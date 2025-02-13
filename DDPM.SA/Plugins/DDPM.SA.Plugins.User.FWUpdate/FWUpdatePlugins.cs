@@ -281,19 +281,54 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             _logs.DebugMsg_1($"CheckUODFWUInfo start");
             string s = "";
-            if (DeviceInfos != null && DeviceInfos.Count > 0)
+            if (DeviceInfos != null && DeviceInfos.Count > 0 && UODFWUInfo != null && UODFWUInfo.FWUpdateInfo != null)
             {
                 _logs.DebugMsg_1($"CheckUODFWUInfo if 1");
                 foreach (DeviceInfo deviceInfo in DeviceInfos)
                 {
                     _logs.DebugMsg_1($"CheckUODFWUInfo deviceInfo.DockServiceTag : {deviceInfo.DockServiceTag}");
                     _logs.DebugMsg_1($"CheckUODFWUInfo UODFWUInfo.FWUpdateInfo.ServiceTag : {UODFWUInfo.FWUpdateInfo.ServiceTag}");
-                    if (deviceInfo.DockServiceTag.Equals(UODFWUInfo.FWUpdateInfo.ServiceTag))
+                    if ((deviceInfo.PhysicalDeviceType == DeviceType.LogicalDock ||
+                        deviceInfo.PhysicalDeviceType == DeviceType.PhysicalWiredDock) &&
+                        deviceInfo.DockServiceTag.Equals(UODFWUInfo.FWUpdateInfo.ServiceTag))
                     {
                         _logs.DebugMsg_1($"CheckUODFWUInfo deviceInfo.FirmwareVersion : {deviceInfo.FirmwareVersion}");
                         _logs.DebugMsg_1($"CheckUODFWUInfo UODFWUInfo.FWUpdateInfo.TheLatestVersion : {UODFWUInfo.FWUpdateInfo.TheLatestVersion}");
-                        string Ver = deviceInfo.FirmwareVersion;
-                        if (Ver.Equals(UODFWUInfo.FWUpdateInfo.TheLatestVersion))
+                        string currentVer = deviceInfo.FirmwareVersion;
+                        if (!string.IsNullOrEmpty(currentVer) &&
+                                !currentVer.Contains("."))
+                        {
+                            if (currentVer.Length < 5) //長度小於5
+                            {
+                                if (currentVer.Length < 4) // 長度不足4,就補0在字首到長度為4
+                                    currentVer = currentVer.PadLeft(4, '0');
+                                currentVer = Regex.Replace(currentVer, ".{1}", "$0.").Substring(0, (currentVer.Length * 2) - 1);
+                            }
+                            else if (currentVer.Length > 4) // 長度大於4
+                            {
+                                //FF.FF.FF.FF(testing) or
+                                //01004501 => 01.00.45.01 / 00011600 => 00.01.16.00(production)
+
+                                if (currentVer.Length < 8) // 長度不足8,就補0在字首到長度為8
+                                    currentVer = currentVer.PadLeft(8, '0');
+
+                                //FF.FF.FF.FF(testing) or
+                                //00001541 => 1.5.4.1; 00001064 => 1.0.6.4(production)
+                                if (currentVer.StartsWith("0000")) // 檢查前4個字元是否都為0
+                                {
+                                    currentVer = currentVer.Substring(4);
+                                    currentVer = Regex.Replace(currentVer, ".{1}", "$0.").Substring(0, (currentVer.Length * 2) - 1);
+                                }
+                                else
+                                {
+                                    string pattern = @"(.{2})(.{2})(.{2})(.{2})";
+                                    string replacement = "$1.$2.$3.$4";
+                                    currentVer = Regex.Replace(currentVer, pattern, replacement);
+                                }
+                            }
+                            _logs.DebugMsg_1($" CheckUODFWUInfo(), currentVer (production output) = {currentVer}");
+                        }
+                        if (currentVer.Equals(UODFWUInfo.FWUpdateInfo.TheLatestVersion))
                         {
                             s = $"{deviceInfo.ModelNumber} UOD update completed.";
                         }
@@ -311,7 +346,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                 }
             }
-            else if (!string.IsNullOrEmpty(UODFWUInfo.FWUpdateInfo.ServiceTag))
+            else if (UODFWUInfo != null && UODFWUInfo.FWUpdateInfo != null && !string.IsNullOrEmpty(UODFWUInfo.FWUpdateInfo.ServiceTag))
             {
                 _logs.DebugMsg_1($"CheckUODFWUInfo UODFWUInfo.FWUpdateInfo.ServiceTag is null : {string.IsNullOrEmpty(UODFWUInfo.FWUpdateInfo.ServiceTag)}");
                 TimeSpan difference = new TimeSpan(0);
