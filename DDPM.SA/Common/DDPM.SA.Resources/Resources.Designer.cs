@@ -646,7 +646,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Move or click the target mouse’s left button twice.
+        ///   Looks up a localized string similar to Please double click mouse left button to start firmware update.
         /// </summary>
         internal static string M1_Please_double_click_mouse_left_button_to_start_firmware_update {
             get {
@@ -655,7 +655,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please press &quot;U&quot; key on keyboard to start firmware update.
+        ///   Looks up a localized string similar to Press “U” key twice to activate firmware update of target keyboard.
         /// </summary>
         internal static string M2_Please_press_key_on_keyboard_to_start_firmware_update {
             get {
