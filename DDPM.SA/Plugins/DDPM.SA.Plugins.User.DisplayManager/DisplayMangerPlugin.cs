@@ -4876,6 +4876,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 if (firmwares_item != null)
                                 {
                                     firmwares_item.id = model;
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] model : {model}");
                                     if (firmwares_item.url.Contains("%2"))
                                     {
                                         firmwares_item.url = firmwares_item.url.Replace("%2", GlobalDefinitions.percent_two_url);// "https://downloads.dell.com");
@@ -4891,8 +4892,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     firmwares_item.D_Ctrl = monitorInfo.D_Ctrl;
                                     if (firmwares_item.SupportedPlatform != null)
                                     {
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] firmwares_item.SupportedPlatform : {firmwares_item.SupportedPlatform}");
                                         string currentPlatform = GetSystemArchitecture();
                                         string[] supportedPlatform = firmwares_item.SupportedPlatform.Split(",");
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] currentPlatform : {currentPlatform}");
                                         if (!supportedPlatform.ToList().Contains(currentPlatform))
                                         {
                                             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} {firmwares_item.id} Platform no supported. currentPlatform:{currentPlatform} ");
@@ -4943,19 +4946,20 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public string GetSystemArchitecture()
         {
-            if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
+            _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetSystemArchitecture)} RuntimeInformation.ProcessArchitecture : {RuntimeInformation.OSArchitecture.ToString()}");
+            if (RuntimeInformation.OSArchitecture == Architecture.X64)
             {
                 return "Intel";//"Intel_x64";
             }
-            else if (RuntimeInformation.ProcessArchitecture == Architecture.X86)
+            else if (RuntimeInformation.OSArchitecture == Architecture.X86)
             {
                 return "Intel";//"Intel_x86";
             }
-            else if (RuntimeInformation.ProcessArchitecture == Architecture.Arm)
+            else if (RuntimeInformation.OSArchitecture == Architecture.Arm)
             {
                 return "ARM";
             }
-            else if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+            else if (RuntimeInformation.OSArchitecture == Architecture.Arm64)
             {
                 return "ARM";//"ARM_64";
             }
