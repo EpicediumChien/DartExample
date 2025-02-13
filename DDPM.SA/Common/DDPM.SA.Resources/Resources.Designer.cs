@@ -646,7 +646,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please double click mouse left button to start firmware update.
+        ///   Looks up a localized string similar to Move or click the target mouse’s left button twice.
         /// </summary>
         internal static string M1_Please_double_click_mouse_left_button_to_start_firmware_update {
             get {
