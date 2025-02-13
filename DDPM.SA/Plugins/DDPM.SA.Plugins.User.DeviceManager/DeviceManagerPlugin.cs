@@ -10,6 +10,7 @@
 
 #endregion
 
+using DDDPM.SA.Common;
 using DdmLibrary.Utility;
 using DDPM.MonitorBorker;
 using DDPM.OSDs;
@@ -278,7 +279,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceManagerPlugin constructor ...");
 
             _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
-            SACommonHelper.GetResourceDictionary();
+            SAUICommonHelper.GetResourceDictionary();
             loadResourceDictionary(UXSystemParameters.Instance.OSTheme);
 
             //Robert_Lin, 2024-12-1 added, to let TextBox highlight text color can be changed with TextBox.SelectionTextBrush
@@ -290,6 +291,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"CurrentCultureInfo=[{CultureInfo.CurrentCulture.Name}], MappedCultureInfo=[{DDPM.SA.Resources.DdpmCultureMap.MappedCultureInfo.Name}]");
 
             Microsoft.Win32.SystemEvents.PowerModeChanged += OnPowerModeChanged;//Added 01/07 by Bruce
+            DdpmSACommonHelper.SAUserPluginReady(nameof(DeviceMangerPlugin));
         }
 
 
@@ -1527,55 +1529,55 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </summary>
         /// <param name="mo"></param> 螢幕資訊
         /// <returns></returns> 回傳目前螢幕在 ColorSetting setting config的 index number
-        public int get_index_of_json_config_for_cur_monitor(MonitorInfo mo)//string index_monitor)
-        {
-            int index = -1;
+        //public int get_index_of_json_config_for_cur_monitor(MonitorInfo mo)//string index_monitor)
+        //{
+        //    int index = -1;
 
-            if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null)
-            {
-                // chech if ModelName and SerialNumber is null
-                if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
-                {
-                    for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
-                    {
-                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
-                            return -1;
+        //    if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null)
+        //    {
+        //        // chech if ModelName and SerialNumber is null
+        //        if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
+        //        {
+        //            for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
+        //            {
+        //                if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
+        //                    return -1;
 
-                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
-                            return -1;
-                    }
-                }
+        //                if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
+        //                    return -1;
+        //            }
+        //        }
 
-                index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                                      x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                                      x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+        //        index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+        //                                              x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+        //                                              x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
 
-                if (index == -1)
-                {
-                    // chech if ModelName and ServiceTag is null
-                    if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
-                    {
-                        for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
-                        {
-                            if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
-                                return -1;
+        //        if (index == -1)
+        //        {
+        //            // chech if ModelName and ServiceTag is null
+        //            if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
+        //            {
+        //                for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
+        //                {
+        //                    if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
+        //                        return -1;
 
-                            if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ServiceTag))
-                                return -1;
-                        }
-                    }
+        //                    if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ServiceTag))
+        //                        return -1;
+        //                }
+        //            }
 
-                    index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                               x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                               x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
-                }
+        //            index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+        //                                       x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+        //                                       x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
+        //        }
 
-                //int index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                //x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                //x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
-            }
-            return index;
-        }
+        //        //int index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+        //        //x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+        //        //x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+        //    }
+        //    return index;
+        //}
 
         /// <summary>
         /// 啟動監視NightLight Status
@@ -18293,12 +18295,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 case OSThemeEnum.Light:
                     appModeTelementryData = "Light";
-                    SACommonHelper.SwitchToLightMode();
+                    SAUICommonHelper.SwitchToLightMode();
                     break;
 
                 case OSThemeEnum.Dark:
                     appModeTelementryData = "Dark";
-                    SACommonHelper.SwitchToDarkMode();
+                    SAUICommonHelper.SwitchToDarkMode();
                     break;
 
                 default:

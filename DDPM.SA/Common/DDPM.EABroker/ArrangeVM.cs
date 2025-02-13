@@ -349,7 +349,7 @@ namespace DDPM.EABroker
                 return true;
             if (fileName.Equals("DDPM.exe", StringComparison.OrdinalIgnoreCase))
                 return true;
-            if (fileName.Equals("DDM.exe", StringComparison.OrdinalIgnoreCase))
+            if (fileName.Equals(GlobalDefinitions.DDMExeName, StringComparison.OrdinalIgnoreCase))
                 return true;
 
             return false;

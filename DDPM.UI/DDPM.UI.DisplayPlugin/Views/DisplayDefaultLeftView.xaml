@@ -102,7 +102,7 @@
                 -->
                 <!--Chewlin 20250111 for fix Display page RestoreToDefault clipping issue(No PIMS number) change Width="176" to  MinWidth="176" ADD Width="auto"-->
                 <Button Grid.Row="1" Style="{StaticResource SecondaryButtonStyle}"  MinWidth="176" Width="auto" Click="Restore_Click"  Cursor="Hand" Margin="8,0,0,70" x:Name="btnRestore"
-                        Visibility="{Binding IsRestoreBtnVisible}">
+                        Visibility="{Binding IsRestoreBtnVisible}" AutomationProperties.Name="{Binding ElementName=txtRestore, Path=Text, Mode=OneWay}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -113,11 +113,11 @@
                                                 HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
                         -->
                         <!--Chewlin 20250111 for fix Display page RestoreToDefault clipping issue(No PIMS number) add Width="auto"-->
-                        <UXControls:UXTextBlock Name="txtRestore" Width="auto" Foreground="{DynamicResource SecondaryButton_TextColor_Default}" VerticalAlignment="Center" Grid.Column="0"
+                        <UXControls:UXTextBlock Name="txtRestore" Width="auto" Foreground="{DynamicResource SecondaryButton_TextColor_Default}" VerticalAlignment="Center" Grid.Column="0" Focusable="False"
                                                 HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
                         <!-- Robert_Lin, 2024-12-8, Change LockIcon to a ControlTemplate from Image -->
                         <!-- NEW: -->
-                        <ContentControl Grid.Column="1"  Name="RestoreLockIcon" Visibility="Collapsed" Margin="0,0,6,0"
+                        <ContentControl Grid.Column="1"  Name="RestoreLockIcon" Visibility="Collapsed" Margin="0,0,6,0" Focusable="False"
                                         Template="{StaticResource icon_Lock}" Foreground="{DynamicResource LockIcon_Fill}">
                             <ContentControl.ToolTip>
                                 <ToolTip>
