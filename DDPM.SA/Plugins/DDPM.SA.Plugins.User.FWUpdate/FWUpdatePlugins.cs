@@ -2093,25 +2093,23 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 };
                 sendMessageToEvent(fWUpdateInfo);
             }
-            if (_timeOutCount <= 60)
+            if (_timeOutCount <= 60 && 
+                _fWUpdateInfo.DeviceType == DeviceType.LogicalHeadset &&
+                _fWUpdateInfo.Model.Contains("7024") &&
+                _CurrentProcess >= 100)
             {
-                if (_fWUpdateInfo.DeviceType == DeviceType.LogicalHeadset &&
-                    _fWUpdateInfo.Model.Contains("7024") &&
-                    _CurrentProcess >= 100)
+                _updateErrorCode = FWUErrorCode.NoError;
+                _notificationStr = LangHelper.Instance["A2_Firmware_update_successful"];
+                _logs.DebugMsg_1("_timeOutCount <= 60 and is WL7024FWU and _CurrentProcess is 100% so successful");
+                UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                 {
-                    _updateErrorCode = FWUErrorCode.NoError;
-                    _notificationStr = LangHelper.Instance["A2_Firmware_update_successful"];
-                    _logs.DebugMsg_1("_timeOutCount <= 60 and is WL7024FWU and _CurrentProcess is 100% so successful");
-                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
-                    {
-                        DeviceName = _fWUpdateInfo.DeviceName,
-                        Model = _fWUpdateInfo.Model,
-                        TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                        ProcessName = "A2 Firmware update successful",
-                    };
-                    sendMessageToEvent(updateProgressInfo);
-                    resetState();
-                }
+                    DeviceName = _fWUpdateInfo.DeviceName,
+                    Model = _fWUpdateInfo.Model,
+                    TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                    ProcessName = "A2 Firmware update successful",
+                };
+                sendMessageToEvent(updateProgressInfo);
+                resetState();
             }
             _timeOutCount--;
             if (_namedPipeServer != null && _namedPipeServer.IsNamedPipeServerIsNoSafe &&
