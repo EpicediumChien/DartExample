@@ -83,6 +83,10 @@ public class Constants
     /// DDPM.UI.Plugin.WalkThroughPlugin PluginId
     /// </summary>
     public const string WalkThroughPluginId = "{CB7DD7CC-72C4-4D70-9C6B-AFF7758E5A29}";
+    /// <summary>
+    /// DDPM.UI.Plugin.Bootloader PluginId
+    /// </summary>
+    public const string BootloaderPluginId = "{7EA1CB12-F945-4CAB-915B-BD4C3D25259E}";
     #endregion Plugin IDs
 
     // (Move to DDPM.SA.Common/Display/EAEMConstants.cs)

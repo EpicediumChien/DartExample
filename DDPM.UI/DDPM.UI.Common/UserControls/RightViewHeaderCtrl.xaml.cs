@@ -167,6 +167,61 @@ namespace DDPM.UI.Common
                 SelectionChanged(this, new RoutedEventArgs());
         }
 
+        private void header2_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                e.Handled = true;
+                //Redirect to header2_MouseLeftButtonDown()
+                var mouseDevice = InputManager.Current.PrimaryMouseDevice;
+                if (mouseDevice != null)
+                {
+                    var args = new MouseButtonEventArgs(mouseDevice, 0, MouseButton.Left)
+                    {
+                        RoutedEvent = UIElement.MouseLeftButtonDownEvent
+                    };
+                    header2_MouseLeftButtonDown(sender, args);
+                }
+            }
+
+        }
+
+        private void header1_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                e.Handled = true;
+                //Redirect to header1_MouseLeftButtonDown()
+                var mouseDevice = InputManager.Current.PrimaryMouseDevice;
+                if (mouseDevice != null)
+                {
+                    var args = new MouseButtonEventArgs(mouseDevice, 0, MouseButton.Left)
+                    {
+                        RoutedEvent = UIElement.MouseLeftButtonDownEvent
+                    };
+                    header1_MouseLeftButtonDown(sender, args);
+                }
+            }
+        }
+
+        private void header0_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                e.Handled = true;
+                //Redirect to header0_MouseLeftButtonDown()
+                var mouseDevice = InputManager.Current.PrimaryMouseDevice;
+                if (mouseDevice != null)
+                {
+                    var args = new MouseButtonEventArgs(mouseDevice, 0, MouseButton.Left)
+                    {
+                        RoutedEvent = UIElement.MouseLeftButtonDownEvent
+                    };
+                    header0_MouseLeftButtonDown(sender, args);
+                }
+            }
+        }
         #endregion Selection Changed
+
     }
 }

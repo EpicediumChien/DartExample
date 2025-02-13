@@ -45,30 +45,30 @@ namespace DDPM.SA.Common
         /// <summary>
         /// 軟體更新的錯誤碼，安裝時使用
         /// </summary>
-        public SWUErrorCode SWUErrorCode { get; set; }
+        public SWUErrorCode SWUErrorCode { get; set; } = SWUErrorCode.Unknow;
 
-        public string SoftwareName { get; set; }
-        public string SoftwareVersion { get; set; }
-        public string TheLatestVersion { get; set; }
-        public bool NeedUpdated { get; set; }
+        public string SoftwareName { get; set; } = string.Empty;
+        public string SoftwareVersion { get; set; } = string.Empty;
+        public string TheLatestVersion { get; set; } = string.Empty;
+        public bool NeedUpdated { get; set; } = false;
 
         /// <summary>
         /// 安裝時使用，獲取目前的進度資訊
         /// </summary>
-        public string ProcessName { get; set; }
+        public string ProcessName { get; set; } = string.Empty;
 
         /// <summary>
         /// 安裝時使用，獲取安裝進度
         /// </summary>
-        public double ProcessProgress { get; set; }
+        public double ProcessProgress { get; set; } = 0.0;
 
-        public string ServerPath { get; set; }
-        public string FileSavepath { get; set; }
-        public string InstallPaths { get; set; }
-        public string SHA256 { get; set; }
-        public string SHA512 { get; set; }
-        public string Thumbprint { get; set; }
-        public string Available_date { get; set; }
+        public string ServerPath { get; set; } = string.Empty;
+        public string FileSavepath { get; set; } = string.Empty;
+        public string InstallPaths { get; set; } = string.Empty;
+        public string SHA256 { get; set; } = string.Empty;
+        public string SHA512 { get; set; } = string.Empty;
+        public string Thumbprint { get; set; } = string.Empty;
+        public string Available_date { get; set; } = string.Empty;
 
         public bool Equals(SWUpdateInfo swUpdateInfo)
         {

@@ -2714,29 +2714,27 @@ namespace NetworkKVM.Plugins
             {
                 foreach (DDPMMonitorSettings setting in settings)
                 {
-                    if (setting != null)
+                    if (setting != null && 
+                        setting.ServiceTag == monitorInfo.edid.ServiceTag)
                     {
-                        if (setting.ServiceTag == monitorInfo.edid.ServiceTag)
+                        setting.KVM.isOnNKVM = ison;
+                        bool b = _SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result;
+                        if (ison)
                         {
-                            setting.KVM.isOnNKVM = ison;
-                            bool b = _SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result;
-                            if (ison)
-                            {
-                                //_SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
-                                OnNKVM().Wait();
-                                //bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
-                            }
-                            else
-                            {
-                                OffNKVM().Wait();
-                                DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-                                if (config != null)
-                                {
-                                    config.LockSettings.Enable_Display_NetworkKVM = false;
-                                }
-                            }
-                            break;
+                            //_SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
+                            OnNKVM().Wait();
+                            //bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
                         }
+                        else
+                        {
+                            OffNKVM().Wait();
+                            DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
+                            if (config != null)
+                            {
+                                config.LockSettings.Enable_Display_NetworkKVM = false;
+                            }
+                        }
+                        break;
                     }
                 }
             }

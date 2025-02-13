@@ -20,6 +20,7 @@ using System.Reflection;
 using DDPM.SA.Obfuscation;
 using System.IO;
 using System.Windows;
+using DDDPM.SA.Common;
 
 namespace DDPM.Subagent.User
 {
@@ -58,6 +59,7 @@ namespace DDPM.Subagent.User
 
         private static void Main(string[] args)
         {
+            DdpmSACommonHelper.SAUserLaunchTimer.Start();
             //Dean 0626 remove to fix SAST issue
             //var handle = GetConsoleWindow();
             //
