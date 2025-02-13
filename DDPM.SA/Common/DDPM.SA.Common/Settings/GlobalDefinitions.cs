@@ -62,5 +62,14 @@ namespace DDPM.SA.Common.Settings
 
         //Migration
         public const string MigrationInput = "Migration";
+
+        //DDM(NKVM) executable file name
+#if SUPPORT_200
+        public const string DDMExeName = "DDM.exe";
+        public const string DDMProcessName = "DDM";
+#else
+        public const string DDMExeName = "DDPM-NKVM.exe";
+        public const string DDMProcessName = "DDPM-NKVM";
+#endif
     }
 }
