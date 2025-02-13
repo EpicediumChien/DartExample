@@ -12,7 +12,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 
 namespace DDPM.SA.Common.UI
 {
-    public static partial class SACommonHelper
+    public static partial class SAUICommonHelper
     {
         public static void SwitchToDarkMode() 
         {

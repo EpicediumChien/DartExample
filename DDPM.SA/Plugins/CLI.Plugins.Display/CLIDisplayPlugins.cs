@@ -13371,7 +13371,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private static void LaunchNetworkkvmApp(ILog log)
         {
-            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\" + GlobalDefinitions.DDMExeName;
             string valueName = "(Default)";
 
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
@@ -13405,7 +13405,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private static void LaunchNetworkkvmApp_on(ILog log)
         {
-            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\" + GlobalDefinitions.DDMExeName;
             string valueName = "(Default)";
 
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
@@ -13439,7 +13439,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private static void LaunchNetworkkvmApp_off(ILog log)
         {
-            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\" + GlobalDefinitions.DDMExeName;
             string valueName = "(Default)";
 
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
@@ -13473,7 +13473,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private static void LaunchNetworkkvmautoconnectApp_on(ILog log)
         {
-            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\" + GlobalDefinitions.DDMExeName;
             string valueName = "(Default)";
 
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
@@ -13507,7 +13507,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private static void LaunchNetworkkvmautoconnectApp_off(ILog log)
         {
-            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\" + GlobalDefinitions.DDMExeName;
             string valueName = "(Default)";
 
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
@@ -13541,7 +13541,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private static void LaunchNetworkkvmcontenttransferApp_on(ILog log)
         {
-            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\" + GlobalDefinitions.DDMExeName;
             string valueName = "(Default)";
 
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
@@ -13575,7 +13575,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private static void LaunchNetworkkvmcontenttransferApp_off(ILog log)
         {
-            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\" + GlobalDefinitions.DDMExeName;
             string valueName = "(Default)";
 
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
@@ -13609,7 +13609,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private static void LaunchNetworkkvmincomingportApp(ILog log, CommandLineInput commandLineInput)
         {
-            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\" + GlobalDefinitions.DDMExeName;
             string valueName = "(Default)";
 
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
@@ -13643,7 +13643,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private static void LaunchNetworkkvmoutgoingportApp(ILog log, CommandLineInput commandLineInput)
         {
-            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\" + GlobalDefinitions.DDMExeName;
             string valueName = "(Default)";
 
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
@@ -13677,7 +13677,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private static void LaunchNetworkkvmcontenttransferportApp(ILog log, CommandLineInput commandLineInput)
         {
-            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\" + GlobalDefinitions.DDMExeName;
             string valueName = "(Default)";
 
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
@@ -13711,7 +13711,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private static void LaunchNetworkkvmaccessresetApp(ILog log)
         {
-            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\" + GlobalDefinitions.DDMExeName;
             string valueName = "(Default)";
 
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
@@ -13769,7 +13769,7 @@ namespace DDPM.CLI.Plugins.Display
             cli_Response.Command = commandLineInput.Command;
             cli_Response.TargetFeature = commandLineInput.TargetFeature;
 
-            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\" + GlobalDefinitions.DDMExeName;
 
             if (File.Exists(filePath))
             {

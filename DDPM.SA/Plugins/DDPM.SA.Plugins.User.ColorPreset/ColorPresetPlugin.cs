@@ -185,8 +185,8 @@ namespace ColorPreset.Plugins
                         if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
                             return -1;
 
-                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
-                            return -1;
+                        //if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
+                        //    return -1;
                     }
                 }
 
@@ -2285,11 +2285,13 @@ namespace ColorPreset.Plugins
                     //Bruce 02/10 get color profile metadata, no save in local 
                     strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
                     string Info;
+                    writelog("DownloadICCData get Metadata go.");
                     HttpClient client = new HttpClient();
                     client.Timeout = TimeSpan.FromSeconds(5);
                     HttpResponseMessage response = client.GetAsync(url).Result;
                     response.EnsureSuccessStatusCode();
                     string jsonContent = response.Content.ReadAsStringAsync().Result;
+                    writelog("DownloadICCData get Metadata done.");
                     if (!string.IsNullOrEmpty(jsonContent))
                     {
                         strReadJson = string.Empty;
@@ -2298,6 +2300,7 @@ namespace ColorPreset.Plugins
                         //    writelog($"[DownloadICCData] CheckICC_JSON_Security Fail. {strFilePath}");
                         //    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
                         //}
+                        writelog("DownloadICCData check Metadata go.");
                         List<string> InfoPkey = new List<string>();
                         if (_SettingsPlugin_internal != null)
                         {
@@ -2312,6 +2315,7 @@ namespace ColorPreset.Plugins
                         //Bruce 02/10 verify color profile metadata
                         string szInfo = string.Empty;
                         strReadJson = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(Log, jsonContent, InfoPkey, out szInfo);
+                        writelog($"DownloadICCData check Metadata done. strReadJson is null : {string.IsNullOrEmpty(strReadJson)}");
                         if (!string.IsNullOrEmpty(strReadJson))
                         {
                             ////Elsa Add Security
@@ -2351,14 +2355,14 @@ namespace ColorPreset.Plugins
 
                         foreach (var kvp in _ICC_Metadata._support_ICC_DeviceName)
                         {
-                            Trace.WriteLine($" Model name = {kvp.Key}");
+                            writelog($"foreach Model name = {kvp.Key}");
                         }
 
-                        Trace.WriteLine($"m.modelName = {m.modelName} ");
+                        writelog($"m.modelName = {m.modelName} ");
 
                         var lookup = _ICC_Metadata._support_ICC_DeviceName.First(x => x.Key.Equals(m.modelName, StringComparison.OrdinalIgnoreCase));
 
-                        Trace.WriteLine($"lookup.Key = {lookup.Key} ");
+                        writelog($"lookup.Key = {lookup.Key} ");
 
                         if (lookup.Key != null)
                         {
@@ -2433,6 +2437,7 @@ namespace ColorPreset.Plugins
                                     {
                                         writelog($"[DownloadICCData] download icc {_ICC_Metadata._match_ICC_DeviceName[i]} failed");
                                     }
+                                    writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i].File} download done");
                                 }
                             }
                         }
@@ -2441,6 +2446,11 @@ namespace ColorPreset.Plugins
                     {
                         writelog($"[DownloadICCData] Download ICC Metadata failed = {downloadInfo}");
                     }
+                }
+                else
+                {
+                    writelog($"url is null");
+                    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
                 }
                 //}
 

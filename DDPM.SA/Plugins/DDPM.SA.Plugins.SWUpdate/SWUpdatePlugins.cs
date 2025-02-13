@@ -1,4 +1,5 @@
-﻿using DDPM.SA.Common;
+﻿using DDDPM.SA.Common;
+using DDPM.SA.Common;
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
 using DDPM.SA.Common.Settings;
@@ -16,6 +17,7 @@ using PInvoke;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -123,6 +125,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             _SWUpdateInfoPackage = new SWUpdateInfoPackage();
             _ForceSWUpdateInfoPackage = new SWUpdateInfoPackage();
             _ForceSWUpdateInfoPackage.SWUpdateInfo = new List<SWUpdateInfo>();
+            DdpmSACommonHelper.SAPluginReady(nameof(SWUpdatePlugins));
         }
         #region Overriding methods
 
@@ -184,6 +187,13 @@ namespace DDPM.SA.Plugins.SWUpdate
         }
 
         #endregion Overriding methods
+        public void SetLang(CultureInfo cultureInfo)
+        {
+            _logs.DebugMsg_1($"SetLang start");
+            _logs.DebugMsg_1($"cultureInfo : {cultureInfo}");
+            LangHelper.UserMappedCultureInfo = cultureInfo;
+            _logs.DebugMsg_1($"SetLang done");
+        }
         /// <summary>
         /// 設定檔儲存的延遲更新資訊包
         /// </summary>

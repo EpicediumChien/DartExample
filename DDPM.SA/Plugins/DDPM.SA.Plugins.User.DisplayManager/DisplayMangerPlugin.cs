@@ -970,7 +970,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<string> GetCurrentInput(MonitorInfo monitorInfo)
         {
             ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, "input select").Result;
-            if (objGetVCP != null && objGetVCP.result) 
+            if (objGetVCP != null && objGetVCP.result)
             {
                 Trace.WriteLine("CurrentInput:" + objGetVCP.value.ToString());
                 string currentInpt = objGetVCP.value.ToString();
@@ -4092,8 +4092,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 string manufacturer_Name = Vendor_Product_Identification.Manufacturer_Name(edid_byte);
                 string product_Id = Vendor_Product_Identification.Product_Id(edid_byte).PadLeft(4, '0');
                 MonitorInfo? monitorInfo = monitorInfos.Find(o => BitConverter.ToString((byte[])currentMnoitorByteArr[i]).Replace("-", "").StartsWith(o.edid.Edid));
-                Debug.WriteLine(monitorInfos[0].edid.Edid);
-                Debug.WriteLine(BitConverter.ToString((byte[])currentMnoitorByteArr[i]).Replace("-", ""));
                 string modelName = $"{manufacturer_Name} {manufacturer_Name + product_Id}";
                 string manufacturer = manufacturer_Name;
                 string orientation = "N/A";
@@ -4105,6 +4103,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 string connection = "DisplayPort";
                 string serialNumber = "N/A";
                 string optimalResolution = "N/A";
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetMonitorAssetReport)} monitorInfo is null :{monitorInfo == null}");
                 if (monitorInfo != null)
                 {
                     modelName = monitorInfo.modelName;
@@ -4141,6 +4140,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     optimalResolution = $"{Resolutions_Width}x{Resolutions_High} at {Frequency}Hz";
                 }
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetMonitorAssetReport)} ret.Add : {modelName}");
                 ret.Add(new MonitorAssetReport()
                 {
                     ModelName = modelName,

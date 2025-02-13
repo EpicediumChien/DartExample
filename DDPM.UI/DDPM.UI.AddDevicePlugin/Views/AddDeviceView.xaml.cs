@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.AddDisplay;
@@ -269,14 +270,16 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             moduleGroup.AddHeader(Speaker, new AddSpeakerModule(_vm!));
             groups.Add(moduleGroup);
 
-            moduleGroup = new ModuleGroup()
+            if (!GlobalDefinitions.isSupport200)
             {
-                GroupName = Dock,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Dock.png", "DDPM.UI.Resources")
-            };
-            moduleGroup.AddHeader(Dock, new AddDockModule(_vm!));
-            groups.Add(moduleGroup);
-
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Dock,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Dock.png", "DDPM.UI.Resources")
+                };
+                moduleGroup.AddHeader(Dock, new AddDockModule(_vm!));
+                groups.Add(moduleGroup);
+            }
             _vm!.ModuleGroups = groups;
         }
 

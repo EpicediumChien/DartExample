@@ -59,8 +59,8 @@ namespace DDPM.UI.Plugin.ViewModels
         public ICommand GoBackClickedCommand { get; private set; }
         public ICommand ShowInfoClickedCommand { get; private set; }
         public volatile Dictionary<Guid, DeviceInfo> DeviceInfos = new();
-        public List<string> EOLKBList = DDPM.SA.Common.UI.SACommonHelper.EOLKBList;// new () { "WK636", "KM713", "WK717", "KM714", "KM717" };
-        public List<string> EOLMouseList = DDPM.SA.Common.UI.SACommonHelper.EOLMouseList;// new () { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
+        public List<string> EOLKBList = DDPM.SA.Common.UI.SAUICommonHelper.EOLKBList;// new () { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        public List<string> EOLMouseList = DDPM.SA.Common.UI.SAUICommonHelper.EOLMouseList;// new () { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
         //public DDPMSettings? DDPMSettings;
         public bool IsCopilotEnabled = true;
         public bool IsDTPReady = false;
@@ -125,7 +125,7 @@ namespace DDPM.UI.Plugin.ViewModels
             int i = 0;
             foreach (var info in DeviceInfos.Values)
             {
-                if (DDPM.SA.Common.UI.SACommonHelper.MappingModel(info.ModelNumber) == Model)
+                if (DDPM.SA.Common.UI.SAUICommonHelper.MappingModel(info.ModelNumber) == Model)
                 {
                     i++;
                     //OnPropertyChanged(nameof(MultiDevicesInfoVisibility));
@@ -228,12 +228,12 @@ namespace DDPM.UI.Plugin.ViewModels
             }
 
             CheckCopilot();
-            Model = DDPM.SA.Common.UI.SACommonHelper.MappingModel(CurrentDeviceInfo.ModelNumber);
+            Model = DDPM.SA.Common.UI.SAUICommonHelper.MappingModel(CurrentDeviceInfo.ModelNumber);
             //Name = CurrentDeviceInfo.Name;
             if (EOLKBList.Contains(Model) || EOLMouseList.Contains(Model))
-                Name = DDPM.SA.Common.UI.SACommonHelper.MappingEOLName(Model);// DdpmCommonHelper.MappingEOLName(Model);
+                Name = DDPM.SA.Common.UI.SAUICommonHelper.MappingEOLName(Model);// DdpmCommonHelper.MappingEOLName(Model);
             else
-                Name = DDPM.SA.Common.UI.SACommonHelper.MappingName(Model, CurrentDeviceInfo.Name.Trim());
+                Name = DDPM.SA.Common.UI.SAUICommonHelper.MappingName(Model, CurrentDeviceInfo.Name.Trim());
 
             if (CurrentDeviceInfo.Type == DeviceType.PhysicalWiredDock || CurrentDeviceInfo.Type == DeviceType.LogicalDock)
             {
@@ -353,7 +353,7 @@ namespace DDPM.UI.Plugin.ViewModels
             return true;
         }
 
-        //using this function from DDPM.SA.Common.UI.SACommonHelper [Dean]0115
+        //using this function from DDPM.SA.Common.UI.SAUICommonHelper [Dean]0115
         /*private string MappingModel(string modelNumber)
         {
             //[#PeripheralModelMap] This mapping table has a duplicate code in

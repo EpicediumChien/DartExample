@@ -3590,6 +3590,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                         {
                             SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, false, true).Result;
                             Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
+                            cLI_SWU_RESPONSE.SWname = string.Join(",", swUpdateInfoPackage.SWUpdateInfo.Select(_ => _.SoftwareName));
+                            cLI_SWU_RESPONSE.SWVersion = string.Join(",", swUpdateInfoPackage.SWUpdateInfo.Select(_ => $"[{_.SoftwareVersion}]"));
+                            cLI_SWU_RESPONSE.SWUpdateRESPONSE.AddRange(swUpdateInfoPackage.SWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.SoftwareName} to Version:{_.TheLatestVersion}"));
+                            cLI_SWU_RESPONSE.Result = "PASS";
                             ret = true;
                             //_devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, installPath);
                         }

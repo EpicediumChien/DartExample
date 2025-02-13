@@ -10,6 +10,7 @@
 
 #endregion
 
+using DDDPM.SA.Common;
 using DdmLibrary.Utility;
 using DDPM.MonitorBorker;
 using DDPM.OSDs;
@@ -278,7 +279,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceManagerPlugin constructor ...");
 
             _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
-            SACommonHelper.GetResourceDictionary();
+            SAUICommonHelper.GetResourceDictionary();
             loadResourceDictionary(UXSystemParameters.Instance.OSTheme);
 
             //Robert_Lin, 2024-12-1 added, to let TextBox highlight text color can be changed with TextBox.SelectionTextBrush
@@ -290,6 +291,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"CurrentCultureInfo=[{CultureInfo.CurrentCulture.Name}], MappedCultureInfo=[{DDPM.SA.Resources.DdpmCultureMap.MappedCultureInfo.Name}]");
 
             Microsoft.Win32.SystemEvents.PowerModeChanged += OnPowerModeChanged;//Added 01/07 by Bruce
+            DdpmSACommonHelper.SAUserPluginReady(nameof(DeviceMangerPlugin));
         }
 
 
@@ -1527,55 +1529,55 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </summary>
         /// <param name="mo"></param> 螢幕資訊
         /// <returns></returns> 回傳目前螢幕在 ColorSetting setting config的 index number
-        public int get_index_of_json_config_for_cur_monitor(MonitorInfo mo)//string index_monitor)
-        {
-            int index = -1;
+        //public int get_index_of_json_config_for_cur_monitor(MonitorInfo mo)//string index_monitor)
+        //{
+        //    int index = -1;
 
-            if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null)
-            {
-                // chech if ModelName and SerialNumber is null
-                if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
-                {
-                    for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
-                    {
-                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
-                            return -1;
+        //    if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null)
+        //    {
+        //        // chech if ModelName and SerialNumber is null
+        //        if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
+        //        {
+        //            for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
+        //            {
+        //                if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
+        //                    return -1;
 
-                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
-                            return -1;
-                    }
-                }
+        //                if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
+        //                    return -1;
+        //            }
+        //        }
 
-                index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                                      x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                                      x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+        //        index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+        //                                              x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+        //                                              x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
 
-                if (index == -1)
-                {
-                    // chech if ModelName and ServiceTag is null
-                    if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
-                    {
-                        for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
-                        {
-                            if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
-                                return -1;
+        //        if (index == -1)
+        //        {
+        //            // chech if ModelName and ServiceTag is null
+        //            if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
+        //            {
+        //                for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
+        //                {
+        //                    if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
+        //                        return -1;
 
-                            if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ServiceTag))
-                                return -1;
-                        }
-                    }
+        //                    if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ServiceTag))
+        //                        return -1;
+        //                }
+        //            }
 
-                    index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                               x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                               x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
-                }
+        //            index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+        //                                       x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+        //                                       x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
+        //        }
 
-                //int index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                //x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                //x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
-            }
-            return index;
-        }
+        //        //int index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+        //        //x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+        //        //x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+        //    }
+        //    return index;
+        //}
 
         /// <summary>
         /// 啟動監視NightLight Status
@@ -5892,6 +5894,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("[DeviceMangerPlugin] _FWUpdatePlugin is null");
                 return Task.FromResult(new List<FWUpdateInfo>());
             }
+            _FWUpdatePlugin.SetLang(LangHelper.GetLanguage());
             _UpdateProgress = null;
             writelog($"[DeviceMangerPlugin] SetDelayFWUpdateInfoPackage go");
             SetDelayFWUpdateInfoPackage();
@@ -5948,6 +5951,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
                 writelog($"[DeviceMangerPlugin] Install SetDelayFWUpdateInfoPackage go");
                 SetDelayFWUpdateInfoPackage();
+                _FWUpdatePlugin.SetLang(LangHelper.GetLanguage());
                 //if (_UpdateProgress != null)
                 //{
                 writelog($"[DeviceMangerPlugin] Install _FWUpdatePlugin.Install go");
@@ -6528,6 +6532,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (_SWUpdatePlugin != null)
                     {
                         writelog("[UpdateEvent], go to _SWUpdatePlugin.UpdateEvent.");
+                        _SWUpdatePlugin.SetLang(LangHelper.GetLanguage());
                         _SWUpdatePlugin.UpdateEvent();
                     }
                 }
@@ -6539,6 +6544,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         List<FWUpdateInfo> fWUpdateInfos = new List<FWUpdateInfo>();
                         _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
                         GetDeviceinfos().Wait();
+                        _FWUpdatePlugin.SetLang(LangHelper.GetLanguage());
                         fWUpdateInfos = _FWUpdatePlugin.UpdateEvent().Result;
                         _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
                         List<FWUpdateInfo> DisplayList = fWUpdateInfos.FindAll(o => o.IsDisplay);
@@ -8302,40 +8308,49 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUITrigger = false, string installPath = "")
         {
             writelog("[SW_DownloadAndInstall], start.");
-            try
+            if (_SWUpdatePlugin != null)
             {
-                if (swUpdateInfos != null && swUpdateInfos.Count > 0)
+                try
                 {
-                    MiniMizeDDPMUI().Wait();
-                    writelog("[SW_DownloadAndInstall], WriteRegistryData go.");
-                    string registryKey = @"SOFTWARE\Dell\Dell Display and Peripheral Manager";
-                    string SW_Available_date = swUpdateInfos[0].Available_date;
-                    bool b = WriteRegistryData(RegistryHive.LocalMachine, registryKey, nameof(SW_Available_date), SW_Available_date).Result;
-                    writelog($"[SW_DownloadAndInstall], WriteRegistryData ret : {b}");
-                }
-            }
-            catch (Exception ex)
-            {
-                writelog($"[SW_DownloadAndInstall], Error : {ex.Message}");
-            }
-            List<SWUpdateInfo> retSWUpdateInfos = _SWUpdatePlugin.DownloadAndInstall(swUpdateInfos, isUITrigger, installPath).Result;
-            bool isRestoreDDPM = false;
-            if (retSWUpdateInfos != null)
-            {
-                foreach (SWUpdateInfo swUpdateInfo in retSWUpdateInfos)
-                {
-                    if (swUpdateInfo.SWUErrorCode != SWUErrorCode.NoError)
+                    if (swUpdateInfos != null && swUpdateInfos.Count > 0)
                     {
-                        isRestoreDDPM = true;
-                        break;
+                        MiniMizeDDPMUI().Wait();
+                        writelog("[SW_DownloadAndInstall], WriteRegistryData go.");
+                        string registryKey = @"SOFTWARE\Dell\Dell Display and Peripheral Manager";
+                        string SW_Available_date = swUpdateInfos[0].Available_date;
+                        bool b = WriteRegistryData(RegistryHive.LocalMachine, registryKey, nameof(SW_Available_date), SW_Available_date).Result;
+                        writelog($"[SW_DownloadAndInstall], WriteRegistryData ret : {b}");
                     }
                 }
+                catch (Exception ex)
+                {
+                    writelog($"[SW_DownloadAndInstall], Error : {ex.Message}");
+                }
+                _SWUpdatePlugin.SetLang(LangHelper.GetLanguage());
+                List<SWUpdateInfo> retSWUpdateInfos = _SWUpdatePlugin.DownloadAndInstall(swUpdateInfos, isUITrigger, installPath).Result;
+                bool isRestoreDDPM = false;
+                if (retSWUpdateInfos != null)
+                {
+                    foreach (SWUpdateInfo swUpdateInfo in retSWUpdateInfos)
+                    {
+                        if (swUpdateInfo.SWUErrorCode != SWUErrorCode.NoError)
+                        {
+                            isRestoreDDPM = true;
+                            break;
+                        }
+                    }
+                }
+                if (isRestoreDDPM)
+                {
+                    RestoreDDPMUI();
+                }
+                return Task.FromResult(retSWUpdateInfos);
             }
-            if (isRestoreDDPM)
+            else
             {
-                RestoreDDPMUI();
+                writelog($"[SW_DownloadAndInstall], _SWUpdatePlugin is null");
+                return Task.FromResult(new List<SWUpdateInfo>());
             }
-            return Task.FromResult(retSWUpdateInfos);
         }
 
         public Task<InterruptScreenRoot> InterruptScreen_Metadata()
@@ -10790,6 +10805,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private bool SaveMonitorAssetReport(List<MonitorAssetReport> monitorAssetReports, string savePath)
         {
+            writelog($"{nameof(SaveMonitorAssetReport)} start");
             bool ret = false;
             try
             {
@@ -10826,14 +10842,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         object value = property.GetValue(report);
                         contentToSave += $"      Value = \"{value}\"\r\n";
                         contentToSave += $"    End Attribute\r\n";
+                        writelog($"{nameof(SaveMonitorAssetReport)} propertyName : {propertyName}");
                     }
                     contentToSave += $"  End Group\r\n";
                 }
                 File.WriteAllText(filePath, contentToSave);
+                ret = true;
             }
-            catch
+            catch (Exception ex)
             {
+                writelog($"{nameof(SaveMonitorAssetReport)} error :{ex.Message}");
             }
+            writelog($"{nameof(SaveMonitorAssetReport)} end");
             return ret;
         }
 
@@ -18275,12 +18295,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 case OSThemeEnum.Light:
                     appModeTelementryData = "Light";
-                    SACommonHelper.SwitchToLightMode();
+                    SAUICommonHelper.SwitchToLightMode();
                     break;
 
                 case OSThemeEnum.Dark:
                     appModeTelementryData = "Dark";
-                    SACommonHelper.SwitchToDarkMode();
+                    SAUICommonHelper.SwitchToDarkMode();
                     break;
 
                 default:

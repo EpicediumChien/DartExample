@@ -1015,7 +1015,7 @@ namespace NetworkKVM.Plugins
             var directory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
             directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
-            string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
+            string strFullPath = string.Format("{0}\\Plugins\\NKVM\\{1}", directory, GlobalDefinitions.DDMExeName);
 
             Trace.WriteLine($"NKVM full path is {strFullPath}");
 

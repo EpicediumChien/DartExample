@@ -314,13 +314,13 @@ namespace DDPM.UI.Module.Kvm
             set
             {
                 SetProperty(ref _isNoKVM, value);
-                if (value)
-                {
-                    isOnUSBKVM(false);
-                    USBKVMisON = false;
-                    //isUSBKVM = false;
-                    //isNKVM = false;
-                }
+                //if (value)
+                //{
+                //    isOnUSBKVM(false);
+                //    USBKVMisON = false;
+                //    //isUSBKVM = false;
+                //    //isNKVM = false;
+                //}
             }
         }
 
@@ -344,13 +344,13 @@ namespace DDPM.UI.Module.Kvm
             set
             {
                 SetProperty(ref _isNKVM, value);
-                if (value)
-                {
-                    isOnUSBKVM(false);
-                    USBKVMisON = false;
-                    //isUSBKVM = false;
-                    //isNoKVM = false;
-                }
+                //if (value)
+                //{
+                //    isOnUSBKVM(false);
+                //    USBKVMisON = false;
+                //    //isUSBKVM = false;
+                //    //isNoKVM = false;
+                //}
             }
         }
 
@@ -985,17 +985,15 @@ namespace DDPM.UI.Module.Kvm
                     return;
                 }
 
-                SupportNKVM = Visibility.Collapsed;
-                SupportUSBKVM = Visibility.Collapsed;
-
                 var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
                 directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
-                string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
+                string strFullPath = string.Format("{0}\\Plugins\\NKVM\\{1}", directory, GlobalDefinitions.DDMExeName);
 
                 if (mi.CapabilityDic.ContainsKey("E7"))
                 {
                     SupportUSBKVM = Visibility.Visible;
+                    OnPropertyChanged("SupportUSBKVM");
                     //inputList = new Dictionary<string, InputInfo>();
                     //subInputs = new List<InputSourceObj>();
                     //usbsList = new List<string>();
@@ -1022,6 +1020,8 @@ namespace DDPM.UI.Module.Kvm
                 }
                 else
                 {
+                    SupportUSBKVM = Visibility.Collapsed;
+                    OnPropertyChanged("SupportUSBKVM");
                     USBKVMisON = false;
                 }
 
@@ -1030,11 +1030,15 @@ namespace DDPM.UI.Module.Kvm
                 if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result && File.Exists(strFullPath))
                 {
                     SupportNKVM = Visibility.Visible;
+                    OnPropertyChanged("SupportNKVM");
                 }
                 else
                 {
+                    SupportNKVM = Visibility.Collapsed;
+                    OnPropertyChanged("SupportNKVM");
                     NKVMisON = false;
                 }
+
                 if (USBKVMisON)
                 {
                     isUSBKVM = true;
@@ -1053,8 +1057,6 @@ namespace DDPM.UI.Module.Kvm
                     //EnableUSBKVM = Visibility.Collapsed;
                     //DisenableUSBKVM = Visibility.Visible;
                 }
-                OnPropertyChanged("SupportUSBKVM");
-                OnPropertyChanged("SupportNKVM");
             }
             catch (Exception ex)
             {
@@ -1130,7 +1132,9 @@ namespace DDPM.UI.Module.Kvm
                     e.Result = "MonitorInfo is null";
                     return;
                 }
-
+                //Update Left view Text1
+                Text1 = selHomeDevice.Text1;
+                OnPropertyChanged("Text1");
                 //if (DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
                 //{
                 //    _log?.Info("[KvmViewModel]isScreenPartition.");
@@ -2028,7 +2032,7 @@ namespace DDPM.UI.Module.Kvm
             var directory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
             directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
-            string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
+            string strFullPath = string.Format("{0}\\Plugins\\NKVM\\{1}", directory, GlobalDefinitions.DDMExeName);
             //Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(strFullPath, out FileInfo))
@@ -2040,7 +2044,7 @@ namespace DDPM.UI.Module.Kvm
             try
             {
                 IntPtr NkvmdHandle = IntPtr.Zero;
-                string processName = "DDM";
+                string processName = GlobalDefinitions.DDMProcessName;// "DDM";
                 Process[] processes = Process.GetProcessesByName(processName);
 
                 if (processes.Length == 0)
@@ -2110,6 +2114,11 @@ namespace DDPM.UI.Module.Kvm
         {
             DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, ison).Wait();
             KvmModule.isUSBKVM = ison;
+            if (!ison)
+            {
+                KvmModule._leftView = null;
+                DdpmCommonHelper.ModuleOwner.LoadLeftView();
+            }
         }
 
         public void isOnNKVM(bool ison)
