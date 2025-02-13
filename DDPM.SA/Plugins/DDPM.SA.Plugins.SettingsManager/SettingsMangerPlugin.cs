@@ -37,6 +37,7 @@ using System.Net.NetworkInformation;
 using System.Windows.Interop;
 using DDPMSettings = DDPM.SA.Common.Settings;
 using Microsoft.VisualBasic.Logging;
+using DDDPM.SA.Common;
 
 namespace DDPM.SA.Plugins.SettingsManager
 {
@@ -120,6 +121,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                     WriteLog($"SettingsManagerPlugin constructor ... DDM2Path is invalid, skip delete it ({info})");
                 }
             }
+            DdpmSACommonHelper.SAPluginReady(nameof(SettingsMangerPlugin));
         }
 
         #endregion

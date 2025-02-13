@@ -28,7 +28,7 @@
                     <StackPanel Margin="20,20,8,8"
                                 Orientation="Horizontal">
                         <UXControls:UXTextBlock Text="{Binding [On_screen_notifications], Source={x:Static lang:LangHelper.Instance}}"
-                                                FontSize="20"
+                                                FontSize="20" Focusable="True"
                                                 TextBlockType="Header1"
                                                 Foreground="{DynamicResource DefaultTheme_TxtColor}" />
                         <Grid Margin="15,0,0,0"
@@ -43,7 +43,7 @@
                                 BorderThickness="0" CornerRadius="6">
                             <StackPanel Orientation="Vertical"
                                         Margin="15,0,0,0">
-                                <UXControls:UXTextBlock Margin="0,20,0,0"
+                                <UXControls:UXTextBlock Margin="0,20,0,0" Focusable="True"
                                                         Text="{Binding [All_Devices], Source={x:Static lang:LangHelper.Instance}}"
                                                         FontSize="16"
                                                         Foreground="{DynamicResource DefaultTheme_TxtColor}" />
@@ -69,7 +69,7 @@
                                 BorderThickness="0" CornerRadius="6">
                             <StackPanel Orientation="Vertical"
                                         Margin="15,0,0,0">
-                                <UXControls:UXTextBlock Margin="0,20,0,0"
+                                <UXControls:UXTextBlock Margin="0,20,0,0" Focusable="True"
                                                         Text="{Binding [Device_specific], Source={x:Static lang:LangHelper.Instance}}"
                                                         FontSize="16"
                                                         Foreground="{DynamicResource DefaultTheme_TxtColor}" />
@@ -121,7 +121,7 @@
                     </Grid>
                     <Grid Margin="20,20,8,8">
                         <UXControls:UXTextBlock Text="{Binding [Reports], Source={x:Static lang:LangHelper.Instance}}"
-                                                FontSize="20"
+                                                FontSize="20" Focusable="True"
                                                 TextBlockType="Header1"
                                                 Foreground="{DynamicResource DefaultTheme_TxtColor}" />
                     </Grid>

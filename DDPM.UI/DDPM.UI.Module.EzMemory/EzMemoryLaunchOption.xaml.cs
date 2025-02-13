@@ -133,8 +133,8 @@ namespace DDPM.UI.Module.EzMemory
                 //             So the per-monitor settings will be always null. we can skip it (to restore)
                 //But in Edit mode, we can restore its monitor settings with current editing profileId.
                 // 使用 CultureInfo 來取得 AM 和 PM
-                string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
-                string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
+                string amDesignator = Strings.Am;//CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+                string pmDesignator = Strings.Pm;//CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
 
                 //Add mode: Always reset to defaults
                 if (!_vm.IsEditProfile)
