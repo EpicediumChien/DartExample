@@ -168,7 +168,7 @@ namespace DDPM.SA.Common.UI
                     return name;
                 default:
                     if (model == "U3224KB")                   
-                        return "Dell UltraSharp 32 6K Monitor U3224KB";
+                        return "Dell UltraSharp 32 6K Monitor";
                     return name;
             }
         }
