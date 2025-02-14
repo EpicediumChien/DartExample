@@ -153,7 +153,7 @@ namespace DDPM.SA.Common.UI
         }
 
         //[Dean]0115 move this from UI DdpmCommonHelper to SA SACommonHelper, Major consumer is DDPM UI
-        public static string MappingName(string model, string name)
+        public static string MappingWebCamName(string model, string name)
         {
             name = name.Replace(model, "").Trim();
             switch (CultureInfo.InstalledUICulture.Name)
@@ -169,6 +169,26 @@ namespace DDPM.SA.Common.UI
                 default:
                     if (model == "U3224KB")                   
                         return "Dell UltraSharp 32 6K Monitor";
+                    return name;
+            }
+        }
+
+        public static string MappingName(string model, string name)
+        {
+            name = name.Replace(model, "").Trim();
+            switch (CultureInfo.InstalledUICulture.Name)
+            {
+                case "ja-JP":
+                    if (model == "WB7022")
+                        return "Dell Digital Hi-Resolution Webcam";
+                    if (model == "U3223QZ")
+                        return "Dell Digital Hi-End 32 4K Video Conferencing Monitor";
+                    if (model == "U3224KB")
+                        return "Dell Digital Hi-End 32 6K Monitor";
+                    return name;
+                default:
+                    if (model == "U3224KB")
+                        return "Dell UltraSharp 32 6K Monitor U3224KB";
                     return name;
             }
         }

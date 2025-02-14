@@ -309,7 +309,7 @@ namespace DDPM.UI.Common.Models
                         //if ( model == "U3224KB" || model == "U3224KBA")//model == "P2424HEB" || model == "P2724DEB" |||| model == "P3424WEB"  || model == "U3223QZ" )
                         //    return DDPM.SA.Common.UI.SAUICommonHelper.MappingName(model, DeviceInfo.Name);
                         //else
-                        return DDPM.SA.Common.UI.SAUICommonHelper.MappingName(model, DeviceInfo.Name) + $" {model}";
+                        return DDPM.SA.Common.UI.SAUICommonHelper.MappingWebCamName(model, DeviceInfo.Name) + $" {model}";
                     }
 
                     //OLD Code:
