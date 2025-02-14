@@ -1593,30 +1593,25 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
 
                 // read reg
-                if (modelType != "Displays")
+                if (modelNumber == "U3224KB" || modelNumber == "U3224KBA") // correct DPeM typo
                 {
-                    if (modelNumber == "U3224KB" || modelNumber == "U3224KBA") // correct DPeM typo
+                    regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{"U3224KB"}";
+                    regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.   
+                    if (!CheckRegReturnValue(regValue)) // If false, need to check "U3224KBA" again
                     {
-                        regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{"U3224KB"}";
-                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.   
-                        if (!CheckRegReturnValue(regValue)) // If false, need to check "U3224KBA" again
-                        {
-                            regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{"U3224KBA"}";
-                            regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
-                        }
-                    }
-                    else if (modelNumber == "P2424HEB") // correct DPeM typo
-                    {
-                        regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{"CXXXXXX"}";
-                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.                   
-                        if (!CheckRegReturnValue(regValue)) // If false, need to check "P2424HEB" again
-                        {
-                            regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{"P2424HEB"}";
-                            regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
-                        }
-                    }
-                    else
+                        regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{"U3224KBA"}";
                         regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                    }
+                }
+                else if (modelNumber == "P2424HEB") // correct DPeM typo
+                {
+                    regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{"CXXXXXX"}";
+                    regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.                   
+                    if (!CheckRegReturnValue(regValue)) // If false, need to check "P2424HEB" again
+                    {
+                        regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{"P2424HEB"}";
+                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                    }
                 }
                 else
                     regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
