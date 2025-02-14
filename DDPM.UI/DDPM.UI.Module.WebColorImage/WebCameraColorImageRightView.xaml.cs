@@ -164,7 +164,7 @@ namespace DDPM.UI.Module.WebCameraColorImage
         {
             try
             {
-                string infoType = string.Empty;
+                string infoType = "";
 
                 switch (type)
                 {

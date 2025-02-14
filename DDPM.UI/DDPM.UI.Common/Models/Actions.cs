@@ -274,7 +274,7 @@ namespace DDPM.UI.Common
                 KeyActions.Add(KeyName.F12, new SelectedAction(6, new AssignedAction(6)));
             }
 
-            if (guid != "")
+            if (!string.IsNullOrEmpty(guid))
             {
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
@@ -398,7 +398,7 @@ namespace DDPM.UI.Common
                     break;
             }
 
-            if (guid != "")
+            if (!string.IsNullOrEmpty(guid))
             {
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
@@ -623,7 +623,7 @@ namespace DDPM.UI.Common
                 string json = JsonConvert.SerializeObject(actions, Formatting.Indented);
                 var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions");
 
-                string info = string.Empty;
+                string info = "";
                 if (!Directory.Exists(fileFolder))
                     Directory.CreateDirectory(fileFolder);
                 //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
@@ -651,8 +651,8 @@ namespace DDPM.UI.Common
             //var filePath = Path.Combine(Application.StartupPath, @$"ActionList\{model}_{instanceID}.json");
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
             var hasFile = File.Exists(filePath);
-            string info = string.Empty;
-            string jsonString = string.Empty;
+            string info = "";
+            string jsonString = "";
             switch (type)
             {
                 case eDeviceCategory.KB:

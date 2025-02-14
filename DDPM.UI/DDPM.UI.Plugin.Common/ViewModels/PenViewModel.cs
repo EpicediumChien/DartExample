@@ -480,16 +480,16 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public bool IsSearchEnabled
         {
-            get => SelectedButton != PenButtonName.TopButton.ToString() ? true : (SelectedBehavior != "" ? true : false);
+            get => SelectedButton != PenButtonName.TopButton.ToString() || !string.IsNullOrEmpty(SelectedBehavior);
         }
 
-        public SelectedAction? SelectedAction => SelectedButton == "" ? null :
+        public SelectedAction? SelectedAction => string.IsNullOrEmpty(SelectedButton) ? null :
                               (SelectedButton == PenButtonName.TopBarrelButton.ToString() ? PenAction.TopBarrelButtonClickAction :
                               (SelectedButton == PenButtonName.BottomBarrelButton.ToString() ? PenAction.BottomBarrelButtonClickAction :
                               (SelectedBehavior == ButtonBehavior.ClickOnce.ToString() ? PenAction.TopButtonClickAction :
                               (SelectedBehavior == ButtonBehavior.DoubleClick.ToString() ? PenAction.TopButtonDoubleClickAction : PenAction.TopButtonPressHoldAction))));
 
-        public int SelectedActionID => SelectedButton == "" ? -1 : SelectedAction?.AssignedAction.ID ?? -1;
+        public int SelectedActionID => string.IsNullOrEmpty(SelectedButton) ? -1 : SelectedAction?.AssignedAction.ID ?? -1;
         public string TopButtonImageFile { get; set; } = "";
         public string TopBarrelButtonImageFile { get; set; } = "";
         public string BottomBarrelButtonImageFile { get; set; } = "";
@@ -561,7 +561,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 string tooltip1 = Actions.PenActions[PenAction.TopButtonClickAction.AssignedAction.ID].Caption;
                 //string tooltip1 = _EraserActions[PenAction.TopButtonClickAction.AssignedAction.ID];
                 string parameter1 = PenAction.TopButtonClickAction.AssignedAction.Parameter;
-                if (parameter1 != "")
+                if (!string.IsNullOrEmpty(parameter1))
                 {
                     var arr = parameter1.Split('|');
                     if (int.TryParse(arr[0], out int id))
@@ -589,7 +589,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 var id2 = PenAction.TopButtonDoubleClickAction.AssignedAction.ID;
                 //string tooltip2 = _EraserActions[id2];
                 string parameter2 = PenAction.TopButtonDoubleClickAction.AssignedAction.Parameter;
-                if (parameter2 != "")
+                if (!string.IsNullOrEmpty(parameter2))
                 {
                     var arr = parameter2.Split('|');
                     if (int.TryParse(arr[0], out int id))
@@ -616,7 +616,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 //string tooltip3 = Actions.PenActions[PenAction.TopButtonPressHoldAction.AssignedAction.ID].Caption;
                 string tooltip3 = _EraserActions[PenAction.TopButtonPressHoldAction.AssignedAction.ID];
                 string parameter3 = PenAction.TopButtonPressHoldAction.AssignedAction.Parameter;
-                if (parameter3 != "")
+                if (!string.IsNullOrEmpty(parameter3))
                 {
                     var arr = parameter3.Split('|');
                     if (int.TryParse(arr[0], out int id))
@@ -650,7 +650,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 string tooltip = Actions.PenActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID].Caption;
                 //string tooltip = _SideSwitchActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID];
                 string parameter = PenAction.TopBarrelButtonClickAction.AssignedAction.Parameter;
-                if (parameter != "")
+                if (!string.IsNullOrEmpty(parameter))
                 {
                     var arr = parameter.Split('|');
                     if (int.TryParse(arr[0], out int id))
@@ -680,7 +680,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 string tooltip = Actions.PenActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID].Caption;
                 //string tooltip = _SideSwitchActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID];
                 string parameter = PenAction.BottomBarrelButtonClickAction.AssignedAction.Parameter;
-                if (parameter != "")
+                if (!string.IsNullOrEmpty(parameter))
                 {
                     var arr = parameter.Split('|');
                     if (int.TryParse(arr[0], out int id))
@@ -706,7 +706,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void ClearSelectedButton()
         {
-            if (SelectedButton != "")
+            if (!string.IsNullOrEmpty(SelectedButton))
             {
                 RefreshButtonImageFile(SelectedButton);
                 SelectedButton = "";
@@ -749,7 +749,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             try
             {
-                if (SelectedButton != "")
+                if (!string.IsNullOrEmpty(SelectedButton))
                 {
                     SelectedAction!.AssignedAction.ID = actionID;
                     SelectedAction.AssignedAction.Parameter = parameter;
