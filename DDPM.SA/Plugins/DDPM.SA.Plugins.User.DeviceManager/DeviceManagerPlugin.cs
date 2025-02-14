@@ -255,11 +255,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private DDMtoDDPM dDMtodDPM = new DDMtoDDPM();
         private HotkeySettings hotkeySettings = new HotkeySettings();
-
         /// <summary>
         ///Check ICC profile update timers
         /// </summary>
         private System.Timers.Timer _checkICCProfileScheduleTimer;//Added 02/10 by Bruce
+        bool isDownloadingICC = false;//Added 02/13 by Bruce
+        bool isNeedPreDownloadingICC = false;//Added 02/13 by Bruce
+
         #endregion
 
         #region Constructor
@@ -1821,18 +1823,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void CheckICCProfileScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)//Bruce 02/10 added timer to check icm
         {
             writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} start");
-            if (_checkICCProfileScheduleTimer != null)
-            {
-                _checkICCProfileScheduleTimer.Stop();
-                _checkICCProfileScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
-                _checkICCProfileScheduleTimer.Start();
-            }
             if (_ColorPresetPlugin != null && _SettingsPlugin != null)
             {
                 writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} _AllInfoMonitors.Count : {_AllInfoMonitors.Count}");
                 for (int i = 0; i < _AllInfoMonitors.Count; i++)
                 {
-                    _ColorPresetPlugin.DownloadICCData(_AllInfoMonitors[i], _SettingsPlugin, true).Wait();
+                    _ColorPresetPlugin.DownloadICCData(_AllInfoMonitors[i], _SettingsPlugin, true, "", true).Wait();
                 }
             }
             else
@@ -1840,6 +1836,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} _ColorPresetPlugin is null");
             }
             writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} done");
+        }
+
+        private void PreDownloadICC(MonitorInfo newMontor)
+        {
+            writelog($"{nameof(PreDownloadICC)} start");
+            writelog($"{nameof(PreDownloadICC)} isDownloadingICC : {isDownloadingICC}");
+            if (!isDownloadingICC)
+            {
+                isDownloadingICC = true;
+                writelog($"{nameof(PreDownloadICC)} DownloadICCData go, newMontor : {newMontor.modelName}");
+                ///for (int i = 0; i < _AllInfoMonitors.Count; i++)
+                {
+                    _ColorPresetPlugin.DownloadICCData(/*_AllInfoMonitors[i]*/newMontor, _SettingsPlugin, true, "", isNeedPreDownloadingICC).Wait();
+                }
+                if (isNeedPreDownloadingICC)
+                {
+                    isNeedPreDownloadingICC = false;
+                }
+                isDownloadingICC = false;
+            }
+            writelog($"{nameof(PreDownloadICC)} done");
         }
         #endregion
 
@@ -12954,10 +12971,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             writelog($"_checkICCProfileScheduleTimer initialize");
                             _checkICCProfileScheduleTimer = new System.Timers.Timer();
-                            _checkICCProfileScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
+                            _checkICCProfileScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
                             _checkICCProfileScheduleTimer.Elapsed += new ElapsedEventHandler(CheckICCProfileScheduleTimer_Elapsed);
                             _checkICCProfileScheduleTimer.Start();
                         }
+                        isNeedPreDownloadingICC = true;
 
                         if (_SettingsPlugin != null)
                         {
@@ -16607,6 +16625,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             monitorSettingsList.Add(settings);
                             bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
+
+                            PreDownloadICC(m);// 
                         }
                     }
                 }
