@@ -548,7 +548,7 @@ namespace DDPM.SA.Plugins.CMAManager
                     {
                         Array fwarray = jObject["FWUpdateRESPONSE"].ToArray();
 
-                        fwupdateresponse = "N/A";
+                        fwupdateresponse = string.Empty;
 
                         if (fwarray.Length > 0)
                         {
@@ -566,7 +566,7 @@ namespace DDPM.SA.Plugins.CMAManager
                     }
                     catch
                     {
-                        fwupdateresponse = "N/A";
+                        fwupdateresponse = string.Empty;
                     }
                     
                 }
@@ -580,7 +580,7 @@ namespace DDPM.SA.Plugins.CMAManager
                     marketingname = "N/A";
                     serialnumber = "N/A";
                     fwversion = "N/A";
-                    fwupdateresponse = "N/A";
+                    fwupdateresponse = string.Empty;
 
                     result = "N/A";
                     message = "N/A";

@@ -447,6 +447,8 @@ namespace DDPM.UI.Common
         public static readonly string WarmProfileTooltip = GetString("Camera.24");
 
         //EazyMemory
+        public static readonly string Am = GetString("AM");
+        public static readonly string Pm = GetString("PM");
         public static readonly string Yes = GetString("Yes");
         public static readonly string No = GetString("No");
         public static readonly string ProfileTitleTextBlockForRightViewUI = GetString("EazyMemory.6");

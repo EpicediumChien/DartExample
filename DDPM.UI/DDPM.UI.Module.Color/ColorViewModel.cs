@@ -230,15 +230,15 @@ namespace DDPM.UI.Module.Color
                 int temp = _colorPresetSelectedIndex;
                 if (ColorPresets_ItemsCollection != null && temp < ColorPresets_ItemsCollection.Count)//before
                     last_selected_value = ColorPresets_ItemsCollection[temp];
-                if (CheckIfDisableALSFeature())
-                {
+                //if (CheckIfDisableALSFeature()) //Do not need to check ALS feature PIMS-345895
+                //{
                     _colorPresetSelectedIndex = value;
                     SetColorPresetBySelection();
-                }
-                else
-                {
-                    _colorPresetSelectedIndex = temp;
-                }
+                //}
+                //else
+                //{
+                //    _colorPresetSelectedIndex = temp;
+                //}
                 OnPropertyChanged("ColorPresetSelectedIndex");
                 if (ColorPresets_ItemsCollection != null && _colorPresetSelectedIndex < ColorPresets_ItemsCollection.Count)//after: keep or change
                     last_selected_value = ColorPresets_ItemsCollection[_colorPresetSelectedIndex];
