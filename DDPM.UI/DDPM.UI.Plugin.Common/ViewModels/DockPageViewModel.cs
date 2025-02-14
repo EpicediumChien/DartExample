@@ -53,7 +53,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (deviceInfo.LogicalDeviceType.Contains("Dock") &&
                     !DeviceInfos.ContainsKey(deviceInfo.ID))
                 {
-                    DeviceInfos.Add(deviceInfo.ID, deviceInfo);                    
+                    DeviceInfos.Add(deviceInfo.ID, deviceInfo);
                 }
             }
         }
@@ -76,7 +76,7 @@ namespace DDPM.UI.Plugin.ViewModels
             //{
             //    FirmwareVersion2 += $" {CurrentDeviceInfo.DockServiceTag}";
             //}
-            FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(false).Result;
+            FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(false, false).Result;
             _isEnableUpdate = false;
             foreach (FWUpdateInfo fWUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
             {

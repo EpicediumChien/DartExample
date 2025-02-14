@@ -1282,9 +1282,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //Get FW avaiable count
             //Check SW avaiable count
             _log.Info("Calling to GetFWUpdateInfo()");
-            FWUpdateInfoPackage fwUpdateInfoPackage = devMgr.GetFWUpdateInfo(false, false, false, null, false, false, true).Result;
+            FWUpdateInfoPackage fwUpdateInfoPackage = devMgr.GetFWUpdateInfo(false, true).Result;
             _log.Info("Calling to SW_GetSWUpdateInfo()");
-            SWUpdateInfoPackage sWUpdateInfoPackage = devMgr.SW_GetSWUpdateInfo(false, false, false, true).Result;
+            SWUpdateInfoPackage sWUpdateInfoPackage = devMgr.SW_GetSWUpdateInfo(false, true).Result;
             _log.Info("Return from SW_GetSWUpdateInfo()");
             if (fwUpdateInfoPackage.FWUpdateInfo.Count > 0 || sWUpdateInfoPackage.SWUpdateInfo.Count > 0)
                 ret = true;
@@ -1337,8 +1337,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (_deviceManager != null)
             {
                 //Get FW/SW update count
-                FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(false, false, false, null, false, false, true).Result;
-                SWUpdateInfoPackage sWUpdateInfoPackage = _deviceManager.SW_GetSWUpdateInfo(false, false, false, true).Result;
+                FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(false, true).Result;
+                SWUpdateInfoPackage sWUpdateInfoPackage = _deviceManager.SW_GetSWUpdateInfo(false, true).Result;
 
                 int newSwCount = 0;
                 if ((sWUpdateInfoPackage != null) && (sWUpdateInfoPackage.SWUpdateInfo != null))

@@ -421,7 +421,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private void Set_CheckUpdate_Dowork(object sender, DoWorkEventArgs e)
         {
             Log?.Info($"CheckUpdate start");
-            SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false, false, false, null, false, false, true, true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false).Result);
+            SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false, true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, true).Result);
             RefreshUI();
             Log?.Info($"CheckUpdate done");
         }
