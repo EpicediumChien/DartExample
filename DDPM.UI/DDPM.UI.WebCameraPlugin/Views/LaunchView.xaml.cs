@@ -119,7 +119,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 InitializeComponent();
                 _vm.Reset();
                 DataContext = _vm;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                //_vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
 
                 //leo 2024/12/09 因為多加條件判斷,改變呼叫位置
                 //BuildModuleGroups();
@@ -255,13 +255,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 //因為需要處理PresenceDetection分頁是否出現判斷,改變呼叫順序
                 check_PresenceFunction();
-                BuildModuleGroups();
+                //BuildModuleGroups();
                 //initResolutionFPS();
                 //usb 2.0限制規則要放在最後做校正
                 CheckUSBtype();
 
                 //grdPreview.Visibility = _vm.WebcamGrid ? Visibility.Visible : Visibility.Hidden;
-
+                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                BuildModuleGroups();
                 DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             }
             catch (Exception ex)
