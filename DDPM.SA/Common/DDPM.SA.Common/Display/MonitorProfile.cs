@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using VcpCore.Common;
 using static System.Reflection.Metadata.BlobBuilder;
 
 namespace DDPM.SA.Common
@@ -363,7 +364,7 @@ namespace DDPM.SA.Common
             return profileName.ToString();
         }
 
-        public static bool SetMonitorProfile(string profile_name)
+        public static bool SetMonitorProfile(string strDisplayName, string profile_name)
         {
             // c++ recommendation: http://stackoverflow.com/questions/13533754/code-example-for-wcsgetdefaultcolorprofile
 
@@ -371,21 +372,21 @@ namespace DDPM.SA.Common
             displayDevice.cb = Marshal.SizeOf(displayDevice);
 
             // First, find the primary adaptor
-            string adaptorName = null;
-            UInt32 deviceIndex = 0;
+            string adaptorName = strDisplayName;
+            uint deviceIndex = 0;
 
-            while (_EnumDisplayDevices(null, deviceIndex++, ref displayDevice, EDD_GET_DEVICE_INTERFACE_NAME) != 0)
-            {
-                if ((displayDevice.StateFlags & DisplayDeviceStateFlags.AttachedToDesktop) != 0)
-                {
-                    adaptorName = displayDevice.DeviceName;
-                    continue;
-                }
-            }
+            //while (_EnumDisplayDevices(null, deviceIndex++, ref displayDevice, EDD_GET_DEVICE_INTERFACE_NAME) != 0)
+            //{
+            //    if ((displayDevice.StateFlags & DisplayDeviceStateFlags.AttachedToDesktop) != 0)
+            //    {
+            //        adaptorName = displayDevice.DeviceName;
+            //        continue;
+            //    }
+            //}
 
             // Second, find the first active (and attached) monitor
-            string deviceName = null;
-            deviceIndex = 0;
+            string deviceName = string.Empty;
+            //deviceIndex = 0;
             while (_EnumDisplayDevices(adaptorName, deviceIndex++, ref displayDevice, EDD_GET_DEVICE_INTERFACE_NAME) != 0)
             {
                 if ((displayDevice.StateFlags & DisplayDeviceStateFlags.Active) != 0 &&
@@ -405,8 +406,8 @@ namespace DDPM.SA.Common
 
             if (res == 0)
             {
-                bRes = false;
-                throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
+                return false;
+                //throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
             }
 
             // Finally, get the profile name
@@ -456,7 +457,7 @@ namespace DDPM.SA.Common
             return bRes;
         }
 
-        public static bool IntsallMonitorProfile(string pProfileName)
+        public static bool IntsallMonitorProfile(string strDisplayName, string pProfileName)
         {
             bool blRes = false;
             blRes = _InstallColorProfile(IntPtr.Zero, pProfileName);
@@ -467,17 +468,17 @@ namespace DDPM.SA.Common
             displayDevice.cb = Marshal.SizeOf(displayDevice);
 
             // First, find the primary adaptor
-            string adaptorName = null;
+            string adaptorName = strDisplayName;
             UInt32 deviceIndex = 0;
 
-            while (_EnumDisplayDevices(null, deviceIndex++, ref displayDevice, EDD_GET_DEVICE_INTERFACE_NAME) != 0)
-            {
-                if ((displayDevice.StateFlags & DisplayDeviceStateFlags.AttachedToDesktop) != 0)
-                {
-                    adaptorName = displayDevice.DeviceName;
-                    continue;
-                }
-            }
+            //while (_EnumDisplayDevices(null, deviceIndex++, ref displayDevice, EDD_GET_DEVICE_INTERFACE_NAME) != 0)
+            //{
+            //    if ((displayDevice.StateFlags & DisplayDeviceStateFlags.AttachedToDesktop) != 0)
+            //    {
+            //        adaptorName = displayDevice.DeviceName;
+            //        continue;
+            //    }
+            //}
 
             // Second, find the first active (and attached) monitor
             string deviceName = null;
@@ -497,7 +498,9 @@ namespace DDPM.SA.Common
             UInt32 res = _WcsGetUsePerUserProfiles(deviceName, DeviceClassFlags.CLASS_MONITOR, out usePerUserProfiles);
             if (res == 0)
             {
-                throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
+                //throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
+
+                return false;
             }
 
             // Finally, get the profile name
