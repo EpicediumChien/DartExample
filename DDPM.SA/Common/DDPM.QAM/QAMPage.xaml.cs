@@ -216,6 +216,8 @@ namespace DDPM.QAM
 
                 CameraSetting.Show();
 
+                //Derek 2025/02/13 auto open present page
+                CameraSetting.OpenPresetsFullView();
             }
 
 

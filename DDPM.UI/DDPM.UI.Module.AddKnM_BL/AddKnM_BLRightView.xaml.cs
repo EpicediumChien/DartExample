@@ -1,7 +1,9 @@
 ﻿using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace DDPM.UI.Module.AddKnM_BL
 {
@@ -94,6 +96,25 @@ namespace DDPM.UI.Module.AddKnM_BL
         private void AdjustBorderHeight()
         {
             stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.ActualHeight;
+        }
+
+        //Robert_Lin 2025-2-9 for Narrator, when user press [Enter] on "Windows Settings" text
+        private void windowsSettings_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                e.Handled = true;
+                //Redirect to OpenWindowsSettings()
+                var mouseDevice = InputManager.Current.PrimaryMouseDevice;
+                if (mouseDevice != null)
+                {
+                    var args = new MouseButtonEventArgs(mouseDevice, 0, MouseButton.Left)
+                    {
+                        RoutedEvent = UIElement.MouseLeftButtonDownEvent
+                    };
+                    OpenWindowsSettings(sender, args);
+               }
+            }
         }
     }
 }

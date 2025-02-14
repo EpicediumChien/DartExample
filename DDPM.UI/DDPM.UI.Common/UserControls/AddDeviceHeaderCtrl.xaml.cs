@@ -148,5 +148,41 @@ namespace DDPM.UI.Common
             //if (header1Text.ActualWidth <= 150)
             //    header1Text.Width = header1Border.ActualWidth - 40;
         }
+
+        private void header0_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                bool isSelectionChanged = (vm.InternalSelectedIndex != 0);
+                vm.InternalSelectedIndex = 0;
+                if (isSelectionChanged && (SelectionChanged != null))
+                    SelectionChanged(this, new RoutedEventArgs());
+            }
+        }
+
+        private void header1_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                bool isSelectionChanged = (vm.InternalSelectedIndex != 1);
+                vm.InternalSelectedIndex = 1;
+                if (isSelectionChanged && (SelectionChanged != null))
+                    SelectionChanged(this, new RoutedEventArgs());
+            }
+        }
+
+        private void header2_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                bool isSelectionChanged = (vm.InternalSelectedIndex != 2);
+                vm.InternalSelectedIndex = 2;
+                if (isSelectionChanged && (SelectionChanged != null))
+                    SelectionChanged(this, new RoutedEventArgs());
+            }
+        }
     }
 }

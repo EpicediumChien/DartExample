@@ -1087,19 +1087,22 @@
     <value>Sensibilidade da ponta</value>
   </data>
   <data name="PenSettings.2" xml:space="preserve">
-    <value>Mover o controle deslizante para a direita diminuirá gradualmente\na sensibilidade à pressão e você\nprecisará aplicar uma pressão maior na caneta</value>
+    <value>Mover o controle deslizante para a direita diminuirá gradualmente a sensibilidade à pressão e você precisará aplicar uma pressão maior na caneta</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.3" xml:space="preserve">
     <value>Sensibilidade de inclinação</value>
   </data>
   <data name="PenSettings.4" xml:space="preserve">
-    <value>Mover o controle deslizante para a direita aumentará gradualmente\no o efeito de inclinação, e você precisará\naplicar uma ângulo de inclinação menor</value>
+    <value>Mover o controle deslizante para a direita aumentará gradualmente o o efeito de inclinação, e você precisará aplicar uma ângulo de inclinação menor</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.5" xml:space="preserve">
     <value>Emparelhar com o aplicativo de blocos</value>
   </data>
   <data name="PenSettings.6" xml:space="preserve">
-    <value>Emparelhe a caneta ao seu dispositivo móvel usando\no aplicativo de blocos</value>
+    <value>Emparelhe a caneta ao seu dispositivo móvel usando o aplicativo de blocos</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.7" xml:space="preserve">
     <value>Começar</value>

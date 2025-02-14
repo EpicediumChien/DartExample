@@ -347,8 +347,8 @@ namespace DDPM.QAM
                 OnPropertyChanged(nameof(UI_ProfileList));
 
                 selectedProfileName = "NONE"; //Derek 2025/01/20
-                webcamSettings.SelectedProfile = selectedProfileName;
-                //webcamSettings.PresetProfiles[4].Zoom
+                webcamSettings.SelectedProfileName = selectedProfileName;
+                SaveSelectProfile(); //Derek 2025/02/11 for PIMS 330862 FOV test fail
             }
             catch (Exception ex)
             {
@@ -832,16 +832,14 @@ namespace DDPM.QAM
         {
             try
             {
-                if (null != webcamSettings.NONE && selectedProfileName == "NONE")
+                if (null != webcamSettings.NONE && selectedProfileName == "NONE" && 
+                    (65 == fov || 78 == fov || 90 == fov))
                 {
-                    if (65 == fov || 78 == fov || 90 == fov)
-                    {
-                        webcamSettings.NONE.FieldOfView = fov;
+                    webcamSettings.NONE.FieldOfView = fov;
 
-                        SaveSelectProfile();
+                    SaveSelectProfile();
 
-                        return true;
-                    }
+                    return true;
                 }
             }
             catch (Exception e)

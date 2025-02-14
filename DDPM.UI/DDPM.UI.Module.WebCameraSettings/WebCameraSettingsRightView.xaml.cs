@@ -205,45 +205,43 @@ namespace DDPM.UI.Module.WebCameraSettings
         //  Jim add 20240628
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_vm != null && _vm.MediaCapture != null)
+            if (_vm != null && _vm.MediaCapture != null && 
+                _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Supported)
             {
-                if (_vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Supported)
-                {
-                    // 20240702 jim add
-                    // Unhook the event handler, so that changing properties on the slider won't trigger an API call
-                    //AutofocusSlider.ValueChanged -= AutofocusSlider_ValueChanged;
+                // 20240702 jim add
+                // Unhook the event handler, so that changing properties on the slider won't trigger an API call
+                //AutofocusSlider.ValueChanged -= AutofocusSlider_ValueChanged;
 
-                    //var value = _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Default;
-                    //var autofocusControl = _vm.MediaCapture.VideoDeviceController.Focus;
+                //var value = _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Default;
+                //var autofocusControl = _vm.MediaCapture.VideoDeviceController.Focus;
 
-                    //AutofocusSlider.Minimum = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Min;
-                    //AutofocusSlider.Maximum = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Max;
-                    //AutofocusSlider.TickFrequency = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Step * 100;
-                    ////ZoomSlider.Value = value;
+                //AutofocusSlider.Minimum = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Min;
+                //AutofocusSlider.Maximum = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Max;
+                //AutofocusSlider.TickFrequency = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Step * 100;
+                ////ZoomSlider.Value = value;
 
-                    //dbvalue = 0.0f;
-                    //if (autofocusControl.TryGetValue(out dbvalue))
-                    //    AutofocusSlider.Value = dbvalue;
+                //dbvalue = 0.0f;
+                //if (autofocusControl.TryGetValue(out dbvalue))
+                //    AutofocusSlider.Value = dbvalue;
 
-                    //AutofocusSlider.ValueChanged += AutofocusSlider_ValueChanged;
+                //AutofocusSlider.ValueChanged += AutofocusSlider_ValueChanged;
 
-                    //if (autofocusControl.Capabilities.AutoModeSupported)
-                    //{
-                    //    bool isAuto;
-                    //    autofocusControl.TryGetAuto(out isAuto);
-                    //    Autofocus_ToggleSwitch.IsChecked = isAuto;
-                    //    if (isAuto)
-                    //    {
-                    //        _vm.IsChecked_Autofocus = true;
-                    //        _vm.AutofocusStatus_String = "ON";
-                    //    }
-                    //    else
-                    //    {
-                    //        _vm.IsChecked_Autofocus = false;
-                    //        _vm.AutofocusStatus_String = "OFF";
-                    //    }
-                    //}
-                }
+                //if (autofocusControl.Capabilities.AutoModeSupported)
+                //{
+                //    bool isAuto;
+                //    autofocusControl.TryGetAuto(out isAuto);
+                //    Autofocus_ToggleSwitch.IsChecked = isAuto;
+                //    if (isAuto)
+                //    {
+                //        _vm.IsChecked_Autofocus = true;
+                //        _vm.AutofocusStatus_String = "ON";
+                //    }
+                //    else
+                //    {
+                //        _vm.IsChecked_Autofocus = false;
+                //        _vm.AutofocusStatus_String = "OFF";
+                //    }
+                //}
             }
             //NarratorModeSupport.RecurseUitems(start  );
 

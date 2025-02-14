@@ -166,7 +166,7 @@ namespace NetworkKVM.Plugins
                 if (_AllInfoMonitors.Count == 0)
                 {
                     _logs.DebugMsg("[UpdateMonitorInfo] _AllInfoMonitors count is zero.");
-                    return Task.CompletedTask;//return directly, no change
+                    //return Task.CompletedTask;//return directly, no change
                 }
                 _AllInfoMonitors.Clear();
                 //means unplug all connected dell monitors
@@ -1015,7 +1015,7 @@ namespace NetworkKVM.Plugins
             var directory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
             directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
-            string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
+            string strFullPath = string.Format("{0}\\Plugins\\NKVM\\{1}", directory, GlobalDefinitions.DDMExeName);
 
             Trace.WriteLine($"NKVM full path is {strFullPath}");
 
@@ -2714,29 +2714,27 @@ namespace NetworkKVM.Plugins
             {
                 foreach (DDPMMonitorSettings setting in settings)
                 {
-                    if (setting != null)
+                    if (setting != null && 
+                        setting.ServiceTag == monitorInfo.edid.ServiceTag)
                     {
-                        if (setting.ServiceTag == monitorInfo.edid.ServiceTag)
+                        setting.KVM.isOnNKVM = ison;
+                        bool b = _SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result;
+                        if (ison)
                         {
-                            setting.KVM.isOnNKVM = ison;
-                            bool b = _SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result;
-                            if (ison)
-                            {
-                                //_SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
-                                OnNKVM().Wait();
-                                //bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
-                            }
-                            else
-                            {
-                                OffNKVM().Wait();
-                                DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-                                if (config != null)
-                                {
-                                    config.LockSettings.Enable_Display_NetworkKVM = false;
-                                }
-                            }
-                            break;
+                            //_SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
+                            OnNKVM().Wait();
+                            //bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
                         }
+                        else
+                        {
+                            OffNKVM().Wait();
+                            DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
+                            if (config != null)
+                            {
+                                config.LockSettings.Enable_Display_NetworkKVM = false;
+                            }
+                        }
+                        break;
                     }
                 }
             }

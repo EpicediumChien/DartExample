@@ -57,7 +57,7 @@ namespace DDPM.UI.Common.Tests
         public void TestOpenRunActionsList()
         {
             // Act
-            var result = Actions.OpenRunActionsList;
+            var result = Actions.OpenRunActionsList();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -66,7 +66,7 @@ namespace DDPM.UI.Common.Tests
         public void TestRadialMenuActionsList()
         {
             // Act
-            var result = Actions.RadialMenuActionsList;
+            var result = Actions.RadialMenuActionsList();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -84,7 +84,7 @@ namespace DDPM.UI.Common.Tests
         public void TestAllActionsPenBarrelButton()
         {
             // Act
-            var result = Actions.AllActionsPenBarrelButton;
+            var result = Actions.AllActionsPenBarrelButton();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -93,7 +93,7 @@ namespace DDPM.UI.Common.Tests
         public void TestAllActionsPenTopButton()
         {
             // Act
-            var result = Actions.AllActionsPenTopButton;
+            var result = Actions.AllActionsPenTopButton();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -102,7 +102,7 @@ namespace DDPM.UI.Common.Tests
         public void TestWindowsActionsKnM()
         {
             // Act
-            var result = Actions.WindowsActionsKnM;
+            var result = Actions.WindowsActionsKnM();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -111,7 +111,7 @@ namespace DDPM.UI.Common.Tests
         public void TestWindowsActionsPenBarrelButton()
         {
             // Act
-            var result = Actions.WindowsActionsPenBarrelButton;
+            var result = Actions.WindowsActionsPenBarrelButton();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -120,7 +120,7 @@ namespace DDPM.UI.Common.Tests
         public void TestWindowsActionsPenTopButton()
         {
             // Act
-            var result = Actions.WindowsActionsPenTopButton;
+            var result = Actions.WindowsActionsPenTopButton();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -129,7 +129,7 @@ namespace DDPM.UI.Common.Tests
         public void TestProductivityActionsKnM()
         {
             // Act
-            var result = Actions.ProductivityActionsKnM;
+            var result = Actions.ProductivityActionsKnM();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -138,7 +138,7 @@ namespace DDPM.UI.Common.Tests
         public void TestProductivityActionsPenBarrelButton()
         {
             // Act
-            var result = Actions.ProductivityActionsPenBarrelButton;
+            var result = Actions.ProductivityActionsPenBarrelButton();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -147,7 +147,7 @@ namespace DDPM.UI.Common.Tests
         public void TestProductivityActionsPenTopButton()
         {
             // Act
-            var result = Actions.ProductivityActionsPenTopButton;
+            var result = Actions.ProductivityActionsPenTopButton();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -156,7 +156,7 @@ namespace DDPM.UI.Common.Tests
         public void TestMultimediaActionsKnM()
         {
             // Act
-            var result = Actions.MultimediaActionsKnM;
+            var result = Actions.MultimediaActionsKnM();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -165,7 +165,7 @@ namespace DDPM.UI.Common.Tests
         public void TestMultimediaActionsPenBarrelButton()
         {
             // Act
-            var result = Actions.MultimediaActionsPenBarrelButton;
+            var result = Actions.MultimediaActionsPenBarrelButton();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -174,7 +174,7 @@ namespace DDPM.UI.Common.Tests
         public void TestMultimediaActionsPenTopButton()
         {
             // Act
-            var result = Actions.MultimediaActionsPenTopButton;
+            var result = Actions.MultimediaActionsPenTopButton();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -183,7 +183,7 @@ namespace DDPM.UI.Common.Tests
         public void TestWordActions()
         {
             // Act
-            var result = Actions.WordActions;
+            var result = Actions.WordActions();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -192,7 +192,7 @@ namespace DDPM.UI.Common.Tests
         public void TestExcelActions()
         {
             // Act
-            var result = Actions.ExcelActions;
+            var result = Actions.ExcelActions();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -201,7 +201,7 @@ namespace DDPM.UI.Common.Tests
         public void TestPowerPointActions()
         {
             // Act
-            var result = Actions.PowerPointActions;
+            var result = Actions.PowerPointActions();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -210,7 +210,7 @@ namespace DDPM.UI.Common.Tests
         public void TestOutlookActions()
         {
             // Act
-            var result = Actions.OutlookActions;
+            var result = Actions.OutlookActions();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -219,7 +219,7 @@ namespace DDPM.UI.Common.Tests
         public void TestSuggestedActionsK()
         {
             // Act
-            var result = Actions.SuggestedActionsK;
+            var result = Actions.SuggestedActionsK();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -228,7 +228,7 @@ namespace DDPM.UI.Common.Tests
         public void TestSuggestedActionsM()
         {
             // Act
-            var result = Actions.SuggestedActionsM;
+            var result = Actions.SuggestedActionsM();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -237,7 +237,7 @@ namespace DDPM.UI.Common.Tests
         public void TestSuggestedActionsPenTopButton()
         {
             // Act
-            var result = Actions.SuggestedActionsPenTopButton;
+            var result = Actions.SuggestedActionsPenTopButton();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -246,7 +246,7 @@ namespace DDPM.UI.Common.Tests
         public void TestSuggestedActionsPenBarrelButton()
         {
             // Act
-            var result = Actions.SuggestedActionsPenBarrelButton;
+            var result = Actions.SuggestedActionsPenBarrelButton();
             // Assert
             Assert.That(result, Is.Not.Null);
         }

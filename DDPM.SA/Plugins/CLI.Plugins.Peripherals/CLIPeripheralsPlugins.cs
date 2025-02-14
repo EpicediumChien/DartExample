@@ -1116,7 +1116,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            var di = _deviceinfo.FirstOrDefault(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType));
                             if (di.IsCollabsKeysSupported)
                             {
                                 var result = RunAsyncTimeout(_devMgr.SetCollaborationScreenShareEnable(bl, Guid.Parse(x.Guid))).Result;
@@ -1455,7 +1455,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            var di = _deviceinfo.FirstOrDefault(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType));
                             if (di.IsMicEnumerationSupported)
                             {
                                 var result = RunAsyncTimeout(_devMgr.SetIsMicEnumerationOn(bl, Guid.Parse(x.Guid))).Result;
@@ -1796,7 +1796,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            var di = _deviceinfo.FirstOrDefault(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType));
                             if (di.IsESISupported)
                             {
                                 var result = RunAsyncTimeout(_devMgr.SetIsProximitySensorEnable(x.Guid, bl)).Result;
@@ -3767,6 +3767,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                         {
                             SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, false).Result;
                             Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
+                            cLI_SWU_RESPONSE.SWname = string.Join(",", swUpdateInfoPackage.SWUpdateInfo.Select(_ => _.SoftwareName));
+                            cLI_SWU_RESPONSE.SWVersion = string.Join(",", swUpdateInfoPackage.SWUpdateInfo.Select(_ => $"[{_.SoftwareVersion}]"));
+                            cLI_SWU_RESPONSE.SWUpdateRESPONSE.AddRange(swUpdateInfoPackage.SWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.SoftwareName} to Version:{_.TheLatestVersion}"));
+                            cLI_SWU_RESPONSE.Result = "PASS";
                             ret = true;
                             //_devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, installPath);
                         }

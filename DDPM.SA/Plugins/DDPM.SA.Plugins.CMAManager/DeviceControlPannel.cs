@@ -12,8 +12,8 @@ namespace DDPM.SA.Plugins.CMAManager
         private const string DEVICE_DISPLAY = "display";
         private const string DEVICE_PERIPHERAL = "peripheral";
 
-        private List<MonitorInfo> monitors;
-        private List<DeviceInfo> deivces;
+        private static List<MonitorInfo> monitors;
+        private static List<DeviceInfo> deivces;
 
         public DeviceControlPannel()
         {
@@ -84,19 +84,33 @@ namespace DDPM.SA.Plugins.CMAManager
             return args;
         }
 
+        // add @ 20250212 stephen
+        private bool compare(MonitorInfo info1, MonitorInfo info2)
+        {
+            bool result = false;
+
+            if (info1.edid.ServiceTag.ToLower().Equals(info2.edid.ServiceTag.ToLower()))
+            {
+                result = true;
+            }
+
+            return result;
+        }
+
         private string getMosDiffer(List<MonitorInfo> src, List<MonitorInfo> des)
         {
             string result = string.Empty;
 
             List<MonitorInfo> diff = new List<MonitorInfo>();
 
-            foreach (MonitorInfo info in src)
+            foreach (MonitorInfo info1 in src)
             {
                 Boolean isExist = false;
 
-                foreach (MonitorInfo other in des)
+                foreach (MonitorInfo info2 in des)
                 {
-                    if (other.Equals(info))
+                    // modified @ 20250212 stephen
+                    if (compare(info1, info2))
                     {
                         isExist = true;
                         break;
@@ -106,7 +120,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 if (!isExist)
                 {
-                    diff.Add(info);
+                    diff.Add(info1);
                 }
             }
 

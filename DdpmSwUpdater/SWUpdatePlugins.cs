@@ -167,7 +167,7 @@ namespace DdpmSwUpdater
                 {
                     if (!string.IsNullOrEmpty(path_programdata))
                     {
-                        if (LogManage.fromDDPM)
+                        if (LogManage.FromDDPM)
                         {
                             savePath = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
                         }
@@ -432,7 +432,7 @@ namespace DdpmSwUpdater
                 LogManage.LogMessage($"Initialize download path start");
                 if (!string.IsNullOrEmpty(path_programdata))
                 {
-                    if (LogManage.fromDDPM)
+                    if (LogManage.FromDDPM)
                     {
                         savePath = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
                     }

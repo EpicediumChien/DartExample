@@ -836,6 +836,41 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return false;
             }
         }
+        public async Task<int> GetTouchScrollSensitivityLevel(string Guid)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return -1; }
+
+            if (_mouseMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_mouseInterfaceType, commodity, "TouchScrollSensitivityLevel");
+                    if (value is int intValue)
+                    {
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"GetTouchScrollSensitivityLevel returned a value that is not of type int or is null for TouchScrollSensitivityLevel");
+                        return -1;
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                    return -1;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetDpiValue]Could not retrieve the Commodity Interface for the {_itemID} item. _mouseMethodInfo is null");
+                writelog($"[GetDpiValue]Could not retrieve the Commodity Interface for the {_itemID} item. _mouseMethodInfo is null");
+                return -1;
+            }
+
+        }
 
         public async Task SetDpiValue(string Guid, int newValue)
         {
@@ -966,7 +1001,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     await DeleteMouseAllAssignedActions(Guid);
                     await SetCurrentSelectedAppSpecificProfile(Guid, profileID);
 
-                    model = SACommonHelper.MappingModel(model);
+                    model = SAUICommonHelper.MappingModel(model);
                     var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
                     if (File.Exists(filePath))
                     {
@@ -1007,6 +1042,22 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
             {
                 return SetPropertyValue(_mouseInterfaceType, commodity, "ReportRate", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return false;
+            }
+        }
+        public async Task<bool> SetTouchScrollSensitivityLevel(string Guid, int newValue)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return false; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                return SetPropertyValue(_mouseInterfaceType, commodity, "TouchScrollSensitivityLevel", newValue);
             }
             else
             {
@@ -1350,7 +1401,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!result)
                 return false;
 
-            model = SACommonHelper.MappingModel(model);
+            model = SAUICommonHelper.MappingModel(model);
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
             if (File.Exists(filePath))
             {
@@ -3730,7 +3781,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 "Speaker" => _speakerMethodInfo,
                 "Dongle" => _dongleMethodInfo,
                 "Dock" => _dockMethodInfo,
-                "AirAudio"=> _airaudioMethodInfo,
+                "AirAudio" => _airaudioMethodInfo,
                 _ => null
             };
             Type interfaceType = type switch
@@ -3776,7 +3827,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                     if (value == null)
                     {
-                        Debug.WriteLine($"Not found {type} GUID: {guid}");
                         writelog($"Not found {type} GUID: {guid}");
                         return false;
                     }
@@ -9890,7 +9940,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 text = "";
 
             text = $"[DTPProxyPlugin] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
-            Console.WriteLine(text);
+            Debug.WriteLine(text);
 
 
             if (Log != null)
@@ -11274,10 +11324,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_IsHDROnChanged(object sender, IsHDROnChangedArgs e)
         {
-            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsHDROnChanged",
-                                    e.DeviceId, $"NewValue:{e.IsHDROn}"));
+            // << 250207 updated by Hess to prevent cli duplicate event
+            //SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsHDROnChanged",
+            //                        e.DeviceId, $"NewValue:{e.IsHDROn}"));
+            // >> 
 
-            writelog($"Catch event _Webcamcom_IsHDROnChanged, NewValue:{e.IsHDROn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event IsHDROnChanged, Guid: {e.DeviceId} NewValue:{e.IsHDROn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_FieldOfViewChanged(object sender, FieldOfViewChangedArgs e)

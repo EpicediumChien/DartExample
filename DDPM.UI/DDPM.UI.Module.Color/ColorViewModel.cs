@@ -217,7 +217,7 @@ namespace DDPM.UI.Module.Color
         //
         //Dean 0612 add for ALS syncup
         //
-        private int _colorPresetSelectedIndex = -1;//no choose
+        private int _colorPresetSelectedIndex { get; set; } = -1;//no choose
 
         public int ColorPresetSelectedIndex
         {
@@ -230,15 +230,15 @@ namespace DDPM.UI.Module.Color
                 int temp = _colorPresetSelectedIndex;
                 if (ColorPresets_ItemsCollection != null && temp < ColorPresets_ItemsCollection.Count)//before
                     last_selected_value = ColorPresets_ItemsCollection[temp];
-                if (CheckIfDisableALSFeature())
-                {
+                //if (CheckIfDisableALSFeature()) //Do not need to check ALS feature PIMS-345895
+                //{
                     _colorPresetSelectedIndex = value;
                     SetColorPresetBySelection();
-                }
-                else
-                {
-                    _colorPresetSelectedIndex = temp;
-                }
+                //}
+                //else
+                //{
+                //    _colorPresetSelectedIndex = temp;
+                //}
                 OnPropertyChanged("ColorPresetSelectedIndex");
                 if (ColorPresets_ItemsCollection != null && _colorPresetSelectedIndex < ColorPresets_ItemsCollection.Count)//after: keep or change
                     last_selected_value = ColorPresets_ItemsCollection[_colorPresetSelectedIndex];
@@ -271,10 +271,12 @@ namespace DDPM.UI.Module.Color
         //User to update selected index but do not trigger set VCP
         public void UpdateColorPresetSelectedIndex(int selIndex)
         {
-            _colorPresetSelectedIndex = selIndex;
-            OnPropertyChanged("ColorPresetSelectedIndex");
+            _colorPresetSelectedIndex = selIndex;            
+            
             if (ColorPresets_ItemsCollection != null && selIndex < ColorPresets_ItemsCollection.Count)
                 last_selected_value = ColorPresets_ItemsCollection[selIndex];
+            
+            OnPropertyChanged("ColorPresetSelectedIndex"); // Jim 20250211 fix 0x52 color preset no synchronization issue.
         }
 
         //
@@ -430,8 +432,8 @@ namespace DDPM.UI.Module.Color
                         if (System.String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
                             return -1;
 
-                        if (System.String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
-                            return -1;
+                        //if (System.String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber)) // Jim 20250207 modify  PIMS-344233 for Color : auto list
+                        //    return -1;
                     }
                 }
 
@@ -1898,6 +1900,5 @@ namespace DDPM.UI.Module.Color
         }
         //Robert_Lin 2025-1-18 added to handle Advanced Settings / ICC profile hylerlink click command
         ////////////////////////////
-
     }
 }

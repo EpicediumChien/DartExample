@@ -38,8 +38,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         private ObservableCollection<HomeDevice> _homeDevices = new ObservableCollection<HomeDevice>();
         private HomeDevice? _selectedHomeDevice;
 
-        private List<string> EOLKBList = DDPM.SA.Common.UI.SACommonHelper.EOLKBList;// new () { "WK636", "KM713", "WK717", "KM714", "KM717" };
-        private List<string> EOLMouseList = DDPM.SA.Common.UI.SACommonHelper.EOLMouseList;// new () { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
+        private readonly List<string> EOLKBList = DDPM.SA.Common.UI.SAUICommonHelper.EOLKBList;// new () { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        private readonly List<string> EOLMouseList = DDPM.SA.Common.UI.SAUICommonHelper.EOLMouseList;// new () { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
 
         //Robert_Lin, 2024-12-16 added in order to let view model can get devices in PleaseWait thread
         //It need DdpmHomePlugin set value to it.
@@ -228,7 +228,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 //Determine the SortOrder in the foreach loop.
                 //Each Category have their index, would be in order of ModelNumber
                 int idxWebcam = 0, idxKB = 0, idxMouse = 0,
-                    idxPen = 0, idxHeadset = 0, idxSpeaker = 0, idxDock = 0;
+                    idxPen = 0, idxHeadset = 0, idxSpeaker = 0, idxDock = 0, idxBootloader = 0;
 
                 //Robert_Lin 2024-5-16 This method should be called once, provide all
                 //monitor in this call. So it will clear original list at first
@@ -457,6 +457,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         dev.SortOrder = (int)dev.DeviceCategory + idxSpeaker;
                         idxSpeaker++;
                     }
+                    //0211 Bruce 新增Bootloader UI
+                    else if (devType.Equals(DeviceType.PhysicalBootloader) ||
+                        devType.Equals(DeviceType.LogicalBootloader))
+                    {
+                        dev.DeviceCategory = eDeviceCategory.Bootloader;
+                        System.Windows.Media.Color textColor = Colors.White;
+                        dev.DeviceModel = di.ModelNumber;
+                        dev.SortOrder = (int)dev.DeviceCategory + idxBootloader;
+                    }
 
                     //Robert_Lin, 2024-8-6, assign InstanceNo for the new adding device (dev)
                     //
@@ -490,7 +499,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 //RefreshCollectionView();
             }
         }
-
         public void ResetDevices()
         {
             System.Windows.Application.Current.Dispatcher.Invoke(() =>

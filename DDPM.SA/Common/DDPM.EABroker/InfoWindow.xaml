@@ -61,8 +61,13 @@
                     <WrapPanel>
                         <TextBlock Text=", HoveringWindow=" />
                         <TextBlock Text="{Binding HoveringWindow}" />
+                        <!-- Robert_Lin 2025-2-5, access to HoveringAwsIconText will access to ISplitCtrl.FriendlyName and it will cause exception to load the resource
+                        Remark the usage code temporatry.
+                        -->
+                        <!-- 
                         <TextBlock Text=", HoveringAwsIconText="/>
                         <TextBlock Text="{Binding HoveringAwsIconText}"/>
+                        -->
                         <TextBlock Text=", HoveringCell="/>
                         <TextBlock Text="{Binding HoveringCell}"/>
 

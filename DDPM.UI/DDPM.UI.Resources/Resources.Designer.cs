@@ -763,6 +763,51 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bootloader.
+        /// </summary>
+        internal static string Bootloader {
+            get {
+                return ResourceManager.GetString("Bootloader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your device is unavailable..
+        /// </summary>
+        internal static string Bootloader_0 {
+            get {
+                return ResourceManager.GetString("Bootloader.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please click.
+        /// </summary>
+        internal static string Bootloader_1 {
+            get {
+                return ResourceManager.GetString("Bootloader.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to here.
+        /// </summary>
+        internal static string Bootloader_2 {
+            get {
+                return ResourceManager.GetString("Bootloader.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to update your firmware in order to restore functionality..
+        /// </summary>
+        internal static string Bootloader_3 {
+            get {
+                return ResourceManager.GetString("Bootloader.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Brightness.
         /// </summary>
         internal static string Brightness {
@@ -997,7 +1042,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scroll Wheel Click.
+        ///   Looks up a localized string similar to Customize Scroll Wheel Click.
         /// </summary>
         internal static string ButtonSettings_0 {
             get {
@@ -1006,7 +1051,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scroll Tilt Left.
+        ///   Looks up a localized string similar to Customize Scroll Tilt Left.
         /// </summary>
         internal static string ButtonSettings_1 {
             get {
@@ -1051,7 +1096,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scroll Tilt Right.
+        ///   Looks up a localized string similar to Customize Scroll Tilt Right.
         /// </summary>
         internal static string ButtonSettings_2 {
             get {
@@ -1060,7 +1105,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Side Button Forward.
+        ///   Looks up a localized string similar to Customize Side Button Forward.
         /// </summary>
         internal static string ButtonSettings_3 {
             get {
@@ -1069,7 +1114,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Side Button Back.
+        ///   Looks up a localized string similar to Customize Side Button Back.
         /// </summary>
         internal static string ButtonSettings_4 {
             get {
@@ -2028,6 +2073,51 @@ namespace DDPM.UI.Resources {
         internal static string Customize {
             get {
                 return ResourceManager.GetString("Customize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customize Scroll Tilt Left.
+        /// </summary>
+        internal static string CustomizeScrollTiltLCaption {
+            get {
+                return ResourceManager.GetString("CustomizeScrollTiltLCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customize Scroll Tilt Right.
+        /// </summary>
+        internal static string CustomizeScrollTiltRCaption {
+            get {
+                return ResourceManager.GetString("CustomizeScrollTiltRCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customize Scroll Wheel Click.
+        /// </summary>
+        internal static string CustomizeScrollWheelCaption {
+            get {
+                return ResourceManager.GetString("CustomizeScrollWheelCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customize Side Button Back.
+        /// </summary>
+        internal static string CustomizeSideButtonBCaption {
+            get {
+                return ResourceManager.GetString("CustomizeSideButtonBCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customize Side Button Forward.
+        /// </summary>
+        internal static string CustomizeSideButtonFCaption {
+            get {
+                return ResourceManager.GetString("CustomizeSideButtonFCaption", resourceCulture);
             }
         }
         
@@ -6829,7 +6919,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Moving the slider to the right will gradually\ndecrease the sensitivity to pressure and you\nneed to apply firmer pen pressure.
+        ///   Looks up a localized string similar to Moving the slider to the right will gradually decrease the sensitivity to pressure and you need to apply firmer pen pressure.
         /// </summary>
         internal static string PenSettings_2 {
             get {
@@ -6847,7 +6937,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Moving the slider to the right will gradually\nincrease the tilting effect, and you need to\napply less tilting angle.
+        ///   Looks up a localized string similar to Moving the slider to the right will gradually increase the tilting effect, and you need to apply less tilting angle.
         /// </summary>
         internal static string PenSettings_4 {
             get {
@@ -6865,7 +6955,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pair your pen to your mobile device using\nthe Tile app.
+        ///   Looks up a localized string similar to Pair your pen to your mobile device using the Tile app.
         /// </summary>
         internal static string PenSettings_6 {
             get {

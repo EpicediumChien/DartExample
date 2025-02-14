@@ -28,7 +28,7 @@ namespace DDPM.UI.Module.InputSource
             this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
             vm.InputSourceModule = this;
             _rightView = new InputSourceRightView(vm);
-            vm.Invoke_RefreshData();            
+            //vm.Invoke_RefreshData();            
         }
 
         public string ModuleName { get => Constants.ModuleName_InputSource; } //"InputSourceModule"
@@ -83,6 +83,10 @@ namespace DDPM.UI.Module.InputSource
             {
                 isSelectChanged = false;
                 InitNewViewModel();
+            }
+            else
+            {
+                vm.Invoke_RefreshData();
             }
         }
 

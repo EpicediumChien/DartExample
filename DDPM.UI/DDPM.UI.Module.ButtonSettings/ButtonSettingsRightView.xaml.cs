@@ -74,8 +74,8 @@ namespace DDPM.UI.Module.ButtonSettings
         {
             //SelectedActionID = _vm.SelectedActionID;
 
-            txtCaption.Text = $"{Strings.Customize} {ButtonCaptions[_vm.SelectedButton]}";
-            txtCaption.FontSize = _vm.SelectedButton == MouseButtonName.SideButtonForward.ToString() ? 18 : 20;
+            txtCaption.Text = $"{ButtonCaptions[_vm.SelectedButton]}";
+            //txtCaption.FontSize = _vm.SelectedButton == MouseButtonName.SideButtonForward.ToString() ? 18 : 20;
             imgBack.Visibility = Visibility.Visible;
             Section2.Visibility = Visibility.Visible;
 
@@ -191,10 +191,10 @@ namespace DDPM.UI.Module.ButtonSettings
                     sourceList = _vm.SelectedApp switch
                     {
                         "AllApp" => Actions.AllActionsKnM(),
-                        "Word" => Actions.WordActions,
-                        "Excel" => Actions.ExcelActions,
-                        "PowerPoint" => Actions.PowerPointActions,
-                        _ => Actions.OutlookActions
+                        "Word" => Actions.WordActions(),
+                        "Excel" => Actions.ExcelActions(),
+                        "PowerPoint" => Actions.PowerPointActions(),
+                        _ => Actions.OutlookActions()
                     };
                 }
                 searchText = txtSearchText.Text;

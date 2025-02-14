@@ -133,8 +133,8 @@ namespace DDPM.UI.Module.EzMemory
                 //             So the per-monitor settings will be always null. we can skip it (to restore)
                 //But in Edit mode, we can restore its monitor settings with current editing profileId.
                 // 使用 CultureInfo 來取得 AM 和 PM
-                string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
-                string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
+                string amDesignator = Strings.Am;//CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+                string pmDesignator = Strings.Pm;//CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
 
                 //Add mode: Always reset to defaults
                 if (!_vm.IsEditProfile)
@@ -340,11 +340,10 @@ namespace DDPM.UI.Module.EzMemory
                 }
 
                 // Handle Monitor Settings
-                if(_vm.IsAutoLaunch)
-                {
-                    if(_vm.SelectedHour == string.Empty || _vm.SelectedHour == string.Empty || _vm.SelectedAMPM == string.Empty) return;
-                }
-                if(_vm.IsLaunchAtStartup)
+                if (_vm.IsAutoLaunch && (_vm.SelectedHour == string.Empty || _vm.SelectedAMPM == string.Empty))
+                    return;
+
+                if (_vm.IsLaunchAtStartup)
                 {
                     _log.Info($"@{nameof(EzMemoryLaunchOption)} _vm.IsLaunchAtStartup True ");
 
@@ -390,14 +389,11 @@ namespace DDPM.UI.Module.EzMemory
                 if (isEditMode)
                 {
                     //Check if layout is changed, if yes, then remove the old layout from SplitList
-                    if (_vm.currentEditprofile.Layout != layout)
+                    if (_vm.currentEditprofile.Layout != layout && _vm.OrgEditSplitItem != null)
                     {
-                        if (_vm.OrgEditSplitItem != null)
-                        {
-                            _vm.CurrentEditSelectspItem.ProfileID = _vm.OrgEditSplitItem.ProfileID;
-                            _vm.CurrentEditSelectspItem.ISplitCtrl.FriendlyName = profileName;
-                            _vm.OrgEditSplitItem.ReplaceWithISplitICtrl(_vm.CurrentEditSelectspItem.ISplitCtrl);
-                        }
+                        _vm.CurrentEditSelectspItem.ProfileID = _vm.OrgEditSplitItem.ProfileID;
+                        _vm.CurrentEditSelectspItem.ISplitCtrl.FriendlyName = profileName;
+                        _vm.OrgEditSplitItem.ReplaceWithISplitICtrl(_vm.CurrentEditSelectspItem.ISplitCtrl);
                     }
                     //SplitItem tooltip
                     _vm.CurrentEditSelectspItem.ISplitCtrl.FriendlyName = profileName;
@@ -521,11 +517,8 @@ namespace DDPM.UI.Module.EzMemory
                         spItem.IsSelected = true;
 
                         //Set new added SplitItem as Current selected
-                        if (_vm.CurrentSelectspItem != null)
-                        {
-                            if (_vm.CurrentSelectspItem.ProfileID != profileID)
-                                _vm.CurrentSelectspItem.IsSelected = false;
-                        }
+                        if (_vm.CurrentSelectspItem != null && _vm.CurrentSelectspItem.ProfileID != profileID)
+                            _vm.CurrentSelectspItem.IsSelected = false;
                         _vm.CurrentSelectspItem = spItem;
                         //_vm.CurrentSelectspItem.IsSelected = true;
                     }

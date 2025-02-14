@@ -268,7 +268,8 @@ namespace DDPM.SA.Plugins.CMAManager
                 command = command + ("app=" + task.command);
                 command = command + (" value=" + task.devicetype + "," + ("x:\\config.json"));
 
-                if (option.index != null && option.index.Length > 0)
+                // modefied start @ 20250206 stephen : base on CLI spec change
+                /*if (option.index != null && option.index.Length > 0)
                 {
                     command = command + (" index=" + option.index);
                 }
@@ -277,11 +278,36 @@ namespace DDPM.SA.Plugins.CMAManager
                     command = command + (" index=1");
                 }
 
-                return command;
+                return command;*/
+            }
+            else
+            {
+                command = command + (task.devicetype + "=" + task.command);
+                command = command + (" value=" + task.value);
             }
 
-            command = command + (task.devicetype + "=" + task.command);
-            command = command + (" value=" + task.value);
+            //command = command + (task.devicetype + "=" + task.command);
+            //command = command + (" value=" + task.value);
+            // modified end @ 20250206 stephen
+
+            // check options
+
+            if (option.index != null && option.index.Length > 0)
+            {
+                command = command + (" index=" + option.index);
+            }
+
+            if (option.servicetag != null && option.servicetag.Length > 0)
+            {
+                command = command + (" servicetag=" + option.servicetag);
+            }
+
+            if (option.model != null && option.model.Length > 0)
+            {
+                command = command + (" model=" + option.model);
+            }
+
+            return command;
 
             // check options
 
@@ -929,7 +955,8 @@ namespace DDPM.SA.Plugins.CMAManager
 
                         taskInfoQueue.Dequeue();    // add @ 20250124 stephen: bug fix
 
-                        sendDeferNotify(uniqueAgentGuid.ToString(), request.remote_request);
+                        // modified @ 20502024 stephen : send fwjob event
+                        sendFwJobNotify(uniqueAgentGuid.ToString(), request.remote_request);
 
                         result.message = "Device not found";
                         result.output_result = "FAIL";
@@ -1086,11 +1113,42 @@ namespace DDPM.SA.Plugins.CMAManager
                 args.eventType = Params.EventType.FW.ToString();
                 args.notification = "{\"sid\": \"" + "sid" + "\",\"gid\": \"" + data.Guid + "\",\"response\": [" + data.FWUErrorCode + "<" + (int)data.FWUErrorCode + ">" + "(" + data.DeviceName + ", " + data.Model + ")" + "]}";
 
-                // add @ 20250121 stephen
-                CmdResponse cmdResponse = new CmdResponse(data.Guid, true, data);
-                args.notification = cmdResponse.genResponseFwUpdate();
+                // modified start @ 20250213 stephen : error handle while guid is empty 
+                try
+                {
+                    // add @ 20250121 stephen
+                    CmdResponse cmdResponse = new CmdResponse(data.Guid, true, data);
+                    args.notification = cmdResponse.genResponseFwUpdate();
 
-                cmdResponse.writeToFile(data.Guid, args.notification);
+                    cmdResponse.writeToFile(data.Guid, args.notification);
+
+                }
+                catch (Exception e)
+                {
+
+                    WriteLog("UpdateFwStatus() CmdResponse exception = " + e.ToString());
+
+                    string response = string.Empty;
+
+                    response = "{\"sid\":\"N/A\",\"gid\":\"N/A\",\"response\":[{\"tid\":1,\"result\":" + Params.Response.STATUS_FW_UPDATE_ERROR + ",\"msg\":\"Exception Error\",\"data\":";
+                    response = response + "[{";
+                    response = response + "\"seqnum\":" + 2 + ",";
+                    response = response + "\"index\":\"" + data.DeviceIndex + "\",";
+                    response = response + "\"model\":\"" + data.Model + "\",";
+                    response = response + "\"servicetag\":\"" + data.ServiceTag + "\",";
+                    response = response + "\"marketingname\":\"" + "N/A" + "\",";
+                    response = response + "\"serialnumber\":\"" + "N/A" + "\",";
+                    response = response + "\"fwversion\":\"" + data.TheLatestVersion + "\",";
+                    response = response + "\"fwupdateresponse\":\"" + string.Empty + "\"";
+                    response = response + "}]";
+                    response = response + "}]}";
+
+                    args.notification = response;
+
+                }
+
+                WriteLog("UpdateFwStatus() CmdResponse args.notification final = " + args.notification);
+                // modified end @ 20250213
 
 
                 OnEventNotify(args);
@@ -1145,7 +1203,10 @@ namespace DDPM.SA.Plugins.CMAManager
 
             NotifyArgs args = deviceControlPannel.OnDeviceChnaged(data);
 
-            args.notification = "{\"sid\": \"\",\"gid\": \"\",\"response\": [{\"tid\": ,\"result\": 0,\"msg\": \"\",\"data\": [" + args.notification + "]}]}";
+            // moidified @ 2050213 stephen : add create time
+            //args.notification = "{\"sid\": \"\",\"gid\": \"\",\"response\": [{\"tid\": ,\"result\": 0,\"msg\": \"\",\"data\": [" + args.notification + "]}]}";
+            args.notification = "{\"sid\": \"\",\"gid\": \"\",\"response\": [{\"tid\": ,\"result\": 0,\"msg\": \" " + DateTimeOffset.Now.ToString() + " \",\"data\": [" + args.notification + "]}]}";
+
 
             if (Params.EventType.DISPLAY_CONNECT.ToString().Equals(args.eventType))
             {
@@ -1155,6 +1216,13 @@ namespace DDPM.SA.Plugins.CMAManager
             {
                 OnEventDisplayDisconnect(args);
             }
+
+            // add @ 20250206 stephen
+            Thread.Sleep(3000);
+
+            // add @ 20250204 stephen
+            WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed isDoFwJobChecking = " + isDoFwJobChecking);
+
 
             // add @ 20250117 stephen
             // modify @ 20250119 stephen
@@ -1387,7 +1455,7 @@ namespace DDPM.SA.Plugins.CMAManager
         // add @ 20250117 stephen
         private void initFwJobControlPanel()
         {
-            WriteLog($"[CMA] initDeferControlPanel()");
+            WriteLog($"[CMA] initFwJobControlPanel()");
             FwJobControlPanel.init();
             //startDeferTimer();
 
@@ -1410,60 +1478,114 @@ namespace DDPM.SA.Plugins.CMAManager
 
             isDoFwJobChecking = true;
 
-            List<string> strDefers = FwJobControlPanel.displayConnected(monitors);
+            List<string> listFwJobs = FwJobControlPanel.displayConnected(monitors);
+
+            // add @ 20250204 stephen : fix list is null
+            if (null == listFwJobs)
+            {
+                WriteLog("[CMA] doFwJobChecking: No FwJob.");
+                isDoFwJobChecking = false;
+                return;
+            }
+
+            WriteLog("[CMA] doFwJobChecking strDefers.Count = " + listFwJobs.Count);
+            // add end @ 20250204
+
             DeferItem deferItem = null;
             // do defer
-            foreach (string strDefer in strDefers)
+            foreach (string strFwJob in listFwJobs)
             {
-                WriteLog(strDefer);
-                deferItem = new DeferItem(strDefer);
-                if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, deferItem.guid.ToString(), deferItem.commanddata).Result)
+                WriteLog("[CMA] doFwJobChecking strFwJob = " + strFwJob);
+                deferItem = new DeferItem(strFwJob);
+                // modified start @ 20250204 stephen : check defer in command
+                if (deferItem.commanddata.ToLower().Contains("defer"))
                 {
-                    WriteLog($"[CMA] _CliManagerPlugin.checkDefer = true, do not run command");
+                    // modified start @ 20250213 stephen : fix bug if fwjob from cli and contain defer
+                    /*if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, deferItem.guid.ToString(), deferItem.commanddata).Result)
+                    {
+                        WriteLog($"[CMA] _CliManagerPlugin.checkDefer = true, do not run command");
 
-                    // feedback event to show in defer status
-                    sendDeferNotify(deferItem.guid.ToString(), deferItem.commanddata);
-                }
-                else
-                {
+                        // feedback event to show in defer status
+                        sendDeferNotify(deferItem.guid.ToString(), deferItem.commanddata);
+                        isDoFwJobChecking = false;
+                        return;
+                    }*/
+
+                    bool isDeferSelect = false;
 
                     switch (deferItem.commandfrom)
                     {
                         case DeferControlPanel.SRC_FROM_CLI:
 
-                            WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CLI");
-                            ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
-                            CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(deferItem.commanddata.Split(' '));
-
-                            commandLineInput.isCliRunAdmin = true;
-
-                            CLIEventResult result = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
+                            if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, deferItem.guid.ToString(), deferItem.commanddata).Result)
+                            {
+                                WriteLog($"[CMA] _CliManagerPlugin.checkDefer::DeferControlPanel.SRC_FROM_CLI = true, do not run command");
+                                isDeferSelect = true;
+                                //return;
+                            }
 
                             break;
 
                         case DeferControlPanel.SRC_FROM_CMA:
-                            WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CMA");
-                            try
+                            if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, deferItem.guid.ToString(), deferItem.commanddata).Result)
                             {
-                                initCommandTask(deferItem.guid.ToString(), deferItem.commanddata);
+                                WriteLog($"[CMA] _CliManagerPlugin.checkDefer::DeferControlPanel.SRC_FROM_CMA = true, do not run command");
 
-                                TaskInfo taskInfo = taskInfoQueue.Peek();
-                                WriteLog($"[CMA] before runCommandTask, taskInfo.sid = {taskInfo.sid} ; taskInfo.gid = {taskInfo.gid} ; taskInfo.tid = {taskInfo.tid} ; taskInfo.eventtype = {taskInfo.eventtype} ; taskInfo.command = {taskInfo.command}");
-                                _ = Task.Run(async () => await runCommandTaskAsync(taskInfo.sid, taskInfo.gid));
-                            }
-                            catch (Exception e)
-                            {
-
-                                NotifyArgs args = new NotifyArgs();
-                                args.eventType = Params.EventType.UNKNOWN_ERROR.ToString();
-                                args.notification = e.ToString() + "; " + deferItem.commanddata;
-                                OnEventNotify(args);
+                                // feedback event to show in defer status
+                                sendDeferNotify(deferItem.guid.ToString(), deferItem.commanddata);
+                                isDeferSelect = true;
                             }
                             break;
+
                     }
 
+                    if (isDeferSelect)
+                    {
+                        isDoFwJobChecking = false;
+                        return;
+                    }
+                    // modoified end @ 20250213
                 }
+
+                switch (deferItem.commandfrom)
+                {
+                    case DeferControlPanel.SRC_FROM_CLI:
+
+                        WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CLI");
+                        ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
+                        CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(deferItem.commanddata.Split(' '));
+
+                        commandLineInput.isCliRunAdmin = true;
+
+                        CLIEventResult result = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
+
+                        break;
+
+                    case DeferControlPanel.SRC_FROM_CMA:
+                        WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CMA");
+                        try
+                        {
+                            initCommandTask(deferItem.guid.ToString(), deferItem.commanddata);
+
+                            TaskInfo taskInfo = taskInfoQueue.Peek();
+                            WriteLog($"[CMA] before runCommandTask, taskInfo.sid = {taskInfo.sid} ; taskInfo.gid = {taskInfo.gid} ; taskInfo.tid = {taskInfo.tid} ; taskInfo.eventtype = {taskInfo.eventtype} ; taskInfo.command = {taskInfo.command}");
+                            _ = Task.Run(async () => await runCommandTaskAsync(taskInfo.sid, taskInfo.gid));
+                        }
+                        catch (Exception e)
+                        {
+
+                            NotifyArgs args = new NotifyArgs();
+                            args.eventType = Params.EventType.UNKNOWN_ERROR.ToString();
+                            args.notification = e.ToString() + "; " + deferItem.commanddata;
+                            OnEventNotify(args);
+                        }
+                        break;
+                }
+                // modified end @ 20250204 stephen
+            
+
             }
+        
             Thread.Sleep(30000);
             isDoFwJobChecking = false;
         }

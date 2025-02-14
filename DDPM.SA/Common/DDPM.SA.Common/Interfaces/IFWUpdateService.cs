@@ -2,6 +2,7 @@
 using DPeMPublic.Common.Enums;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace DDPM.SA.Common
@@ -23,6 +24,10 @@ namespace DDPM.SA.Common
         Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, List<DeviceInfo> currentDevice, int IODongleCountGen3AgoCount, bool isUITrigger, string installPath);
         Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay, DeviceType deviceType);
         Task<bool> RestartService();
+
+        void SetDeviceinfo(List<DeviceInfo> DeviceInfos, int Gen3AgeDongleCount);
+        void SetLang(CultureInfo cultureInfo);
+
         void CheckUODFWUInfo(DokcUODUpdateInfoPackage UODFWUInfo, List<DeviceInfo> DeviceInfos);
         void SetSkipCA(bool isSkipCA);
         void SetSkipSHA(bool isSkipSHA);

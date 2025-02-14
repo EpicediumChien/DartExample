@@ -76,56 +76,56 @@ namespace DDPM.SA.Common
         /// <summary>
         /// 韌體更新的錯誤碼，安裝時使用
         /// </summary>
-        public FWUErrorCode FWUErrorCode { get; set; }
-        public DeviceType DeviceType { get; set; }
-        public bool IsDisplay { get; set; }
-        public string DeviceName { get; set; }
-        public string DeviceId { get; set; }
-        public int DeviceIndex { get; set; }
-        public string DevicePath { get; set; }
-        public string Model { get; set; }
-        public string DeviceVersion { get; set; }
-        public string TheLatestVersion { get; set; }
+        public FWUErrorCode FWUErrorCode { get; set; } = FWUErrorCode.Unknow;
+        public DeviceType DeviceType { get; set; } = DeviceType.Unknown;
+        public bool IsDisplay { get; set; } = false;
+        public string DeviceName { get; set; } = string.Empty;
+        public string DeviceId { get; set; } = string.Empty;
+        public int DeviceIndex { get; set; } = 0;
+        public string DevicePath { get; set; } = string.Empty;
+        public string Model { get; set; } = string.Empty;
+        public string DeviceVersion { get; set; } = string.Empty;
+        public string TheLatestVersion { get; set; } = string.Empty;
 
         /// <summary>
         /// Dock專用，判斷是否斷線更新
         /// </summary>
-        public bool IsUOD { get; set; }
+        public bool IsUOD { get; set; } = false;
         /// <summary>
         /// Only for webcam true is HPD can name pipa update, false is MPS need client update
         /// </summary>
-        public bool IsESISupported {  get; set; }
+        public bool IsESISupported { get; set; } = false;
 
         /// <summary>
         /// 裝置例項路徑，Dock專用，用於判斷UOD的Dock再次連接時是否更新完成
         /// </summary>
-        public string PNPDeviceID { get; set; }
+        public string PNPDeviceID { get; set; } = string.Empty;
 
-        public bool NeedUpdated { get; set; }
+        public bool NeedUpdated { get; set; } = false;
 
         /// <summary>
         /// 安裝時使用，獲取目前的進度資訊
         /// </summary>
-        public string ProcessName { get; set; }
+        public string ProcessName { get; set; } = string.Empty;
 
         /// <summary>
         /// 安裝時使用，獲取安裝進度
         /// </summary>
-        public double ProcessProgress { get; set; }
+        public double ProcessProgress { get; set; } = 0.0;
 
-        public string ServerPath { get; set; }
-        public string FileSavepath { get; set; }
-        public string InstallPaths { get; set; }
-        public string SHA256 { get; set; }
+        public string ServerPath { get; set; } = string.Empty;
+        public string FileSavepath { get; set; } = string.Empty;
+        public string InstallPaths { get; set; } = string.Empty;
+        public string SHA256 { get; set; } = string.Empty;
         //public string SHA512 { get; set; }
-        public string Thumbprint { get; set; }
-        public string ServiceTag { get; set; }
-        public string SupplierID { get; set; }
-        public int InstanceId { get; set; }
-        public string D_Ctrl { get; set; }
-        public string Connectivity { get; set; }
-        public string Update_date { get; set; }
-        public string Available_date { get; set; }
+        public string Thumbprint { get; set; } = string.Empty;
+        public string ServiceTag { get; set; } = string.Empty;
+        public string SupplierID { get; set; } = string.Empty;
+        public int InstanceId { get; set; } = 0;
+        public string D_Ctrl { get; set; } = string.Empty;
+        public string Connectivity { get; set; } = string.Empty;
+        public string Update_date { get; set; } = string.Empty;
+        public string Available_date { get; set; } = string.Empty;
 
         public bool Equals(FWUpdateInfo fwUpdateInfo)
         {
@@ -199,20 +199,20 @@ namespace DDPM.SA.Common
     }
     public class UpdateProgressInfo
     {
-        public string DeviceName { get; set; }
-        public string DeviceId { get; set; }
-        public string Model { get; set; }
-        public string DeviceVersion { get; set; }
-        public string TheLatestVersion { get; set; }
+        public string DeviceName { get; set; } = string.Empty;
+        public string DeviceId { get; set; } = string.Empty;
+        public string Model { get; set; } = string.Empty;
+        public string DeviceVersion { get; set; } = string.Empty;
+        public string TheLatestVersion { get; set; } = string.Empty;
 
         /// <summary>
         /// 安裝時使用，獲取目前的進度資訊
         /// </summary>
-        public string ProcessName { get; set; }
+        public string ProcessName { get; set; } = string.Empty;
 
         /// <summary>
         /// 安裝時使用，獲取安裝進度
         /// </summary>
-        public double ProcessProgress { get; set; }
+        public double ProcessProgress { get; set; } = 0.0;
     }
 }

@@ -46,6 +46,7 @@ using DDPM.SA.Resources.Helper;
 using System.Windows;
 using System.Net.NetworkInformation;
 using System.Globalization;
+using DDDPM.SA.Common;
 
 
 namespace DDPM.SA.Plugins.User.FWUpdate
@@ -82,6 +83,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// 現在正在進行下載或安裝流程的裝置資訊
         /// </summary>
         private FWUpdateInfo _fWUpdateInfo = new FWUpdateInfo();
+
+        /// <summary>
+        /// 從DeviceManager取得的連接的裝置資訊列表，用於更新韌體前確認是否有插入多個Dock或裝置電量是否足夠
+        /// </summary>
+        private List<DeviceInfo> _DeviceInfos;
+        /// <summary>
+        /// 從DeviceManager取得的連接的IO Dongle，用於更新韌體前確認是否有插入多個Dongle
+        /// </summary>
+        private int _IODongleCount;
 
         /// <summary>
         /// 給UI或是CLI的全部韌體更新包
@@ -151,6 +161,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _agent = agent;
             _logs ??= new Logs(Log, PluginLogId);
             _fWUpdateInfoPackage = new FWUpdateInfoPackage();
+            DdpmSACommonHelper.SAPluginReady(nameof(FWUpdatePlugins));
         }
 
         #region Overriding methods
@@ -218,22 +229,75 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         #endregion Overriding methods
 
-        public void CheckUODFWUInfo(DokcUODUpdateInfoPackage UODFWUInfo, List<DeviceInfo>? DeviceInfos)
+
+        public void SetDeviceinfo(List<DeviceInfo> DeviceInfos, int Gen3AgeDongleCount)
         {
-            string s = "";
+            _IODongleCount = Gen3AgeDongleCount;
             if (DeviceInfos != null && DeviceInfos.Count > 0)
             {
+                _DeviceInfos = DeviceInfos;
+            }
+        }
+        public void SetLang(CultureInfo cultureInfo)
+        {
+            _logs.DebugMsg_1($"SetLang start");
+            _logs.DebugMsg_1($"cultureInfo : {cultureInfo}");
+            LangHelper.UserMappedCultureInfo = cultureInfo;
+            _logs.DebugMsg_1($"SetLang done");
+        }
+
+        public void CheckUODFWUInfo(DokcUODUpdateInfoPackage UODFWUInfo, List<DeviceInfo>? DeviceInfos)
+        {
+            _logs.DebugMsg_1($"CheckUODFWUInfo start");
+            string s = "";
+            if (DeviceInfos != null && DeviceInfos.Count > 0 && UODFWUInfo != null && UODFWUInfo.FWUpdateInfo != null)
+            {
+                _logs.DebugMsg_1($"CheckUODFWUInfo if 1");
                 foreach (DeviceInfo deviceInfo in DeviceInfos)
                 {
-                    if (deviceInfo.DockServiceTag.Equals(UODFWUInfo.FWUpdateInfo.ServiceTag))
+                    _logs.DebugMsg_1($"CheckUODFWUInfo deviceInfo.DockServiceTag : {deviceInfo.DockServiceTag}");
+                    _logs.DebugMsg_1($"CheckUODFWUInfo UODFWUInfo.FWUpdateInfo.ServiceTag : {UODFWUInfo.FWUpdateInfo.ServiceTag}");
+                    if ((deviceInfo.PhysicalDeviceType == DeviceType.LogicalDock ||
+                        deviceInfo.PhysicalDeviceType == DeviceType.PhysicalWiredDock) &&
+                        deviceInfo.DockServiceTag.Equals(UODFWUInfo.FWUpdateInfo.ServiceTag))
                     {
-                        string Ver = deviceInfo.FirmwareVersion;
-                        if (!int.TryParse(Ver, out _))
+                        _logs.DebugMsg_1($"CheckUODFWUInfo deviceInfo.FirmwareVersion : {deviceInfo.FirmwareVersion}");
+                        _logs.DebugMsg_1($"CheckUODFWUInfo UODFWUInfo.FWUpdateInfo.TheLatestVersion : {UODFWUInfo.FWUpdateInfo.TheLatestVersion}");
+                        string currentVer = deviceInfo.FirmwareVersion;
+                        if (!string.IsNullOrEmpty(currentVer) &&
+                                !currentVer.Contains("."))
                         {
-                            Ver = Convert.ToInt32(Ver, 16).ToString();
+                            if (currentVer.Length < 5) //長度小於5
+                            {
+                                if (currentVer.Length < 4) // 長度不足4,就補0在字首到長度為4
+                                    currentVer = currentVer.PadLeft(4, '0');
+                                currentVer = Regex.Replace(currentVer, ".{1}", "$0.").Substring(0, (currentVer.Length * 2) - 1);
+                            }
+                            else if (currentVer.Length > 4) // 長度大於4
+                            {
+                                //FF.FF.FF.FF(testing) or
+                                //01004501 => 01.00.45.01 / 00011600 => 00.01.16.00(production)
+
+                                if (currentVer.Length < 8) // 長度不足8,就補0在字首到長度為8
+                                    currentVer = currentVer.PadLeft(8, '0');
+
+                                //FF.FF.FF.FF(testing) or
+                                //00001541 => 1.5.4.1; 00001064 => 1.0.6.4(production)
+                                if (currentVer.StartsWith("0000")) // 檢查前4個字元是否都為0
+                                {
+                                    currentVer = currentVer.Substring(4);
+                                    currentVer = Regex.Replace(currentVer, ".{1}", "$0.").Substring(0, (currentVer.Length * 2) - 1);
+                                }
+                                else
+                                {
+                                    string pattern = @"(.{2})(.{2})(.{2})(.{2})";
+                                    string replacement = "$1.$2.$3.$4";
+                                    currentVer = Regex.Replace(currentVer, pattern, replacement);
+                                }
+                            }
+                            _logs.DebugMsg_1($" CheckUODFWUInfo(), currentVer (production output) = {currentVer}");
                         }
-                        string deviceVersion = Regex.Replace(Convert.ToInt32(Ver).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(Ver).ToString("D4").Length * 2) - 1);
-                        if (deviceVersion.Equals(UODFWUInfo.FWUpdateInfo.TheLatestVersion))
+                        if (currentVer.Equals(UODFWUInfo.FWUpdateInfo.TheLatestVersion))
                         {
                             s = $"{deviceInfo.ModelNumber} UOD update completed.";
                         }
@@ -243,13 +307,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         }
                         UODFWUInfo = new DokcUODUpdateInfoPackage();
                         CallSaveUODFWDeviceInfos?.AsyncFireAndForget(this, UODFWUInfo, System.Threading.CancellationToken.None);
-                        _checkUODTimer.Stop();
-                        _checkUODTimer = null;
+                        if (_checkUODTimer != null)
+                        {
+                            _checkUODTimer.Stop();
+                            _checkUODTimer = null;
+                        }
                     }
                 }
             }
-            else if (!string.IsNullOrEmpty(UODFWUInfo.FWUpdateInfo.ServiceTag))
+            else if (UODFWUInfo != null && UODFWUInfo.FWUpdateInfo != null && !string.IsNullOrEmpty(UODFWUInfo.FWUpdateInfo.ServiceTag))
             {
+                _logs.DebugMsg_1($"CheckUODFWUInfo UODFWUInfo.FWUpdateInfo.ServiceTag is null : {string.IsNullOrEmpty(UODFWUInfo.FWUpdateInfo.ServiceTag)}");
                 TimeSpan difference = new TimeSpan(0);
                 if (UODFWUInfo.SaveTime != null)
                 {
@@ -285,6 +353,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 NotificationFWupdate(LangHelper.Instance["Dock_UOD_FW_update_info"], s);
             }
+            _logs.DebugMsg_1($"CheckUODFWUInfo done");
         }
 
         /// <summary>
@@ -1341,7 +1410,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 if (!fwUpdateInfo.IsDisplay)
                 {
                     _CurrentProcess = 0;
-                    _fwTimeOutCount = 120;
+                    if (_fWUpdateInfo.DeviceType == DeviceType.LogicalKeyboard ||
+                        _fWUpdateInfo.DeviceType == DeviceType.LogicalMouse)
+                    {
+                        _fwTimeOutCount = 60;
+                    }
+                    else
+                    {
+                        _fwTimeOutCount = 120;
+                    }
                     _timeOutCount = _fwTimeOutCount;
                     _timerTimeOut = new Timer();
                     _timerTimeOut.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
@@ -1663,25 +1740,23 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 };
                 sendMessageToEvent(fWUpdateInfo);
             }
-            if (_timeOutCount <= 60)
+            if (_timeOutCount <= 60 && 
+                _fWUpdateInfo.DeviceType == DeviceType.LogicalHeadset &&
+                _fWUpdateInfo.Model.Contains("7024") &&
+                _CurrentProcess >= 100)
             {
-                if (_fWUpdateInfo.DeviceType == DeviceType.LogicalHeadset &&
-                    _fWUpdateInfo.Model.Contains("7024") &&
-                    _CurrentProcess >= 100)
+                _updateErrorCode = FWUErrorCode.NoError;
+                _notificationStr = LangHelper.Instance["A2_Firmware_update_successful"];
+                _logs.DebugMsg_1("_timeOutCount <= 60 and is WL7024FWU and _CurrentProcess is 100% so successful");
+                UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                 {
-                    _updateErrorCode = FWUErrorCode.NoError;
-                    _notificationStr = LangHelper.Instance["A2_Firmware_update_successful"];
-                    _logs.DebugMsg_1("_timeOutCount <= 60 and is WL7024FWU and _CurrentProcess is 100% so successful");
-                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
-                    {
-                        DeviceName = _fWUpdateInfo.DeviceName,
-                        Model = _fWUpdateInfo.Model,
-                        TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                        ProcessName = "A2 Firmware update successful",
-                    };
-                    sendMessageToEvent(updateProgressInfo);
-                    resetState();
-                }
+                    DeviceName = _fWUpdateInfo.DeviceName,
+                    Model = _fWUpdateInfo.Model,
+                    TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                    ProcessName = "A2 Firmware update successful",
+                };
+                sendMessageToEvent(updateProgressInfo);
+                resetState();
             }
             _timeOutCount--;
             if (_namedPipeServer != null && _namedPipeServer.IsNamedPipeServerIsNoSafe &&
@@ -1718,6 +1793,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         private void pasreMessage(string message)
         {
+            message = Regex.Replace(message, @"(<.*?>)", match => match.Value.ToUpper());
             string messageWithRoot = "<Root>" + message;
             messageWithRoot += "</Root>";
 
@@ -1740,12 +1816,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             XmlNode? tPubKeyDev1;
             XmlNode? encBlock;
 
-            if (message.Contains("InvokeDisplay"))
+            if (message.Contains("InvokeDisplay".ToUpper()))
             {
-                msg1Node = xmlDoc.SelectSingleNode("Root/InvokeDisplay/MSG1");//鍵盤滑鼠才會觸發
-                progressNode = xmlDoc.SelectSingleNode("Root/InvokeDisplay/Progress");
-                buttonCaptionNode = xmlDoc.SelectSingleNode("Root/InvokeDisplay/Button-Caption");
-                buttonStateNode = xmlDoc.SelectSingleNode("Root/InvokeDisplay/Button-State");
+                msg1Node = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/MSG1".ToUpper());//鍵盤滑鼠才會觸發
+                progressNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Progress".ToUpper());
+                buttonCaptionNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Button-Caption".ToUpper());
+                buttonStateNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Button-State".ToUpper());
                 if (msg1Node != null)
                 {
                     if (msg1Node.InnerText == "M1")
@@ -2033,9 +2109,20 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     int.TryParse(timeOut.InnerText, out _fwTimeOutCount);
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get timeOut value : {_fwTimeOutCount}");
-                    if (_fwTimeOutCount < 120)
+                    if (_fWUpdateInfo.DeviceType == DeviceType.LogicalKeyboard ||
+                        _fWUpdateInfo.DeviceType == DeviceType.LogicalMouse)
                     {
-                        _fwTimeOutCount = 120;
+                        if (_fwTimeOutCount < 60)
+                        {
+                            _fwTimeOutCount = 60;
+                        }
+                    }
+                    else
+                    {
+                        if (_fwTimeOutCount < 120)
+                        {
+                            _fwTimeOutCount = 120;
+                        }
                     }
                     UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                     {
@@ -2388,6 +2475,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _logs.DebugMsg_1($"Check_CanBeOTAUpdate Webcam FW is support HPD : {fwUpdateInfo.IsESISupported}");
                 //Updates can only be displayed if the firmware is HPD and the OS supports MPS.
                 ret = fwUpdateInfo.IsESISupported && ret;
+            }
+            else if (fwUpdateInfo.DeviceType == DeviceType.LogicalAirAudio)//0205 Added by Bruce, to skip CADI FWU.
+            {
+                _logs.DebugMsg_1($"Check_CanBeOTAUpdate DeviceType is DeviceType.LogicalAirAudio can not be update");
+                ret = false;
             }
             _logs.DebugMsg_1($"Check_CanBeOTAUpdate finish. ret : {ret}");
             return ret;

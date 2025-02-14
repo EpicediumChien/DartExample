@@ -1320,8 +1320,8 @@ namespace DDPM.SA.Common
                 var finalVCPList = vcpKeyList.Concat(vcpValueList);
 
                 var targetFeatures = FeatureListByVCP
-                .Where(f => (f["TargetType"].ToString().Equals(targetType, StringComparison.OrdinalIgnoreCase))
-                && (f["VCP"].ToString().Split(",").ToList().Except(finalVCPList).Count() == 0) || f["VCP"].ToString().Equals("ALL", StringComparison.OrdinalIgnoreCase)
+                .Where(f => (f["TargetType"].ToString().Equals(targetType, StringComparison.OrdinalIgnoreCase)) && 
+                (f["VCP"].ToString().Split(",").Except(finalVCPList).Count() == 0) || f["VCP"].ToString().Equals("ALL", StringComparison.OrdinalIgnoreCase)
                 || f["VCP"].ToString().Equals(isColorMangerment.ToString().ToUpper(), StringComparison.OrdinalIgnoreCase))
                 .Select(f => f["TargetFeature"].ToString())
                 .Distinct()

@@ -283,49 +283,36 @@ namespace DDPM.SA.Plugin.CLIManager
                     rst.ExitCode = _.code;
                     rst.serialize_Json_response = _.result;
 
-                    if (_.code == (int)CLI_ExitCode.success && commandLineInput.TargetFeature == "NETWORKKVM")
+                    if (_.code == (int)CLI_ExitCode.success && commandLineInput.TargetFeature == "NETWORKKVM" && commandLineInput.Command == "SET")
                     {
-                        if (commandLineInput.Command == "GET")
+                        bool? result;
+
+                        if (commandLineInput.Options[0].Option_Value == "ON" || commandLineInput.Options[0].Option_Value == "OFF")
+                        {
+                            data.Enable_Display_NetworkKVM = commandLineInput.Options[0].Option_Value == "ON";
+                            WriteLog($"WriteITConfigData Enable_Display_NetworkKVM: {data.Enable_Display_NetworkKVM} Entry");
+                            result = _SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Enable_Display_NetworkKVM" }).Result;
+                            WriteLog("WriteITConfigData Enable_Display_NetworkKVM Exit");
+                        }
+                        else
+                        {
+                            data.Lock_Display_NetworkKVM = commandLineInput.Options[0].Option_Value == "DISABLE";
+                            WriteLog($"WriteITConfigData Lock_Display_NetworkKVM: {data.Lock_Display_NetworkKVM} Entry");
+                            result = _SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Lock_Display_NetworkKVM" }).Result;
+                            WriteLog("WriteITConfigData Lock_Display_NetworkKVM Exit");
+                        }
+
+                        if (result != true)
                         {
                             rst.serialize_Json_response = JsonConvert.SerializeObject(new NKVM_RESPONSE
                             {
                                 Command = commandLineInput.Command,
                                 TargetFeature = commandLineInput.TargetFeature,
-                                Result = "PASS",
-                                Value = (data.Lock_Display_NetworkKVM ? "DISABLE" : "ENABLE") + (data.Enable_Display_NetworkKVM ? ", ON" : ", OFF"),
+                                Result = "FAIL",
+                                Value = commandLineInput.Options[0].Option_Value,
+                                Message = "Failed to update config"
                             }, Formatting.Indented);
-                        }
-                        else if (commandLineInput.Command == "SET")
-                        {
-                            bool? result;
-
-                            if (commandLineInput.Options[0].Option_Value == "ON" || commandLineInput.Options[0].Option_Value == "OFF")
-                            {
-                                data.Enable_Display_NetworkKVM = commandLineInput.Options[0].Option_Value == "ON";
-                                WriteLog($"WriteITConfigData Enable_Display_NetworkKVM: {data.Enable_Display_NetworkKVM} Entry");
-                                result = _SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Enable_Display_NetworkKVM" }).Result;
-                                WriteLog("WriteITConfigData Enable_Display_NetworkKVM Exit");
-                            }
-                            else
-                            {
-                                data.Lock_Display_NetworkKVM = commandLineInput.Options[0].Option_Value == "DISABLE";
-                                WriteLog($"WriteITConfigData Lock_Display_NetworkKVM: {data.Lock_Display_NetworkKVM} Entry");
-                                result = _SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Lock_Display_NetworkKVM" }).Result;
-                                WriteLog("WriteITConfigData Lock_Display_NetworkKVM Exit");
-                            }
-
-                            if (result != true)
-                            {
-                                rst.serialize_Json_response = JsonConvert.SerializeObject(new NKVM_RESPONSE
-                                {
-                                    Command = commandLineInput.Command,
-                                    TargetFeature = commandLineInput.TargetFeature,
-                                    Result = "FAIL",
-                                    Value = commandLineInput.Options[0].Option_Value,
-                                    Message = "Failed to update config"
-                                }, Formatting.Indented);
-                                rst.ExitCode = (int)CLI_ExitCode.fail_SetSettings_ITSettingsValue;
-                            }
+                            rst.ExitCode = (int)CLI_ExitCode.fail_SetSettings_ITSettingsValue;
                         }
                     }
                 }
@@ -681,7 +668,7 @@ namespace DDPM.SA.Plugin.CLIManager
         private (int exitCode, string value, string message) RunDDMCommand(string command)
         {
             WriteLog($"RunDDMCommand({command}) Entry");
-            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\" + GlobalDefinitions.DDMExeName;
             int exitCode = -1;
             string value = _commandLineInput.Options.Count > 0 ? _commandLineInput.Options[0].Option_Value : "N/A";
             string message = "N/A";
@@ -734,7 +721,7 @@ namespace DDPM.SA.Plugin.CLIManager
                 TargetFeature = _commandLineInput.TargetFeature
             };
 
-            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\" + GlobalDefinitions.DDMExeName;
 
             if (File.Exists(filePath))
             {
@@ -799,16 +786,9 @@ namespace DDPM.SA.Plugin.CLIManager
                 else
                 {
                     var cmds = new List<string> { $"{command} {_commandLineInput.Options[0].Option_Value}", "exit" };
-                    if (command.Equals("NETWORKKVM"))
+                    if (command.Equals("NETWORKKVM") && _commandLineInput.Options[0].Option_Value.Equals("ON") || _commandLineInput.Options[0].Option_Value.Equals("ENABLE"))
                     {
-                        if (_commandLineInput.Options[0].Option_Value.Equals("ON"))
-                        {
-                            cmds[1] = "connect";
-                        }
-                        else if (_commandLineInput.Options[0].Option_Value.Equals("ENABLE"))
-                        {
-                            cmds.RemoveAt(1);
-                        }
+                        cmds[1] = "connect";
                     }
                     retcode = true;
                     response.Result = "PASS";

@@ -23,6 +23,9 @@ namespace DDPM.UI.Module.DisplayHotkeys
             vm.DisplayHotkeysModule = this;
             _rightView = new DisplayHotkeysRightView(vm);
             vm.InitLog();
+
+            //Robert_Lin 2025-2-10 comment out below statement to avid invoke twice in Init time.
+            //If comment-out below statement will cause the ComboBox.Items empty, so remove the comment mark.
             vm.Invoke_RefreshData();
         }
 

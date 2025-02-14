@@ -133,17 +133,17 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Length == 3)
+            if (values.Length == 3 && 
+                values[0] is bool isChecked && 
+                values[1] is bool isDarkTheme && 
+                values[2] is bool quickPauseStatus)
             {
-                if (values[0] is bool isChecked && values[1] is bool isDarkTheme && values[2] is bool quickPauseStatus)
-                {
-                    if (!quickPauseStatus)
-                        return Brushes.Gray;
-                    if (isDarkTheme)
-                        return isChecked ? Brushes.White : Brushes.Gray;
-                    else
-                        return isChecked ? Brushes.Black : Brushes.Gray;
-                }
+                if (!quickPauseStatus)
+                    return Brushes.Gray;
+                if (isDarkTheme)
+                    return isChecked ? Brushes.White : Brushes.Gray;
+                else
+                    return isChecked ? Brushes.Black : Brushes.Gray;
             }
             return Brushes.Gray;
         }

@@ -75,11 +75,8 @@ namespace DDPM.UI.Module.EzArrange
             //OLD:
             //_homeDevice = vmDisplay.SelectedHomeDevice;
             //NEW:
-            if (DdpmCommonHelper.ModuleOwner != null)
-            {
-                if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null)
-                    _homeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
-            }
+            if (DdpmCommonHelper.ModuleOwner != null && DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null)
+                _homeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
             ////Robert_Lin 2025-1-21 Debug
             //string deviceName_vmDisplay = vmDisplay.SelectedHomeDevice.MonitorInfo.DisplayName;
             //string deviceName_Helper = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.DisplayName;
@@ -142,6 +139,7 @@ namespace DDPM.UI.Module.EzArrange
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //InitRecentListView();
+            CleanUpListViewItems();
             InitListViewItems();
 
             //Robert_Lin, 2025-1-7, the DDPMDebug.txt solution will be removed, use DevSettings instaed.
@@ -521,12 +519,12 @@ namespace DDPM.UI.Module.EzArrange
 
                         //If it's a Window item
                         if (spj.CustomId == 0)
-                        {
+                        { // do same thing?
                             itemRecent.Buddy = itemBuddy;
                             itemBuddy.Buddy = itemRecent;
                         }
                         else //It's a Custom item
-                        {
+                        { // do same thing?
                             itemRecent.Buddy = itemBuddy;
                             itemBuddy.Buddy = itemRecent;
                         }
@@ -1092,7 +1090,7 @@ namespace DDPM.UI.Module.EzArrange
                         if (delCustom != null)
                         {
                             //Delete its Buddy from RecentList
-                            if (itemCustom.Buddy != null)
+                            if (itemCustom != null && itemCustom.Buddy != null)
                             {
                                 splitListView_Recent.DeleteSplitItem(itemCustom.Buddy);
                             }
@@ -1311,7 +1309,11 @@ namespace DDPM.UI.Module.EzArrange
                 {
                     customList.Add(itemCustom.ToSplitJson);
                 }
-                res &= _deviceManagerSA.WriteEACustomList(customList.ToArray()).Result;
+
+                if(_deviceManagerSA != null)
+                {
+                    res &= _deviceManagerSA.WriteEACustomList(customList.ToArray()).Result;
+                }
             }
             return res;
         }

@@ -9,7 +9,12 @@
              mc:Ignorable="d"
              HorizontalAlignment="Right"
              d:DesignHeight="72" d:DesignWidth="228"
+             IsTabStop="True" Focusable="True"
+             AutomationProperties.Name="{Binding Text, Mode=OneWay}" 
+             PreviewKeyDown="UserControl_PreviewKeyDown"
              >
+    <!-- Robert_Lin, 2025-2-8 UserControl add IsTabStop and Focusable for Narrator
+    -->
     <UserControl.Style>
         <Style TargetType="UserControl">
             <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Default}" />
@@ -25,7 +30,8 @@
     </UserControl.Resources>
 
   <Grid Height="64"  VerticalAlignment="Top" Margin="0,0,0,8" HorizontalAlignment="Right" Visibility="{Binding Visibility}">
-        <Border Name="bdRoot" Width="212" BorderThickness="2" CornerRadius="13" Focusable="True" 
+      <!-- Robert_Lin 2025-2-8 Change Facusable=True to False to avoid Narrator DeviceBarItem twice -->
+        <Border Name="bdRoot" Width="212" BorderThickness="2" CornerRadius="13" Focusable="False"
                 MouseEnter="rootGrid_MouseEnter" MouseLeave="rootGrid_MouseLeave" MouseLeftButtonDown="rootGrid_MouseLeftButtonDown">
             <Border.Style>
                 <Style TargetType="Border">

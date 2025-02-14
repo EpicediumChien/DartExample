@@ -122,5 +122,22 @@ namespace DDPM.UI.Common
             ((Canvas)this.FindName(resolveIconName(Id))).Tag = whiteBrush;
             IconName.Foreground = whiteBrush;
         }
+
+        //Robert_Lin 2025-2-8 added for Narrator to handle [Enter] key = Mouse.LeftButtonDown
+        private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                if (IsSelected)
+                { return; }
+                bdRoot.BorderBrush = new SolidColorBrush((Color)FindResource("Vbar_BdColor_Hover"));
+
+                if (ClickCommand != null)
+                    ClickCommand?.Execute(this);
+
+                IsSelected = true;
+            }
+        }
     }
 }

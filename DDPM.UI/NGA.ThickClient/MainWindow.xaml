@@ -9,11 +9,18 @@
     Background="{DynamicResource mainWindowBkColor}"
     mc:Ignorable="d"
     ResizeMode="CanResize"
-    MinWidth="1050"
-    MinHeight="645"
+    AutomationProperties.Name="DDPM"
     Loaded="MainWindow_Loaded"
-    Activated="ConsoleWindow_Activated" Deactivated="ConsoleWindow_DeActivated" StateChanged="MainWIndow_StateChanged" Closing="ConsoleWindow_Closing" Closed="ConsoleWindow_Closed_1"
+    Activated="ConsoleWindow_Activated" Deactivated="ConsoleWindow_DeActivated" 
+    StateChanged="MainWIndow_StateChanged" Closing="ConsoleWindow_Closing" 
+    Closed="ConsoleWindow_Closed_1"
     MouseUp="AdjustWindowMinSize">
+
+    <!-- wpf:ConsoleWindow
+        MinWidth="1050"
+    MinHeight="645"
+
+    -->
     <!--<wpf:ConsoleWindow.TopBackground>
         <ImageBrush ImageSource="/Resources/Images/Background.png" Stretch="UniformToFill" />
     </wpf:ConsoleWindow.TopBackground>-->

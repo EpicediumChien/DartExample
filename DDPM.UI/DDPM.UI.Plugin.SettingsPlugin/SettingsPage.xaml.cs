@@ -90,10 +90,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
-                    SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
-                    if (vm != null)
+                    SettingsPageViewModel localVm = (SettingsPageViewModel)this.DataContext;
+                    if (localVm != null)
                     {
-                        vm.Lock_AnalyticsPage = (bool)isLocked;
+                        localVm.Lock_AnalyticsPage = (bool)isLocked;
                         _log?.Info($"[SettingsPage] Apply TelemetryConsent(Lock) : {isLocked}");
                     }
                 }));
@@ -104,13 +104,13 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
-                    SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
-                    if (vm != null)
+                    SettingsPageViewModel localVm = (SettingsPageViewModel)this.DataContext;
+                    if (localVm != null)
                     {
-                        vm.Lock_UpdatesPage = (bool)isLocked;
-                        data.LockSettings.Lock_Settings_Updates = vm.Lock_UpdatesPage;
+                        localVm.Lock_UpdatesPage = (bool)isLocked;
+                        data.LockSettings.Lock_Settings_Updates = localVm.Lock_UpdatesPage;
                         _log?.Info($"[SettingsPage] Apply FW/SW Updates(Lock) : {isLocked}");
-                        vm.RefreshUI();
+                        localVm.RefreshUI();
                     }
                 }));
             }
@@ -119,13 +119,13 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
-                    SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
-                    if (vm != null)
+                    SettingsPageViewModel localVm = (SettingsPageViewModel)this.DataContext;
+                    if (localVm != null)
                     {
-                        vm.Lock_GeneralPage = (bool)isLocked;
-                        data.LockSettings.Lock_Setting_ScreenNotification = vm.Lock_GeneralPage;
+                        localVm.Lock_GeneralPage = (bool)isLocked;
+                        data.LockSettings.Lock_Setting_ScreenNotification = localVm.Lock_GeneralPage;
                         _log?.Info($"[SettingsPage] Apply General(check) : {isLocked}");
-                        vm.RefreshUI();
+                        localVm.RefreshUI();
                     }
                 }));
             }
@@ -134,13 +134,13 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             Dispatcher.Invoke(new Action(() =>
             {
-                SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
-                if (vm != null)
+                SettingsPageViewModel localVm = (SettingsPageViewModel)this.DataContext;
+                if (localVm != null)
                 {
                     //vm.GlobalSettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
                     Global.SettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
-                    vm.GlobalSettingParam = Global.SettingParam;
-                    vm.RefreshUI();
+                    localVm.GlobalSettingParam = Global.SettingParam;
+                    localVm.RefreshUI();
                 }
             }));
         }
@@ -148,16 +148,21 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             Dispatcher.Invoke(new Action(() =>
             {
-                SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
-                if (vm != null)
+                SettingsPageViewModel localVm = (SettingsPageViewModel)this.DataContext;
+                if (localVm != null)
                 {
-                    vm.CheckUpdate();
+                    localVm.CheckUpdate();
                 }
             }));
         }
         private void leftArrow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             IConsole? console = SettingsPlugin.PluginIoc.GetService<IConsole>();
+            var args = new EventManagerArgs();
+            bool isShow = true;
+            bool isEnabled = true;
+            args.Tag = new List<bool> { isShow, IsEnabled }; //true=Show, false=Hide
+            console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsIcon, this, args);
             console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
         }
         //0614 將按鈕改成UXTextBlock，事件也變更，讓風格更像figma，不影響功能作動
@@ -226,6 +231,70 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             }
             else
                 DdpmCommonHelper.WriteUILog($"DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM == false");
+        }
+
+        private void leftArrow_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                e.Handled = true;
+                //Invoke a MouseLeftButtonDown event to the TextBlock which will calling to leftArrow_MouseLeftButtonDown()
+                var mouseDevice = InputManager.Current.PrimaryMouseDevice;
+                if (mouseDevice != null)
+                {
+                    var args = new MouseButtonEventArgs(mouseDevice, 0, MouseButton.Left)
+                    {
+                        RoutedEvent = UIElement.MouseLeftButtonDownEvent
+                    };
+                    leftArrow_MouseLeftButtonDown(sender, args);
+                }
+            }
+        }
+
+        private void GeneralButton_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                vm.SetSelected(0);
+            }
+        }
+
+        private void UpdatesButton_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                vm.SetSelected(1);
+            }
+        }
+
+        private void AnalyticsButton_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            //Dean 0618 add analytics page
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                vm.SetSelected(2);
+            }
+        }
+
+        private void WidgetSettingsButton_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                vm.SetSelected(3);
+            }
+        }
+
+        private void AboutButton_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                vm.SetSelected(4);
+            }
         }
     }
 }

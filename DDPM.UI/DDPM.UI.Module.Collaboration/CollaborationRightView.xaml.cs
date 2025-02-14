@@ -137,7 +137,7 @@ namespace DDPM.UI.Module.Collaboration
                 txtAlert1.Text = Strings.Alert4;
                 bdrAlert1.Visibility = Visibility.Visible;
             }
-            else if (CTKMessage == "ZoomUpToDate, TeamsNotRunning")
+            else if (CTKMessage == "ZoomNotInstalled, TeamsNotRunning")
             { // Scenario 5
                 txtAlert2.Text = Strings.Alert5;
                 bdrAlert2.Visibility = Visibility.Visible;

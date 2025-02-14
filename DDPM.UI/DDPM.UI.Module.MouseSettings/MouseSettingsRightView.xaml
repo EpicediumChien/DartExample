@@ -135,7 +135,7 @@
                 <Image Margin="16,0,0,0" Source="/DDPM.UI.Common;component/Resources/Info.png" Stretch="Fill"
                                        Width="16" Height="16" VerticalAlignment="Center" />
                 <UXControls:UXTextBlock Name="txtDPIMessage" FontFamily="Roboto" FontSize="12" FontWeight="Normal"
-                                                        Margin="10,1,0,0" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                                                        Margin="10,1,0,0" Foreground="{DynamicResource DefaultTheme_TxtColor}" VerticalAlignment="Top" HorizontalAlignment="Left" />
               </StackPanel>
             </StackPanel>
           </Border>

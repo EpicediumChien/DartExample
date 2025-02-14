@@ -50,11 +50,8 @@ namespace DDPM.UI.Module.EzMemory
             //OLD:
             //_homeDevice = vmDisplay.SelectedHomeDevice;
             //NEW:
-            if (DdpmCommonHelper.ModuleOwner != null)
-            {
-                if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null)
-                    _homeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
-            }
+            if (DdpmCommonHelper.ModuleOwner != null && DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null)
+                _homeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
 
             _console = vmDisplay.Console;
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
