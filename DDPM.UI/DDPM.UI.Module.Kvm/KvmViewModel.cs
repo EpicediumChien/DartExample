@@ -490,8 +490,6 @@ namespace DDPM.UI.Module.Kvm
 
         public string? ConnectionType { get; set; }
         public string? Text1 { get; set; }
-        public bool isUSBKVMButton { get; set; } = true;
-        public double USBKVMButtonOpacity { get; set; } = 1;
 
         public bool isNKVMEanble { get; set; } = true;
         public double NKVM_Opacity { get; set; } = 1;
@@ -514,6 +512,8 @@ namespace DDPM.UI.Module.Kvm
         public double PC2USB_Opacity { get; set; } = 1;
         public double PC3USB_Opacity { get; set; } = 1;
         public double PC4USB_Opacity { get; set; } = 1;
+
+        public bool isScreenPartition = false;
 
         #region Hotkey
 
@@ -994,19 +994,23 @@ namespace DDPM.UI.Module.Kvm
                     //inputList = new Dictionary<string, InputInfo>();
                     //subInputs = new List<InputSourceObj>();
                     //usbsList = new List<string>();
-                    isUSBKVMButton = true;
-                    USBKVMButtonOpacity = 1;
+                    isUSBKVMEanble = true;
+                    USBKVM_Opacity = 1;
 
                     if (mi.CapabilityDic.ContainsKey("E8"))
                     {
                         isPxP = Visibility.Visible;
                         NoPxP = Visibility.Collapsed;
-                        if (DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
+                        isScreenPartition = DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result;
+                        if (isScreenPartition)
                         {
-                            isUSBKVMButton = false;
-                            USBKVMButtonOpacity = 0.5;
+                            isNoKVM = true;
+                            isUSBKVMEanble = false;
+                            USBKVM_Opacity = 0.5;
                             _log?.Info("[KvmViewModel]isScreenPartition.");
-                            return;
+                            OnPropertyChanged("isUSBKVMEanble");
+                            OnPropertyChanged("USBKVM_Opacity");
+                            //return;
                         }
                     }
                     else
@@ -1036,7 +1040,7 @@ namespace DDPM.UI.Module.Kvm
                     NKVMisON = false;
                 }
 
-                if (USBKVMisON)
+                if (USBKVMisON && !isScreenPartition)
                 {
                     isUSBKVM = true;
                     //EnableUSBKVM = Visibility.Visible;
@@ -1289,8 +1293,6 @@ namespace DDPM.UI.Module.Kvm
                         else
                         {
                             _log?.Info("inputList is null or pcsList is null or count < 2.");
-                            //isUSBKVMButton = false;
-                            //USBKVMButtonOpacity = 0.5;
                         }
 
 
@@ -1391,12 +1393,6 @@ namespace DDPM.UI.Module.Kvm
                                 {
                                     _log.Info("[KvmViewModel] _pipPbpCaps is null or Length not > 0");
                                 }
-
-                                //else
-                                //{
-                                //    isUSBKVMButton = false;
-                                //    USBKVMButtonOpacity = 0.5;
-                                //}
 
                                 //Get current Main InputSource from MonitorInfo
                                 //
@@ -2116,6 +2112,12 @@ namespace DDPM.UI.Module.Kvm
                 KvmModule._leftView = null;
                 DdpmCommonHelper.ModuleOwner.LoadLeftView();
             }
+        }
+
+        public void LoaddefLeftView()
+        {
+            KvmModule._leftView = null;
+            DdpmCommonHelper.ModuleOwner.LoadLeftView();
         }
 
         public void isOnNKVM(bool ison)

@@ -257,8 +257,15 @@ namespace DDPM.UI.Module.Kvm
                 //{
                 //    vm.isNoKVM = true;
                 //}
-                vm.USBKVMisON = false;
-                vm.isOnUSBKVM(false);
+                if (!vm.isScreenPartition)
+                {
+                    vm.USBKVMisON = false;
+                    vm.isOnUSBKVM(false);
+                }
+                else
+                {
+                    vm.LoaddefLeftView();
+                }
                 DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM");
             }
 
