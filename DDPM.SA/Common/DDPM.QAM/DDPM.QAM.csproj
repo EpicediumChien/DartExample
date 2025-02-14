@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Imgs\AppLogo.png" />
     <None Remove="imgs\cursor\FistCursor.cur" />
     <None Remove="imgs\cursor\HandCursor.cur" />
   </ItemGroup>
