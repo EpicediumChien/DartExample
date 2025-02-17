@@ -2676,7 +2676,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         if (IDevices.Contains(iLogicalDevice.Id) && iLogicalDevice is IDevice _IDevice)
                         {
                             _IDevice.NameChanged -= (name) => OnDeviceNameChanged(_IDevice, name);
-                            IDevices.Remove(deviceGuid);
+                            IDevices.Remove(iLogicalDevice.Id);
                         }
                         if (LogicalDevices.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevice _logicalDevice)
                         {
