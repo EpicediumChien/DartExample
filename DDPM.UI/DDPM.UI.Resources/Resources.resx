@@ -1480,7 +1480,7 @@
     <value>Barrel Button</value>
   </data>
   <data name="DefineBySystem" xml:space="preserve">
-    <value>Define by system</value>
+    <value>Defined by system</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>E-mail</value>

@@ -2415,7 +2415,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 return Width + "x" + Height + " [" + AspectRatio + "] " + FrameRate + "FPS " + _properties.Subtype;
             }
 
-            return string.Empty;
+            return "";
         }
     }
 
