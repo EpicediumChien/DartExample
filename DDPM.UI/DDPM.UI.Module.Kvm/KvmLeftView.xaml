@@ -128,7 +128,7 @@
                                                    ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" Text1="{Binding Text1}" />
 
                 <Button Margin="8, 0" MaxWidth="230" MinHeight="40" VerticalAlignment="Top"
-                        Style="{StaticResource SecondaryButtonStyle}"
+                        Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding LeftButtonEnable}"
                         Click="EditInput_Click">
                     <TextBlock Text="{Binding [Kvm.13], Source={x:Static lang:LangHelper.Instance}}" 
                                TextWrapping="Wrap"
@@ -136,7 +136,7 @@
                                MaxHeight="40"/>
                 </Button>
                 <Button MaxWidth="180" MinHeight="40" VerticalAlignment="Top"
-                        Style="{StaticResource SecondaryButtonStyle}"
+                        Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding LeftButtonEnable}"
                         Click="EditPXP_Click" Visibility="{Binding isPxP}">
                     <TextBlock Text="{Binding [Kvm.14], Source={x:Static lang:LangHelper.Instance}}" 
                                TextWrapping="Wrap"
@@ -145,17 +145,5 @@
                 </Button>
             </WrapPanel>
         </Grid>
-        <Border Name="DisableAll0" Background="#4C24273C">
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsKVMBusy}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-        </Border>
     </Grid>
 </UserControl>
