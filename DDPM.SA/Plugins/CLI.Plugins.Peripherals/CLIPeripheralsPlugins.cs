@@ -3064,6 +3064,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                     foreach (FWUpdateInfo info in fwUpdateInfoPackage.FWUpdateInfo)
                     {
                         info.Guid = commandLineInput.remote_mgr_guid;
+                        info.IsUOD = isUODMode &&
+                             (info.DeviceType == DeviceType.PhysicalWiredDock ||
+                              info.DeviceType == DeviceType.LogicalDock);
                     }
 
                     _devMgr.updateFWUpdateInfoPackage(fwUpdateInfoPackage);
