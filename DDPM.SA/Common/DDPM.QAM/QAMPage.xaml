@@ -12,7 +12,7 @@
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         AllowsTransparency="True" IsVisibleChanged="Window_IsVisibleChanged"
-        Background="Transparent" Closing="Window_Closing"
+        Background="Transparent" Closing="Window_Closing" Loaded="Window_Loaded"
         Topmost="True">
     <Window.Resources>
         <ResourceDictionary>
@@ -167,7 +167,7 @@
                           Fill="{DynamicResource Default_SA_QAM_Path_BkColor}"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center" /> -->
-                    <Image Source="imgs\AppLogo.png" Stretch="Uniform" Height="25" Width="25"/>
+                    <Image Source="imgs\AppLogo.png" Stretch="Uniform" Height="25" Width="25" x:Name="DDPMInco"/>
                 </Grid>
             </Grid>
         </Border>
