@@ -3042,7 +3042,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 else
                 {
                     FWUpdateInfoPackage allFWUpdateInfo = _devMgr.GetFWUpdateInfo(isShowInfo, true).Result;
-                    var fwUpdateInfoPackage = Filter(allFWUpdateInfo, guid, serviceTag, model, miniver);
+                    var fwUpdateInfoPackage = Filter(allFWUpdateInfo, guid, serviceTag, model, miniver, deviceTypes);
 
                     if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
                     {
@@ -3171,7 +3171,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 else
                 {
                     FWUpdateInfoPackage allFWUpdateInfo = _devMgr.GetFWUpdateInfo(isShowInfo, true).Result;
-                    var fwUpdateInfoPackage = Filter(allFWUpdateInfo, null, null, model, miniver);
+                    var fwUpdateInfoPackage = Filter(allFWUpdateInfo, null, null, model, miniver, null);
 
                     if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
                     {
@@ -3235,7 +3235,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             }
         }
 
-        private FWUpdateInfoPackage Filter(FWUpdateInfoPackage _fWUpdateInfoPackage, List<string> giuds, List<string> serviceTags, List<string> models, string minVersion)
+        private FWUpdateInfoPackage Filter(FWUpdateInfoPackage _fWUpdateInfoPackage, List<string> giuds, List<string> serviceTags, List<string> models, string minVersion, List<DeviceType> deviceTypes)
         {
             writelog($"{nameof(Filter)} start");
             FWUpdateInfoPackage _forCLI_FWUpdateInfoPackage = new FWUpdateInfoPackage();
@@ -3377,6 +3377,34 @@ namespace DDPM.CLI.Plugins.Peripherals
                 {
                     writelog($"{nameof(Filter)} no minVersion");
                     _forCLI_FWUpdateInfoPackage.FWUpdateInfo = FWU_List;
+                }
+
+                if (deviceTypes != null)
+                {
+                    writelog($"{nameof(Filter)} deviceTypes go");
+                    if (_forCLI_FWUpdateInfoPackage.FWUpdateInfo.Count > 0)
+                    {
+                        List<FWUpdateInfo> FWU_ListByDeviceType = new List<FWUpdateInfo>();
+                        foreach (var deviceType in deviceTypes)
+                        {
+                            writelog($"{nameof(Filter)} deviceTypes : {deviceType}");
+                            foreach (FWUpdateInfo fWUpdateInfo in _forCLI_FWUpdateInfoPackage.FWUpdateInfo.FindAll(o => o.DeviceType.Equals(deviceType)))
+                            {
+                                writelog($"{nameof(Filter)} fWUpdateInfo.DeviceType : {fWUpdateInfo.DeviceType}");
+                                FWU_ListByDeviceType.Add(fWUpdateInfo);
+                            }
+                        }
+                        _forCLI_FWUpdateInfoPackage.FWUpdateInfo = FWU_ListByDeviceType;
+                    }
+                    writelog($"{nameof(Filter)} deviceTypes done");
+                }
+                else
+                {
+                    writelog($"{nameof(Filter)} no deviceTypes, is display");
+                    if (_forCLI_FWUpdateInfoPackage.FWUpdateInfo.Count > 0)
+                    {
+                        _forCLI_FWUpdateInfoPackage.FWUpdateInfo = _forCLI_FWUpdateInfoPackage.FWUpdateInfo.FindAll(o => o.IsDisplay == true);
+                    }
                 }
             }
             writelog($"{nameof(Filter)} done");
