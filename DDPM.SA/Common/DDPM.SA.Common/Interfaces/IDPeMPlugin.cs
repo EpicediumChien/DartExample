@@ -153,7 +153,7 @@ namespace DDPM.SA.Common
         void UpdateSettingsInstance(ISettingsManagerDev SettingsInstance);
         event EventHandler<OSDEventArgs> Peripheral_OSD_Notify;
 
-        Task UpdateLowBatteryOSD();
+        Task UpdateLowBatteryOSD(bool showOSD);
     }
 
     public interface IDPeMServiceRegPlugin : IFrameworkPlugin

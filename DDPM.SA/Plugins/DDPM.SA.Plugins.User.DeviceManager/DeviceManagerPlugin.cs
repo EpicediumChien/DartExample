@@ -10491,7 +10491,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             GlobalSettingChangeEvent?.Invoke(this, null);
 
             // << 250217 added by Hess to meet PIMS-328225
-            _PeripheralsPlugin.UpdateLowBatteryOSD();
+            _PeripheralsPlugin.UpdateLowBatteryOSD(isDisplay);
             // >>
 
             return Task.FromResult(ret);
