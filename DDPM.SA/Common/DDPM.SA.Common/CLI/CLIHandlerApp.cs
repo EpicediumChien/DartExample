@@ -1057,7 +1057,13 @@ namespace DDPM.SA.Common.CLI
                         else if (commandLineInput.TargetFeature.Equals("SCREENNOTIFICATION"))
                         {
                             if (value.ToUpper().Equals("ON") || value.ToUpper().Equals("OFF"))
-                                continue;
+                            {
+                                if (data_IT != null)
+                                    data_IT.Lock_Setting_ScreenNotification = true;
+                                if (data_user != null)
+                                    data_user.LockSettings.Lock_Setting_ScreenNotification = true;
+                            }
+                            continue;
                         }
                         else if (commandLineInput.TargetFeature.Equals("HDR"))
                         {

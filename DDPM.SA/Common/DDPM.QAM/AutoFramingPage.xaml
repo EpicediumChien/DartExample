@@ -99,7 +99,7 @@
                                 <TextBlock MaxWidth="350" TextWrapping="WrapWithOverflow" Text="{Binding [AI_Auto_Framing], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                             </Border>
                         </ToolTip>-->
-                        <ToolTip Background="Transparent" BorderThickness="0" Placement="Center" VerticalOffset="40">
+                        <ToolTip Background="Transparent" BorderThickness="0" Placement="Center" VerticalOffset="40" x:Name="tt">
                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                 <Border.Resources>
                                     <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />

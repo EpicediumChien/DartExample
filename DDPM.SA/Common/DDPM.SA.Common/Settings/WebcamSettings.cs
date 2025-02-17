@@ -338,20 +338,10 @@ namespace DDPM.SA.Common.Settings
                     {
                         continue;
                     }
-                    WebcamProfile newprofile = new();
-                    newprofile.Name = PresetProfile.Name + "*";
-                    newprofile.Description = PresetProfile.Description;
-                    newprofile.IsHDROn = PresetProfile.IsHDROn;
-                    newprofile.Brightness = PresetProfile.Brightness;
-                    newprofile.Contrast = PresetProfile.Contrast;
-                    newprofile.Saturation = PresetProfile.Saturation;
-                    newprofile.Sharpness = PresetProfile.Sharpness;
-                    newprofile.IsAutoFramingOn = PresetProfile.IsAutoFramingOn;
-                    newprofile.FieldOfView = PresetProfile.FieldOfView;
-                    newprofile.IsAutoWhiteBalanceOn = PresetProfile.IsAutoWhiteBalanceOn;
-                    newprofile.AutoWhiteBalance = PresetProfile.AutoWhiteBalance;
-                    newprofile.Zoom = PresetProfile.Zoom;
+                    WebcamProfile newprofile = PresetProfile;
+                    newprofile.Name = newprofile.Name + "*";
                     CustomProfiles.TryAdd(newprofile.Name, newprofile);
+                    log?.Info(@$"Get newprofile {JsonConvert.SerializeObject(newprofile)}");
                 }
                 //var FindSelectedProfile = PresetProfiles.ToList().Where(x => x.Value.Description == di.ProfileDescription).FirstOrDefault();
                 //SelectedProfileName = FindSelectedProfile.Value.Name;
@@ -541,7 +531,7 @@ namespace DDPM.SA.Common.Settings
         public string Id { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public int Priority { get; set; } = -1;
+        public int Priority { get; set; } = 0; //參考IL基本值
         public bool IsHDROn { get; set; } = false;
         public int Brightness { get; set; } = -1;
         public int Contrast { get; set; } = -1;
@@ -552,14 +542,14 @@ namespace DDPM.SA.Common.Settings
         public bool IsAutoWhiteBalanceOn { get; set; } = false;
         public int AutoWhiteBalance { get; set; } = -1;
         public bool IsFocusOn { get; set; } = false;
-        public int Focus { get; set; } = -1;
-        public int Pan { get; set; } = -1;
-        public int Tilt { get; set; } = -1;
-        public int Zoom { get; set; } = -1;
-        public int AntiFlicker { get; set; } = -1;
-        public int AutoFramingSensitivity { get; set; } = -1;
-        public int AutoFramingFrameSize { get; set; } = -1;
-        public bool IsAutoFramingTransitionOn { get; set; } = false;
+        public int Focus { get; set; } = 0;//參考IL基本值
+        public int Pan { get; set; } = 0;//參考IL基本值
+        public int Tilt { get; set; } = 0;//參考IL基本值
+        public int Zoom { get; set; } = 100;//參考IL基本值
+        public int AntiFlicker { get; set; } = 2;//參考IL基本值
+        public int AutoFramingSensitivity { get; set; } = 1;//參考IL基本值
+        public int AutoFramingFrameSize { get; set; } = 1;//參考IL基本值
+        public bool IsAutoFramingTransitionOn { get; set; } = true;//參考IL基本值
         public WebcamProfile Clone()
         {
             return (WebcamProfile)MemberwiseClone();

@@ -1001,7 +1001,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     await DeleteMouseAllAssignedActions(Guid);
                     await SetCurrentSelectedAppSpecificProfile(Guid, profileID);
 
-                    model = SACommonHelper.MappingModel(model);
+                    model = SAUICommonHelper.MappingModel(model);
                     var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
                     if (File.Exists(filePath))
                     {
@@ -1401,7 +1401,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!result)
                 return false;
 
-            model = SACommonHelper.MappingModel(model);
+            model = SAUICommonHelper.MappingModel(model);
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
             if (File.Exists(filePath))
             {
@@ -14630,8 +14630,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (_comdity is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _AirAudiocom)
                 {
                     _AirAudiocom.FirmwareVersionChanged += AirAudio_FirmwareVersionChanged;
-                    _AirAudiocom.BatteryLevelChanged += AirAudio_BatteryLevelChanged;
-                    _AirAudiocom.BatteryStatusChanged += AirAudio_BatteryStatusChanged;
+                    //_AirAudiocom.BatteryLevelChanged += AirAudio_BatteryLevelChanged;
+                    //_AirAudiocom.BatteryStatusChanged += AirAudio_BatteryStatusChanged;
                     _AirAudiocom.PairedHostNameChanged += AirAudio_PairedHostNameChanged;
                     _AirAudiocom.InstanceNumberChanged += AirAudio_InstanceNumberChanged;
                     _AirAudiocom.IsReadyChanged += AirAudio_IsReadyChanged;
@@ -14682,8 +14682,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (_comdity is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _AirAudiocom)
                 {
                     _AirAudiocom.FirmwareVersionChanged -= AirAudio_FirmwareVersionChanged;
-                    _AirAudiocom.BatteryLevelChanged -= AirAudio_BatteryLevelChanged;
-                    _AirAudiocom.BatteryStatusChanged -= AirAudio_BatteryStatusChanged;
+                    //_AirAudiocom.BatteryLevelChanged -= AirAudio_BatteryLevelChanged;
+                    //_AirAudiocom.BatteryStatusChanged -= AirAudio_BatteryStatusChanged;
                     _AirAudiocom.PairedHostNameChanged -= AirAudio_PairedHostNameChanged;
                     _AirAudiocom.InstanceNumberChanged -= AirAudio_InstanceNumberChanged;
                     _AirAudiocom.IsReadyChanged -= AirAudio_IsReadyChanged;
@@ -14728,8 +14728,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (obj.airaudioCommodity is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _AirAudiocom)
             {
                 _AirAudiocom.FirmwareVersionChanged -= AirAudio_FirmwareVersionChanged;
-                _AirAudiocom.BatteryLevelChanged -= AirAudio_BatteryLevelChanged;
-                _AirAudiocom.BatteryStatusChanged -= AirAudio_BatteryStatusChanged;
+                //_AirAudiocom.BatteryLevelChanged -= AirAudio_BatteryLevelChanged;
+                //_AirAudiocom.BatteryStatusChanged -= AirAudio_BatteryStatusChanged;
                 _AirAudiocom.PairedHostNameChanged -= AirAudio_PairedHostNameChanged;
                 _AirAudiocom.InstanceNumberChanged -= AirAudio_InstanceNumberChanged;
                 _AirAudiocom.IsReadyChanged -= AirAudio_IsReadyChanged;
@@ -14886,8 +14886,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (_comdityAirAudio is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _AirAudiocom)
                 {
                     _AirAudiocom.FirmwareVersionChanged += AirAudio_FirmwareVersionChanged;
-                    _AirAudiocom.BatteryLevelChanged += AirAudio_BatteryLevelChanged;
-                    _AirAudiocom.BatteryStatusChanged += AirAudio_BatteryStatusChanged;
+                    //_AirAudiocom.BatteryLevelChanged += AirAudio_BatteryLevelChanged;
+                    //_AirAudiocom.BatteryStatusChanged += AirAudio_BatteryStatusChanged;
                     _AirAudiocom.PairedHostNameChanged += AirAudio_PairedHostNameChanged;
                     _AirAudiocom.InstanceNumberChanged += AirAudio_InstanceNumberChanged;
                     _AirAudiocom.IsReadyChanged += AirAudio_IsReadyChanged;

@@ -657,6 +657,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
                 _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SoundBarPluginId, selectedHomeDevice.DeviceInfo.ID.ToString() + instanceNo);
             }
+            //0211 Bruce 新增Bootloader UI
+            if (selectedHomeDevice?.DeviceCategory == eDeviceCategory.Bootloader)
+            {
+                //Check if it's fake device
+                if (selectedHomeDevice.DeviceInfo == null)
+                    return;
+
+                IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
+                _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.BootloaderPluginId, selectedHomeDevice.DeviceInfo.ID.ToString());
+            }
         }
 
         #endregion HomeDevice Selection and Navigate to Landing Page

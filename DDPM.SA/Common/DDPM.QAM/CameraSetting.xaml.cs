@@ -49,6 +49,12 @@ namespace DDPM.QAM
                 vm.RefreshUI();
             }
         }
+
+        public void OpenPresetsFullView()
+        {
+            Presets_Click(this, null);
+        }
+
         private void Presets_Click(object sender, MouseButtonEventArgs e)
         {
             //DdpmCommonHelper.DeviceManagerSA!.WriteLog($"Presets_Click, bFirstClick = {bFirstClick}");

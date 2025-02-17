@@ -10,6 +10,7 @@
 
 #endregion
 
+using DDDPM.SA.Common;
 using DdmLibrary.Utility;
 using DDPM.MonitorBorker;
 using DDPM.OSDs;
@@ -254,11 +255,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private DDMtoDDPM dDMtodDPM = new DDMtoDDPM();
         private HotkeySettings hotkeySettings = new HotkeySettings();
-
         /// <summary>
         ///Check ICC profile update timers
         /// </summary>
         private System.Timers.Timer _checkICCProfileScheduleTimer;//Added 02/10 by Bruce
+        bool isDownloadingICC = false;//Added 02/13 by Bruce
+        bool isNeedPreDownloadingICC = false;//Added 02/13 by Bruce
+
         #endregion
 
         #region Constructor
@@ -278,7 +281,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceManagerPlugin constructor ...");
 
             _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
-            SACommonHelper.GetResourceDictionary();
+            SAUICommonHelper.GetResourceDictionary();
             loadResourceDictionary(UXSystemParameters.Instance.OSTheme);
 
             //Robert_Lin, 2024-12-1 added, to let TextBox highlight text color can be changed with TextBox.SelectionTextBrush
@@ -290,6 +293,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"CurrentCultureInfo=[{CultureInfo.CurrentCulture.Name}], MappedCultureInfo=[{DDPM.SA.Resources.DdpmCultureMap.MappedCultureInfo.Name}]");
 
             Microsoft.Win32.SystemEvents.PowerModeChanged += OnPowerModeChanged;//Added 01/07 by Bruce
+            DdpmSACommonHelper.SAUserPluginReady(nameof(DeviceMangerPlugin));
         }
 
 
@@ -403,10 +407,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     if (_hotkeySettings != null && _hotkeySettings.Count > 0)
                     {
-                        HotkeySettings hotkeySettings = _hotkeySettings.FirstOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
-                        if (hotkeySettings != null)
+                        HotkeySettings localHotkeySettings = _hotkeySettings.FirstOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
+                        if (localHotkeySettings != null)
                         {
-                            if (hotkeySettings.HotkeyOptions.Count > 0 && hotkeySettings.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
+                            if (localHotkeySettings.HotkeyOptions.Count > 0 && localHotkeySettings.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
                             {
                                 //check cursor position at the edge
                                 //Robert_Lin, 2025-1-3 fix compiler error: 'Rectangle' is an ambiguous reference between 'System.Drawing.Rectangle' and 'System.Windows.Shapes.Rectangle'
@@ -603,10 +607,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             usbKvmPBPs.Add(usbKvmPBP);
                         }
-                        HotkeySettings hotkeySettings = _hotkeySettings.SingleOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
-                        if (hotkeySettings != null)
+                        HotkeySettings localHotkeySettings = _hotkeySettings.SingleOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
+                        if (localHotkeySettings != null)
                         {
-                            if (hotkeySettings.HotkeyOptions.Any(x => x == HotkeyOption.KvmAutoApply))
+                            if (localHotkeySettings.HotkeyOptions.Any(x => x == HotkeyOption.KvmAutoApply))
                             {
                                 //update timer
                                 if (usbKvmPBPs.Any(x => x.isPBPmode))
@@ -1819,18 +1823,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void CheckICCProfileScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)//Bruce 02/10 added timer to check icm
         {
             writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} start");
-            if (_checkICCProfileScheduleTimer != null)
-            {
-                _checkICCProfileScheduleTimer.Stop();
-                _checkICCProfileScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
-                _checkICCProfileScheduleTimer.Start();
-            }
             if (_ColorPresetPlugin != null && _SettingsPlugin != null)
             {
                 writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} _AllInfoMonitors.Count : {_AllInfoMonitors.Count}");
                 for (int i = 0; i < _AllInfoMonitors.Count; i++)
                 {
-                    _ColorPresetPlugin.DownloadICCData(_AllInfoMonitors[i], _SettingsPlugin, true).Wait();
+                    _ColorPresetPlugin.DownloadICCData(_AllInfoMonitors[i], _SettingsPlugin, true, "", true).Wait();
                 }
             }
             else
@@ -1838,6 +1836,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} _ColorPresetPlugin is null");
             }
             writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} done");
+        }
+
+        private void PreDownloadICC(MonitorInfo newMontor)
+        {
+            writelog($"{nameof(PreDownloadICC)} start");
+            writelog($"{nameof(PreDownloadICC)} isDownloadingICC : {isDownloadingICC}");
+            if (!isDownloadingICC)
+            {
+                isDownloadingICC = true;
+                writelog($"{nameof(PreDownloadICC)} DownloadICCData go, newMontor : {newMontor.modelName}");
+                ///for (int i = 0; i < _AllInfoMonitors.Count; i++)
+                {
+                    _ColorPresetPlugin.DownloadICCData(/*_AllInfoMonitors[i]*/newMontor, _SettingsPlugin, true, "", isNeedPreDownloadingICC).Wait();
+                }
+                if (isNeedPreDownloadingICC)
+                {
+                    isNeedPreDownloadingICC = false;
+                }
+                isDownloadingICC = false;
+            }
+            writelog($"{nameof(PreDownloadICC)} done");
         }
         #endregion
 
@@ -6366,7 +6385,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (isDevuceTrigger)
                     {
-                        _FWUpdatePlugin.CheckUODFWUInfo(config.UserSettings.UODFWUInfoPackage, _PeripheralsPlugin.GetDevices().Result.deviceInfo);
+                        _FWUpdatePlugin.CheckUODFWUInfo(config.UserSettings.UODFWUInfoPackage, GetDevices().Result.deviceInfo);
                     }
                     else
                     {
@@ -12952,10 +12971,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             writelog($"_checkICCProfileScheduleTimer initialize");
                             _checkICCProfileScheduleTimer = new System.Timers.Timer();
-                            _checkICCProfileScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
+                            _checkICCProfileScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
                             _checkICCProfileScheduleTimer.Elapsed += new ElapsedEventHandler(CheckICCProfileScheduleTimer_Elapsed);
                             _checkICCProfileScheduleTimer.Start();
                         }
+                        isNeedPreDownloadingICC = true;
 
                         if (_SettingsPlugin != null)
                         {
@@ -13797,12 +13817,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 //new monitor
                 hotkeyInfoList.Add(info);
-                HotkeySettings hotkeySettings = new HotkeySettings();
-                hotkeySettings.HotkeyInfo = hotkeyInfoList;
-                hotkeySettings.SerialNumber = "DDPM";// monitorEdid.SerialNumber; //Dean 1001 temporally make all update to single fake monitor
-                hotkeySettings.ServiceTag = "DDPM";// monitorEdid.ServiceTag;     //Reason: change per monitor as per user
-                hotkeySettings.ModelName = "DDPM";// monitorEdid.ModelName;
-                saveList.Add(hotkeySettings);
+                HotkeySettings localHotkeySettings = new HotkeySettings();
+                localHotkeySettings.HotkeyInfo = hotkeyInfoList;
+                localHotkeySettings.SerialNumber = "DDPM";// monitorEdid.SerialNumber; //Dean 1001 temporally make all update to single fake monitor
+                localHotkeySettings.ServiceTag = "DDPM";// monitorEdid.ServiceTag;     //Reason: change per monitor as per user
+                localHotkeySettings.ModelName = "DDPM";// monitorEdid.ModelName;
+                saveList.Add(localHotkeySettings);
                 //set default inputsource value of other monitor due to the hotkey is global
                 List<MonitorInfo> defaultMoList = _AllInfoMonitors.Where(x => !x.edid.ServiceTag.Equals(mo.edid.ServiceTag)).ToList();
                 foreach (var m in defaultMoList)
@@ -13893,13 +13913,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else
                     {
                         hotkeyInfoList.Add(info);
-                        HotkeySettings hotkeySettings = new HotkeySettings();
-                        hotkeySettings.HotkeyInfo = hotkeyInfoList;
+                        HotkeySettings localHotkeySettings = new HotkeySettings();
+                        localHotkeySettings.HotkeyInfo = hotkeyInfoList;
                         //hotkeySettings.DeviceInfo = monitorEdid;
-                        hotkeySettings.SerialNumber = "DDPM";// monitorEdid.SerialNumber;
-                        hotkeySettings.ModelName = "DDPM";// monitorEdid.ModelName;
-                        hotkeySettings.ServiceTag = "DDPM";// monitorEdid.ServiceTag;
-                        saveList.Add(hotkeySettings);
+                        localHotkeySettings.SerialNumber = "DDPM";// monitorEdid.SerialNumber;
+                        localHotkeySettings.ModelName = "DDPM";// monitorEdid.ModelName;
+                        localHotkeySettings.ServiceTag = "DDPM";// monitorEdid.ServiceTag;
+                        saveList.Add(localHotkeySettings);
                     }
                     //set default inputsource value of other monitor due to the hotkey is global
                     List<MonitorInfo> defaultMoList = _AllInfoMonitors.Where(x => !x.edid.ServiceTag.Equals(mo.edid.ServiceTag)).ToList();
@@ -16250,14 +16270,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(read);
         }
 
-        public Task<bool> WriteHotkeySettings(List<HotkeySettings> hotkeySettings)
+        public Task<bool> WriteHotkeySettings(List<HotkeySettings> inputHotkeySettings)
         {
             bool r = false;
 
             //if (r)
             //{
             //data process
-            var tmp = hotkeySettings;
+            var tmp = inputHotkeySettings;
             //write back to settings
             r = _SettingsPlugin.WriteHotkeySettings(tmp).Result;
             Thread.Sleep(100);
@@ -16273,14 +16293,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             List<HotkeySettings> read = _SettingsPlugin.ReadHotkeySettings().Result;
             //HotkeySettings hotkeySettings = read.Where(x => x.ModelName.Equals(monitorEdid.ModelName) && x.SerialNumber.Equals(monitorEdid.SerialNumber)).SingleOrDefault();
-            HotkeySettings hotkeySettings = read.SingleOrDefault(x => x.ModelName.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
+            HotkeySettings localHotkeySettings = read.SingleOrDefault(x => x.ModelName.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
 
             //1006 read hotkey data per monitor
             List<HotkeyData> list = GetInputSourceHotKeyData(mo);
 
-            if (hotkeySettings != null && hotkeySettings.HotkeyInfo.Count > 0)
+            if (localHotkeySettings != null && localHotkeySettings.HotkeyInfo.Count > 0)
             {
-                return Task.FromResult((hotkeySettings, list));
+                return Task.FromResult((localHotkeySettings, list));
             }
             return Task.FromResult((new HotkeySettings(), list));
         }
@@ -16605,6 +16625,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             monitorSettingsList.Add(settings);
                             bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
+
+                            PreDownloadICC(m);// 
                         }
                     }
                 }
@@ -18293,12 +18315,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 case OSThemeEnum.Light:
                     appModeTelementryData = "Light";
-                    SACommonHelper.SwitchToLightMode();
+                    SAUICommonHelper.SwitchToLightMode();
                     break;
 
                 case OSThemeEnum.Dark:
                     appModeTelementryData = "Dark";
-                    SACommonHelper.SwitchToDarkMode();
+                    SAUICommonHelper.SwitchToDarkMode();
                     break;
 
                 default:

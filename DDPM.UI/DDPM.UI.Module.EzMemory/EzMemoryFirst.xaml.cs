@@ -472,12 +472,9 @@ namespace DDPM.UI.Module.EzMemory
             //Robert_Lin 2025-1-9, will set selected item based on vm.CurrentEditSelectspItem
             // we will used EAID (Layout) to match
             int eaIdSelected = 0; //Default 0 : No init selected item
-            if (_vm.CurrentEditSelectspItem != null)
+            if (_vm.CurrentEditSelectspItem != null && _vm.CurrentEditSelectspItem.ISplitCtrl != null)
             {
-                if (_vm.CurrentEditSelectspItem.ISplitCtrl != null)
-                {
-                    eaIdSelected = _vm.CurrentEditSelectspItem.ISplitCtrl.EAID;
-                }
+                eaIdSelected = _vm.CurrentEditSelectspItem.ISplitCtrl.EAID;
             }
 
             //A Build WindowLists
@@ -942,13 +939,9 @@ namespace DDPM.UI.Module.EzMemory
             _vm.CurrentEditSelectspItem = spItem;
             _vm.CurrentEditSelectspItem.IsSelected = true;
 
-            if (_vm.CurrentEditSelectspItem != null)
+            if (_vm.CurrentEditSelectspItem != null && _vm.CurrentEditSelectspItem.ISplitCtrl != null)
             {
-                if (_vm.CurrentEditSelectspItem.ISplitCtrl != null)
-                {
-                    _vm.CurrentSelectsEAID = _vm.CurrentEditSelectspItem.ISplitCtrl.EAID;
-                }
-
+                _vm.CurrentSelectsEAID = _vm.CurrentEditSelectspItem.ISplitCtrl.EAID;
             }
         }
         #endregion SplitItem Selection

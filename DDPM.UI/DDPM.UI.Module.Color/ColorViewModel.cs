@@ -271,11 +271,11 @@ namespace DDPM.UI.Module.Color
         //User to update selected index but do not trigger set VCP
         public void UpdateColorPresetSelectedIndex(int selIndex)
         {
-            _colorPresetSelectedIndex = selIndex;            
-            
+            _colorPresetSelectedIndex = selIndex;
+
             if (ColorPresets_ItemsCollection != null && selIndex < ColorPresets_ItemsCollection.Count)
                 last_selected_value = ColorPresets_ItemsCollection[selIndex];
-            
+
             OnPropertyChanged("ColorPresetSelectedIndex"); // Jim 20250211 fix 0x52 color preset no synchronization issue.
         }
 
@@ -316,7 +316,7 @@ namespace DDPM.UI.Module.Color
                                         // Jim 20250107 modify for PIMS-314608 U2725QEt Wistron- P3:DDPM(Windows)-Shine a torch or cover the sensor of DUT1,DUT2 screen has not changed
                                         if (hd.MonitorInfo.IsDellMonitor)
                                             DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0, Is_Game_DeviceName, SmartHDR_ON, null, true);
-                                       
+
                                     }
                                 }
                             }
@@ -332,22 +332,22 @@ namespace DDPM.UI.Module.Color
                 }
 
                 //this.Dispatcher.Invoke((Action)(() =>
-                {
-                    //ColorViewModel vm = (ColorViewModel)DataContext;
+                //{
+                //    //ColorViewModel vm = (ColorViewModel)DataContext;
 
-                    // if Auto-adjust the ICC color profile based on Color preset
+                //    // if Auto-adjust the ICC color profile based on Color preset
 
-                    if (_ICC_Metadata.Is_Support_ICC_DeviceName &&
-                        DCM_Visibility == Visibility.Hidden && // add jim 20240604
-                        ColorManagement_isChecked &&
-                        ICCprofile_based_Colorpreset_enable)
-                    {                                             
-                        // add jim 20240830
-                        DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex], 0, Is_Game_DeviceName, SmartHDR_ON); // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
-                        //DdpmCommonHelper.DeviceManagerSA?.SetMonitorProfile(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
-                        //DdpmCommonHelper.DeviceManagerSA?.AutoColorManagementForMonitorConfig(MyModule.SelectedHomeDevice?.MonitorInfo,"BYMONITOR", SupportColorPresets[idex]);                             
-                    }
-                }
+                //    if (_ICC_Metadata.Is_Support_ICC_DeviceName &&
+                //        DCM_Visibility == Visibility.Hidden && // add jim 20240604
+                //        ColorManagement_isChecked &&
+                //        ICCprofile_based_Colorpreset_enable)
+                //    {
+                //        // add jim 20240830
+                //        DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex], 0, Is_Game_DeviceName, SmartHDR_ON); // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                //        //DdpmCommonHelper.DeviceManagerSA?.SetMonitorProfile(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
+                //        //DdpmCommonHelper.DeviceManagerSA?.AutoColorManagementForMonitorConfig(MyModule.SelectedHomeDevice?.MonitorInfo,"BYMONITOR", SupportColorPresets[idex]);                             
+                //    }
+                //}
                 //}));
             }
 
@@ -393,7 +393,7 @@ namespace DDPM.UI.Module.Color
                 {
                     //keep auto color temp on and return false that do not change color preset
                     return false;
-                }                
+                }
             }
             return true;
         }
@@ -1237,7 +1237,7 @@ namespace DDPM.UI.Module.Color
                 // jim modify 20240604
                 ((ComboBox)(MyModule.GetRightView().FindName("cbManualPreset"))).SelectedIndex = index;
 
-                RefreshUI();
+                //RefreshUI();
             }));
         }
 
@@ -1900,5 +1900,6 @@ namespace DDPM.UI.Module.Color
         }
         //Robert_Lin 2025-1-18 added to handle Advanced Settings / ICC profile hylerlink click command
         ////////////////////////////
+
     }
 }

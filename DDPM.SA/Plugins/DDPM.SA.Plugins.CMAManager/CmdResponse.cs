@@ -77,7 +77,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
         private string loadFile(string guid)
         {
-            string response = string.Empty;
+            string responseString = string.Empty;
 
             try
             {
@@ -106,7 +106,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 listResponse = new List<string>();
             }
 
-            return response;
+            return responseString;
 
         }
         public void writeToFile(string guid, string json)
@@ -333,30 +333,30 @@ namespace DDPM.SA.Plugins.CMAManager
             private int responseCode(int code)
             {
 
-                int result = -1;
+                int resultCode = -1;
 
                 switch (code)
                 {
                     case (int)FWUErrorCode.NoError:
-                        result = Params.Response.STATUS_FW_UPDATE_SUCCESS;
+                        resultCode = Params.Response.STATUS_FW_UPDATE_SUCCESS;
                         break;
 
                     case (int)FWUErrorCode.DeviceDisconnected:
-                        result = Params.Response.STATUS_FW_UPDATE_DEVICE_NOT_CONNECTED;
+                        resultCode = Params.Response.STATUS_FW_UPDATE_DEVICE_NOT_CONNECTED;
                         break;
 
                     case (int)FWUErrorCode.Unknow:
-                        result = Params.Response.UNKNOWN_ERROR;
+                        resultCode = Params.Response.UNKNOWN_ERROR;
                         break;
 
                     default:
-                        result = Params.Response.STATUS_FW_UPDATE_ERROR;
+                        resultCode = Params.Response.STATUS_FW_UPDATE_ERROR;
                         break;
 
                 }
 
 
-                return result;
+                return resultCode;
             }
 
             public string ToString()
@@ -391,22 +391,22 @@ namespace DDPM.SA.Plugins.CMAManager
                 return response;
             }
 
-            private bool checkResult(string _result)
+            private bool checkResult(string inputString)
             {
 
-                string result = _result.ToLower();
+                string lowerString = inputString.ToLower();
 
-                if (result.Equals("success"))
+                if (lowerString.Equals("success"))
                 {
                     return true;
                 }
 
-                if (result.Equals("pass"))
+                if (lowerString.Equals("pass"))
                 {
                     return true;
                 }
 
-                if (result.Equals("completed"))
+                if (lowerString.Equals("completed"))
                 {
                     return true;
                 }
@@ -548,7 +548,7 @@ namespace DDPM.SA.Plugins.CMAManager
                     {
                         Array fwarray = jObject["FWUpdateRESPONSE"].ToArray();
 
-                        fwupdateresponse = "N/A";
+                        fwupdateresponse = string.Empty;
 
                         if (fwarray.Length > 0)
                         {
@@ -566,7 +566,7 @@ namespace DDPM.SA.Plugins.CMAManager
                     }
                     catch
                     {
-                        fwupdateresponse = "N/A";
+                        fwupdateresponse = string.Empty;
                     }
                     
                 }
@@ -580,7 +580,7 @@ namespace DDPM.SA.Plugins.CMAManager
                     marketingname = "N/A";
                     serialnumber = "N/A";
                     fwversion = "N/A";
-                    fwupdateresponse = "N/A";
+                    fwupdateresponse = string.Empty;
 
                     result = "N/A";
                     message = "N/A";

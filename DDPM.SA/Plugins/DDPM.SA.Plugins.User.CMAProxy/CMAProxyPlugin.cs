@@ -329,6 +329,9 @@ namespace DDPM.SA.Plugins.User.CMAProxy
 
             if (condition.Equals("all") || condition.Equals("displaychanged"))
             {
+                // add @ 20250214 stephen : wait for list ready
+                Thread.Sleep(3000);
+
                 List<MonitorInfo> mos = _DevManagerPlugin.GetMonitors().Result;
                 WriteLog($"Monitor count is ${mos.Count}");
                 if (_CMAManagerPlugin != null)

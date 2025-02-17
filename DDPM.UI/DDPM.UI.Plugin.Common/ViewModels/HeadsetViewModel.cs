@@ -612,8 +612,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     _wearDetectionPageShow = true;
                     _automatedActionsSensitivityUpPageShow = true;
                     _automatedActionsWhenHeadsetIsRemovedPageShow = true;
-                    _automatedActionsAnswerCallPageShow = true; //WL5024 page2, not only AnswerCall  // always show, but need to detect disable/enable
+                    _automatedActionsAnswerCallPageShow = DeviceInfoDTP.IsAnswerCallSupported; //true; //WL5024 page2, not only AnswerCall  // always show, but need to detect disable/enable
                     _supportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
+                    SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
                     //OnPropertyChanged(nameof(AnswerCalls_String));
                     //Page 3
                     _voiceGuidancePageShow = true;
@@ -627,6 +628,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     //Page 2                  
                     _automatedActionsAnswerCallPageShow = true;//DELL 說拿掉;// only AnswerCall // always show, but need to detect disable/enable
                     _supportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
+                    SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
                     //OnPropertyChanged(nameof(AnswerCalls_String));
                     //Page 3
                     _voiceGuidancePageShow = true;
@@ -639,6 +641,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     //Page 2                   
                     _automatedActionsAnswerCallPageShow = true;// only AnswerCall // always show, but need to detect disable/enable
                     _supportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
+                    SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
                     //OnPropertyChanged(nameof(AnswerCalls_String));
                     //Page 3
                     _voiceGuidancePageShow = true;
@@ -651,6 +654,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _configureMyAudioModesPageShow = true;
                     //Page 2
                     _supportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
+                    SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
                     _automatedActionsAnswerCallPageShow = true;//DELL 說拿掉;// only AnswerCall // always show, but need to detect disable/enable
                     //OnPropertyChanged(nameof(AnswerCalls_String));
                     //Page 3

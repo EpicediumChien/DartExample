@@ -136,6 +136,12 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             try
             {
                 await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
+                if (!_vm.SupportedAnswerCalls)
+                {
+                    BuildModuleGroups(_vm.SupportedAnswerCalls);
+                    vbarList.ItemsSource = null;
+                    vbarList.ItemsSource = _vm!.VbarItems;
+                }
                 DdpmCommonHelper.WriteUILog($"[Headset] LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
                 if (!_vm.IsRestoreEnable)
                 {
@@ -180,7 +186,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         /// <summary>
         /// Base on specified monitor's capabilities to build the Vbar items, and headers/modules
         /// </summary>
-        private void BuildModuleGroups()
+        private void BuildModuleGroups(bool secondVbar = true)
         {
             List<ModuleGroup> groups = new List<ModuleGroup>();
             ModuleGroup moduleGroup;
@@ -195,20 +201,17 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 moduleGroup.AddHeader(AudioSettings, new HeadsetAudioSettingsModule(_vm!));
                 groups.Add(moduleGroup);
 
-                //bool answerCall = DdpmCommonHelper.DeviceManagerSA.GetIsBoomMicSupportedAsync(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
-                //DdpmCommonHelper.WriteUILog($"[Headset] BuildModuleGroups Model = {_vm!.Model}, GetIsBoomMicSupportedAsync = {answerCall.ToString()}");
-
-                //if (_vm!.Model == "WL7024" || _vm!.Model == "WL5024" || answerCall)
-                //{
-                moduleGroup = new ModuleGroup()
+                if(secondVbar)
                 {
-                    GroupName = AutomatedActions,
-                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
-                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
-                };
-                moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
-                groups.Add(moduleGroup);
-                //}
+                    moduleGroup = new ModuleGroup()
+                    {
+                        GroupName = AutomatedActions,
+                        GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
+                        GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
+                    };
+                    moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
+                    groups.Add(moduleGroup);
+                }
 
                 moduleGroup = new ModuleGroup()
                 {

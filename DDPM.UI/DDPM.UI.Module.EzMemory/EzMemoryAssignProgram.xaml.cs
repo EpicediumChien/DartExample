@@ -150,12 +150,9 @@ namespace DDPM.UI.Module.EzMemory
             //Robert_Lin 2025-1-10 During editing, the SplitItem should be CurrentEditSelectspItem
             //NEW:
             int splitCount = 0;
-            if (_vm.CurrentEditSelectspItem != null)
+            if (_vm.CurrentEditSelectspItem != null && _vm.CurrentEditSelectspItem.ISplitCtrl != null)
             {
-                if (_vm.CurrentEditSelectspItem.ISplitCtrl != null)
-                {
-                    splitCount = _vm.CurrentEditSelectspItem.ISplitCtrl.CellList.Count;
-                }
+                splitCount = _vm.CurrentEditSelectspItem.ISplitCtrl.CellList.Count;
             }
             if (splitCount == 2)
             //OLD:

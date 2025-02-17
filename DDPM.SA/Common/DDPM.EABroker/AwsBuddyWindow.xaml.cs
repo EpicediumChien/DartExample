@@ -271,7 +271,7 @@ namespace DDPM.EABroker
             ISplitCtrl? localSplit = _workSplit;
 
             return;
-
+            /*
             if (localSplit != null)
             {
                 string hoveringCellName = "";
@@ -286,15 +286,15 @@ namespace DDPM.EABroker
                     SplitCtrl0B sp0B = (SplitCtrl0B)localSplit;
                     foreach (CellBorder cellBd in sp0B.CellBorders)
                     {
-                        //if (cellBd.rect.Contains(x, y))
-                        //{
-                        //    cellBd.IsHover = true;
-                        //    //Convert to CellObj
-                        //    hoverCell = new CellObj(cellBd.Name, cellBd.Border);
-                        //    hoverCell.rc = cellBd.rect;
-                        //}
-                        //else
-                        //    cellBd.IsHover = false;
+                        if (cellBd.rect.Contains(x, y))
+                        {
+                            cellBd.IsHover = true;
+                            //Convert to CellObj
+                            hoverCell = new CellObj(cellBd.Name, cellBd.Border);
+                            hoverCell.rc = cellBd.rect;
+                        }
+                        else
+                            cellBd.IsHover = false;
                         if (cellObj != null)
                         {
                             if (cellBd.CellName.Equals(hoveringCellName))
@@ -316,7 +316,7 @@ namespace DDPM.EABroker
                     }
                 }
 
-            }
+            }*/
         }
 
         public Rect GetHoveringCellRect()

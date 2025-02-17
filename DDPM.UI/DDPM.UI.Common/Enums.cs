@@ -12,13 +12,14 @@ namespace DDPM.UI.Common
         Unknown = -1,
         Display = 0,
         Webcam = 1000,
-        KB = 1100,
-        Mouse = 1200,
-        Pen = 1300,
-        Headset = 1400,
-        Soundbar = 1500,
-        Dock = 1600,
-        WalkThrough = 1700,
+        Bootloader = 1100,
+        KB = 1200,
+        Mouse = 1300,
+        Pen = 1400,
+        Headset = 1500,
+        Soundbar = 1600,
+        Dock = 1700,
+        WalkThrough = 1800,
     }
 
     public enum PenButtonName

@@ -75,11 +75,8 @@ namespace DDPM.UI.Module.EzArrange
             //OLD:
             //_homeDevice = vmDisplay.SelectedHomeDevice;
             //NEW:
-            if (DdpmCommonHelper.ModuleOwner != null)
-            {
-                if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null)
-                    _homeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
-            }
+            if (DdpmCommonHelper.ModuleOwner != null && DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null)
+                _homeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
             ////Robert_Lin 2025-1-21 Debug
             //string deviceName_vmDisplay = vmDisplay.SelectedHomeDevice.MonitorInfo.DisplayName;
             //string deviceName_Helper = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.DisplayName;
