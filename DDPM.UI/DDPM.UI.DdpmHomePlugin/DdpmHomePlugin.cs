@@ -1758,6 +1758,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 } //foreach
 
                 DdpmCommonHelper.LastShowOsdScreenDeviceName = screenDeviceName;
+
+                Screen? screenNow = Screen.AllScreens.FirstOrDefault(x => x.DeviceName.Equals(screenDeviceName, StringComparison.OrdinalIgnoreCase));
+                if (screenNow != null)
+                {
+                    if (_viewModel != null)
+                    {
+                        _viewModel.IsSmallScreenResolution = (screenNow.Bounds.Width < 1050);
+                    }
+                }
             }
         }
         #endregion  MainWindow Move To new position
