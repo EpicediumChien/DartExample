@@ -152,6 +152,8 @@ namespace DDPM.SA.Common
         void UpdateDTPInstance(IDTPProxyPlugin DTPInstance);
         void UpdateSettingsInstance(ISettingsManagerDev SettingsInstance);
         event EventHandler<OSDEventArgs> Peripheral_OSD_Notify;
+
+        Task UpdateLowBatteryOSD(bool showOSD);
     }
 
     public interface IDPeMServiceRegPlugin : IFrameworkPlugin
