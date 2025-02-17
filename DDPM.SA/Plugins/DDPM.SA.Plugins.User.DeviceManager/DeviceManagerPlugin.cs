@@ -2376,24 +2376,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         if (input.Value.USBUpstream == GlobalDefinitions.MigrationInput)
                                         {
                                             readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
-                                            if (readinputlist != null)
+                                            if (readinputlist != null && readinputlist.Count != 0)
                                             {
-                                                if (readinputlist.Count != 0)
+                                                foreach (var readinput in readinputlist)
                                                 {
-                                                    foreach (var readinput in readinputlist)
+                                                    foreach (var copyinput in copyinputlist)
                                                     {
-                                                        foreach (var copyinput in copyinputlist)
+                                                        if (readinput.Value.Code == copyinput.Value.Code)
                                                         {
-                                                            if (readinput.Value.Code == copyinput.Value.Code)
-                                                            {
-                                                                readinput.Value.InputName = copyinput.Value.InputName;
-                                                                break;
-                                                            }
+                                                            readinput.Value.InputName = copyinput.Value.InputName;
+                                                            break;
                                                         }
                                                     }
-                                                    bool b1 = SetInputSourcelist(monitorInfo, readinputlist).Result;
-                                                    return Task.FromResult(readinputlist);
                                                 }
+                                                bool b1 = SetInputSourcelist(monitorInfo, readinputlist).Result;
+                                                return Task.FromResult(readinputlist);
                                             }
                                             break;
                                         }
@@ -12109,12 +12106,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void OnCheckUpdateScheduleEvent()
         {
             DDPMSettings data = ReloadAppConfigData().Result;
-            if (data != null)
+            if (data != null && !data.LockSettings.Lock_Settings_Updates)
             {
-                if (!data.LockSettings.Lock_Settings_Updates)
-                {
-                    CheckUpdate();
-                }
+                CheckUpdate();
             }
         }
 
