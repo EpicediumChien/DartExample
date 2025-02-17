@@ -35,6 +35,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using VcpCore.Common;
+using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 using IDeviceManager = IndiLogic.DPeM.Broker.IDeviceManager;
 using IDs = DDPM.SA.Common.IDs;
 using Task = System.Threading.Tasks.Task;
@@ -3039,6 +3040,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
+        public Task UpdateLowBatteryOSD()
+        {
+
+            return Task.CompletedTask;
+        }
 
         private void ILogicalDevice_BatteryLevelChanged(ILogicalDevice arg1, int arg2)
         {
