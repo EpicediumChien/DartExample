@@ -1675,7 +1675,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         _log.Info($"[Walkthrough] CheckAndQueueDevice Check color code = {device.ColorCode.ToString()}");                        
                     }
                     _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Device)");
-                    await CheckAndQueueDevice(_modelNumber, device.LogicalDeviceType.ToString(), device.ID);
+                    await CheckAndQueueDevice(device.ModelNumber, device.LogicalDeviceType.ToString(), device.ID);
                 }
 
                 if (WalkThroughQueue.Count != 0 && ShowPluginById == false)
