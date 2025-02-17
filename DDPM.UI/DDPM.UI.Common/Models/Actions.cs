@@ -28,7 +28,8 @@ namespace DDPM.UI.Common
         public Dictionary<int, SelectedAction> RadialActions = new();
         public bool IsUseCenter = true;
 
-        public PenActions()
+        public PenActions() { }
+        public PenActions(bool hasFile)
         {
             try
             {
@@ -45,7 +46,7 @@ namespace DDPM.UI.Common
                 {
                     TopButtonDoubleClickAction.AssignedAction.ID = 64;
                 }
-                else if (TopButtonDoubleClickAction.AssignedAction.ID == 23)
+                else if (TopButtonDoubleClickAction.AssignedAction.ID == 8 || TopButtonDoubleClickAction.AssignedAction.ID == 23)
                 {
                     TopButtonDoubleClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
                 }
@@ -53,7 +54,7 @@ namespace DDPM.UI.Common
                 task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserSinglePressSetting();
                 jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
                 TopButtonClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
-                if (TopButtonClickAction.AssignedAction.ID == 23)
+                if (TopButtonClickAction.AssignedAction.ID == 8 || TopButtonClickAction.AssignedAction.ID == 23)
                 {
                     TopButtonClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
                 }
@@ -65,7 +66,7 @@ namespace DDPM.UI.Common
                 {
                     TopButtonPressHoldAction.AssignedAction.ID = 64;
                 }
-                else if (TopButtonPressHoldAction.AssignedAction.ID == 23)
+                else if (TopButtonPressHoldAction.AssignedAction.ID == 8 || TopButtonPressHoldAction.AssignedAction.ID == 23)
                 {
                     TopButtonPressHoldAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
                 }
@@ -73,7 +74,7 @@ namespace DDPM.UI.Common
                 task1 = DdpmCommonHelper.DeviceManagerSA!.GetSideTopSwitchSinglePressSetting();
                 jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
                 TopBarrelButtonClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
-                if (TopBarrelButtonClickAction.AssignedAction.ID == 23)
+                if (TopBarrelButtonClickAction.AssignedAction.ID == 8 || TopBarrelButtonClickAction.AssignedAction.ID == 23)
                 {
                     TopBarrelButtonClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
                 }
@@ -81,7 +82,7 @@ namespace DDPM.UI.Common
                 task1 = DdpmCommonHelper.DeviceManagerSA!.GetSideBottomSwitchSinglePressSetting();
                 jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
                 BottomBarrelButtonClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
-                if (BottomBarrelButtonClickAction.AssignedAction.ID == 23)
+                if (BottomBarrelButtonClickAction.AssignedAction.ID == 8 || BottomBarrelButtonClickAction.AssignedAction.ID == 23)
                 {
                     BottomBarrelButtonClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
                 }
@@ -273,7 +274,7 @@ namespace DDPM.UI.Common
                 KeyActions.Add(KeyName.F12, new SelectedAction(6, new AssignedAction(6)));
             }
 
-            if (guid != "")
+            if (!string.IsNullOrEmpty(guid))
             {
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
@@ -397,7 +398,7 @@ namespace DDPM.UI.Common
                     break;
             }
 
-            if (guid != "")
+            if (!string.IsNullOrEmpty(guid))
             {
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
@@ -622,7 +623,7 @@ namespace DDPM.UI.Common
                 string json = JsonConvert.SerializeObject(actions, Formatting.Indented);
                 var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions");
 
-                string info = string.Empty;
+                string info = "";
                 if (!Directory.Exists(fileFolder))
                     Directory.CreateDirectory(fileFolder);
                 //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
@@ -650,8 +651,8 @@ namespace DDPM.UI.Common
             //var filePath = Path.Combine(Application.StartupPath, @$"ActionList\{model}_{instanceID}.json");
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
             var hasFile = File.Exists(filePath);
-            string info = string.Empty;
-            string jsonString = string.Empty;
+            string info = "";
+            string jsonString = "";
             switch (type)
             {
                 case eDeviceCategory.KB:
@@ -716,7 +717,7 @@ namespace DDPM.UI.Common
                             DdpmCommonHelper.WriteUILog($"[ImportActionList] ValidateFilePath failed(model:{model}): {info}");
                         }
                     }
-                    var pen = new PenActions();
+                    var pen = new PenActions(false);
                     return pen;
 
                 default:

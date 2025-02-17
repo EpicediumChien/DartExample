@@ -114,7 +114,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (mg.GroupIcon != null)
                 {
-                    DeviceBarItem deviceBarItem = new(idx, mg.GroupIcon, mg.GroupName, idx == 3 && WacomVersion == "")
+                    DeviceBarItem deviceBarItem = new(idx, mg.GroupIcon, mg.GroupName, idx == 3 && string.IsNullOrEmpty(WacomVersion))
                     {
                         ClickCommand = DeviceBarItemClickCommand
                     };
@@ -180,7 +180,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             //set
             //{
-                //SetProperty(ref _leftView, value);
+            //SetProperty(ref _leftView, value);
             //}
         }
 
@@ -192,11 +192,11 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (_rightViewHeaders.Count == 0 &&
                     ModuleGroups.Count > 0 &&
-                    DeviceBarSelectedIndex >= 0 && 
+                    DeviceBarSelectedIndex >= 0 &&
                     DeviceBarSelectedIndex < ModuleGroups.Count)
                 {
                     ModuleGroup mg = ModuleGroups[DeviceBarSelectedIndex];
-                    _rightViewHeaders = mg.Headers;  
+                    _rightViewHeaders = mg.Headers;
                 }
                 return _rightViewHeaders;
             }

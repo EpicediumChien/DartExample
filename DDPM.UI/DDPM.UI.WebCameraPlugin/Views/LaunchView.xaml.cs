@@ -85,8 +85,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private SoftwareBitmap backBitmapBuffer;
 
         private readonly string[] PresetNames = [LangHelper.Instance["Default"], LangHelper.Instance["Smooth"], LangHelper.Instance["Vibrant"], LangHelper.Instance["Warm"]];
-        private string EditMode = string.Empty;
-        private string EditingProfileName = string.Empty;
+        private string EditMode = "";
+        private string EditingProfileName = "";
         private static PowerEventControl _pwr_Mon;
 
         public Thread status_thread;
@@ -295,7 +295,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void DeviceManagerSA_UIUpdateNotify(object? sender, UpdateUINotify e)
         {
             if (e == null || e == EventArgs.Empty || e.UI_Field_Name == null
-                || e.UI_Field_Name == string.Empty)
+                || string.IsNullOrEmpty(e.UI_Field_Name))
                 return;
 
             //DdpmCommonHelper.WriteUILog($"WebcamLanuchView_UIUpdateNotify catch event msg: {e.UI_Field_Name}");
@@ -465,7 +465,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             print_debug("AllSupportedResolutions:" + AllSupportedResolutions);
 
             print_debug("check_PresenceFunction() s0 model-" + model);
-            
+
             if (is_camera_dell7)
             {
                 print_debug("check_PresenceFunction() s1");
@@ -511,7 +511,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                 _vm.MPS_Setting_Visibility = Visibility.Collapsed;
                                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
                             }
-                        }                       
+                        }
 
                         //dell 7 韌體升級畫面需要在 usb 3.0下,如果在2.0模式整個分頁關閉
                         if (!AllSupportedResolutions)
@@ -1440,7 +1440,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                     //var microphone = audioDevices.FirstOrDefault();
 
-                    string AudioDeviceId = string.Empty; // 2024/12/31 Elie.
+                    string AudioDeviceId = ""; // 2024/12/31 Elie.
                     if (microphone != null)
                     {
                         AudioDeviceId = microphone.Id;
@@ -2789,7 +2789,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm!.DisableVBar();
                 gdBattery.Visibility = Visibility.Collapsed;
                 gdAddProfile.Visibility = Visibility.Visible;
-                txbName.Text = string.Empty;
+                txbName.Text = "";
                 txbName.Focus();
                 _vm.TooltipVisibility = Visibility.Visible;
             }
@@ -2975,7 +2975,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     blSystemcompatibility_MPS = false;
             }
 
-            string strComputerManufacturer = string.Empty;
+            string strComputerManufacturer = "";
 
             strComputerManufacturer = WinVersion.GetComputerManufacturer();
 
