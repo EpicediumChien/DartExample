@@ -45,6 +45,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         //It need DdpmHomePlugin set value to it.
         private IDeviceManagerSA? _deviceManagerSA = null;
 
+        //Robert_Lin 2025-2-17 for PIMS-343306 Observed UI truncation when switching to certain screen resolutions.
+        //When the screen of DDPM located is less then 800 width, then show the horz-scrollbar for HomeDevicesListView.
+        private bool _isSmallScreenResolution = false; //When Screen.Bounds.Width < 800
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -132,6 +136,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         /// <param name="monitorInfos"></param>
         public void PrepareMonitorInfos(List<MonitorInfo> monitorInfos)
         {
+
             lock (_LockList)
             {
                 //Robert_Lin 2024-5-16 This method should be called once, provide all
@@ -163,11 +168,21 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     };
 
                     //Robert_Lin, 2024-11-20 PIMS-302436, Show the user input name to replace InputCable
-                    Dictionary<string, InputInfo> inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(mi).Result;
-                    InputInfo mainInput;
-                    if (inputList.TryGetValue(mi.inputCable, out mainInput))
+                    //Robert_Lin 2025-2-16 Add null check
+                    //NEW:
+                    if (DdpmCommonHelper.DeviceManagerSA != null)
                     {
-                        dev.InputName = mainInput.InputName;
+                        //END of NEW
+                        //OLD:
+                        Dictionary<string, InputInfo> inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(mi).Result;
+                        if (inputList != null)
+                        {
+                            InputInfo mainInput;
+                            if (inputList.TryGetValue(mi.inputCable, out mainInput))
+                            {
+                                dev.InputName = mainInput.InputName;
+                            }
+                        }
                     }
                     //
                     ///////////////////////////////////////////////////////////////////////////////
@@ -786,5 +801,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         public bool IsPandoraPaired = false;
 
         #endregion
+
+        //Set it to true only when the screen of DDPM located is less then 800 width
+        public bool IsSmallScreenResolution
+        {
+            get => _isSmallScreenResolution;
+            set => SetProperty(ref _isSmallScreenResolution, value);
+        }
     }
 }

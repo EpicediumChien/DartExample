@@ -228,6 +228,15 @@ namespace DDPM.UI.Common.UserControls
         {
             return vm.GotoFirstSelectedItemPage();
         }
+        private void prevButton_Click(object sender, RoutedEventArgs e)
+        {
+            vm.GoToPrevPage();
+        }
+        private void nextButton_Click(object sender, RoutedEventArgs e)
+        {
+            vm.GoToNextPage();
+        }
+
         #endregion Page Navigation
 
         #region SplitItem Edit Command
@@ -483,5 +492,6 @@ namespace DDPM.UI.Common.UserControls
             }
         }
         #endregion Custom List
+
     }
 }
