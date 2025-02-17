@@ -188,7 +188,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             //Derek 1212
             if (e == null || e == EventArgs.Empty || e.UI_Field_Name == null
-                || e.UI_Field_Name == string.Empty)
+                || string.IsNullOrEmpty(e.UI_Field_Name))
                 return;
 
             //Open this to get the message format of Webcam event

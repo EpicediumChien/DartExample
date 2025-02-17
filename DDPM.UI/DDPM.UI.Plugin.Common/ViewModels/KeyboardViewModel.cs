@@ -1085,14 +1085,14 @@ namespace DDPM.UI.Plugin.ViewModels
                 parameter = action.AssignedAction.Parameter;
             }
             string tooltip = actionItem.Caption!;
-            if (parameter != "")
+            if (!string.IsNullOrEmpty(parameter))
                 tooltip += " : " + parameter;
             return tooltip;
         }
 
         public string SelectedKey { get; set; } = "";
-        public SelectedAction? SelectedAction => SelectedKey == "" ? null : KeyboardAction.KeyActions[(KeyName)Enum.Parse(typeof(KeyName), SelectedKey, true)];
-        public int SelectedActionID => SelectedKey == "" ? -1 : SelectedAction?.AssignedAction.ID ?? -1;
+        public SelectedAction? SelectedAction => string.IsNullOrEmpty(SelectedKey) ? null : KeyboardAction.KeyActions[(KeyName)Enum.Parse(typeof(KeyName), SelectedKey, true)];
+        public int SelectedActionID => string.IsNullOrEmpty(SelectedKey) ? -1 : SelectedAction?.AssignedAction.ID ?? -1;
         public string F1ImageFile { get; set; } = "";
         public string F2ImageFile { get; set; } = "";
         public string F3ImageFile { get; set; } = "";
@@ -1199,7 +1199,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void ClearSelectedKey()
         {
-            if (SelectedKey != "")
+            if (!string.IsNullOrEmpty(SelectedKey))
             {
                 RefreshKeyImageFile(SelectedKey);
                 SelectedKey = "";
@@ -1213,7 +1213,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void UpdateAction(int actionID, string parameter = "", bool RefreshImage = true)
         {
-            if (SelectedKey != "")
+            if (!string.IsNullOrEmpty(SelectedKey))
             {
                 int pkId = (int)(KeyName)Enum.Parse(typeof(KeyName), SelectedKey, true);
                 pkId = CheckPKID(pkId);
@@ -1231,7 +1231,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         { "ActionId", Actions.ActionIdToGuid[actionID] }
                     };
 
-                    if (parameter == "")
+                    if (string.IsNullOrEmpty(parameter))
                     {
                         byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
                         DdpmCommonHelper.DeviceManagerSA!.SetKbAssignedAction(CurrentDeviceID.ToString(), newValue);
