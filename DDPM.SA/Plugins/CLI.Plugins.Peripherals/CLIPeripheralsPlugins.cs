@@ -3077,11 +3077,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                         cli_FWU_RESPONSE.Model = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => _.Model));
                         cli_FWU_RESPONSE.ServiceTag = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => _.ServiceTag ?? "N/A"));
                         cli_FWU_RESPONSE.FWVersion = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"[{_.DeviceVersion}]"));
-                        cli_FWU_RESPONSE.FWUpdateRESPONSE.AddRange(fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.DeviceName} to Version:{_.TheLatestVersion}"));
 
                         fwUpdateInfoPackage.FWUpdateInfo.ForEach(_ =>
                         {
-                            var msg = $"Ready to start updating Device: {_.DeviceName}" + (string.IsNullOrWhiteSpace(_.ServiceTag) ? $", ServiceTag: {_.ServiceTag}" : "") + $" to Version: {_.TheLatestVersion}";
+                            var msg = $"Ready to start updating Device: {_.DeviceName}" + (!string.IsNullOrWhiteSpace(_.ServiceTag) ? $", ServiceTag: {_.ServiceTag}" : "") + $" to Version: {_.TheLatestVersion}";
                             cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
                         });
 
@@ -3089,7 +3088,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                            .ToList()
                                            .ForEach(_ => 
                                            {
-                                               var msg = $"No updates available: {_.ModelNumber}" + (string.IsNullOrWhiteSpace(_.DockServiceTag) ? $", ServiceTag: {_.DockServiceTag}" : "") + $" Version: {_.FirmwareVersion}";
+                                               var msg = $"No updates available: {_.ModelNumber}" + (!string.IsNullOrWhiteSpace(_.DockServiceTag) ? $", ServiceTag: {_.DockServiceTag}" : "") + $" Version: {_.FirmwareVersion}";
                                                cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
                                            });
 
