@@ -9089,7 +9089,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         {
                                             writelog("[SentSettingstoTelementry] _TelementryScheduler is null");
                                         }
-                                        if (monitorSettingsList.Find(ms => ms.easyArrangementDDPM.Desktops != null && ms.easyArrangementDDPM.Desktops.Count() > 0) != null)
+                                        if (monitorSettingsList.Find(ms => ms.easyArrangementDDPM.Desktops != null && ms.easyArrangementDDPM.Desktops.Count > 0) != null)
                                             return Task.FromResult(DisplayImportResultCode.DoneWithEzMemoryCleared);
                                         return Task.FromResult(DisplayImportResultCode.Done);
                                     }
