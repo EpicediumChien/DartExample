@@ -30,7 +30,7 @@
 
     <Grid>
         <!-- Robert_Lin 2025-2-11 remove toplevel Grid rows and columns -->
-        <!-- OLD: (removed)
+                <!-- OLD: (removed)
               <Grid.RowDefinitions>
             <RowDefinition Height="3*" />
             <RowDefinition Height="Auto" />
@@ -63,32 +63,32 @@
               <Viewbox Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
           
             -->
-                <Viewbox Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40,80,80,20"
+            <Viewbox Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40,80,80,20"
                      Stretch="Uniform" >
 
-                    <!-- Width="1378" Height="735"
+                <!-- Width="1378" Height="735"
                 -->
-                    <Grid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                <Grid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" 
                       >
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Border Grid.Row="0" Width="432" Height="244" CornerRadius="4" BorderThickness="1" VerticalAlignment="Top">
-                            <ContentControl Content="{Binding VideoSwapContent_Left}" Margin="6" />
-                        </Border>
-                        <Grid Grid.Row="1" HorizontalAlignment="Center" >
-                            <Grid.Resources>
-                                <Style TargetType="Path">
-                                    <Setter Property="Stroke" Value="{DynamicResource DefaultTheme_PathColor}" />
-                                    <Setter Property="Fill" Value="Transparent" />
-                                </Style>
-                            </Grid.Resources>
-                            <Path Data="M132.617 81.4308V1H100.803V81.4308C100.804 82.5166 101.237 83.5575 102.005 84.3248C102.774 85.0921 103.816 85.5231 104.902 85.5231H128.523C129.609 85.5231 130.65 85.0919 131.418 84.3244C132.186 83.557 132.617 82.5161 132.617 81.4308Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                            <Path Data="M100.806 80.4419H4.29567C3.72121 80.4423 3.15704 80.5942 2.66011 80.8823C2.16318 81.1704 1.75109 81.5843 1.46545 82.0825C1.1798 82.5807 1.03071 83.1453 1.03323 83.7195C1.03576 84.2937 1.18981 84.857 1.47983 85.3526L12.981 104.99C13.2681 105.482 13.6792 105.89 14.1733 106.174C14.6673 106.457 15.2271 106.606 15.7968 106.606H218.136C218.689 106.607 219.233 106.467 219.717 106.199C220.201 105.931 220.608 105.544 220.899 105.075L233.209 85.4371C233.518 84.9435 233.69 84.3762 233.705 83.794C233.721 83.2118 233.581 82.636 233.299 82.1263C233.017 81.6166 232.604 81.1916 232.102 80.8954C231.6 80.5992 231.029 80.4426 230.446 80.4419H132.62" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                            <Path Data="M2.67578 87.4043L11.9211 107.998C12.2902 108.818 12.8883 109.514 13.6436 110.003C14.3989 110.492 15.2793 110.753 16.1792 110.754H217.378C218.243 110.753 219.09 110.512 219.826 110.058C220.562 109.604 221.158 108.955 221.546 108.183L231.996 87.4307" StrokeThickness="0.4" StrokeMiterLimit="10"/>
-                        </Grid>
-                        <!--<Image Source="{Binding DeviceImage}" Stretch="Uniform">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Width="432" Height="244" CornerRadius="4" BorderThickness="1" VerticalAlignment="Top">
+                        <ContentControl Content="{Binding VideoSwapContent_Left}" Margin="6" />
+                    </Border>
+                    <Grid Grid.Row="1" HorizontalAlignment="Center" >
+                        <Grid.Resources>
+                            <Style TargetType="Path">
+                                <Setter Property="Stroke" Value="{DynamicResource DefaultTheme_PathColor}" />
+                                <Setter Property="Fill" Value="Transparent" />
+                            </Style>
+                        </Grid.Resources>
+                        <Path Data="M132.617 81.4308V1H100.803V81.4308C100.804 82.5166 101.237 83.5575 102.005 84.3248C102.774 85.0921 103.816 85.5231 104.902 85.5231H128.523C129.609 85.5231 130.65 85.0919 131.418 84.3244C132.186 83.557 132.617 82.5161 132.617 81.4308Z" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                        <Path Data="M100.806 80.4419H4.29567C3.72121 80.4423 3.15704 80.5942 2.66011 80.8823C2.16318 81.1704 1.75109 81.5843 1.46545 82.0825C1.1798 82.5807 1.03071 83.1453 1.03323 83.7195C1.03576 84.2937 1.18981 84.857 1.47983 85.3526L12.981 104.99C13.2681 105.482 13.6792 105.89 14.1733 106.174C14.6673 106.457 15.2271 106.606 15.7968 106.606H218.136C218.689 106.607 219.233 106.467 219.717 106.199C220.201 105.931 220.608 105.544 220.899 105.075L233.209 85.4371C233.518 84.9435 233.69 84.3762 233.705 83.794C233.721 83.2118 233.581 82.636 233.299 82.1263C233.017 81.6166 232.604 81.1916 232.102 80.8954C231.6 80.5992 231.029 80.4426 230.446 80.4419H132.62" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                        <Path Data="M2.67578 87.4043L11.9211 107.998C12.2902 108.818 12.8883 109.514 13.6436 110.003C14.3989 110.492 15.2793 110.753 16.1792 110.754H217.378C218.243 110.753 219.09 110.512 219.826 110.058C220.562 109.604 221.158 108.955 221.546 108.183L231.996 87.4307" StrokeThickness="0.4" StrokeMiterLimit="10"/>
+                    </Grid>
+                    <!--<Image Source="{Binding DeviceImage}" Stretch="Uniform">
                     <Image.ToolTip>
                     <ToolTip Placement="Center"  HorizontalOffset="8" VerticalOffset="-8"
                     ToolTipService.HasDropShadow="True"
@@ -110,8 +110,8 @@
                     </ToolTip>
                     </Image.ToolTip>
                     </Image>-->
-                    </Grid>
-                </Viewbox>
+                </Grid>
+            </Viewbox>
 
             <!-- 2024-6-20 Robert_Lin, move this stackPanel inside image box
             1 Change StackPanel Grid.Row=1 to 0; 2. Add VerticalAlignment=Bottom to StackPanel
@@ -145,5 +145,17 @@
                 </Button>
             </WrapPanel>
         </Grid>
+        <Border Name="DisableAll0" Background="#4C24273C">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsKVMBusy}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
     </Grid>
 </UserControl>
