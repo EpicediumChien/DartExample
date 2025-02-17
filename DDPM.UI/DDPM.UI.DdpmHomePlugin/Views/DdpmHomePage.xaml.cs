@@ -16,6 +16,8 @@ using VcpCore.Common;
 using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHomePageViewModel;
 using DDPM.SA.Common.Settings;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -162,6 +164,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //{
             //    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
             //}
+
+            //Determine whether current screen is small resolution
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
+            IntPtr hMainWnd = new System.Windows.Interop.WindowInteropHelper(mainWindow).Handle;
+            Screen screenNow = Screen.FromHandle(hMainWnd);
+            if (_ddpmHomePageViewModel != null)
+            {
+                _ddpmHomePageViewModel.IsSmallScreenResolution = screenNow.Bounds.Width < 1050;
+            }   
 
             //Reference to [https://stackoverflow.com/questions/27729881/which-event-fires-after-all-items-are-loaded-and-shown-in-a-listview]
             //To get into RenderingDone() when UI is render done.
@@ -1106,7 +1117,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             _ddpmHomePageViewModel.ImportNotify -= ImportNotifyEventHandler;
             if (_ddpmHomePageViewModel != null && _ddpmHomePageViewModel.ImportNotify == null
-                || !_ddpmHomePageViewModel.ImportNotify.GetInvocationList().Where(e => e.Method.Name == nameof(ImportNotifyEventHandler)).Any())
+                || !_ddpmHomePageViewModel.ImportNotify.GetInvocationList().Any(e => e.Method.Name == nameof(ImportNotifyEventHandler)))
             {
                 _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
             }

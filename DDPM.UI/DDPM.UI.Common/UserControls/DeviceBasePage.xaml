@@ -49,89 +49,90 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
-        <!-- ImageSource Uri
+    <!--<UXControls:UXScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">-->
+        <Grid>
+            <!-- ImageSource Uri
         "pack://application:,,,/" + assemblyName + ";component/" + resourceName
         -->
-        <Image x:Name="imgBkGlow"
+            <Image x:Name="imgBkGlow"
                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png"
                Stretch="UniformToFill"/>
 
-        <!-- Layers: buttom to top, 1,2,3, ... -->
-        <!-- Layer 1 -->
-        <Grid >
+            <!-- Layers: buttom to top, 1,2,3, ... -->
+            <!-- Layer 1 -->
+            <Grid >
 
-            <StackPanel Orientation="Horizontal" x:Name="topStackPanel">
-                <!-- LeftFrame -->
-                <Grid x:Name="LeftGrid">
-                    <ContentControl Name="LeftFrame" Content="{Binding LeftView}" Margin="0"/>
+                <StackPanel Orientation="Horizontal" x:Name="topStackPanel">
+                    <!-- LeftFrame -->
+                    <Grid x:Name="LeftGrid">
+                        <ContentControl Name="LeftFrame" Content="{Binding LeftView}" Margin="0"/>
 
-                    <!-- Dummy layer, MarketName use this grid to binding its MaxWidth, do not remove or rename -->
-                    <Grid Name="markeyNameWidthGrid">
-                        <Grid.Style>
-                            <Style TargetType="Grid">
-                                <Setter Property="Margin" Value="10,0,212,0"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsLandingMode}" Value="False">
-                                        <Setter Property="Margin" Value="100,0,70,0"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Grid.Style>
-                    </Grid>
+                        <!-- Dummy layer, MarketName use this grid to binding its MaxWidth, do not remove or rename -->
+                        <Grid Name="markeyNameWidthGrid">
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Margin" Value="10,0,212,0"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsLandingMode}" Value="False">
+                                            <Setter Property="Margin" Value="100,0,70,0"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                        </Grid>
 
-                    <!-- Layer 2 : Nav and Vbar -->
-                    <Grid Name="gridNav">
-                        <!-- Nav: Display Monitor market name, and LeftArrow back to DdpmHomePage -->
-                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="60,8,0,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition MaxHeight="90" />
-                                <RowDefinition Height="AUto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                        <!-- Layer 2 : Nav and Vbar -->
+                        <Grid Name="gridNav">
+                            <!-- Nav: Display Monitor market name, and LeftArrow back to DdpmHomePage -->
+                            <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="60,8,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition MaxHeight="90" />
+                                    <RowDefinition Height="AUto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                            <!-- #region LeftArrow -->
-                            <!-- OLD, Robert_Lin, 2024-6-10, change to using Polyline to draw -->
-                            <!--
+                                <!-- #region LeftArrow -->
+                                <!-- OLD, Robert_Lin, 2024-6-10, change to using Polyline to draw -->
+                                <!--
                                 <UXControls:UXTextBlock Grid.Row="0" Grid.Column="0" Text="&#xe223; "
                                 FontFamily="Segoe UI Symbol" FontSize="30"
                                 HorizontalAlignment="Left" TextBlockType="Header2"
                                 TextBlockSemanticColorType="Light" MouseLeftButtonDown="leftArrow_MouseLeftButtonDown" />
                                 -->
-                            <!-- Robert_Lin, 2024-6-10, new approach -->
-                            <!-- Robert_Lin, 2024-8-8, change for support keyboard tab stop -->
-                            <Border Focusable="True" IsEnabled="False" Visibility="Collapsed"
+                                <!-- Robert_Lin, 2024-6-10, new approach -->
+                                <!-- Robert_Lin, 2024-8-8, change for support keyboard tab stop -->
+                                <Border Focusable="True" IsEnabled="False" Visibility="Collapsed"
                                     AutomationProperties.Name="{Binding [Back], Source={x:Static lang:LangHelper.Instance}}" 
                                     KeyboardNavigation.TabIndex="1"
                                     BorderBrush="{StaticResource FocusDotBrush}" PreviewKeyDown="bdLeftArrow_PreviewKeyDown">
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="BorderThickness" Value="0" />
-                                        <Style.Triggers>
-                                            <Trigger Property="IsKeyboardFocused" Value="True">
-                                                <Setter Property="BorderThickness" Value="1" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="BorderThickness" Value="0" />
+                                            <Style.Triggers>
+                                                <Trigger Property="IsKeyboardFocused" Value="True">
+                                                    <Setter Property="BorderThickness" Value="1" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
 
-                                <!--Robert_Lin, 2024-1030 fix PIMS-314264 Click no action when click non-arrow (Polylines) area => Grid.Background=FakeTransparent
+                                    <!--Robert_Lin, 2024-1030 fix PIMS-314264 Click no action when click non-arrow (Polylines) area => Grid.Background=FakeTransparent
                                     and remove Custor="Hand" 
                                     -->
-                                <Grid Width="24" Height="24"  MouseLeftButtonDown="leftArrow_MouseLeftButtonDown" 
+                                    <Grid Width="24" Height="24"  MouseLeftButtonDown="leftArrow_MouseLeftButtonDown" 
                                           Background="{StaticResource FakeTransparent}">
-                                    <!--2024/06/19 Elie, Fix the issue where canot go back to homepage.-->
-                                    <Polyline Points="12,5 5,12 12,19"
+                                        <!--2024/06/19 Elie, Fix the issue where canot go back to homepage.-->
+                                        <Polyline Points="12,5 5,12 12,19"
                                                   Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
                                                   StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
-                                    <Polyline Points="5,12 19,12"
+                                        <Polyline Points="5,12 19,12"
                                                   Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
                                                   StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
-                                    <!-- Robert_Lin, 2024-1030 remove the hover effect -->
-                                    <!--<Grid.Style>
+                                        <!-- Robert_Lin, 2024-1030 remove the hover effect -->
+                                        <!--<Grid.Style>
                                             <Style TargetType="Grid">
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
@@ -146,42 +147,42 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </Grid.Style>-->
-                                </Grid>
-                            </Border>
-                            
-                            <!-- #region leftArrow-StatelessButton -->
-                            <!-- Robert_Lin 2025-2-10 New leftArrow design which support Narrator -->
-                            <Button Grid.Row="0" Grid.Column="0" Width="24" Height="24"
+                                    </Grid>
+                                </Border>
+
+                                <!-- #region leftArrow-StatelessButton -->
+                                <!-- Robert_Lin 2025-2-10 New leftArrow design which support Narrator -->
+                                <Button Grid.Row="0" Grid.Column="0" Width="24" Height="24"
                                     VerticalAlignment="Center" Cursor="Hand"
                                     KeyboardNavigation.TabIndex="1" Style="{StaticResource StatelessButton}"
                                     AutomationProperties.Name="{Binding [Back], Source={x:Static lang:LangHelper.Instance}}" Click="leftArrow_Click"
                                     >
-                                <Grid >
-                                    <Polyline Points="12,5 5,12 12,19"
+                                    <Grid >
+                                        <Polyline Points="12,5 5,12 12,19"
                                                   Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
                                                   StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
-                                    <Polyline Points="5,12 19,12"
+                                        <Polyline Points="5,12 19,12"
                                                   Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
                                                   StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
-                                </Grid>
-                            </Button>
-                            <!-- #endregion leftArrow-StatelessButton -->
-                            <!-- #endregion LeftArrow -->
+                                    </Grid>
+                                </Button>
+                                <!-- #endregion leftArrow-StatelessButton -->
+                                <!-- #endregion LeftArrow -->
 
-                            <!-- #region Monitor Market Name -->
-                            <!-- Robert_Lin, 2024-8-29 Comment out for DDPMW-2094 
+                                <!-- #region Monitor Market Name -->
+                                <!-- Robert_Lin, 2024-8-29 Comment out for DDPMW-2094 
                             <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="{Binding [Display], Source={x:Static lang:LangHelper.Instance}}" Name="marketName"
                                                     HorizontalAlignment="Left" TextBlockType="Header2"
                                                     TextBlockSemanticColorType="DefaultHeader"
                                                     Foreground="White"
                                                     FontSize="24" />
                             -->
-                            <!-- Robert_Lin, 2024-8-29 for DDPMW-2094, for NPI projects show MarketName else show "Display" 
+                                <!-- Robert_Lin, 2024-8-29 for DDPMW-2094, for NPI projects show MarketName else show "Display" 
                             The binding Text will be HomeDevice.LandingMarketName
                             Support text wrap, maxmum tow rows, ending with "..."
                             -->
-                            <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,12">
-                                <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Name="marketName"
+                                <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,12">
+                                    <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Name="marketName"
                                                             Text="{Binding SelectedHomeDevice.LandingMarketName}"
                                                             HorizontalAlignment="Left" TextBlockType="Header2"
                                                             TextBlockSemanticColorType="DefaultHeader"
@@ -190,27 +191,27 @@
                                                             FontSize="24" TextTrimming="WordEllipsis"
                                                             MaxWidth="{Binding Path=ActualWidth, ElementName=markeyNameWidthGrid}"
                                                             MaxHeight="90"/>
-                            </Grid>
-                            <!-- #endregion Monitor Market Name -->
+                                </Grid>
+                                <!-- #endregion Monitor Market Name -->
 
 
-                            <!-- ComboBox to select Monitor -->
-                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                                <!-- #region Models -->
-                                <StackPanel>
-                                    <!-- #region ModelName for single monitor -->
-                                    <!-- Robert_Lin, 2024-6-20, change to show DisplayName -->
-                                    <Grid x:Name="gridDisplayName">
-                                        <UXControls:UXTextBlock Text="{Binding SelectedHomeDevice.DisplayName}" 
+                                <!-- ComboBox to select Monitor -->
+                                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                                    <!-- #region Models -->
+                                    <StackPanel>
+                                        <!-- #region ModelName for single monitor -->
+                                        <!-- Robert_Lin, 2024-6-20, change to show DisplayName -->
+                                        <Grid x:Name="gridDisplayName">
+                                            <UXControls:UXTextBlock Text="{Binding SelectedHomeDevice.DisplayName}" 
                                                                 TextTrimming="CharacterEllipsis" x:Name="tbDisplayName"
                                                                 HorizontalAlignment="Left" 
                                                                 Focusable="True" KeyboardNavigation.TabIndex="3"
                                                                 MaxWidth="{Binding Path=ActualWidth, ElementName=markeyNameWidthGrid}"
                                                                 Visibility="{Binding SelectedHomeDeviceTextVisibiliity}" FontSize="18" />
-                                    </Grid>
-                                    <!-- #endregion ModelName for single monitor -->
-                                    
-                                    <!-- #region HomeDeviceComboBox - When there are multiple monitors
+                                        </Grid>
+                                        <!-- #endregion ModelName for single monitor -->
+
+                                        <!-- #region HomeDeviceComboBox - When there are multiple monitors
                                     <UXControls:UXComboBox  x:Name="HomeDeviceComboBox"
                                     Visibility="{Binding HomeDevicesComboBoxVisibility}"
                                     Background="#FF293B4D" Width="200"
@@ -219,23 +220,54 @@
                                     BorderBrush="#FF40586D" Foreground="White"
                                     SelectedItem="{Binding SelectedHomeDevice, Mode=TwoWay}">
                                     </UXControls:UXComboBox> -->
-                                    <!-- HomeDeviceComboBox - Option1: Using WPF ComboBox -->
-                                    <!-- Robert_Lin, 2024-6-20, change to show DisplayName -->
-                                    <!-- Derek_Du 2024-10-26 remove MinWidth="140"  for RWD -->
-                                    <ComboBox Style="{DynamicResource DdpmComboBoxStyle}" Height="40"
-                                              Visibility="{Binding HomeDevicesComboBoxVisibility}"
-                                              KeyboardNavigation.TabIndex="3" KeyboardNavigation.TabNavigation="Continue"
-                                              ItemsSource="{Binding HomeDevices}"
+                                        <!-- HomeDeviceComboBox - Option1: Using WPF ComboBox -->
+                                        <!-- Robert_Lin, 2024-6-20, change to show DisplayName -->
+                                        <!-- Derek_Du 2024-10-26 remove MinWidth="140"  for RWD -->
+                                        <!-- 
                                               DisplayMemberPath="DisplayName"
+                                              KeyboardNavigation.TabNavigation="Continue"
+                                              KeyboardNavigation.DirectionalNavigation="Continue"
+                                    -->
+                                        <ComboBox Style="{DynamicResource DdpmComboBoxStyle}" Height="40"
+                                              Visibility="{Binding HomeDevicesComboBoxVisibility}"
+                                              KeyboardNavigation.TabIndex="3" 
+                                              DisplayMemberPath="DisplayName"
+                                              ItemsSource="{Binding HomeDevices}"
                                               SelectedItem="{Binding SelectedHomeDevice, Mode=TwoWay}">
-                                    </ComboBox>
-                                    <!-- #endregion HomeDeviceComboBox  - When there are multiple monitors -->
-                                </StackPanel>
-                                <!-- #endregion Models -->
+                                            <ComboBox.ItemContainerStyle>
+                                                <Style TargetType="ComboBoxItem" BasedOn="{StaticResource DdpmComboBoxItemContainerStyle}">
+                                                    <Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}"/>
+                                                </Style>
+                                            </ComboBox.ItemContainerStyle>
+                                            <!--<ComboBox.Resources>
+                                            <Style TargetType="ListBoxItem">
+                                                <Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}"/>
+                                            </Style>
+                                        </ComboBox.Resources>-->
+                                            <!--<ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                -->
+                                            <!--<ComboBoxItem Content="{Binding DisplayName}" Focusable="False"
+                                                              AutomationProperties.Name="{Binding DisplayName}"/>-->
+                                            <!--
+                                                <TextBlock Text="{Binding DisplayName}" Focusable="False"
+                                                           AutomationProperties.Name="{Binding DisplayName}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>-->
+                                            <!--<ComboBox.ItemContainerStyle>
+                                            <Style TargetType="ComboBoxItem">
+                                                <Setter Property="Focusable" Value="False"/>
+                                                <Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}"/>
+                                            </Style>
+                                        </ComboBox.ItemContainerStyle>-->
+                                        </ComboBox>
+                                        <!-- #endregion HomeDeviceComboBox  - When there are multiple monitors -->
+                                    </StackPanel>
+                                    <!-- #endregion Models -->
 
-                                <!-- #region DeviceInfoIcon -->
-                                <!-- OLD, Image solution -->
-                                <!--<Image Name="imgInfoIcon" Stretch="None" Margin="8,0,0,6" Visibility="Collapsed"
+                                    <!-- #region DeviceInfoIcon -->
+                                    <!-- OLD, Image solution -->
+                                    <!--<Image Name="imgInfoIcon" Stretch="None" Margin="8,0,0,6" Visibility="Collapsed"
                                        Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
                                     <Image.ToolTip>
                                         <ToolTip Placement="Left" HorizontalOffset="-16" VerticalOffset="-90">
@@ -263,140 +295,141 @@
                                     </Image.ToolTip>
                                 </Image>-->
 
-                                <!-- NEW: Using Paths to draw -->
-                                <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="8,0,0,10" VerticalAlignment="Center">
-                                    <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
-                                        <Grid.Resources>
-                                            <Style TargetType="Path">
-                                                <!--<Setter Property="Fill" Value="#FFB6B6B6"/>-->
-                                                <Setter Property="Fill" Value="{DynamicResource InfoIconColor}"/>
-                                            </Style>
-                                        </Grid.Resources>
-                                        <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"/>
-                                        <Path Data="M8.75 6.4502H7.25V12.6502H8.75V6.4502Z"/>
-                                        <Path Data="M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"/>
-                                        <Grid.ToolTip>
-                                            <ToolTip Placement="Right" HorizontalOffset="-16" VerticalOffset="-90">
-                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                    <Border.Resources>
-                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
-                                                    </Border.Resources>
+                                    <!-- NEW: Using Paths to draw -->
+                                    <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="8,0,0,10" VerticalAlignment="Center">
+                                        <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
+                                            <Grid.Resources>
+                                                <Style TargetType="Path">
+                                                    <!--<Setter Property="Fill" Value="#FFB6B6B6"/>-->
+                                                    <Setter Property="Fill" Value="{DynamicResource InfoIconColor}"/>
+                                                </Style>
+                                            </Grid.Resources>
+                                            <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"/>
+                                            <Path Data="M8.75 6.4502H7.25V12.6502H8.75V6.4502Z"/>
+                                            <Path Data="M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"/>
+                                            <Grid.ToolTip>
+                                                <ToolTip Placement="Right" HorizontalOffset="-16" VerticalOffset="-90">
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
+                                                        </Border.Resources>
 
-                                                    <StackPanel>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding [FirmwareVersion], Source={x:Static lang:LangHelper.Instance}}" Name="tooltipFwVer" Margin="0,0,8,0" />
-                                                            <TextBlock Text="{Binding SelectedHomeDevice.FwVer}" />
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [FirmwareVersion], Source={x:Static lang:LangHelper.Instance}}" Name="tooltipFwVer" Margin="0,0,8,0" />
+                                                                <TextBlock Text="{Binding SelectedHomeDevice.FwVer}" />
+                                                            </StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ServiceTag], Source={x:Static lang:LangHelper.Instance}}" Name="tooltipServiceTag" Margin="0,0,8,0" />
+                                                                <TextBlock Text="{Binding SelectedHomeDevice.ServiceTag}" />
+                                                            </StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ManufactureMonth], Source={x:Static lang:LangHelper.Instance}}" Name="tooltipManufactureMonth" Margin="0,0,8,0" />
+                                                                <TextBlock Text="{Binding SelectedHomeDevice.MfgDate}" />
+                                                            </StackPanel>
                                                         </StackPanel>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding [ServiceTag], Source={x:Static lang:LangHelper.Instance}}" Name="tooltipServiceTag" Margin="0,0,8,0" />
-                                                            <TextBlock Text="{Binding SelectedHomeDevice.ServiceTag}" />
-                                                        </StackPanel>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding [ManufactureMonth], Source={x:Static lang:LangHelper.Instance}}" Name="tooltipManufactureMonth" Margin="0,0,8,0" />
-                                                            <TextBlock Text="{Binding SelectedHomeDevice.MfgDate}" />
-                                                        </StackPanel>
-                                                    </StackPanel>
-                                                </Border>
-                                            </ToolTip>
-                                        </Grid.ToolTip>
-                                    </Grid>
-                                </Viewbox>
-                                <!-- #endregion DeviceInfoIcon -->
-                            </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Grid.ToolTip>
+                                        </Grid>
+                                    </Viewbox>
+                                    <!-- #endregion DeviceInfoIcon -->
+                                </StackPanel>
+                            </Grid>
                         </Grid>
-                    </Grid>
 
-                    <!-- Left vBar -->
-                    <!-- ItemsSource="{Binding VbarItems}" -->
-                    <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,0" 
+                        <!-- Left vBar -->
+                        <!-- ItemsSource="{Binding VbarItems}" -->
+                        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,0" 
                               x:Name="vBarLeft" Width="{Binding vBarWidthRWD}">
-                        <ItemsControl Name="vbarListLeft" Margin="0,10,5,0" HorizontalAlignment="Right" 
+                            <ItemsControl Name="vbarListLeft" Margin="0,10,5,0" HorizontalAlignment="Right" 
                                           ItemsSource="{Binding Source={StaticResource ItemsViewSource}}"
                                       Focusable="False" KeyboardNavigation.TabNavigation="Continue">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <ContentPresenter />
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                            <ItemsControl.ItemContainerStyle>
-                                <Style>
-                                    <Setter Property="FrameworkElement.Margin" Value="0,5" />
-                                </Style>
-                            </ItemsControl.ItemContainerStyle>
-                        </ItemsControl>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <ContentPresenter />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style>
+                                        <Setter Property="FrameworkElement.Margin" Value="0,5" />
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                            </ItemsControl>
+                        </Grid>
                     </Grid>
-                </Grid>
-                <!--<UXControls:UXScrollViewer x:Name="topViewScrollViewer">-->
-                <!-- vBar + RightFrame -->
-                <StackPanel x:Name="stVbarRightFrame">
-                    <!-- vBar -->
-                    <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,15" x:Name="vBarRight" Visibility="Collapsed"
+                    <!--<UXControls:UXScrollViewer x:Name="topViewScrollViewer">-->
+                    <!-- vBar + RightFrame -->
+                    <StackPanel x:Name="stVbarRightFrame">
+                        <!-- vBar -->
+                        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,15" x:Name="vBarRight" Visibility="Collapsed"
                               MouseEnter="vBar_MouseEnter" MouseLeave="vBar_MouseLeave">
-                        <ItemsControl Name="vbarListRight" Margin="0,10,5,0" HorizontalAlignment="Right" 
+                            <ItemsControl Name="vbarListRight" Margin="0,10,5,0" HorizontalAlignment="Right" 
                                           ItemsSource="{Binding Source={StaticResource ItemsViewSource}}"
                                       KeyboardNavigation.TabNavigation="Continue">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <ContentPresenter />
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                            <ItemsControl.ItemContainerStyle>
-                                <Style>
-                                    <Setter Property="FrameworkElement.Margin" Value="0,5" />
-                                </Style>
-                            </ItemsControl.ItemContainerStyle>
-                        </ItemsControl>
-                    </Grid>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <ContentPresenter />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style>
+                                        <Setter Property="FrameworkElement.Margin" Value="0,5" />
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                            </ItemsControl>
+                        </Grid>
 
 
-                    <!-- RightFrame -->
-                    <Grid x:Name="RightGrid" HorizontalAlignment="Right" MinWidth="660">
-                        <Border CornerRadius="13" Margin="10,0,0,20" Padding="16,0" 
+                        <!-- RightFrame -->
+                        <Grid x:Name="RightGrid" HorizontalAlignment="Right" MinWidth="660">
+                            <Border CornerRadius="13" Margin="10,0,0,20" Padding="16,0" 
                                     Background="{DynamicResource RightBaseBkColor}">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
 
-                                <!-- RightViewHeader control -->
-                                <common:RightViewHeaderCtrl Grid.Row="0" x:Name="rightViewHeaderCtrl" Margin="0,20,0,0"
+                                    <!-- RightViewHeader control -->
+                                    <common:RightViewHeaderCtrl Grid.Row="0" x:Name="rightViewHeaderCtrl" Margin="0,20,0,0"
                                     SelectedIndex="{Binding RightViewHeaderSelectedIndex, Mode=TwoWay}"
                                     ItemsSource="{Binding RightViewHeaders, Mode=TwoWay}"
                                     SelectionChanged="rightViewHeaderCtrl_SelectionChanged"/>
 
-                                <!-- RightFrame: will inject DdpmModule's RightView -->
-                                <!-- Robert_Lin, 2024-8-23, change Mode back to OneWay due to the RightView property in ViewModel
+                                    <!-- RightFrame: will inject DdpmModule's RightView -->
+                                    <!-- Robert_Lin, 2024-8-23, change Mode back to OneWay due to the RightView property in ViewModel
                                  is Get only, no Setter -->
-                                <!-- Robert_Lin, 2024-6-26, chage Mode to OneWay from TwoWay -->
-                                <ContentControl Grid.Row="1" Name="RightFrame"
+                                    <!-- Robert_Lin, 2024-6-26, chage Mode to OneWay from TwoWay -->
+                                    <ContentControl Grid.Row="1" Name="RightFrame"
                                     Content="{Binding RightView, Mode=OneWay}"/>
-                            </Grid>
-                        </Border>
-                    </Grid>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                    <!--</UXControls:UXScrollViewer>-->
                 </StackPanel>
-                <!--</UXControls:UXScrollViewer>-->
-            </StackPanel>
 
+            </Grid>
+
+            <!-- Layer : FullView -->
+            <ContentControl Name="FullFrame" Content="{Binding FullView}">
+                <ContentControl.Style>
+                    <Style TargetType="ContentControl">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding FullView}" Value="{x:Null}">
+                                <!-- Debug to set always Visible -->
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContentControl.Style>
+            </ContentControl>
         </Grid>
-
-        <!-- Layer : FullView -->
-        <ContentControl Name="FullFrame" Content="{Binding FullView}">
-            <ContentControl.Style>
-                <Style TargetType="ContentControl">
-                    <Setter Property="Visibility" Value="Visible" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding FullView}" Value="{x:Null}">
-                            <!-- Debug to set always Visible -->
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ContentControl.Style>
-        </ContentControl>
-    </Grid>
+    <!--</UXControls:UXScrollViewer>-->
 </UserControl>

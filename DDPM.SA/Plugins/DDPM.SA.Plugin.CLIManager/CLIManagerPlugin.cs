@@ -373,6 +373,15 @@ namespace DDPM.SA.Plugin.CLIManager
                         rst = CLIHandlerPeripheral.CLI_Peripheral_RestoreFactoryDefault(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
                     else if (commandLineInput.PluginsType.Equals("DISPLAY"))
                         rst = CLIHandlerDisplay.CLI_Display_RestoreFactoryDefault(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else if (commandLineInput.PluginsType.Equals("APP") && commandLineInput.Options.Count == 0)
+                        rst = CLIHandlerApp.CLI_Common_LockUlockWithUserAction(Log, data, _SettingsPluginIT, new CommandLineInput
+                        {
+                            Command = commandLineInput.Command,
+                            PluginsType = commandLineInput.PluginsType,
+                            TargetType = commandLineInput.TargetType,
+                            TargetFeature = "SCREENNOTIFICATION",
+                            Options = new List<CommandType_Option> { new CommandType_Option("VALUE", "LOCK") }
+                        }, command_guid);
                     else
                         rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;

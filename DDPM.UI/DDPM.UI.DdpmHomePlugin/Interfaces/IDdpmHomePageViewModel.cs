@@ -41,5 +41,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Interfaces
 
         public bool IsPleaseWaitVisible { get; set; }
         public void DumpDevicesToLog();
+        public bool IsSmallScreenResolution { get; set; }
     }
 }

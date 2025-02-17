@@ -180,27 +180,35 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             {
                 case "DDPM":
                     _showPluginManager?.ShowHomePage();
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] EndWalkThrough: DDPM : DDPM");
                     break;
                 case "Displays":
-                    _showPluginManager?.ShowHomePage(); //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.DisplayPluginId);
+                    _showPluginManager?.ShowHomePage();
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] EndWalkThrough: Displays : Displays");
                     break;
                 case "LogicalWebcam":
                     _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WebCameraPluginId, _currentDeviceinfo.ToString());
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] EndWalkThrough: LogicalWebcam : " + _currentDeviceinfo.ToString());
                     break;
                 case "LogicalKeyboard":
                     _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.KeyboardPluginId, _currentDeviceinfo.ToString());
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] EndWalkThrough: LogicalKeyboard : " + _currentDeviceinfo.ToString());
                     break;
                 case "LogicalMouse":
                     _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.MousePluginId, _currentDeviceinfo.ToString());
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] EndWalkThrough: LogicalMouse : " + _currentDeviceinfo.ToString());
                     break;
                 case "LogicalPen":
                     _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.PenPluginId, _currentDeviceinfo.ToString());
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] EndWalkThrough: LogicalPen : " + _currentDeviceinfo.ToString());
                     break;
                 case "LogicalHeadset":
                     _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.HeadsetPluginId, _currentDeviceinfo.ToString());
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] EndWalkThrough: LogicalHeadset : " + _currentDeviceinfo.ToString());
                     break;
                 default:
                     _showPluginManager?.ShowHomePage();
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] EndWalkThrough: default : default");
                     break;
             }
             ControlIcon(true);

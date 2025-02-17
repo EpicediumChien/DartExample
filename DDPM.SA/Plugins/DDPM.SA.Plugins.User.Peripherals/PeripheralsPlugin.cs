@@ -22,6 +22,7 @@ using Dell.TechHub.Sdk.Common.Utilities.Extensions;
 using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Shell.Interop;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using VcpCore.Common;
+using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 using IDeviceManager = IndiLogic.DPeM.Broker.IDeviceManager;
 using IDs = DDPM.SA.Common.IDs;
 using Task = System.Threading.Tasks.Task;
@@ -2559,31 +2561,47 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
-        private void _iDeviceManager_DeviceRemovedEvent(IPhysicalDevice iPhysicalDevice)
+        private void _iDeviceManager_DeviceRemovedEvent(Guid physicalDeviceId)//(IPhysicalDevice iPhysicalDevice) // Elie, 25/02/17 R23 changes the interface
         {
             //System.Diagnostics.Debug.WriteLine("ParentPhysicalDevice Removed, Id : " + iPhysicalDevice.Id + ", Name : " + iPhysicalDevice.Name);
-            writelog("ParentPhysicalDevice Removed, Id : " + iPhysicalDevice.Id + ", Name : " + iPhysicalDevice.Name);
+            //writelog("ParentPhysicalDevice Removed, Id : " + iPhysicalDevice.Id + ", Name : " + iPhysicalDevice.Name);
+            writelog("ParentPhysicalDevice Removed, Id : " + physicalDeviceId);// + ", Name : " + iPhysicalDevice.Name);
             lock (_PeripheralLock)
             {
                 if (_isClientConnected)
                 {
-                    iPhysicalDevice.DeviceAddedEvent -= IPhysicalDevice_DeviceAddedEvent;
-                    iPhysicalDevice.DeviceRemovedEvent -= IPhysicalDevice_DeviceRemovedEvent;
+                    //IPhysicalDevice iPhysicalDevice;
+                    List<IPhysicalDevice> iPhysicalDevices = _iDeviceManager.Devices
+                        .Where(x => x.Id == physicalDeviceId)
+                        .ToList();
 
-                    if (iPhysicalDevice is IPhysicalPenDevice penDevice && PhysicalPenDevices.Contains(penDevice.Id))
+                    if (iPhysicalDevices == null || iPhysicalDevices.Count == 0)
                     {
-                        penDevice.ActivePenInformationChanged -= PenDevice_ActivePenInformationChanged;
-                        PhysicalPenDevices.Remove(penDevice.Id);
+                        writelog($"[DeviceRemovedEvent]No devices found with ID: {physicalDeviceId}");
                     }
-
-                    ScanDevices();
-
-                    if (iPhysicalDevice.Type == DeviceType.PhysicalAudioDongle || iPhysicalDevice.Type == DeviceType.PhysicalDongle)
+                    else
                     {
-                        DeviceChangedEventArgs _EventArgs = new();
-                        _EventArgs.type = DeviceChangedType.Peripherals_UnPlug;
-                        _EventArgs.changedProperty = "PhysicalDeviceRemoved";
-                        OnNotify(_EventArgs);
+                        foreach (var iPhysicalDevice in iPhysicalDevices)
+                        {
+                            iPhysicalDevice.DeviceAddedEvent -= IPhysicalDevice_DeviceAddedEvent;
+                            iPhysicalDevice.DeviceRemovedEvent -= IPhysicalDevice_DeviceRemovedEvent;
+
+                            if (iPhysicalDevice is IPhysicalPenDevice penDevice && PhysicalPenDevices.Contains(penDevice.Id))
+                            {
+                                penDevice.ActivePenInformationChanged -= PenDevice_ActivePenInformationChanged;
+                                PhysicalPenDevices.Remove(penDevice.Id);
+                            }
+
+                            ScanDevices();
+
+                            if (iPhysicalDevice.Type == DeviceType.PhysicalAudioDongle || iPhysicalDevice.Type == DeviceType.PhysicalDongle)
+                            {
+                                DeviceChangedEventArgs _EventArgs = new();
+                                _EventArgs.type = DeviceChangedType.Peripherals_UnPlug;
+                                _EventArgs.changedProperty = "PhysicalDeviceRemoved";
+                                OnNotify(_EventArgs);
+                            }
+                        }
                     }
                 }
             }
@@ -2608,7 +2626,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
-        private void IPhysicalDevice_DeviceRemovedEvent(ILogicalDevice iLogicalDevice)
+        private void IPhysicalDevice_DeviceRemovedEvent(Guid deviceGuid)//(ILogicalDevice iLogicalDevice) // Elie, 25/02/17 R23 changes the interface
         {
             lock (_lock)
             {
@@ -2616,9 +2634,13 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 {
                     //Debug.WriteLine($"ID: {iLogicalDevice.Id}, Type:{iLogicalDevice.Type}");
                     //Debug.WriteLine($"DeviceCount: {_deviceHelper.deviceInfo.Count}");
-                    writelog($"ID: {iLogicalDevice.Id}, Type:{iLogicalDevice.Type}");
+                    //writelog($"ID: {iLogicalDevice.Id}, Type:{iLogicalDevice.Type}");
+                    writelog($"ID: {deviceGuid}");//, Type:{iLogicalDevice.Type}");
                     writelog($"DeviceCount: {_deviceHelper.deviceInfo.Count}");
-                    _deviceHelper.deviceInfo.Where(x => x.ID == iLogicalDevice.Id).ToList().ForEach(device =>
+
+                    List<DeviceInfo> deviceInfoList = _deviceHelper.deviceInfo.Where(x => x.ID == deviceGuid).ToList();
+
+                    deviceInfoList.ForEach(device =>
                     {
                         device.IsConnected = false;
 
@@ -2630,60 +2652,83 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         };
                         OnNotify(_EventArgs);
                     });
-                    if (IDevices.Contains(iLogicalDevice.Id) && iLogicalDevice is IDevice _IDevice)
+
+                    //_deviceHelper.deviceInfo.Where(x => x.ID == deviceGuid).ToList().ForEach(device =>
+                    //{
+                    //    device.IsConnected = false;
+
+                    //    DeviceChangedEventArgs _EventArgs = new()
+                    //    {
+                    //        type = DeviceChangedType.Peripherals_UnPlug,
+                    //        device_peripherals = device,
+                    //        changedProperty = "LogicalDeviceRemoved"
+                    //    };
+                    //    OnNotify(_EventArgs);
+                    //});
+
+                    ILogicalDevice iLogicalDevice = _iDeviceManager.Devices.SelectMany(device => device.Devices).FirstOrDefault(x => x.Id == deviceGuid);
+
+                    if (iLogicalDevice == null)
                     {
-                        _IDevice.NameChanged -= (name) => OnDeviceNameChanged(_IDevice, name);
-                        IDevices.Remove(iLogicalDevice.Id);
+                        writelog($"***** Device not found by GUID: {deviceGuid}, it cannot Remove DTP Event. *****");
                     }
-                    if (LogicalDevices.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevice _logicalDevice)
+                    else
                     {
-                        _logicalDevice.BatteryStatusChanged -= ILogicalDevice_BatteryStatusChanged;
-                        _logicalDevice.BatteryLevelChanged -= ILogicalDevice_BatteryLevelChanged;
-                        LogicalDevices.Remove(iLogicalDevice.Id);
-                    }
-                    if (LogicalDevices2.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevice2 _logicalDevice2)
-                    {
-                        _logicalDevice2.DpiLevelChanged -= ILogicalDevice_DpiLevelChanged;
-                        LogicalDevices2.Remove(iLogicalDevice.Id);
-                    }
-                    if (LogicalDevices3.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevice3 _logicalDevice3)
-                    {
-                        _logicalDevice3.MousePrimaryButtonChanged -= ILogicalDevice_MousePrimaryButtonChanged;
-                        _logicalDevice3.DPIValueChanged -= ILogicalDevice_DpiValueChanged;
-                        _logicalDevice3.TouchScrollSensitivityLevelChanged -= ILogicalDevice_TouchScrollSensitivityLevelChanged;
-                        _logicalDevice3.BackLightingControlsChanged -= ILogicalDevice_BackLightingControlsChanged;
-                        _logicalDevice3.BackLightingLevelChanged -= ILogicalDevice_BackLightingLevelChanged;
-                        _logicalDevice3.PairedHostNameChanged -= ILogicalDevice_PairedHostNameChanged;
-                        _logicalDevice3.IsDPILevelChangePendingChanged -= ILogicalDevice_IsDPILevelChangePendingChanged;
-                        _logicalDevice3.IsDPIValueChangePendingChanged -= ILogicalDevice_IsDPIValueChangePendingChanged;
-                        LogicalDevices3.Remove(iLogicalDevice.Id);
-                    }
-                    if (LogicalDevicesPen.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevicePen _logicalDevicePen)
-                    {
-                        _logicalDevicePen.PenSettingChanged -= Pen_PenSettingChanged;
-                        _logicalDevicePen.KeyCaptureStarted -= Pen_KeyCaptureStarted;
-                        _logicalDevicePen.KeyCaptureDataChanged -= Pen_KeyCaptureDataChanged;
-                        _logicalDevicePen.KeyCaptureProgressDataChanged -= Pen_KeyCaptureProgressDataChanged;
-                        LogicalDevicesPen.Remove(iLogicalDevice.Id);
-                    }
-                    if (LogicalDevicHeadset.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
-                    {
-                        _logs.DebugMsg_1($"[LogicalDevicHeadset] IPhysicalDevice_DeviceRemovedEvent Remove DTH event ... in");
-                        _logicalDeviceHeadset.IsReadyChanged -= _logicalDeviceHeadset_IsReadyChanged;
-                        _logicalDeviceHeadset.IsDirtyChanged -= _logicalDeviceHeadset_IsDirtyChanged;
-                        _logicalDeviceHeadset.MicNoiseCancellationChanged -= _logicalDeviceHeadset_MicNoiseCancellationChanged;
-                        _logicalDeviceHeadset.MicNCIncomingChanged -= _logicalDeviceHeadset_MicNCIncomingChanged;
-                        _logicalDeviceHeadset.SidetoneChanged -= _logicalDeviceHeadset_SidetoneChanged;
-                        _logicalDeviceHeadset.BusyLightChanged -= _logicalDeviceHeadset_BusyLightChanged;
-                        _logicalDeviceHeadset.VoiceGuidanceChanged -= _logicalDeviceHeadset_VoiceGuidanceChanged;
-                        _logicalDeviceHeadset.SelectedPresetChanged -= _logicalDeviceHeadset_SelectedPresetChanged;
-                        _logicalDeviceHeadset.SidetoneLevelChanged -= _logicalDeviceHeadset_SidetoneLevelChanged;
-                        _logicalDeviceHeadset.MuteStatusChanged -= _logicalDeviceHeadset_MuteStatusChanged;
-                        _logicalDeviceHeadset.BandsGainChanged -= _logicalDeviceHeadset_BandsGainChanged;
-                        _logicalDeviceHeadset.AncModeChanged -= _logicalDeviceHeadset_AncModeChanged;
-                        _logicalDeviceHeadset.AncGainChanged -= _logicalDeviceHeadset_AncGainChanged;
-                        LogicalDevicHeadset.Remove(iLogicalDevice.Id);
-                        _logs.DebugMsg_1($"[LogicalDevicHeadset] IPhysicalDevice_DeviceRemovedEvent Remove ID : {iLogicalDevice.Id.ToString()} ... ");
+                        if (IDevices.Contains(iLogicalDevice.Id) && iLogicalDevice is IDevice _IDevice)
+                        {
+                            _IDevice.NameChanged -= (name) => OnDeviceNameChanged(_IDevice, name);
+                            IDevices.Remove(iLogicalDevice.Id);
+                        }
+                        if (LogicalDevices.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevice _logicalDevice)
+                        {
+                            _logicalDevice.BatteryStatusChanged -= ILogicalDevice_BatteryStatusChanged;
+                            _logicalDevice.BatteryLevelChanged -= ILogicalDevice_BatteryLevelChanged;
+                            LogicalDevices.Remove(iLogicalDevice.Id);
+                        }
+                        if (LogicalDevices2.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevice2 _logicalDevice2)
+                        {
+                            _logicalDevice2.DpiLevelChanged -= ILogicalDevice_DpiLevelChanged;
+                            LogicalDevices2.Remove(iLogicalDevice.Id);
+                        }
+                        if (LogicalDevices3.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevice3 _logicalDevice3)
+                        {
+                            _logicalDevice3.MousePrimaryButtonChanged -= ILogicalDevice_MousePrimaryButtonChanged;
+                            _logicalDevice3.DPIValueChanged -= ILogicalDevice_DpiValueChanged;
+                            _logicalDevice3.TouchScrollSensitivityLevelChanged -= ILogicalDevice_TouchScrollSensitivityLevelChanged;
+                            _logicalDevice3.BackLightingControlsChanged -= ILogicalDevice_BackLightingControlsChanged;
+                            _logicalDevice3.BackLightingLevelChanged -= ILogicalDevice_BackLightingLevelChanged;
+                            _logicalDevice3.PairedHostNameChanged -= ILogicalDevice_PairedHostNameChanged;
+                            _logicalDevice3.IsDPILevelChangePendingChanged -= ILogicalDevice_IsDPILevelChangePendingChanged;
+                            _logicalDevice3.IsDPIValueChangePendingChanged -= ILogicalDevice_IsDPIValueChangePendingChanged;
+                            LogicalDevices3.Remove(iLogicalDevice.Id);
+                        }
+                        if (LogicalDevicesPen.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevicePen _logicalDevicePen)
+                        {
+                            _logicalDevicePen.PenSettingChanged -= Pen_PenSettingChanged;
+                            _logicalDevicePen.KeyCaptureStarted -= Pen_KeyCaptureStarted;
+                            _logicalDevicePen.KeyCaptureDataChanged -= Pen_KeyCaptureDataChanged;
+                            _logicalDevicePen.KeyCaptureProgressDataChanged -= Pen_KeyCaptureProgressDataChanged;
+                            LogicalDevicesPen.Remove(iLogicalDevice.Id);
+                        }
+                        if (LogicalDevicHeadset.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
+                        {
+                            _logs.DebugMsg_1($"[LogicalDevicHeadset] IPhysicalDevice_DeviceRemovedEvent Remove DTH event ... in");
+                            _logicalDeviceHeadset.IsReadyChanged -= _logicalDeviceHeadset_IsReadyChanged;
+                            _logicalDeviceHeadset.IsDirtyChanged -= _logicalDeviceHeadset_IsDirtyChanged;
+                            _logicalDeviceHeadset.MicNoiseCancellationChanged -= _logicalDeviceHeadset_MicNoiseCancellationChanged;
+                            _logicalDeviceHeadset.MicNCIncomingChanged -= _logicalDeviceHeadset_MicNCIncomingChanged;
+                            _logicalDeviceHeadset.SidetoneChanged -= _logicalDeviceHeadset_SidetoneChanged;
+                            _logicalDeviceHeadset.BusyLightChanged -= _logicalDeviceHeadset_BusyLightChanged;
+                            _logicalDeviceHeadset.VoiceGuidanceChanged -= _logicalDeviceHeadset_VoiceGuidanceChanged;
+                            _logicalDeviceHeadset.SelectedPresetChanged -= _logicalDeviceHeadset_SelectedPresetChanged;
+                            _logicalDeviceHeadset.SidetoneLevelChanged -= _logicalDeviceHeadset_SidetoneLevelChanged;
+                            _logicalDeviceHeadset.MuteStatusChanged -= _logicalDeviceHeadset_MuteStatusChanged;
+                            _logicalDeviceHeadset.BandsGainChanged -= _logicalDeviceHeadset_BandsGainChanged;
+                            _logicalDeviceHeadset.AncModeChanged -= _logicalDeviceHeadset_AncModeChanged;
+                            _logicalDeviceHeadset.AncGainChanged -= _logicalDeviceHeadset_AncGainChanged;
+                            LogicalDevicHeadset.Remove(iLogicalDevice.Id);
+                            _logs.DebugMsg_1($"[LogicalDevicHeadset] IPhysicalDevice_DeviceRemovedEvent Remove ID : {iLogicalDevice.Id.ToString()} ... ");
+                        }
                     }
 
                     //if (LowBatteryIDs.Contains(iLogicalDevice.Id.ToString()))
@@ -2856,8 +2901,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     OnNotify(_EventArgs);
                     Debug.WriteLine($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
                     writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
-
                     CheckLowBatteryOSD(deviceInfo);
+
+                    // << 250217 added by Hess to meet PIMS-341711
+                    if (deviceInfo.BatteryStatus == "Charging")
+                        LowBatteryIDs.Remove(deviceInfo.ID.ToString());
+                    // >>
                 }
                 else
                 {
@@ -2996,6 +3045,97 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
+        public Task UpdateLowBatteryOSD(bool showOSD)
+        {
+            writelog($"UpdateLowBatteryOSD: Value: {showOSD}");
+            if (_deviceHelper is { deviceInfo: not null })
+            {
+                foreach (var di in _deviceHelper.deviceInfo)
+                {
+                    if (showOSD)
+                    {
+                        try
+                        {
+                            if (di.BatteryLevel >= 0 && di.BatteryLevel <= 9)
+                            {
+                                OSDType_Device type = OSDType_Device.Unknown;
+                                var deviceType = di.LogicalDeviceType.ToUpper();
+                                var model = SAUICommonHelper.MappingModel(di.ModelNumber);
+                                var message = $"{di.Name.Replace(di.ModelNumber, "").Trim()} {model}";
+                                if (deviceType.Contains("PEN"))
+                                {
+                                    if (di.ModelNumber == "PN5122W" && di.BatteryLevel > 6)
+                                        continue;
+
+                                    type = OSDType_Device.Pen;
+                                }
+                                else if (deviceType.Contains("KEYBOARD"))
+                                {
+                                    type = OSDType_Device.Keyboard;
+                                }
+                                else if (deviceType.Contains("MOUSE"))
+                                {
+                                    type = OSDType_Device.Mouse;
+                                }
+                                else if (deviceType.Contains("HEADSET"))
+                                {
+                                    type = OSDType_Device.Headset;
+                                }
+                                else if (SAUICommonHelper.EOLKBList.Contains(di.ModelNumber))
+                                {
+                                    type = OSDType_Device.Keyboard;
+                                    message = SAUICommonHelper.MappingEOLName(model);
+                                }
+                                else if (SAUICommonHelper.EOLMouseList.Contains(di.ModelNumber))
+                                {
+                                    type = OSDType_Device.Mouse;
+                                    message = SAUICommonHelper.MappingEOLName(model);
+                                }
+
+                                OSDEventArgs args = new OSDEventArgs()
+                                {
+                                    Requester = "BatteryLow",
+                                    DeviceName = Screen.PrimaryScreen.DeviceName,
+                                    osd_type = OSDType.BatteryLow,
+                                    osd_device = type,
+                                    Message = message
+                                };
+                                OnOSDNotify(args);
+                                LowBatteryIDs.Add(di.ID.ToString());
+                                writelog($"Show BatteryLow OSD: ID: {di.ID} Level: {di.BatteryLevel}");
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            writelog($"General setting Check [Low battery level] fail with exception:{e.Message}");
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            OSDEventArgs args = new OSDEventArgs()
+                            {
+                                Requester = "CloseBatteryLowOSD",
+                                DeviceName = Screen.PrimaryScreen.DeviceName,
+                                osd_type = OSDType.BatteryLow,
+                                //Message = message
+                            };
+                            OnOSDNotify(args);
+                        }
+                        catch (Exception e)
+                        {
+                            writelog($"General setting Uncheck [Low battery level] fail with exception:{e.Message}");
+                        }
+                        LowBatteryIDs.Clear();
+                    }
+                }
+            }
+
+
+
+            return Task.CompletedTask;
+        }
 
         private void ILogicalDevice_BatteryLevelChanged(ILogicalDevice arg1, int arg2)
         {

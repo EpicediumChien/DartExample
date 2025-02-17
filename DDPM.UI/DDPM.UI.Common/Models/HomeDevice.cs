@@ -306,10 +306,10 @@ namespace DDPM.UI.Common.Models
                         } //switch(deviceInfo.ModelNumber)
 
                         // Jim 20250205 modify PIMS-318236
-                        if (model == "P2424HEB" || model == "P2724DEB" || model == "P3424WEB" || model == "U3223QZ" || model == "U3224KB" || model == "U3224KBA")
-                            return DDPM.SA.Common.UI.SAUICommonHelper.MappingName(model, DeviceInfo.Name);
-                        else
-                            return DDPM.SA.Common.UI.SAUICommonHelper.MappingName(model, DeviceInfo.Name) + $" {model}";
+                        //if ( model == "U3224KB" || model == "U3224KBA")//model == "P2424HEB" || model == "P2724DEB" |||| model == "P3424WEB"  || model == "U3223QZ" )
+                        //    return DDPM.SA.Common.UI.SAUICommonHelper.MappingName(model, DeviceInfo.Name);
+                        //else
+                        return DDPM.SA.Common.UI.SAUICommonHelper.MappingWebCamName(model, DeviceInfo.Name) + $" {model}";
                     }
 
                     //OLD Code:
