@@ -772,7 +772,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     if (SelectedApp == "AllApp")
                     {
                         btn.Value.AssignedAction.ID = btn.Value.DefaultActionID;
-                        btn.Value.AssignedAction.Parameter = string.Empty;
+                        btn.Value.AssignedAction.Parameter = "";
                     }
                     else
                     {
@@ -899,8 +899,8 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
         public string SelectedButton { get; set; } = "";
-        public SelectedMouseAction? SelectedMouseAction => SelectedButton == "" ? null : MouseAction.ButtonActions[(MouseButtonName)Enum.Parse(typeof(MouseButtonName), SelectedButton, true)];
-        public int SelectedActionID => SelectedApp == "AllApp" ? (SelectedButton == "" ? -1 : SelectedMouseAction?.AssignedAction.ID ?? -1) : SelectedMouseAction?.OfficeActions[SelectedApp] ?? -1;
+        public SelectedMouseAction? SelectedMouseAction => string.IsNullOrEmpty(SelectedButton) ? null : MouseAction.ButtonActions[(MouseButtonName)Enum.Parse(typeof(MouseButtonName), SelectedButton, true)];
+        public int SelectedActionID => SelectedApp == "AllApp" ? (string.IsNullOrEmpty(SelectedButton) ? -1 : SelectedMouseAction?.AssignedAction.ID ?? -1) : SelectedMouseAction?.OfficeActions[SelectedApp] ?? -1;
         public string ScrollWheelClickTooltip
         {
             get
@@ -990,7 +990,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     if (action.AssignedAction.ID == -1)
                     {
-                        return SelectedButton == "" ? Strings.NullActionTooltip1 : Strings.NullActionTooltip2;
+                        return string.IsNullOrEmpty(SelectedButton) ? Strings.NullActionTooltip1 : Strings.NullActionTooltip2;
                     }
                     else
                     {
@@ -1009,7 +1009,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (action.DefaultActionID == -1)
                 {
-                    return SelectedButton == "" ? Strings.NullActionTooltip1 : Strings.NullActionTooltip2;
+                    return string.IsNullOrEmpty(SelectedButton) ? Strings.NullActionTooltip1 : Strings.NullActionTooltip2;
                 }
                 actionItem = Actions.KnMActions[action.DefaultActionID];
             }
@@ -1019,7 +1019,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 parameter = action.AssignedAction.Parameter;
             }
             string tooltip = actionItem.Caption!;
-            if (parameter != "")
+            if (!string.IsNullOrEmpty(parameter))
                 tooltip += " : " + parameter;
             return tooltip;
         }
@@ -1036,7 +1036,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             try
             {
-                if (SelectedButton != "")
+                if (!string.IsNullOrEmpty(SelectedButton))
                 {
                     if (SelectedApp == "AllApp")
                     {
@@ -1061,7 +1061,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         { "ActionId", Actions.ActionIdToGuid[actionID] }
                     };
 
-                        if (parameter == "")
+                        if (string.IsNullOrEmpty(parameter))
                         {
                             byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
                             DdpmCommonHelper.DeviceManagerSA!.SetMouseAction(CurrentDeviceID.ToString(), newValue);
@@ -1090,7 +1090,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void ClearSelectedButton()
         {
-            if (SelectedButton != "")
+            if (!string.IsNullOrEmpty(SelectedButton))
             {
                 RefreshButtonImageFile(SelectedButton);
                 SelectedButton = "";

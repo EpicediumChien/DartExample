@@ -38,7 +38,7 @@ namespace DDPM.UI.Module.KeyCustomization
             txtSearchText.Text = "";
             SectionAction.Visibility = Visibility.Visible;
             txtCaption.Focus();
-            if (_vm.SelectedKey == "")
+            if (string.IsNullOrEmpty(_vm.SelectedKey))
             {
                 txtCaption.Text = Strings.KeyCustomizeCaptionCaption;
                 imgBack.Visibility = Visibility.Collapsed;
@@ -118,7 +118,7 @@ namespace DDPM.UI.Module.KeyCustomization
                 var cat = Actions.KnMActions[SelectedActionID].Category;
                 if (cat == ActionCategory.None)
                 {
-                    if (ActiveActionSection != "")
+                    if (!string.IsNullOrEmpty(ActiveActionSection))
                     {
                         CloseSectionPanel($"{ActiveActionSection}Panel", true);
                     }
@@ -127,7 +127,7 @@ namespace DDPM.UI.Module.KeyCustomization
                 else
                 {
                     var section = cat?.ToString().Replace("Action", "") ?? "";
-                    if (section != "")
+                    if (!string.IsNullOrEmpty(section))
                     {
                         RefreshAction(section);
                         OpenSectionPanel($"{section}Panel", true);
@@ -166,9 +166,9 @@ namespace DDPM.UI.Module.KeyCustomization
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (txtSearchText.Text.Trim() == "")
+            if (string.IsNullOrEmpty(txtSearchText.Text.Trim()))
             { txtSearchText.Text = ""; }
-            if (txtSearchText.Text == "")
+            if (string.IsNullOrEmpty(txtSearchText.Text))
             {
                 SectionAction.Visibility = Visibility.Visible;
                 //bdrSearch.Visibility = Visibility.Collapsed;
@@ -254,7 +254,7 @@ namespace DDPM.UI.Module.KeyCustomization
                 RefreshAction(section[1]);
             }
             var sectionOld = GetActionSection(SelectedActionID);
-            if (sectionOld[0] != section[0] && sectionOld[0] != "")
+            if (sectionOld[0] != section[0] && !string.IsNullOrEmpty(sectionOld[0]))
             {
                 RefreshAction(sectionOld[0]);
                 if (sectionOld.Length > 1)
@@ -414,7 +414,7 @@ namespace DDPM.UI.Module.KeyCustomization
             { return; }
 
             DoubleAnimation rotateAnimation;
-            if (ActiveActionSection == "")
+            if (string.IsNullOrEmpty(ActiveActionSection))
             {
                 img.RenderTransform = new RotateTransform();
                 rotateAnimation = new()
@@ -466,7 +466,7 @@ namespace DDPM.UI.Module.KeyCustomization
             };
             img.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
 
-            if (ActiveActionSection != "")
+            if (!string.IsNullOrEmpty(ActiveActionSection))
                 CloseSectionPanel($"{ActiveActionSection}Panel");
 
             ActiveActionSection = section;
@@ -480,7 +480,7 @@ namespace DDPM.UI.Module.KeyCustomization
 
         private void ScrollAction(string section = "", double offset = -1)
         {
-            if (section == "")
+            if (string.IsNullOrEmpty(section))
             { section = ActiveActionSection; }
             if (offset == -1)
             {
