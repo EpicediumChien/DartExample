@@ -2101,7 +2101,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 };
                 sendMessageToEvent(fWUpdateInfo);
             }
-            if (_timeOutCount <= 60 && 
+            if (_timeOutCount <= 60 &&
                 _fWUpdateInfo.DeviceType == DeviceType.LogicalHeadset &&
                 _fWUpdateInfo.Model.Contains("7024") &&
                 _CurrentProcess >= 100)
@@ -2237,13 +2237,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             //else
             {
-                progressNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='progress']");
-                buttonCaptionNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='button-caption']");
-                buttonStateNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='button-state']");
-                stateFlowNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='stateflow']");
-                timeOut = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='timeout']");
-                tPubKeyDev1 = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='tpubkeydev1']");
-                encBlock = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='encblock']");
+                progressNode = xmlDoc.SelectSingleNode("Root/" + "progress".ToUpper(new CultureInfo("en-US", false)));
+                buttonCaptionNode = xmlDoc.SelectSingleNode("Root/" + "button-caption".ToUpper(new CultureInfo("en-US", false)));
+                buttonStateNode = xmlDoc.SelectSingleNode("Root/" + "button-state".ToUpper(new CultureInfo("en-US", false)));
+                stateFlowNode = xmlDoc.SelectSingleNode("Root/" + "stateflow".ToUpper(new CultureInfo("en-US", false)));
+                timeOut = xmlDoc.SelectSingleNode("Root/" + "timeout".ToUpper(new CultureInfo("en-US", false)));
+                tPubKeyDev1 = xmlDoc.SelectSingleNode("Root/" + "tpubkeydev1".ToUpper(new CultureInfo("en-US", false)));
+                encBlock = xmlDoc.SelectSingleNode("Root/" + "encblock".ToUpper(new CultureInfo("en-US", false)));
 
                 if (progressNode == null && buttonCaptionNode == null && buttonStateNode == null && stateFlowNode == null && timeOut == null && tPubKeyDev1 == null && encBlock == null)
                 {
