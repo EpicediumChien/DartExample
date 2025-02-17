@@ -3,6 +3,9 @@
 :: This batch program will generate DDPMSA.reg file base on current directory.
 :: You should run this batch program when you change the base dir of the source code.
 :: And then import the "DDPMSA.reg" into your Windows Registry.
+:: [v5] 2025-2-17 Dean_Yang
+:: Add DTP registration to DTP instrumentation SA
+:: Modify startup group of User SubAgent to 3 (Standard Subagent)
 :: [v4] 2024-8-28 Elie_Liao
 :: fixed wrong name (DDPM.SA.Plugins.User.ActionsManger.)
 :: Add DDPM.SA.Plugins.User.DTPProxy.dll to SubAgent.Uer
@@ -42,7 +45,8 @@ echo [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\AgentRegistration\{2E365D80-
 echo "ExecutablePath"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.Subagent.User.exe">>%OutFile%
 echo "RecoveryAction"=dword:00000002>>%OutFile%
 echo "ExecutionContext"=dword:00000002>>%OutFile%
-echo "StartupGroup"=dword:00000001>>%OutFile%
+::Startup group should be 3 (Standard Subagent) per DTH expert's suggestion
+echo "StartupGroup"=dword:00000003>>%OutFile%
 echo "StartupType"=dword:00000002>>%OutFile%
 echo "MaxRecovery"=dword:00000003>>%OutFile%
 echo.>>%OutFile% 
@@ -91,8 +95,46 @@ echo.>>%OutFile%
 :: This section is used to generate secret key and version info, test purpose
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{21A24609-08A2-423E-80DE-4D33A933F1A1}]>>%OutFile%
 echo "DisplayName"="Dell Display and Peripheral Manager">>%OutFile%
-echo "DisplayVersion"="2.0.0.45">>%OutFile%
+echo "DisplayVersion"="2.0.0.70">>%OutFile%
 echo "InstallLocation"="C:\\Program Files\\Dell\\Dell Display and Peripheral Manager">>%OutFile%
+echo.>>%OutFile%
+:: ========================================================
+:: 2025-2-17 Add DTP registration to DTP instrumentation SA
+:: Start from DPeM core service R23
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins]>>%OutFile%
+echo.>>%OutFile%
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{037F8DB1-6BA6-40B4-B87E-B93032163CF4}]>>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll\\Dell.TechHub.Plugins.DongleCommodity.dll">>%OutFile%
+echo.>>%OutFile%
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{0c0dbe70-e66c-4200-98ad-244b2e451033}]>>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll\\Dell.TechHub.Plugins.DockCommodity.dll">>%OutFile%
+echo.>>%OutFile%
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{5452CA9A-BE6C-4F1B-A04D-EE6730754E5F}]>>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll\\Dell.TechHub.Plugins.WebcamCommodity.dll">>%OutFile%
+echo.>>%OutFile%
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{86037d2f-ed7c-45fe-a5c8-b49859a6b841}]>>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll\\Dell.TechHub.Plugins.HeadsetCommodity.dll">>%OutFile%
+echo.>>%OutFile%
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{8B8810F3-B076-4AED-8106-1802941B330C}]>>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll\\Dell.TechHub.Plugins.GlobalPeripheralCommodity.dll">>%OutFile%
+echo.>>%OutFile%
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{A647FA97-3A21-485F-ADAE-4FF579CECB81}]>>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll\\Dell.TechHub.Plugins.AirAudioCommodity.dll">>%OutFile%
+echo.>>%OutFile%
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{a93dd192-c426-4a6d-b10b-b38b3453085f}]>>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll\\Dell.TechHub.Plugins.MouseCommodity.dll">>%OutFile%
+echo.>>%OutFile%
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{ab63559e-2139-49c1-aba7-73c5ddd29e4c}]>>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll\\Dell.TechHub.Plugins.KeyboardCommodity.dll">>%OutFile%
+echo.>>%OutFile%
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{B939D4A6-86BC-4FC0-9923-4A0507398E2B}]>>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll\\Dell.TechHub.Plugins.PenCommodity.dll">>%OutFile%
+echo.>>%OutFile%
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{dafb7da9-3603-432a-8554-aefd3b3fdeba}]>>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll\\Dell.TechHub.Plugins.SpeakerCommodity.dll">>%OutFile%
+echo.>>%OutFile%
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{E40CF224-7E8A-455B-8F61-E9FD214C82B5}]>>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll\\DDPM.Peripherals.interface.dll">>%OutFile%
 echo.>>%OutFile%
 
 
