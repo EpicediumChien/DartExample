@@ -16,7 +16,8 @@ namespace DDPM.SA.Resources.Helper
         public static LangHelper Instance => _lazy.Value;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public static CultureInfo? UserMappedCultureInfo;
+        public static CultureInfo? UserMappedCultureInfo { get => userMappedCultureInfo; set => userMappedCultureInfo = value; }
+        private static CultureInfo? userMappedCultureInfo;
         public LangHelper()
         {
             //Get the resources of the Lang of the Resources in this namespace, which can be modified.
