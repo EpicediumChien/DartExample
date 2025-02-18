@@ -26,8 +26,10 @@ namespace VcpCore.Plugins.Test
             public void TestType_Initialize0x52toEmpty()
             {
                 Guid ActualdGuid = Guid.NewGuid();
-                Type_Initialize0x52toEmpty expectGUID = new Type_Initialize0x52toEmpty(ActualdGuid);
+                Guid UserGuid = Guid.NewGuid();
+                Type_Initialize0x52toEmpty expectGUID = new Type_Initialize0x52toEmpty(ActualdGuid, UserGuid);
                 Assert.That(ActualdGuid, Is.EqualTo(expectGUID.guid));
+                Assert.That(UserGuid, Is.EqualTo(expectGUID.user_guid));
             }
         }
 
@@ -37,8 +39,10 @@ namespace VcpCore.Plugins.Test
             public void TestType_Watcher0x52()
             {
                 Guid ActualdGuid = Guid.NewGuid();
-                Type_Watcher0x52 expectGUID = new Type_Watcher0x52(ActualdGuid);
+                Guid UserGuid = Guid.NewGuid();
+                Type_Watcher0x52 expectGUID = new Type_Watcher0x52(ActualdGuid, UserGuid);
                 Assert.That(ActualdGuid, Is.EqualTo(expectGUID.guid));
+                Assert.That(UserGuid, Is.EqualTo(expectGUID.user_guid));
             }
         }
 
@@ -48,10 +52,12 @@ namespace VcpCore.Plugins.Test
             public void TestType_GetCapabilitiesString()
             {
                 Guid ActualGuid = Guid.NewGuid();
+                Guid UserGuid = Guid.NewGuid();
                 MonitorInfo_complex ActualmonitorInfoX = new MonitorInfo_complex() { AliasDeviceName = "D2424H", FwVersion = "1.3", series = "1234567", CapabilityString = "DS1346425" };
-                Type_GetCapabilitiesString type_GetCapabilitiesString = new Type_GetCapabilitiesString(ActualGuid, ActualmonitorInfoX);
+                Type_GetCapabilitiesString type_GetCapabilitiesString = new Type_GetCapabilitiesString(ActualGuid, ActualmonitorInfoX, UserGuid);
                 Assert.That(ActualGuid, Is.EqualTo(type_GetCapabilitiesString.guid));
                 Assert.That(ActualmonitorInfoX, Is.EqualTo(type_GetCapabilitiesString.monitorInfoX));
+                Assert.That(UserGuid, Is.EqualTo(type_GetCapabilitiesString.user_guid));
             }
         }
 
@@ -61,10 +67,12 @@ namespace VcpCore.Plugins.Test
             public void TestType_GetVCPCapabilities()
             {
                 Guid ActualGuid = Guid.NewGuid();
+                Guid UserGuid = Guid.NewGuid();
                 MonitorInfo_complex ActualmonitorInfoX = new MonitorInfo_complex() { AliasDeviceName = "AW2724H", CapabilityString = "HH1346425", series = "1234567" };
-                Type_GetVCPCapabilities type_GetVCPCapabilities = new Type_GetVCPCapabilities(ActualGuid, ActualmonitorInfoX);
+                Type_GetVCPCapabilities type_GetVCPCapabilities = new Type_GetVCPCapabilities(ActualGuid, ActualmonitorInfoX, UserGuid);
                 Assert.That(ActualGuid, Is.EqualTo(type_GetVCPCapabilities.guid));
                 Assert.That(ActualmonitorInfoX, Is.EqualTo(type_GetVCPCapabilities.monitorInfoX));
+                Assert.That(UserGuid, Is.EqualTo(type_GetVCPCapabilities.user_guid));
             }
         }
 
@@ -74,14 +82,16 @@ namespace VcpCore.Plugins.Test
             public void TestType_GetVCPCapability_I()
             {
                 Guid ActualGuid = Guid.NewGuid();
+                Guid UserGuid = Guid.NewGuid();
                 MonitorInfo_complex ActualmonitorInfoX = new MonitorInfo_complex() { AliasDeviceName = "D2424H", FwVersion = "1.3", series = "1234567", CapabilityString = "DS1346425" };
                 byte ActualCode = 0x11;
                 int ActualOpt = 10;
 
-                Type_GetVCPCapability_I type_GetVCPCapability_I = new Type_GetVCPCapability_I(ActualGuid, ActualmonitorInfoX, ActualCode, ActualOpt);
+                Type_GetVCPCapability_I type_GetVCPCapability_I = new Type_GetVCPCapability_I(ActualGuid, ActualmonitorInfoX, ActualCode, UserGuid, ActualOpt);
                 Assert.That(ActualGuid, Is.EqualTo(type_GetVCPCapability_I.guid));
                 Assert.That(ActualmonitorInfoX, Is.EqualTo(type_GetVCPCapability_I.monitorInfoX));
                 Assert.That(ActualCode, Is.EqualTo(type_GetVCPCapability_I.code));
+                Assert.That(UserGuid, Is.EqualTo(type_GetVCPCapability_I.user_guid));
                 Assert.That(ActualOpt, Is.EqualTo(type_GetVCPCapability_I.opt));
             }
         }
@@ -92,14 +102,16 @@ namespace VcpCore.Plugins.Test
             public void TestType_GetVCPCapability_II()
             {
                 Guid ActualGuid = Guid.NewGuid();
+                Guid UserGuid = Guid.NewGuid();
                 MonitorInfo_complex ActualmonitorInfoX = new MonitorInfo_complex() { AliasDeviceName = "AW2724H", CapabilityString = "HH1346425", series = "1234567" };
                 string ActualFunctionName = "GetVCPCapability_II";
                 int Actualopt = 20;
 
-                Type_GetVCPCapability_II type_GetVCPCapability_II = new Type_GetVCPCapability_II(ActualGuid, ActualmonitorInfoX, ActualFunctionName, Actualopt);
+                Type_GetVCPCapability_II type_GetVCPCapability_II = new Type_GetVCPCapability_II(ActualGuid, ActualmonitorInfoX, ActualFunctionName, UserGuid, Actualopt);
                 Assert.That(ActualGuid, Is.EqualTo(type_GetVCPCapability_II.guid));
                 Assert.That(ActualmonitorInfoX, Is.EqualTo(type_GetVCPCapability_II.monitorInfoX));
                 Assert.That(ActualFunctionName, Is.EqualTo(type_GetVCPCapability_II.FunctionName));
+                Assert.That(UserGuid, Is.EqualTo(type_GetVCPCapability_II.user_guid));
                 Assert.That(Actualopt, Is.EqualTo(type_GetVCPCapability_II.opt));
             }
         }
@@ -110,15 +122,17 @@ namespace VcpCore.Plugins.Test
             public void TestType_SetVCPCapability_I()
             {
                 Guid ActualGuid = Guid.NewGuid();
+                Guid UserGuid = Guid.NewGuid();
                 MonitorInfo_complex ActualmonitorInfoX = new MonitorInfo_complex() { AliasDeviceName = "D2424H", FwVersion = "1.3", series = "1234567", CapabilityString = "DS1346425" };
                 byte ActualCode = 0x11;
                 uint ActualVal = 20;
 
-                Type_SetVCPCapability_I type_SetVCPCapability_I = new Type_SetVCPCapability_I(ActualGuid, ActualmonitorInfoX, ActualCode, ActualVal);
+                Type_SetVCPCapability_I type_SetVCPCapability_I = new Type_SetVCPCapability_I(ActualGuid, ActualmonitorInfoX, ActualCode, ActualVal, UserGuid);
                 Assert.That(ActualGuid, Is.EqualTo(type_SetVCPCapability_I.guid));
                 Assert.That(ActualmonitorInfoX, Is.EqualTo(type_SetVCPCapability_I.monitorInfoX));
                 Assert.That(ActualCode, Is.EqualTo(type_SetVCPCapability_I.code));
                 Assert.That(ActualVal, Is.EqualTo(type_SetVCPCapability_I.val));
+                Assert.That(UserGuid, Is.EqualTo(type_SetVCPCapability_I.user_guid));
             }
         }
 
@@ -128,15 +142,17 @@ namespace VcpCore.Plugins.Test
             public void TestType_SetVCPCapability_II()
             {
                 Guid ActualGuid = Guid.NewGuid();
+                Guid UserGuid = Guid.NewGuid();
                 MonitorInfo_complex ActualmonitorInfoX = new MonitorInfo_complex() { AliasDeviceName = "AW2724H", CapabilityString = "HH1346425", series = "1234567" };
                 string ActualFunctionName = "GetVCPCapability_II";
                 string ActualVal = "0x22";
 
-                Type_SetVCPCapability_II type_SetVCPCapability_II = new Type_SetVCPCapability_II(ActualGuid, ActualmonitorInfoX, ActualFunctionName, ActualVal);
+                Type_SetVCPCapability_II type_SetVCPCapability_II = new Type_SetVCPCapability_II(ActualGuid, ActualmonitorInfoX, ActualFunctionName, ActualVal, UserGuid);
                 Assert.That(ActualGuid, Is.EqualTo(type_SetVCPCapability_II.guid));
                 Assert.That(ActualmonitorInfoX, Is.EqualTo(type_SetVCPCapability_II.monitorInfoX));
                 Assert.That(ActualFunctionName, Is.EqualTo(type_SetVCPCapability_II.FunctionName));
                 Assert.That(ActualVal, Is.EqualTo(type_SetVCPCapability_II.val));
+                Assert.That(UserGuid, Is.EqualTo(type_SetVCPCapability_II.user_guid));
             }
         }
     }

@@ -1,22 +1,22 @@
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
+using DDPM.UI.Common.ViewModels;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.ResourceManager;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using VcpCore.Common;
-using Dell.Client.Framework.UX.WPF.ResourceManager;
-using DDPM.SA.Common.Settings;
 using Windows.System;
-using Dell.Client.Framework.UX.WPF;
-using Dell.Client.Framework.Common;
-using DDPM.UI.Common.ViewModels;
 
 namespace DDPM.UI.Module.Kvm.Tests
 {
@@ -33,6 +33,7 @@ namespace DDPM.UI.Module.Kvm.Tests
         private Mock<IConsole>? MyConsoleMock;
         private Mock<ILog>? _logMock;
         private KvmModule? kvmModule;
+
         [SetUp]
         public void Setup()
         {
@@ -44,7 +45,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             var resourceDictionary = new ResourceDictionary();
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
-            _logMock=new Mock<ILog>();
+            _logMock = new Mock<ILog>();
             MyConsoleMock = new Mock<IConsole>();
             MyConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(_logMock.Object);
             DdpmCommonHelper.MyConsole = MyConsoleMock.Object;
@@ -66,7 +67,6 @@ namespace DDPM.UI.Module.Kvm.Tests
             privateObject = new PrivateObject(kvmViewModel);
             inputSourceList = new InputSourceList();
         }
-
 
         //class InputSourceList
         [Test]
@@ -139,7 +139,7 @@ namespace DDPM.UI.Module.Kvm.Tests
         [Test]
         public void TestDDPMWindowPos()
         {
-            var dDPMWindowPos = new DDPMWindowPos(new IntPtr(),new IntPtr());
+            var dDPMWindowPos = new DDPMWindowPos(new IntPtr(), new IntPtr());
             Assert.That(dDPMWindowPos, Is.Not.Null);
         }
 
@@ -548,7 +548,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             kvmViewModel.KvmModule = kvmmodule;
             kvmViewModel.KvmModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
 
-            deviceManagerMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            deviceManagerMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
             try
             {
                 kvmViewModel.CurrentInputChange();

@@ -351,7 +351,7 @@ namespace CLI.Plugins.Display
 
                 //2 Get current mode
                 ObjGetVCP objGetVCP = _devMgr.GetPxpMode(_AllInfoMonitors[idx]).Result;
- 
+
                 if ((objGetVCP == null) || (!objGetVCP.result))
                 {
                     response.Result = "ERROR";
@@ -507,8 +507,8 @@ namespace CLI.Plugins.Display
             bool flag = true;
             int count = 0;
             List<string> swapIsDone = new List<string>();
-            ushort[] pbp3A = [49,50,51,52,53,54];
-            ushort[] pbp4A = [65,66];
+            ushort[] pbp3A = [49, 50, 51, 52, 53, 54];
+            ushort[] pbp4A = [65, 66];
             // if command is /set -Display=PxP -value=<off, pip, pip-large & etc> -value=<HDMI, DP, USB-C & etc>
             // step1 change inputsource 
             // step2 set pxp mode
@@ -554,7 +554,7 @@ namespace CLI.Plugins.Display
             if (_cmdLineInput.Options.Count == 2)
             {
                 swapIsDone = new List<string>();
-                flag = true;              
+                flag = true;
                 while (flag && count < 1000)
                 {
                     for (int i = 0; i < serviceTagList.Count; i++)
@@ -655,7 +655,7 @@ namespace CLI.Plugins.Display
                             _AllInfoMonitors = _devMgr.GetMonitors().Result;
                             break;
                         }
-                    }                                            
+                    }
                     CLI_RESPONSE response = new CLI_RESPONSE(mo)
                     {
                         Command = _cmdLineInput.Command,
@@ -713,7 +713,7 @@ namespace CLI.Plugins.Display
                                 for (int ssIndex = ss.Length - 1; ssIndex >= 1; ssIndex--)
                                 {
                                     int intNum = Convert.ToInt32(get_InputSource_code(get_inputsource_type(ss[ssIndex]).ToString()), 16);
-                                    string strBinary = Convert.ToString(intNum, 2).PadLeft(5,'0');
+                                    string strBinary = Convert.ToString(intNum, 2).PadLeft(5, '0');
                                     binaryIndex = binaryIndex + strBinary;
                                 }
                                 //"PIP/PBP Input"
@@ -883,9 +883,9 @@ namespace CLI.Plugins.Display
             int errCount = 0;
             bool isPass = false;
             //foreach (int idx in _monitorIndeies)
-                for (int idx = 0; idx < _AllInfoMonitors.Count; idx++)
-                {
-                
+            for (int idx = 0; idx < _AllInfoMonitors.Count; idx++)
+            {
+
 
 
 
@@ -917,12 +917,12 @@ namespace CLI.Plugins.Display
                             sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
                             sub3 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
                             isOK = _devMgr.SetSubInputs(_AllInfoMonitors[idx], sub2, null, null).Result;
-                        }                        
+                        }
                     }
                 }
-                
-                
-                
+
+
+
                 if (isPass || isOK)
                 {
                     response.Result = "PASS";
@@ -1019,14 +1019,14 @@ namespace CLI.Plugins.Display
 
             ss = _cmdLineInput.Options[0].Option_Value.Split(new string[] { "," }, StringSplitOptions.None);
             //-value is specified
-            if (ss.Length >= 1 && 
+            if (ss.Length >= 1 &&
                 ss.Length < 2 &&
                 ss[0] != null)
             {
                 sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
             }
 
-            if (ss.Length > 1 && 
+            if (ss.Length > 1 &&
                 ss.Length < 3 &&
                 ss[1] != null)
             {
@@ -1034,7 +1034,7 @@ namespace CLI.Plugins.Display
                 sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
             }
 
-            if (ss.Length > 2 && 
+            if (ss.Length > 2 &&
                 ss.Length < 4 &&
                 ss[2] != null)
             {
@@ -1273,12 +1273,12 @@ namespace CLI.Plugins.Display
 
                 if (_AllInfoMonitors[idx].CapabilityDic.ContainsKey("E5"))
                 {
-                    rc = _devMgr.GetVCPCapability(_AllInfoMonitors[idx], 0xE5, 0x02).Result;
+                    rc = _devMgr.GetVCPCapability(_AllInfoMonitors[idx], 0xE5, opt: 0x02).Result;
                     if (rc != null)
                     {
                         isPass = true;
                         response.Value = (rc.value).ToString();
-                    }                        
+                    }
                     //response.Model = _AllInfoMonitors[idx].modelName;
                     //response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                     //response.Index = change_0base_to_1base(idx.ToString());
@@ -1292,7 +1292,7 @@ namespace CLI.Plugins.Display
                     //response.Index = change_0base_to_1base(idx.ToString());
                     //response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 }
-                    
+
                 if (isPass)
                 {
                     response.Result = "PASS";
@@ -1456,7 +1456,7 @@ namespace CLI.Plugins.Display
                 {
                     int idx;
                     if (int.TryParse(idxString, out idx) &&
-                        idx >= 0 && 
+                        idx >= 0 &&
                         idx < allMonitors.Count)
                     {
                         listOut.Add(idx);
@@ -1471,7 +1471,7 @@ namespace CLI.Plugins.Display
                 {
                     int idx;
                     if (int.TryParse(idxString, out idx) &&
-                        idx >= 0 && 
+                        idx >= 0 &&
                         idx < allMonitors.Count)
                     {
                         listOut.Add(idx);
