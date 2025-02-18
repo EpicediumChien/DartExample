@@ -54,6 +54,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Security.Policy;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -2629,7 +2630,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //ChangeSB725(deviceHelper);
             ChangeHeadset(deviceHelper);
             ChangeDock(deviceHelper);
+            FormatFWVersion(deviceHelper);
             return await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
+        }
+
+        private void FormatFWVersion(DeviceHelper deviceHelper)
+        {
+            writelog("FormatFWVersion start");
+            var GetDeviceInfos = deviceHelper.deviceInfo.Where(x => !x.FirmwareVersion.Contains('.')).ToList();
+            foreach (var deviceInfo in GetDeviceInfos)
+            {
+                if (deviceInfo.LogicalDeviceType.Contains("DOCK", StringComparison.OrdinalIgnoreCase))
+                {
+                    deviceInfo.FirmwareVersion = Regex.Replace(deviceInfo.FirmwareVersion, "(\\w{2})", "$1.").TrimEnd('.');
+                }
+                else
+                {
+                    deviceInfo.FirmwareVersion = Regex.Replace(deviceInfo.FirmwareVersion, "(\\w)", "$1.").TrimEnd('.');
+                }
+                writelog($"FormatFWVersion for {deviceInfo.LogicalDeviceType}: {deviceInfo.FirmwareVersion}");
+            }
+            writelog("FormatFWVersion done");
         }
 
         private static void ChangeSB725(DeviceHelper deviceHelper)
