@@ -54,7 +54,8 @@ namespace DDPM.UI.Plugin.ViewModels
             DebouncerFfunctionInit();
             _log!.Info($"[HeadsetViewModel] HeadsetViewModel Start...");
         }
-        ~HeadsetViewModel()
+
+        public void UloadHeadset_DTPNotify()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
@@ -62,6 +63,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
             }
         }
+
         private void DebouncerFfunctionInit()
         {
             _debouncerHeadset = new Debouncer(1000, ExecuteDebouncedAction);
@@ -2211,7 +2213,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         break;
                     }
-                    if (tick >= 52) // 51 sec force exit
+                    if (tick >= 20) // 20 sec force exit
                     {
                         //waitHeadsetFW = true;
                         //waitHeadsetReady = true;
