@@ -44,7 +44,16 @@ namespace DDPM.UI.Plugin.ViewModels
             _log!.Info($"[SoundBarViewModel] SoundBarViewModel Start...");
             SpeakerInfoValueDTP = new SpeakerInfoValue();
             _current_soundBar = string.Empty;
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Speaker_DTPNotify;
             _debouncerSpeaker = new Debouncer(1000, ExecuteDebouncedAction);
+        }
+
+        public void UloadSpeaker_DTPNotify()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify -= Speaker_DTPNotify;
+            }
         }
 
         private void ExecuteDebouncedAction(object param)
@@ -97,6 +106,103 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
+
+        private Dictionary<string, string> deal_param(string param)
+        {
+            Dictionary<string, string> tmp = new Dictionary<string, string>();
+
+            try
+            {
+                List<string> list = param.Split(new char[] { ';' }).ToList();
+                foreach (string s in list)
+                {
+                    List<string> item = s.Split(new char[] { ':' }).ToList();
+                    if (item.Count == 2)
+                    {
+                        tmp.Add(item[0], item[1]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Info($"[HeadsetViewModel] deal_param exception {ex.Message.ToString()}");
+            }
+            return tmp;
+        }
+        private void Speaker_DTPNotify(object? sender, UpdateUINotify e)
+        {
+            Dictionary<string, string> event_param = deal_param(e.UI_Field_Name);
+            try
+            {
+                if (event_param == null || event_param.Count == 0)
+                {
+                    _log.Info($"[SoundBarViewModel] Headset_DTPNotify null or 0");
+                    return;
+                }
+                if (!event_param.TryGetValue("Device", out var device))
+                {
+                    _log.Info($"[SoundBarViewModel] Device cannot be found in event_param");
+                    return;
+                }
+                if (device == "Speaker")
+                {
+                    if (!event_param.TryGetValue("EventType", out var eventtype))
+                    {
+                        _log.Info($"[SoundBarViewModel] EventType cannot be found in event_param");
+                        return;
+                    }
+                    if (!event_param.TryGetValue("DeviceId", out var guid))
+                    {
+                        _log.Info($"[SoundBarViewModel] GUID cannot be found in event_param");
+                        return;
+                    }
+                    _log.Info($"[SoundBarViewModel] EventType = {eventtype}");
+
+                    switch (eventtype)
+                    {
+                        //case "Speaker_Connected":
+                        //case "Speaker_Disconnected":
+                        //case "Speaker_OnFirmwareVersionChanged":
+                        //case "Speaker_OnMuteStatusChanged":
+                        //case "Speaker_OnInstanceNumberChanged":
+                        case "Speaker_OnCurrentSelectedProfileChanged":
+                            SpeakerInfoValueDTP.SpeakerProfile = event_param[eventtype];
+                            CheckPresetsUI();
+                            break;
+                        case "Speaker_OnIsIMicNSEnabledChanged":
+                            SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable = event_param[eventtype].ToLower() == "true" ? true : false;
+                            CheckAudioSettingsUI();
+                            break;
+                        case "Speaker_OnVolumeAdjustmentToneChanged":
+                            SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = int.Parse(event_param[eventtype]);
+                            CheckAudioSettingsUI();
+                            break;
+                        case "Speaker_OnIsMicMuteSoundEnabledChanged":
+                            SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable = event_param[eventtype].ToLower() == "true" ? true : false;
+                            CheckAudioSettingsUI();
+                            break;
+                        case "Speaker_OnBassChanged":
+                        case "Speaker_OnMidRangeChanged":
+                        case "Speaker_OnTrebleChanged":
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                SoundbarSettingChanged?.Invoke(this, EventArgs.Empty);
+                            });
+                            break;
+                        default:
+                            break;
+                    }
+                    //CheckSpeakerFunc();
+                    _log.Info($"[SoundBarViewModel] Speaker_DTPNotify {event_param[eventtype].ToString() + Model.ToString()}");
+                    //UpdateResetToDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"[HeadsetViewModel] Headset_DTPNotify Exception = {ex.Message.ToString()}");
+            }
+        }
+
         private void UpdateDTPValue()
         {
             try
@@ -111,7 +217,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     }
 
                     SpeakerInfoValueDTP.SpeakerProfileName = _deviceManager.GetProfileNameAsync(CurrentDeviceID.ToString()).Result ?? String.Empty;
-                    if(SpeakerInfoValueDTP.SpeakerProfile == _default)
+                    SpeakerInfoValueDTP.SpeakerProfile = _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()).Result ?? String.Empty;
+                    if (SpeakerInfoValueDTP.SpeakerProfile == _default)
                     {
                         SpeakerInfoValueDTP.SpeakerBass = _deviceManager.GetBassAsync(CurrentDeviceID.ToString()).Result;
                         SpeakerInfoValueDTP.SpeakerMidRange = _deviceManager.GetMidRangeAsync(CurrentDeviceID.ToString()).Result;
@@ -123,7 +230,6 @@ namespace DDPM.UI.Plugin.ViewModels
                         SpeakerInfoValueDTP.SpeakerMidRange = 0;
                         SpeakerInfoValueDTP.SpeakerTreble = 0;
                     }
-                    SpeakerInfoValueDTP.SpeakerProfile = _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()).Result ?? String.Empty;
                     SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable = _deviceManager.GetIsWiredAudioMicMuteSoundEnableAsync(CurrentDeviceID.ToString()).Result;
                     SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = _deviceManager.GetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceID.ToString()).Result;
                     SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable = _deviceManager.GetIsWiredAudioIMicNSEnableAsync(CurrentDeviceID.ToString()).Result;
@@ -189,10 +295,10 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 UpdateResetToDefault();
                 CheckSpeakerFunc();
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    SoundbarSettingChanged?.Invoke(this, EventArgs.Empty);
-                });
+                //Application.Current.Dispatcher.Invoke(() =>
+                //{
+                //    SoundbarSettingChanged?.Invoke(this, EventArgs.Empty);
+                //});
 
             }
             catch (Exception ex)
@@ -631,7 +737,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 UpdateDTPValue();
                 CheckSpeakerFunc();
-                SoundbarSettingChanged?.Invoke(this, EventArgs.Empty);
+                //SoundbarSettingChanged?.Invoke(this, EventArgs.Empty);
                 //_showPluginManager?.ShowHomePage();
             }
             catch (Exception ex)
@@ -646,6 +752,10 @@ namespace DDPM.UI.Plugin.ViewModels
             _log.Info($"[SoundBarViewModel] CheckHeadsetFunc ...");
             CheckAudioSettingsUI();
             CheckPresetsUI();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                SoundbarSettingChanged?.Invoke(this, EventArgs.Empty);
+            });
         }
 
         /// <summary>
