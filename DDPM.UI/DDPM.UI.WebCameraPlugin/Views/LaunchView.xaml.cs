@@ -97,12 +97,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         public LaunchView()
         {
-
-            DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView() start");
-
+            DdpmCommonHelper.WriteUILog($"Webcam UI LaunchView Begin timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
             try
             {
-
                 _vm = (WebCameraViewModel?)WebCameraplugin.PluginIoc?.GetService<IPeripheralViewModel>();
                 if (_vm == null)
                 {
@@ -270,8 +267,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView() ex:" + ex.Message);
             }
-
-            DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView() end");
+            DdpmCommonHelper.WriteUILog($"Webcam UI LaunchView End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
 
         private void OnWebcamCloseEvent(object sender, EventManagerArgs e)
@@ -1256,12 +1252,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             print_debug("CheckUSBtype() end");
         }
 
-
-        private void LaunchView_Loaded(object sender, RoutedEventArgs e)
-        {
-            //if (!_vm!.IsDTPReady)
-            //    DdpmCommonHelper.MyConsole!.ShowHomePage();
-        }
 
         //bool WebcamGrid_old_ststus = false;
         private void status_change()
@@ -3100,8 +3090,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 DdpmCommonHelper.WriteUILog($"UserControl_Loaded catch exception: {ex.Message}");
             }
-
-            //DdpmCommonHelper.WriteUILog($"Webcam landing page UserControl_Loaded");
+            DdpmCommonHelper.WriteUILog($"Webcam UI Loaded timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
 
         private void txbName_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

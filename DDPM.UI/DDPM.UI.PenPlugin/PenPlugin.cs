@@ -1,4 +1,4 @@
- using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
 using DDPM.UI.Common;
@@ -74,7 +74,7 @@ namespace DDPM.UI.Plugin.PenPlugin
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\PenPlugin.cs  DeviceManager_DeviceChanged() ex:" + ex.Message);
             }
@@ -134,10 +134,12 @@ namespace DDPM.UI.Plugin.PenPlugin
         /// <inheritdoc/>
         public void OnShown(string pluginParameter)
         {
+            DdpmCommonHelper.WriteUILog($"Pen pugin OnShown Begin timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
             ConfigureServices();
             GetPeripheralsAsync();
             if (_viewModel != null && !_viewModel.SetCurrentDevice(pluginParameter))
             { }
+            DdpmCommonHelper.WriteUILog($"Pen pugin OnShown End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
 
         #endregion Interface IConsolePluginSupportsActivations
