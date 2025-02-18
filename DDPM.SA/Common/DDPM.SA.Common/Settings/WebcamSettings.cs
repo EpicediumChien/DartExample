@@ -80,7 +80,7 @@ namespace DDPM.SA.Common.Settings
                 if (string.IsNullOrEmpty(str))
                 {
                     log?.Info("DTP GetSupportedResolutions fail!");
-                    switch (di.ModelNumber)
+                    switch (di.ModelNumber) // WB5023 same as default?
                     {
                         case "WB5023":
                             str = "[{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}]";
