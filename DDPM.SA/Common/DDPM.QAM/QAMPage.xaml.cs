@@ -384,18 +384,27 @@ namespace DDPM.QAM
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            string imagePath = @"imgs\ddpm-dark.png";
+            try
+            {
+                string imagePath = @"imgs\ddpm-dark.png";
 
-            if (!IsDarkMode())
-                imagePath = @"imgs\ddpm-light.png";
+                if (!IsDarkMode())
+                    imagePath = @"imgs\ddpm-light.png";
 
 
-            BitmapImage bitmap = new BitmapImage(new Uri(imagePath, UriKind.RelativeOrAbsolute));
-            bitmap.BeginInit();
-            bitmap.UriSource = new System.Uri(imagePath);
-            bitmap.EndInit();
-            // 将 BitmapImage 对象赋值给 Image 控件的 Source 属性
-            DDPMInco.Source = bitmap;
+                BitmapSource bitmap = new BitmapImage(new Uri(imagePath, UriKind.RelativeOrAbsolute));
+                //bitmap.BeginInit();
+                //bitmap.UriSource = new System.Uri(imagePath);
+                //bitmap.EndInit();
+                // 将 BitmapImage 对象赋值给 Image 控件的 Source 属性
+                DDPMInco.Source = bitmap;
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"Catch exception[{ex.Message}] when Window_Loaded");
+                throw;
+            }
+            
         }
 
         private bool IsDarkMode()
