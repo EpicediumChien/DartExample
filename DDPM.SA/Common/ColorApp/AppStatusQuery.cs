@@ -154,7 +154,7 @@ namespace DDPM.ColorApp
                 //logger.WriteLog($"[Watcher-callback] real process: ProcessName[{_realProcess.ProcessName}]ModuleName[{_realProcess.MainModule.ModuleName}]Title[{_realProcess.MainWindowTitle}]");
 
                 //string strlog;
-                strlog = String.Format($"process.ProcessName != \"ApplicationFrameHost\"");
+                strlog = "process.ProcessName != \"ApplicationFrameHost\"";
                 writelog(strlog);
 
                 //return false;
@@ -192,7 +192,7 @@ namespace DDPM.ColorApp
                     ///
 
                     //string strlog;
-                    strlog = String.Format($"[Watcher-callback] Got sandbox app, retrieve process info by process id");
+                    strlog = "[Watcher-callback] Got sandbox app, retrieve process info by process id";
                     writelog(strlog);
 
                     for (int i = 0; i < 4; i++)
@@ -331,7 +331,7 @@ namespace DDPM.ColorApp
             if (String.Compare(_LastforgroundTitle, forgroundTitle) == 0)
             {
                 //string strlog;
-                strlog = String.Format($"[Watcher-Move]  Same as last app, check screen location");
+                strlog = "[Watcher-Move]  Same as last app, check screen location";
                 writelog(strlog);
 
                 ///////logger.WriteLog($"[Watcher-Move]  Same as last app, check screen location");
@@ -340,7 +340,7 @@ namespace DDPM.ColorApp
                 if (String.Compare(_LastLocatedScreen, screen.DeviceName) == 0)
                 {
                     //string strlog;
-                    strlog = String.Format($"[Watcher-Move]  Same as last monitor, drop move event");
+                    strlog = "[Watcher-Move]  Same as last monitor, drop move event";
                     writelog(strlog);
 
                     ///////logger.WriteLog($"[Watcher-Move]  Same as last monitor, drop move event");
