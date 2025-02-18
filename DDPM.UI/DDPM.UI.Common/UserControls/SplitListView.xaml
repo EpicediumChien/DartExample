@@ -7,6 +7,7 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              
              KeyboardNavigation.TabNavigation="Continue"
+             AutomationProperties.LiveSetting="Off"
 
              mc:Ignorable="d"
              d:DesignHeight="64" d:DesignWidth="616">
@@ -118,7 +119,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <!-- rootGrid -->
+    <!-- rootGrid
+     KeyboardNavigation.TabNavigation="Continue"
+    -->
     <Grid>
         <!-- Col0=prevBtn, Col2=nextBtn, Col1=Split items -->
         <Grid.ColumnDefinitions>
@@ -134,14 +137,28 @@
         4. The button shadow effect need to follow requirements.
         -->
         <!-- prevBtn -->
-        <Button Style="{StaticResource StatelessButton}" Grid.Column="0"
+        <Button Grid.Column="0" Name="prevButton"
                 IsEnabled="{Binding IsPrevButtonEnabled}" Click="prevButton_Click"
                 Focusable="True" KeyboardNavigation.IsTabStop="True" KeyboardNavigation.TabIndex="1"
                 AutomationProperties.Name="{Binding [Left], Source={x:Static lang:LangHelper.Instance}}"
+                AutomationProperties.IsOffscreenBehavior="Onscreen"
                 >
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource StatelessButton}">
+                    <Setter Property="AutomationProperties.ItemStatus" Value="Enabled"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                            <Setter Property="AutomationProperties.ItemStatus"
+                                    Value="{Binding [RadiaMenu.1], Source={x:Static lang:LangHelper.Instance}}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+            <!-- 
+                    IsEnabled="{Binding IsPrevButtonEnabled}">
+            -->
             <Border Grid.Column="0" Name="prevBtn" 
-                IsEnabled="{Binding IsPrevButtonEnabled}"
-                MouseLeftButtonDown="prevBtn_MouseLeftButtonDown">
+                    >
                 <Border.Style>
                     <Style TargetType="Border" BasedOn="{StaticResource EzBtnStyle}">
                         <Style.Triggers>
@@ -163,10 +180,10 @@
                                 <Style TargetType="Path">
                                     <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Default}" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=prevBtn, Path=IsMouseOver}" Value="True">
+                                        <DataTrigger Binding="{Binding ElementName=prevButton, Path=IsMouseOver}" Value="True">
                                             <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Hover}" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Border}}"
+                                        <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}"
                                                  Value="False">
                                             <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Disabled}" />
                                         </DataTrigger>
@@ -180,12 +197,24 @@
         </Button>
         <!-- nextBtn -->
         <!-- NEW for Narrator, change it as a Button -->
-        <Button Style="{StaticResource StatelessButton}" Grid.Column="2"
+        <Button Grid.Column="2" Name="nextButton"
                 IsEnabled="{Binding IsNexButtonEnabled}" Click="nextButton_Click"
-                Focusable="True" KeyboardNavigation.IsTabStop="True" KeyboardNavigation.TabIndex="7"
-                AutomationProperties.Name="{Binding [Right], Source={x:Static lang:LangHelper.Instance}}">
+                Focusable="True" KeyboardNavigation.IsTabStop="True" KeyboardNavigation.TabIndex="8"
+                AutomationProperties.Name="{Binding [Right], Source={x:Static lang:LangHelper.Instance}}"
+                AutomationProperties.IsOffscreenBehavior="Onscreen">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource StatelessButton}">
+                    <Setter Property="AutomationProperties.ItemStatus" Value="Enabled"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                            <Setter Property="AutomationProperties.ItemStatus"
+                                   Value="{Binding [RadiaMenu.1], Source={x:Static lang:LangHelper.Instance}}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
 
-            <Border Name="nextBtn" IsEnabled="{Binding IsNextButtonEnabled}" MouseLeftButtonDown="nextBtn_MouseLeftButtonDown"
+            <Border Name="nextBtn" IsEnabled="{Binding IsNextButtonEnabled}"
             >
                 <Border.Style>
                     <Style TargetType="Border" BasedOn="{StaticResource EzBtnStyle}">
@@ -208,10 +237,10 @@
                                 <Style TargetType="Path">
                                     <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Default}" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=nextBtn, Path=IsMouseOver}" Value="True">
+                                        <DataTrigger Binding="{Binding ElementName=nextButton, Path=IsMouseOver}" Value="True">
                                             <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Hover}" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding ElementName=nextBtn, Path=IsEnabled}" Value="False">
+                                        <DataTrigger Binding="{Binding ElementName=nextButton, Path=IsEnabled}" Value="False">
                                             <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Disabled}" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -280,6 +309,7 @@
             <ContentControl Grid.Column="4" Content="{Binding SplitItem4}" Style="{StaticResource ContentControlStyle_SplitItem}" KeyboardNavigation.TabIndex="6" />
 
             <local:AddCustomLayoutButton x:Name="addButton" Grid.Column="{Binding AddButtonColumn}"
+                                         Focusable="True" KeyboardNavigation.IsTabStop="True" KeyboardNavigation.TabIndex="7"
                                          HorizontalAlignment="Center" Margin="0,0,40,0">
                 <local:AddCustomLayoutButton.Style>
                     <Style TargetType="local:AddCustomLayoutButton">
