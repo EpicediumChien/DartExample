@@ -2,10 +2,12 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using static DDPM.ColorApp.WindowFocusWatcher;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 //using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -34,7 +36,12 @@ namespace DDPM.ColorApp
 
         public static int _GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId)
         {
-            return GetWindowThreadProcessId(hWnd, out nProcessId);
+            int rst = GetWindowThreadProcessId(hWnd, out nProcessId);
+            if (rst == 0) 
+            {
+                writelog($"[AppStatusQuery] GetWindowThreadProcessId failed");
+            }
+            return rst;
         }
 
         [DllImport("USER32.DLL", SetLastError = true)]
@@ -43,7 +50,12 @@ namespace DDPM.ColorApp
 
         public static int _GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount)
         {
-            return GetWindowText(hWnd, lpString, nMaxCount);
+            int rst = GetWindowText(hWnd, lpString, nMaxCount);
+            if (rst == 0)
+            {
+                writelog($"[AppStatusQuery] GetWindowText failed");
+            }
+            return rst;
         }
 
         [DllImport("USER32.DLL", SetLastError = true)]
@@ -62,7 +74,12 @@ namespace DDPM.ColorApp
 
         public static bool _EnumChildWindows(IntPtr hwnd, WindowEnumProc callback, IntPtr lParam)
         {
-            return EnumChildWindows(hwnd, callback, lParam);
+            bool rst = EnumChildWindows(hwnd, callback, lParam);
+            if (!rst)
+            {
+                writelog($"[AppStatusQuery] EnumChildWindows failed");
+            }
+            return rst;
         }
 
         public delegate bool WindowEnumProc(IntPtr hwnd, IntPtr lparam);
