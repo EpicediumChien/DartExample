@@ -22,6 +22,7 @@ using Dell.TechHub.Sdk.Common.Utilities.Extensions;
 using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Shell.Interop;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using VcpCore.Common;
+using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 using IDeviceManager = IndiLogic.DPeM.Broker.IDeviceManager;
 using IDs = DDPM.SA.Common.IDs;
 using Task = System.Threading.Tasks.Task;
@@ -2899,8 +2901,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     OnNotify(_EventArgs);
                     Debug.WriteLine($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
                     writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
-
                     CheckLowBatteryOSD(deviceInfo);
+
+                    // << 250217 added by Hess to meet PIMS-341711
+                    if (deviceInfo.BatteryStatus == "Charging")
+                        LowBatteryIDs.Remove(deviceInfo.ID.ToString());
+                    // >>
                 }
                 else
                 {
@@ -3039,6 +3045,97 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
+        public Task UpdateLowBatteryOSD(bool showOSD)
+        {
+            writelog($"UpdateLowBatteryOSD: Value: {showOSD}");
+            if (_deviceHelper is { deviceInfo: not null })
+            {
+                foreach (var di in _deviceHelper.deviceInfo)
+                {
+                    if (showOSD)
+                    {
+                        try
+                        {
+                            if (di.BatteryLevel >= 0 && di.BatteryLevel <= 9)
+                            {
+                                OSDType_Device type = OSDType_Device.Unknown;
+                                var deviceType = di.LogicalDeviceType.ToUpper();
+                                var model = SAUICommonHelper.MappingModel(di.ModelNumber);
+                                var message = $"{di.Name.Replace(di.ModelNumber, "").Trim()} {model}";
+                                if (deviceType.Contains("PEN"))
+                                {
+                                    if (di.ModelNumber == "PN5122W" && di.BatteryLevel > 6)
+                                        continue;
+
+                                    type = OSDType_Device.Pen;
+                                }
+                                else if (deviceType.Contains("KEYBOARD"))
+                                {
+                                    type = OSDType_Device.Keyboard;
+                                }
+                                else if (deviceType.Contains("MOUSE"))
+                                {
+                                    type = OSDType_Device.Mouse;
+                                }
+                                else if (deviceType.Contains("HEADSET"))
+                                {
+                                    type = OSDType_Device.Headset;
+                                }
+                                else if (SAUICommonHelper.EOLKBList.Contains(di.ModelNumber))
+                                {
+                                    type = OSDType_Device.Keyboard;
+                                    message = SAUICommonHelper.MappingEOLName(model);
+                                }
+                                else if (SAUICommonHelper.EOLMouseList.Contains(di.ModelNumber))
+                                {
+                                    type = OSDType_Device.Mouse;
+                                    message = SAUICommonHelper.MappingEOLName(model);
+                                }
+
+                                OSDEventArgs args = new OSDEventArgs()
+                                {
+                                    Requester = "BatteryLow",
+                                    DeviceName = Screen.PrimaryScreen.DeviceName,
+                                    osd_type = OSDType.BatteryLow,
+                                    osd_device = type,
+                                    Message = message
+                                };
+                                OnOSDNotify(args);
+                                LowBatteryIDs.Add(di.ID.ToString());
+                                writelog($"Show BatteryLow OSD: ID: {di.ID} Level: {di.BatteryLevel}");
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            writelog($"General setting Check [Low battery level] fail with exception:{e.Message}");
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            OSDEventArgs args = new OSDEventArgs()
+                            {
+                                Requester = "CloseBatteryLowOSD",
+                                DeviceName = Screen.PrimaryScreen.DeviceName,
+                                osd_type = OSDType.BatteryLow,
+                                //Message = message
+                            };
+                            OnOSDNotify(args);
+                        }
+                        catch (Exception e)
+                        {
+                            writelog($"General setting Uncheck [Low battery level] fail with exception:{e.Message}");
+                        }
+                        LowBatteryIDs.Clear();
+                    }
+                }
+            }
+
+
+
+            return Task.CompletedTask;
+        }
 
         private void ILogicalDevice_BatteryLevelChanged(ILogicalDevice arg1, int arg2)
         {

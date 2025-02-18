@@ -52,7 +52,7 @@
                         <ColumnDefinition />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0"
+                    <Grid Grid.Column="0" x:Name="HeaderBd"
                           MouseDown="Grid_MouseDown">
                         <Border CornerRadius="10,0,0,0">
                             <Border.Style>
@@ -79,6 +79,19 @@
                               Fill="{DynamicResource Default_SA_QAM_Path_BkColor}"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center">
+                                <Path.Style>
+                                    <Style TargetType="Path">                                        
+                                        <Style.Triggers>                                            
+                                            <DataTrigger Binding="{Binding IsMouseOver, ElementName=HeaderBd}" Value="True">                                               
+                                                <Setter Property="Visibility" Value="Visible"/>                                                
+                                            </DataTrigger>
+                                            
+                                            <DataTrigger Binding="{Binding IsMouseOver, ElementName=HeaderBd}" Value="False">                                                
+                                                <Setter Property="Visibility" Value="Collapsed"/>                                                
+                                            </DataTrigger>                                            
+                                        </Style.Triggers>                                        
+                                    </Style>                                    
+                                </Path.Style>
                             </Path>
                         </Border>
                     </Grid>
@@ -167,7 +180,7 @@
                           Fill="{DynamicResource Default_SA_QAM_Path_BkColor}"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center" /> -->
-                    <Image Source="imgs\AppLogo.png" Stretch="Uniform" Height="25" Width="25"/>
+                    <Image Stretch="Uniform" Height="25" Width="25" x:Name="DDPMInco" Source="{DynamicResource QAMImage_CallDDPM}"/>
                 </Grid>
             </Grid>
         </Border>
