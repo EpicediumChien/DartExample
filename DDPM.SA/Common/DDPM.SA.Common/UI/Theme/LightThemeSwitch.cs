@@ -100,6 +100,10 @@ namespace DDPM.SA.Common.UI
             UpdateFreezable("Tooltip_BdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E9E9E9"));
             UpdateFreezable("Tooltip_TextColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
             #endregion
+
+            #region QAM Page
+            UpdateBitmapImage("QAMImage_CallDDPM", new Uri($"pack://application:,,,/DDPM.QAM;component/Imgs/ddpm-light.png", UriKind.RelativeOrAbsolute));
+            #endregion
         }
     }
 }
