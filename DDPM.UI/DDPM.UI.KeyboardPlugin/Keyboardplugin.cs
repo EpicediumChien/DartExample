@@ -85,8 +85,8 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                             _viewModel.DeviceInfos.Remove(e.device_peripherals.ID);
                         //GetPeripheralsAsync();
                     }
-                    if (e.type == DeviceChangedType.Peripherals_PlugIn && 
-                        e.device_peripherals.ModelNumber == _viewModel?.CurrentDeviceInfo?.ModelNumber && 
+                    if (e.type == DeviceChangedType.Peripherals_PlugIn &&
+                        e.device_peripherals.ModelNumber == _viewModel?.CurrentDeviceInfo?.ModelNumber &&
                         !_viewModel.DeviceInfos.ContainsKey(e.device_peripherals.ID))
                         _viewModel.DeviceInfos.Add(e.device_peripherals.ID, e.device_peripherals);
                     _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
@@ -161,6 +161,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         /// <inheritdoc/>
         public void OnShown(string pluginParameter)
         {
+            DdpmCommonHelper.WriteUILog($"Keyboard pugin OnShown Begin timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
             if (!IsEventRegistered)
             {
                 DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
@@ -168,7 +169,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             }
             ConfigureServices();
             GetPeripheralsAsync();
-            if (_viewModel != null && _viewModel.SetCurrentDevice(pluginParameter) && 
+            if (_viewModel != null && _viewModel.SetCurrentDevice(pluginParameter) &&
                 _viewModel.CurrentDeviceInfo!.IsCollabsKeysSupported)
             {
                 _log.Debug($"GetCTKMessageHelper is invoked");
@@ -176,6 +177,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 _viewModel.CTKMessageHelper = task.Result;
                 _log.Debug($"GetCTKMessageHelper is successful");
             }
+            DdpmCommonHelper.WriteUILog($"Keyboard pugin OnShown End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
 
         #endregion Interface IConsolePluginSupportsActivations
