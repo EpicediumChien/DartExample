@@ -7919,7 +7919,7 @@ namespace DDPM.CLI.Plugins.Display
                             S_PowerNap_RESPONSE.Result = "PASS";
                             S_PowerNap_RESPONSE.Value = "Off";
                         }*/
-                        if (read_list.Count >= 0 || idx >= 0)
+                        if (read_list.Count > 0 || idx >= 0)
                         {
 
                             List<string> values = value.Replace(".", ",").Split(",").ToList();
@@ -7991,7 +7991,7 @@ namespace DDPM.CLI.Plugins.Display
                             S_PowerNap_RESPONSE.Result = "PASS";
                             S_PowerNap_RESPONSE.Value = "Off";
                         }*/
-                        if (read_list.Count >= 0 || idx >= 0)
+                        if (read_list.Count > 0 || idx >= 0)
                         {
                             PowerNapSetting temp = read_list[idx];
                             List<string> values = value.Replace(".", ",").Split(",").ToList();
@@ -8064,7 +8064,7 @@ namespace DDPM.CLI.Plugins.Display
                                 S_PowerNap_RESPONSE.Result = "PASS";
                                 S_PowerNap_RESPONSE.Value = "Off";
                             }*/
-                            if (read_list.Count >= 0 || idx >= 0)
+                            if (read_list.Count > 0 || idx >= 0)
                             {
                                 PowerNapSetting temp = read_list[idx];
 
@@ -8139,7 +8139,7 @@ namespace DDPM.CLI.Plugins.Display
                                 S_PowerNap_RESPONSE.Result = "PASS";
                                 S_PowerNap_RESPONSE.Value = "Off";
                             }*/
-                            if (read_list.Count >= 0 || idx >= 0)
+                            if (read_list.Count > 0 || idx >= 0)
                             {
                                 PowerNapSetting temp = read_list[idx];
 
