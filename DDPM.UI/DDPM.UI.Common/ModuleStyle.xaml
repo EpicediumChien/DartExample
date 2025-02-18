@@ -826,40 +826,47 @@
   <!--  ComboBoxItem style of DdpmComboBox  -->
   <!--
     Define the hilight style when mouse selecting item
-    -->
-  <Style x:Key="DdpmComboBoxItemContainerStyle" TargetType="{x:Type ComboBoxItem}">
-    <Setter Property="SnapsToDevicePixels" Value="true" />
-    <!--<Setter Property="Foreground" Value="{DynamicResource DdpmCB_FgColor}" />-->
-    <Setter Property="OverridesDefaultStyle" Value="true" />
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type ComboBoxItem}">
-          <Border Name="Border" Padding="2,2,2,0" SnapsToDevicePixels="true"
+        <Setter Property="AutomationProperties.Name" Value="{Binding Value, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="AutomationProperties.Name" Value="{Binding Value}"/>
+        <Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}"/>
+        <Setter Property="KeyboardNavigation.DirectionalNavigation" Value="Cycle"/>
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue"/>
+        <Setter Property="AutomationProperties.Name" Value="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+  -->
+    <Style x:Key="DdpmComboBoxItemContainerStyle" TargetType="{x:Type ComboBoxItem}">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <!--<Setter Property="Foreground" Value="{DynamicResource DdpmCB_FgColor}" />-->
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Focusable" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                    <Border Name="Border" Padding="2,2,2,0" SnapsToDevicePixels="true"
                             Background="{StaticResource FakeTransparent}">
-            <ContentPresenter
+                        <ContentPresenter 
                             Name="contentPresenter"
                             Margin="0,8,40,8"
                             VerticalAlignment="Center" />
-          </Border>
-          <ControlTemplate.Triggers>
-            <Trigger Property="IsHighlighted" Value="true">
-              <!--<Setter TargetName="Border" Property="Background" Value="{DynamicResource DdpmCB_BdBgColor}" />-->
-              <Setter TargetName="Border" Property="Background" Value="{DynamicResource DdpmCB_HoverItemBkColor}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="true">
+                            <!--<Setter TargetName="Border" Property="Background" Value="{DynamicResource DdpmCB_BdBgColor}" />-->
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource DdpmCB_HoverItemBkColor}" />
 
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="false">
-              <Setter Property="Foreground" Value="#888888" />
-            </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-              <Setter Property="Foreground" Value="{DynamicResource DdpmCB_SelTextColor}" />
-            </Trigger>
-          </ControlTemplate.Triggers>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="#888888" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource DdpmCB_SelTextColor}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
-  <!--  DdpmComboBox Control Template  -->
+    <!--  DdpmComboBox Control Template  -->
   <!--
     [1] The margin between ComboBox and Popup is 12
     [2] Popup color and border style

@@ -1203,18 +1203,26 @@ namespace DDPM.SA.Plugins.CMAManager
 
             NotifyArgs args = deviceControlPannel.OnDeviceChnaged(data);
 
-            // moidified @ 2050213 stephen : add create time
-            //args.notification = "{\"sid\": \"\",\"gid\": \"\",\"response\": [{\"tid\": ,\"result\": 0,\"msg\": \"\",\"data\": [" + args.notification + "]}]}";
-            args.notification = "{\"sid\": \"\",\"gid\": \"\",\"response\": [{\"tid\": ,\"result\": 0,\"msg\": \" " + DateTimeOffset.Now.ToString() + " \",\"data\": [" + args.notification + "]}]}";
+            // modified @ 20250213 stephen : add create time
+            // modified @ 20250213 stephen : fix bug with empty event
 
+            WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed args.notification.Equals(string.Empty) = " + args.notification.Equals(string.Empty));
 
-            if (Params.EventType.DISPLAY_CONNECT.ToString().Equals(args.eventType))
+            if (!args.notification.Equals(string.Empty))
             {
-                OnEventDisplayConnect(args);
-            }
-            else
-            {
-                OnEventDisplayDisconnect(args);
+
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed args.notification = " + args.notification);
+
+                args.notification = "{\"sid\": \"\",\"gid\": \"\",\"response\": [{\"tid\": ,\"result\": 0,\"msg\": \" " + DateTimeOffset.Now.ToString() + " \",\"data\": [" + args.notification + "]}]}";
+
+                if (Params.EventType.DISPLAY_CONNECT.ToString().Equals(args.eventType))
+                {
+                    OnEventDisplayConnect(args);
+                }
+                else
+                {
+                    OnEventDisplayDisconnect(args);
+                }
             }
 
             // add @ 20250206 stephen

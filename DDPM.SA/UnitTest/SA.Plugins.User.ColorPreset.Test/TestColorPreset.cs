@@ -541,7 +541,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             privatehotkeyPluginObject.SetFieldOrProperty("_SettingsPlugin_internal", settingsPluginManagerDev_);
             try
             {
-                var Result = colorPresetPlugin.DownloadICCData(monitorInfo1, settingsPluginManagerDev_, true, savelPath).Result;  // web no response,(404) Not Found.
+                var Result = colorPresetPlugin.DownloadICCData(monitorInfo1, settingsPluginManagerDev_, true, savelPath, true).Result;  // web no response,(404) Not Found.
                 Assert.IsNotNull(Result);
                 Assert.IsNotNull(Result.strICC_Folder);
                 Assert.IsNotNull(Result.Is_Support_ICC_DeviceName);

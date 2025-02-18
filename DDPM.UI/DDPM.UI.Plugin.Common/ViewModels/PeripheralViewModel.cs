@@ -248,7 +248,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     }
                 }
             }
-            if (instenceNo == "")
+            if (string.IsNullOrEmpty(instenceNo))
             {
                 Model2 = Model;
             }
@@ -268,11 +268,11 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         ImageFilePath += "LightMode/";
                     }
-                    if (DdpmCommonHelper.EOLKBList.Contains(CurrentDeviceInfo?.ModelNumber ?? string.Empty))
+                    if (DdpmCommonHelper.EOLKBList.Contains(CurrentDeviceInfo?.ModelNumber ?? ""))
                     {
                         ImageFilePath += "Lineart-kb.png";
                     }
-                    if (DdpmCommonHelper.EOLMouseList.Contains(CurrentDeviceInfo?.ModelNumber ?? string.Empty))
+                    if (DdpmCommonHelper.EOLMouseList.Contains(CurrentDeviceInfo?.ModelNumber ?? ""))
                     {
                         ImageFilePath += "Lineart-ms.png";
                     }

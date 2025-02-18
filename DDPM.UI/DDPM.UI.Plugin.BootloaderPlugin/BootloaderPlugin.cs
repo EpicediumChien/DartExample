@@ -17,7 +17,7 @@ using System.Windows.Input;
 namespace DDPM.UI.Plugin.BootloaderPlugin
 {
     /// <summary>
-    /// Interaction logic for AboutDockView Plugin.xaml
+    /// Interaction logic for AboutBootloaderView Plugin.xaml
     /// </summary>
     [Plugin(PluginId, PluginName, Version = PluginVersion, Category = Category.Utility)]
     [Descriptor(Description = TileDetailText)]
@@ -54,9 +54,9 @@ namespace DDPM.UI.Plugin.BootloaderPlugin
         public BootloaderPlugin(IPluginManager pluginManager, IConsole console, IShowPluginManager showPluginManager)
         {
             _pluginManager = pluginManager;
-            _showPluginManager= showPluginManager;
+            _showPluginManager = showPluginManager;
             _console = console;
-            _log = console.CreateLog("Dock");
+            _log = console.CreateLog("Bootloader");
             _log.Info($"{nameof(BootloaderPage)} - Constructed");
 
             CancellationToken = StartupCancellationTokenSource.Token;
@@ -97,8 +97,7 @@ namespace DDPM.UI.Plugin.BootloaderPlugin
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            if (e != null && e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Dock") &&
-                _viewModel != null)
+            if (e != null && e.device_peripherals != null && _viewModel != null)
             {
                 if (e.type == DeviceChangedType.Peripherals_UnPlug)
                 {
@@ -109,7 +108,7 @@ namespace DDPM.UI.Plugin.BootloaderPlugin
                     }
                     GetPeripheralsAsync();
                 }
-                _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);                
+                _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
             }
         }
 
@@ -199,7 +198,7 @@ namespace DDPM.UI.Plugin.BootloaderPlugin
             _isConfigured = true;
         }
 
-        public string HeaderText => "Dell Dock";
+        public string HeaderText => "Bootloader";
         public Type PageType => typeof(BootloaderPage);
 
         #region Interface IConsolePluginSupportsActivations
