@@ -2021,6 +2021,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return false;
             }
         }
+
+        // Content is same as GetIsPropertyHDRSupported() ?
         public async Task<bool> GeIsPropertyAntiFlickerSupported(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -12474,6 +12476,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
+        // Content is same as GetAirAudioBoomMicAsync?
         public async Task<bool> GetAirAudioIsWearDetectionAsync(string Guid)
         {
             string guid = Guid;
