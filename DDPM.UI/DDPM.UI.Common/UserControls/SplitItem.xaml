@@ -9,12 +9,14 @@
              d:DesignHeight="68" d:DesignWidth="88"
              Background="#02000000"
              
+             Focusable="True" KeyboardNavigation.IsTabStop="True"
+             KeyboardNavigation.TabNavigation="Continue"
              AutomationProperties.Name="{Binding ToolTipText}"
+             
              Name="root">
     <!-- 
              Focusable="True"
              IsTabStop="True"
-             AutomationProperties.Name="{Binding ToolTipText}"
              AutomationProperties.Name="{Binding ToolTipText, RelativeSource={RelativeSource Self}}"
              KeyboardNavigation.TabNavigation="Continue"
              AutomationProperties.IsOffscreenBehavior="Onscreen"
@@ -103,8 +105,11 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
+    <!-- 
+    KeyboardNavigation.TabNavigation="Contained"
+    -->
     <Grid Background="{StaticResource FakeTransparent}" MouseLeftButtonDown="rootGrid_MouseLeftButtonDown"
-          KeyboardNavigation.TabNavigation="Contained">
+          >
         <Grid.ToolTip>
             <ToolTip Visibility="{Binding ToolTipText, Converter={StaticResource StringEmptyToVisibilityConverter}}">
                 <!-- Robert_Lin, 2025-1-9 SplitItem Tooltip outerborder will apply DDPM standard style 
@@ -167,7 +172,7 @@
                         </MultiDataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding ElementName=root, Path=IsFocused}" Value="True"/>
+                                <Condition Binding="{Binding ElementName=root, Path=IsKeyboardFocusWithin}" Value="True"/>
                                 <Condition Binding="{Binding IsHoverable}" Value="True"/>
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Visibility" Value="Visible" />
@@ -191,6 +196,7 @@
                         Width="16" Height="16"  Margin="8.5,9,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"
                         Visibility="{Binding IsEditEnabled, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Click="pencilButton_Click" Cursor="Hand"
+                        AutomationProperties.Name="Modify current layout"
                         >
 
                    <Border Background="{StaticResource Brush_GradientButtonCyan}" CornerRadius="3"
@@ -230,7 +236,9 @@
                 -->
                 <Button x:Name="closeXButton" Style="{StaticResource StatelessButton}"
                         Width="16" Height="16" Margin="0,9,8.5,0" HorizontalAlignment="Right" VerticalAlignment="Top"
-                        Visibility="{Binding IsDeleteEnabled, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}" Cursor="Hand" Click="closeXButton_Click"
+                        Visibility="{Binding IsDeleteEnabled, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                        Cursor="Hand" Click="closeXButton_Click"
+                        AutomationProperties.Name="Delete current layout"
                         >
 
                     <Border Background="{StaticResource Brush_GradientButtonCyan}" CornerRadius="3"

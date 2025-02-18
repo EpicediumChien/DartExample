@@ -29,6 +29,18 @@ namespace DDPM.UI.Common.UserControls
         {
             InitializeComponent();
             DataContext = vm;
+            SetInputMode();
+        }
+
+        private void SetInputMode()
+        {
+            // 设置输入法模式为英文
+            InputMethod.SetPreferredImeState(this, InputMethodState.Off);
+            // 或者设置输入法模式为中文
+            // InputMethod.SetPreferredImeState(inputTextBox, InputMethodState.On);
+
+            // 设置输入法的转换模式，例如全角/半角
+            //InputMethod.SetPreferredImeConversionMode(inputTextBox, ImeConversionModeValues.Native | ImeConversionModeValues.FullShape);
         }
 
         #endregion Init
