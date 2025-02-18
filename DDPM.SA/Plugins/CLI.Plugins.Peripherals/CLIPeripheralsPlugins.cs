@@ -3084,7 +3084,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
                         });
 
-                        fwUpdateDeviceInfos.Where(_ => !string.IsNullOrWhiteSpace(_.DockServiceTag) && !fwUpdateInfoPackage.FWUpdateInfo.Select(x => x.ServiceTag).Contains(_.DockServiceTag))
+                        fwUpdateDeviceInfos.Where(_ => !fwUpdateInfoPackage.FWUpdateInfo.Select(x => x.DeviceId).Contains(_.ID.ToString()))
                                            .ToList()
                                            .ForEach(_ => 
                                            {
