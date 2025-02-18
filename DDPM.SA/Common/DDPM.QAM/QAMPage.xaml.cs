@@ -381,59 +381,5 @@ namespace DDPM.QAM
                 WriteLog($"Window_IsVisibleChanged catch exception; {ex.Message}");
             }
         }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                string imagePath = @"imgs\ddpm-dark.png";
-
-                if (!IsDarkMode())
-                    imagePath = @"imgs\ddpm-light.png";
-
-
-                BitmapSource bitmap = new BitmapImage(new Uri(imagePath, UriKind.RelativeOrAbsolute));
-                //bitmap.BeginInit();
-                //bitmap.UriSource = new System.Uri(imagePath);
-                //bitmap.EndInit();
-                // 将 BitmapImage 对象赋值给 Image 控件的 Source 属性
-                DDPMInco.Source = bitmap;
-            }
-            catch (Exception ex)
-            {
-                WriteLog($"Catch exception[{ex.Message}] when Window_Loaded");
-                throw;
-            }
-            
-        }
-
-        private bool IsDarkMode()
-        {
-            try
-            {
-                // 打开注册表项
-                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"))
-                {
-                    if (key != null)
-                    {
-                        // 获取 AppsUseLightTheme 值
-                        object? value = key.GetValue("AppsUseLightTheme");
-
-                        if (value != null)
-                        {
-                            int ret = (int)value;
-                            // 如果值为 0，则表示深色模式
-                            return ret == 0; 
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                WriteLog($"Catch exception[{ex.Message}] when GetSystemTheme ");
-            }
-
-            return false;
-        }
     }
 }
