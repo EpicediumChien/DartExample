@@ -934,7 +934,7 @@
     <value>НАЛАШТУВАННЯ KVM USB</value>
   </data>
   <data name="Kvm.3" xml:space="preserve">
-    <value>Підключити мишу\nта клавіатуру</value>
+    <value>Підключити мишу та клавіатуру</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
     <value>Миша й клавіатура підключаються із заднього боку монітора (USB-A).\n Примітка: ви також можете підключити інші периферійні USB-пристрої, такі як вебкамера.</value>
@@ -955,7 +955,7 @@
     <value>USB</value>
   </data>
   <data name="Kvm.6" xml:space="preserve">
-    <value>Підключення до\nваших пристроїв</value>
+    <value>Підключення до ваших пристроїв</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
     <value>Підключіть відеокабель і USB-кабель від кожного ПК до\n монітора. Можна підключити до 4 ПК (комп’ютерів, ігрових\n консолей тощо). \r\n\r\nВиберіть тип кабелю та призначте назву кожному джерелу.</value>
@@ -991,7 +991,7 @@
     <value>НАЛАШТУВАННЯ PIP/PBP</value>
   </data>
   <data name="Kvm.17" xml:space="preserve">
-    <value>Налаштуйте PIP/PBP\nдля свого монітора</value>
+    <value>Налаштуйте PIP/PBP для свого монітора</value>
   </data>
   <data name="Kvm.18" xml:space="preserve">
     <value>Ваш монітор може відображати сигнал з одного ПК чи джерела одночасно (повноекранний режим)\nабо показувати зображення, розділене між джерелами (картинка в картинці / картинки поруч).</value>
@@ -1087,19 +1087,22 @@
     <value>Чутливість кінчика</value>
   </data>
   <data name="PenSettings.2" xml:space="preserve">
-    <value>Переміщення повзунка праворуч поступово зменшує чутливість до натискання,\nі вам потрібно буде сильніше\nнатискати на перо</value>
+    <value>Переміщення повзунка праворуч поступово зменшує чутливість до натискання, і вам потрібно буде сильніше натискати на перо</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.3" xml:space="preserve">
     <value>Чутливість до нахилу</value>
   </data>
   <data name="PenSettings.4" xml:space="preserve">
-    <value>Пересування повзунка праворуч поступово збільшує ефект нахилу,\nі вам потрібно буде\nвикористовувати менший кут нахилу</value>
+    <value>Пересування повзунка праворуч поступово збільшує ефект нахилу, і вам потрібно буде використовувати менший кут нахилу</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.5" xml:space="preserve">
     <value>Сполучення з Tile</value>
   </data>
   <data name="PenSettings.6" xml:space="preserve">
-    <value>Сполучення пера з мобільним пристроєм за допомогою\nпрограми Tile</value>
+    <value>Сполучення пера з мобільним пристроєм за допомогою програми Tile</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.7" xml:space="preserve">
     <value>Початок роботи</value>
@@ -2278,7 +2281,7 @@
     <value>Перейменування джерела вхідного сигналу</value>
   </data>
   <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
-    <value>Від&apos;єднайте всі USB-накопичувачі від монітора.</value>
+    <value>Від'єднайте всі USB-накопичувачі від монітора.</value>
   </data>
   <data name="AddDevice.KnM.14" xml:space="preserve">
     <value>Під’єднання бездротового приймача</value>

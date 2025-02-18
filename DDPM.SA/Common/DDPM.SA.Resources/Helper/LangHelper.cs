@@ -16,7 +16,7 @@ namespace DDPM.SA.Resources.Helper
         public static LangHelper Instance => _lazy.Value;
 
         public event PropertyChangedEventHandler PropertyChanged;
-
+        public static CultureInfo? UserMappedCultureInfo;
         public LangHelper()
         {
             //Get the resources of the Lang of the Resources in this namespace, which can be modified.
@@ -48,7 +48,22 @@ namespace DDPM.SA.Resources.Helper
                 //resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
                 //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("ru");
                 //string str = _resourceManager.GetString(name, cultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
-                string str = _resourceManager.GetString(name, CultureInfo.CurrentUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+
+                //Robert_Lin 2025-1-22 PIMS-331191 With DDPM installed, observe language in DDPM UI not change for other langauges of Other countries
+                //Add a CultureInfoMap to convert (mapped) CultureInfo.CurrentUICulture to the supported cultureInfo of DDPM
+                //OLD:
+                //string str = _resourceManager.GetString(name, CultureInfo.CurrentUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+                //NEW:
+                //Bruce 02/11 Fix PIMS-344808 modify the language used by System to be the same as that captured by user.
+                string str;
+                if (UserMappedCultureInfo != null)
+                {
+                    str = _resourceManager.GetString(name, UserMappedCultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+                }
+                else
+                {
+                    str = _resourceManager.GetString(name, DdpmCultureMap.MappedCultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+                }
                 return System.Text.RegularExpressions.Regex.Unescape(str);
 #endif
             }
@@ -59,6 +74,11 @@ namespace DDPM.SA.Resources.Helper
             CultureInfo.CurrentCulture = cultureInfo;
             CultureInfo.CurrentUICulture = cultureInfo;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("item[]"));  //A collection of strings, corresponding to the values of the resources
+        }
+        public static CultureInfo GetLanguage()
+        {
+            //Bruce 02/11 Fix PIMS-344808 modify the language used by System to be the same as that captured by user.
+            return DdpmCultureMap.MappedCultureInfo;
         }
     }
 }

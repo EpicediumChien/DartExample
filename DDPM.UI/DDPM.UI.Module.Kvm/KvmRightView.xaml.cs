@@ -29,7 +29,7 @@ namespace DDPM.UI.Module.Kvm
             _vm = vm;
             //DataContext = new KvmViewModel();
             DataContext = vm;
-            vm.Invoke_RefreshData();
+            //vm.Invoke_RefreshData();
             vm.Invoke_RefreshHotkeySettings();
 
             //lock/unlock
@@ -102,12 +102,12 @@ namespace DDPM.UI.Module.Kvm
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
-                    KvmViewModel vm = (KvmViewModel)this.DataContext;
-                    if (vm != null)
+                    KvmViewModel localVm = (KvmViewModel)this.DataContext;
+                    if (localVm != null)
                     {
                         IsLockinNKVMUI((bool)isLocked);
                         Trace.WriteLine($"[SettingsPage] Apply NetworkKVM(Lock) : {isLocked}");
-                        vm.OnPropertyChanged_Lock();
+                        localVm.OnPropertyChanged_Lock();
                     }
                 }));
             }
@@ -117,13 +117,13 @@ namespace DDPM.UI.Module.Kvm
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
-                    KvmViewModel vm = (KvmViewModel)this.DataContext;
-                    if (vm != null)
+                    KvmViewModel localVm = (KvmViewModel)this.DataContext;
+                    if (localVm != null)
                     {
                         //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
                         IsLockinUSBKVMUI((bool)isLocked);
                         Trace.WriteLine($"[SettingsPage] Apply USBKVM(Lock) : {isLocked}");
-                        vm.OnPropertyChanged_Lock();
+                        localVm.OnPropertyChanged_Lock();
                     }
                 }));
             }
@@ -182,30 +182,30 @@ namespace DDPM.UI.Module.Kvm
                 {
                     if (vm.USBKVMisON)
                     {
-                        vm._log.Debug("[SelectUSBKVM]USBKVM is on");
+                        vm._log.Info("[SelectUSBKVM]USBKVM is on");
                         button_USB.Visibility = Visibility.Collapsed;
                         button_OnUSB.Visibility = Visibility.Visible;
                         button_USBHotkeys.Visibility = Visibility.Visible;
                         //if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E8"))
                         //{
-                        //    vm._log.Debug("[SelectUSBKVM]Have E8");
+                        //    vm._log.Info("[SelectUSBKVM]Have E8");
                         //    button_USBHotkeys.Visibility = Visibility.Visible;
                         //}
                         //else
                         //{
-                        //    vm._log.Debug("[SelectUSBKVM]No E8");
+                        //    vm._log.Info("[SelectUSBKVM]No E8");
                         //    button_USBHotkeys.Visibility = Visibility.Collapsed;
                         //}
                     }
                     else
                     {
-                        vm._log.Debug("[SelectUSBKVM]USBKVM is off");
+                        vm._log.Info("[SelectUSBKVM]USBKVM is off");
                         button_USB.Visibility = Visibility.Visible;
                         button_OnUSB.Visibility = Visibility.Collapsed;
                         button_USBHotkeys.Visibility = Visibility.Collapsed;
                     }
-                    vm.isNKVM = false;
-                    vm.isNoKVM = false;
+                    //vm.isNKVM = false;
+                    //vm.isNoKVM = false;
                 }
                 else
                 {
@@ -228,18 +228,20 @@ namespace DDPM.UI.Module.Kvm
                 button_OnUSB.Visibility = Visibility.Collapsed;
                 button_USBHotkeys.Visibility = Visibility.Collapsed;
                 button_Net.Visibility = Visibility.Visible;
-                if (vm != null)
-                {
-                    vm.isNKVM = true;
-                }
+                //if (vm != null)
+                //{
+                //    vm.isNKVM = true;
+                //}
+                vm.isOnUSBKVM(false);
+                vm.USBKVMisON = false;
             }
         }
 
         private void SelectNoKVM(object sender, RoutedEventArgs e)
         {
-            RadioButton radioButton = sender as RadioButton;
+            //RadioButton radioButton = sender as RadioButton;
 
-            radioButton.IsEnabled = false;
+            //radioButton.IsEnabled = false;
 
             Button button_USB = (Button)FindName("USBKVM");
             Button button_OnUSB = (Button)FindName("ONUSBKVM");
@@ -251,13 +253,23 @@ namespace DDPM.UI.Module.Kvm
                 button_OnUSB.Visibility = Visibility.Collapsed;
                 button_USBHotkeys.Visibility = Visibility.Collapsed;
                 button_Net.Visibility = Visibility.Collapsed;
-                if (vm != null)
+                //if (vm != null)
+                //{
+                //    vm.isNoKVM = true;
+                //}
+                if (!vm.isScreenPartition)
                 {
-                    vm.isNoKVM = true;
+                    vm.USBKVMisON = false;
+                    vm.isOnUSBKVM(false);
                 }
+                else
+                {
+                    vm.LoaddefLeftView();
+                }
+                DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM");
             }
 
-            radioButton.IsEnabled = true;
+            //radioButton.IsEnabled = true;
 
             //Robert_Lin debug purpose, can be removed at release build
             //if (DdpmCommonHelper.ModuleOwner != null)

@@ -49,6 +49,7 @@ namespace DDPM.Easy.Common
         //SplitCtrl0B is used fro OnScreen custom layout, EAID should be [1000~1004], no default value
         public int EAID { get; set; }
 
+        public string TooltipResourceName { get; } = "EATooltip_0B";
         #endregion ISplitCtrl Native Members
 
         #region ViewModel
@@ -440,11 +441,11 @@ namespace DDPM.Easy.Common
 
         public List<double> DefaultSettings => new List<double>() { 1, 1 };
 
-         #endregion Settings
+        #endregion Settings
 
         #region FriendlyName
 
-        public string FriendlyName { get; set; }
+        public string FriendlyName { get; set; } = "";
 
         #endregion FriendlyName
 

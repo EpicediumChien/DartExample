@@ -6,6 +6,7 @@ using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using DDPM.UI.Plugin.DdpmHomePlugin;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.UX.WPF;
 using System.Windows;
 using System.Windows.Controls;
@@ -44,9 +45,15 @@ namespace DDPM.UI.Module.Kvm
                 new TabHeader() { Text = "PBP" }
             };
 
-            pipOff.InnerContent = new SplitCtrl0A(null) { Description = "Full screen" };
-            pipSmall.InnerContent = new SplitCtrl1A(null) { Description = "PIP Small" };
-            pipLarge.InnerContent = new SplitCtrl1B(null) { Description = "PIP Large" };
+            //Robert_Lin 2025-2-1 for Multilingal strings
+            //NEW:
+            pipOff.InnerContent = new SplitCtrl0A(null) { Description = LangHelper.Instance["Fullscreen.1"] };
+            pipSmall.InnerContent = new SplitCtrl1A(null) { Description = LangHelper.Instance["PIPSmall"] };
+            pipLarge.InnerContent = new SplitCtrl1B(null) { Description = LangHelper.Instance["PIPLarge"] };
+            //OLD:
+            //pipOff.InnerContent = new SplitCtrl0A(null) { Description = "Full screen" };
+            //pipSmall.InnerContent = new SplitCtrl1A(null) { Description = "PIP Small" };
+            //pipLarge.InnerContent = new SplitCtrl1B(null) { Description = "PIP Large" };
 
             //Assign SplitOwner to all SplitItems
             //  pipOff : PxpOff group
@@ -134,7 +141,7 @@ namespace DDPM.UI.Module.Kvm
                 }
                 else
                 {
-                    vm._log?.Debug("[BackMKFullView]PxPcodeDictionary is null or PxPCode not found.");
+                    vm._log?.Info("[BackMKFullView]PxPcodeDictionary is null or PxPCode not found.");
                 }
                 if (vm.ToProgressValue > 3 || vm.ToProgressValue < 0)
                 {
@@ -240,7 +247,7 @@ namespace DDPM.UI.Module.Kvm
                     }
                     else
                     {
-                        vm._log.Debug("PC1 not found in pcsList.");
+                        vm._log.Info("PC1 not found in pcsList.");
                     }
                     //Get the Content of the new selected SplitItem
                     //vm.PxPCode = 0x0;
@@ -277,7 +284,7 @@ namespace DDPM.UI.Module.Kvm
                     }
                     else
                     {
-                        vm._log.Debug("PC1 or PC2 not found in pcsList.");
+                        vm._log.Info("PC1 or PC2 not found in pcsList.");
                     }
                     //Get the Content of the new selected SplitItem
                     //PIPSplitCtrl1A splitCtrl1A = new PIPSplitCtrl1A();
@@ -317,7 +324,7 @@ namespace DDPM.UI.Module.Kvm
                     }
                     else
                     {
-                        vm._log.Debug("PC1 or PC2 not found in pcsList.");
+                        vm._log.Info("PC1 or PC2 not found in pcsList.");
                     }
                     //Get the Content of the new selected SplitItem
                     //vm.PxPCode = 0x12;
@@ -366,7 +373,7 @@ namespace DDPM.UI.Module.Kvm
                     }
                     else
                     {
-                        vm._log?.Debug("[OnPbpItemClicked]PxPcodeDictionary is null or PxPCode not found.");
+                        vm._log?.Info("[OnPbpItemClicked]PxPcodeDictionary is null or PxPCode not found.");
                     }
                 }
             }
@@ -460,7 +467,7 @@ namespace DDPM.UI.Module.Kvm
                 }
                 else
                 {
-                    vm._log?.Debug("[CloseUSBKVM]PxPcodeDictionary is null or PxPCode not found.");
+                    vm._log?.Info("[CloseUSBKVM]PxPcodeDictionary is null or PxPCode not found.");
                 }
                 vm.isPxPFullView = false;
                 //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[vm.PxPCode];

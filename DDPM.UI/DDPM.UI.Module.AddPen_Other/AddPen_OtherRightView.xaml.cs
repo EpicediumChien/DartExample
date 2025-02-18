@@ -1,10 +1,12 @@
-﻿using DDPM.UI.Common;
+﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using System.Net;
 using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
@@ -35,6 +37,29 @@ namespace DDPM.UI.Module.AddPen_Other
             //txtStep2.Text = Step2;
 
             breakPoints = DdpmCommonHelper.GetBreakPoints();
+            Unloaded += AddPen_OtherRightView_Unloaded;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+            }
+        }
+
+        bool? IsBLE = null;
+        private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
+        {
+            if (e.type == DeviceChangedType.Peripherals_SettingsChange && e.changedProperty == "ActivePenInformationChanged")
+            {
+                var di = e.device_peripherals;
+                IsBLE = di.IsBLE;
+            }
+        }
+
+        private void AddPen_OtherRightView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+            }
         }
 
         private void UserControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
@@ -59,25 +84,44 @@ namespace DDPM.UI.Module.AddPen_Other
         {
             stepsStackPanel.Orientation = Orientation.Horizontal;
 
-            txtStep1.Width = txtStep2.Width  = this.ActualWidth / 2 - 70;
-            stepsBorder1.Width = stepsBorder2.Width =  this.ActualWidth / 2 - 25;
+            txtStep1.Width = txtStep2.Width = this.ActualWidth / 2 - 70;
+            stepsBorder1.Width = stepsBorder2.Width = this.ActualWidth / 2 - 25;
         }
 
         private void Pairing(object sender, System.Windows.Input.StylusDownEventArgs e)
         {
-            MessageModalDialog messageModalDialog;
-            Window mainWindow = System.Windows.Application.Current.MainWindow;
-            messageModalDialog = new(Strings.PairYourPen, Strings.PairYourPenMessage, Strings.No, Strings.Yes);
-            if (mainWindow != null)
+            Thread.Sleep(500);
+
+            if (IsBLE != null)
             {
-                messageModalDialog.Owner = mainWindow;
-                messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
-                messageModalDialog.Top = mainWindow.Top + 300;
+                if (IsBLE.HasValue && !IsBLE.Value)
+                {
+                    MessageModalDialog messageModalDialog;
+                    Window mainWindow = System.Windows.Application.Current.MainWindow;
+                    messageModalDialog = new(Strings.PairYourPen, Strings.PairYourPenMessage, Strings.No, Strings.Yes);
+                    if (mainWindow != null)
+                    {
+                        messageModalDialog.Owner = mainWindow;
+                        messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                        messageModalDialog.Top = mainWindow.Top + 300;
+                    }
+                    if (messageModalDialog.ShowDialog()!.Value)
+                    {
+                        _vm.StartPairingPen();
+                    }
+                    IsBLE = null;
+                }
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"IsBLE.HasValu : {IsBLE.HasValue}, !IsBLE.Value : {!IsBLE.Value}");
+                }
             }
-            if (messageModalDialog.ShowDialog()!.Value)
+            else
             {
-                _vm.StartPairingPen();
+                DdpmCommonHelper.WriteUILog("Pairing, IsBLE == null");
             }
+
+
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

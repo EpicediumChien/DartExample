@@ -23,7 +23,7 @@ namespace DDPM.UI.Plugin.Common
                 Interval = TimeSpan.FromSeconds(2.5)
             };
             timer.Tick += Timer_Tick;
-            //timer.Start();
+            //timer.StartkeyHook();
             Loaded += WaitingModalDialog_Loaded;
             Unloaded += WaitingModalDialog_Unloaded;
         }

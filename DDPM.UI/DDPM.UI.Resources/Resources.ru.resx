@@ -538,7 +538,7 @@
     <value>Пример: «Alt + P», «Shift + F» «Ctrl + Shift + F».\nОбратите внимание, что при работе с несколькими мониторами для активации функции горячих клавиш курсор мыши должен находиться на экране целевого монитора.</value>
   </data>
   <data name="ButtonSettings.0" xml:space="preserve">
-    <value>Нажатие колеса прокрутки</value>
+    <value>Настроить нажатие колеса прокрутки</value>
   </data>
   <data name="ButtonSettings.1" xml:space="preserve">
     <value>Наклон колеса прокрутки влево</value>
@@ -934,7 +934,7 @@
     <value>НАСТРОЙКА USB-KVM</value>
   </data>
   <data name="Kvm.3" xml:space="preserve">
-    <value>Подключите мышь\n и клавиатуру</value>
+    <value>Подключите мышь и клавиатуру</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
     <value>Подключите мышь и клавиатуру к разъему на задней панели монитора (USB-A).\n Примечание. Можно подключить и другие периферийные USB-устройства, такие как\n веб-камера.</value>
@@ -955,7 +955,7 @@
     <value>USB</value>
   </data>
   <data name="Kvm.6" xml:space="preserve">
-    <value>Подключение к\n устройствам</value>
+    <value>Подключение к устройствам</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
     <value>Подключите видеокабель и USB-кабель между каждым ПК к\n монитору. Можно подключить до 4 ПК (компьютеры, игровые\n консоли и т.п.). \r\n\r\nВыберите тип кабеля и назначьте имя каждому источнику.</value>
@@ -991,7 +991,7 @@
     <value>НАСТРОЙКА PIP/PBP</value>
   </data>
   <data name="Kvm.17" xml:space="preserve">
-    <value>Настройка PIP/PBP\nдля монитора</value>
+    <value>Настройка PIP/PBP для монитора</value>
   </data>
   <data name="Kvm.18" xml:space="preserve">
     <value>Монитор может отображать один компьютер или источник одновременно (в полноэкранном режиме),\nили быть разделенным между источниками (картинка в картинке (PIP) / картинка рядом (PBP)).</value>
@@ -1087,19 +1087,22 @@
     <value>Чувствительность наконечника</value>
   </data>
   <data name="PenSettings.2" xml:space="preserve">
-    <value>Перемещение ползунка вправо приведет к постепенному\nснижению чувствительности к нажиму, \nтак что потребуется более жесткий нажим пера</value>
+    <value>Перемещение ползунка вправо приведет к постепенному снижению чувствительности к нажиму,  так что потребуется более жесткий нажим пера</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.3" xml:space="preserve">
     <value>Чувствительность к наклону</value>
   </data>
   <data name="PenSettings.4" xml:space="preserve">
-    <value>Перемещение ползунка вправо приведет к\nпостепенному увеличению эффекта наклона, так что потребуется\nуменьшить угол наклона</value>
+    <value>Перемещение ползунка вправо приведет к постепенному увеличению эффекта наклона, так что потребуется уменьшить угол наклона</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.5" xml:space="preserve">
     <value>Сопряжение с Tile</value>
   </data>
   <data name="PenSettings.6" xml:space="preserve">
-    <value>Выполните сопряжение пера с мобильным устройством при помощи\nприложения Tile</value>
+    <value>Выполните сопряжение пера с мобильным устройством при помощи приложения Tile</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.7" xml:space="preserve">
     <value>Начало работы</value>
@@ -1874,6 +1877,7 @@
   </data>
   <data name="WalkThroughMouseMS355_Main.1" xml:space="preserve">
     <value>Настроить нажатие колеса прокрутки</value>
+    <comment>PIMS-334908　Ｒｏｂｅｒｔ２０２５０１２１</comment>
   </data>
   <data name="WalkThroughMouseMS355_Main.2" xml:space="preserve">
     <value>Действия для конкретных приложений</value>

@@ -583,6 +583,24 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The default ICC profile is for Smart HDR. We are not able to change color preset in the.
+        /// </summary>
+        internal static string ICC_notification_NonSmartHDR {
+            get {
+                return ResourceManager.GetString("ICC_notification_NonSmartHDR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The default ICC profile is not suitable for Smart HDR. We are not able to change color preset in the.
+        /// </summary>
+        internal static string ICC_notification_SmartHDR {
+            get {
+                return ResourceManager.GetString("ICC_notification_SmartHDR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The same monitor is detected, do you want to import settings for %1?.
         /// </summary>
         internal static string ImpExp_Message_0 {
@@ -628,7 +646,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please double click mouse left button to start firmware update.
+        ///   Looks up a localized string similar to Move or click the target mouse’s left button twice.
         /// </summary>
         internal static string M1_Please_double_click_mouse_left_button_to_start_firmware_update {
             get {
@@ -637,7 +655,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please press &quot;U&quot; key on keyboard to start firmware update.
+        ///   Looks up a localized string similar to Press “U” key twice to activate firmware update of target keyboard.
         /// </summary>
         internal static string M2_Please_press_key_on_keyboard_to_start_firmware_update {
             get {

@@ -352,11 +352,11 @@ namespace DDPM.SA.Common
                                         t = tS;
                                     if (t.Length > 1 && t.EndsWith("]"))
                                         t = t.Substring(0, t.Length - 1);
-                                    if (tmpSS[0].ToUpper().Contains("SERVICETAG") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DEVICEDATA") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
+                                    if (tmpSS[0].ToUpper().Contains("SERVICETAG") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                     {
                                         commandInput.ServiceTag.Add(t);
                                     }
-                                    else if (tmpSS[0].ToUpper().Contains("MODEL") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DEVICEDATA") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
+                                    else if (tmpSS[0].ToUpper().Contains("MODEL") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                     {
                                         commandInput.Model.Add(t);
                                     }
@@ -727,6 +727,18 @@ namespace DDPM.SA.Common
                     commandInput.isNormalCommands = true;
                     return;
                 }
+                if (commandInput.Command == "SET" && commandInput.TargetType == "APP" && commandInput.TargetFeature == "RESTOREFACTORYDEFAULTS" && commandInput.Options.Count == 0)
+                {
+                    commandInput.isITCommands = true;
+                    commandInput.isNormalCommands = true;
+                    return;
+                }
+                if (commandInput.Command == "SET" && commandInput.TargetFeature == "SCREENNOTIFICATION" && (commandInput.Options[0].Option_Value == "ON" || commandInput.Options[0].Option_Value == "OFF"))
+                {
+                    commandInput.isITCommands = true;
+                    commandInput.isNormalCommands = true;
+                    return;
+                }
                 if (commandInput.Options.Count == 0)//recognized only normal command -> CLIProxy
                 {
                     commandInput.isNormalCommands = true;
@@ -803,9 +815,7 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Command line format error"
             };
-#if DEBUG
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-#endif
 
             return (int)CLI_ExitCode.fail_FormantError;
         }
@@ -824,9 +834,7 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "DDPM CLI should be executed as elevated process"
             };
-#if DEBUG
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-#endif
             return (int)CLI_ExitCode.fail_notAdmin;
         }
 
@@ -844,9 +852,7 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Timeout for obtaining DDPM SA (CLI Manager)"
             };
-#if DEBUG
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-#endif
             return (int)CLI_ExitCode.target_subagent_timeout;
         }
 
@@ -864,9 +870,7 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Wrong ID value"
             };
-#if DEBUG
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-#endif
             return (int)CLI_ExitCode.fail_Value;
         }
 
@@ -996,6 +1000,20 @@ namespace DDPM.SA.Common
             };
         }
 
+        public static int ResponseFWUpdateDeviceNotConnected(CommandLineInput commandLineInput)
+        {
+            APP_RESPONSE result = new APP_RESPONSE()
+            {
+                Command = commandLineInput.Command,
+                TargetFeature = commandLineInput.TargetFeature,
+                Result = "PASS",
+                Value = commandLineInput.Options.Count > 0 ? commandLineInput.Options[0].Option_Value : "N/A",
+                Message = "Device not connected, add to schedule."
+            };
+            Console.WriteLine(result.ToJson());
+            return (int)CLI_ExitCode.success;
+        }
+
         public static int ResponseDefer(CommandLineInput commandLineInput)
         {
             APP_RESPONSE result = new APP_RESPONSE()
@@ -1006,9 +1024,7 @@ namespace DDPM.SA.Common
                 Value = commandLineInput.Options.Count > 0 ? commandLineInput.Options[0].Option_Value : "N/A",
                 Message = "Set defer operation completed"
             };
-#if DEBUG
             Console.WriteLine(result.ToJson());
-#endif
             return (int)CLI_ExitCode.success;
         }
 
@@ -1022,9 +1038,7 @@ namespace DDPM.SA.Common
                 Value = commandLineInput.Options.Count > 0 ? commandLineInput.Options[0].Option_Value : "N/A",
                 Message = "Option value not supported"
             };
-#if DEBUG
             Console.WriteLine(result.ToJson());
-#endif
             return (int)CLI_ExitCode.fail_option_value;
         }
 
@@ -1202,6 +1216,16 @@ namespace DDPM.SA.Common
                 new Dictionary<string, object> {{ "TargetType", "AUDIO" }, { "TargetFeature", "wearDetection" },               { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "AUDIO" }, { "TargetFeature", "wearDetection" },               { "Value", "N/A" }, { "Type", 1 }},
 
+                 // - AIRAUDIO
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "FWVersion" },                   { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "RestoreFactoryDefaults" },      { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "ancMode" },                     { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "ancMode" },                     { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "micNoiseCancellation" },        { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "micNoiseCancellation" },        { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "wearDetection" },               { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "wearDetection" },               { "Value", "N/A" }, { "Type", 1 }},
+
                 // - KEYBOARD
                 new Dictionary<string, object> {{ "TargetType", "KEYBOARD" }, { "TargetFeature", "FWVersion" },                { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "KEYBOARD" }, { "TargetFeature", "RestoreFactoryDefaults" },   { "Value", "N/A" }, { "Type", 1 }},
@@ -1308,8 +1332,8 @@ namespace DDPM.SA.Common
                 var finalVCPList = vcpKeyList.Concat(vcpValueList);
 
                 var targetFeatures = FeatureListByVCP
-                .Where(f => (f["TargetType"].ToString().Equals(targetType, StringComparison.OrdinalIgnoreCase))
-                && (f["VCP"].ToString().Split(",").ToList().Except(finalVCPList).Count() == 0) || f["VCP"].ToString().Equals("ALL", StringComparison.OrdinalIgnoreCase)
+                .Where(f => (f["TargetType"].ToString().Equals(targetType, StringComparison.OrdinalIgnoreCase)) && 
+                (f["VCP"].ToString().Split(",").Except(finalVCPList).Count() == 0) || f["VCP"].ToString().Equals("ALL", StringComparison.OrdinalIgnoreCase)
                 || f["VCP"].ToString().Equals(isColorMangerment.ToString().ToUpper(), StringComparison.OrdinalIgnoreCase))
                 .Select(f => f["TargetFeature"].ToString())
                 .Distinct()
@@ -1321,9 +1345,7 @@ namespace DDPM.SA.Common
                     { targetType, targetFeatures }
                 };
                 string json = JsonConvert.SerializeObject(result, Formatting.Indented);
-#if DEBUG
                 Console.WriteLine(json);
-#endif
                 return json;
             }
             // [HELP]: Print all the data in the command set
@@ -1337,9 +1359,7 @@ namespace DDPM.SA.Common
                     );
 
                 string json = JsonConvert.SerializeObject(groupedFeatures, Formatting.Indented);
-#if DEBUG
                 Console.WriteLine(json);
-#endif
             }
 
             // [HELP]: Print the command according to the feature in list<pluginType> aka. targetFeature
@@ -1356,9 +1376,7 @@ namespace DDPM.SA.Common
                     { targetType, targetFeatures }
                 };
                 string json = JsonConvert.SerializeObject(result, Formatting.Indented);
-#if DEBUG
                 Console.WriteLine(json);
-#endif
             }
 
             public static bool IsTargetFeatureAndPluginsTypeExists(CommandLineInput commandLineInput)
@@ -1435,9 +1453,7 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Command line format error"
             };
-#if DEBUG
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-#endif
             return (int)CLI_ExitCode.fail_FormantError;
         }
     }

@@ -95,6 +95,8 @@ namespace DDPM.Easy.Common
 
         //public CellJson[] Cells { get; set; }
 
+        public string TooltipResourceName { get; }
+
         #endregion Native members - value not be changed once created
 
         #region ViewModel
@@ -147,7 +149,9 @@ namespace DDPM.Easy.Common
             //Clone settings
             newObj.Settings = new List<double>(Settings);
             newObj.EAID = EAID;
-            newObj.FriendlyName = FriendlyName;
+            //Robert_Lin 2025-2-5 prevent null exception, tepmoratry comment-out
+            //if (!string.IsNullOrEmpty(FriendlyName))
+            //    newObj.FriendlyName = FriendlyName;
             return newObj;
         }
         #endregion Create a new instance

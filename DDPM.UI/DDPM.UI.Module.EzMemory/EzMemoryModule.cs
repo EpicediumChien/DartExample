@@ -40,7 +40,10 @@ namespace DDPM.UI.Module.EzMemory
 
                 //Robert_Lin 2025-1-13 Fix bug: Create log for EzMemoryModule
                 //And all _log.Info() has been changed to LogInfo() in the EzArrangeViewModel
-                _selHomeDevice.vmEzArrange.CreateLog(_vmDisplay.Console, "EMMod");
+                if (_selHomeDevice != null)
+                {
+                    _selHomeDevice.vmEzArrange.CreateLog(_vmDisplay.Console, "EMMod");
+                }
             }
             //_rightView.DataContext = vm;
         }

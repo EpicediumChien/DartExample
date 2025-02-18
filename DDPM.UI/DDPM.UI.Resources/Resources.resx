@@ -538,19 +538,19 @@
     <value>Example: "Alt + P", "Shift + F", "Ctrl + Shift + F".\nNote that for multiple monitors,the mouse cursor should be on the targeted monitor screen to trigger the hotkey function.</value>
   </data>
   <data name="ButtonSettings.0" xml:space="preserve">
-    <value>Scroll Wheel Click</value>
+    <value>Customize Scroll Wheel Click</value>
   </data>
   <data name="ButtonSettings.1" xml:space="preserve">
-    <value>Scroll Tilt Left</value>
+    <value>Customize Scroll Tilt Left</value>
   </data>
   <data name="ButtonSettings.2" xml:space="preserve">
-    <value>Scroll Tilt Right</value>
+    <value>Customize Scroll Tilt Right</value>
   </data>
   <data name="ButtonSettings.3" xml:space="preserve">
-    <value>Side Button Forward</value>
+    <value>Customize Side Button Forward</value>
   </data>
   <data name="ButtonSettings.4" xml:space="preserve">
-    <value>Side Button Back</value>
+    <value>Customize Side Button Back</value>
   </data>
   <data name="ButtonSettings.5" xml:space="preserve">
     <value>To customize, click one of the outlined sections on the image to the left</value>
@@ -940,7 +940,7 @@
     <value>USB KVM SETUP</value>
   </data>
   <data name="Kvm.3" xml:space="preserve">
-    <value>Connect Mouse\n and Keyboard</value>
+    <value>Connect Mouse and Keyboard</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
     <value>For Mouse and Keyboard, connect to rear of monitor (USB-A).\n Note: You can also connect other USB Peripherals such as\n Webcam.</value>
@@ -961,7 +961,7 @@
     <value>USB</value>
   </data>
   <data name="Kvm.6" xml:space="preserve">
-    <value>Connecting to\n your devices</value>
+    <value>Connecting to your devices</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
     <value>Please connect a video cable and USB cable between each PC to\n the monitor. You can connect up to 4 PCs (computers, gaming\n consoles, etc). \r\n\r\nPlease select the cable type and assign a name to each source.</value>
@@ -997,7 +997,7 @@
     <value>PIP/PBP SETUP</value>
   </data>
   <data name="Kvm.17" xml:space="preserve">
-    <value>Setup PIP/PBP\nfor your monitor</value>
+    <value>Setup PIP/PBP for your monitor</value>
   </data>
   <data name="Kvm.18" xml:space="preserve">
     <value>Your monitor can display one PC or source at a time (fullscreen),\nor be partitioned between sources (picture-in/by-picture).</value>
@@ -1093,19 +1093,22 @@
     <value>Tip Sensitivity</value>
   </data>
   <data name="PenSettings.2" xml:space="preserve">
-    <value>Moving the slider to the right will gradually\ndecrease the sensitivity to pressure and you\nneed to apply firmer pen pressure</value>
+    <value>Moving the slider to the right will gradually decrease the sensitivity to pressure and you need to apply firmer pen pressure</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.3" xml:space="preserve">
     <value>Tilt Sensitivity</value>
   </data>
   <data name="PenSettings.4" xml:space="preserve">
-    <value>Moving the slider to the right will gradually\nincrease the tilting effect, and you need to\napply less tilting angle</value>
+    <value>Moving the slider to the right will gradually increase the tilting effect, and you need to apply less tilting angle</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.5" xml:space="preserve">
     <value>Pair with Tile</value>
   </data>
   <data name="PenSettings.6" xml:space="preserve">
-    <value>Pair your pen to your mobile device using\nthe Tile app</value>
+    <value>Pair your pen to your mobile device using the Tile app</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.7" xml:space="preserve">
     <value>Get started</value>
@@ -1477,7 +1480,7 @@
     <value>Barrel Button</value>
   </data>
   <data name="DefineBySystem" xml:space="preserve">
-    <value>Define by system</value>
+    <value>Defined by system</value>
   </data>
   <data name="EMail" xml:space="preserve">
     <value>E-mail</value>
@@ -3512,5 +3515,41 @@
   </data>
   <data name="WebCameraPresenceDetection.13" xml:space="preserve">
     <value>minutes</value>
+  </data>
+  <data name="Cardi.1" xml:space="preserve">
+    <value>AI Mic Noise Cancellation</value>
+  </data>
+  <data name="Cardi.2" xml:space="preserve">
+    <value>Multimedia Presets</value>
+  </data>
+  <data name="CustomizeScrollTiltLCaption" xml:space="preserve">
+    <value>Customize Scroll Tilt Left</value>
+  </data>
+  <data name="CustomizeScrollTiltRCaption" xml:space="preserve">
+    <value>Customize Scroll Tilt Right</value>
+  </data>
+  <data name="CustomizeScrollWheelCaption" xml:space="preserve">
+    <value>Customize Scroll Wheel Click</value>
+  </data>
+  <data name="CustomizeSideButtonBCaption" xml:space="preserve">
+    <value>Customize Side Button Back</value>
+  </data>
+  <data name="CustomizeSideButtonFCaption" xml:space="preserve">
+    <value>Customize Side Button Forward</value>
+  </data>
+  <data name="Bootloader" xml:space="preserve">
+    <value>Bootloader</value>
+  </data>
+  <data name="Bootloader.0" xml:space="preserve">
+    <value>Your device is unavailable.</value>
+  </data>
+  <data name="Bootloader.1" xml:space="preserve">
+    <value>Please click</value>
+  </data>
+  <data name="Bootloader.2" xml:space="preserve">
+    <value>here</value>
+  </data>
+  <data name="Bootloader.3" xml:space="preserve">
+    <value>to update your firmware in order to restore functionality.</value>
   </data>
 </root>

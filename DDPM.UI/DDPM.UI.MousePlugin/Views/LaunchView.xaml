@@ -78,7 +78,7 @@
       </Grid>
       <!-- Layer 2 : Nav -->
       <Grid Grid.Column="0">
-        <Border Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
+        <Border x:Name="LeftBorder" Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
         <!--Image-->
         <Grid>
           <Viewbox Name="largeImage" Margin="30,0" MaxWidth="500">
@@ -219,7 +219,11 @@
                 </StackPanel>
                 <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
                 <!-- Elsa 20250107 For PIMS [PIMS-334377] add Width="230" TextTrimming="CharacterEllipsis" -->
-                <UXControls:UXTextBlock Name="txtFirmware" Style="{StaticResource ConnectionStyle3}" Margin="20,13,0,0" Width="230" TextTrimming="CharacterEllipsis"/>
+                <!-- Robert_Lin 2025-2-4 PIMS-344432 Not able to see Dongle FW version in Non English language
+                    Root cause: the TextTrimming="CharacterEllipsis" setting let the version number cannot be seen in uk/ru/...
+                    Fixed: Let the TextBlock can be wrap. Remove TextTrimming="CharacterEllipsis" and add TextWrap.
+                -->
+                <UXControls:UXTextBlock Name="txtFirmware" Style="{StaticResource ConnectionStyle3}" Margin="20,13,0,0" Width="230" TextWrapping="Wrap"/>
                 <UXControls:UXTextBlock Name="txtSlot" Style="{StaticResource ConnectionStyle3}" Margin="20,15,0,0" />
               </StackPanel>
             </Border>

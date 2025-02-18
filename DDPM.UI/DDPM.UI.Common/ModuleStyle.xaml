@@ -826,40 +826,47 @@
   <!--  ComboBoxItem style of DdpmComboBox  -->
   <!--
     Define the hilight style when mouse selecting item
-    -->
-  <Style x:Key="DdpmComboBoxItemContainerStyle" TargetType="{x:Type ComboBoxItem}">
-    <Setter Property="SnapsToDevicePixels" Value="true" />
-    <!--<Setter Property="Foreground" Value="{DynamicResource DdpmCB_FgColor}" />-->
-    <Setter Property="OverridesDefaultStyle" Value="true" />
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type ComboBoxItem}">
-          <Border Name="Border" Padding="2,2,2,0" SnapsToDevicePixels="true"
+        <Setter Property="AutomationProperties.Name" Value="{Binding Value, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="AutomationProperties.Name" Value="{Binding Value}"/>
+        <Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}"/>
+        <Setter Property="KeyboardNavigation.DirectionalNavigation" Value="Cycle"/>
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue"/>
+        <Setter Property="AutomationProperties.Name" Value="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+  -->
+    <Style x:Key="DdpmComboBoxItemContainerStyle" TargetType="{x:Type ComboBoxItem}">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <!--<Setter Property="Foreground" Value="{DynamicResource DdpmCB_FgColor}" />-->
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Focusable" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                    <Border Name="Border" Padding="2,2,2,0" SnapsToDevicePixels="true"
                             Background="{StaticResource FakeTransparent}">
-            <ContentPresenter
+                        <ContentPresenter 
                             Name="contentPresenter"
                             Margin="0,8,40,8"
                             VerticalAlignment="Center" />
-          </Border>
-          <ControlTemplate.Triggers>
-            <Trigger Property="IsHighlighted" Value="true">
-              <!--<Setter TargetName="Border" Property="Background" Value="{DynamicResource DdpmCB_BdBgColor}" />-->
-              <Setter TargetName="Border" Property="Background" Value="{DynamicResource DdpmCB_HoverItemBkColor}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="true">
+                            <!--<Setter TargetName="Border" Property="Background" Value="{DynamicResource DdpmCB_BdBgColor}" />-->
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource DdpmCB_HoverItemBkColor}" />
 
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="false">
-              <Setter Property="Foreground" Value="#888888" />
-            </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-              <Setter Property="Foreground" Value="{DynamicResource DdpmCB_SelTextColor}" />
-            </Trigger>
-          </ControlTemplate.Triggers>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="#888888" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource DdpmCB_SelTextColor}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
-  <!--  DdpmComboBox Control Template  -->
+    <!--  DdpmComboBox Control Template  -->
   <!--
     [1] The margin between ComboBox and Popup is 12
     [2] Popup color and border style
@@ -2135,6 +2142,7 @@
   <BitmapImage x:Key="MonitorImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png" />
   <BitmapImage x:Key="KeyboardImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Lineart-kb.png" />
   <BitmapImage x:Key="MouseImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Lineart-ms.png" />
+    <!-- #endregion BitmapImage -->
 
   <!-- #region Webcam -->
   <SolidColorBrush x:Key="Webcam_TextBox_BkColor" Color="#141D28"/>
@@ -2142,7 +2150,7 @@
   <SolidColorBrush x:Key="Webcam_UndoRedo_BkColor" Color="#99193457"/>
   <SolidColorBrush x:Key="Webcam_UndoRedo_DisableBkColor" Color="#80596067"/>
   <SolidColorBrush x:Key="Webcam_UndoRedo_DisableFgColor" Color="#80F5F6F7"/>
-  <!-- #endregion -->
+  <!-- #endregion Webcam -->
 
   <!-- #region DDPM.SA.Common.Popup.PopupBase Robert_Lin 2024-12-2 -->
   <SolidColorBrush x:Key="popupBase_Window_BkColor" Color="#F20D121A"/>
@@ -2198,7 +2206,6 @@
     <Setter Property="VerticalAlignment" Value="Top" />
     <Setter Property="HorizontalAlignment" Value="Left" />
   </Style>
-  <!-- #endregion BitmapImage -->
 
   <!-- #region Easy Arrange -->
   <DropShadowEffect x:Key="EzArrange_ShadowEffect" Color="#7F000000" ShadowDepth="0" BlurRadius="12" Opacity="1" Direction="0" />
@@ -2267,4 +2274,31 @@
   <!-- #endregion -->
   <BitmapImage x:Key="InterruptScreen_Image" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_InterruptScreen.png" />
   <SolidColorBrush x:Key="InterruptScreen_Backgroung" Color="#132F54" />
+
+    <!-- #region StatelessButton -->
+    <!-- A custom style button which all of visual states are removed 
+    The basic usage of this style is the Back Arraow (LeftArrow image/path icon) control
+    For an Image it can be clicked with MouseLeftButtonDown with Image control.
+    However it not clickable with keyboard ([Enter] key when in Narrator mode. we need make the
+    Image as the conent of a Button control to support Narrator.
+    -->
+    <Style x:Key="StatelessButton" TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup/>
+                        </VisualStateManager.VisualStateGroups>
+
+                        <ContentPresenter/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- #endregion StatelessButton -->
+
 </ResourceDictionary>

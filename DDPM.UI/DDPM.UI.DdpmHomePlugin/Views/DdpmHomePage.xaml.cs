@@ -16,6 +16,8 @@ using VcpCore.Common;
 using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHomePageViewModel;
 using DDPM.SA.Common.Settings;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -109,7 +111,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 double windowTop = 0;
                                 double actualWidth = 0;
                                 double actualHeight = 0;
-                                if (parentWindow == null) {
+                                if (parentWindow == null)
+                                {
                                     DdpmCommonHelper.WriteUILog($"[DdpmHomePlugin] Error cannot get MainWindow value", memberName: nameof(parentWindow));
                                     return;
                                 }
@@ -125,7 +128,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 modalDialog.Top = windowTop;
                                 modalDialog.ShowDialog();
 
-                                if (modalDialog.DialogResult != null && 
+                                if (modalDialog.DialogResult != null &&
                                     modalDialog.DialogResult == true &&
                                     (int)DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result > 0 && //For jason to do import
                                     modalDialog.isChecked) //ignore next check for this model
@@ -134,7 +137,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 }
                             }
                         }
-                        
+
                     });
                 }
             }
@@ -161,6 +164,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //{
             //    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
             //}
+
+            //Determine whether current screen is small resolution
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
+            IntPtr hMainWnd = new System.Windows.Interop.WindowInteropHelper(mainWindow).Handle;
+            Screen screenNow = Screen.FromHandle(hMainWnd);
+            if (_ddpmHomePageViewModel != null)
+            {
+                _ddpmHomePageViewModel.IsSmallScreenResolution = screenNow.Bounds.Width < 1050;
+            }   
 
             //Reference to [https://stackoverflow.com/questions/27729881/which-event-fires-after-all-items-are-loaded-and-shown-in-a-listview]
             //To get into RenderingDone() when UI is render done.
@@ -645,6 +657,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
                 _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SoundBarPluginId, selectedHomeDevice.DeviceInfo.ID.ToString() + instanceNo);
             }
+            //0211 Bruce 新增Bootloader UI
+            if (selectedHomeDevice?.DeviceCategory == eDeviceCategory.Bootloader)
+            {
+                //Check if it's fake device
+                if (selectedHomeDevice.DeviceInfo == null)
+                    return;
+
+                IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
+                _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.BootloaderPluginId, selectedHomeDevice.DeviceInfo.ID.ToString());
+            }
         }
 
         #endregion HomeDevice Selection and Navigate to Landing Page
@@ -1094,7 +1116,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private void AttachImportNotification()
         {
             _ddpmHomePageViewModel.ImportNotify -= ImportNotifyEventHandler;
-            _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
+            if (_ddpmHomePageViewModel != null && _ddpmHomePageViewModel.ImportNotify == null
+                || !_ddpmHomePageViewModel.ImportNotify.GetInvocationList().Any(e => e.Method.Name == nameof(ImportNotifyEventHandler)))
+            {
+                _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
+            }
         }
 
         ~DdpmHomePage()

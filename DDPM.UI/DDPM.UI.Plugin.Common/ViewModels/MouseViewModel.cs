@@ -246,8 +246,26 @@ namespace DDPM.UI.Plugin.ViewModels
             //IsTouchScrollSensitivitySupported = true;
             if (IsTouchScrollSensitivitySupported)
             {
-                TouchScrollSensitivityLevel = CurrentDeviceInfo.TouchScrollSensitivityLevel;
+                if (DdpmCommonHelper.DeviceManagerSA == null)
+                {
+                    if (CurrentDeviceInfo.TouchScrollSensitivityLevel > 0 && CurrentDeviceInfo.TouchScrollSensitivityLevel < 4)
+                        _touchScrollSensitivityLevel = 4 - CurrentDeviceInfo.TouchScrollSensitivityLevel;
+                    else
+                        _touchScrollSensitivityLevel = 1;
+                }
+                else
+                {
+                    _touchScrollSensitivityLevel = DdpmCommonHelper.DeviceManagerSA.GetTouchScrollSensitivityLevel(CurrentDeviceInfo!.ID.ToString()).Result;
+                    if (_touchScrollSensitivityLevel == -1)
+                    {
+                        DdpmCommonHelper.WriteUILog("Get TouchScrollSensitivityLevel fail!");
+                        _touchScrollSensitivityLevel = 1;
+                    }
+                    else
+                        _touchScrollSensitivityLevel = 4 - _touchScrollSensitivityLevel;
+                }
             }
+            OnPropertyChanged(nameof(TouchScrollSensitivityLevel));
             OnPropertyChanged(nameof(IsTouchScrollSensitivitySupported));
 
             //IsDPIValueVisible = CurrentDeviceInfo.IsDPIValueSupported;
@@ -508,7 +526,8 @@ namespace DDPM.UI.Plugin.ViewModels
                                     break;
 
                                 case "TouchScrollSensitivityLevelChanged":
-                                    TouchScrollSensitivityLevel = di.TouchScrollSensitivityLevel;
+                                    _touchScrollSensitivityLevel = 4 - di.TouchScrollSensitivityLevel;
+                                    OnPropertyChanged(nameof(TouchScrollSensitivityLevel));
                                     break;
 
                                 case "DpiValueChanged":
@@ -543,7 +562,7 @@ namespace DDPM.UI.Plugin.ViewModels
                                 default:
                                     break;
                             }
-                            GenerateInfo();
+                            //GenerateInfo();
                         }
                         break;
 
@@ -578,7 +597,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     if (_touchScrollSensitivityLevel != value)
                     {
                         _touchScrollSensitivityLevel = value;
-                        if (value == 1)
+                        if (value == 2)
                             IsMediumVisible = 1;
                         else
                             IsMediumVisible = 0;
@@ -597,8 +616,8 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void SetTouchScrollSensitivityLevel()
         {
-            if (_touchScrollSensitivityLevel != CurrentDeviceInfo!.TouchScrollSensitivityLevel)
-                DdpmCommonHelper.DeviceManagerSA!.SetTouchScrollSensitivityLevel(_touchScrollSensitivityLevel, CurrentDeviceInfo.ID);
+            //DdpmCommonHelper.DeviceManagerSA!.SetTouchScrollSensitivityLevel(4 - _touchScrollSensitivityLevel, CurrentDeviceInfo!.ID);
+            DdpmCommonHelper.DeviceManagerSA!.SetTouchScrollSensitivityLevel(CurrentDeviceInfo!.ID.ToString(), 4 - _touchScrollSensitivityLevel);
         }
 
         public bool IsTouchScrollSensitivitySupported { get; set; }
@@ -753,7 +772,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     if (SelectedApp == "AllApp")
                     {
                         btn.Value.AssignedAction.ID = btn.Value.DefaultActionID;
-                        btn.Value.AssignedAction.Parameter = string.Empty;
+                        btn.Value.AssignedAction.Parameter = "";
                     }
                     else
                     {
@@ -880,8 +899,8 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
         public string SelectedButton { get; set; } = "";
-        public SelectedMouseAction? SelectedMouseAction => SelectedButton == "" ? null : MouseAction.ButtonActions[(MouseButtonName)Enum.Parse(typeof(MouseButtonName), SelectedButton, true)];
-        public int SelectedActionID => SelectedApp == "AllApp" ? (SelectedButton == "" ? -1 : SelectedMouseAction?.AssignedAction.ID ?? -1) : SelectedMouseAction?.OfficeActions[SelectedApp] ?? -1;
+        public SelectedMouseAction? SelectedMouseAction => string.IsNullOrEmpty(SelectedButton) ? null : MouseAction.ButtonActions[(MouseButtonName)Enum.Parse(typeof(MouseButtonName), SelectedButton, true)];
+        public int SelectedActionID => SelectedApp == "AllApp" ? (string.IsNullOrEmpty(SelectedButton) ? -1 : SelectedMouseAction?.AssignedAction.ID ?? -1) : SelectedMouseAction?.OfficeActions[SelectedApp] ?? -1;
         public string ScrollWheelClickTooltip
         {
             get
@@ -971,7 +990,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     if (action.AssignedAction.ID == -1)
                     {
-                        return SelectedButton == "" ? Strings.NullActionTooltip1 : Strings.NullActionTooltip2;
+                        return string.IsNullOrEmpty(SelectedButton) ? Strings.NullActionTooltip1 : Strings.NullActionTooltip2;
                     }
                     else
                     {
@@ -990,7 +1009,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (action.DefaultActionID == -1)
                 {
-                    return SelectedButton == "" ? Strings.NullActionTooltip1 : Strings.NullActionTooltip2;
+                    return string.IsNullOrEmpty(SelectedButton) ? Strings.NullActionTooltip1 : Strings.NullActionTooltip2;
                 }
                 actionItem = Actions.KnMActions[action.DefaultActionID];
             }
@@ -1000,24 +1019,24 @@ namespace DDPM.UI.Plugin.ViewModels
                 parameter = action.AssignedAction.Parameter;
             }
             string tooltip = actionItem.Caption!;
-            if (parameter != "")
+            if (!string.IsNullOrEmpty(parameter))
                 tooltip += " : " + parameter;
             return tooltip;
         }
 
-        public ObservableCollection<int> SuggestedActions { get => new(Actions.SuggestedActionsM); }
-        public ObservableCollection<int> ProductivityActions { get; set; } = new(Actions.ProductivityActionsKnM);
-        public ObservableCollection<int> WindowsActions { get; set; } = new(Actions.WindowsActionsKnM);
-        public ObservableCollection<int> MultimediaActions { get; set; } = new(Actions.MultimediaActionsKnM);
-        public ObservableCollection<int> WordActions { get; set; } = new(Actions.WordActions);
-        public ObservableCollection<int> ExcelActions { get; set; } = new(Actions.ExcelActions);
-        public ObservableCollection<int> PowerPointActions { get; set; } = new(Actions.PowerPointActions);
-        public ObservableCollection<int> OutlookActions { get; set; } = new(Actions.OutlookActions);
+        public ObservableCollection<int> SuggestedActions { get => new(Actions.SuggestedActionsM()); }
+        public ObservableCollection<int> ProductivityActions { get; set; } = new(Actions.ProductivityActionsKnM());
+        public ObservableCollection<int> WindowsActions { get; set; } = new(Actions.WindowsActionsKnM());
+        public ObservableCollection<int> MultimediaActions { get; set; } = new(Actions.MultimediaActionsKnM());
+        public ObservableCollection<int> WordActions { get; set; } = new(Actions.WordActions());
+        public ObservableCollection<int> ExcelActions { get; set; } = new(Actions.ExcelActions());
+        public ObservableCollection<int> PowerPointActions { get; set; } = new(Actions.PowerPointActions());
+        public ObservableCollection<int> OutlookActions { get; set; } = new(Actions.OutlookActions());
         public void UpdateAction(int actionID, string parameter = "", bool RefreshImage = true)
         {
             try
             {
-                if (SelectedButton != "")
+                if (!string.IsNullOrEmpty(SelectedButton))
                 {
                     if (SelectedApp == "AllApp")
                     {
@@ -1042,7 +1061,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         { "ActionId", Actions.ActionIdToGuid[actionID] }
                     };
 
-                        if (parameter == "")
+                        if (string.IsNullOrEmpty(parameter))
                         {
                             byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
                             DdpmCommonHelper.DeviceManagerSA!.SetMouseAction(CurrentDeviceID.ToString(), newValue);
@@ -1071,7 +1090,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void ClearSelectedButton()
         {
-            if (SelectedButton != "")
+            if (!string.IsNullOrEmpty(SelectedButton))
             {
                 RefreshButtonImageFile(SelectedButton);
                 SelectedButton = "";

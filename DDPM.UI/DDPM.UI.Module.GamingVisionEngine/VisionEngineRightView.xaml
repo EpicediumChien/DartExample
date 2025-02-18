@@ -7,7 +7,7 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              d:DesignHeight="800" d:DesignWidth="800" mc:Ignorable="d">
-    
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -54,6 +54,7 @@
                                                   Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                   Name="tbVisionEngineToggle" AcceptsReturn="True" PreviewKeyDown="tbVisionEngineToggle_PreviewKeyDown" PreviewKeyUp="tbVisionEngineToggle_PreviewKeyUp" GotFocus="tbVisionEngineToggle_GotFocus" LostFocus="tbVisionEngineToggle_LostFocus" ContextMenuOpening="tbVisionEngineToggle_ContextMenuOpening" ContextMenu="{x:Null}" Text="{Binding VisionEngineToggleKey,Mode=TwoWay}" />
                         </Grid>
+                        <TextBox Width="1" Height="1" Name="tbCleanFocus" Panel.ZIndex="-99" />
                     </StackPanel>
                 </Border>
                 <Border Name="DisableAll" Background="#4C24273C">
@@ -68,7 +69,10 @@
                         </Style>
                     </Border.Style>
                     <!--  Add a UXBusyIndicator from Robert  -->
-                    <UXControls:UXBusyIndicator Width="64" Height="64" HorizontalAlignment="Center" VerticalAlignment="Center" BusyIndicatorType="Secondary" IsActive="{Binding IsBusy}" />
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <UXControls:UXBusyIndicator Width="64" Height="64" HorizontalAlignment="Center" VerticalAlignment="Center" BusyIndicatorType="Secondary" IsActive="{Binding IsBusy}" />
+                        <UXControls:UXTextBlock Margin="0, 20, 0, 0" Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="#FF797F84" />
+                    </StackPanel>
                 </Border>
             </Grid>
         </UXControls:UXScrollViewer>

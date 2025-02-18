@@ -365,7 +365,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                                 {
                                     List<InputSourceObj> inputSourceObjs = hotkeyData.inputSource.Join(inputList.Values, a => a.Code, b => b.Code, (a, b) => new InputSourceObj()
                                     {
-                                        Name = b.InputName,
+                                        Name = inputList.First(kv => kv.Value.Code == a.Code).Key,
                                         Code = a.Code,
                                     }).ToList();
                                     if (inputSourceObjs == null || list.Count == 0)
@@ -380,6 +380,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                                     else
                                     {
                                         _FavoriteInputSelect = InputsList.SingleOrDefault(x => x.inputSource.Equals(inputSourceObjs[0].Name));// hotkeyInfo.InputSource[0].Name));
+                                        SaveHotkeySettings(new InputSourceObj((ushort)_FavoriteInputSelect.inputCode, _FavoriteInputSelect.inputSource), "FavoriteCombobox");
                                     }
                                 }
                                 else
@@ -426,13 +427,40 @@ namespace DDPM.UI.Module.DisplayHotkeys
                             HotkeyData? hotkeyData2 = list.SingleOrDefault(x => x.hotkeyType.Equals(HotkeyType.SwitchInputSource));
                             if (hotkeyData2 != null)
                             {
+                                List<InputSourceObj> inputSourceObjs = new List<InputSourceObj>();
                                 if (string.IsNullOrEmpty(hotkeyData2.inputSource.ElementAtOrDefault(0)?.Name))
                                 {
-                                    List<InputSourceObj> inputSourceObjs = hotkeyData2.inputSource.Join(inputList.Values, a => a.Code, b => b.Code, (a, b) => new InputSourceObj()
+                                    inputSourceObjs = hotkeyData2.inputSource.Join(inputList.Values, a => a.Code, b => b.Code, (a, b) => new InputSourceObj()
                                     {
-                                        Name = b.InputName,
+                                        Name = inputList.First(kv => kv.Value.Code == a.Code).Key,
                                         Code = a.Code,
                                     }).ToList();
+                                    SaveHotkeySettings(new InputSourceObj((ushort)inputSourceObjs[0].Code, inputSourceObjs[0].Name), "SwitchCombobox1");
+                                    SaveHotkeySettings(new InputSourceObj((ushort)inputSourceObjs[1].Code, inputSourceObjs[1].Name), "SwitchCombobox2");
+                                    if (hotkeyData2.inputSource[0].Code == inputSourceObjs[0].Code)
+                                    {
+                                        hotkeyData2.inputSource[0].Name = inputSourceObjs[0].Name;
+                                    }
+                                    else
+                                    {
+                                        hotkeyData2.inputSource[0].Name = inputSourceObjs[1].Name;
+                                    }
+                                    if (hotkeyData2.inputSource[1].Code == inputSourceObjs[1].Code)
+                                    {
+                                        hotkeyData2.inputSource[1].Name = inputSourceObjs[1].Name;
+                                    }
+                                    else
+                                    {
+                                        hotkeyData2.inputSource[1].Name = inputSourceObjs[0].Name;
+                                    }
+                                }
+                                if (string.IsNullOrEmpty(hotkeyData2.inputSource.ElementAtOrDefault(0)?.Name))
+                                {
+                                    //inputSourceObjs = hotkeyData2.inputSource.Join(inputList.Values, a => a.Code, b => b.Code, (a, b) => new InputSourceObj()
+                                    //{
+                                    //    Name = inputList.First(kv => kv.Value.Code == a.Code).Key,
+                                    //    Code = a.Code,
+                                    //}).ToList();
                                     if (inputSourceObjs == null || list.Count == 0)
                                     {
                                         //hotkey.InputSource Count must not 0. 
@@ -440,7 +468,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                                         //set default
                                         _switchInput1Selected = InputsList.SingleOrDefault(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
                                         if (_switchInput1Selected != null)
-                                            _switchInput2Selected = _inputsList.Where(x => x.inputSource != _switchInput1Selected.inputSource).First();
+                                            _switchInput2Selected = _inputsList.First(x => x.inputSource != _switchInput1Selected.inputSource);
                                         if (_switchInput1Selected != null && _switchInput2Selected != null)
                                         {
                                             SaveHotkeySettings(new InputSourceObj((ushort)_switchInput1Selected.inputCode, _switchInput1Selected.inputSource), "SwitchCombobox1");
@@ -460,7 +488,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                                         //set default
                                         _switchInput1Selected = InputsList.SingleOrDefault(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
                                         if (_switchInput1Selected != null)
-                                            _switchInput2Selected = _inputsList.Where(x => x.inputSource != _switchInput1Selected.inputSource).First();
+                                            _switchInput2Selected = _inputsList.First(x => x.inputSource != _switchInput1Selected.inputSource);
                                         if (_switchInput1Selected != null && _switchInput2Selected != null)
                                         {
                                             SaveHotkeySettings(new InputSourceObj((ushort)_switchInput1Selected.inputCode, _switchInput1Selected.inputSource), "SwitchCombobox1");
@@ -477,7 +505,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                                         //set default
                                         _switchInput1Selected = InputsList.SingleOrDefault(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
                                         if (_switchInput1Selected != null)
-                                            _switchInput2Selected = _inputsList.Where(x => x.inputSource != _switchInput1Selected.inputSource).First();
+                                            _switchInput2Selected = _inputsList.First(x => x.inputSource != _switchInput1Selected.inputSource);
                                         if (_switchInput1Selected != null && _switchInput2Selected != null)
                                         {
                                             SaveHotkeySettings(new InputSourceObj((ushort)_switchInput1Selected.inputCode, _switchInput1Selected.inputSource), "SwitchCombobox1");
@@ -491,7 +519,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                                 //set default
                                 _switchInput1Selected = InputsList.SingleOrDefault(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
                                 if (_switchInput1Selected != null)
-                                    _switchInput2Selected = _inputsList.Where(x => x.inputSource != _switchInput1Selected.inputSource).First();
+                                    _switchInput2Selected = _inputsList.First(x => x.inputSource != _switchInput1Selected.inputSource);
                                 if (_switchInput1Selected != null && _switchInput2Selected != null)
                                 {
                                     SaveHotkeySettings(new InputSourceObj((ushort)_switchInput1Selected.inputCode, _switchInput1Selected.inputSource), "SwitchCombobox1");
@@ -505,7 +533,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                             {
                                 _switchInput1Selected = InputsList.SingleOrDefault(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
                                 if (_switchInput1Selected != null)
-                                    _switchInput2Selected = _inputsList.Where(x => x.inputSource != _switchInput1Selected.inputSource).First();
+                                    _switchInput2Selected = _inputsList.First(x => x.inputSource != _switchInput1Selected.inputSource);
                                 if (_switchInput1Selected != null && _switchInput2Selected != null)
                                 {
                                     SaveHotkeySettings(new InputSourceObj((ushort)_switchInput1Selected.inputCode, _switchInput1Selected.inputSource), "SwitchCombobox1");
@@ -520,7 +548,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                         {
                             _switchInput1Selected = InputsList.SingleOrDefault(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
                             if (_switchInput1Selected != null)
-                                _switchInput2Selected = InputsList.Where(x => x.inputSource != _switchInput1Selected.inputSource).First();
+                                _switchInput2Selected = InputsList.First(x => x.inputSource != _switchInput1Selected.inputSource);
                             if (_switchInput1Selected != null && _switchInput2Selected != null)
                             {
                                 SaveHotkeySettings(new InputSourceObj(_switchInput1Selected.inputSource), "SwitchCombobox1");
@@ -584,11 +612,20 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 }
                 else
                 {
-                    ToggleInputSourceKey = "None";
-                    FavoriteInputSourceKey = "None";
-                    SwitchInputSourceKey = "None";
-                    SwapPIPPBPInputSourceKey = "None";
-                    ChangePIPPositionKey = "None";
+                    //Robert_Lin 2025-2-10 [PIMS-345543] Non-English Language -All Hotkey default value displays show English "None"
+                    //OLD:
+                    //ToggleInputSourceKey = "None";
+                    //FavoriteInputSourceKey = "None";
+                    //SwitchInputSourceKey = "None";
+                    //SwapPIPPBPInputSourceKey = "None";
+                    //ChangePIPPositionKey = "None";
+                    //NEW:
+                    ToggleInputSourceKey = LangHelper.Instance["None"];
+                    FavoriteInputSourceKey = LangHelper.Instance["None"];
+                    SwitchInputSourceKey = LangHelper.Instance["None"];
+                    SwapPIPPBPInputSourceKey = LangHelper.Instance["None"];
+                    ChangePIPPositionKey = LangHelper.Instance["None"];
+
                 }
             }
             catch (Exception ex)

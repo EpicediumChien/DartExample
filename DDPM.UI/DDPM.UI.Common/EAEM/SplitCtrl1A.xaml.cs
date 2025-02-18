@@ -23,7 +23,7 @@ namespace DDPM.UI.Common.EAEM
             InitializeComponent();
         }
 
-        public SplitCtrl1A(List<double>? settings = null)
+        public SplitCtrl1A(List<double>? settings)
         {
             InitializeComponent();
             SetSettings(settings);

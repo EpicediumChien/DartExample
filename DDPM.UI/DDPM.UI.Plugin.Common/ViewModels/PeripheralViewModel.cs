@@ -59,8 +59,8 @@ namespace DDPM.UI.Plugin.ViewModels
         public ICommand GoBackClickedCommand { get; private set; }
         public ICommand ShowInfoClickedCommand { get; private set; }
         public volatile Dictionary<Guid, DeviceInfo> DeviceInfos = new();
-        public List<string> EOLKBList = DDPM.SA.Common.UI.SACommonHelper.EOLKBList;// new () { "WK636", "KM713", "WK717", "KM714", "KM717" };
-        public List<string> EOLMouseList = DDPM.SA.Common.UI.SACommonHelper.EOLMouseList;// new () { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
+        public List<string> EOLKBList = DDPM.SA.Common.UI.SAUICommonHelper.EOLKBList;// new () { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        public List<string> EOLMouseList = DDPM.SA.Common.UI.SAUICommonHelper.EOLMouseList;// new () { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
         //public DDPMSettings? DDPMSettings;
         public bool IsCopilotEnabled = true;
         public bool IsDTPReady = false;
@@ -114,7 +114,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void OnShowInfoClicked()
         {
-            MessageBox.Show(DeviceInfo, Name, MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show(DeviceInfo, Name, MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         public Visibility MultiDevicesInfoVisibility { get; set; } = Visibility.Collapsed;
@@ -125,7 +125,7 @@ namespace DDPM.UI.Plugin.ViewModels
             int i = 0;
             foreach (var info in DeviceInfos.Values)
             {
-                if (DDPM.SA.Common.UI.SACommonHelper.MappingModel(info.ModelNumber) == Model)
+                if (DDPM.SA.Common.UI.SAUICommonHelper.MappingModel(info.ModelNumber) == Model)
                 {
                     i++;
                     //OnPropertyChanged(nameof(MultiDevicesInfoVisibility));
@@ -228,12 +228,12 @@ namespace DDPM.UI.Plugin.ViewModels
             }
 
             CheckCopilot();
-            Model = DDPM.SA.Common.UI.SACommonHelper.MappingModel(CurrentDeviceInfo.ModelNumber);
+            Model = DDPM.SA.Common.UI.SAUICommonHelper.MappingModel(CurrentDeviceInfo.ModelNumber);
             //Name = CurrentDeviceInfo.Name;
             if (EOLKBList.Contains(Model) || EOLMouseList.Contains(Model))
-                Name = DDPM.SA.Common.UI.SACommonHelper.MappingEOLName(Model);// DdpmCommonHelper.MappingEOLName(Model);
+                Name = DDPM.SA.Common.UI.SAUICommonHelper.MappingEOLName(Model);// DdpmCommonHelper.MappingEOLName(Model);
             else
-                Name = DDPM.SA.Common.UI.SACommonHelper.MappingName(Model, CurrentDeviceInfo.Name.Trim());
+                Name = DDPM.SA.Common.UI.SAUICommonHelper.MappingName(Model, CurrentDeviceInfo.Name.Trim());
 
             if (CurrentDeviceInfo.Type == DeviceType.PhysicalWiredDock || CurrentDeviceInfo.Type == DeviceType.LogicalDock)
             {
@@ -248,7 +248,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     }
                 }
             }
-            if (instenceNo == "")
+            if (string.IsNullOrEmpty(instenceNo))
             {
                 Model2 = Model;
             }
@@ -268,11 +268,11 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         ImageFilePath += "LightMode/";
                     }
-                    if (DdpmCommonHelper.EOLKBList.Contains(CurrentDeviceInfo?.ModelNumber ?? string.Empty))
+                    if (DdpmCommonHelper.EOLKBList.Contains(CurrentDeviceInfo?.ModelNumber ?? ""))
                     {
                         ImageFilePath += "Lineart-kb.png";
                     }
-                    if (DdpmCommonHelper.EOLMouseList.Contains(CurrentDeviceInfo?.ModelNumber ?? string.Empty))
+                    if (DdpmCommonHelper.EOLMouseList.Contains(CurrentDeviceInfo?.ModelNumber ?? ""))
                     {
                         ImageFilePath += "Lineart-ms.png";
                     }
@@ -347,13 +347,13 @@ namespace DDPM.UI.Plugin.ViewModels
             VisiblePairedHostName3 = CurrentDeviceInfo.VisiblePairedHostName3;
 
             CheckMultiDevice();
-            GenerateInfo();
+            //GenerateInfo();
 
             CurrentCursor = Cursors.Arrow;
             return true;
         }
 
-        //using this function from DDPM.SA.Common.UI.SACommonHelper [Dean]0115
+        //using this function from DDPM.SA.Common.UI.SAUICommonHelper [Dean]0115
         /*private string MappingModel(string modelNumber)
         {
             //[#PeripheralModelMap] This mapping table has a duplicate code in
@@ -386,7 +386,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
-            if (DeviceInfo == null)
+            if (di == null)
             {
                 DdpmCommonHelper.WriteUILog($"Error: DeviceChanged Event with no device info!");
                 return;
@@ -481,293 +481,297 @@ namespace DDPM.UI.Plugin.ViewModels
             timer.Stop();
         }
 
+
         protected void GenerateInfo()
         {
-            StringBuilder DeviceInfo = new();
+#if DEBUG
+            StringBuilder localDeviceInfo = new();
             if (CurrentDeviceInfo!.Name.ToUpper().Contains("HEADSET"))
             {
-                DeviceInfo.Append($"ID : {CurrentDeviceInfo!.ID}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsReady : {CurrentDeviceInfo!.IsReady}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PhyscialDeviceID : {CurrentDeviceInfo.PhyscialDeviceID}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"Name : {CurrentDeviceInfo.Name}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"BatteryLevel : {CurrentDeviceInfo.BatteryLevel}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"BatteryStatus : {CurrentDeviceInfo.BatteryStatus}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"InterfaceType : {CurrentDeviceInfo.InterfaceType}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsBatteryLevelSupported : {CurrentDeviceInfo.IsBatteryLevelSupported}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsConnected : {CurrentDeviceInfo.IsConnected}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsPhysicalDeviceDongle : {CurrentDeviceInfo.IsPhysicalDeviceDongle}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"LogicalDeviceType : {CurrentDeviceInfo.LogicalDeviceType}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"ModelNumber : {CurrentDeviceInfo.ModelNumber}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"MuteStatus : {CurrentDeviceInfo.MuteStatus}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"OdmId : {CurrentDeviceInfo.OdmId}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PairedDeviceCount : {CurrentDeviceInfo.PairedDeviceCount}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PhysicalDeviceFirmwareVersion : {CurrentDeviceInfo.PhysicalDeviceFirmwareVersion}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PhysicalDeviceType : {CurrentDeviceInfo.PhysicalDeviceType}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PluginId : {CurrentDeviceInfo.PluginId}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"TotalNumberOfPairedHostName : {CurrentDeviceInfo.TotalNumberOfPairedHostName}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"TouchScrollSensitivityLevel : {CurrentDeviceInfo.TouchScrollSensitivityLevel}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"TouchSensitivityLevelValue : {CurrentDeviceInfo.TouchSensitivityLevelValue}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"Type : {CurrentDeviceInfo.Type}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"VisiblePairedHostName1 : {CurrentDeviceInfo.VisiblePairedHostName1}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"VisiblePairedHostName2 : {CurrentDeviceInfo.VisiblePairedHostName2}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"VisiblePairedHostName3 : {CurrentDeviceInfo.VisiblePairedHostName3}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"AncGain : {CurrentDeviceInfo.AncGain}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"AncMode : {CurrentDeviceInfo.AncMode}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"Band1Gain : {CurrentDeviceInfo.Band1Gain}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"Band2Gain : {CurrentDeviceInfo.Band2Gain}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"Band3Gain : {CurrentDeviceInfo.Band3Gain}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"Band4Gain : {CurrentDeviceInfo.Band4Gain}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"Band5Gain : {CurrentDeviceInfo.Band5Gain}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"BusyLight : {CurrentDeviceInfo.BusyLight}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsMuteMicrophoneChecked : {CurrentDeviceInfo.IsMuteMicrophoneChecked}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsPauseMusicChecked : {CurrentDeviceInfo.IsPauseMusicChecked}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsQuickPauseChecked : {CurrentDeviceInfo.IsQuickPauseChecked}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsWearDetectionChecked : {CurrentDeviceInfo.IsWearDetectionChecked}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"MicNCIncoming : {CurrentDeviceInfo.MicNCIncoming}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"MicNoiseCancellation : {CurrentDeviceInfo.MicNoiseCancellation}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"SelectedPreset : {CurrentDeviceInfo.SelectedPreset}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"Sidetone : {CurrentDeviceInfo.Sidetone}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"SidetoneLevel : {CurrentDeviceInfo.SidetoneLevel}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"VoiceGuidance : {CurrentDeviceInfo.VoiceGuidance}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"WearDetection : {CurrentDeviceInfo.WearDetection}");
-                DeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"ID : {CurrentDeviceInfo!.ID}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsReady : {CurrentDeviceInfo!.IsReady}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PhyscialDeviceID : {CurrentDeviceInfo.PhyscialDeviceID}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"Name : {CurrentDeviceInfo.Name}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"BatteryLevel : {CurrentDeviceInfo.BatteryLevel}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"BatteryStatus : {CurrentDeviceInfo.BatteryStatus}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"InterfaceType : {CurrentDeviceInfo.InterfaceType}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsBatteryLevelSupported : {CurrentDeviceInfo.IsBatteryLevelSupported}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsConnected : {CurrentDeviceInfo.IsConnected}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsPhysicalDeviceDongle : {CurrentDeviceInfo.IsPhysicalDeviceDongle}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"LogicalDeviceType : {CurrentDeviceInfo.LogicalDeviceType}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"ModelNumber : {CurrentDeviceInfo.ModelNumber}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"MuteStatus : {CurrentDeviceInfo.MuteStatus}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"OdmId : {CurrentDeviceInfo.OdmId}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PairedDeviceCount : {CurrentDeviceInfo.PairedDeviceCount}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PhysicalDeviceFirmwareVersion : {CurrentDeviceInfo.PhysicalDeviceFirmwareVersion}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PhysicalDeviceType : {CurrentDeviceInfo.PhysicalDeviceType}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PluginId : {CurrentDeviceInfo.PluginId}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"TotalNumberOfPairedHostName : {CurrentDeviceInfo.TotalNumberOfPairedHostName}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"TouchScrollSensitivityLevel : {CurrentDeviceInfo.TouchScrollSensitivityLevel}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"TouchSensitivityLevelValue : {CurrentDeviceInfo.TouchSensitivityLevelValue}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"Type : {CurrentDeviceInfo.Type}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"VisiblePairedHostName1 : {CurrentDeviceInfo.VisiblePairedHostName1}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"VisiblePairedHostName2 : {CurrentDeviceInfo.VisiblePairedHostName2}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"VisiblePairedHostName3 : {CurrentDeviceInfo.VisiblePairedHostName3}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"AncGain : {CurrentDeviceInfo.AncGain}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"AncMode : {CurrentDeviceInfo.AncMode}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"Band1Gain : {CurrentDeviceInfo.Band1Gain}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"Band2Gain : {CurrentDeviceInfo.Band2Gain}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"Band3Gain : {CurrentDeviceInfo.Band3Gain}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"Band4Gain : {CurrentDeviceInfo.Band4Gain}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"Band5Gain : {CurrentDeviceInfo.Band5Gain}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"BusyLight : {CurrentDeviceInfo.BusyLight}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsMuteMicrophoneChecked : {CurrentDeviceInfo.IsMuteMicrophoneChecked}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsPauseMusicChecked : {CurrentDeviceInfo.IsPauseMusicChecked}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsQuickPauseChecked : {CurrentDeviceInfo.IsQuickPauseChecked}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsWearDetectionChecked : {CurrentDeviceInfo.IsWearDetectionChecked}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"MicNCIncoming : {CurrentDeviceInfo.MicNCIncoming}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"MicNoiseCancellation : {CurrentDeviceInfo.MicNoiseCancellation}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"SelectedPreset : {CurrentDeviceInfo.SelectedPreset}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"Sidetone : {CurrentDeviceInfo.Sidetone}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"SidetoneLevel : {CurrentDeviceInfo.SidetoneLevel}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"VoiceGuidance : {CurrentDeviceInfo.VoiceGuidance}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"WearDetection : {CurrentDeviceInfo.WearDetection}");
+                localDeviceInfo.Append(Environment.NewLine);
             }
             else if (CurrentDeviceInfo!.Name.ToUpper().Contains("SPEAKER"))
             {
-                DeviceInfo.Append($"ID : {CurrentDeviceInfo!.ID}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PhyscialDeviceID : {CurrentDeviceInfo.PhyscialDeviceID}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"Name : {CurrentDeviceInfo.Name}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"BatteryLevel : {CurrentDeviceInfo.BatteryLevel}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"BatteryStatus : {CurrentDeviceInfo.BatteryStatus}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"InterfaceType : {CurrentDeviceInfo.InterfaceType}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsBatteryLevelSupported : {CurrentDeviceInfo.IsBatteryLevelSupported}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsConnected : {CurrentDeviceInfo.IsConnected}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsPhysicalDeviceDongle : {CurrentDeviceInfo.IsPhysicalDeviceDongle}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"LogicalDeviceType : {CurrentDeviceInfo.LogicalDeviceType}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"ModelNumber : {CurrentDeviceInfo.ModelNumber}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"MuteStatus : {CurrentDeviceInfo.MuteStatus}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"OdmId : {CurrentDeviceInfo.OdmId}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PairedDeviceCount : {CurrentDeviceInfo.PairedDeviceCount}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PhysicalDeviceFirmwareVersion : {CurrentDeviceInfo.PhysicalDeviceFirmwareVersion}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PhysicalDeviceType : {CurrentDeviceInfo.PhysicalDeviceType}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PluginId : {CurrentDeviceInfo.PluginId}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"TotalNumberOfPairedHostName : {CurrentDeviceInfo.TotalNumberOfPairedHostName}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"TouchScrollSensitivityLevel : {CurrentDeviceInfo.TouchScrollSensitivityLevel}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"TouchSensitivityLevelValue : {CurrentDeviceInfo.TouchSensitivityLevelValue}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"Type : {CurrentDeviceInfo.Type}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"VisiblePairedHostName1 : {CurrentDeviceInfo.VisiblePairedHostName1}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"VisiblePairedHostName2 : {CurrentDeviceInfo.VisiblePairedHostName2}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"VisiblePairedHostName3 : {CurrentDeviceInfo.VisiblePairedHostName3}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"SelectedPreset : {CurrentDeviceInfo.SelectedPreset}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsEqualizerSupported : {CurrentDeviceInfo.IsEqualizerSupported}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"WiredAudioVolumeAdjustmentTone : {CurrentDeviceInfo.WiredAudioVolumeAdjustmentTone}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsWiredAudioIMicNSEnable : {CurrentDeviceInfo.IsWiredAudioIMicNSEnable}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsWiredAudioMicMuteSoundEnable : {CurrentDeviceInfo.IsWiredAudioMicMuteSoundEnable}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"MuteStatus : {CurrentDeviceInfo.MuteStatus}");
-                DeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"ID : {CurrentDeviceInfo!.ID}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PhyscialDeviceID : {CurrentDeviceInfo.PhyscialDeviceID}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"Name : {CurrentDeviceInfo.Name}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"BatteryLevel : {CurrentDeviceInfo.BatteryLevel}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"BatteryStatus : {CurrentDeviceInfo.BatteryStatus}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"InterfaceType : {CurrentDeviceInfo.InterfaceType}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsBatteryLevelSupported : {CurrentDeviceInfo.IsBatteryLevelSupported}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsConnected : {CurrentDeviceInfo.IsConnected}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsPhysicalDeviceDongle : {CurrentDeviceInfo.IsPhysicalDeviceDongle}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"LogicalDeviceType : {CurrentDeviceInfo.LogicalDeviceType}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"ModelNumber : {CurrentDeviceInfo.ModelNumber}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"MuteStatus : {CurrentDeviceInfo.MuteStatus}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"OdmId : {CurrentDeviceInfo.OdmId}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PairedDeviceCount : {CurrentDeviceInfo.PairedDeviceCount}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PhysicalDeviceFirmwareVersion : {CurrentDeviceInfo.PhysicalDeviceFirmwareVersion}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PhysicalDeviceType : {CurrentDeviceInfo.PhysicalDeviceType}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PluginId : {CurrentDeviceInfo.PluginId}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"TotalNumberOfPairedHostName : {CurrentDeviceInfo.TotalNumberOfPairedHostName}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"TouchScrollSensitivityLevel : {CurrentDeviceInfo.TouchScrollSensitivityLevel}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"TouchSensitivityLevelValue : {CurrentDeviceInfo.TouchSensitivityLevelValue}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"Type : {CurrentDeviceInfo.Type}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"VisiblePairedHostName1 : {CurrentDeviceInfo.VisiblePairedHostName1}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"VisiblePairedHostName2 : {CurrentDeviceInfo.VisiblePairedHostName2}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"VisiblePairedHostName3 : {CurrentDeviceInfo.VisiblePairedHostName3}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"SelectedPreset : {CurrentDeviceInfo.SelectedPreset}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsEqualizerSupported : {CurrentDeviceInfo.IsEqualizerSupported}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"WiredAudioVolumeAdjustmentTone : {CurrentDeviceInfo.WiredAudioVolumeAdjustmentTone}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsWiredAudioIMicNSEnable : {CurrentDeviceInfo.IsWiredAudioIMicNSEnable}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsWiredAudioMicMuteSoundEnable : {CurrentDeviceInfo.IsWiredAudioMicMuteSoundEnable}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"MuteStatus : {CurrentDeviceInfo.MuteStatus}");
+                localDeviceInfo.Append(Environment.NewLine);
             }
             else
             {
-                DeviceInfo.Append($"ID : {CurrentDeviceInfo!.ID}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PhyscialDeviceID : {CurrentDeviceInfo.PhyscialDeviceID}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"Name : {CurrentDeviceInfo.Name}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"BackLightingControls : {CurrentDeviceInfo.BackLightingControls}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"BackLightingLevel : {CurrentDeviceInfo.BackLightingLevel}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"BackLightTabIndex : {CurrentDeviceInfo.BackLightTabIndex}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"BatteryLevel : {CurrentDeviceInfo.BatteryLevel}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"BatteryStatus : {CurrentDeviceInfo.BatteryStatus}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"CollabsKeysSupported : {CurrentDeviceInfo.CollabsKeysSupported}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"ColorCode : {CurrentDeviceInfo.ColorCode}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"DeviceName : {CurrentDeviceInfo.DeviceName}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"DpiDelta : {CurrentDeviceInfo.DpiDelta}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"DPILevel : {CurrentDeviceInfo.DPILevel}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"DpiLevel : {CurrentDeviceInfo.DpiLevel}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"DPIValue : {CurrentDeviceInfo.DpiValue}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"DpiLevelValues : {CurrentDeviceInfo.DpiLevelValues}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"DpiMax : {CurrentDeviceInfo.DpiMax}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"DpiMin : {CurrentDeviceInfo.DpiMin}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"FirmwareVersion : {CurrentDeviceInfo.FirmwareVersion}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"InstanceId : {CurrentDeviceInfo.InstanceId}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"InstanceNumber : {CurrentDeviceInfo.InstanceNumber}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"InterfaceType : {CurrentDeviceInfo.InterfaceType}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsBatteryLevelSupported : {CurrentDeviceInfo.IsBatteryLevelSupported}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsCollaborationBlinkEffectEnable : {CurrentDeviceInfo.IsCollaborationBlinkEffectEnable}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsCollaborationCameraEnable : {CurrentDeviceInfo.IsCollaborationCameraEnable}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsCollaborationChatEnable : {CurrentDeviceInfo.IsCollaborationChatEnable}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsCollaborationDoubleTapEnable : {CurrentDeviceInfo.IsCollaborationDoubleTapEnable}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsCollaborationKeyEnable : {CurrentDeviceInfo.IsCollaborationKeyEnable}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsCollaborationMicEnable : {CurrentDeviceInfo.IsCollaborationMicEnable}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsCollaborationScreenShareEnable : {CurrentDeviceInfo.IsCollaborationScreenShareEnable}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsCollabsKeysSupported : {CurrentDeviceInfo.IsCollabsKeysSupported}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsConnected : {CurrentDeviceInfo.IsConnected}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsDPILevelChangePending : {CurrentDeviceInfo.IsDPILevelChangePending}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsDPILevelSupported : {CurrentDeviceInfo.IsDPILevelSupported}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsDPIValueChangePending : {CurrentDeviceInfo.IsDPIValueChangePending}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsDPIValueSupported : {CurrentDeviceInfo.IsDPIValueSupported}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsIlluminationSupported : {CurrentDeviceInfo.IsIlluminationSupported}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsPhysicalDeviceDongle : {CurrentDeviceInfo.IsPhysicalDeviceDongle}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsReportRateSupported : {CurrentDeviceInfo.IsReportRateSupported}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"IsTouchScrollSensitivitySupported : {CurrentDeviceInfo.IsTouchScrollSensitivitySupported}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"LogicalDeviceType : {CurrentDeviceInfo.LogicalDeviceType}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"MaxPairingSlots : {CurrentDeviceInfo.MaxPairingSlots}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"ModelNumber : {CurrentDeviceInfo.ModelNumber}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"MousePrimaryButton : {CurrentDeviceInfo.MousePrimaryButton}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"MuteStatus : {CurrentDeviceInfo.MuteStatus}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"OdmId : {CurrentDeviceInfo.OdmId}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PairedDeviceCount : {CurrentDeviceInfo.PairedDeviceCount}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PairedHostName1 : {CurrentDeviceInfo.PairedHostName1}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PairedHostName2 : {CurrentDeviceInfo.PairedHostName2}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PairedHostName3 : {CurrentDeviceInfo.PairedHostName3}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PairingStatusName : {CurrentDeviceInfo.PairingStatusName}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PhysicalDeviceFirmwareVersion : {CurrentDeviceInfo.PhysicalDeviceFirmwareVersion}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PhysicalDeviceType : {CurrentDeviceInfo.PhysicalDeviceType}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"PluginId : {CurrentDeviceInfo.PluginId}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"ReportRate : {CurrentDeviceInfo.ReportRate}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"Status : {CurrentDeviceInfo.Status}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"TotalNumberOfPairedHostName : {CurrentDeviceInfo.TotalNumberOfPairedHostName}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"TouchScrollSensitivityLevel : {CurrentDeviceInfo.TouchScrollSensitivityLevel}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"TouchSensitivityLevelValue : {CurrentDeviceInfo.TouchSensitivityLevelValue}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"Type : {CurrentDeviceInfo.Type}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"VisiblePairedHostName1 : {CurrentDeviceInfo.VisiblePairedHostName1}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"VisiblePairedHostName2 : {CurrentDeviceInfo.VisiblePairedHostName2}");
-                DeviceInfo.Append(Environment.NewLine);
-                DeviceInfo.Append($"VisiblePairedHostName3 : {CurrentDeviceInfo.VisiblePairedHostName3}");
+                localDeviceInfo.Append($"ID : {CurrentDeviceInfo!.ID}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PhyscialDeviceID : {CurrentDeviceInfo.PhyscialDeviceID}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"Name : {CurrentDeviceInfo.Name}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"BackLightingControls : {CurrentDeviceInfo.BackLightingControls}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"BackLightingLevel : {CurrentDeviceInfo.BackLightingLevel}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"BackLightTabIndex : {CurrentDeviceInfo.BackLightTabIndex}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"BatteryLevel : {CurrentDeviceInfo.BatteryLevel}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"BatteryStatus : {CurrentDeviceInfo.BatteryStatus}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"CollabsKeysSupported : {CurrentDeviceInfo.CollabsKeysSupported}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"ColorCode : {CurrentDeviceInfo.ColorCode}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"DeviceName : {CurrentDeviceInfo.DeviceName}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"DpiDelta : {CurrentDeviceInfo.DpiDelta}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"DPILevel : {CurrentDeviceInfo.DPILevel}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"DpiLevel : {CurrentDeviceInfo.DpiLevel}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"DPIValue : {CurrentDeviceInfo.DpiValue}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"DpiLevelValues : {CurrentDeviceInfo.DpiLevelValues}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"DpiMax : {CurrentDeviceInfo.DpiMax}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"DpiMin : {CurrentDeviceInfo.DpiMin}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"FirmwareVersion : {CurrentDeviceInfo.FirmwareVersion}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"InstanceId : {CurrentDeviceInfo.InstanceId}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"InstanceNumber : {CurrentDeviceInfo.InstanceNumber}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"InterfaceType : {CurrentDeviceInfo.InterfaceType}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsBatteryLevelSupported : {CurrentDeviceInfo.IsBatteryLevelSupported}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsCollaborationBlinkEffectEnable : {CurrentDeviceInfo.IsCollaborationBlinkEffectEnable}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsCollaborationCameraEnable : {CurrentDeviceInfo.IsCollaborationCameraEnable}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsCollaborationChatEnable : {CurrentDeviceInfo.IsCollaborationChatEnable}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsCollaborationDoubleTapEnable : {CurrentDeviceInfo.IsCollaborationDoubleTapEnable}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsCollaborationKeyEnable : {CurrentDeviceInfo.IsCollaborationKeyEnable}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsCollaborationMicEnable : {CurrentDeviceInfo.IsCollaborationMicEnable}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsCollaborationScreenShareEnable : {CurrentDeviceInfo.IsCollaborationScreenShareEnable}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsCollabsKeysSupported : {CurrentDeviceInfo.IsCollabsKeysSupported}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsConnected : {CurrentDeviceInfo.IsConnected}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsDPILevelChangePending : {CurrentDeviceInfo.IsDPILevelChangePending}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsDPILevelSupported : {CurrentDeviceInfo.IsDPILevelSupported}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsDPIValueChangePending : {CurrentDeviceInfo.IsDPIValueChangePending}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsDPIValueSupported : {CurrentDeviceInfo.IsDPIValueSupported}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsIlluminationSupported : {CurrentDeviceInfo.IsIlluminationSupported}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsPhysicalDeviceDongle : {CurrentDeviceInfo.IsPhysicalDeviceDongle}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsReportRateSupported : {CurrentDeviceInfo.IsReportRateSupported}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"IsTouchScrollSensitivitySupported : {CurrentDeviceInfo.IsTouchScrollSensitivitySupported}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"LogicalDeviceType : {CurrentDeviceInfo.LogicalDeviceType}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"MaxPairingSlots : {CurrentDeviceInfo.MaxPairingSlots}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"ModelNumber : {CurrentDeviceInfo.ModelNumber}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"MousePrimaryButton : {CurrentDeviceInfo.MousePrimaryButton}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"MuteStatus : {CurrentDeviceInfo.MuteStatus}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"OdmId : {CurrentDeviceInfo.OdmId}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PairedDeviceCount : {CurrentDeviceInfo.PairedDeviceCount}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PairedHostName1 : {CurrentDeviceInfo.PairedHostName1}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PairedHostName2 : {CurrentDeviceInfo.PairedHostName2}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PairedHostName3 : {CurrentDeviceInfo.PairedHostName3}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PairingStatusName : {CurrentDeviceInfo.PairingStatusName}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PhysicalDeviceFirmwareVersion : {CurrentDeviceInfo.PhysicalDeviceFirmwareVersion}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PhysicalDeviceType : {CurrentDeviceInfo.PhysicalDeviceType}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"PluginId : {CurrentDeviceInfo.PluginId}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"ReportRate : {CurrentDeviceInfo.ReportRate}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"Status : {CurrentDeviceInfo.Status}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"TotalNumberOfPairedHostName : {CurrentDeviceInfo.TotalNumberOfPairedHostName}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"TouchScrollSensitivityLevel : {CurrentDeviceInfo.TouchScrollSensitivityLevel}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"TouchSensitivityLevelValue : {CurrentDeviceInfo.TouchSensitivityLevelValue}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"Type : {CurrentDeviceInfo.Type}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"VisiblePairedHostName1 : {CurrentDeviceInfo.VisiblePairedHostName1}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"VisiblePairedHostName2 : {CurrentDeviceInfo.VisiblePairedHostName2}");
+                localDeviceInfo.Append(Environment.NewLine);
+                localDeviceInfo.Append($"VisiblePairedHostName3 : {CurrentDeviceInfo.VisiblePairedHostName3}");
             }
-            this.DeviceInfo = DeviceInfo.ToString();
+            //this.DeviceInfo = localDeviceInfo.ToString();
+#endif
         }
+
 
         public virtual new void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
@@ -801,7 +805,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public string Model2 { get; set; } = "";
 
-        public string? DeviceInfo { get; set; }
+        //public string? DeviceInfo { get; set; }
         public Guid CurrentDeviceID { get; set; }
         public int CurrentInstanceID { get; set; }
         public bool IsCollabsKeysSupported { get; set; }
@@ -1234,11 +1238,11 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 if (_rightViewHeaders.Count == 0 &&
-                    _rightViewHeaders.Count == 0 && ModuleGroups.Count > 0 && // If _vbarItems is empty, will build the list from ModuleGroups
+                    ModuleGroups.Count > 0 && // If _vbarItems is empty, will build the list from ModuleGroups
                     ((VbarSelectedIndex >= 0) || (VbarSelectedIndex < ModuleGroups.Count))) //Get the selected ModuleGroup
                 {
                     ModuleGroup mg = ModuleGroups[VbarSelectedIndex];
-                    _rightViewHeaders = mg.Headers;                                            
+                    _rightViewHeaders = mg.Headers;
                 }
                 return _rightViewHeaders;
             }

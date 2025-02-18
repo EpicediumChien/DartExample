@@ -50,6 +50,7 @@ namespace NGA.ThickClient
         /// </summary>
         private const double UsableWidthPercentage = 0.75;
 
+        //Robert_Lin 2025-2-8 DDPM support resizable, should change this flag to true
         //Robert_Lin 2024-6-19 a flag for switch Resizable MainWindow
         private bool _isMainWindowResizable = false;
 
@@ -672,7 +673,9 @@ namespace NGA.ThickClient
             }
             else if (screenWorkingArea.Left > window.Left * factor)
             {
-                adjustedLeft = screenWorkingArea.Left;
+                //adjustedLeft = screenWorkingArea.Left;
+                // To top right
+                adjustedLeft = screenWorkingArea.Right - window.Width * factor;
             }
 
             // Adjust Y
@@ -683,7 +686,9 @@ namespace NGA.ThickClient
             }
             else if (screenWorkingArea.Bottom < (window.Top + window.Height) * factor)
             {
-                adjustedTop = screenWorkingArea.Bottom - window.Height * factor;
+                //adjustedTop = screenWorkingArea.Bottom - window.Height * factor;
+                // To top right
+                adjustedTop = screenWorkingArea.Top;
             }
 
             // Apply the adjusted position
@@ -725,15 +730,16 @@ namespace NGA.ThickClient
 
             var workingArea = screen.WorkingArea;
 
-            bool isOutOfBounds = window.Left < workingArea.Left / factor
-                    || window.Top < workingArea.Top / factor
+            bool isOutOfBounds = window.Left + window.Width - 200 < workingArea.Left / factor
+                    || window.Top + 64 < workingArea.Top / factor
                     || window.Left + window.Width > workingArea.Right / factor
-                    || window.Top + window.Height > workingArea.Bottom / factor;
+                    || window.Top + 64 > workingArea.Bottom / factor;
 
             this.MinWidth = width;
             this.MinHeight = height;
 
             // Resize the window
+
             if (width > workingWidth)
             {
                 this.MinWidth = workingWidth;

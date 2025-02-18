@@ -9,7 +9,11 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800" Width="500" Height="500">
+             d:DesignHeight="450" d:DesignWidth="360" >
+    
+    <!-- Robert_Lin 2025-2-11 Remove Width and Height from UserControl 
+    Width="500" Height="500"
+    -->
     <UserControl.Resources>
 
         <ResourceDictionary>
@@ -25,7 +29,9 @@
     </UserControl.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
+        <!-- Robert_Lin 2025-2-11 remove toplevel Grid rows and columns -->
+                <!-- OLD: (removed)
+              <Grid.RowDefinitions>
             <RowDefinition Height="3*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -35,18 +41,35 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+  
+        -->
 
         <Grid Grid.Row="1" Grid.Column="1">
-            <Grid.RowDefinitions>
+            <!-- Robert_Lin 2025-2-25 
+            OLD:
+              <Grid.RowDefinitions>
                 <RowDefinition Height="2*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+           
+            -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-            <Viewbox Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <!-- Robert_Lin 2025-2-11 Modify 
+            OLD:
+              <Viewbox Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+          
+            -->
+            <Viewbox Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40,80,80,20"
+                     Stretch="Uniform" >
 
                 <!-- Width="1378" Height="735"
                 -->
-                <Grid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                      >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -93,23 +116,34 @@
             <!-- 2024-6-20 Robert_Lin, move this stackPanel inside image box
             1 Change StackPanel Grid.Row=1 to 0; 2. Add VerticalAlignment=Bottom to StackPanel
             -->
+            <!-- Robert_Lin 2025-2-11 PIMS-345550 Dark stabilizer toggle hotkey /Open Network KVMstatement is cutted when change Windows
+                  display language
+            The "Modify PIP/PBP" button is truncated : Change StackPanel to WrapPanel
+            -->
             <!--  20240617  jim add -->
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+            <WrapPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom"
                         Margin="0, 20, 0, 0">
                 <DDPMUserControls:BatteryIndicator Grid.Row="1" HorizontalAlignment="Center" Height="40"
 
                                                    ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" Text1="{Binding Text1}" />
 
-                <Button Margin="8, 0" Height="40" VerticalAlignment="Top"
-                        Style="{StaticResource SecondaryButtonStyle}"
-                        Content="{Binding [Kvm.13], Source={x:Static lang:LangHelper.Instance}}"
+                <Button Margin="8, 0" MaxWidth="230" MinHeight="40" VerticalAlignment="Top"
+                        Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding LeftButtonEnable}"
                         Click="EditInput_Click">
+                    <TextBlock Text="{Binding [Kvm.13], Source={x:Static lang:LangHelper.Instance}}" 
+                               TextWrapping="Wrap"
+                               TextTrimming="CharacterEllipsis"
+                               MaxHeight="40"/>
                 </Button>
-                <Button Height="40" VerticalAlignment="Top"
-                        Style="{StaticResource SecondaryButtonStyle}"
-                        Content="{Binding [Kvm.14], Source={x:Static lang:LangHelper.Instance}}"
-                        Click="EditPXP_Click" Visibility="{Binding isPxP}"/>
-            </StackPanel>
+                <Button MaxWidth="180" MinHeight="40" VerticalAlignment="Top"
+                        Style="{StaticResource SecondaryButtonStyle}" IsEnabled="{Binding LeftButtonEnable}"
+                        Click="EditPXP_Click" Visibility="{Binding isPxP}">
+                    <TextBlock Text="{Binding [Kvm.14], Source={x:Static lang:LangHelper.Instance}}" 
+                               TextWrapping="Wrap"
+                               TextTrimming="CharacterEllipsis"
+                               MaxHeight="40"/>
+                </Button>
+            </WrapPanel>
         </Grid>
     </Grid>
 </UserControl>

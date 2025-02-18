@@ -205,7 +205,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Connect your display via HDMI/USB-C port on your system 的當地語系化字串。
+        ///   查詢類似 Connect your display via HDMI/USB-C port on your system. 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Display_1 {
             get {
@@ -223,7 +223,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Connect your Dock via USB port on your system 的當地語系化字串。
+        ///   查詢類似 Connect your Dock via USB port on your system. 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Dock_0 {
             get {
@@ -250,7 +250,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Power ON headset 的當地語系化字串。
+        ///   查詢類似 Power ON headset. 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Headset_1 {
             get {
@@ -259,7 +259,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Press and hold power button for 3 seconds to make the headset discoverable by Bluetooth 的當地語系化字串。
+        ///   查詢類似 Press and hold power button for 3 seconds to make the headset discoverable by Bluetooth. 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Headset_2 {
             get {
@@ -286,7 +286,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Pairing will automatically begin after a few seconds 的當地語系化字串。
+        ///   查詢類似 Pairing will automatically begin after a few seconds. 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Headset_5 {
             get {
@@ -358,7 +358,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Connect your keyboard and mouse via USB port on your system 的當地語系化字串。
+        ///   查詢類似 Connect your keyboard and mouse via USB port on your system. 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_KnM_13 {
             get {
@@ -376,7 +376,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Slide power switch slider to ON 的當地語系化字串。
+        ///   查詢類似 Slide power switch slider to ON. 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_KnM_2 {
             get {
@@ -385,7 +385,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Select a Bluetooth channel, then press and hold for 3 seconds to make the device discoverable 的當地語系化字串。
+        ///   查詢類似 Select a Bluetooth channel, then press and hold for 3 seconds to make the device discoverable. 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_KnM_3 {
             get {
@@ -394,7 +394,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered 的當地語系化字串。
+        ///   查詢類似 Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered. 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_KnM_4 {
             get {
@@ -403,7 +403,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Connect your USB wireless receiver to your system 的當地語系化字串。
+        ///   查詢類似 Connect your USB wireless receiver to your system. 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_KnM_6 {
             get {
@@ -421,7 +421,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Press and hold any key/button and slide power to ON 的當地語系化字串。
+        ///   查詢類似 Press and hold any key/button and slide power to ON. 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_KnM_8 {
             get {
@@ -592,7 +592,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Connect your webcam via USB port on your system 的當地語系化字串。
+        ///   查詢類似 Connect your webcam via USB port on your system. 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Webcam_0 {
             get {
@@ -759,6 +759,51 @@ namespace DDPM.UI.Resources {
         internal static string BarrelButton {
             get {
                 return ResourceManager.GetString("BarrelButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Bootloader 的當地語系化字串。
+        /// </summary>
+        internal static string Bootloader {
+            get {
+                return ResourceManager.GetString("Bootloader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Your device is unavailable. 的當地語系化字串。
+        /// </summary>
+        internal static string Bootloader_0 {
+            get {
+                return ResourceManager.GetString("Bootloader.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Please click 的當地語系化字串。
+        /// </summary>
+        internal static string Bootloader_1 {
+            get {
+                return ResourceManager.GetString("Bootloader.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 here 的當地語系化字串。
+        /// </summary>
+        internal static string Bootloader_2 {
+            get {
+                return ResourceManager.GetString("Bootloader.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 to update your firmware in order to restore functionality. 的當地語系化字串。
+        /// </summary>
+        internal static string Bootloader_3 {
+            get {
+                return ResourceManager.GetString("Bootloader.3", resourceCulture);
             }
         }
         
@@ -997,7 +1042,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Scroll Wheel Click 的當地語系化字串。
+        ///   查詢類似 Customize Scroll Wheel Click 的當地語系化字串。
         /// </summary>
         internal static string ButtonSettings_0 {
             get {
@@ -1006,7 +1051,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Scroll Tilt Left 的當地語系化字串。
+        ///   查詢類似 Customize Scroll Tilt Left 的當地語系化字串。
         /// </summary>
         internal static string ButtonSettings_1 {
             get {
@@ -1051,7 +1096,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Scroll Tilt Right 的當地語系化字串。
+        ///   查詢類似 Customize Scroll Tilt Right 的當地語系化字串。
         /// </summary>
         internal static string ButtonSettings_2 {
             get {
@@ -1060,7 +1105,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Side Button Forward 的當地語系化字串。
+        ///   查詢類似 Customize Side Button Forward 的當地語系化字串。
         /// </summary>
         internal static string ButtonSettings_3 {
             get {
@@ -1069,7 +1114,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Side Button Back 的當地語系化字串。
+        ///   查詢類似 Customize Side Button Back 的當地語系化字串。
         /// </summary>
         internal static string ButtonSettings_4 {
             get {
@@ -1416,6 +1461,24 @@ namespace DDPM.UI.Resources {
         internal static string Cancel {
             get {
                 return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 AI Mic Noise Cancellation 的當地語系化字串。
+        /// </summary>
+        internal static string Cardi_1 {
+            get {
+                return ResourceManager.GetString("Cardi.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Multimedia Presets 的當地語系化字串。
+        /// </summary>
+        internal static string Cardi_2 {
+            get {
+                return ResourceManager.GetString("Cardi.2", resourceCulture);
             }
         }
         
@@ -2014,6 +2077,51 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Customize Scroll Tilt Left 的當地語系化字串。
+        /// </summary>
+        internal static string CustomizeScrollTiltLCaption {
+            get {
+                return ResourceManager.GetString("CustomizeScrollTiltLCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Customize Scroll Tilt Right 的當地語系化字串。
+        /// </summary>
+        internal static string CustomizeScrollTiltRCaption {
+            get {
+                return ResourceManager.GetString("CustomizeScrollTiltRCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Customize Scroll Wheel Click 的當地語系化字串。
+        /// </summary>
+        internal static string CustomizeScrollWheelCaption {
+            get {
+                return ResourceManager.GetString("CustomizeScrollWheelCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Customize Side Button Back 的當地語系化字串。
+        /// </summary>
+        internal static string CustomizeSideButtonBCaption {
+            get {
+                return ResourceManager.GetString("CustomizeSideButtonBCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Customize Side Button Forward 的當地語系化字串。
+        /// </summary>
+        internal static string CustomizeSideButtonFCaption {
+            get {
+                return ResourceManager.GetString("CustomizeSideButtonFCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Cut 的當地語系化字串。
         /// </summary>
         internal static string Cut {
@@ -2050,7 +2158,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Define by system 的當地語系化字串。
+        ///   查詢類似 Defined by system 的當地語系化字串。
         /// </summary>
         internal static string DefineBySystem {
             get {
@@ -5398,7 +5506,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Setup PIP/PBP\nfor your monitor 的當地語系化字串。
+        ///   查詢類似 Setup PIP/PBP for your monitor 的當地語系化字串。
         /// </summary>
         internal static string Kvm_17 {
             get {
@@ -5524,7 +5632,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Connect Mouse\n and Keyboard 的當地語系化字串。
+        ///   查詢類似 Connect Mouse and Keyboard 的當地語系化字串。
         /// </summary>
         internal static string Kvm_3 {
             get {
@@ -5578,7 +5686,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Connecting to\n your devices 的當地語系化字串。
+        ///   查詢類似 Connecting to your devices 的當地語系化字串。
         /// </summary>
         internal static string Kvm_6 {
             get {
@@ -6811,7 +6919,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Moving the slider to the right will gradually\ndecrease the sensitivity to pressure and you\nneed to apply firmer pen pressure 的當地語系化字串。
+        ///   查詢類似 Moving the slider to the right will gradually decrease the sensitivity to pressure and you need to apply firmer pen pressure 的當地語系化字串。
         /// </summary>
         internal static string PenSettings_2 {
             get {
@@ -6829,7 +6937,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Moving the slider to the right will gradually\nincrease the tilting effect, and you need to\napply less tilting angle 的當地語系化字串。
+        ///   查詢類似 Moving the slider to the right will gradually increase the tilting effect, and you need to apply less tilting angle 的當地語系化字串。
         /// </summary>
         internal static string PenSettings_4 {
             get {
@@ -6847,7 +6955,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Pair your pen to your mobile device using\nthe Tile app 的當地語系化字串。
+        ///   查詢類似 Pair your pen to your mobile device using the Tile app 的當地語系化字串。
         /// </summary>
         internal static string PenSettings_6 {
             get {

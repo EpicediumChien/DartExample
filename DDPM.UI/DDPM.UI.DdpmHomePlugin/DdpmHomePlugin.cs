@@ -45,6 +45,8 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using System.Linq;
 using System.Windows.Automation;
 using DDPM.SA.Common.Settings;
+using System.Globalization;
+using DDPM.UI.Resources.Helper;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -144,6 +146,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _log = console.CreateLog("DDPMHOME");
             _log.Info($"{nameof(DdpmHomePlugin)} - Constructed");
             _log.Info($"current process ID: {Process.GetCurrentProcess().Id}");
+
+            //Robert_Lin 2025-1-22 added to force the static contructor of DdpmCultureMap to be called.
+            //PIMS-331191 With DDPM installed, observe language in DDPM UI not change for other langauges of Other countries
+            _log.Info($"CurrentCultureInfo=[{CultureInfo.CurrentCulture.Name}], MappedCultureInfo=[{DDPM.UI.Resources.DdpmCultureMap.MappedCultureInfo.Name}]");
 
             //DdpmCommonHelper.MyConsole = console;
 
@@ -344,22 +350,25 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //Call once
                             Task t1 = Task.Run(() =>
                             {
+                                //Use this flag to Debug/Test Gear icon GlowEffect, it will force to trigger the GlowEffect startup
+                                bool forceGlowEffect = DevSettings.ForceGearIconGlowEffectAtStartup();
+
                                 _log.Info("Calling to CheckIfSwFwUpdateAvailable()");
-                                if (CheckIfSwFwUpdateAvailable(_deviceManager))
+                                if (CheckIfSwFwUpdateAvailable(_deviceManager) || forceGlowEffect)
                                 {
                                     _log.Info("Return from CheckIfSwFwUpdateAvailable(), return true");
+                                    //Robert_Lin 2025-1-21 Change GearIcon (InfoPath to GeatButton)
                                     //Robert_Lin, 2024-12-9, Change GlowEffect_Start() to GlowEffect_Trigger()
-                                    if (_iconGear != null)
+                                    if (_gearBtn != null)
+                                    {
+                                        _gearBtn.GlowEffect_Trigger();
+                                    }
+                                    else if (_iconGear != null)
                                     {
                                         //Elapsed= 1, 1 msec
                                         _log.Info("Calling to GlowEffect_Trigger()");
-                                        if (_gearBtn != null)
-                                            _gearBtn.SetOrangeDotVisible(true);
-                                        else if (_iconGear != null)
-                                        {
-                                            _iconGear.GlowEffect_Trigger();
-                                            //_iconGear.GlowEffect_Start();
-                                        }
+                                        _iconGear.GlowEffect_Trigger();
+                                        //_iconGear.GlowEffect_Start();
                                     }
                                     else
                                     {
@@ -516,7 +525,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                     MonitorInfo newPlugIn = null;
                     // If is a plugin event
-                    if(_monitorInfos.Count() >= _monitorCache.Count())
+                    if(_monitorInfos.Count >= _monitorCache.Count)
                     {
                         foreach (MonitorInfo monitor in _monitorInfos)
                         {
@@ -567,8 +576,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
                 string path = localAppDataPath + "\\Dell Display and Peripheral Manager\\Export";
 
+                _log.Info($"[CheckIfNeedImportSetting_Display] Monitor count is {monitorInfos.Count}.");
                 foreach (MonitorInfo info in monitorInfos)
                 {
+                    _log.Info($"[CheckIfNeedImportSetting_Display] Monitor ServiceTag: {info.edid.ServiceTag} Model: {info.modelName} search for previous exported data.");
                     string model = info.modelName;//"U2724DE";
                     string serviceTag = info.edid.ServiceTag;
                     string exportpath = path + "\\" + model + ".json";
@@ -1009,30 +1020,50 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private void AddIconsToMasthead(UXMasthead masthead)
         {
-            if (_gearBtn == null)
+            //To get the Narrator strig for the Gear icon
+            string narratorString_Gear = "Settings";
+            try
             {
-                _gearBtn = new GearButton();
-                _gearBtn.Command = new RelayCommand(OnGearIconClicked);
-                masthead.InsertCustomContent(_gearBtn);
+                narratorString_Gear = LangHelper.Instance["Settings"];
+            }
+            catch (Exception e2)
+            {
             }
 
-            //Add Grear icon, click it will call to OnGreaeIconClicked()
-            if (_iconGear == null)
+            //Robert_Lin 2025-2-6 two options to choice either one:
+            //1 GearBtn (If usingGearBtn=True)         2 PathIcon
+            bool usingGearBtn = true;
+
+            if (usingGearBtn)
             {
-                /*
-                _iconGear = new PathIcon();
-                //iconGear.Width = 12; iconGear.Height = 12;
-                _iconGear.PathData = "M5.1525 12L6.99 12L7.5 10.4475L8.04 10.2375L9.54 10.9875L10.905 9.6675L10.155 8.1675L10.335 7.6275L12 7.02L12 5.145L10.35 4.6275L10.14 4.0875L10.965 2.43L9.6525 1.11L8.0625 1.965L7.5 1.6875L6.93 -2.21617e-07L5.085 -3.02264e-07L4.545 1.7175L4.0125 1.9575L2.3925 1.2075L1.0875 2.5275L1.9125 4.1175L1.665 4.6725L7.26157e-07 5.205L6.43214e-07 7.1025L1.68 7.62L1.92 8.1675L1.215 9.7125L2.5125 11.0175L4.0125 10.2675L4.545 10.4325L5.1525 12ZM2.6775 10.05L2.175 9.54L2.79 8.1825L2.25 6.9675L0.750001 6.51L0.750001 5.76L2.25 5.25L2.805 4.0275L2.055 2.61L2.55 2.1075L3.9825 2.805L5.205 2.3025L5.67 0.8025L6.3675 0.8025L6.87 2.25L8.0775 2.8575L9.51 2.1075L9.99 2.595L9.24 4.095L9.75 5.25L11.205 5.7075L11.205 6.4575L9.705 6.9825L9.2925 8.205L9.9375 9.51L9.435 10.0125L8.0925 9.375L6.885 9.8475L6.42 11.2125L5.715 11.2125L5.19 9.75L3.9675 9.3825L2.6775 10.0275L2.6775 10.05Z M8.1825 6C8.18102 5.56866 8.05176 5.14744 7.81104 4.78952C7.57033 4.4316 7.22895 4.15303 6.83002 3.98899C6.43109 3.82495 5.9925 3.7828 5.56964 3.86785C5.14677 3.95291 4.75859 4.16136 4.45411 4.46689C4.14963 4.77241 3.94251 5.16131 3.8589 5.58447C3.7753 6.00762 3.81896 6.44607 3.98436 6.84443C4.14977 7.24279 4.42951 7.58321 4.78825 7.8227C5.147 8.06218 5.56866 8.19 6 8.19C6.28724 8.19 6.57166 8.1333 6.83694 8.02315C7.10223 7.913 7.34316 7.75157 7.54592 7.54811C7.74868 7.34465 7.90929 7.10317 8.01852 6.83751C8.12776 6.57185 8.18349 6.28724 8.1825 6ZM4.6275 6C4.63047 5.7274 4.71411 5.46179 4.86787 5.23667C5.02163 5.01156 5.23862 4.83703 5.49146 4.7351C5.7443 4.63318 6.02167 4.60842 6.28857 4.66396C6.55547 4.7195 6.79993 4.85285 6.99113 5.04718C7.18232 5.24151 7.31167 5.48811 7.36287 5.75587C7.41406 6.02364 7.3848 6.30057 7.27878 6.55172C7.17275 6.80287 6.99472 7.017 6.76713 7.16708C6.53955 7.31716 6.27261 7.39647 6 7.395C5.63332 7.39104 5.28311 7.24208 5.02592 6.98068C4.76874 6.71928 4.6255 6.3667 4.6275 6Z";
-                _iconGear.ClickCommand = new RelayCommand(OnGearIconClicked);
-                _iconGear.IsTabStop = true;
-                _iconGear.Focusable = true;
-                _iconGear.SetValue(AutomationProperties.NameProperty, "Settings icon");
-                //_iconGear.TabIndex = 0;
-                //_iconGear.IsHitTestVisible = true;
-                masthead.InsertCustomContent(_iconGear);
-                //masthead.IsTabStop = true;
-                */
+                if (_gearBtn == null)
+                {
+                    _gearBtn = new GearButton();
+                    _gearBtn.Command = new RelayCommand(OnGearIconClicked);
+                    _gearBtn.SetValue(AutomationProperties.NameProperty, narratorString_Gear);
+                    masthead.InsertCustomContent(_gearBtn);
+                }
             }
+            else //using PathIcon
+            {
+                //Add Grear icon, click it will call to OnGreaeIconClicked()
+                if (_iconGear == null)
+                {
+                    _iconGear = new PathIcon();
+                    //iconGear.Width = 12; iconGear.Height = 12;
+                    _iconGear.PathData = "M5.1525 12L6.99 12L7.5 10.4475L8.04 10.2375L9.54 10.9875L10.905 9.6675L10.155 8.1675L10.335 7.6275L12 7.02L12 5.145L10.35 4.6275L10.14 4.0875L10.965 2.43L9.6525 1.11L8.0625 1.965L7.5 1.6875L6.93 -2.21617e-07L5.085 -3.02264e-07L4.545 1.7175L4.0125 1.9575L2.3925 1.2075L1.0875 2.5275L1.9125 4.1175L1.665 4.6725L7.26157e-07 5.205L6.43214e-07 7.1025L1.68 7.62L1.92 8.1675L1.215 9.7125L2.5125 11.0175L4.0125 10.2675L4.545 10.4325L5.1525 12ZM2.6775 10.05L2.175 9.54L2.79 8.1825L2.25 6.9675L0.750001 6.51L0.750001 5.76L2.25 5.25L2.805 4.0275L2.055 2.61L2.55 2.1075L3.9825 2.805L5.205 2.3025L5.67 0.8025L6.3675 0.8025L6.87 2.25L8.0775 2.8575L9.51 2.1075L9.99 2.595L9.24 4.095L9.75 5.25L11.205 5.7075L11.205 6.4575L9.705 6.9825L9.2925 8.205L9.9375 9.51L9.435 10.0125L8.0925 9.375L6.885 9.8475L6.42 11.2125L5.715 11.2125L5.19 9.75L3.9675 9.3825L2.6775 10.0275L2.6775 10.05Z M8.1825 6C8.18102 5.56866 8.05176 5.14744 7.81104 4.78952C7.57033 4.4316 7.22895 4.15303 6.83002 3.98899C6.43109 3.82495 5.9925 3.7828 5.56964 3.86785C5.14677 3.95291 4.75859 4.16136 4.45411 4.46689C4.14963 4.77241 3.94251 5.16131 3.8589 5.58447C3.7753 6.00762 3.81896 6.44607 3.98436 6.84443C4.14977 7.24279 4.42951 7.58321 4.78825 7.8227C5.147 8.06218 5.56866 8.19 6 8.19C6.28724 8.19 6.57166 8.1333 6.83694 8.02315C7.10223 7.913 7.34316 7.75157 7.54592 7.54811C7.74868 7.34465 7.90929 7.10317 8.01852 6.83751C8.12776 6.57185 8.18349 6.28724 8.1825 6ZM4.6275 6C4.63047 5.7274 4.71411 5.46179 4.86787 5.23667C5.02163 5.01156 5.23862 4.83703 5.49146 4.7351C5.7443 4.63318 6.02167 4.60842 6.28857 4.66396C6.55547 4.7195 6.79993 4.85285 6.99113 5.04718C7.18232 5.24151 7.31167 5.48811 7.36287 5.75587C7.41406 6.02364 7.3848 6.30057 7.27878 6.55172C7.17275 6.80287 6.99472 7.017 6.76713 7.16708C6.53955 7.31716 6.27261 7.39647 6 7.395C5.63332 7.39104 5.28311 7.24208 5.02592 6.98068C4.76874 6.71928 4.6255 6.3667 4.6275 6Z";
+                    _iconGear.ClickCommand = new RelayCommand(OnGearIconClicked);
+                    _iconGear.IsTabStop = true;
+                    _iconGear.Focusable = true;
+                    _iconGear.SetValue(AutomationProperties.NameProperty, narratorString_Gear);
+                    //_iconGear.TabIndex = 0;
+                    //_iconGear.IsHitTestVisible = true;
+                    masthead.InsertCustomContent(_iconGear);
+                    //masthead.IsTabStop = true;
+                }
+            }
+
+
 
             if (_iconAddDevice == null)
             {
@@ -1041,9 +1072,17 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 //iconAdd.Width = 12; iconAdd.Height = 12;
                 _iconAddDevice.PathData = "M11.9475 5.25C11.7801 3.92998 11.1787 2.70306 10.2378 1.76219C9.29697 0.821322 8.07004 0.219895 6.75003 0.0525C6.50151 0.0179984 6.25093 0.000457859 6.00003 0C4.4809 0.0103651 3.02227 0.596591 1.91848 1.64037C0.814689 2.68416 0.147927 4.10778 0.0527501 5.62395C-0.042427 7.14012 0.441067 8.63595 1.40566 9.80958C2.37025 10.9832 3.74413 11.7472 5.25003 11.9475C5.49854 11.982 5.74912 11.9995 6.00003 12C6.85082 11.9992 7.69172 11.8175 8.46693 11.4669C9.24214 11.1164 9.93393 10.6049 10.4964 9.96659C11.0588 9.32824 11.4791 8.57756 11.7293 7.76439C11.9795 6.95121 12.0539 6.09412 11.9475 5.25ZM9.90003 9.4425C9.11363 10.3318 8.0465 10.9251 6.87611 11.1237C5.70572 11.3224 4.50261 11.1143 3.46685 10.5343C2.43109 9.95422 1.62511 9.03707 1.18295 7.93536C0.740791 6.83366 0.6891 5.61378 1.03647 4.47862C1.38385 3.34345 2.10935 2.36141 3.09232 1.69581C4.0753 1.03021 5.25651 0.72116 6.4395 0.820065C7.6225 0.918969 8.73599 1.41987 9.5948 2.23945C10.4536 3.05903 11.006 4.14791 11.16 5.325C11.253 6.06139 11.1888 6.80912 10.9716 7.51887C10.7544 8.22862 10.3892 8.88425 9.90003 9.4425Z M6.42753 2.625H5.52752L5.52752 5.55L2.62503 5.55V6.45L5.52752 6.45L5.52752 9.375L6.42753 9.375L6.42753 6.45L9.37503 6.45V5.55L6.42753 5.55L6.42753 2.625Z";
                 _iconAddDevice.ClickCommand = new RelayCommand(OnAddIconClicked);
-                _iconAddDevice.IsTabStop= true;
+                _iconAddDevice.IsTabStop = true;
                 _iconAddDevice.Focusable = true;
-                _iconAddDevice.SetValue(AutomationProperties.NameProperty, "Add Device icon");
+                string narrarorString = "Add Device";
+                try
+                {
+                    narrarorString = LangHelper.Instance["AddDevice"];
+                }
+                catch (Exception e1)
+                {
+                }
+                _iconAddDevice.SetValue(AutomationProperties.NameProperty, narrarorString);
                 //_iconAddDevice.TooltipText = "Add device";
                 masthead.InsertCustomContent(_iconAddDevice);
             }
@@ -1089,6 +1128,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //Robert_Lin, 2024-7-17, fix PIMS-286435 in AddDevice menu, the AddDevice icon is in Top Right side.
             if (_iconGear != null)
                 _iconGear.Visibility = Visibility.Collapsed;
+            if (_gearBtn != null)
+                _gearBtn.Visibility = Visibility.Collapsed;
+
             if(_IsAnyUpdate) _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
             else _console.ShowPluginById(UI.Common.Constants.SettingsPluginId);
         }
@@ -1188,20 +1230,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
 
                 bool isEnabled = param[1];
-                if (isEnabled)
-                {
-                    if (_gearBtn != null)
-                        _gearBtn.IsEnabled = isEnabled;
-                    if (_iconGear != null)
-                        _iconGear.IsEnabled = isEnabled;
-                }
-                else
-                {
-                    if (_gearBtn != null)
-                        _gearBtn.IsEnabled = isEnabled;
-                    if (_iconGear != null)
-                        _iconGear.IsEnabled = isEnabled;
-                }
+
+                if (_gearBtn != null)
+                    _gearBtn.IsEnabled = isEnabled;
+                if (_iconGear != null)
+                    _iconGear.IsEnabled = isEnabled;
             }
         }
 
@@ -1535,14 +1568,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} Start for ModelNumber {modelNumber}, ModelType {modelType}");
             object regValue;
-            UserId = GetActiveUserID();
+            //UserId = GetActiveUserID();
             string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
             string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{modelNumber}";
             string regKeyForDDPM = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
-
-            //Derek 10/24 for Consent screen to share DDPM data with Dell 
-            string regPathForConsent = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Global\Consent";
-            string regKeyForConsent = $"IsFirstTimeLaunchDDPM_com.dell.DPM.Plugin.LogicalDevice.Consent";
 
             var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
 
@@ -1550,16 +1579,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 if (null == _deviceManager)
                     return;
-
-                //Derek 10/25 for Consent, please don't remove it
-                //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPathForConsent, regKeyForConsent);
-
-                //if (!Convert.ToBoolean(regValue))
-                //{
-                //    if (!WalkThroughQueue.Exists(info => info.ModelName == "Consent"))
-                //        WalkThroughQueue.Add(new WalkThroughInfo("Consent", "Consent"));
-                //}
-
 
                 regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
 
@@ -1574,10 +1593,31 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
 
                 // read reg
-                regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                if (modelNumber == "U3224KB" || modelNumber == "U3224KBA") // correct DPeM typo
+                {
+                    regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{"U3224KB"}";
+                    regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.   
+                    if (!CheckRegReturnValue(regValue)) // If false, need to check "U3224KBA" again
+                    {
+                        regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{"U3224KBA"}";
+                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                    }
+                }
+                else if (modelNumber == "P2424HEB") // correct DPeM typo
+                {
+                    regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{"CXXXXXX"}";
+                    regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.                   
+                    if (!CheckRegReturnValue(regValue)) // If false, need to check "P2424HEB" again
+                    {
+                        regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{"P2424HEB"}";
+                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                    }
+                }
+                else
+                    regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
 
                 // mean null or "" or is false, add to the queue and set it to true
-                if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)) || !Convert.ToBoolean(regValue))
+                if (!CheckRegReturnValue(regValue))
                 {
                     // 0114 Wayn Remove to walkthrough end then record the registry
                     // register model for walk through done
@@ -1612,6 +1652,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
         }
 
+        public bool CheckRegReturnValue(object regValue)
+        {
+            if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)) || !Convert.ToBoolean(regValue))
+            {
+                return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// Collect currently connected devices
         /// </summary>
@@ -1623,7 +1672,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 List<MonitorInfo> monitorInfos = _deviceManager.GetMonitors().Result;
                 var deviceHelper = _deviceManager.GetDevices().Result;
-
+                UserId = GetActiveUserID();
                 // WalkThroughInfo
                 foreach (var monitor in monitorInfos)
                 {
@@ -1642,7 +1691,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         _log.Info($"[Walkthrough] CheckAndQueueDevice Check color code = {device.ColorCode.ToString()}");                        
                     }
                     _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Device)");
-                    await CheckAndQueueDevice(_modelNumber, device.LogicalDeviceType.ToString(), device.ID);
+                    await CheckAndQueueDevice(device.ModelNumber, device.LogicalDeviceType.ToString(), device.ID);
                 }
 
                 if (WalkThroughQueue.Count != 0 && ShowPluginById == false)
@@ -1725,6 +1774,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 } //foreach
 
                 DdpmCommonHelper.LastShowOsdScreenDeviceName = screenDeviceName;
+
+                Screen? screenNow = Screen.AllScreens.FirstOrDefault(x => x.DeviceName.Equals(screenDeviceName, StringComparison.OrdinalIgnoreCase));
+                if (screenNow != null)
+                {
+                    if (_viewModel != null)
+                    {
+                        _viewModel.IsSmallScreenResolution = (screenNow.Bounds.Width < 1050);
+                    }
+                }
             }
         }
         #endregion  MainWindow Move To new position

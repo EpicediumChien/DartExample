@@ -53,6 +53,7 @@ using static Windows.Foundation.UniversalApiContract;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.Linq.Expressions;
+using DDPM.SA.Common.Alert;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -84,8 +85,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private SoftwareBitmap backBitmapBuffer;
 
         private readonly string[] PresetNames = [LangHelper.Instance["Default"], LangHelper.Instance["Smooth"], LangHelper.Instance["Vibrant"], LangHelper.Instance["Warm"]];
-        private string EditMode = string.Empty;
-        private string EditingProfileName = string.Empty;
+        private string EditMode = "";
+        private string EditingProfileName = "";
         private static PowerEventControl _pwr_Mon;
 
         public Thread status_thread;
@@ -119,7 +120,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 InitializeComponent();
                 _vm.Reset();
                 DataContext = _vm;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                //_vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
 
                 //leo 2024/12/09 因為多加條件判斷,改變呼叫位置
                 //BuildModuleGroups();
@@ -178,13 +179,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                             //Lock Functionality 9/7
                             //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Webcam]                        
-                            if (data.LockSettings != null)
+                            if (data.LockSettings != null && DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
                             {
-                                if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
-                                {
-                                    //RestoreLockIcon.Visibility = Visibility.Visible;
-                                    //txtRestore.IsEnabled = false;
-                                }
+                                //RestoreLockIcon.Visibility = Visibility.Visible;
+                                //txtRestore.IsEnabled = false;
                             }
                         }
                     }
@@ -258,13 +256,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 //因為需要處理PresenceDetection分頁是否出現判斷,改變呼叫順序
                 check_PresenceFunction();
-                BuildModuleGroups();
+                //BuildModuleGroups();
                 //initResolutionFPS();
                 //usb 2.0限制規則要放在最後做校正
                 CheckUSBtype();
 
                 //grdPreview.Visibility = _vm.WebcamGrid ? Visibility.Visible : Visibility.Hidden;
-
+                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                BuildModuleGroups();
                 DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             }
             catch (Exception ex)
@@ -297,7 +296,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void DeviceManagerSA_UIUpdateNotify(object? sender, UpdateUINotify e)
         {
             if (e == null || e == EventArgs.Empty || e.UI_Field_Name == null
-                || e.UI_Field_Name == string.Empty)
+                || string.IsNullOrEmpty(e.UI_Field_Name))
                 return;
 
             //DdpmCommonHelper.WriteUILog($"WebcamLanuchView_UIUpdateNotify catch event msg: {e.UI_Field_Name}");
@@ -332,11 +331,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (profileName != _vm!.CurrentProfileName || isProfilePropertyChanged)
                 {
                     _vm!.CurrentProfileName = profileName;
-                    _vm.IsSettingProfile = true;
                     //Derek 2025/01/18 cancel this action due to it has done by QAM
                     //_vm.SetProfile();
-                    _vm.IsSettingProfile = false;
                     isProfilePropertyChanged = false;
+                    _vm.isUIHasUpdateByQAM = true;
                 }
 
                 Dispatcher.Invoke(new Action(() =>
@@ -442,6 +440,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //檢查是否為dell電腦
             bool is_DellPc = check_DellPc();
 
+            bool is_SUT_internal_presence_sensor = check_SUT_internal_presence_sensor();
+
             //現在規格已經不需要判斷韌體奇偶數直接從 is_EsiSupport 判斷就好
 
             //硬體與條件狀態模擬測試 rd測試用
@@ -462,6 +462,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             print_debug("is_camera_dell7:" + is_camera_dell7);
             print_debug("is_WindowsVer_OK:" + is_WindowsVer_OK);
             print_debug("is_DellPc:" + is_DellPc);
+            print_debug("is_SUT_internal_presence_sensor:" + is_SUT_internal_presence_sensor);
             print_debug("AllSupportedResolutions:" + AllSupportedResolutions);
 
             print_debug("check_PresenceFunction() s0 model-" + model);
@@ -486,18 +487,31 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.MPS_Setting_Visibility = Visibility.Collapsed;
                         _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
 
-                        if (!is_DellPc)
+                        if (AllSupportedResolutions)//如果是USB 3.0
                         {
-                            //韌體升級
-                            print_debug("check_PresenceFunction() s4");
-                            _vm.UPD_Visibility = Visibility.Collapsed;
-                            _vm.brdHello_show = Visibility.Collapsed;
-                            _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-                            _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                            if (!is_DellPc)
+                            {
+                                //韌體升級
+                                print_debug("check_PresenceFunction() s4");
+                                _vm.UPD_Visibility = Visibility.Collapsed;
+                                _vm.brdHello_show = Visibility.Collapsed;
+                                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
 
-                            //2025/01/02 Leo fixed
-                            noPresenceFunction = true;
+                                //2025/01/02 Leo fixed
+                                //noPresenceFunction = true;  // Jim modify 20250203 PIMS-343711 due to the comment from Dell PO
 
+                            }
+                            else if (is_DellPc && is_SUT_internal_presence_sensor) // Jim modify 20250206 PIMS-344423
+                            {
+                                print_debug("check_PresenceFunction() s4-1");
+
+                                //顯示韌體升級
+                                _vm.UPD_Visibility = Visibility.Collapsed;
+                                _vm.brdHello_show = Visibility.Collapsed;
+                                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                            }
                         }
 
                         //dell 7 韌體升級畫面需要在 usb 3.0下,如果在2.0模式整個分頁關閉
@@ -551,9 +565,49 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             //顯示windos setting設定畫面
                             _vm.MPS_Setting_Visibility = Visibility.Visible;
 
+                            /*
                             if (!is_DellPc)
                             {
                                 print_debug("check_PresenceFunction() s11");
+
+                                //顯示韌體升級
+                                _vm.brdHello_show = Visibility.Collapsed;
+                                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                            }
+                            */
+
+                            /*
+                            if (!is_DellPc && is_SUT_internal_presence_sensor) // Jim modify 20250125 PIMS-343711
+                            {
+                                print_debug("check_PresenceFunction() s11-0");
+
+                                //顯示韌體升級
+                                _vm.brdHello_show = Visibility.Collapsed;
+                                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                            }
+                            else if (!is_DellPc && !is_SUT_internal_presence_sensor) // Jim modify 20250125 PIMS-343711
+                            {
+                                print_debug("check_PresenceFunction() s11-2");
+
+                                // PresenceFunction  整個分頁不用顯示
+                                noPresenceFunction = true;
+                            }
+                            */
+
+                            if (!is_DellPc) // Jim modify 20250203 PIMS-343711 due to the comment from Dell PO
+                            {
+                                print_debug("check_PresenceFunction() s11");
+
+                                //顯示windows setting設定畫面
+                                _vm.brdHello_show = Visibility.Collapsed;
+                                _vm.MPS_Setting_Visibility = Visibility.Visible;
+                                _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
+                            }
+                            else if (is_DellPc && is_SUT_internal_presence_sensor) // Jim modify 20250124 PIMS-319078
+                            {
+                                print_debug("check_PresenceFunction() s11-1");
 
                                 //顯示韌體升級
                                 _vm.brdHello_show = Visibility.Collapsed;
@@ -714,6 +768,24 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             if (manufacturer == null)
                 DdpmCommonHelper.WriteUILog("check_DellPc() manufacturer == null");
+
+            return false;
+
+        }
+
+        public bool check_SUT_internal_presence_sensor()
+        {
+            if (File.Exists(@"C:\ui_cond\dellpc.txt"))
+                return true;
+
+            string model = WinVersion.GetComputerModel();
+            if (model != null && (model.Contains("Latitude 7350", StringComparison.OrdinalIgnoreCase) || model.Contains("XPS 9345", StringComparison.OrdinalIgnoreCase) || model.Contains("XPS 13 9345", StringComparison.OrdinalIgnoreCase)))
+            {
+                return true;
+            }
+
+            if (model == null)
+                DdpmCommonHelper.WriteUILog("check_SUT_internal_presence_sensor() model == null");
 
             return false;
 
@@ -1369,7 +1441,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                     //var microphone = audioDevices.FirstOrDefault();
 
-                    string AudioDeviceId = string.Empty; // 2024/12/31 Elie.
+                    string AudioDeviceId = ""; // 2024/12/31 Elie.
                     if (microphone != null)
                     {
                         AudioDeviceId = microphone.Id;
@@ -1539,13 +1611,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //Lock Functionality 9/7
                 //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Webcam]
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA!.ReloadAppConfigData().Result;
-                if (data != null && data.LockSettings != null)
+                if (data != null && data.LockSettings != null && DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
                 {
-                    if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
-                    {
-                        //RestoreLockIcon.Visibility = Visibility.Visible;
-                        //txtRestore.IsEnabled = false;
-                    }
+                    //RestoreLockIcon.Visibility = Visibility.Visible;
+                    //txtRestore.IsEnabled = false;
                 }
             }));
         }
@@ -2294,36 +2363,39 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private async Task CleanupMediaCaptureAsync()
         {
 
-            try
+            if (_vm.MediaFrameReader != null)
             {
-                _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"Error del MediaFrameReader FrameArrived: {ex.Message}");
-            }
-
-            try
-            {
-                await _vm.MediaFrameReader.StopAsync();
-
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"Error stopping MediaFrameReader: {ex.Message}");
-            }
-
-            try
-            {
-                if (_vm.MediaFrameReader != null)
+                try
                 {
-                    _vm.MediaFrameReader.Dispose();
-                    _vm.MediaFrameReader = null;
+                    _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
                 }
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"Error Dispose MediaFrameReader: {ex.Message}");
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog($"Error del MediaFrameReader FrameArrived: {ex.Message}");
+                }
+
+                try
+                {
+                    await _vm.MediaFrameReader.StopAsync();
+
+                }
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog($"Error stopping MediaFrameReader: {ex.Message}");
+                }
+
+                try
+                {
+                    if (_vm.MediaFrameReader != null)
+                    {
+                        _vm.MediaFrameReader.Dispose();
+                        _vm.MediaFrameReader = null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog($"Error Dispose MediaFrameReader: {ex.Message}");
+                }
             }
 
             if (_vm!.MediaCapture != null)
@@ -2415,15 +2487,26 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     //DdpmCommonHelper.DeviceManagerSA!.SetProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.ProfileIDs[profileName]);
                     _vm!.CurrentProfileName = profileName;
-                    _vm.IsSettingProfile = true;
-                    _vm.SetProfile();
-                    _vm.IsSettingProfile = false;
                     isProfilePropertyChanged = false;
+
+                    _vm.AlertType = WebcamAlert.Alert1;
+                    _vm.AlertVisibility = Visibility.Visible;
+
+                    new Thread(() =>
+                    {
+                        Thread.Sleep(3000);
+                        _vm.AlertVisibility = Visibility.Collapsed;
+                    }).Start();
+
+                    _vm.SetProfile();
+
+                    //Derek 2025/02/12 force preview refresh to apply changed settings when change profile
+                    Preview();
+
+                    //Derek 1212
+                    DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm!.CurrentProfileName, false);
                 }
                 btnPreset_Click(this, null);
-
-                //Derek 1212
-                DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm!.CurrentProfileName, false);
             }
             catch (Exception ex)
             {
@@ -2473,6 +2556,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         Duration = new Duration(TimeSpan.FromSeconds(0.3)),
                     };
                     AnimatedPanel.Visibility = Visibility.Collapsed;
+                    _vm?.OnUpdateIsHDROn();
                 }
                 else
                 {
@@ -2514,9 +2598,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (profileName != _vm!.CurrentProfileName)
                 {
                     _vm.CurrentProfileName = profileName;
-                    _vm.IsSettingProfile = true;
                     _vm.SetProfile();
-                    _vm.IsSettingProfile = false;
                 }
                 txbName.Text = profileName;
                 _vm!.DisableVBar();
@@ -2551,9 +2633,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (profileName == _vm!.CurrentProfileName)
                 {
                     _vm!.CurrentProfileName = "Default";
-                    _vm.IsSettingProfile = true;
                     _vm.SetProfile();
-                    _vm.IsSettingProfile = false;
                 }
                 btnPreset_Click(this, null);
 
@@ -2710,7 +2790,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm!.DisableVBar();
                 gdBattery.Visibility = Visibility.Collapsed;
                 gdAddProfile.Visibility = Visibility.Visible;
-                txbName.Text = string.Empty;
+                txbName.Text = "";
                 txbName.Focus();
                 _vm.TooltipVisibility = Visibility.Visible;
             }
@@ -2765,9 +2845,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (EditMode == "EDIT")
                 {
                     _vm!.CurrentProfileName = EditingProfileName;
-                    _vm.IsSettingProfile = true;
                     _vm.SetProfile();
-                    _vm.IsSettingProfile = false;
                 }
                 txtCaption.Text = _vm!.Name;
                 _vm.EnableVBar();
@@ -2898,7 +2976,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     blSystemcompatibility_MPS = false;
             }
 
-            string strComputerManufacturer = string.Empty;
+            string strComputerManufacturer = "";
 
             strComputerManufacturer = WinVersion.GetComputerManufacturer();
 

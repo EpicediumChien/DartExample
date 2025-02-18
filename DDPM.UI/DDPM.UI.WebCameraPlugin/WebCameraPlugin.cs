@@ -141,7 +141,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void GetPeripheralsAsync()
         {
-            _log.Debug($"GetPeripherals is invoked");
+            DdpmCommonHelper.WriteUILog($"GetPeripherals is invoked");
             Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
             _deviceHelper = task.Result;
 
@@ -176,9 +176,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         /// <inheritdoc/>
         public void OnActivated()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
-            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += WebCameraplugin_UIUpdateNotify;
-            Mouse.OverrideCursor = null;
+            //DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+            //DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += WebCameraplugin_UIUpdateNotify;
+            //Mouse.OverrideCursor = null;
 
             //DdpmCommonHelper.WriteUILog($"Webcam plugin OnActivated start");
             //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);
@@ -188,13 +188,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             //Derek 1212
             if (e == null || e == EventArgs.Empty || e.UI_Field_Name == null
-                || e.UI_Field_Name == string.Empty)
+                || string.IsNullOrEmpty(e.UI_Field_Name))
                 return;
 
             //Open this to get the message format of Webcam event
             //System.Windows.MessageBox.Show(e.UI_Field_Name);
             Console.WriteLine("WebCameraplugin_UIUpdateNotify Get event : " + e.UI_Field_Name + "#" + DateTime.Now.ToString("yyyy-MM-dd h:mm:tt") + "\r\n");
-            _log.Debug("WebCameraplugin_UIUpdateNotify Get event : " + e.UI_Field_Name + "#" + DateTime.Now.ToString("yyyy-MM-dd h:mm:tt") + "\r\n");
+            DdpmCommonHelper.WriteUILog("WebCameraplugin_UIUpdateNotify Get event : " + e.UI_Field_Name + "#" + DateTime.Now.ToString("yyyy-MM-dd h:mm:tt") + "\r\n");
 
             //cmd format sample
             //5;Device:Webcam;EventType:Webcam_IsHDROnChanged;DeviceId:28d64fee-3544-45c7-a1b0-10db20a4cf8e;NewValue:True
@@ -203,14 +203,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 if (!event_param.TryGetValue("Device", out var device))
                 {
-                    _log.Debug("Device cannot be found in event_param");
+                    DdpmCommonHelper.WriteUILog("Device cannot be found in event_param");
                     return;
                 }
                 if (device == "Webcam")
                 {
                     if (!event_param.TryGetValue("EventType", out var eventtype))
                     {
-                        _log.Debug("EventType cannot be found in event_param");
+                        DdpmCommonHelper.WriteUILog("EventType cannot be found in event_param");
                         return;
                     }
 
@@ -219,448 +219,457 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     {
                         #region for cli setting
                         case "Webcam_ZoomMeetingTypeChanged":
-                            {
-                                //No corresponding UI
-                            }
-                            break;
+                        {
+                            //No corresponding UI
+                        }
+                        break;
                         case "Webcam_SharpnessChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
+                            }
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (int.TryParse(NewValue, out var _t))
+                                    _viewModel!.Sharpness = _t;
+                                else
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("Webcam_SharpnessChanged NewValue not int");
                                     return;
                                 }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    if (int.TryParse(NewValue, out var _t))
-                                        _viewModel!.Sharpness = _t;
-                                    else
-                                    {
-                                        _log.Debug("Webcam_SharpnessChanged NewValue not int");
-                                        return;
-                                    }
-                                });
-                            }
-                            break;
+                            });
+                        }
+                        break;
 
                         case "Webcam_Esi_WALLockCountdownChanged":
-                            {
-                                //??
-                            }
-                            break;
+                        {
+                            //??
+                        }
+                        break;
                         case "Webcam_IsZoomScreenShareActiveChanged":
-                            {
-                                //No corresponding UI
-                            }
-                            break;
+                        {
+                            //No corresponding UI
+                        }
+                        break;
                         case "Webcam_IsZoomMeetingActiveChanged":
-                            {
-                                //No corresponding UI
-                            }
-                            break;
+                        {
+                            //No corresponding UI
+                        }
+                        break;
                         case "Webcam_SerialNumberChanged":
-                            {
-                                //??
-                            }
-                            break;
+                        {
+                            //??
+                        }
+                        break;
                         case "Webcam_IsHDROnChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
-                                {
-                                    _log.Debug("NewValue cannot be found in event_param");
-                                    return;
-                                }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    _viewModel!.IsSettingProfile = true;
-                                    if (NewValue.ToLower() == "true")
-                                        _viewModel.IsHDROn = true;
-                                    else
-                                        _viewModel.IsHDROn = false;
-                                    _viewModel!.IsSettingProfile = false;
-                                });
-                                //HDR SIWTCH時候,需要重置CAMERA,中間需要一段初始化時間約1秒
-                                //_viewModel!.mre.Set();
-                                Thread.Sleep(1000);
-                                _viewModel!.mre.Set();
-                                _viewModel!.hdr_change = false;
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
                             }
-                            break;
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                //_viewModel!.IsSettingProfile = true;
+                                if (NewValue.ToLower() == "true")
+                                    _viewModel.IsHDROn = true;
+                                else
+                                    _viewModel.IsHDROn = false;
+                                //_viewModel!.IsSettingProfile = false;
+                            });
+                            //HDR SIWTCH時候,需要重置CAMERA,中間需要一段初始化時間約1秒
+                            //_viewModel!.mre.Set();
+                            Thread.Sleep(1000);
+                            _viewModel!.mre.Set();
+                            _viewModel!.hdr_change = false;
+                        }
+                        break;
                         case "Webcam_FieldOfViewChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
+                            }
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (int.TryParse(NewValue, out var _t))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    _viewModel!.FieldOfView = _t;
+
+                                    //Derek 1211 to sync data with QAM
+                                    if (90 == _t)
+                                    {
+                                        _viewModel!.SetFOV_Selected(2);
+                                        _viewModel.SelectedFovIndex = 2;
+                                    }
+                                    else if (78 == _t)
+                                    {
+                                        _viewModel!.SetFOV_Selected(1);
+                                        _viewModel.SelectedFovIndex = 1;
+                                    }
+                                    else if (65 == _t)
+                                    {
+                                        _viewModel!.SetFOV_Selected(0);
+                                        _viewModel.SelectedFovIndex = 0;
+                                    }
+                                }
+                                else
+                                {
+                                    DdpmCommonHelper.WriteUILog("Webcam_FieldOfViewChanged NewValue not int");
                                     return;
                                 }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    if (int.TryParse(NewValue, out var _t))
-                                    {
-                                        _viewModel!.FieldOfView = _t;
+                            });
 
-                                        //Derek 1211 to sync data with QAM
-                                        if (90 == _t)
-                                            _viewModel!.SetFOV_Selected(2);
-                                        else if (78 == _t)
-                                            _viewModel!.SetFOV_Selected(1);
-                                        else if (65 == _t)
-                                            _viewModel!.SetFOV_Selected(0);
-                                    }
-                                    else
-                                    {
-                                        _log.Debug("Webcam_FieldOfViewChanged NewValue not int");
-                                        return;
-                                    }
-                                });
-
-                            }
-                            break;
+                        }
+                        break;
                         case "Webcam_AutoFramingFrameSizeChanged":
-                            {
-                                //if (!event_param.TryGetValue("NewValue", out var NewValue))
-                                //{
-                                //    _log.Debug("NewValue cannot be found in event_param");
-                                //    return;
-                                //}
-                                //System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                //{
-                                //    if (int.TryParse(NewValue, out var _t))
-                                //        _viewModel!.AutoFramingFrameSize = _t;
-                                //    else
-                                //    {
-                                //        _log.Debug("Webcam_AutoFramingFrameSizeChanged NewValue not int");
-                                //        return;
-                                //    }
-                                //});
-                            }
-                            break;
+                        {
+                            //if (!event_param.TryGetValue("NewValue", out var NewValue))
+                            //{
+                            //    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                            //    return;
+                            //}
+                            //System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            //{
+                            //    if (int.TryParse(NewValue, out var _t))
+                            //        _viewModel!.AutoFramingFrameSize = _t;
+                            //    else
+                            //    {
+                            //        DdpmCommonHelper.WriteUILog("Webcam_AutoFramingFrameSizeChanged NewValue not int");
+                            //        return;
+                            //    }
+                            //});
+                        }
+                        break;
                         case "Webcam_AutoFramingSensitivityChanged":
-                            {
-                                //if (!event_param.TryGetValue("NewValue", out var NewValue))
-                                //{
-                                //    _log.Debug("NewValue cannot be found in event_param");
-                                //    return;
-                                //}
-                                //System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                //{
-                                //    if (int.TryParse(NewValue, out var _t))
-                                //        _viewModel!.AutoFramingFrameSize = _t;
-                                //    else
-                                //    {
-                                //        _log.Debug("Webcam_AutoFramingSensitivityChanged NewValue not int");
-                                //        return;
-                                //    }
-                                //});
-                            }
-                            break;
+                        {
+                            //if (!event_param.TryGetValue("NewValue", out var NewValue))
+                            //{
+                            //    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                            //    return;
+                            //}
+                            //System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            //{
+                            //    if (int.TryParse(NewValue, out var _t))
+                            //        _viewModel!.AutoFramingFrameSize = _t;
+                            //    else
+                            //    {
+                            //        DdpmCommonHelper.WriteUILog("Webcam_AutoFramingSensitivityChanged NewValue not int");
+                            //        return;
+                            //    }
+                            //});
+                        }
+                        break;
                         case "Webcam_IsAutoFramingOnChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
-                                {
-                                    _log.Debug("NewValue cannot be found in event_param");
-                                    return;
-                                }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    if (NewValue.ToLower() == "true")
-                                        _viewModel!.IsAutoFramingOn = true;
-                                    else
-                                        _viewModel!.IsAutoFramingOn = false;
-                                });
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
                             }
-                            break;
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (NewValue.ToLower() == "true")
+                                    _viewModel!.IsAutoFramingOn = true;
+                                else
+                                    _viewModel!.IsAutoFramingOn = false;
+                            });
+                        }
+                        break;
                         case "Webcam_IsAutoFramingTransitionOnChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
-                                {
-                                    _log.Debug("NewValue cannot be found in event_param");
-                                    return;
-                                }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    if (NewValue.ToLower() == "true")
-                                        _viewModel!.IsAutoFramingTransitionOn = true;
-                                    else
-                                        _viewModel!.IsAutoFramingTransitionOn = false;
-                                });
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
                             }
-                            break;
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (NewValue.ToLower() == "true")
+                                    _viewModel!.IsAutoFramingTransitionOn = true;
+                                else
+                                    _viewModel!.IsAutoFramingTransitionOn = false;
+                            });
+                        }
+                        break;
                         case "Webcam_AutoWhiteBalanceChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
+                            }
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (int.TryParse(NewValue, out var _t))
+                                    _viewModel!.AutoWhiteBalance = _t;
+                                else
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("Webcam_AutoWhiteBalanceChanged NewValue not int");
                                     return;
                                 }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    if (int.TryParse(NewValue, out var _t))
-                                        _viewModel!.AutoWhiteBalance = _t;
-                                    else
-                                    {
-                                        _log.Debug("Webcam_AutoWhiteBalanceChanged NewValue not int");
-                                        return;
-                                    }
-                                });
-                            }
-                            break;
+                            });
+                        }
+                        break;
                         case "Webcam_IsAutoWhiteBalanceOnChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
-                                {
-                                    _log.Debug("NewValue cannot be found in event_param");
-                                    return;
-                                }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    if (NewValue.ToLower() == "true")
-                                        _viewModel!.IsAutoWhiteBalanceOn = true;
-                                    else
-                                        _viewModel!.IsAutoWhiteBalanceOn = false;
-                                });
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
                             }
-                            break;
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (NewValue.ToLower() == "true")
+                                    _viewModel!.IsAutoWhiteBalanceOn = true;
+                                else
+                                    _viewModel!.IsAutoWhiteBalanceOn = false;
+                            });
+                        }
+                        break;
                         case "Webcam_SaturationChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
+                            }
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (int.TryParse(NewValue, out var _t))
+                                    _viewModel!.Saturation = _t;
+                                else
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("Webcam_SaturationChanged NewValue not int");
                                     return;
                                 }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    if (int.TryParse(NewValue, out var _t))
-                                        _viewModel!.Saturation = _t;
-                                    else
-                                    {
-                                        _log.Debug("Webcam_SaturationChanged NewValue not int");
-                                        return;
-                                    }
-                                });
-                            }
-                            break;
+                            });
+                        }
+                        break;
                         case "Webcam_AntiFlickerChanged":
+                        {
+                            //1:50 2:60
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                //1:50 2:60
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
+                            }
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (int.TryParse(NewValue, out var _t))
+                                    _viewModel!.AntiFlicker = _t;
+                                else
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("Webcam_AntiFlickerChanged NewValue not int");
                                     return;
                                 }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    if (int.TryParse(NewValue, out var _t))
-                                        _viewModel!.AntiFlicker = _t;
-                                    else
-                                    {
-                                        _log.Debug("Webcam_AntiFlickerChanged NewValue not int");
-                                        return;
-                                    }
-                                });
-                            }
-                            break;
+                            });
+                        }
+                        break;
                         case "Webcam_ContrastChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
+                            }
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (int.TryParse(NewValue, out var _t))
+                                    _viewModel!.Contrast = _t;
+                                else
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("Webcam_ContrastChanged NewValue not int");
                                     return;
                                 }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    if (int.TryParse(NewValue, out var _t))
-                                        _viewModel!.Contrast = _t;
-                                    else
-                                    {
-                                        _log.Debug("Webcam_ContrastChanged NewValue not int");
-                                        return;
-                                    }
-                                });
-                            }
-                            break;
+                            });
+                        }
+                        break;
                         case "Webcam_BrightnessChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
+                            }
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (int.TryParse(NewValue, out var _t))
+                                    _viewModel!.Brightness = _t;
+                                else
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("Webcam_BrightnessChanged NewValue not int");
                                     return;
                                 }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    if (int.TryParse(NewValue, out var _t))
-                                        _viewModel!.Brightness = _t;
-                                    else
-                                    {
-                                        _log.Debug("Webcam_BrightnessChanged NewValue not int");
-                                        return;
-                                    }
-                                });
-                            }
-                            break;
+                            });
+                        }
+                        break;
                         case "Webcam_ZoomChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
+                            }
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (int.TryParse(NewValue, out var _t))
+                                    _viewModel!.Zoom = _t;
+                                else
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("Webcam_ZoomChanged NewValue not int");
                                     return;
                                 }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    if (int.TryParse(NewValue, out var _t))
-                                        _viewModel!.Zoom = _t;
-                                    else
-                                    {
-                                        _log.Debug("Webcam_ZoomChanged NewValue not int");
-                                        return;
-                                    }
-                                });
-                            }
-                            break;
+                            });
+                        }
+                        break;
                         case "Webcam_TiltChanged":
-                            {
-                                //??
-                            }
-                            break;
+                        {
+                            //??
+                        }
+                        break;
 
                         case "Webcam_PanChanged":
-                            {
-                                //??
-                            }
-                            break;
+                        {
+                            //??
+                        }
+                        break;
 
                         case "Webcam_FocusChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
+                            }
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (int.TryParse(NewValue, out var _t))
+                                    _viewModel!.Focus = _t;
+                                else
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("Webcam_FocusChanged NewValue not int");
                                     return;
                                 }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    if (int.TryParse(NewValue, out var _t))
-                                        _viewModel!.Focus = _t;
-                                    else
-                                    {
-                                        _log.Debug("Webcam_FocusChanged NewValue not int");
-                                        return;
-                                    }
-                                });
-                            }
-                            break;
+                            });
+                        }
+                        break;
 
                         case "Webcam_IsFocusOnChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
-                                {
-                                    _log.Debug("NewValue cannot be found in event_param");
-                                    return;
-                                }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    if (NewValue.ToLower() == "true")
-                                        _viewModel!.IsFocusOn = true;
-                                    else
-                                        _viewModel!.IsFocusOn = false;
-                                });
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
                             }
-                            break;
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (NewValue.ToLower() == "true")
+                                    _viewModel!.IsFocusOn = true;
+                                else
+                                    _viewModel!.IsFocusOn = false;
+                            });
+                        }
+                        break;
 
                         case "Webcam_PriorityChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
+                            }
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                if (int.TryParse(NewValue, out var _t))
+                                    _viewModel!.Priority = _t;
+                                else
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("Webcam_PriorityChanged NewValue not int");
                                     return;
                                 }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    if (int.TryParse(NewValue, out var _t))
-                                        _viewModel!.Priority = _t;
-                                    else
-                                    {
-                                        _log.Debug("Webcam_PriorityChanged NewValue not int");
-                                        return;
-                                    }
-                                });
+                            });
 
-                            }
-                            break;
+                        }
+                        break;
 
                         case "Webcam_CustomProfileRemoved":
-                            {
+                        {
 
-                            }
-                            break;
+                        }
+                        break;
 
                         case "Webcam_CustomProfileAdded":
-                            {
+                        {
 
-                            }
-                            break;
+                        }
+                        break;
 
                         case "Webcam_CurrentSelectedProfileChanged":
-                            {
+                        {
 
-                            }
-                            break;
+                        }
+                        break;
 
                         case "Webcam_IsMicEnumerationOnChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
-                                {
-                                    _log.Debug("NewValue cannot be found in event_param");
-                                    return;
-                                }
-                                _viewModel!.isIsMicEnumerationOnChanged_event = true;
-
-                                DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 6 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    if (NewValue.ToLower() == "true")
-                                    {
-                                        DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 7 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                                        _viewModel!.IsMicEnumerationOn = true;
-                                    }
-                                    else
-                                    {
-                                        DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 8 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                                        _viewModel!.IsMicEnumerationOn = false;
-                                    }
-                                });
-                                DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 9 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                                _viewModel!.isIsMicEnumerationOnChanged_event = false;
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
                             }
-                            break;
+                            _viewModel!.isIsMicEnumerationOnChanged_event = true;
 
-                        case "Webcam_ProfileManagerAdded":
+                            DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 6 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
                             {
-
-                            }
-                            break;
-                        #endregion
-                        case "Webcam_Esi_IsCameraSensorCoveredChanged":
-                            {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
-                                {
-                                    _log.Debug("NewValue cannot be found in event_param");
-                                    return;
-                                }
-
                                 if (NewValue.ToLower() == "true")
                                 {
-                                    var _globalSettings = DdpmCommonHelper.DeviceManagerSA!.GetGlobalSettingParam().Result;
+                                    DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 7 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                                    _viewModel!.IsMicEnumerationOn = true;
+                                }
+                                else
+                                {
+                                    DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 8 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                                    _viewModel!.IsMicEnumerationOn = false;
+                                }
+                            });
+                            DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 9 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                            _viewModel!.isIsMicEnumerationOnChanged_event = false;
+                        }
+                        break;
 
-                                    // check if show OSD for Presence Detection Sensor Cover
-                                    if (_globalSettings.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State)
-                                    {
-                                        DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.Fingerprint);
-                                        _viewModel.IsChecked_Snooze = false; // jim 20241221 add for 和DPeM 行為對齊 
-                                    }
+                        case "Webcam_ProfileManagerAdded":
+                        {
+
+                        }
+                        break;
+                        #endregion
+                        case "Webcam_Esi_IsCameraSensorCoveredChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
+                            {
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
+                            }
+
+                            if (NewValue.ToLower() == "true")
+                            {
+                                var _globalSettings = DdpmCommonHelper.DeviceManagerSA!.GetGlobalSettingParam().Result;
+
+                                // check if show OSD for Presence Detection Sensor Cover
+                                if (_globalSettings.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State)
+                                {
+                                    DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.Fingerprint);
+                                    _viewModel.IsChecked_Snooze = false; // jim 20241221 add for 和DPeM 行為對齊 
                                 }
                             }
-                            break;
+                        }
+                        break;
 
                         // Jim 20250104 comment out for PIMS-335905 [DDPM Win 2.0][R19] Observe no WAL Countdown OSD is seen when WAL is act=tivated
                         /*
@@ -668,7 +677,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         {
                             if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                _log.Debug("NewValue cannot be found in event_param");
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                 return;
                             }
 
@@ -679,29 +688,29 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         */
 
                         case "Webcam_WALSnoozeTimeLeftInSecondsChanged":
+                        {
+                            if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
-                                {
-                                    _log.Debug("NewValue cannot be found in event_param");
-                                    return;
-                                }
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                return;
+                            }
 
-                                if (!String.IsNullOrEmpty(NewValue))
+                            if (!String.IsNullOrEmpty(NewValue))
+                            {
+                                if (Int32.TryParse(NewValue, out int numValue))
                                 {
-                                    if (Int32.TryParse(NewValue, out int numValue))
-                                    {
-                                        TimeSpan ts = TimeSpan.FromSeconds(numValue);
-                                        _viewModel.WALSnoozeTimeLeft = ts.ToString(@"hh\:mm\:ss");
-                                    }
+                                    TimeSpan ts = TimeSpan.FromSeconds(numValue);
+                                    _viewModel.WALSnoozeTimeLeft = ts.ToString(@"hh\:mm\:ss");
                                 }
                             }
-                            break;
+                        }
+                        break;
                     }
                 }
             }
             catch (Exception ex)
             {
-                _log.Debug(ex, "WebCameraplugin_UIUpdateNotify");
+                DdpmCommonHelper.WriteUILog("WebCameraplugin_UIUpdateNotify:" + ex.Message);
             }
         }
 
@@ -723,7 +732,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex) // Jim 20250108 add exception handling for PIMS-335905 on ARM has crash
             {
-                _log.Debug(ex, $"deal_param {ex.Message}");
+                DdpmCommonHelper.WriteUILog($"deal_param {ex.Message}");
                 tmp.Clear();
             }
             return tmp;
@@ -746,6 +755,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 _viewModel.SetCurrentDevice(parameter);
             }
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += WebCameraplugin_UIUpdateNotify;
+            Mouse.OverrideCursor = null;
         }
 
         #endregion Interface IConsolePluginSupportsActivations
@@ -784,15 +796,15 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             try
             {
 
-                foreach(Thread t in _viewModel.thread_list)
+                foreach (Thread t in _viewModel.thread_list)
                 {
-                    if ( t != null)
+                    if (t != null)
                     {
-                        Console.WriteLine(t.Name +" " + t.IsAlive);
+                        Console.WriteLine(t.Name + " " + t.IsAlive);
 
-                        if( t.IsAlive )
+                        if (t.IsAlive)
                         {
-                            t.Interrupt(); 
+                            t.Interrupt();
                         }
 
                     }

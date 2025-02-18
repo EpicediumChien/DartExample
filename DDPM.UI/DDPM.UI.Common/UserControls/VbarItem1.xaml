@@ -8,9 +8,15 @@
              xmlns:local="clr-namespace:DDPM.UI.Common.UserControls"
              mc:Ignorable="d"
              HorizontalAlignment="Right"
-             Focusable="True"
+             IsTabStop="True" Focusable="True"
              AutomationProperties.Name="{Binding Text, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+             KeyboardNavigation.TabNavigation="None"
              d:DesignHeight="74" d:DesignWidth="212" PreviewKeyDown="UserControl_PreviewKeyDown">
+    <!-- UserControl Narrator: not read
+             AutomationProperties.Name="{Binding Text, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+             AutomationProperties.Name="{Binding Text, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+              AutomationProperties.Name="{Binding Text, Mode=OneWay}"
+   -->
     <UserControl.Resources>
         <ResourceDictionary>
             <Common:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
@@ -113,8 +119,9 @@
         <!-- Robert_Lin, 2024-12-28, add below propery into bdOuter can see the design UI 
         d:Width="64"    -> Non-Landing mode VarItem
         d:Width="212"   -> Landing mode VarItem
+        Focusable="False"
         -->
-        <Border x:Name="bdOuter" Height="64" BorderThickness="2" CornerRadius="13" Focusable="True" d:Width="212"  
+        <Border x:Name="bdOuter" Height="64" BorderThickness="2" CornerRadius="13" d:Width="212"  
                 >
             <Border.Style>
                 <Style TargetType="Border">
@@ -175,11 +182,11 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Icon -->
+                <!-- #region Icon -->
                 <ContentControl Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"
                                 Template="{Binding VisualTemplate, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                 <Image Grid.Column="0" Width="24" Height="24" Visibility="{Binding NoCanvasIcon, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibilityConverter}}"
-                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                       VerticalAlignment="Center" HorizontalAlignment="Center" Focusable="False"
                        Source="{Binding IconImage, RelativeSource={RelativeSource AncestorType=UserControl}}">
                     <Image.Style>
                         <Style TargetType="Image">
@@ -213,8 +220,9 @@
                     </ContentControl.Style>
 
                 </ContentControl>
+                <!-- #endregion Icon -->
 
-                <!-- Text -->
+                <!-- #region Text -->
                 <!-- Robert_Lin 2025-1-13 for the Multilingual UI PIMS, VbarItem Text display follow the MarkeetName at DDPMW-2094 
                 OLD Code: 
                 <UXControls:UXTextBlock Grid.Column="1" FontSize="14" Focusable="False" Width="145" TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow"
@@ -256,8 +264,9 @@
                         </Style>
                     </UXControls:UXTextBlock.Style>
                 </UXControls:UXTextBlock>
+                <!-- #endregion Text -->
 
-                <!-- LockIcon -->
+                <!-- #region LockIcon -->
                 <!-- 
                       Visibility="{Binding IsLocked, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibilityConverter}}"
                 
@@ -269,6 +278,7 @@
                     <Path Data="M12.1 6.40012V4.00012C12.2 1.80012 10.5 0.100122 8.30005 0.00012207H8.10005C5.90005 0.00012207 4.10005 1.80012 4.10005 4.00012V6.40012H1.80005V16.0001H14.1V6.40012H12.1ZM5.30005 4.00012C5.20005 2.50012 6.40005 1.30012 7.80005 1.20012H8.20005C9.80005 1.20012 11 2.50012 11 4.00012V6.40012H5.30005V4.00012ZM13.1 14.9001H3.00005V7.50012H13.1V14.9001Z M7.60005 12.5001H8.60005V9.30012H6.80005V10.3001H7.60005V12.5001Z"
                                      Fill="{DynamicResource DefaultTheme_PathColor}" />
                 </Grid>
+                <!-- #endregion LockIcon -->
 
                 <!-- Robert's Test: to draw a cross '+' in Design time to see if the icon is in center of VbarItem1 -->
                 <Grid Visibility="Collapsed" d:Visibility="Visible">

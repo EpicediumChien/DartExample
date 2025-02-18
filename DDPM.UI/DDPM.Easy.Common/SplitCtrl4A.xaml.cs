@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using DDPM.UI.Resources.Helper;
+using System.Windows.Controls;
 using Rect = System.Windows.Rect;
 
 namespace DDPM.Easy.Common
@@ -30,6 +31,7 @@ namespace DDPM.Easy.Common
 
         //SplitCtrl2? ~ 7? are predefined layout, have default value, the EAID may be changed to [1000~1004] if they are customized.
         public int EAID { get; set; } = 14;
+        public string TooltipResourceName { get; } = "EATooltip_41";
         #endregion ISplitCtrl Native Members
 
         #region ViewModel
@@ -269,8 +271,10 @@ namespace DDPM.Easy.Common
 
         #region FriendlyName
         private string _friendlyName = string.Empty;
-        private string _defaultHorzName = "Option 4.1: split in 4 quadrants.";
-        private string _defaultVertName = "Option 4.1: split in 4 quadrants.";
+        private string _defaultHorzName = //LangHelper.Instance[$"EATooltip_41H"];
+        "Option 4.1: split in 4 quadrants.";
+        private string _defaultVertName = //LangHelper.Instance[$"EATooltip_41V"];
+        "Option 4.1: split in 4 quadrants.";
         public string FriendlyName
         {
             get
@@ -278,9 +282,27 @@ namespace DDPM.Easy.Common
                 if (String.IsNullOrEmpty(_friendlyName))
                 {
                     if (VM.IsVertical)
+                    {
+                        try
+                        {
+                            return LangHelper.Instance[$"{TooltipResourceName}V"];
+                        }
+                        catch (Exception e1)
+                        {
+                        }
                         return _defaultVertName;
+                    }
                     else
+                    {
+                        try
+                        {
+                            return LangHelper.Instance[$"{TooltipResourceName}H"];
+                        }
+                        catch (Exception e1)
+                        {
+                        }
                         return _defaultHorzName;
+                    }
                 }
                 return _friendlyName;
             }

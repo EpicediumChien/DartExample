@@ -36,6 +36,9 @@ namespace DDPM.UI.Plugin.MousePlugin
         private SolidColorBrush buttonColorFocusedT = new(System.Windows.Media.Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF));
         private SolidColorBrush buttonColorFocusedF = new(System.Windows.Media.Color.FromArgb(0x80, 0xFF, 0xFF, 0xFF));
 
+        private double leftBorderDefaultWidth = 0.0;
+        private double capAreaDefaultWidth = 0.0;
+
         public LaunchView()
         {
             try
@@ -136,41 +139,45 @@ namespace DDPM.UI.Plugin.MousePlugin
                 //Unloaded += LaunchView_Unloaded;
                 //if (DdpmCommonHelper.DeviceManagerSA != null)
                 //{
-                //    DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
+                //    //DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
                 //    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
                 //}
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  LaunchView() ex:" + ex.Message);
             }
+            leftBorderDefaultWidth = 1045;
+            capAreaDefaultWidth = AppCaptionArea.Width;
+            LeftBorder.SizeChanged -= CapAreaSizeChange;
+            LeftBorder.SizeChanged += CapAreaSizeChange;
         }
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
         {
             try
             {
 
-                if (_vm != null && e.type == DeviceChangedType.Peripherals_SettingsChange && e.changedProperty == "CopilotEnableChanged")
-                {
-                    _vm.IsCopilotEnabled = e.device_peripherals.Message != "false";
-                    if (!_vm.IsCopilotEnabled)
-                        _vm.RemoveCopilotAction();
-                    Dispatcher.Invoke(new Action(() =>
-                    {
-                        _vm.RefreshButtonImageFile(_vm.SelectedButton, false, true);
+                //if (_vm != null && e.type == DeviceChangedType.Peripherals_SettingsChange && e.changedProperty == "CopilotEnableChanged")
+                //{
+                //    _vm.IsCopilotEnabled = e.device_peripherals.Message != "false";
+                //    if (!_vm.IsCopilotEnabled)
+                //        _vm.RemoveCopilotAction();
+                //    Dispatcher.Invoke(new Action(() =>
+                //    {
+                //        _vm.RefreshButtonImageFile(_vm.SelectedButton, false, true);
 
-                        if (_vm.VbarSelectedIndex == 1)
-                        {
-                            _vm.ActiveModule!.OnActivated();
-                        }
-                        else
-                        {
-                            OnVbarItemClicked(_vm.VbarItems[1]);
-                        }
-                    }));
-                }
+                //        if (_vm.VbarSelectedIndex == 1)
+                //        {
+                //            _vm.ActiveModule!.OnActivated();
+                //        }
+                //        else
+                //        {
+                //            OnVbarItemClicked(_vm.VbarItems[1]);
+                //        }
+                //    }));
+                //}
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  DeviceManagerSA_DeviceChanged ex:" + ex.Message);
             }
@@ -180,7 +187,7 @@ namespace DDPM.UI.Plugin.MousePlugin
         {
             //if (DdpmCommonHelper.DeviceManagerSA != null)
             //{
-            //    DdpmCommonHelper.DeviceManagerSA.StopCopilotRegistryMonitor();
+            //    //DdpmCommonHelper.DeviceManagerSA.StopCopilotRegistryMonitor();
             //    DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
             //}
         }
@@ -213,6 +220,7 @@ namespace DDPM.UI.Plugin.MousePlugin
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
+            LeftBorder.SizeChanged -= CapAreaSizeChange;
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -237,7 +245,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                     }
                 }));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  DeviceManagerSA_ITSettingsActionEvent ex:" + ex.Message);
             }
@@ -377,7 +385,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 SetAppFocus();
                 _vm.ActiveModule?.OnActivated();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  App_MouseLeftButtonDown ex:" + ex.Message);
             }
@@ -422,7 +430,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  Unpair_Click ex:" + ex.Message);
             }
@@ -456,7 +464,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 SetAppFocus();
                 _vm.IsAllButtonsVisible = Visibility.Visible;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  Mainframe_MouseLeftButtonDown ex:" + ex.Message);
             }
@@ -478,7 +486,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                     BLConnection.Visibility = Visibility.Visible;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  BatteryIndicator_MouseEnter ex:" + ex.Message);
             }
@@ -584,12 +592,12 @@ namespace DDPM.UI.Plugin.MousePlugin
                         _vm.ImgBL2 = true;
                         break;
                 }
-                if (txtBLHost1.Text.Length > 20)
-                    txtBLHost1.Text = txtBLHost1.Text.Substring(0, 20);
-                if (txtBLHost2.Text.Length > 20)
-                    txtBLHost2.Text = txtBLHost2.Text.Substring(0, 20);
-                if (txtBLHost3.Text.Length > 20)
-                    txtBLHost3.Text = txtBLHost3.Text.Substring(0, 20);
+                if (txtBLHost1.Text.Length > 15 && txtBLHost1.Text != Strings.ReadyToBePaired)
+                    txtBLHost1.Text = txtBLHost1.Text.Substring(0, 15);
+                if (txtBLHost2.Text.Length > 15 && txtBLHost1.Text != Strings.ReadyToBePaired)
+                    txtBLHost2.Text = txtBLHost2.Text.Substring(0, 15);
+                if (txtBLHost3.Text.Length > 15 && txtBLHost1.Text != Strings.ReadyToBePaired)
+                    txtBLHost3.Text = txtBLHost3.Text.Substring(0, 15);
             }
             catch (Exception ex)
             {
@@ -675,7 +683,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                         break;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  InitializeButtonImage ex:" + ex.Message);
             }
@@ -688,7 +696,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 var btnName = ((Image)sender).Name;
                 _vm!.RefreshButtonImageFile(btnName, true, btnName == _vm.SelectedButton);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  ButtonHoverIn ex:" + ex.Message);
             }
@@ -701,7 +709,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 var btnName = ((Image)sender).Name;
                 _vm!.RefreshButtonImageFile(btnName, false, btnName == _vm.SelectedButton);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs ButtonHoverOut ex:" + ex.Message);
             }
@@ -777,7 +785,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 _vm.RefreshButtonInfo();
                 _vm.CheckRestoreStatus();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs SetAppFocus ex:" + ex.Message);
             }
@@ -790,7 +798,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 UXTextBlock button = (UXTextBlock)sender;
                 button.Foreground = buttonColorFocusedT;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs SetAppFocus ex:" + ex.Message);
             }
@@ -806,7 +814,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                     button.Foreground = buttonColorFocusedF;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs App_MouseLeave ex:" + ex.Message);
             }
@@ -836,9 +844,17 @@ namespace DDPM.UI.Plugin.MousePlugin
                     Mainframe_MouseLeftButtonDown(this, e);
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs PushBack ex:" + ex.Message);
+            }
+        }
+
+        private void CapAreaSizeChange(object sender, SizeChangedEventArgs e)
+        {
+            if (LeftBorder != null && leftBorderDefaultWidth != 0 && capAreaDefaultWidth != 0) {
+                double scalingFactor = LeftBorder.ActualWidth / leftBorderDefaultWidth;
+                AppCaptionArea.LayoutTransform = new ScaleTransform(scalingFactor, scalingFactor);
             }
         }
     }

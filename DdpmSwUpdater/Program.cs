@@ -23,12 +23,12 @@ internal class Program
                 {
                     if (args[0].ToLower().Equals("/fromddpm"))
                     {
-                        LogManage.fromDDPM = true;
+                        LogManage.FromDDPM = true;
                         LogManage.LogMessage($"Is DDPM call");
                     }
                     else
                     {
-                        LogManage.fromDDPM = false;
+                        LogManage.FromDDPM = false;
                         LogManage.LogMessage($"Is DDM call");
                     }
                     string registryKey = @"SOFTWARE\Dell\Dell Display and Peripheral Manager";
@@ -68,7 +68,7 @@ internal class Program
                         }
                         if (ret.Equals(SWUErrorCode.NoError))
                         {
-                            Method method = new Method(LogManage.logs);
+                            Method method = new Method(LogManage.Logs);
                             LogManage.LogMessage($"DdpmSwUpdater DeleteFolder go");
                             method.DeleteFolder(@"C:\Program Files\Dell\Dell Display Manager 2");
                             method.Dispose();
@@ -84,7 +84,7 @@ internal class Program
             }
             else
             {
-                LogManage.fromDDPM = false;
+                LogManage.FromDDPM = false;
                 LogManage.LogMessage($"args.Length <= 0 go to copy");
                 bool isSkipCA = LogManage.GetCheckCAStatus();
                 bool isSkipSHA = LogManage.GetCheckSHAStatus();
@@ -130,7 +130,7 @@ internal class Program
                 string? currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 if (!string.IsNullOrEmpty(currentDirectory))
                 {
-                    Method method = new Method(LogManage.logs);
+                    Method method = new Method(LogManage.Logs);
                     method.CopyLogFolder(currentDirectory, savePath);
                     method.Dispose();
                     string? exePath = Process.GetCurrentProcess().MainModule?.FileName;

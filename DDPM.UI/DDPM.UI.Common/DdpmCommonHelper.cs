@@ -111,9 +111,9 @@ namespace DDPM.UI.Common
             error
         }
 
-        //Using object from DDPM.SA.Common.UI.SACommonHelper [Dean]0115
-        public static List<string> EOLKBList = DDPM.SA.Common.UI.SACommonHelper.EOLKBList;// new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
-        public static List<string> EOLMouseList = DDPM.SA.Common.UI.SACommonHelper.EOLMouseList;// new () { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
+        //Using object from DDPM.SA.Common.UI.SAUICommonHelper [Dean]0115
+        public static List<string> EOLKBList = DDPM.SA.Common.UI.SAUICommonHelper.EOLKBList;// new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        public static List<string> EOLMouseList = DDPM.SA.Common.UI.SAUICommonHelper.EOLMouseList;// new () { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
 
         /// <summary>
         /// 
@@ -568,7 +568,7 @@ namespace DDPM.UI.Common
                         model = deviceInfo.ModelNumber;
                         break;
                 } //switch(deviceInfo.ModelNumber)*/
-                model = DDPM.SA.Common.UI.SACommonHelper.MappingModel(deviceInfo.ModelNumber);
+                model = DDPM.SA.Common.UI.SAUICommonHelper.MappingModel(deviceInfo.ModelNumber);
 
                 if (deviceInfo.ColorCode != 0)
                 {
@@ -578,7 +578,7 @@ namespace DDPM.UI.Common
             return $"{model}{colorCode}";
         }
 
-        //Using this from DDPM.SA.Common.UI.SACommonHelper [Dean]0115
+        //Using this from DDPM.SA.Common.UI.SAUICommonHelper [Dean]0115
         /*public static string MappingEOLName(string model)
         {
             switch (model)
@@ -600,7 +600,7 @@ namespace DDPM.UI.Common
             }
         }*/
 
-        //Using this from DDPM.SA.Common.UI.SACommonHelper [Dean]0115
+        //Using this from DDPM.SA.Common.UI.SAUICommonHelper [Dean]0115
         /*public static string MappingName(string model, string name)
         {
             name = name.Replace(model, "").Trim();
@@ -619,7 +619,7 @@ namespace DDPM.UI.Common
             }
         }*/
 
-        //Collect all the peripheral model name which is EOL model to DDPM.SA.Common.UI.SACommonHelper [Dean]0115
+        //Collect all the peripheral model name which is EOL model to DDPM.SA.Common.UI.SAUICommonHelper [Dean]0115
         /// <summary>
         /// Check if the specifc peripheral model is EOL model.
         /// Based on "Copy of Peripheral-SupportedDeviceList_20241224.xlsx"
@@ -1570,6 +1570,24 @@ namespace DDPM.UI.Common
             }
 
             return uIElements;
+        }
+
+        public static double GetScalingFactor(Window window)
+        {
+            // Get the PresentationSource for the window
+            var source = PresentationSource.FromVisual(window);
+
+            if (source != null && source.CompositionTarget != null)
+            {
+                // Get the matrix that represents the DPI scaling
+                var transform = source.CompositionTarget.TransformToDevice;
+
+                // Extract the scaling factors (X)
+                return transform.M11;
+            }
+
+            // Default scaling is 1.0 (100%)
+            return 1.0;
         }
     }
 

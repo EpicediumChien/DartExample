@@ -17,43 +17,54 @@ namespace DdpmSwUpdater
     public class LogManage
     {
         static string logFilePath = "DdpmSwUpdater.log";
-        public static Logs logs;
-        public static string Version = string.Empty;
         static string path = string.Empty;
-        public static bool fromDDPM = true;
+
+        private static Logs logs;
+        public static Logs Logs { get => logs; set => logs = value; }
+
+        private static string version = string.Empty;
+        public static string Version { get => version; set => version = value; }
+
+        private static bool fromDDPM = true;
+        public static bool FromDDPM { get => fromDDPM; set => fromDDPM = value; }
+
         public static void SetPath()
         {
             //DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
             //[Dean] 20250120 change log location to be C:\ProgramData\Dell\DdpmSwUpdater
-            string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);// WTSFunction.GetActiveUserLocalAppDataPath(null);
-            if (!string.IsNullOrEmpty(AppDataPath))
+            string ProgramDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);// WTSFunction.GetActiveUserLocalAppDataPath(null);
+            if (!string.IsNullOrEmpty(ProgramDataPath))
             {
-                path = AppDataPath + @"\Dell\DdpmSwUpdater";// "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-DdpmSwUpdater";
+                path = ProgramDataPath + GlobalDefinitions.LogSwUpdater; //@"\Dell\Dell Display and Peripheral Manager\DdpmSwUpdater";// "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-DdpmSwUpdater";
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
                 }
-#if RELEASE
-                try
-                {
-                    bool acl = DDPMFileSecurity.CheckFolderACL(path, out string info);
-                    if(!acl)
-                    {
-                        LogMessage($"SetPath error : {info}");
-                        return;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogMessage($"SetPath error : {ex.Message}");
-                    return;
-                }
-#endif
                 logFilePath = path + "\\" + logFilePath;
+                logs = new Logs(logFilePath, "DdpmSwUpdater");
+                var version = Assembly.GetExecutingAssembly().GetName().Version;
+                LogMessage($"DdpmSwUpdater Ver:{version}");
+
+                //Dean 0124 According to log move into %programdata%\Dell\Dell Display and Peripheral Manager, using oridignal ACL as well 
+                /*#if RELEASE
+                                try
+                                {
+                                    bool acl = DDPMFileSecurity.CheckFolderACL(path, out string info);
+                                    if(!acl)
+                                    {
+                                        LogMessage($"SetPath error : {info}");
+                                        return;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    LogMessage($"SetPath error : {ex.Message}");
+                                    return;
+                                }
+                #endif*/
+
             }
-            logs = new Logs(logFilePath, "DdpmSwUpdater");
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-            LogMessage($"DdpmSwUpdater Ver:{version}");
+
         }
         public static SWUpdateHelper GetSWUMetadata(bool isSkipCA)
         {
@@ -62,7 +73,7 @@ namespace DdpmSwUpdater
             {
                 List<string> InfoPkey = new List<string>(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
                 //InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
-                swUpdateHelper = SWUpdateSetting.GetSWMetadata(isSkipCA, out string getMetadataInfo, null, InfoPkey, LogManage.logs);
+                swUpdateHelper = SWUpdateSetting.GetSWMetadata(isSkipCA, out string getMetadataInfo, null, InfoPkey, LogManage.Logs);
                 LogMessage($"GetMetadata {getMetadataInfo}");
             }
             catch (Exception ex)
@@ -94,7 +105,7 @@ namespace DdpmSwUpdater
         }
         public static Logs RetrieveLogObject()
         {
-            return logs;
+            return Logs;
         }
 
         public static void LogMessage(string message)
@@ -109,9 +120,9 @@ namespace DdpmSwUpdater
                 //{
                 //    Directory.CreateDirectory(path);
                 //}
-                if (logs != null)
+                if (Logs != null)
                 {
-                    logs.DebugMsg_1(message);
+                    Logs.DebugMsg_1(message);
                 }
 #if DEBUG
                 Console.WriteLine($"{DateTime.Now}: {message}");

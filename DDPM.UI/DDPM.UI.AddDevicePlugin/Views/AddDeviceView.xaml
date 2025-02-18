@@ -7,11 +7,12 @@
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:viewmodels="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              d:DataContext="{d:DesignInstance Type=viewmodels:AddDeviceViewModel}"
              mc:Ignorable="d"
              Loaded="UserControl_Loaded"
              Unloaded="UserControl_Unloaded"
-             d:DesignHeight="671" d:DesignWidth="1374">
+             d:DesignHeight="480" d:DesignWidth="1374">
 
   <UserControl.Resources>
     <ResourceDictionary>
@@ -27,19 +28,25 @@
   </UserControl.Style>
   <Grid>
     <Border Background="Transparent" StylusDown="Pairing"></Border>
-    <Grid>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="312" />
-        <ColumnDefinition Width="*" />
-      </Grid.ColumnDefinitions>
-      <!-- Right side: Header + RightView -->
-      <Border CornerRadius="13" Background="{DynamicResource Vbar_BkBrush_Default}" Grid.Column="1" Margin="8,80,100,60" >
-        <Grid Grid.Column="1" Name="RightFrame">
-          <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-          </Grid.RowDefinitions>
-          <!--<Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="16,23,16,-5" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding AlertVisibility}">
+      <!-- Robert_Lin 2025-2-17 for PIMS-343306 Observed UI truncation when switching to certain screen resolutions
+      When the screen resolution is very low (< 800x600), the UI will be truncated.
+      By Dell's requirements, we should enable the scrollbar at this situation.
+      Fix: Move the Grid of major content into a UXScrollViewer, and will auto show Vert scrollbar.
+        -->
+        <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="312" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <!-- Right side: Header + RightView -->
+                <Border CornerRadius="13" Background="{DynamicResource Vbar_BkBrush_Default}" Grid.Column="1" Margin="8,80,100,60" >
+                    <Grid Grid.Column="1" Name="RightFrame">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <!--<Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="16,23,16,-5" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding AlertVisibility}">
                         <StackPanel Orientation="Horizontal">
                         <Grid VerticalAlignment="top">
                         <Image x:Name="InfoIcon" Margin="12,0,0,0" Source="/DDPM.UI.Common;component/Resources/alert.png" Stretch="Fill"
@@ -54,39 +61,51 @@
                         </Grid>
                         </StackPanel>
                         </Border>-->
-          <!-- RightViewHeader -->
-          <common:AddDeviceHeaderCtrl Grid.Row="0" Name="rightViewHeaderCtrl" Margin="17,17,17,0"
+                        <!-- RightViewHeader -->
+                        <!-- 
+                                      KeyboardNavigation.TabIndex="5" KeyboardNavigation.IsTabStop="True" Focusable="True"
+                                      KeyboardNavigation.TabNavigation="Local"
+                        -->
+                        <common:AddDeviceHeaderCtrl Grid.Row="0" Name="rightViewHeaderCtrl" Margin="17,17,17,0"
                                                     SelectedIndex="{Binding RightViewHeaderSelectedIndex, Mode=TwoWay}"
                                                     ItemsSource="{Binding RightViewHeaders, Mode=TwoWay}"
+                                      KeyboardNavigation.TabIndex="5"
                                                     SelectionChanged="RightViewHeaderCtrl_SelectionChanged" />
 
-          <ContentControl Grid.Row="1" Name="RightFrame2" Content="{Binding RightView, Mode=TwoWay}" />
-        </Grid>
-      </Border>
-      <Grid Grid.Column="0">
-        <!--<Border Background="Transparent" StylusDown="Pairing"></Border>-->
-        <!-- DeviceBar -->
-        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
-          <ItemsControl Name="vbarList" Margin="0,80,0,0"
+                        <ContentControl Grid.Row="1" Name="RightFrame2" Content="{Binding RightView, Mode=OneWay}" 
+                          KeyboardNavigation.TabIndex="6" />
+                    </Grid>
+                </Border>
+                <Grid Grid.Column="0">
+                    <!--<Border Background="Transparent" StylusDown="Pairing"></Border>-->
+                    <!-- DeviceBar -->
+                    <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
+                        <ItemsControl Name="vbarList" Margin="0,80,0,0" Focusable="False"
+                        KeyboardNavigation.TabIndex="3" KeyboardNavigation.TabNavigation="Continue"
                                   HorizontalAlignment="Right" VerticalAlignment="Top"
                                   ItemsSource="{Binding DeviceBarItems}">
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <Grid>
-                  <ContentPresenter />
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <ContentPresenter />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
                 </Grid>
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
-        </Grid>
-      </Grid>
-    </Grid>
+            </Grid>
+        </UXControls:UXScrollViewer>
+      
     <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
       <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
           <Image x:Name="ArrowLeft" Margin="64,19,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Fill"
-                           VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="GoBackHomepage"/>
-          <UXControls:UXTextBlock Name="txtCaption" Margin="12,16,0,0" HorizontalAlignment="Left" Style="{StaticResource ProductNameTextStyle}" VerticalAlignment="Top" />
+                 Focusable="True" KeyboardNavigation.TabIndex="1" 
+                 AutomationProperties.Name="{Binding [Back], Source={x:Static lang:LangHelper.Instance}}" 
+                           VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="GoBackHomepage" PreviewKeyDown="ArrowLeft_PreviewKeyDown"/>
+          <UXControls:UXTextBlock Name="txtCaption" Margin="12,16,0,0" HorizontalAlignment="Left" Style="{StaticResource ProductNameTextStyle}" VerticalAlignment="Top" 
+                                  Focusable="True" KeyboardNavigation.TabIndex="2"/>
         </StackPanel>
       </StackPanel>
     </Grid>

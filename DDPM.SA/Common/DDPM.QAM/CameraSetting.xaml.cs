@@ -49,6 +49,12 @@ namespace DDPM.QAM
                 vm.RefreshUI();
             }
         }
+
+        public void OpenPresetsFullView()
+        {
+            Presets_Click(this, null);
+        }
+
         private void Presets_Click(object sender, MouseButtonEventArgs e)
         {
             //DdpmCommonHelper.DeviceManagerSA!.WriteLog($"Presets_Click, bFirstClick = {bFirstClick}");
@@ -133,18 +139,19 @@ namespace DDPM.QAM
                 if (QAMPage != null)
                 {
                     //Make sure CameraSetting & QAMPage in same screen
+                    var scalingRatio = Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
                     System.Drawing.Point cursorPosition = System.Windows.Forms.Cursor.Position;
                     Screen screen = Screen.FromPoint(cursorPosition);
 
-                    if (this.Left + this.Width > screen.Bounds.Right)
+                    if (this.Left + this.Width > screen.Bounds.Right / scalingRatio)
                     {
-                        this.Left = screen.Bounds.Right - this.Width;
+                        this.Left = screen.Bounds.Right / scalingRatio - this.Width;
                     }
 
-                    if (this.Left - screen.Bounds.Left < QAMPage.Width)
+                    if (this.Left * scalingRatio - screen.Bounds.Left < QAMPage.Width)
                     {
-                        this.Left = screen.Bounds.Left + QAMPage.Width;
-                        QAMPage.Left = screen.Bounds.Left;
+                        this.Left = screen.Bounds.Left / scalingRatio + QAMPage.Width;
+                        QAMPage.Left = screen.Bounds.Left / scalingRatio;
                     }
                     else
                     {

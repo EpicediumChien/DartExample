@@ -3,6 +3,7 @@ using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
+using DDPM.UI.Module.HeadsetAudioForSB725Settings;
 using DDPM.UI.Module.HeadsetAudioSettings;
 using DDPM.UI.Module.HeadsetAutomatedActions;
 using DDPM.UI.Module.HeadsetDeviceSettings;
@@ -135,6 +136,12 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             try
             {
                 await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
+                if (!_vm.SupportedAnswerCalls)
+                {
+                    BuildModuleGroups(_vm.SupportedAnswerCalls);
+                    vbarList.ItemsSource = null;
+                    vbarList.ItemsSource = _vm!.VbarItems;
+                }
                 DdpmCommonHelper.WriteUILog($"[Headset] LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
                 if (!_vm.IsRestoreEnable)
                 {
@@ -179,44 +186,54 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         /// <summary>
         /// Base on specified monitor's capabilities to build the Vbar items, and headers/modules
         /// </summary>
-        private void BuildModuleGroups()
+        private void BuildModuleGroups(bool secondVbar = true)
         {
             List<ModuleGroup> groups = new List<ModuleGroup>();
             ModuleGroup moduleGroup;
-
-            moduleGroup = new ModuleGroup()
+            if (_vm.CurrentDeviceInfo.ModelNumber != "SB725")
             {
-                GroupName = AudioSettings,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Setting.png"),
-                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.AudioSettings)
-            };
-            moduleGroup.AddHeader(AudioSettings, new HeadsetAudioSettingsModule(_vm!));
-            groups.Add(moduleGroup);
-
-            //bool answerCall = DdpmCommonHelper.DeviceManagerSA.GetIsBoomMicSupportedAsync(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
-            //DdpmCommonHelper.WriteUILog($"[Headset] BuildModuleGroups Model = {_vm!.Model}, GetIsBoomMicSupportedAsync = {answerCall.ToString()}");
-
-            //if (_vm!.Model == "WL7024" || _vm!.Model == "WL5024" || answerCall)
-            //{
                 moduleGroup = new ModuleGroup()
                 {
-                    GroupName = AutomatedActions,
-                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
-                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
+                    GroupName = AudioSettings,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Setting.png"),
+                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.AudioSettings)
                 };
-                moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
+                moduleGroup.AddHeader(AudioSettings, new HeadsetAudioSettingsModule(_vm!));
                 groups.Add(moduleGroup);
-            //}
 
-            moduleGroup = new ModuleGroup()
+                if(secondVbar)
+                {
+                    moduleGroup = new ModuleGroup()
+                    {
+                        GroupName = AutomatedActions,
+                        GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
+                        GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
+                    };
+                    moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
+                    groups.Add(moduleGroup);
+                }
+
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = DeviceSettings,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Main.png"),
+                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetSettings)
+                };
+                moduleGroup.AddHeader(DeviceSettings, new HeadsetDeviceSettingsModule(_vm!));
+                groups.Add(moduleGroup);
+            }
+            else 
             {
-                GroupName = DeviceSettings,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Main.png"),
-                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetSettings)
-            };
-            moduleGroup.AddHeader(DeviceSettings, new HeadsetDeviceSettingsModule(_vm!));
-            groups.Add(moduleGroup);
-
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = AudioSettings,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Setting.png"),
+                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.AudioSettings)
+                };
+                moduleGroup.AddHeader(AudioSettings, new HeadsetAudioForSB725SettingsModule(_vm!));
+                groups.Add(moduleGroup);
+            }
+           
             _vm.ModuleGroups = groups;
         }
 
@@ -366,7 +383,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         private void Mainframe_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (_vm!.VbarSelectedIndex == -1) { return; }
-
+            _vm.UpdateResetToDefault();
             if (_vm!.ConnectionType != "WiredAudio")
             {
                 btnUnpair.Visibility = Visibility.Visible;
@@ -437,11 +454,11 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 string PairedHostName1 = string.Empty;
                 string PairedHostName2 = string.Empty;
                 if (string.IsNullOrEmpty(_vm.PairedHostName1))
-                    PairedHostName1 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
+                    PairedHostName1 =_vm.isAirAudio==false? DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result: null; //DTP
                 else
                     PairedHostName1 = _vm.PairedHostName1; //DTH
                 if (string.IsNullOrEmpty(_vm.PairedHostName2))
-                    PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
+                    PairedHostName2 = _vm.isAirAudio == false ? DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result : null; //DTP
                 else
                     PairedHostName2 = _vm.PairedHostName2;  //DTH
 

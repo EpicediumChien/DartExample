@@ -1,4 +1,5 @@
-﻿using DDPM.SA.Common;
+﻿using DDDPM.SA.Common;
+using DDPM.SA.Common;
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
 using DDPM.SA.Common.Settings;
@@ -16,6 +17,7 @@ using PInvoke;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -123,6 +125,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             _SWUpdateInfoPackage = new SWUpdateInfoPackage();
             _ForceSWUpdateInfoPackage = new SWUpdateInfoPackage();
             _ForceSWUpdateInfoPackage.SWUpdateInfo = new List<SWUpdateInfo>();
+            DdpmSACommonHelper.SAPluginReady(nameof(SWUpdatePlugins));
         }
         #region Overriding methods
 
@@ -139,7 +142,9 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
+#if DEBUG
             Console.WriteLine($"Dispose: {disposing}");
+#endif
             if (!IsDisposed)
             {
                 if (disposing)
@@ -176,10 +181,19 @@ namespace DDPM.SA.Plugins.SWUpdate
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
             PluginCondition = new PluginStartedCondition();
+#if DEBUG
             Console.WriteLine("SWUpdate plugin report started");
+#endif
         }
 
         #endregion Overriding methods
+        public void SetLang(CultureInfo cultureInfo)
+        {
+            _logs.DebugMsg_1($"SetLang start");
+            _logs.DebugMsg_1($"cultureInfo : {cultureInfo}");
+            LangHelper.UserMappedCultureInfo = cultureInfo;
+            _logs.DebugMsg_1($"SetLang done");
+        }
         /// <summary>
         /// 設定檔儲存的延遲更新資訊包
         /// </summary>
@@ -449,7 +463,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                         // 將儲存路徑與從 URL 中提取的檔案名稱組合
                         if (_IsSkipSHA)
                         {
-                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {url}");
+                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {GlobalDefinitions.GetLogPrintServerName(url)}");
                         }
                         _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
                         bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA);
@@ -774,7 +788,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 {
                     _logs.DebugMsg_1($"{nameof(Install)} workingDirectory is not null");
                     string arguments_Final = miniInstallPath + " /fromddpm";
-                    _logs.DebugMsg_1($"arguments_Final : {arguments_Final}");
+                    //_logs.DebugMsg_1($"arguments_Final : {arguments_Final}");
                     WTSFunction.StartProcessAndBypassUACWithAdmin(arguments_Final, workingDirectory, out procInfo);
                 }
                 else
@@ -853,7 +867,6 @@ namespace DDPM.SA.Plugins.SWUpdate
         {
             CertificateCheck certificateCheck = new CertificateCheck(_logs);
             bool isCheckSHA = false;
-            fileCAInfo = "Error";
             if (!string.IsNullOrEmpty(_SWUpdateInfo.SHA512))
             {
                 isCheckSHA = certificateCheck.CheckFile_SHA512(filePath, _SWUpdateInfo.SHA512, out fileCAInfo);

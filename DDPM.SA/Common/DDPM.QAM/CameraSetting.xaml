@@ -11,7 +11,7 @@
         Width="288"
         ShowInTaskbar="False"
         AllowsTransparency="True"
-        Background="Transparent"
+        Background="Transparent" ResizeMode="NoResize"
         Topmost="True">
     <Window.Resources>
         <ResourceDictionary>

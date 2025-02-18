@@ -29,14 +29,16 @@
                                 Text="&#xe223; "
                                 FontFamily="Segoe UI Symbol"
                                 FontSize="30"
+                                     Focusable="True" AutomationProperties.Name="{Binding [Back], Source={x:Static lang:LangHelper.Instance}}" 
+                                     PreviewKeyDown="leftArrow_PreviewKeyDown"
                                 HorizontalAlignment="Left"
                                 TextBlockType="Header2"
                                 TextBlockSemanticColorType="Light"
                                 MouseLeftButtonDown="leftArrow_MouseLeftButtonDown"
-                                Foreground="{DynamicResource DefaultTheme_TxtColor}" />
+                                Foreground="{DynamicResource DefaultTheme_TxtColor}"  />
             <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="{Binding [Settings], Source={x:Static lang:LangHelper.Instance}}"
                                 HorizontalAlignment="Left" TextBlockType="Header2"
-                                FontSize="28"
+                                FontSize="28" Focusable="True"
                                 Foreground="{DynamicResource DefaultTheme_TxtColor}" />
         </StackPanel>
         <Grid Margin="38,24,0,0" Grid.Row="1">
@@ -57,14 +59,18 @@
                     </Grid.RowDefinitions>
                     
                     <!-- #region General -->
+                    <!-- 
+                            Focusable="True"
+                            AutomationProperties.Name="{Binding [General], Source={x:Static lang:LangHelper.Instance}}"
+                    -->
                     <Border Margin="0,4,4,4"
                             Grid.Row="0"
                             Width="212" Height="64"
                             BorderThickness="2"
                             CornerRadius="13"
-                            Focusable="True"
                             x:Name="Vbar_0"
-                            MouseLeftButtonDown="GeneralButton_Click">
+                            MouseLeftButtonDown="GeneralButton_Click" 
+                            PreviewKeyDown="GeneralButton_PreviewKeyDown">
                         <Border.Style>
                             <Style TargetType="Border"
                                    BasedOn="{StaticResource BorderBase}">
@@ -104,7 +110,7 @@
                                                     Text="{Binding [General], Source={x:Static lang:LangHelper.Instance}}"
                                                     Text="Lorem ipsum dolor sit amet consectetur. Fermentum cras imperdiet duis"
                             -->
-                            <UXControls:UXTextBlock Grid.Row="0" Grid.Column="0"
+                            <UXControls:UXTextBlock Grid.Row="0" Grid.Column="0" Focusable="True"
                                                     FontSize="14"
                                                     Margin="20,0"
                                                     Text="{Binding [General], Source={x:Static lang:LangHelper.Instance}}"
@@ -126,14 +132,16 @@
                     <!-- #end region General -->
                     
                     <!-- #region Updates -->
+                    <!-- 
+                            Focusable="True"
+                    -->
                     <Border Margin="0,4,4,4"
                             Grid.Row="1"
                             Width="212" Height="64"
                             BorderThickness="2"
                             CornerRadius="13"
-                            Focusable="True"
                             x:Name="Vbar_1"
-                            MouseLeftButtonDown="UpdatesButton_Click">
+                            MouseLeftButtonDown="UpdatesButton_Click" PreviewKeyDown="UpdatesButton_PreviewKeyDown">
                         <Border.Style>
                             <Style TargetType="Border"
                                    BasedOn="{StaticResource BorderBase}">
@@ -175,7 +183,7 @@
                             
                                                     Text="{Binding [Updates], Source={x:Static lang:LangHelper.Instance}}"
                             -->
-                            <UXControls:UXTextBlock Grid.Column="0"
+                            <UXControls:UXTextBlock Grid.Column="0" Focusable="True"
                                                     FontSize="14"
                                                     Margin="20,0"
                                                     Text="{Binding [Updates], Source={x:Static lang:LangHelper.Instance}}"
@@ -212,14 +220,16 @@
                     <!-- #endregion Updates -->
 
                     <!-- #region Analytics -->
+                    <!-- 
+                            Focusable="True"
+                    -->
                     <Border Margin="0,4,4,4"
                             Grid.Row="2"
                             Width="212" Height="64"
                             BorderThickness="2"
                             CornerRadius="13"
-                            Focusable="True"
                             x:Name="Vbar_2"
-                            MouseLeftButtonDown="AnalyticsButton_Click">
+                            MouseLeftButtonDown="AnalyticsButton_Click" PreviewKeyDown="AnalyticsButton_PreviewKeyDown">
                         <Border.Style>
                             <Style TargetType="Border"
                                    BasedOn="{StaticResource BorderBase}">
@@ -260,7 +270,7 @@
                             <!-- 
                                                     Text="{Binding [Analytics], Source={x:Static lang:LangHelper.Instance}}"
                             -->
-                            <UXControls:UXTextBlock Grid.Column="0"
+                            <UXControls:UXTextBlock Grid.Column="0" Focusable="True"
                                                     Width="212"
                                                     FontSize="14"
                                                     Margin="20,0"
@@ -291,14 +301,16 @@
                     <!-- #end region Analytics -->
                     
                     <!-- #region Widget Settings -->
+                    <!-- 
+                            Focusable="True"
+                    -->
                     <Border Margin="0,4,4,4"
                             Grid.Row="3"
                             Width="212" Height="64"
                             BorderThickness="2"
                             CornerRadius="13"
-                            Focusable="True"
                             x:Name="Vbar_3"
-                            MouseLeftButtonDown="WidgetSettingsButton_Click">
+                            MouseLeftButtonDown="WidgetSettingsButton_Click" PreviewKeyDown="WidgetSettingsButton_PreviewKeyDown">
                         <Border.Style>
                             <Style TargetType="Border"
                                    BasedOn="{StaticResource BorderBase}">
@@ -327,7 +339,7 @@
                             <!-- 
                                                     Text="{Binding [Widget_Settings], Source={x:Static lang:LangHelper.Instance}}"
                             -->
-                            <UXControls:UXTextBlock Width="212"
+                            <UXControls:UXTextBlock Width="212" Focusable="True"
                                                     FontSize="14"
                                                     Grid.Column="0"
                                                     Margin="20,0"
@@ -350,14 +362,17 @@
                     <!-- #endregion Widget Settings -->
                     
                     <!-- #region About -->
+                    <!-- Robert_Lin, 2025-2-9 for Narrator, for each Item, we let keyboard navigation tab stop on TextBlock only -->
+                    <!-- 
+                            Focusable="True"
+                    -->
                     <Border Margin="0,4,4,4"
                             Grid.Row="4"
                             Width="212" Height="64"
                             BorderThickness="2"
                             CornerRadius="13"
-                            Focusable="True"
                             x:Name="Vbar_4"
-                            MouseLeftButtonDown="AboutButton_Click">
+                            MouseLeftButtonDown="AboutButton_Click" PreviewKeyDown="AboutButton_PreviewKeyDown">
                         <Border.Style>
                             <Style TargetType="Border"
                                    BasedOn="{StaticResource BorderBase}">
@@ -387,7 +402,7 @@
                             
                                                       Text="{Binding [About], Source={x:Static lang:LangHelper.Instance}}"
                           -->
-                            <UXControls:UXTextBlock Grid.Row="4"
+                            <UXControls:UXTextBlock Grid.Row="4" Focusable="True"
                                                     Width="212"
                                                     FontSize="14"
                                                      Margin="20,0"

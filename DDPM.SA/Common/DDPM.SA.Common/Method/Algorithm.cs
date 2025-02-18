@@ -26,5 +26,21 @@ namespace DDPM.SA.Common.Method
             }
             return hexString;
         }
+
+        public static string MaskString(string str, int start, int length)
+        {
+            if (start < 0 || length < 0 || start + length > str.Length)
+            {
+                return str;
+            }
+
+            char[] chars = str.ToCharArray();
+            for (int i = start; i < start + length; i++)
+            {
+                chars[i] = '*';
+            }
+
+            return new string(chars);
+        }
     }
 }

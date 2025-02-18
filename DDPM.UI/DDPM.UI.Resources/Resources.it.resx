@@ -934,7 +934,7 @@
     <value>CONFIGURAZIONE KVM USB</value>
   </data>
   <data name="Kvm.3" xml:space="preserve">
-    <value>Collegamento di mouse\n e tastiera</value>
+    <value>Collegamento di mouse e tastiera</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
     <value>Collegare mouse e tastiera sul retro del monitor (USB-A).\n Nota: è possibile collegare anche altre periferiche USB, come la\n webcam.</value>
@@ -955,7 +955,7 @@
     <value>USB</value>
   </data>
   <data name="Kvm.6" xml:space="preserve">
-    <value>Collegamento ai\n dispositivi</value>
+    <value>Collegamento ai dispositivi</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
     <value>Collegare un cavo video e un cavo USB tra ciascun Pc\n e il monitor. È possibile collegare fino a 4 PC (computer, console per\n gaming e così via). \r\n\r\nSelezionare il tipo di cavo e assegnare un nome a ogni sorgente.</value>

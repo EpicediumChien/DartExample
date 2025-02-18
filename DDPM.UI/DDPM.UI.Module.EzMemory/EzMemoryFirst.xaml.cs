@@ -53,6 +53,9 @@ namespace DDPM.UI.Module.EzMemory
         //Robert_Lin 2025-1-11 added. The ProfileName when entering this page
         //If the name (InputText) is the same as this (no changed), then we can skip check if duplicate
         private readonly string _orgProfileName = string.Empty;
+        private double titleText_DefaultFontSize = 20;
+        private double mainText_DefaultFontSize = 60;
+        private double subText_DefaultFontSize = 15;
         #endregion Private Members
 
         public EzMemoryFirst(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
@@ -153,7 +156,31 @@ namespace DDPM.UI.Module.EzMemory
             ////Always Visible Recent split List View
             //splitListView_Recent_Grid.Visibility = Visibility.Collapsed;
             //splitListView_Recent.Visibility = Visibility.Collapsed;
+            titleText_DefaultFontSize = TitleText.FontSize;
+            mainText_DefaultFontSize = MainText.FontSize;
+            subText_DefaultFontSize = SubText.FontSize;
+            LeftGrid.SizeChanged -= AdjustFontSizeForWWO;
+            LeftGrid.SizeChanged += AdjustFontSizeForWWO;
+            System.Windows.Application.Current.MainWindow.SizeChanged -= MainWindow_SizeChanged;
+            System.Windows.Application.Current.MainWindow.SizeChanged += MainWindow_SizeChanged;
+        }
 
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (System.Windows.Application.Current.MainWindow.ActualHeight > 765)
+            {
+                MainPanel.VerticalAlignment = VerticalAlignment.Center;
+            }
+            else
+            {
+                MainPanel.VerticalAlignment = VerticalAlignment.Top;
+            }
+        }
+
+        ~EzMemoryFirst()
+        {
+            LeftGrid.SizeChanged -= AdjustFontSizeForWWO;
+            System.Windows.Application.Current.MainWindow.SizeChanged -= MainWindow_SizeChanged;
         }
 
         /// <summary>
@@ -445,12 +472,9 @@ namespace DDPM.UI.Module.EzMemory
             //Robert_Lin 2025-1-9, will set selected item based on vm.CurrentEditSelectspItem
             // we will used EAID (Layout) to match
             int eaIdSelected = 0; //Default 0 : No init selected item
-            if (_vm.CurrentEditSelectspItem != null)
+            if (_vm.CurrentEditSelectspItem != null && _vm.CurrentEditSelectspItem.ISplitCtrl != null)
             {
-                if (_vm.CurrentEditSelectspItem.ISplitCtrl != null)
-                {
-                    eaIdSelected = _vm.CurrentEditSelectspItem.ISplitCtrl.EAID;
-                }
+                eaIdSelected = _vm.CurrentEditSelectspItem.ISplitCtrl.EAID;
             }
 
             //A Build WindowLists
@@ -915,13 +939,9 @@ namespace DDPM.UI.Module.EzMemory
             _vm.CurrentEditSelectspItem = spItem;
             _vm.CurrentEditSelectspItem.IsSelected = true;
 
-            if (_vm.CurrentEditSelectspItem != null)
+            if (_vm.CurrentEditSelectspItem != null && _vm.CurrentEditSelectspItem.ISplitCtrl != null)
             {
-                if (_vm.CurrentEditSelectspItem.ISplitCtrl != null)
-                {
-                    _vm.CurrentSelectsEAID = _vm.CurrentEditSelectspItem.ISplitCtrl.EAID;
-                }
-
+                _vm.CurrentSelectsEAID = _vm.CurrentEditSelectspItem.ISplitCtrl.EAID;
             }
         }
         #endregion SplitItem Selection
@@ -1077,8 +1097,9 @@ namespace DDPM.UI.Module.EzMemory
 
             //Load all EM Profiles from DeviceManager
             List<EAProfileDDPM> emProfiles = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+            //Robert_Lin 2025-1-21, if there is no UserSettings in this PC, then will output "Profile 1"
             if (emProfiles == null)
-                return string.Empty;
+                return "Profile 1";
 
             //Generate a new Profile Name and check if exists
             const int maxProfileId = 9; //Profille No: 1~9
@@ -1092,6 +1113,97 @@ namespace DDPM.UI.Module.EzMemory
                 }
             }   
             return string.Empty;
+        }
+        #endregion
+
+        #region Adjust Text for RWD
+        private void AdjustFontSizeForWWO(object sender, RoutedEventArgs e)
+        {
+            if (TitleText != null && MainText != null && SubText != null)
+            {
+                // Smaller
+                Typeface typeface = new Typeface(new FontFamily("Arial"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+                double txtRowMinWidth = GetLongestWordPixelLength(TitleText.Text, typeface, TitleText.FontSize);
+                if (txtRowMinWidth > LeftGrid.ActualWidth)
+                {
+                    TitleText.FontSize -= 2;
+                    txtRowMinWidth = GetLongestWordPixelLength(TitleText.Text, typeface, TitleText.FontSize);
+                }
+                else if (TitleText.FontSize < titleText_DefaultFontSize)
+                {
+                    // Bigger
+                    txtRowMinWidth = GetLongestWordPixelLength(TitleText.Text, typeface, TitleText.FontSize + 2);
+                    if (txtRowMinWidth <= LeftGrid.ActualWidth)
+                    {
+                        TitleText.FontSize += 2;
+                    }
+                }
+
+                txtRowMinWidth = GetLongestWordPixelLength(MainText.Text, typeface, MainText.FontSize);
+                if (txtRowMinWidth > LeftGrid.ActualWidth)
+                {
+                    MainText.FontSize -= 2;
+                    txtRowMinWidth = GetLongestWordPixelLength(MainText.Text, typeface, MainText.FontSize);
+                }
+                else if (MainText.FontSize < mainText_DefaultFontSize)
+                {
+                    // Bigger
+                    txtRowMinWidth = GetLongestWordPixelLength(MainText.Text, typeface, MainText.FontSize + 2);
+                    if (txtRowMinWidth <= LeftGrid.ActualWidth)
+                    {
+                        MainText.FontSize += 2;
+                    }
+                }
+
+                txtRowMinWidth = GetLongestWordPixelLength(SubText.Text, typeface, SubText.FontSize);
+                if (txtRowMinWidth > LeftGrid.ActualWidth)
+                {
+                    SubText.FontSize -= 2;
+                    txtRowMinWidth = GetLongestWordPixelLength(SubText.Text, typeface, SubText.FontSize);
+                }
+                else if (SubText.FontSize < subText_DefaultFontSize)
+                {
+                    // Bigger
+                    txtRowMinWidth = GetLongestWordPixelLength(SubText.Text, typeface, SubText.FontSize + 2);
+                    if (txtRowMinWidth <= LeftGrid.ActualWidth)
+                    {
+                        SubText.FontSize += 2;
+                    }
+                }
+            }
+        }
+
+        private double GetLongestWordPixelLength(string text, Typeface typeface, double fontSize)
+        {
+            if (string.IsNullOrEmpty(text))
+                return 0;
+
+            // Split the text into words
+            string[] words = text.Split(new[] { ' ', '\t', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            double maxPixelWidth = 0;
+
+            foreach (string word in words)
+            {
+                double wordWidth = 0;
+
+                if (typeface.TryGetGlyphTypeface(out GlyphTypeface glyphTypeface))
+                {
+                    foreach (char c in word)
+                    {
+                        if (glyphTypeface.CharacterToGlyphMap.TryGetValue(c, out ushort glyphIndex))
+                        {
+                            // Calculate width based on advance widths
+                            double advanceWidth = glyphTypeface.AdvanceWidths[glyphIndex];
+                            wordWidth += advanceWidth * fontSize;
+                        }
+                    }
+                }
+
+                maxPixelWidth = Math.Max(maxPixelWidth, wordWidth);
+            }
+
+            return maxPixelWidth;
         }
         #endregion
     }

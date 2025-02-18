@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
-             d:DesignHeight="671" d:DesignWidth="1278">
+             d:DesignHeight="671" d:DesignWidth="1278" Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <ResourceDictionary>
             <Storyboard x:Key="StoryGotoTwoView">
@@ -46,7 +46,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" MinWidth="645" />
                 </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0" Margin="76, 60, 0, 0">
+                <Grid x:Name="LeftGrid" Grid.Column="0" Margin="76, 60, 0, 0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -75,18 +75,18 @@
                         </ProgressBar>
                     </Grid>
                     <Grid Grid.Column="0" Grid.Row="1" Margin="0, 50, 0, 0" HorizontalAlignment="Left">
-                        <UXControls:UXTextBlock Text="{Binding [Kvm.2], Source={x:Static lang:LangHelper.Instance}}"
+                        <UXControls:UXTextBlock x:Name="GridTxt_Row1" Text="{Binding [Kvm.2], Source={x:Static lang:LangHelper.Instance}}"
                                                 Foreground="{DynamicResource DefaultTheme_PbHeaderColor}"
                                                 FontSize="20" LineHeight="28" />
                     </Grid>
                     <Grid Grid.Column="0" Grid.Row="2" Margin="0, 8, 0 ,0" HorizontalAlignment="Left">
                         <!-- Elsa 20250108 For PIMS [PIMS-334050] change FontSize="48" LineHeight="76" to FontSize="42" LineHeight="40" add TextWrapping="WrapWithOverflow" -->
-                        <UXControls:UXTextBlock Text="{Binding [Kvm.6], Source={x:Static lang:LangHelper.Instance}}"
+                        <UXControls:UXTextBlock  x:Name="GridTxt_Row2" Text="{Binding [Kvm.6], Source={x:Static lang:LangHelper.Instance}}"
                                                 FontSize="64" LineHeight="40" TextWrapping="WrapWithOverflow"/>
                     </Grid>
                     <!--<Grid Grid.Column="0" Grid.Row="3" Margin="0, 16, 0, 0" Width="476" Height="120" HorizontalAlignment="Left">-->
                     <!-- Elsa 20250108 For PIMS [PIMS-334050] change FontSize="16" to FontSize="15" and add TextWrapping="WrapWithOverflow" -->
-                    <UXControls:UXTextBlock Grid.Column="0" Grid.Row="3" Margin="0, 16, 0, 0" Height="120" HorizontalAlignment="Left"
+                    <UXControls:UXTextBlock Grid.Column="0" Grid.Row="3" Margin="0, 16, 0, 0" Height="120" HorizontalAlignment="Left" x:Name="GridTxt_Row3"
                             Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
                             Text="{Binding [Kvm.7], Source={x:Static lang:LangHelper.Instance}}" 
                                                 FontSize="16" LineHeight="24" TextTrimming="None" TextWrapping="WrapWithOverflow"/>
@@ -109,8 +109,9 @@
                                                  ContentStringFormat="{}{0}"
                                                  Click="OpenMKFullView" Visibility="{Binding SetInput}">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Path x:Name="LeftArrow" Visibility="Visible" Data="M2.6204 8.3256L2.3415 8.0002L2.6204 7.67481L8.6204 0.674805L9.3796 1.3256L4.0871 7.5002H20V8.5002H4.0871L9.3796 14.6748L8.6204 15.3256L2.6204 8.3256Z" Fill="white"/>
                                     <UXControls:UXTextBlock Margin="8,0" Text="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="14"/>
-                                    <Path Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white"/>
+                                    <Path x:Name="RightArrow" Visibility="Visible" Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white"/>
                                 </StackPanel>
                             </UXControls:UXButton>
                             <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"

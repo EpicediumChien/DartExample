@@ -289,17 +289,19 @@ namespace DDPM.UI.Common.ViewModels
             _log = console.CreateLog(logName);
         }
 
-        public void LogInfo(string message, Exception ex = null)
+        public void LogInfo(string message, Exception ex = null,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
             if (_log != null)
             {
                 if (ex != null)
                 {
-                    _log.Error(ex, message);
+                    _log.Error(ex,  $"{message} : Caller=[{memberName}], Line#=[{sourceLineNumber}]");
                 }
                 else
                 {
-                    _log.Info(message);
+                    _log.Info($"{message} : Caller=[{memberName}], Line#=[{sourceLineNumber}]");
                 }
             }
         }
@@ -392,7 +394,12 @@ namespace DDPM.UI.Common.ViewModels
 
             DateTime launchTime = DateTime.Today.Add(time);
 
-            string formattedTime = launchTime.ToString("h:mm tt", System.Globalization.CultureInfo.CurrentCulture);
+            //CultureInfo.InvariantCulture must be AM/PM
+            string formattedTime = launchTime.ToString("h:mm tt", CultureInfo.InvariantCulture);
+
+            string amDesignator = Strings.Am;
+            string pmDesignator = Strings.Pm;
+            formattedTime = formattedTime.Replace("AM", amDesignator).Replace("PM", pmDesignator);
 
             return formattedTime;
         }
@@ -429,8 +436,8 @@ namespace DDPM.UI.Common.ViewModels
             HourList = Enumerable.Range(1, 12).Select(i => i.ToString("D2")).ToList();
             MinuteList = Enumerable.Range(0, 60).Select(i => i.ToString("D2")).ToList();//將數字格式化成兩位數，單位數自動補 0
 
-            string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
-            string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
+            string amDesignator = Strings.Am; //CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+            string pmDesignator = Strings.Pm; //CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
             AMPMList = new List<string> { amDesignator, pmDesignator };
 
             _isApplyEnabled = false;
@@ -1177,6 +1184,7 @@ namespace DDPM.UI.Common.ViewModels
 
             // 更新對應的 WindowAppName 屬性
             UpdateWindowAppName(index, fileName[index].FileName);
+            RefreshAssignPageButtons(); //PIMS-345539
         }
 
         public void ClearTextBlockAppName()

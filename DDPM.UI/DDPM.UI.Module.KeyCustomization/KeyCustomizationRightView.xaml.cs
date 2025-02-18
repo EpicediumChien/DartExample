@@ -38,7 +38,7 @@ namespace DDPM.UI.Module.KeyCustomization
             txtSearchText.Text = "";
             SectionAction.Visibility = Visibility.Visible;
             txtCaption.Focus();
-            if (_vm.SelectedKey == "")
+            if (string.IsNullOrEmpty(_vm.SelectedKey))
             {
                 txtCaption.Text = Strings.KeyCustomizeCaptionCaption;
                 imgBack.Visibility = Visibility.Collapsed;
@@ -118,7 +118,7 @@ namespace DDPM.UI.Module.KeyCustomization
                 var cat = Actions.KnMActions[SelectedActionID].Category;
                 if (cat == ActionCategory.None)
                 {
-                    if (ActiveActionSection != "")
+                    if (!string.IsNullOrEmpty(ActiveActionSection))
                     {
                         CloseSectionPanel($"{ActiveActionSection}Panel", true);
                     }
@@ -127,7 +127,7 @@ namespace DDPM.UI.Module.KeyCustomization
                 else
                 {
                     var section = cat?.ToString().Replace("Action", "") ?? "";
-                    if (section != "")
+                    if (!string.IsNullOrEmpty(section))
                     {
                         RefreshAction(section);
                         OpenSectionPanel($"{section}Panel", true);
@@ -166,9 +166,9 @@ namespace DDPM.UI.Module.KeyCustomization
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (txtSearchText.Text.Trim() == "")
+            if (string.IsNullOrEmpty(txtSearchText.Text.Trim()))
             { txtSearchText.Text = ""; }
-            if (txtSearchText.Text == "")
+            if (string.IsNullOrEmpty(txtSearchText.Text))
             {
                 SectionAction.Visibility = Visibility.Visible;
                 //bdrSearch.Visibility = Visibility.Collapsed;
@@ -225,7 +225,7 @@ namespace DDPM.UI.Module.KeyCustomization
                 Window parentWindow = Window.GetWindow(this);
                 double windowLeft = 0;
                 double windowTop = 0;
-                ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight);
+                ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight, "", "KB", _vm.CurrentDeviceID.ToString());
                 if (parentWindow != null)
                 {
                     modalDialog.Owner = parentWindow;
@@ -236,33 +236,12 @@ namespace DDPM.UI.Module.KeyCustomization
                 modalDialog.Left = windowLeft;
                 modalDialog.Top = windowTop;
 
-                if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
-                {
-                    Task<bool> task = DdpmCommonHelper.DeviceManagerSA.StartKeyboardKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                    _ = task.Result;
-                }
                 if (modalDialog.ShowDialog()!.Value)
                 {
-                    if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
-                    {
-                        Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA.StopKeyboardKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                        _ = task1.Result;
-                        Task<string> task2 = DdpmCommonHelper.DeviceManagerSA.GetKeyboardKeystrokeDisplayData(_vm.CurrentDeviceID.ToString());
-                        var keystroke = task2.Result;
-                        parameter = keystroke;
-                    }
-                    else
-                    {
-                        parameter = modalDialog.Parameter;
-                    }
+                    parameter = modalDialog.Parameter;
                 }
                 else
                 {
-                    if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
-                    {
-                        Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA.StopKeyboardKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                        _ = task1.Result;
-                    }
                     Initialize();
                     return;
                 }
@@ -275,7 +254,7 @@ namespace DDPM.UI.Module.KeyCustomization
                 RefreshAction(section[1]);
             }
             var sectionOld = GetActionSection(SelectedActionID);
-            if (sectionOld[0] != section[0] && sectionOld[0] != "")
+            if (sectionOld[0] != section[0] && !string.IsNullOrEmpty(sectionOld[0]))
             {
                 RefreshAction(sectionOld[0]);
                 if (sectionOld.Length > 1)
@@ -304,7 +283,7 @@ namespace DDPM.UI.Module.KeyCustomization
             Window parentWindow = Window.GetWindow(this);
             double windowLeft = 0;
             double windowTop = 0;
-            ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter);
+            ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter, "KB", _vm.CurrentDeviceID.ToString());
             if (parentWindow != null)
             {
                 modalDialog.Owner = parentWindow;
@@ -314,29 +293,12 @@ namespace DDPM.UI.Module.KeyCustomization
             modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
             modalDialog.Left = windowLeft;
             modalDialog.Top = windowTop;
-            if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                Task<bool> task = DdpmCommonHelper.DeviceManagerSA.StartKeyboardKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                _ = task.Result;
-            }
 
-            if (modalDialog.ShowDialog()!.Value && modalDialog.Parameter != parameter)
+            if (modalDialog.ShowDialog()!.Value)
             {
-                string para;
-                if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
-                {
-                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA.StopKeyboardKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                    _ = task1.Result;
-                    Task<string> task2 = DdpmCommonHelper.DeviceManagerSA.GetKeyboardKeystrokeDisplayData(_vm.CurrentDeviceID.ToString());
-                    var keystroke = task2.Result;
-                    para = keystroke;
-                }
-                else
-                {
-                    para = modalDialog.Parameter;
-                }
+                var para = modalDialog.Parameter;
                 if (para != parameter)
-                    _vm.UpdateAction(_vm.SelectedActionID, modalDialog.Parameter);
+                    _vm.UpdateAction(_vm.SelectedActionID, para);
             }
         }
 
@@ -452,7 +414,7 @@ namespace DDPM.UI.Module.KeyCustomization
             { return; }
 
             DoubleAnimation rotateAnimation;
-            if (ActiveActionSection == "")
+            if (string.IsNullOrEmpty(ActiveActionSection))
             {
                 img.RenderTransform = new RotateTransform();
                 rotateAnimation = new()
@@ -504,7 +466,7 @@ namespace DDPM.UI.Module.KeyCustomization
             };
             img.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
 
-            if (ActiveActionSection != "")
+            if (!string.IsNullOrEmpty(ActiveActionSection))
                 CloseSectionPanel($"{ActiveActionSection}Panel");
 
             ActiveActionSection = section;
@@ -518,7 +480,7 @@ namespace DDPM.UI.Module.KeyCustomization
 
         private void ScrollAction(string section = "", double offset = -1)
         {
-            if (section == "")
+            if (string.IsNullOrEmpty(section))
             { section = ActiveActionSection; }
             if (offset == -1)
             {

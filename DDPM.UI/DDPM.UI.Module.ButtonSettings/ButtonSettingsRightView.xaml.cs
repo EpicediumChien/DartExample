@@ -54,7 +54,7 @@ namespace DDPM.UI.Module.ButtonSettings
             SectionOffice.Visibility = Visibility.Collapsed;
             //_vm.AppSelectedIndex = "0";
             txtCaption.Focus();
-            if (_vm.SelectedButton == "")
+            if (string.IsNullOrEmpty(_vm.SelectedButton))
             {
                 txtCaption.Text = Strings.ButtonCustomizeCaption;
                 imgBack.Visibility = Visibility.Collapsed;
@@ -74,8 +74,8 @@ namespace DDPM.UI.Module.ButtonSettings
         {
             //SelectedActionID = _vm.SelectedActionID;
 
-            txtCaption.Text = $"{Strings.Customize} {ButtonCaptions[_vm.SelectedButton]}";
-            txtCaption.FontSize = _vm.SelectedButton == MouseButtonName.SideButtonForward.ToString() ? 18 : 20;
+            txtCaption.Text = $"{ButtonCaptions[_vm.SelectedButton]}";
+            //txtCaption.FontSize = _vm.SelectedButton == MouseButtonName.SideButtonForward.ToString() ? 18 : 20;
             imgBack.Visibility = Visibility.Visible;
             Section2.Visibility = Visibility.Visible;
 
@@ -103,7 +103,7 @@ namespace DDPM.UI.Module.ButtonSettings
                         cat = Actions.KnMActions[SelectedActionID].Category!.Value;
                     if (cat == ActionCategory.None)
                     {
-                        if (ActiveActionSection != "")
+                        if (!string.IsNullOrEmpty(ActiveActionSection))
                         {
                             CloseSectionPanel($"{ActiveActionSection}Panel", true);
                         }
@@ -112,7 +112,7 @@ namespace DDPM.UI.Module.ButtonSettings
                     else
                     {
                         var section = cat.ToString().Replace("Action", "") ?? "";
-                        if (section != "")
+                        if (!string.IsNullOrEmpty(section))
                         {
                             RefreshAction(section);
                             OpenSectionPanel($"{section}Panel", true);
@@ -162,9 +162,9 @@ namespace DDPM.UI.Module.ButtonSettings
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (txtSearchText.Text.Trim() == "")
+            if (string.IsNullOrEmpty(txtSearchText.Text.Trim()))
             { txtSearchText.Text = ""; }
-            if (txtSearchText.Text == "")
+            if (string.IsNullOrEmpty(txtSearchText.Text))
             {
                 if (_vm.SelectedApp == "AllApp")
                 {
@@ -191,10 +191,10 @@ namespace DDPM.UI.Module.ButtonSettings
                     sourceList = _vm.SelectedApp switch
                     {
                         "AllApp" => Actions.AllActionsKnM(),
-                        "Word" => Actions.WordActions,
-                        "Excel" => Actions.ExcelActions,
-                        "PowerPoint" => Actions.PowerPointActions,
-                        _ => Actions.OutlookActions
+                        "Word" => Actions.WordActions(),
+                        "Excel" => Actions.ExcelActions(),
+                        "PowerPoint" => Actions.PowerPointActions(),
+                        _ => Actions.OutlookActions()
                     };
                 }
                 searchText = txtSearchText.Text;
@@ -294,7 +294,7 @@ namespace DDPM.UI.Module.ButtonSettings
                 Window parentWindow = Window.GetWindow(this);
                 double windowLeft = 0;
                 double windowTop = 0;
-                ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight);
+                ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight, "", "MOUSE", _vm.CurrentDeviceID.ToString());
                 if (parentWindow != null)
                 {
                     modalDialog.Owner = parentWindow;
@@ -305,33 +305,12 @@ namespace DDPM.UI.Module.ButtonSettings
                 modalDialog.Left = windowLeft;
                 modalDialog.Top = windowTop;
 
-                if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
-                {
-                    Task<bool> task = DdpmCommonHelper.DeviceManagerSA.StartMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                    _ = task.Result;
-                }
                 if (modalDialog.ShowDialog()!.Value)
                 {
-                    if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
-                    {
-                        Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                        _ = task1.Result;
-                        Task<string> task2 = DdpmCommonHelper.DeviceManagerSA.GetMouseKeystrokeDisplayData(_vm.CurrentDeviceID.ToString());
-                        var keystroke = task2.Result;
-                        parameter = keystroke;
-                    }
-                    else
-                    {
-                        parameter = modalDialog.Parameter;
-                    }
+                    parameter = modalDialog.Parameter;
                 }
                 else
                 {
-                    if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
-                    {
-                        Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                        _ = task1.Result;
-                    }
                     Initialize();
                     return;
                 }
@@ -344,7 +323,7 @@ namespace DDPM.UI.Module.ButtonSettings
                 RefreshAction(section[1]);
             }
             var sectionOld = GetActionSection(SelectedActionID);
-            if (sectionOld[0] != section[0] && sectionOld[0] != "")
+            if (sectionOld[0] != section[0] && !string.IsNullOrEmpty(sectionOld[0]))
             {
                 RefreshAction(sectionOld[0]);
                 if (sectionOld.Length > 1)
@@ -373,7 +352,7 @@ namespace DDPM.UI.Module.ButtonSettings
             Window parentWindow = Window.GetWindow(this);
             double windowLeft = 0;
             double windowTop = 0;
-            ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter);
+            ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter, "MOUSE", _vm.CurrentDeviceID.ToString());
             if (parentWindow != null)
             {
                 modalDialog.Owner = parentWindow;
@@ -383,27 +362,10 @@ namespace DDPM.UI.Module.ButtonSettings
             modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
             modalDialog.Left = windowLeft;
             modalDialog.Top = windowTop;
-            if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                Task<bool> task = DdpmCommonHelper.DeviceManagerSA.StartMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                _ = task.Result;
-            }
 
-            if (modalDialog.ShowDialog()!.Value && modalDialog.Parameter != parameter)
+            if (modalDialog.ShowDialog()!.Value)
             {
-                string para;
-                if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
-                {
-                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA.StopMouseKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                    _ = task1.Result;
-                    Task<string> task2 = DdpmCommonHelper.DeviceManagerSA.GetMouseKeystrokeDisplayData(_vm.CurrentDeviceID.ToString());
-                    var keystroke = task2.Result;
-                    para = keystroke;
-                }
-                else
-                {
-                    para = modalDialog.Parameter;
-                }
+                var para = modalDialog.Parameter;
                 if (para != parameter)
                     _vm.UpdateAction(_vm.SelectedActionID, modalDialog.Parameter);
             }
@@ -523,7 +485,7 @@ namespace DDPM.UI.Module.ButtonSettings
             };
             img.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
 
-            if (ActiveActionSection != "" && ActiveActionSection != "Office")
+            if (!string.IsNullOrEmpty(ActiveActionSection) && ActiveActionSection != "Office")
                 CloseSectionPanel($"{ActiveActionSection}Panel");
 
             ActiveActionSection = section;
@@ -563,7 +525,7 @@ namespace DDPM.UI.Module.ButtonSettings
 
         private void ScrollAction(string section = "", double offset = -1)
         {
-            if (section == "")
+            if (string.IsNullOrEmpty(section))
             { section = ActiveActionSection; }
             if (offset == -1)
             {
@@ -616,7 +578,7 @@ namespace DDPM.UI.Module.ButtonSettings
             { return; }
 
             DoubleAnimation rotateAnimation;
-            if (ActiveActionSection == "")
+            if (string.IsNullOrEmpty(ActiveActionSection))
             {
                 img.RenderTransform = new RotateTransform();
                 rotateAnimation = new()

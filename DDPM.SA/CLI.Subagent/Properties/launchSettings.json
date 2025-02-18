@@ -2,7 +2,7 @@
   "profiles": {
     "CLI.Subagent": {
       "commandName": "Project",
-      "commandLineArgs": "/set -app=telemetryconsent -value=true"
+      "commandLineArgs": "/set -webcam=hdr -value=off"
     }
   }
 }

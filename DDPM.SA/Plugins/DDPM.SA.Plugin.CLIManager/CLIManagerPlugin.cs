@@ -283,49 +283,36 @@ namespace DDPM.SA.Plugin.CLIManager
                     rst.ExitCode = _.code;
                     rst.serialize_Json_response = _.result;
 
-                    if (_.code == (int)CLI_ExitCode.success && commandLineInput.TargetFeature == "NETWORKKVM")
+                    if (_.code == (int)CLI_ExitCode.success && commandLineInput.TargetFeature == "NETWORKKVM" && commandLineInput.Command == "SET")
                     {
-                        if (commandLineInput.Command == "GET")
+                        bool? result;
+
+                        if (commandLineInput.Options[0].Option_Value == "ON" || commandLineInput.Options[0].Option_Value == "OFF")
+                        {
+                            data.Enable_Display_NetworkKVM = commandLineInput.Options[0].Option_Value == "ON";
+                            WriteLog($"WriteITConfigData Enable_Display_NetworkKVM: {data.Enable_Display_NetworkKVM} Entry");
+                            result = _SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Enable_Display_NetworkKVM" }).Result;
+                            WriteLog("WriteITConfigData Enable_Display_NetworkKVM Exit");
+                        }
+                        else
+                        {
+                            data.Lock_Display_NetworkKVM = commandLineInput.Options[0].Option_Value == "DISABLE";
+                            WriteLog($"WriteITConfigData Lock_Display_NetworkKVM: {data.Lock_Display_NetworkKVM} Entry");
+                            result = _SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Lock_Display_NetworkKVM" }).Result;
+                            WriteLog("WriteITConfigData Lock_Display_NetworkKVM Exit");
+                        }
+
+                        if (result != true)
                         {
                             rst.serialize_Json_response = JsonConvert.SerializeObject(new NKVM_RESPONSE
                             {
                                 Command = commandLineInput.Command,
                                 TargetFeature = commandLineInput.TargetFeature,
-                                Result = "PASS",
-                                Value = (data.Lock_Display_NetworkKVM ? "DISABLE" : "ENABLE") + (data.Enable_Display_NetworkKVM ? ", ON" : ", OFF"),
+                                Result = "FAIL",
+                                Value = commandLineInput.Options[0].Option_Value,
+                                Message = "Failed to update config"
                             }, Formatting.Indented);
-                        }
-                        else if (commandLineInput.Command == "SET")
-                        {
-                            bool? result;
-
-                            if (commandLineInput.Options[0].Option_Value == "ON" || commandLineInput.Options[0].Option_Value == "OFF")
-                            {
-                                data.Enable_Display_NetworkKVM = commandLineInput.Options[0].Option_Value == "ON";
-                                WriteLog($"WriteITConfigData Enable_Display_NetworkKVM: {data.Enable_Display_NetworkKVM} Entry");
-                                result = _SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Enable_Display_NetworkKVM" }).Result;
-                                WriteLog("WriteITConfigData Enable_Display_NetworkKVM Exit");
-                            }
-                            else
-                            {
-                                data.Lock_Display_NetworkKVM = commandLineInput.Options[0].Option_Value == "DISABLE";
-                                WriteLog($"WriteITConfigData Lock_Display_NetworkKVM: {data.Lock_Display_NetworkKVM} Entry");
-                                result = _SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Lock_Display_NetworkKVM" }).Result;
-                                WriteLog("WriteITConfigData Lock_Display_NetworkKVM Exit");
-                            }
-
-                            if (result != true)
-                            {
-                                rst.serialize_Json_response = JsonConvert.SerializeObject(new NKVM_RESPONSE
-                                {
-                                    Command = commandLineInput.Command,
-                                    TargetFeature = commandLineInput.TargetFeature,
-                                    Result = "FAIL",
-                                    Value = commandLineInput.Options[0].Option_Value,
-                                    Message = "Failed to update config"
-                                }, Formatting.Indented);
-                                rst.ExitCode = (int)CLI_ExitCode.fail_SetSettings_ITSettingsValue;
-                            }
+                            rst.ExitCode = (int)CLI_ExitCode.fail_SetSettings_ITSettingsValue;
                         }
                     }
                 }
@@ -386,6 +373,15 @@ namespace DDPM.SA.Plugin.CLIManager
                         rst = CLIHandlerPeripheral.CLI_Peripheral_RestoreFactoryDefault(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
                     else if (commandLineInput.PluginsType.Equals("DISPLAY"))
                         rst = CLIHandlerDisplay.CLI_Display_RestoreFactoryDefault(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else if (commandLineInput.PluginsType.Equals("APP") && commandLineInput.Options.Count == 0)
+                        rst = CLIHandlerApp.CLI_Common_LockUlockWithUserAction(Log, data, _SettingsPluginIT, new CommandLineInput
+                        {
+                            Command = commandLineInput.Command,
+                            PluginsType = commandLineInput.PluginsType,
+                            TargetType = commandLineInput.TargetType,
+                            TargetFeature = "SCREENNOTIFICATION",
+                            Options = new List<CommandType_Option> { new CommandType_Option("VALUE", "LOCK") }
+                        }, command_guid);
                     else
                         rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
@@ -681,7 +677,7 @@ namespace DDPM.SA.Plugin.CLIManager
         private (int exitCode, string value, string message) RunDDMCommand(string command)
         {
             WriteLog($"RunDDMCommand({command}) Entry");
-            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\" + GlobalDefinitions.DDMExeName;
             int exitCode = -1;
             string value = _commandLineInput.Options.Count > 0 ? _commandLineInput.Options[0].Option_Value : "N/A";
             string message = "N/A";
@@ -734,7 +730,7 @@ namespace DDPM.SA.Plugin.CLIManager
                 TargetFeature = _commandLineInput.TargetFeature
             };
 
-            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\" + GlobalDefinitions.DDMExeName;
 
             if (File.Exists(filePath))
             {
@@ -799,16 +795,9 @@ namespace DDPM.SA.Plugin.CLIManager
                 else
                 {
                     var cmds = new List<string> { $"{command} {_commandLineInput.Options[0].Option_Value}", "exit" };
-                    if (command.Equals("NETWORKKVM"))
+                    if (command.Equals("NETWORKKVM") && _commandLineInput.Options[0].Option_Value.Equals("ON") || _commandLineInput.Options[0].Option_Value.Equals("ENABLE"))
                     {
-                        if (_commandLineInput.Options[0].Option_Value.Equals("ON"))
-                        {
-                            cmds[1] = "connect";
-                        }
-                        else if (_commandLineInput.Options[0].Option_Value.Equals("ENABLE"))
-                        {
-                            cmds.RemoveAt(1);
-                        }
+                        cmds[1] = "connect";
                     }
                     retcode = true;
                     response.Result = "PASS";
@@ -1038,15 +1027,19 @@ namespace DDPM.SA.Plugin.CLIManager
         {
 
             DeferItem item = new DeferItem(from, guid, commanddata);
+
             string did = item.deferid;
-
-            onCLIToastEventNotify(new CLIEventToastArgs()
+            if (!string.IsNullOrEmpty(did))
             {
-                defer_id = did,
-                toast_message = commanddata,
-                is_defer = true
-            });
-
+                onCLIToastEventNotify(new CLIEventToastArgs()
+                {
+                    defer_id = did,
+                    toast_message = commanddata,
+                    is_defer = true,
+                    defer_item = item
+                });
+            }
+            
             bool result = checkToastResult(did, item);
 
             return Task.FromResult(result);
@@ -1056,12 +1049,16 @@ namespace DDPM.SA.Plugin.CLIManager
         {
             string did = item.deferid;
 
-            onCLIToastEventNotify(new CLIEventToastArgs()
+            if (!string.IsNullOrEmpty(did))
             {
-                defer_id = did,
-                toast_message = item.commanddata,
-                is_defer = true
-            });
+                onCLIToastEventNotify(new CLIEventToastArgs()
+                {
+                    defer_id = did,
+                    toast_message = item.ToString(),
+                    is_defer = true,
+                    defer_item = item
+                });
+            }
 
             bool result = checkToastResult(did, item);
 
@@ -1096,7 +1093,7 @@ namespace DDPM.SA.Plugin.CLIManager
                     break;
                 }
             }
-            if (Max_Count >= MAX_DEFER_WAIT_TIME_SEC)
+            if (Max_Count >= MAX_DEFER_WAIT_TIME_SEC && item.commandfrom == DeferControlPanel.SRC_FROM_CLI && item.commanddata.ToLower().Contains("firmwareupdate"))
             {
                 //if end user doesn't select witnin 5 min, set defer as default
                 WriteLog($"@@ CLIManagerPlugin::Timeout and then set defer as default");
@@ -1113,12 +1110,16 @@ namespace DDPM.SA.Plugin.CLIManager
         {
             string did = item.deferid == string.Empty ? "NULL" : item.deferid;
 
-            onCLIToastEventNotify(new CLIEventToastArgs()
+            if (!string.IsNullOrEmpty(did))
             {
-                defer_id = did,
-                toast_message = item.commanddata,
-                is_defer = false
-            });
+                onCLIToastEventNotify(new CLIEventToastArgs()
+                {
+                    defer_id = did,
+                    toast_message = item.ToString(),
+                    is_defer = false,
+                    defer_item = item
+                });
+            }
 
             Max_Count = 0;
             for (Max_Count = 0; Max_Count <= MAX_DEFER_WAIT_TIME_SEC; Max_Count++)
@@ -1172,5 +1173,80 @@ namespace DDPM.SA.Plugin.CLIManager
             }
         }
         #endregion
+
+        // add @ 20250116 stephen
+
+        private int MAX_SECOND_WAIT_RESULT = 10;
+        private bool resultDeviceConn = false;
+        private bool resultReset = false;
+
+        // add @ 20250116 stephen
+        private bool checkDeviceConnResult(DeferItem item)
+        {
+            // true: device is connected
+            //FwJobControlPanel.addToSchedule(item);
+
+            for (int i = 0; i < MAX_SECOND_WAIT_RESULT; i++)
+            {
+                Thread.Sleep(1000);
+                WriteLog($"CLIManagerPlugin::checkDeviceConnResult wait = {i} ");
+                if (resultReset)
+                {
+                    Thread.Sleep(1000);
+                    if (!resultDeviceConn)
+                    {
+                        FwJobControlPanel.addToSchedule(item);
+                    }
+                    break;
+                }
+            }
+            WriteLog($"CLIManagerPlugin::checkDeviceConnResult resultReset = {resultReset}");
+            WriteLog($"CLIManagerPlugin::checkDeviceConnResult resultDeviceCheck = {resultDeviceConn}");
+
+            return resultDeviceConn;
+
+        }
+
+        public Task<bool> checkDeviceConn(int from, string guid, string commanddata, string str_command)
+        {
+            DeferItem item = new DeferItem(from, guid, commanddata);
+
+            initResultDeviceCheck();
+
+            onCLIDeviceCheckEventNotify(new CLIEventDeviceConnArgs()
+            {
+                commands = str_command
+            });
+
+            bool result = checkDeviceConnResult(item);
+
+            return Task.FromResult(result);
+        }
+
+        private void initResultDeviceCheck()
+        {
+            resultDeviceConn = false;
+            resultReset = false;
+        }
+
+        public void sendDeviceCheckResult(bool result)
+        {
+            Console.Write("CLIManagerPlugin::sendDeviceCheckResult result = " + result);
+
+            resultDeviceConn = result;
+            resultReset = true;
+        }
+
+        public event EventHandler<CLIEventDeviceConnArgs> CLIDeviceCheckEvent;
+
+        private void onCLIDeviceCheckEventNotify(CLIEventDeviceConnArgs e)
+        {
+            EventHandler<CLIEventDeviceConnArgs> Handler = CLIDeviceCheckEvent;
+            if (Handler != null)
+            {
+                WriteLog($"CLIManagerPlugin::onCLIDeviceCheckEventNotify CLIEventDeviceConnArgs e.commands = {e.commands}");
+                Handler.Invoke(this, e);
+            }
+        }
     }
 }

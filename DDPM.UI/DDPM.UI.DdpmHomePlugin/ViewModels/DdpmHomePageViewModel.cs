@@ -38,12 +38,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         private ObservableCollection<HomeDevice> _homeDevices = new ObservableCollection<HomeDevice>();
         private HomeDevice? _selectedHomeDevice;
 
-        private List<string> EOLKBList = DDPM.SA.Common.UI.SACommonHelper.EOLKBList;// new () { "WK636", "KM713", "WK717", "KM714", "KM717" };
-        private List<string> EOLMouseList = DDPM.SA.Common.UI.SACommonHelper.EOLMouseList;// new () { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
+        private readonly List<string> EOLKBList = DDPM.SA.Common.UI.SAUICommonHelper.EOLKBList;// new () { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        private readonly List<string> EOLMouseList = DDPM.SA.Common.UI.SAUICommonHelper.EOLMouseList;// new () { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
 
         //Robert_Lin, 2024-12-16 added in order to let view model can get devices in PleaseWait thread
         //It need DdpmHomePlugin set value to it.
         private IDeviceManagerSA? _deviceManagerSA = null;
+
+        //Robert_Lin 2025-2-17 for PIMS-343306 Observed UI truncation when switching to certain screen resolutions.
+        //When the screen of DDPM located is less then 800 width, then show the horz-scrollbar for HomeDevicesListView.
+        private bool _isSmallScreenResolution = false; //When Screen.Bounds.Width < 800
 
         /// <summary>
         /// Default constructor
@@ -132,6 +136,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         /// <param name="monitorInfos"></param>
         public void PrepareMonitorInfos(List<MonitorInfo> monitorInfos)
         {
+
             lock (_LockList)
             {
                 //Robert_Lin 2024-5-16 This method should be called once, provide all
@@ -163,11 +168,21 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     };
 
                     //Robert_Lin, 2024-11-20 PIMS-302436, Show the user input name to replace InputCable
-                    Dictionary<string, InputInfo> inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(mi).Result;
-                    InputInfo mainInput;
-                    if (inputList.TryGetValue(mi.inputCable, out mainInput))
+                    //Robert_Lin 2025-2-16 Add null check
+                    //NEW:
+                    if (DdpmCommonHelper.DeviceManagerSA != null)
                     {
-                        dev.InputName = mainInput.InputName;
+                        //END of NEW
+                        //OLD:
+                        Dictionary<string, InputInfo> inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(mi).Result;
+                        if (inputList != null)
+                        {
+                            InputInfo mainInput;
+                            if (inputList.TryGetValue(mi.inputCable, out mainInput))
+                            {
+                                dev.InputName = mainInput.InputName;
+                            }
+                        }
                     }
                     //
                     ///////////////////////////////////////////////////////////////////////////////
@@ -228,7 +243,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 //Determine the SortOrder in the foreach loop.
                 //Each Category have their index, would be in order of ModelNumber
                 int idxWebcam = 0, idxKB = 0, idxMouse = 0,
-                    idxPen = 0, idxHeadset = 0, idxSpeaker = 0, idxDock = 0;
+                    idxPen = 0, idxHeadset = 0, idxSpeaker = 0, idxDock = 0, idxBootloader = 0;
 
                 //Robert_Lin 2024-5-16 This method should be called once, provide all
                 //monitor in this call. So it will clear original list at first
@@ -398,7 +413,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         idxDock++;
                     }
                     //0618 Wayn 新增HeadSet
-                    else if (devType.ToString().ToUpper().Contains("HEADSET"))
+                    else if (devType.ToString().ToUpper().Contains("HEADSET") || devType.ToString().ToUpper().Contains("LOGICALAIRAUDIO"))
                     {
                         string imagepath = "";
                         switch (di.ModelNumber)
@@ -422,7 +437,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             case "WH3024":
                                 imagepath = "Resources/HeadsetModel_WH3024-Airmax.png";
                                 break;
-
+                            case "SB725":
+                                imagepath = "Resources/Speaker_SB725.png";
+                                break;
                             default:
                                 imagepath = "Resources/HeadsetModel_WL7024-Mito.png";
                                 break;
@@ -446,9 +463,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             case "SB522A":
                                 imagepath = "Resources/Speaker_SB522A.png";
                                 break;
-                            case "SB725":
-                                imagepath = "Resources/Speaker_SB725.png";
-                                break;
                             default:
                                 imagepath = "Resources/Speaker_SP3022.png";
                                 break;
@@ -457,6 +471,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath);
                         dev.SortOrder = (int)dev.DeviceCategory + idxSpeaker;
                         idxSpeaker++;
+                    }
+                    //0211 Bruce 新增Bootloader UI
+                    else if (devType.Equals(DeviceType.PhysicalBootloader) ||
+                        devType.Equals(DeviceType.LogicalBootloader))
+                    {
+                        dev.DeviceCategory = eDeviceCategory.Bootloader;
+                        System.Windows.Media.Color textColor = Colors.White;
+                        dev.DeviceModel = di.ModelNumber;
+                        dev.SortOrder = (int)dev.DeviceCategory + idxBootloader;
                     }
 
                     //Robert_Lin, 2024-8-6, assign InstanceNo for the new adding device (dev)
@@ -491,7 +514,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 //RefreshCollectionView();
             }
         }
-
         public void ResetDevices()
         {
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -779,5 +801,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         public bool IsPandoraPaired = false;
 
         #endregion
+
+        //Set it to true only when the screen of DDPM located is less then 800 width
+        public bool IsSmallScreenResolution
+        {
+            get => _isSmallScreenResolution;
+            set => SetProperty(ref _isSmallScreenResolution, value);
+        }
     }
 }

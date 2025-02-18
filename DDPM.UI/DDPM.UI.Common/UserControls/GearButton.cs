@@ -92,13 +92,11 @@ namespace DDPM.UI.Common.UserControls
 
                     _storyboardGlow = oSB as Storyboard;
                 }
-                if (_storyboardGlow != null)
+                if (_storyboardGlow != null && 
+                    _indication != null)
                 {
-                    if (_indication != null)
-                    {
-                        _storyboardGlow.Begin(_indication);
-                        _indication.Visibility = Visibility.Visible;
-                    }
+                    _indication.Visibility = Visibility.Visible;
+                    _storyboardGlow.Begin(_indication);
                 }
             });
         }

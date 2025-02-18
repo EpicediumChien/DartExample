@@ -8,7 +8,7 @@ namespace DDPM.UI.Module.Kvm
 {
     public class KvmModule : IDdpmModule
     {
-        private UserControl? _leftView; // = new KvmLeftView();
+        public UserControl? _leftView; // = new KvmLeftView();
         private UserControl _rightView;
         private KvmViewModel vm = new KvmViewModel();
 
@@ -33,9 +33,6 @@ namespace DDPM.UI.Module.Kvm
             {
                 _leftView = null;
             }
-            //vm.Invoke_RefreshData();
-            //Jason 12/11 add loadleftview
-            //moduleOwner.LoadLeftView();
         }
 
         public string ModuleName { get => Constants.ModuleName_KVM; } //"KvmModule"
@@ -77,15 +74,25 @@ namespace DDPM.UI.Module.Kvm
         //Handle new device coming
         private void InitNewViewModel()
         {
-            vm._log.Debug("[InitNewViewModel] running...");
-            vm.ModuleOwner = DdpmCommonHelper.ModuleOwner;
+            vm._log.Info("[InitNewViewModel] running...");
             this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+            isUSBKVM = DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
+            if (isUSBKVM)
+            {
+                _leftView = new KvmLeftView(vm);
+                _leftView.DataContext = vm;
+                DdpmCommonHelper.ModuleOwner.LoadLeftView();
+            }
+            else
+            {
+                _leftView = null;
+            }
             vm.Invoke_RefreshData();
         }
 
         public void OnActivated()
         {
-            vm._log.Debug("[OnActivated] running....");
+            vm._log.Info("[OnActivated] running....");
             if (isSelectChanged)
             {
                 isSelectChanged = false;

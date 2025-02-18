@@ -26,6 +26,7 @@ namespace DDPM.UI.Common.Models
         private string _deviceName = string.Empty;
         private ImageSource? _deviceImage;
         private double _normalWidth = 400;
+        private string _deviceModel = string.Empty;
 
         private MonitorInfo? _monitorInfo;
         private DeviceInfo? _deviceInfo;
@@ -42,7 +43,7 @@ namespace DDPM.UI.Common.Models
         /// </summary>
 
         //Robert_Lin, 2024-12-27 add an additional ctor with ILog to let it can write log
-        public HomeDevice(ILog? log = null)
+        public HomeDevice(ILog? log)
         {
             NormalWidth = 400;
             _log = log;
@@ -64,13 +65,25 @@ namespace DDPM.UI.Common.Models
             get => _deviceName;
             set => SetProperty<string>(ref _deviceName, value);
         }
+        public string DeviceModel
+        {
+            get => _deviceModel;
+            set => SetProperty<string>(ref _deviceModel, value);
+        }
 
         public eDeviceCategory DeviceCategory
         {
             get => _deviceCategory;
             set => SetProperty(ref _deviceCategory, value);
         }
-
+        public bool IsBootloader
+        {
+            get => _deviceCategory.Equals(eDeviceCategory.Bootloader);
+        }
+        public bool IsNotBootloader
+        {
+            get => !_deviceCategory.Equals(eDeviceCategory.Bootloader);
+        }
         public MonitorInfo? MonitorInfo
         {
             get => _monitorInfo;
@@ -254,7 +267,7 @@ namespace DDPM.UI.Common.Models
                     //    Some of Keyboard/Mouse need to convert ModelNumber to model
                     //    Show "{Name} + " {model}"
                     //NEW Code:
-                    if (DDPM.SA.Common.UI.SACommonHelper.IsPeripheralEOLModel(DeviceInfo.ModelNumber))//change function source from SA, collect all related function together
+                    if (DDPM.SA.Common.UI.SAUICommonHelper.IsPeripheralEOLModel(DeviceInfo.ModelNumber))//change function source from SA, collect all related function together
                     {
                         //EOL 的 Keyboard/Mouse, Name已包含 {ModelNumber}, homepage tooltip 直接顯示 {Name}
                         return DeviceInfo.Name;
@@ -292,7 +305,11 @@ namespace DDPM.UI.Common.Models
                                 break;
                         } //switch(deviceInfo.ModelNumber)
 
-                        return DDPM.SA.Common.UI.SACommonHelper.MappingName(model, DeviceInfo.Name) + $" {model}";
+                        // Jim 20250205 modify PIMS-318236
+                        //if ( model == "U3224KB" || model == "U3224KBA")//model == "P2424HEB" || model == "P2724DEB" |||| model == "P3424WEB"  || model == "U3223QZ" )
+                        //    return DDPM.SA.Common.UI.SAUICommonHelper.MappingName(model, DeviceInfo.Name);
+                        //else
+                        return DDPM.SA.Common.UI.SAUICommonHelper.MappingWebCamName(model, DeviceInfo.Name) + $" {model}";
                     }
 
                     //OLD Code:
@@ -513,7 +530,7 @@ namespace DDPM.UI.Common.Models
 
                     //Robert_Lin, 2024-10-15 Change the Text1 of BatteryIndicator to inputCable.
                     //The inputCable has been remove unwant - and number, so we should show it directly
-                    string strOut = MonitorInfo.inputCable;
+                    //string strOut = MonitorInfo.inputCable;
 
                     ////2024-5-24 Robert_Lin, remove the tail number and dash
                     //// "USB-C1" => "USB-C"; "HDMI-1" => "HDMI"

@@ -58,10 +58,6 @@
 		</Resource>
 	</ItemGroup>
 
-	<ItemGroup>
-		<Folder Include="UI\" />
-	</ItemGroup>
-
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Command="xcopy &quot;$(ProjectDir)$(OutDir)DDPM.SA.Common.*&quot; &quot;$(SolutionDir)..\DdpmSwUpdater\CommonDll\&quot; /Y /S /Q" />
 	</Target>

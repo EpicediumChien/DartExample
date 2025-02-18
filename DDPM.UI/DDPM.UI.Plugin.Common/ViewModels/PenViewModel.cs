@@ -32,7 +32,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private Dictionary<int, string> _EraserActions = new();
         private Dictionary<int, string> _SideSwitchActions = new();
         private Dictionary<int, string> _MenuActions = new();
-        //private Dictionary<int, string> LaunchableAppValues = new();
+        private Dictionary<string, string> OpenRunActionBrowseCaptionMapping = new();
 
         #endregion Variables
 
@@ -107,9 +107,12 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             try
             {
-                //JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserDoublePressValues))!;
-                Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetEraserSinglePressValues();
-                JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
+                ////JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserDoublePressValues))!;
+                Task<string> task;
+                task = DdpmCommonHelper.DeviceManagerSA!.GetEraserSinglePressValues();
+                var str1 = task.Result;
+                JsonElement jsonObject;
+                jsonObject = JsonSerializer.Deserialize<JsonElement>(str1)!;
                 foreach (var jo in jsonObject.EnumerateArray())
                 {
                     _EraserActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
@@ -134,24 +137,35 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
 
                 task = DdpmCommonHelper.DeviceManagerSA!.GetLaunchableAppValues();
-                jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
-                //var i = 1;
-                //LaunchableAppValues.Add(Strings.Browse);
-                foreach (var jo in jsonObject.EnumerateArray())
+                var str = task.Result;
+                if (string.IsNullOrEmpty(str))
                 {
-                    LaunchableAppValues.Add(jo.GetString()!);
+                    DdpmCommonHelper.WriteUILog("Error: Pen GetLaunchableAppValues fail!");
                 }
-                LaunchableAppValues.Sort();
-                for (int i = 0; i < LaunchableAppValues.Count; i++)
+                else
                 {
-                    string str = LaunchableAppValues[i];
-                    if (str.Length > 2 && str.Substring(str.Length - 3, 3) == "...")
+                    jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
+                    foreach (var jo in jsonObject.EnumerateArray())
                     {
-                        LaunchableAppValues.Remove(str);
-                        LaunchableAppValues.Insert(0, str);
-                        i = 100;
+                        string? str2 = jo.GetString();
+                        if (!string.IsNullOrEmpty(str2))
+                            LaunchableAppValues.Add(str2);
+                    }
+                    LaunchableAppValues.Sort();
+                    for (int i = 0; i < LaunchableAppValues.Count; i++)
+                    {
+                        string st = LaunchableAppValues[i];
+                        if (st.Contains("...", StringComparison.OrdinalIgnoreCase))
+                        {
+                            var str3 = st.Replace("...", "");
+                            LaunchableAppValues.Remove(st);
+                            LaunchableAppValues.Insert(0, str3);
+                            OpenRunActionBrowseCaptionMapping.TryAdd(str3, st);
+                            i = 100;
+                        }
                     }
                 }
+
                 ActionNames = _EraserActions.Union(_SideSwitchActions).Union(_MenuActions).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
                 RadialMenuActions = _MenuActions.OrderBy(x => x.Value).Select(x => x.Key).ToList();
                 IsActionItemsReady = true;
@@ -357,7 +371,7 @@ namespace DDPM.UI.Plugin.ViewModels
                                 default:
                                     break;
                             }
-                            GenerateInfo();
+                            //GenerateInfo();
                         }
                         break;
 
@@ -466,16 +480,16 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public bool IsSearchEnabled
         {
-            get => SelectedButton != PenButtonName.TopButton.ToString() ? true : (SelectedBehavior != "" ? true : false);
+            get => SelectedButton != PenButtonName.TopButton.ToString() || !string.IsNullOrEmpty(SelectedBehavior);
         }
 
-        public SelectedAction? SelectedAction => SelectedButton == "" ? null :
+        public SelectedAction? SelectedAction => string.IsNullOrEmpty(SelectedButton) ? null :
                               (SelectedButton == PenButtonName.TopBarrelButton.ToString() ? PenAction.TopBarrelButtonClickAction :
                               (SelectedButton == PenButtonName.BottomBarrelButton.ToString() ? PenAction.BottomBarrelButtonClickAction :
                               (SelectedBehavior == ButtonBehavior.ClickOnce.ToString() ? PenAction.TopButtonClickAction :
                               (SelectedBehavior == ButtonBehavior.DoubleClick.ToString() ? PenAction.TopButtonDoubleClickAction : PenAction.TopButtonPressHoldAction))));
 
-        public int SelectedActionID => SelectedButton == "" ? -1 : SelectedAction?.AssignedAction.ID ?? -1;
+        public int SelectedActionID => string.IsNullOrEmpty(SelectedButton) ? -1 : SelectedAction?.AssignedAction.ID ?? -1;
         public string TopButtonImageFile { get; set; } = "";
         public string TopBarrelButtonImageFile { get; set; } = "";
         public string BottomBarrelButtonImageFile { get; set; } = "";
@@ -544,10 +558,10 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                //string tooltip1 = Actions.PenActions[PenAction.TopButtonClickAction.AssignedAction.ID].Caption;
-                string tooltip1 = _EraserActions[PenAction.TopButtonClickAction.AssignedAction.ID];
+                string tooltip1 = Actions.PenActions[PenAction.TopButtonClickAction.AssignedAction.ID].Caption;
+                //string tooltip1 = _EraserActions[PenAction.TopButtonClickAction.AssignedAction.ID];
                 string parameter1 = PenAction.TopButtonClickAction.AssignedAction.Parameter;
-                if (parameter1 != "")
+                if (!string.IsNullOrEmpty(parameter1))
                 {
                     var arr = parameter1.Split('|');
                     if (int.TryParse(arr[0], out int id))
@@ -571,11 +585,11 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
                     return $"{Strings.PenButtonClickOnce}: {tooltip1}";
 
-                //string tooltip2 = Actions.PenActions[PenAction.TopButtonDoubleClickAction.AssignedAction.ID].Caption;
+                string tooltip2 = Actions.PenActions[PenAction.TopButtonDoubleClickAction.AssignedAction.ID].Caption;
                 var id2 = PenAction.TopButtonDoubleClickAction.AssignedAction.ID;
-                string tooltip2 = _EraserActions[id2];
+                //string tooltip2 = _EraserActions[id2];
                 string parameter2 = PenAction.TopButtonDoubleClickAction.AssignedAction.Parameter;
-                if (parameter2 != "")
+                if (!string.IsNullOrEmpty(parameter2))
                 {
                     var arr = parameter2.Split('|');
                     if (int.TryParse(arr[0], out int id))
@@ -602,7 +616,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 //string tooltip3 = Actions.PenActions[PenAction.TopButtonPressHoldAction.AssignedAction.ID].Caption;
                 string tooltip3 = _EraserActions[PenAction.TopButtonPressHoldAction.AssignedAction.ID];
                 string parameter3 = PenAction.TopButtonPressHoldAction.AssignedAction.Parameter;
-                if (parameter3 != "")
+                if (!string.IsNullOrEmpty(parameter3))
                 {
                     var arr = parameter3.Split('|');
                     if (int.TryParse(arr[0], out int id))
@@ -633,10 +647,10 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                //string tooltip = Actions.PenActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID].Caption;
-                string tooltip = _SideSwitchActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID];
+                string tooltip = Actions.PenActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID].Caption;
+                //string tooltip = _SideSwitchActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID];
                 string parameter = PenAction.TopBarrelButtonClickAction.AssignedAction.Parameter;
-                if (parameter != "")
+                if (!string.IsNullOrEmpty(parameter))
                 {
                     var arr = parameter.Split('|');
                     if (int.TryParse(arr[0], out int id))
@@ -663,10 +677,10 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                //string tooltip = Actions.PenActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID].Caption;
-                string tooltip = _SideSwitchActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID];
+                string tooltip = Actions.PenActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID].Caption;
+                //string tooltip = _SideSwitchActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID];
                 string parameter = PenAction.BottomBarrelButtonClickAction.AssignedAction.Parameter;
-                if (parameter != "")
+                if (!string.IsNullOrEmpty(parameter))
                 {
                     var arr = parameter.Split('|');
                     if (int.TryParse(arr[0], out int id))
@@ -692,7 +706,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void ClearSelectedButton()
         {
-            if (SelectedButton != "")
+            if (!string.IsNullOrEmpty(SelectedButton))
             {
                 RefreshButtonImageFile(SelectedButton);
                 SelectedButton = "";
@@ -735,7 +749,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             try
             {
-                if (SelectedButton != "")
+                if (!string.IsNullOrEmpty(SelectedButton))
                 {
                     SelectedAction!.AssignedAction.ID = actionID;
                     SelectedAction.AssignedAction.Parameter = parameter;
@@ -801,14 +815,14 @@ namespace DDPM.UI.Plugin.ViewModels
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\PenViewModel.cs UpdateAction ex:" + ex.Message);
             }
         }
-        public ObservableCollection<int> SuggestedActionsTopButton { get => new(Actions.SuggestedActionsPenTopButton); }
-        public ObservableCollection<int> SuggestedActionsBarrelButton { get => new(Actions.SuggestedActionsPenBarrelButton); }
-        public ObservableCollection<int> ProductivityActionsTopButton { get; set; } = new(Actions.ProductivityActionsPenTopButton);
-        public ObservableCollection<int> ProductivityActionsBarrelButton { get; set; } = new(Actions.ProductivityActionsPenBarrelButton);
-        public ObservableCollection<int> WindowsActionsTopButton { get; set; } = new(Actions.WindowsActionsPenTopButton);
-        public ObservableCollection<int> WindowsActionsBarrelButton { get; set; } = new(Actions.WindowsActionsPenBarrelButton);
-        public ObservableCollection<int> MultimediaActionsTopButton { get; set; } = new(Actions.MultimediaActionsPenTopButton);
-        public ObservableCollection<int> MultimediaActionsBarrelButton { get; set; } = new(Actions.MultimediaActionsPenBarrelButton);
+        public ObservableCollection<int> SuggestedActionsTopButton { get => new(Actions.SuggestedActionsPenTopButton()); }
+        public ObservableCollection<int> SuggestedActionsBarrelButton { get => new(Actions.SuggestedActionsPenBarrelButton()); }
+        public ObservableCollection<int> ProductivityActionsTopButton { get; set; } = new(Actions.ProductivityActionsPenTopButton());
+        public ObservableCollection<int> ProductivityActionsBarrelButton { get; set; } = new(Actions.ProductivityActionsPenBarrelButton());
+        public ObservableCollection<int> WindowsActionsTopButton { get; set; } = new(Actions.WindowsActionsPenTopButton());
+        public ObservableCollection<int> WindowsActionsBarrelButton { get; set; } = new(Actions.WindowsActionsPenBarrelButton());
+        public ObservableCollection<int> MultimediaActionsTopButton { get; set; } = new(Actions.MultimediaActionsPenTopButton());
+        public ObservableCollection<int> MultimediaActionsBarrelButton { get; set; } = new(Actions.MultimediaActionsPenBarrelButton());
         public bool IsHoverClickOn
         {
             get => (SelectedButton == PenButtonName.TopBarrelButton.ToString() && PenAction.IsTopBarrelHoverClickOn) || (SelectedButton == PenButtonName.BottomBarrelButton.ToString() && PenAction.IsBottomBarrelHoverClickOn);

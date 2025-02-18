@@ -99,6 +99,7 @@ namespace DDPM.EABroker
 
             xCur /= _vm.ScreenScale;
             yCur /= _vm.ScreenScale;
+ 
 
             double left = xCur - _cxAwsWindow / 2;
             double top = yCur - ArrangeVM.dyAwsShow - _cyAwsWindow;
@@ -117,6 +118,7 @@ namespace DDPM.EABroker
 
             //Fix left if it across screen boundary
             //
+            Trace.WriteLine($"scr.Bounds.Left={scr.Bounds.Left}");
             if (left < (scr.Bounds.Left + _leftMargin))
             {
                 left = scr.Bounds.Left + _leftMargin;

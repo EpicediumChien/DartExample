@@ -13,6 +13,33 @@
             <ResourceDictionary.MergedDictionaries>
                 <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
+
+            <!-- Robert_Lin 2025-2-11 The style for BulletDecorator.Bullet 
+            Usage:
+                <BulletDecorator>
+                    <BulletDecorator.Bullet>
+                        <BulletDecorator.Bullet>
+                            <UXControls:UXTextBlock Style="{StaticResource BulletStyle}"/>
+                        </BulletDecorator.Bullet>
+                        <UXControls:UXTextBlock Style="{StaticResource BulletTextStyle}" Text={Binding ....}"/>
+                </BulletDecorator>
+            -->
+            <Style x:Key="BulletStyle" TargetType="UXControls:UXTextBlock">
+                <Setter Property="Text" Value=" •  "/>
+                <Setter Property="TextBlockType" Value="Subtitle2"/>
+                <Setter Property="Margin" Value="16,4,16,4"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="Foreground" Value="{DynamicResource TextBlock_ForegroundColor}"/>
+                <Setter Property="FontSize" Value="13"/>
+            </Style>
+            <Style x:Key="BulletTextStyle" TargetType="UXControls:UXTextBlock">
+                <Setter Property="TextBlockType" Value="Subtitle2"/>
+                <Setter Property="Margin" Value="16,4,16,4"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="Foreground" Value="{DynamicResource TextBlock_ForegroundColor}"/>
+                <Setter Property="FontSize" Value="13"/>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -20,6 +47,7 @@
             <Border CornerRadius="13">
                 <StackPanel Margin="16,16,16,0">
                     <Grid>
+                        <!--  Select KVM Setup Type -->
                         <UXControls:UXTextBlock Text="{Binding [Kvm.24], Source={x:Static lang:LangHelper.Instance}}"
                                                 FontSize="20"
                                                 TextBlockSemanticColorType="Light"
@@ -35,6 +63,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
+                        <!-- #region No KVM -->
                         <Grid Grid.Row="0" Margin="0,0,0,8" Background="{DynamicResource DefaultTheme_GridBkColor}">
                             <UXControls:UXRadioButton AutomationProperties.AutomationId="LargeRB1"
                                                       GroupName="KVMSelect"
@@ -51,6 +80,8 @@
                                 </UXControls:UXRadioButton.Resources>
                             </UXControls:UXRadioButton>
                         </Grid>
+                        <!-- #endregion No KVM -->
+                        <!-- #region USB KVM -->
                         <Grid Grid.Row="1" Margin="0,8,0,8" Background="{DynamicResource DefaultTheme_GridBkColor}" Visibility="{Binding SupportUSBKVM}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
@@ -95,19 +126,33 @@
                                 </Grid>
                             </Grid>
                             <Grid Grid.Row="1">
-                                <UXControls:UXTextBlock Text="{Binding [Kvm.25], Source={x:Static lang:LangHelper.Instance},StringFormat={} •  {0}}"
-                                                        TextBlockType="Subtitle2"
-                                                        HorizontalAlignment="Left"
-                                                        Margin="16,4,16,4"
-                                                        Opacity="{Binding USBKVM_Opacity}"/>
-                            </Grid>
+                                <BulletDecorator>
+                                    <BulletDecorator.Bullet>
+                                        <UXControls:UXTextBlock Style="{StaticResource BulletStyle}" Opacity="{Binding USBKVM_Opacity}"/>
+                                    </BulletDecorator.Bullet>
+                                    <UXControls:UXTextBlock Style="{StaticResource BulletTextStyle}"
+                                                            Text="{Binding [Kvm.25], Source={x:Static lang:LangHelper.Instance}}"
+                                                            Opacity="{Binding USBKVM_Opacity}"/>
+                                </BulletDecorator>
+                             </Grid>
                             <Grid Grid.Row="2">
+                                <!-- Robert_Lin 2025-2-11 BulletDecorator -->
+                                <!-- OLD:
                                 <UXControls:UXTextBlock Text="{Binding [Kvm.26], Source={x:Static lang:LangHelper.Instance},StringFormat={} •  {0}}"
                                                         TextBlockType="Subtitle2"
                                                         HorizontalAlignment="Left"
                                                         Margin="16,4,16,16"
                                                         Opacity="{Binding USBKVM_Opacity}"/>
-                            </Grid>
+                                -->
+                                <BulletDecorator>
+                                    <BulletDecorator.Bullet>
+                                        <UXControls:UXTextBlock Style="{StaticResource BulletStyle}" Opacity="{Binding USBKVM_Opacity}"/>
+                                    </BulletDecorator.Bullet>
+                                    <UXControls:UXTextBlock Style="{StaticResource BulletTextStyle}"
+                                                            Text="{Binding [Kvm.26], Source={x:Static lang:LangHelper.Instance}}"
+                                                            Opacity="{Binding USBKVM_Opacity}"/>
+                                </BulletDecorator>
+                             </Grid>
                             <Grid Grid.Row="3" HorizontalAlignment="Center">
                                 <StackPanel Orientation="Horizontal">
                                     <UXControls:UXButton ButtonType="Primary"
@@ -118,11 +163,10 @@
                                                          HorizontalAlignment="Center"
                                                          VerticalAlignment="Center"
                                                          Margin="16" Padding="40,8"
-                                                         Background="#0672CB" Opacity="{Binding USBKVMButtonOpacity}"
+                                                         Background="#0672CB"
                                                          Foreground="#FFFFFF"
                                                          Click="OpenUSBKVM"
-                                                         Visibility="Collapsed"
-                                                         IsEnabled="{Binding isUSBKVMButton}"/>
+                                                         Visibility="Collapsed"/>
                                     <!-- Elsa 20250114 change Margin="16" to Margin="14" for ar-SA next button will overflow -->
                                     <UXControls:UXButton ButtonType="Primary"
                                                          AutomationProperties.Name="Primary1"
@@ -132,11 +176,10 @@
                                                          HorizontalAlignment="Center"
                                                          VerticalAlignment="Center"
                                                          Margin="14" Padding="40,8"
-                                                         Background="#0672CB" Opacity="{Binding USBKVMButtonOpacity}"
+                                                         Background="#0672CB"
                                                          Foreground="#FFFFFF"
                                                          Click="OpenUSBKVM"
-                                                         Visibility="Collapsed"
-                                                         IsEnabled="{Binding isUSBKVMButton}"/>
+                                                         Visibility="Collapsed"/>
                                     <!-- Elsa 20250114 remove Margin="16"for es-419 this button will overflow -->
                                     <UXControls:UXButton ButtonType="Secondary"
                                                          x:Name="USBKVMHotkeys"
@@ -146,11 +189,11 @@
                                                          Padding="32,0"
                                                          Visibility="Collapsed" Click="USBKVMHotkeys_Click">
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <UXControls:UXTextBlock Margin="8" Text="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" />
+                                            <UXControls:UXTextBlock Margin="8" Text="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource SecondaryButton_TextColor_Default}" />
                                             <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Background="#00000000">
                                                 <Path Data="M8 0C6.41775 0 4.87103 0.469192 3.55544 1.34824C2.23985 2.22729 1.21447 3.47672 0.608967 4.93853C0.00346625 6.40034 -0.15496 8.00887 0.153721 9.56072C0.462403 11.1126 1.22433 12.538 2.34315 13.6569C3.46197 14.7757 4.88743 15.5376 6.43928 15.8463C7.99113 16.155 9.59966 15.9965 11.0615 15.391C12.5233 14.7855 13.7727 13.7602 14.6518 12.4446C15.5308 11.129 16 9.58225 16 8C16 5.87827 15.1571 3.84344 13.6569 2.34315C12.1566 0.842855 10.1217 0 8 0ZM8 14.93C6.62938 14.93 5.28953 14.5236 4.1499 13.7621C3.01027 13.0006 2.12203 11.9183 1.59752 10.652C1.073 9.3857 0.935766 7.99231 1.20316 6.64802C1.47056 5.30374 2.13058 4.06893 3.09975 3.09975C4.06893 2.13057 5.30374 1.47055 6.64803 1.20316C7.99232 0.935762 9.38571 1.073 10.652 1.59751C11.9183 2.12203 13.0006 3.01027 13.7621 4.1499C14.5236 5.28953 14.93 6.62938 14.93 8C14.9274 9.83714 14.1964 11.5983 12.8973 12.8973C11.5983 14.1964 9.83714 14.9274 8 14.93Z
                                                       M7.36 3.36H8.64V4.64H7.36V3.36Z
-                                                      M7.36 6.24H8.64V12.64H7.36V6.24Z">
+                                                      M7.36 6.24H8.64V12.64H7.36V6.24Z" Fill="{DynamicResource SecondaryButton_TextColor_Default}">
                                                 </Path>
                                                 <Grid.ToolTip>
                                                     <ToolTip>
@@ -172,6 +215,8 @@
                                 </StackPanel>
                             </Grid>
                         </Grid>
+                        <!-- #endregion USB KVM -->
+                        <!-- #region Network KVM -->
                         <Grid Grid.Row="2" Margin="0,8,0,16" Background="{DynamicResource DefaultTheme_GridBkColor}"
                               Visibility="{Binding SupportNKVM}" >
                             <Grid.RowDefinitions>
@@ -218,24 +263,59 @@
                                 </Grid>-->
                             </Grid>
                             <Grid Grid.Row="1">
+                                <!-- Robert_Lin 2025-2-11 Change UXTextBlock to BulletDecorator -->
+                                <!-- OLD:
                                 <UXControls:UXTextBlock Text="{Binding [Kvm.28], Source={x:Static lang:LangHelper.Instance},StringFormat={} •  {0}}"
                                                         TextBlockType="Subtitle2"
                                                         HorizontalAlignment="Left"
                                                         Margin="16,8,16,4" Opacity="{Binding NKVM_Opacity}"/>
+                                -->
+                                <BulletDecorator>
+                                    <BulletDecorator.Bullet>
+                                        <UXControls:UXTextBlock Style="{StaticResource BulletStyle}" Opacity="{Binding NKVM_Opacity}"/>
+                                    </BulletDecorator.Bullet>
+                                    <UXControls:UXTextBlock Style="{StaticResource BulletTextStyle}"
+                                                            Text="{Binding [Kvm.28], Source={x:Static lang:LangHelper.Instance}}"
+                                                            Opacity="{Binding NKVM_Opacity}"/>
+                                </BulletDecorator>
                             </Grid>
                             <Grid Grid.Row="2">
-                                <UXControls:UXTextBlock Text="{Binding [Kvm.29], Source={x:Static lang:LangHelper.Instance},StringFormat={} •  {0}}"
+                                <!-- Robert_Lin 2025-2-11 Change UXTextBlock to BulletDecorator -->
+                                <!-- OLD:
+                               <UXControls:UXTextBlock Text="{Binding [Kvm.29], Source={x:Static lang:LangHelper.Instance},StringFormat={} •  {0}}"
                                                         TextBlockType="Subtitle2"
                                                         HorizontalAlignment="Left"
                                                         Margin="16,4,16,4" Opacity="{Binding NKVM_Opacity}"/>
+                                -->
+                                <BulletDecorator>
+                                    <BulletDecorator.Bullet>
+                                        <UXControls:UXTextBlock Style="{StaticResource BulletStyle}" Opacity="{Binding NKVM_Opacity}"/>
+                                    </BulletDecorator.Bullet>
+                                    <UXControls:UXTextBlock Style="{StaticResource BulletTextStyle}" 
+                                                            Text="{Binding [Kvm.29], Source={x:Static lang:LangHelper.Instance}}"
+                                                            Opacity="{Binding NKVM_Opacity}"/>
+                                </BulletDecorator>
                             </Grid>
                             <Grid Grid.Row="3">
+                                <!-- Robert_Lin 2025-2-11 Change UXTextBlock to BulletDecorator -->
+                                <!-- OLD:
                                 <UXControls:UXTextBlock Text="{Binding [Kvm.30], Source={x:Static lang:LangHelper.Instance},StringFormat={} •  {0}}"
                                                         TextBlockType="Subtitle2"
                                                         HorizontalAlignment="Left"
+                                                        d:Text="Lorem ipsum dolor sit amet consectetur. Fermentum cras imperdiet duis varius facilisi nulla. Volutpat accumsan massa at eu nibh quis."
                                                         Margin="16,4,16,16" Opacity="{Binding NKVM_Opacity}"/>
+                                -->
+                                <BulletDecorator>
+                                    <BulletDecorator.Bullet>
+                                        <UXControls:UXTextBlock Style="{StaticResource BulletStyle}" Opacity="{Binding NKVM_Opacity}"/>
+                                    </BulletDecorator.Bullet>
+                                    <UXControls:UXTextBlock Style="{StaticResource BulletTextStyle}"
+                                                            Text="{Binding [Kvm.30], Source={x:Static lang:LangHelper.Instance}}"
+                                                            Opacity="{Binding NKVM_Opacity}"/>
+                                </BulletDecorator>
+
                             </Grid>
-                            <Grid Grid.Row="4">
+                             <Grid Grid.Row="4">
                                 <UXControls:UXButton ButtonType="Primary"
                                                      Name="NetworkKVM"
                                                      ButtonSize="Medium"
@@ -270,6 +350,7 @@
                                 </UXControls:UXButton>
                             </Grid>
                         </Grid>
+                        <!-- #endregion Network KVM -->
                     </Grid>
                 </StackPanel>
             </Border>
@@ -286,9 +367,12 @@
                 </Style>
             </Border.Style>
             <!-- Add a UXBusyIndicator from Robert -->
-            <UXControls:UXBusyIndicator BusyIndicatorType="Secondary" Width="64" Height="64"
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <UXControls:UXBusyIndicator BusyIndicatorType="Secondary" Width="64" Height="64"
                                         HorizontalAlignment="Center" VerticalAlignment="Center"
                                         IsActive="{Binding IsBusy}" />
+                <UXControls:UXTextBlock Margin="0, 20, 0, 0" Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="#FF797F84" />
+            </StackPanel>
         </Border>
         <Border Name="DisableAll2" Background="#4C24273C">
             <Border.Style>
@@ -302,9 +386,12 @@
                 </Style>
             </Border.Style>
             <!-- Add a UXBusyIndicator from Robert -->
-            <UXControls:UXBusyIndicator BusyIndicatorType="Secondary" Width="64" Height="64"
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <UXControls:UXBusyIndicator BusyIndicatorType="Secondary" Width="64" Height="64"
                                 HorizontalAlignment="Center" VerticalAlignment="Center"
                                 IsActive="{Binding IsKVMBusy}" />
+                <UXControls:UXTextBlock Margin="0, 20, 0, 0" Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="#FF797F84" />
+            </StackPanel>
         </Border>
         <!--<Button Width="200" Height="160" Content="KvmRightView" />-->
     </Grid>
