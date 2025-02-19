@@ -11,7 +11,7 @@
              IsTabStop="True" Focusable="True"
              AutomationProperties.Name="{Binding Text, Mode=OneWay, RelativeSource={RelativeSource Self}}"
              KeyboardNavigation.TabNavigation="None"
-             d:DesignHeight="74" d:DesignWidth="212" PreviewKeyDown="UserControl_PreviewKeyDown">
+             d:DesignHeight="74" d:DesignWidth="212" PreviewKeyDown="UserControl_PreviewKeyDown" Loaded="UserControl_Loaded">
     <!-- UserControl Narrator: not read
              AutomationProperties.Name="{Binding Text, Mode=OneWay, RelativeSource={RelativeSource Self}}"
              AutomationProperties.Name="{Binding Text, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
