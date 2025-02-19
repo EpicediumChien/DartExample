@@ -1595,6 +1595,7 @@ namespace DDPM.SA.Common
         Task WriteLog(string logMsg); //Derek 1210
 
         Task<string> GetWebcamDeviceID(); //Derek 1225
+        Task<int> GetWebcamDeviceCountAsync(); //Derek 2025/02/19
 
         Task SetQAMOSDVisable(bool visable); //Derek 2025/01/02
 

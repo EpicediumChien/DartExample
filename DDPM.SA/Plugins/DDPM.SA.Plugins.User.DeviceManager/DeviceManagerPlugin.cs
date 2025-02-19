@@ -10964,7 +10964,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 int devCnt = GetWebcamDeviceCount();
-                writelog($"GetWebcamDeviceCount = {devCnt}, current webcam device ID = {GetWebcamDeviceID().Result}");
+                writelog($"GetWebcamDeviceCount = {devCnt}, GetWebcamDeviceCountAsync = {GetWebcamDeviceCountAsync().Result}, current webcam device ID = {GetWebcamDeviceID().Result}");
 
                 if (1 != devCnt || _GlobalSettingParam == null || !isWindowsScreenNotLocked ||
                     _GlobalSettingParam.GlobalSetting_WidgetSettings == null //||
@@ -11278,6 +11278,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<string> GetWebcamDeviceID()
         {
             return _DTPProxyPlugin.GetWebcamDeviceID();
+        }
+
+        public Task<int> GetWebcamDeviceCountAsync()
+        {
+            return _DTPProxyPlugin.GetWebcamDeviceCountAsync();
         }
 
         //Marked by Derek 1125 because they had covered by WebcamEventHandler

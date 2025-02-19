@@ -1467,6 +1467,20 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
+        public Task<int> GetWebcamDeviceCountAsync()
+        {
+            try
+            {
+                return Task.FromResult(webcamList.Count);
+            }
+            catch (Exception e)
+            {
+                writelog($"GetWebcamDeviceCountAsync get exception {e.Message}");
+
+                return Task.FromResult(0);
+            }
+        }
+
         //Derek 1221 for QAM
         public Task<string> GetWebcamDeviceID()
         {
