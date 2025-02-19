@@ -2049,8 +2049,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 //review monitor list to check duplicated data
                 ReviewAllMonitorToAvoidDuplicatedInfo();
-
                 InitMonitorSettings();
+                _DisplayManagerPlugin.initDisplayData(_AllInfoMonitors);
                 UpdateHotkeyInfo();
 
                 Task.Run(() => //support last selected monitor info from settings

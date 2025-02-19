@@ -120,6 +120,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         //Derek 2024/10/21
         private Process uiProcess = null;
 
+        private DisplayDataManger _displayDataManger = new DisplayDataManger();
+
         #endregion
 
         #region Public Members
@@ -794,6 +796,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<string> GetUSBUpstream(MonitorInfo monitorInfo, string inputsource)
         {
+            string USBUpstream = string.Empty;
+            _displayDataManger.GetMonitorUSB(monitorInfo, inputsource, out USBUpstream);
+            if (!string.IsNullOrEmpty(USBUpstream))
+            {
+                return Task.FromResult(USBUpstream);
+            }
             int input_num = 0;
             ObjGetVCP objGetVCP = new ObjGetVCP();
             if (monitorInfo.CapabilityDic.ContainsKey("E7"))
@@ -4969,6 +4977,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
+        #endregion
+
+        #region DisplayData
+        public Task initDisplayData(List<MonitorInfo> monitorInfos)
+        {
+            if (monitorInfos != null)
+            {
+                _displayDataManger.InitDisplayData(monitorInfos);
+            }
+            return Task.CompletedTask;
+        }
         #endregion
     }
 }

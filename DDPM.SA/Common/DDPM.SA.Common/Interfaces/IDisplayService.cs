@@ -270,5 +270,9 @@ namespace DDPM.SA.Common
         Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA, ISettingsManagerDev settingsPlugin);
 
         #endregion Display FWU Metadata
+
+        #region DisplayData
+        Task initDisplayData(List<MonitorInfo> monitorInfos);
+        #endregion
     }
 }
