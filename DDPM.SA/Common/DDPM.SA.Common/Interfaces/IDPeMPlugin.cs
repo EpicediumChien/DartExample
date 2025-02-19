@@ -25,6 +25,7 @@ namespace DDPM.SA.Common
         public OSDType osd_type;
         public OSDType_Device osd_device;
         public string Message { get; set; } = string.Empty;
+        public string Guid { get; set; } = string.Empty;
         public bool Status { get; set; } = false;
     }
 

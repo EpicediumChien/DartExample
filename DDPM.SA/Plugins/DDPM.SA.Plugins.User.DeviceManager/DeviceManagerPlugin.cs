@@ -17715,11 +17715,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.CompletedTask;
         }
 
-        private Object HeadsetBatteryLowObj = new Object();
-        private Object KeybordBatteryLowObj = new Object();
-        private Object MouseBatteryLowObj = new Object();
-        private Object StylusBatteryLowObj = new Object();
-
+        //private Object HeadsetBatteryLowObj = new Object();
+        //private Object KeybordBatteryLowObj = new Object();
+        //private Object MouseBatteryLowObj = new Object();
+        //private Object StylusBatteryLowObj = new Object();
         private void _showosd(object monitorInfo, OSDType _types, OSDType_Device _DeviceType, string Content, bool State = false, string title = "", bool stayOpen = false)
         {
             //writelog($"For debugging - Skip _showosd().");
@@ -18131,6 +18130,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        private void CloseOSD(OSDType_Device type, string guid)
+        {
+            switch (type)
+            {
+                case OSDType_Device.Keyboard:
+                    _OSD_Controler.KeybordBatteryLow_CloseWindow(null, null);
+                    break;
+                case OSDType_Device.Mouse:
+                    _OSD_Controler.MouseBatteryLow_CloseWindow(null, null);
+                    break;
+                case OSDType_Device.Headset:
+                    _OSD_Controler.HeadsetBatteryLow_CloseWindow(null, null);
+                    break;
+                case OSDType_Device.Pen:
+                    _OSD_Controler.StylusBatteryLow_CloseWindow(null, null);
+                    break;
+                default:
+                    break;
+            }
+
+        }
         private bool IsValidJson(string jsonString)
         {
             try
@@ -18704,7 +18724,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case "Mute.Status":
                     ShowOSD(e.DeviceName, e.osd_type, e.Message, e.Status);
                     break;
-
+                case "CloseBatteryLowOSD":
+                    CloseOSD(e.osd_device, e.Guid);
+                    break;
                 default:
                     break;
             }

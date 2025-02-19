@@ -2481,7 +2481,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (obj)
             {
                 //_ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, LangHelper.Instance["CollabMultipleCalls"]);
-                OSDEventArgs args = new OSDEventArgs()
+                OSDEventArgs args = new()
                 {
                     Requester = "CollaborationNotAvailable.Keyboard",
                     DeviceName = Screen.PrimaryScreen.DeviceName,
@@ -2502,7 +2502,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (obj)
             {
                 //_ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, LangHelper.Instance["CollabMultipleCalls"]);
-                OSDEventArgs args = new OSDEventArgs()
+                OSDEventArgs args = new()
                 {
                     Requester = "CollaborationNotAvailable.Keyboard",
                     DeviceName = Screen.PrimaryScreen.DeviceName,
@@ -2731,22 +2731,29 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         }
                     }
 
-                    //if (LowBatteryIDs.Contains(iLogicalDevice.Id.ToString()))
-                    //    LowBatteryIDs.Remove(iLogicalDevice.Id.ToString());
+                    // << 250218 added by Hess for PIMS-328225
+                    if (LowBatteryIDs.TryGetValue(deviceGuid.ToString(), out OSDType_Device type))
+                    {
+                        OSDEventArgs args = new()
+                        {
+                            Requester = "CloseBatteryLowOSD",
+                            osd_type = OSDType.BatteryLow,
+                            osd_device = type,
+                            Guid = ""
+                        };
+                        OnOSDNotify(args);
+                    }
+                    // >>
+
                     ScanDevices();
                     var IDs = _deviceHelper.deviceInfo.Select(x => x.ID.ToString()).ToList();
-                    Trace.WriteLine($"[PeripheralsPlugin] IPhysicalDevice_DeviceRemovedEvent LowBatteryIDs.Count : {LowBatteryIDs.Count.ToString()}, IDs.Count : {IDs.Count.ToString()} ... ");
-                    _logs.DebugMsg_1($"[PeripheralsPlugin] IPhysicalDevice_DeviceRemovedEvent LowBatteryIDs.Count : {LowBatteryIDs.Count.ToString()}, IDs.Count : {IDs.Count.ToString()} ... ");
-                    //LowBatteryIDs.ForEach(id =>
-                    //{
-                    //    if (!IDs.Contains(id))
-                    //        LowBatteryIDs.Remove(id);
-                    //});
-                    for (int i = LowBatteryIDs.Count - 1; i >= 0; i--)
+                    writelog($"[PeripheralsPlugin] IPhysicalDevice_DeviceRemovedEvent LowBatteryIDs.Count : {LowBatteryIDs.Count}, IDs.Count : {IDs.Count} ... ");
+                    var lbIDs = LowBatteryIDs.Keys.ToList();
+                    for (int i = lbIDs.Count - 1; i >= 0; i--)
                     {
-                        if (!IDs.Contains(LowBatteryIDs[i]))
+                        if (!IDs.Contains(lbIDs[i]))
                         {
-                            LowBatteryIDs.RemoveAt(i);
+                            LowBatteryIDs.Remove(lbIDs[i]);
                         }
                     }
                 }
@@ -2968,7 +2975,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         //    }
         //}
 
-        private List<string> LowBatteryIDs = new();
+        private Dictionary<string, OSDType_Device> LowBatteryIDs = new();
         private void CheckLowBatteryOSD(DeviceInfo deviceInfo)
         {
             try
@@ -2988,7 +2995,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     return;
                 }
 
-                if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9 && deviceInfo.BatteryStatus != "Charging" && !LowBatteryIDs.Contains(deviceInfo.ID.ToString()))
+                if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9 && deviceInfo.BatteryStatus != "Charging" && !LowBatteryIDs.ContainsKey(deviceInfo.ID.ToString()))
                 {
                     OSDType_Device type = OSDType_Device.Unknown;
                     var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
@@ -3025,7 +3032,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     }
 
                     //_ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
-                    OSDEventArgs args = new OSDEventArgs()
+                    OSDEventArgs args = new()
                     {
                         Requester = "BatteryLow",
                         DeviceName = Screen.PrimaryScreen.DeviceName,
@@ -3034,7 +3041,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         Message = message
                     };
                     OnOSDNotify(args);
-                    LowBatteryIDs.Add(deviceInfo.ID.ToString());
+                    LowBatteryIDs.Add(deviceInfo.ID.ToString(), type);
                     Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
                     writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
                 }
@@ -3050,9 +3057,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             writelog($"UpdateLowBatteryOSD: Value: {showOSD}");
             if (_deviceHelper is { deviceInfo: not null })
             {
-                foreach (var di in _deviceHelper.deviceInfo)
+                if (showOSD)
                 {
-                    if (showOSD)
+                    foreach (var di in _deviceHelper.deviceInfo)
                     {
                         try
                         {
@@ -3092,7 +3099,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     message = SAUICommonHelper.MappingEOLName(model);
                                 }
 
-                                OSDEventArgs args = new OSDEventArgs()
+                                OSDEventArgs args = new()
                                 {
                                     Requester = "BatteryLow",
                                     DeviceName = Screen.PrimaryScreen.DeviceName,
@@ -3101,7 +3108,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     Message = message
                                 };
                                 OnOSDNotify(args);
-                                LowBatteryIDs.Add(di.ID.ToString());
+                                LowBatteryIDs.Add(di.ID.ToString(), type);
                                 writelog($"Show BatteryLow OSD: ID: {di.ID} Level: {di.BatteryLevel}");
                             }
                         }
@@ -3110,25 +3117,31 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             writelog($"General setting Check [Low battery level] fail with exception:{e.Message}");
                         }
                     }
-                    else
+                }
+                else
+                {
+                    try
                     {
-                        try
+                        OSDEventArgs args = new()
                         {
-                            OSDEventArgs args = new OSDEventArgs()
-                            {
-                                Requester = "CloseBatteryLowOSD",
-                                DeviceName = Screen.PrimaryScreen.DeviceName,
-                                osd_type = OSDType.BatteryLow,
-                                //Message = message
-                            };
-                            OnOSDNotify(args);
-                        }
-                        catch (Exception e)
-                        {
-                            writelog($"General setting Uncheck [Low battery level] fail with exception:{e.Message}");
-                        }
-                        LowBatteryIDs.Clear();
+                            Requester = "CloseBatteryLowOSD",
+                            osd_type = OSDType.BatteryLow,
+                            osd_device = OSDType_Device.Keyboard,
+                            Guid = ""
+                        };
+                        OnOSDNotify(args);
+                        args.osd_device = OSDType_Device.Mouse;
+                        OnOSDNotify(args);
+                        args.osd_device = OSDType_Device.Headset;
+                        OnOSDNotify(args);
+                        args.osd_device = OSDType_Device.Pen;
+                        OnOSDNotify(args);
                     }
+                    catch (Exception e)
+                    {
+                        writelog($"General setting Uncheck [Low battery level] fail with exception:{e.Message}");
+                    }
+                    LowBatteryIDs.Clear();
                 }
             }
 
@@ -3216,7 +3229,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     var model = SAUICommonHelper.MappingModel(deviceInfo.ModelNumber);
                     var message = $"{deviceInfo.Name.Replace(deviceInfo.ModelNumber, "").Trim()} {model}";
 
-                    OSDEventArgs args = new OSDEventArgs()
+                    OSDEventArgs args = new()
                     {
                         Requester = "Mute.Status",
                         DeviceName = Screen.PrimaryScreen.DeviceName,
@@ -3420,7 +3433,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
                     var model = SAUICommonHelper.MappingModel(deviceInfo.ModelNumber);
                     var message = $"{deviceInfo.Name.Replace(deviceInfo.ModelNumber, "").Trim()} {model}";
-                    OSDEventArgs args = new OSDEventArgs()
+                    OSDEventArgs args = new()
                     {
                         Requester = "Mute.Status",
                         DeviceName = Screen.PrimaryScreen.DeviceName,
