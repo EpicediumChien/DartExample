@@ -22,23 +22,25 @@ namespace DDPM.SA.Common
 
         Task SetIsUserActive(bool IsUserActive);
 
+        Task CancelVcpTask(Guid user_guid);
+
         Task<List<MonitorInfo>> GetMonitors();
 
         Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken Token);
 
         Task<Dictionary<EDID, Dictionary<object, object>>> GetVCPCacheTable();
 
-        Task<string> GetCapabilitiesString(MonitorInfo monitorInfo);
+        Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default);
 
-        Task<string> GetVCPCapabilities(MonitorInfo monitorInfo);
+        Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid guid = default);
 
-        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, int opt = 0);
+        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, Guid guid = default, int opt = 0);
 
-        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, int opt = 0);
+        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, Guid guid = default, int opt = 0);
 
-        Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val);
+        Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val, Guid guid = default);
 
-        Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val);
+        Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val, Guid guid = default);
 
         event EventHandler<VCPchangedEventArgs> VCPchanged;
 
@@ -270,5 +272,9 @@ namespace DDPM.SA.Common
         Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA, ISettingsManagerDev settingsPlugin);
 
         #endregion Display FWU Metadata
+
+        #region DisplayData
+        Task InitDisplayData(List<MonitorInfo> monitorInfos);
+        #endregion
     }
 }

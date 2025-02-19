@@ -255,12 +255,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private DDMtoDDPM dDMtodDPM = new DDMtoDDPM();
         private HotkeySettings hotkeySettings = new HotkeySettings();
+
         /// <summary>
         ///Check ICC profile update timers
         /// </summary>
         private System.Timers.Timer _checkICCProfileScheduleTimer;//Added 02/10 by Bruce
-        bool isDownloadingICC = false;//Added 02/13 by Bruce
-        bool isNeedPreDownloadingICC = false;//Added 02/13 by Bruce
+
+        private bool isDownloadingICC = false;//Added 02/13 by Bruce
+        private bool isNeedPreDownloadingICC = false;//Added 02/13 by Bruce
 
         #endregion
 
@@ -295,7 +297,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Microsoft.Win32.SystemEvents.PowerModeChanged += OnPowerModeChanged;//Added 01/07 by Bruce
             DdpmSACommonHelper.SAUserPluginReady(nameof(DeviceMangerPlugin));
         }
-
 
         private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
         {
@@ -555,6 +556,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         case 0x00://off
                             usbKvmPBP.isPBPmode = false;
                             break;
+
                         case 0x21://PIP small
                             usbKvmPBP.isPBPmode = false;
                             break;
@@ -562,6 +564,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         case 0x22://PIP large
                             usbKvmPBP.isPBPmode = false;
                             break;
+
                         case 0x23:
                         case 0x24:
                         case 0x25:
@@ -637,7 +640,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,hotkeysetting is null.");
                         }
-
                     }
                 }
             }
@@ -1815,6 +1817,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             return Task.FromResult(true);
         }
+
         /// <summary>
         /// 定期檢查color profile排程
         /// </summary>
@@ -1858,6 +1861,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"{nameof(PreDownloadICC)} done");
         }
+
         #endregion
 
         #region Schedule Manger implementation
@@ -2027,6 +2031,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.CompletedTask;
         }
 
+        public Task CancelVcpTask(Guid user_guid)
+        {
+            writelog("DeviceMangerPlugin received CancelVcpTask: " + user_guid.ToString() + " requested ...");
+
+            if (_DisplayManagerPlugin != null)
+                _DisplayManagerPlugin.CancelVcpTask(user_guid);
+            else
+                writelog("_DisplayManagerPlugin is Null");
+
+            return Task.CompletedTask;
+        }
+
         public Task<List<MonitorInfo>> GetMonitors()
         {
             lock (_MoLock)//this) //Dean 0626 fix SAST issue, do not lock over this object
@@ -2049,8 +2065,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 //review monitor list to check duplicated data
                 ReviewAllMonitorToAvoidDuplicatedInfo();
-
                 InitMonitorSettings();
+                _DisplayManagerPlugin.InitDisplayData(_AllInfoMonitors);
                 UpdateHotkeyInfo();
 
                 Task.Run(() => //support last selected monitor info from settings
@@ -2098,7 +2114,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(_AllInfoMonitors.ToList());
         }
 
-        public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo)
+        public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default)
         {
             writelog("DeviceMangerPlugin received GetCapabilitiesString requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -2107,12 +2123,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string r = string.Empty;
 
             if (_DisplayManagerPlugin != null)
-                r = _DisplayManagerPlugin.GetCapabilitiesString(monitorInfo).Result;
+                r = _DisplayManagerPlugin.GetCapabilitiesString(monitorInfo, guid).Result;
 
             return Task.FromResult(r);
         }
 
-        public Task<string> GetVCPCapabilities(MonitorInfo monitorInfo)
+        public Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid guid = default)
         {
             writelog("DeviceMangerPlugin received GetVCPCapabilities requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -2121,12 +2137,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string r = string.Empty;
 
             if (_DisplayManagerPlugin != null)
-                r = _DisplayManagerPlugin.GetVCPCapabilities(monitorInfo).Result;
+                r = _DisplayManagerPlugin.GetVCPCapabilities(monitorInfo, guid).Result;
 
             return Task.FromResult(r);
         }
 
-        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, int opt = 0)
+        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, Guid guid = default, int opt = 0)
         {
             writelog("DeviceMangerPlugin received GetVCPCapability requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -2137,12 +2153,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ObjGetVCP r = new ObjGetVCP();
 
             if (_DisplayManagerPlugin != null)
-                r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, code, opt).Result;
+                r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, code, guid, opt).Result;
 
             return Task.FromResult(r);
         }
 
-        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, int opt = 0)//Dean 0626 fix SAST issue, syncup param name as well
+        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, Guid guid = default, int opt = 0)//Dean 0626 fix SAST issue, syncup param name as well
         {
             writelog("DeviceMangerPlugin received GetVCPCapability requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -2153,12 +2169,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ObjGetVCP r = new ObjGetVCP();
 
             if (_DisplayManagerPlugin != null)
-                r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, FunctionName, opt).Result;
+                r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, FunctionName, guid, opt).Result;
 
             return Task.FromResult(r);
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val)
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val, Guid guid = default)
         {
             writelog("DeviceMangerPlugin received SetVCPCapability requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -2169,7 +2185,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool r = false;
 
             if (_DisplayManagerPlugin != null)
-                r = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, code, val).Result;
+                r = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, code, val, guid).Result;
 
             //0715 Jason add
             if (r && code == 0x04 && _NKVMPlugin != null)
@@ -2246,7 +2262,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(r);
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val)//Dean 0626 fix SAST issue, syncup param name as well
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val, Guid guid = default)//Dean 0626 fix SAST issue, syncup param name as well
         {
             writelog("DeviceMangerPlugin received SetVCPCapability requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfoX.DisplayName);
@@ -2261,7 +2277,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (!string.IsNullOrEmpty(val))
                 {
                     if (_DisplayManagerPlugin != null)
-                        r = _DisplayManagerPlugin.SetVCPCapability(monitorInfoX, FunctionName, val).Result;
+                        r = _DisplayManagerPlugin.SetVCPCapability(monitorInfoX, FunctionName, val, guid).Result;
 
                     //Telementry Collection
                     var Displaysettings_Function = new Displaysettings_Function();
@@ -3073,11 +3089,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             nRes = _PeripheralsPlugin.GetSnoozeLength(deviceId);
             return Task.FromResult(nRes);
         }
+
         public Task<bool> StartCopilotRegistryMonitor()
         {
             writelog("DeviceMangerPlugin received StartCopilotRegistryMonitor requested ...");
             return Task.Run(() => _PeripheralsPlugin.StartCopilotRegistryMonitor());
         }
+
         public Task<bool> StopCopilotRegistryMonitor()
         {
             writelog("DeviceMangerPlugin received StopCopilotRegistryMonitor requested ...");
@@ -3093,6 +3111,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(retCount);
         }
+
         #endregion
 
         #region Headset
@@ -5495,7 +5514,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             //Derek 1125
             //if (e != null && e != EventArgs.Empty && e.UI_Field_Name.StartsWith("WebcamEvent"))
-            // Jim 20250106 modify 
+            // Jim 20250106 modify
             if (e != null && e != EventArgs.Empty && e.UI_Field_Name != null && e.UI_Field_Name.StartsWith("WebcamEvent"))
             {
                 // Jim 20250104 add for PIMS-335905 [DDPM Win 2.0][R19] Observe no WAL Countdown OSD is seen when WAL is act=tivated
@@ -6432,6 +6451,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread1.Start();
             return tcs.Task;
         }
+
         private void CallOSD(object o, (string, string, bool) args)
         {
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, false, args);
@@ -6624,6 +6644,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"[DelayEvent],{ob} done.");
         }
+
         /// <summary>
         /// 定期檢查更新排程
         /// </summary>
@@ -6643,6 +6664,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _SettingsPlugin is null");
             }
         }
+
         private void UpdateLockSettingChange(ITSettingEventArgs e)
         {
             writelog($"UpdateLockSettingChange start");
@@ -6686,6 +6708,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"UpdateLockSettingChange done");
         }
+
         private void OnPowerModeChanged(object sender, Microsoft.Win32.PowerModeChangedEventArgs e)
         {
             if (_checkUpdateScheduleTimer != null)
@@ -6708,6 +6731,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
+
         private void ResetTimer()
         {
             writelog($"ResetTimer start");
@@ -6720,6 +6744,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"ResetTimer done");
         }
+
         private void DisplayFWCheck()
         {
             writelog($"DisplayFWCheck start");
@@ -6734,6 +6759,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"DisplayFWCheck done");
         }
+
         #endregion
 
         #region USBKVM implementation
@@ -9367,6 +9393,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetMouseAssignableActions(Guid));
         }
+
         public async Task<JArray> GetMouseAssignedActions(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetMouseAssignedActions(Guid));
@@ -9401,6 +9428,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.StopMouseKeystrokeRecording(Guid));
         }
+
         public async Task<int> GetTouchScrollSensitivityLevel(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetTouchScrollSensitivityLevel(Guid));
@@ -9471,6 +9499,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received SetReportRate requested ...");
             return _DTPProxyPlugin.SetReportRate(Guid, newValue);
         }
+
         public Task<bool> SetTouchScrollSensitivityLevel(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetTouchScrollSensitivityLevel requested ...");
@@ -9500,6 +9529,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return _DTPProxyPlugin.KeyCaptureData();
         }
+
         public Task<string> GetIsdDriverVersion()
         {
             return _DTPProxyPlugin.GetIsdDriverVersion();
@@ -9733,6 +9763,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return Task.Run(() => _DTPProxyPlugin.GetKbAssignableActions(Guid));
         }
+
         public Task<JArray> GetKbAssignedActions(string Guid)
         {
             return Task.Run(() => _DTPProxyPlugin.GetKbAssignedActions(Guid));
@@ -9913,6 +9944,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetAutoFramingSensitivity(Guid));
         }
+
         public async Task<string> GetWebcamSerialNumber(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetWebcamSerialNumber(Guid));
@@ -10345,7 +10377,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         /// <summary>
-        /// To confirm whether it is installed and used for the first time, it will check whether there is a REG record, whether DPeM has been installed, and whether the SDK is connected. 
+        /// To confirm whether it is installed and used for the first time, it will check whether there is a REG record, whether DPeM has been installed, and whether the SDK is connected.
         /// </summary>
         /// <returns></returns>
         public async Task<bool> CheckInstallFirstOpen()
@@ -10411,7 +10443,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                         Thread.Sleep(1000);
                     }
-
                 });
                 obj = new Object();
                 return true;
@@ -10423,7 +10454,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             return false;
         }
-
 
         /// <summary>
         /// Confirm that DDPM has been installed
@@ -10964,7 +10994,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 int devCnt = GetWebcamDeviceCount();
-                writelog($"GetWebcamDeviceCount = {devCnt}, current webcam device ID = {QAMWebcamDeviceGuid}");
+                writelog($"GetWebcamDeviceCount = {devCnt}, GetWebcamDeviceCountAsync = {GetWebcamDeviceCountAsync().Result}, current webcam device ID = {GetWebcamDeviceID().Result}");
 
                 if (1 != devCnt || _GlobalSettingParam == null || !isWindowsScreenNotLocked ||
                     _GlobalSettingParam.GlobalSetting_WidgetSettings == null //||
@@ -11182,7 +11212,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case "Webcam_IsZoomMeetingActiveChanged":
-                    writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomMeetingActiveChanged");
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomMeetingActiveChanged start");
                     isQAMHandleEvent = true;
 
                     if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
@@ -11196,11 +11226,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_IsZoomScreenShareActiveChanged");
                     //}
 
-                    writelog($"HandleQAMV2 launched by event Webcam_IsZoomMeetingActiveChanged");
+                    writelog($"HandleQAMV2 launched by event Webcam_IsZoomMeetingActiveChanged end");
                     break;
 
                 case "Webcam_IsZoomScreenShareActiveChanged":
-                    writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomScreenShareActiveChanged");
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomScreenShareActiveChanged start");
                     isQAMHandleEvent = true;
 
                     if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
@@ -11214,11 +11244,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_IsZoomScreenShareActiveChanged");
                     //}
 
-                    writelog($"HandleQAMV2 launched by event Webcam_IsZoomScreenShareActiveChanged");
+                    writelog($"HandleQAMV2 launched by event Webcam_IsZoomScreenShareActiveChanged end");
                     break;
 
                 case "Webcam_ZoomMeetingTypeChanged":
-                    writelog($"HandleQAMV2 launch by webcam event Webcam_ZoomMeetingTypeChanged");
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_ZoomMeetingTypeChanged start");
                     isQAMHandleEvent = true;
 
                     int type = (int)ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
@@ -11236,11 +11266,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_ZoomMeetingTypeChanged");
                     //}
 
-                    writelog($"HandleQAMV2 launched by event Webcam_ZoomMeetingTypeChanged");
+                    writelog($"HandleQAMV2 launched by event Webcam_ZoomMeetingTypeChanged end");
                     break;
 
                 case "Webcam_Disconnected":
-                    writelog($"HandleQAMV2 launch by webcam event Webcam_Disconnected");
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_Disconnected start");
                     isQAMHandleEvent = true;
                     //Derek 1221 if there is only one device after this event, should update QAMWebcamDeviceGuid
                     //if (1 == WebcamDevCnt)
@@ -11249,11 +11279,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     //    writelog($"There is only one device after this event, should update QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid}");
                     //}
-                    writelog($"HandleQAMV2 launched by event Webcam_Disconnected");
+                    writelog($"HandleQAMV2 launched by event Webcam_Disconnected end");
                     break;
 
                 case "Webcam_Connected":
-                    writelog($"HandleQAMV2 launch by webcam event Webcam_Connected");
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_Connected start");
                     isQAMHandleEvent = true;
 
                     //if (1 == WebcamDevCnt)
@@ -11264,7 +11294,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_Connected");
                     //}
 
-                    writelog($"HandleQAMV2 launched by event Webcam_Connected");
+                    writelog($"HandleQAMV2 launched by event Webcam_Connected end");
                     break;
 
                 default:
@@ -11278,6 +11308,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<string> GetWebcamDeviceID()
         {
             return _DTPProxyPlugin.GetWebcamDeviceID();
+        }
+
+        public Task<int> GetWebcamDeviceCountAsync()
+        {
+            return _DTPProxyPlugin.GetWebcamDeviceCountAsync();
         }
 
         //Marked by Derek 1125 because they had covered by WebcamEventHandler
@@ -11496,7 +11531,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 else
                 {
-                    //_QAM.Show();                    
+                    //_QAM.Show();
                     _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
                     //Dispatcher.Run(); //may block the process Derek 1219
 
@@ -11956,6 +11991,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #region FW Update
 
         private static bool isThreadRunning = false;
+
         private void PopupBaseCloseEvent(object o, EventArgs e)
         {
             writelog($"_PopupBase PopupBaseCloseEvent");
@@ -11967,6 +12003,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"_PopupBase PopupBaseCloseEvent2 done");
             }
         }
+
         private void OnProgressUpdateEvent(UpdateProgressInfo fWUpdateInfo)
         {
             //writelog($"{nameof(OnProgressUpdateEvent)} start");
@@ -11994,6 +12031,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             //writelog($"{nameof(OnProgressUpdateEvent)} done");
         }
+
         private Task CallPopup()
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
@@ -12037,6 +12075,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread1.Start();
             return tcs.Task;
         }
+
         private void ClosePopup()
         {
             writelog($"ClosePopup start");
@@ -12054,6 +12093,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"ClosePopup error : {ex.Message}");
             }
         }
+
         private void OnUILockEvent(bool isLockFWU_UI)
         {
             EventHandler<bool> handler = FWU_UILock_Notify;
@@ -12294,6 +12334,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"CheckDeviceFirstTimesToConnect Exception : {ex.Message}");
             }
         }
+
         //0613 Bruce 用於看是否連接超過2個dock
         private void CheckDocks()
         {
@@ -13276,7 +13317,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
 
                         //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
-                        //CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);                        
+                        //CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
                     }
                     else
                     {
@@ -14824,7 +14865,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     moInfo += ",(null)";
                 }
-
             }
             writelog($"Toggle_EzRecentSetting({moInfo}) is called.");
 
@@ -15299,6 +15339,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
+
         private bool IsPxPModeOFF(MonitorInfo mo)
         {
             UInt16 pxpModeValue = 0xff;
@@ -15350,12 +15391,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     case 0x00://off
                         ret = false;
                         break;
+
                     case 0x01://01h: PIP size toggling (s->bigger...>s, NOT to off)
                         ret = true;
                         break;
+
                     case 0x02://02h: PIP position toggling (top right->...->top right)
                         ret = true;
                         break;
+
                     case 0x21://PIP small
                         ret = true;
                         break;
@@ -15363,6 +15407,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     case 0x22://PIP large
                         ret = true;
                         break;
+
                     case 0x23:
                     case 0x24:
                     case 0x25:
@@ -15385,6 +15430,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     case 0x42:
                         ret = false;
                         break;
+
                     default:
                         ret = false;
                         break;
@@ -16631,14 +16677,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             monitorSettingsList.Add(settings);
                             bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
 
-                            PreDownloadICC(m);// 
+                            PreDownloadICC(m);//
                         }
                     }
                 }
             }
         }
 
-        //01/03 Jason add Hotkey to same model 
+        //01/03 Jason add Hotkey to same model
         private void UpdateHotkeyInfo()
         {
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
@@ -17669,10 +17715,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.CompletedTask;
         }
 
-        private Object HeadsetBatteryLowObj = new Object();
-        private Object KeybordBatteryLowObj = new Object();
-        private Object MouseBatteryLowObj = new Object();
-        private Object StylusBatteryLowObj = new Object();
+        //private Object HeadsetBatteryLowObj = new Object();
+        //private Object KeybordBatteryLowObj = new Object();
+        //private Object MouseBatteryLowObj = new Object();
+        //private Object StylusBatteryLowObj = new Object();
         private void _showosd(object monitorInfo, OSDType _types, OSDType_Device _DeviceType, string Content, bool State = false, string title = "", bool stayOpen = false)
         {
             //writelog($"For debugging - Skip _showosd().");
@@ -18084,6 +18130,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        private void CloseOSD(OSDType_Device type, string guid)
+        {
+            switch (type)
+            {
+                case OSDType_Device.Keyboard:
+                    _OSD_Controler.KeybordBatteryLow_CloseWindow(null, null);
+                    break;
+                case OSDType_Device.Mouse:
+                    _OSD_Controler.MouseBatteryLow_CloseWindow(null, null);
+                    break;
+                case OSDType_Device.Headset:
+                    _OSD_Controler.HeadsetBatteryLow_CloseWindow(null, null);
+                    break;
+                case OSDType_Device.Pen:
+                    _OSD_Controler.StylusBatteryLow_CloseWindow(null, null);
+                    break;
+                default:
+                    break;
+            }
+
+        }
         private bool IsValidJson(string jsonString)
         {
             try
@@ -18649,11 +18716,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case "CollaborationNotAvailable.Keyboard":
                     ShowOSD(e.DeviceName, e.osd_type, e.osd_device, e.Message);
                     break;
+
                 case "BatteryLow":
                     ShowOSD(e.DeviceName, e.osd_type, e.osd_device, e.Message);
                     break;
+
                 case "Mute.Status":
                     ShowOSD(e.DeviceName, e.osd_type, e.Message, e.Status);
+                    break;
+                case "CloseBatteryLowOSD":
+                    CloseOSD(e.osd_device, e.Guid);
                     break;
                 default:
                     break;
@@ -18663,7 +18735,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         // add @ 20250116 stephen
         public Task<bool> checkDeviceConnStatus(FwRule rule)
         {
-
             if (!rule.devicetype.Equals("display"))
             {
                 return Task.FromResult(true);
@@ -19191,6 +19262,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
         public async Task<bool> GetAirAudioSidetoneAsync(string Guid)
         {
             try
@@ -19496,7 +19568,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
-
 
         public async Task<bool> GetAirAudioIsReadyAsync(string Guid)
         {
@@ -20314,4 +20385,5 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
     }
 }
+
 //GetIsANCSupportedAsync

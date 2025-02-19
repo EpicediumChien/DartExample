@@ -198,7 +198,7 @@ namespace NetworkKVM.Plugins
             else
             {
                 if (_AllInfoMonitors.Count == 0 && monitorInfos.Count > 0)
-                {                    
+                {
                     //means plugin 1 or more monitor in
                     _logs.DebugMsg("[UpdateMonitorInfo] monitor 0 -> 1");
                     //Call Func: OnMonitorPlugIn(List<MonitorInfo> mos);
@@ -420,7 +420,7 @@ namespace NetworkKVM.Plugins
             bool isAdd = false;
             //if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
             //{
-                _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
+            _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
             //}
             foreach (MonitorInfo monitorInfo in _AllInfoMonitors)
             {
@@ -575,7 +575,7 @@ namespace NetworkKVM.Plugins
         {
             //if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
             //{
-                _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
+            _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
             //}
             foreach (MonitorInfo monitorInfo in _AllInfoMonitors)
             {
@@ -692,7 +692,7 @@ namespace NetworkKVM.Plugins
                     WriteAsync(set_HOTKEY.ToJson()).Wait();
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logs.DebugMsg($"[SetHotkey] exception: {e.Message}");
             }
@@ -1105,7 +1105,7 @@ namespace NetworkKVM.Plugins
             SHOW_NKVM show_NKVM = new SHOW_NKVM();
             show_NKVM.cid = cid + 1;
             show_NKVM.MonitorNum = num;
-            show_NKVM.MonitorX = x; 
+            show_NKVM.MonitorX = x;
             show_NKVM.MonitorY = y;
             show_NKVM.UpdateChecksum();
             if (show_NKVM.ToJson() != string.Empty)
@@ -1136,7 +1136,7 @@ namespace NetworkKVM.Plugins
             return Task.CompletedTask;
         }
 
-#endregion INKVM implementation
+        #endregion INKVM implementation
 
         #region Private Methods
 
@@ -1332,74 +1332,74 @@ namespace NetworkKVM.Plugins
                             //}
                             //else
                             //{
-                                lock (lock_wait)
+                            lock (lock_wait)
+                            {
+                                try
                                 {
-                                    try
+                                    //i = 0;
+                                    response = ReadAsync().Result;
+                                    _logs.DebugMsg("[NetworkKVM] Get :" + response);
+                                    if (!string.IsNullOrEmpty(response))
                                     {
-                                        //i = 0;
-                                        response = ReadAsync().Result;
-                                        _logs.DebugMsg("[NetworkKVM] Get :" + response);
-                                        if (!string.IsNullOrEmpty(response))
+                                        if (response == "Disconnect")
                                         {
-                                            if (response == "Disconnect")
-                                            {
-                                                Disconnect();
-                                                //CreateNamedPipe();
-                                            }
-                                            else
-                                            {
-                                                //var matches = Regex.Matches(response, @"\{.*?\}");
-                                                List<string> respList = new List<string>();
-                                                int braceCount = 0;
-                                                int startIndex = 0;
-
-                                                for (int l = 0; l < response.Length; l++)
-                                                {
-                                                    if (response[l] == '{')
-                                                    {
-                                                        if (braceCount == 0)
-                                                        {
-                                                            startIndex = l;
-                                                        }
-                                                        braceCount++;
-                                                    }
-                                                    else if (response[l] == '}')
-                                                    {
-                                                        braceCount--;
-
-                                                        if (braceCount == 0)
-                                                        {
-                                                            respList.Add(response.Substring(startIndex, l - startIndex + 1));
-                                                        }
-                                                    }
-                                                }
-                                                if (respList != null)
-                                                {
-                                                    foreach (string resp in respList)
-                                                    {
-                                                        _logs.DebugMsg("[NetworkKVM] response string :" + resp);
-                                                        JsonstringParse(resp); //read json type
-                                                    }
-                                                }
-                                            }
+                                            Disconnect();
+                                            //CreateNamedPipe();
                                         }
                                         else
                                         {
-                                            _logs.DebugMsg("[NetworkKVM] Get is null or empty");
+                                            //var matches = Regex.Matches(response, @"\{.*?\}");
+                                            List<string> respList = new List<string>();
+                                            int braceCount = 0;
+                                            int startIndex = 0;
+
+                                            for (int l = 0; l < response.Length; l++)
+                                            {
+                                                if (response[l] == '{')
+                                                {
+                                                    if (braceCount == 0)
+                                                    {
+                                                        startIndex = l;
+                                                    }
+                                                    braceCount++;
+                                                }
+                                                else if (response[l] == '}')
+                                                {
+                                                    braceCount--;
+
+                                                    if (braceCount == 0)
+                                                    {
+                                                        respList.Add(response.Substring(startIndex, l - startIndex + 1));
+                                                    }
+                                                }
+                                            }
+                                            if (respList != null)
+                                            {
+                                                foreach (string resp in respList)
+                                                {
+                                                    _logs.DebugMsg("[NetworkKVM] response string :" + resp);
+                                                    JsonstringParse(resp); //read json type
+                                                }
+                                            }
                                         }
                                     }
-                                    catch (Exception ex)
+                                    else
                                     {
-                                        _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
-                                        Disconnect();
-                                        Thread.Sleep(1000);
-                                        _AllInfoMonitors = GetMonitors().Result;
-                                        if (CreateNamedPipe_init())
-                                        {
-                                            Thread.Sleep(500);
-                                        }
+                                        _logs.DebugMsg("[NetworkKVM] Get is null or empty");
                                     }
                                 }
+                                catch (Exception ex)
+                                {
+                                    _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
+                                    Disconnect();
+                                    Thread.Sleep(1000);
+                                    _AllInfoMonitors = GetMonitors().Result;
+                                    if (CreateNamedPipe_init())
+                                    {
+                                        Thread.Sleep(500);
+                                    }
+                                }
+                            }
                             //}
                         }
                         else
@@ -1464,79 +1464,79 @@ namespace NetworkKVM.Plugins
                             //}
                             //else
                             //{
-                                lock (lock_wait)
+                            lock (lock_wait)
+                            {
+                                try
                                 {
-                                    try
+                                    //i = 0;
+                                    response = ReadAsync().Result;
+                                    _logs.DebugMsg("[NetworkKVM] Get :" + response);
+                                    if (!string.IsNullOrEmpty(response))
                                     {
-                                        //i = 0;
-                                        response = ReadAsync().Result;
-                                        _logs.DebugMsg("[NetworkKVM] Get :" + response);
-                                        if (!string.IsNullOrEmpty(response))
+                                        if (response == "Disconnect")
                                         {
-                                            if (response == "Disconnect")
-                                            {
-                                                Disconnect();
-                                                //CreateNamedPipe();
-                                            }
-                                            else
-                                            {
-                                                //var matches = Regex.Matches(response, @"\{.*?\}");
-                                                List<string> respList = new List<string>();
-                                                int braceCount = 0;
-                                                int startIndex = 0;
-
-                                                for (int l = 0; l < response.Length; l++)
-                                                {
-                                                    if (response[l] == '{')
-                                                    {
-                                                        if (braceCount == 0)
-                                                        {
-                                                            startIndex = l;
-                                                        }
-                                                        braceCount++;
-                                                    }
-                                                    else if (response[l] == '}')
-                                                    {
-                                                        braceCount--;
-
-                                                        if (braceCount == 0)
-                                                        {
-                                                            respList.Add(response.Substring(startIndex, l - startIndex + 1));
-                                                        }
-                                                    }
-                                                }
-                                                if (respList != null)
-                                                {
-                                                    foreach (string resp in respList)
-                                                    {
-                                                        _logs.DebugMsg("[NetworkKVM] response string :" + resp);
-                                                        JsonstringParse(resp); //read json type
-                                                    }
-                                                }
-                                            }
+                                            Disconnect();
+                                            //CreateNamedPipe();
                                         }
                                         else
                                         {
-                                            _logs.DebugMsg("[NetworkKVM] Get is null or empty");
+                                            //var matches = Regex.Matches(response, @"\{.*?\}");
+                                            List<string> respList = new List<string>();
+                                            int braceCount = 0;
+                                            int startIndex = 0;
+
+                                            for (int l = 0; l < response.Length; l++)
+                                            {
+                                                if (response[l] == '{')
+                                                {
+                                                    if (braceCount == 0)
+                                                    {
+                                                        startIndex = l;
+                                                    }
+                                                    braceCount++;
+                                                }
+                                                else if (response[l] == '}')
+                                                {
+                                                    braceCount--;
+
+                                                    if (braceCount == 0)
+                                                    {
+                                                        respList.Add(response.Substring(startIndex, l - startIndex + 1));
+                                                    }
+                                                }
+                                            }
+                                            if (respList != null)
+                                            {
+                                                foreach (string resp in respList)
+                                                {
+                                                    _logs.DebugMsg("[NetworkKVM] response string :" + resp);
+                                                    JsonstringParse(resp); //read json type
+                                                }
+                                            }
                                         }
                                     }
-                                    catch (Exception ex)
+                                    else
                                     {
-                                        _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
-                                        Disconnect();
-                                        Thread.Sleep(1000);
-                                        _AllInfoMonitors = GetMonitors().Result;
-                                        if (CreateNamedPipe())
-                                        {
-                                            Thread.Sleep(500);
-                                        }
-                                        //else
-                                        //{
-                                        //    //i++;
-                                        //    Thread.Sleep(500);
-                                        //}
+                                        _logs.DebugMsg("[NetworkKVM] Get is null or empty");
                                     }
                                 }
+                                catch (Exception ex)
+                                {
+                                    _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
+                                    Disconnect();
+                                    Thread.Sleep(1000);
+                                    _AllInfoMonitors = GetMonitors().Result;
+                                    if (CreateNamedPipe())
+                                    {
+                                        Thread.Sleep(500);
+                                    }
+                                    //else
+                                    //{
+                                    //    //i++;
+                                    //    Thread.Sleep(500);
+                                    //}
+                                }
+                            }
                             //}
                         }
                         else
@@ -1974,7 +1974,7 @@ namespace NetworkKVM.Plugins
                         _logs.DebugMsg("[NetworkKVM] jToken is null");
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logs.DebugMsg("[NetworkKVM] JsonstringParse exception : " + ex.ToString());
                 }
@@ -2067,7 +2067,7 @@ namespace NetworkKVM.Plugins
                     if (_AllInfoMonitors.Count != 0)
                     {
                         b_vcpcode = Convert.ToByte(get_VCP.VcpCode.ToString());
-                        objGetVCP = _VcpCorePlugin.GetVCPCapability(_AllInfoMonitors[get_VCP.MonitorIndex], b_vcpcode, 0).Result;
+                        objGetVCP = _VcpCorePlugin.GetVCPCapability(_AllInfoMonitors[get_VCP.MonitorIndex], b_vcpcode, opt: 0).Result;
 
                         get_VCP_R.MonitorIndex = get_VCP.MonitorIndex;
                         get_VCP_R.VcpCode = get_VCP.VcpCode;
@@ -2139,7 +2139,7 @@ namespace NetworkKVM.Plugins
                     DdpmJsonCommon.Monitor get_MonitorInfo = new DdpmJsonCommon.Monitor();
                     //if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
                     //{
-                        _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
+                    _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
                     //}
                     get_MONITORINFO_R.cid = get_MONITOR_INFO.cid;
                     if (_AllInfoMonitors.Count != 0)
@@ -2714,7 +2714,7 @@ namespace NetworkKVM.Plugins
             {
                 foreach (DDPMMonitorSettings setting in settings)
                 {
-                    if (setting != null && 
+                    if (setting != null &&
                         setting.ServiceTag == monitorInfo.edid.ServiceTag)
                     {
                         setting.KVM.isOnNKVM = ison;
@@ -2809,17 +2809,17 @@ namespace NetworkKVM.Plugins
                             //    NKVMVCPValue nKVMVCPValue = nKVMVCPValues.Find(x => x.monitorInfo == e.monitor);
                             //    if (nKVMVCPValue != null)
                             //    {
-                                    objGetVCP_E9 = _VcpCorePlugin.GetVCPCapability(e.monitor, 0xE9).Result;
-                                    if (objGetVCP_E9 != null && objGetVCP_E9.result)
-                                    {
-                                        _logs.DebugMsg("[NetworkKVM] MonitorPlug E9 : " + (int)(uint)objGetVCP_E9.value);
-                                        //_logs.DebugMsg("[NetworkKVM] MonitorPlug nKVMVCPValue : " + nKVMVCPValue.value);
-                                        //if (nKVMVCPValue.value != (int)(uint)objGetVCP_E9.value)
-                                        //{
-                                            //nKVMVCPValue.value = (int)(uint)objGetVCP_E9.value;
-                                            SetVCPNotify(e.monitor, 0xE9, (int)(uint)objGetVCP_E9.value);
-                                        //}
-                                    }
+                            objGetVCP_E9 = _VcpCorePlugin.GetVCPCapability(e.monitor, 0xE9).Result;
+                            if (objGetVCP_E9 != null && objGetVCP_E9.result)
+                            {
+                                _logs.DebugMsg("[NetworkKVM] MonitorPlug E9 : " + (int)(uint)objGetVCP_E9.value);
+                                //_logs.DebugMsg("[NetworkKVM] MonitorPlug nKVMVCPValue : " + nKVMVCPValue.value);
+                                //if (nKVMVCPValue.value != (int)(uint)objGetVCP_E9.value)
+                                //{
+                                //nKVMVCPValue.value = (int)(uint)objGetVCP_E9.value;
+                                SetVCPNotify(e.monitor, 0xE9, (int)(uint)objGetVCP_E9.value);
+                                //}
+                            }
                             //    }
                             //}
                         }
@@ -2847,17 +2847,17 @@ namespace NetworkKVM.Plugins
                             //    NKVMVCPValue nKVMVCPValue = nKVMVCPValues.Find(x => x.monitorInfo == e.monitor);
                             //    if (nKVMVCPValue != null)
                             //    {
-                                    objGetVCP_E9 = _VcpCorePlugin.GetVCPCapability(e.monitor, 0xE9).Result;
-                                    if (objGetVCP_E9 != null && objGetVCP_E9.result)
-                                    {
-                                        _logs.DebugMsg("[NetworkKVM] MonitorPlug E9 : " + (int)(uint)objGetVCP_E9.value);
-                                        //_logs.DebugMsg("[NetworkKVM] MonitorPlug nKVMVCPValue : " + nKVMVCPValue.value);
-                                        //if (nKVMVCPValue.value != (int)(uint)objGetVCP_E9.value)
-                                        //{
-                                            //nKVMVCPValue.value = (int)(uint)objGetVCP_E9.value;
-                                            SetVCPNotify(e.monitor, 0xE9, (int)(uint)objGetVCP_E9.value);
-                                        //}
-                                    }
+                            objGetVCP_E9 = _VcpCorePlugin.GetVCPCapability(e.monitor, 0xE9).Result;
+                            if (objGetVCP_E9 != null && objGetVCP_E9.result)
+                            {
+                                _logs.DebugMsg("[NetworkKVM] MonitorPlug E9 : " + (int)(uint)objGetVCP_E9.value);
+                                //_logs.DebugMsg("[NetworkKVM] MonitorPlug nKVMVCPValue : " + nKVMVCPValue.value);
+                                //if (nKVMVCPValue.value != (int)(uint)objGetVCP_E9.value)
+                                //{
+                                //nKVMVCPValue.value = (int)(uint)objGetVCP_E9.value;
+                                SetVCPNotify(e.monitor, 0xE9, (int)(uint)objGetVCP_E9.value);
+                                //}
+                            }
                             //    }
                             //}
                         }
@@ -2867,7 +2867,7 @@ namespace NetworkKVM.Plugins
                         }
                     }
                 }
-                catch(Exception ex) 
+                catch (Exception ex)
                 {
                     _logs.DebugMsg("[NetworkKVM] VCPchanged exception : " + ex.ToString());
                 }

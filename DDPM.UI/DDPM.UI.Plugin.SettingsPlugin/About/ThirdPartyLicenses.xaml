@@ -14,7 +14,7 @@
         WindowStartupLocation="CenterScreen"
         Background="Transparent"
         Topmost="True"
-        ResizeMode="NoResize"
+        ResizeMode="NoResize" Deactivated="Window_Deactivated"
         Loaded="UXWindow_Loaded">
     <Window.Resources>
         <ResourceDictionary>

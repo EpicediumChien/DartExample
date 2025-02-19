@@ -39,8 +39,8 @@
                         <Border x:Name="AudioPresetBorder" CornerRadius="6" Width="488" Height="Auto" VerticalAlignment="Top">
                             <StackPanel x:Name="AudioModesStackPanel" Orientation="Vertical">
                                 <Grid x:Name="TitleGrid" VerticalAlignment="Top" Margin="20,0,0,0">
-                                    <!--Chewlin 20250108 change Width="200" to Width="280" Fix ES language Audio Preset Title Clipping issue(No Pims Number) -->
-                                    <UXControls:UXTextBlock x:Name="AudioSettingsTextBlock" Text="{Binding [SpeakerAudioPreset.0], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Height="28" Width="280" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
+                                    <!--Chewlin 20250219 change Width="280" to MaxWidth="310" Fix ES-XL language Audio Preset Title Clipping issue(No Pims Number) -->
+                                    <UXControls:UXTextBlock x:Name="AudioSettingsTextBlock" Text="{Binding [SpeakerAudioPreset.0], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Height="28" MaxWidth="310" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
                                 </Grid>
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -51,9 +51,9 @@
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
-
+                                    <!--Chewlin 20250219 ADD MaxWidth="420" TextWrapping="WrapWithOverflow" to Fix ES-XL language Audio Preset1 content Clipping issue(No Pims Number) -->
                                     <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Left">
-                                        <UXControls:UXTextBlock x:Name="AudioOutputPresetsTextBlock1"  Text="{Binding [SpeakerAudioPreset.1], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="0" Grid.Column="0"  Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="14" Margin="20,0,0,20" />
+                                        <UXControls:UXTextBlock x:Name="AudioOutputPresetsTextBlock1"  Text="{Binding [SpeakerAudioPreset.1], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="0" Grid.Column="0"  Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="14" Margin="20,0,0,20" MaxWidth="420" TextWrapping="WrapWithOverflow"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="1">

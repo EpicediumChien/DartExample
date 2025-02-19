@@ -40,7 +40,18 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
 
             InitializeAsync();
             _vm!.HeadsetSettingChanged += HeadsetSettingChanged;
+            Unloaded += HeadsetAudioSettingsRightView_UnLoadedStatus;
         }
+
+        private async void HeadsetAudioSettingsRightView_UnLoadedStatus(object sender, RoutedEventArgs e)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                _vm!.HeadsetSettingChanged -= HeadsetSettingChanged;
+                _vm._log!.Info("[HeadsetAudioSettingsRightView] -= HeadsetSettingChanged ");
+            }
+        }
+
         private void HeadsetSettingChanged(object? sender, EventArgs e)
         {
             InitializeNodeValue();

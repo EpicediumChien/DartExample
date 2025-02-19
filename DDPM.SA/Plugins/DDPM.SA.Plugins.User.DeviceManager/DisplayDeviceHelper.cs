@@ -105,7 +105,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (msec == 8000)//means no UI pluged
             {
-                WriteLog($"[CheckAndTriggerToastWhileMonitorPlugged] is monitor list null: {mos==null}, is settingsManager null: {settingsManager == null}");
+                WriteLog($"[CheckAndTriggerToastWhileMonitorPlugged] is monitor list null: {mos == null}, is settingsManager null: {settingsManager == null}");
                 if (mos != null && settingsManager != null)
                 {
                     settingsManagerDev = settingsManager;
@@ -293,14 +293,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction]monitor[{{currentMoInfo.AliasDeviceName}};{{currentMoInfo.edid.ServiceTag}}], un-supported job: {job}");
                 return;
             }
-            ObjGetVCP obVCPValue = devManagerSA.GetVCPCapability(currentMoInfo, code, 0).Result;
+            ObjGetVCP obVCPValue = devManagerSA.GetVCPCapability(currentMoInfo, code, opt: 0).Result;
             Debug.WriteLine($"PerformHotKeyBrightnessContrastLuminanceAction,monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] ,current: code={code},value={obVCPValue.value}");
             WriteLog($"PerformHotKeyBrightnessContrastLuminanceAction,monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] ,current: code={code},value={obVCPValue.value}");
             uint targetValue = (uint)obVCPValue.value;
             uint maxLuminace = 100;
             if (job == HotkeyType.LuminanceIncrease || job == HotkeyType.LuminanceReduce)
             {
-                ObjGetVCP obMaxValue = devManagerSA.GetVCPCapability(currentMoInfo, code, 1).Result;
+                ObjGetVCP obMaxValue = devManagerSA.GetVCPCapability(currentMoInfo, code, opt: 1).Result;
                 if (obMaxValue.result)
                     maxLuminace = (uint)obMaxValue.value;
                 Debug.WriteLine($"PerformHotKeyBrightnessContrastLuminanceAction,monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] ,max Luminace value={maxLuminace}");
@@ -396,7 +396,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     //25 Test Scenario : 2 same monitors with ALS Function
                     if (alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName &&
-                        alsSynchronizeList[0].isSupportALS == 2 && 
+                        alsSynchronizeList[0].isSupportALS == 2 &&
                         alsSynchronizeList[1].isSupportALS == 2)
                     {
                         if (CheckALSOnOff(alsSynchronizeList) == false)
@@ -408,11 +408,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             //SynchronizeBtnExpectedResult("D");
                             return Task.FromResult("D");
-                        }                        
+                        }
                     }
                     //26 Test Scenario : 2 different monitors with ALS Function
                     if (alsSynchronizeList[0].ModelName != alsSynchronizeList[1].ModelName &&
-                        alsSynchronizeList[0].isSupportALS == 2 && 
+                        alsSynchronizeList[0].isSupportALS == 2 &&
                         alsSynchronizeList[1].isSupportALS == 2)
                     {
                         if (CheckALSOnOff(alsSynchronizeList) == false)
@@ -431,7 +431,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName)
                     {
                         //SynchronizeBtnExpectedResult("A");
-                        return Task.FromResult("A");                        
+                        return Task.FromResult("A");
                     }
                     //14 Test Scenario : 2 same non UP series monitors without ALS function
                     if (!alsSynchronizeList[0].ModelName.Contains("UP") && !alsSynchronizeList[1].ModelName.Contains("UP") &&
@@ -440,7 +440,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         //Expected Result B:
                         //SynchronizeBtnExpectedResult("B");
-                        return Task.FromResult("B");                     
+                        return Task.FromResult("B");
                     }
                     //15 Test Scenario : 2 different UP series monitors
                     if (alsSynchronizeList[0].ModelName.Contains("UP") && alsSynchronizeList[1].ModelName.Contains("UP") &&
@@ -459,13 +459,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         return Task.FromResult("B");
                     }
                     //17 Test Scenario : UP monitor and Non UP series monitor without ALS function
-                    if ((alsSynchronizeList[0].ModelName.Contains("UP") || alsSynchronizeList[1].ModelName.Contains("UP")) && 
+                    if ((alsSynchronizeList[0].ModelName.Contains("UP") || alsSynchronizeList[1].ModelName.Contains("UP")) &&
                         (!alsSynchronizeList[0].ModelName.Contains("UP") || !alsSynchronizeList[1].ModelName.Contains("UP")) &&
                         alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 0)
                     {
-                            //"Synchronize between monitors" is NOT displayed.
-                            //SynchronizeBtnExpectedResult("E");
-                            return Task.FromResult("E");                        
+                        //"Synchronize between monitors" is NOT displayed.
+                        //SynchronizeBtnExpectedResult("E");
+                        return Task.FromResult("E");
                     }
                     //18 Test Scenario : UP monitor and ALS function monitor
                     if (alsSynchronizeList[0].ModelName.Contains("UP") || alsSynchronizeList[1].ModelName.Contains("UP") &&
@@ -473,7 +473,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         //"Synchronize between monitors" is NOT displayed.
                         //SynchronizeBtnExpectedResult("E");
-                        return Task.FromResult("E");                        
+                        return Task.FromResult("E");
                     }
                     //else
                     //{
