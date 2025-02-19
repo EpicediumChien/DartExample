@@ -1374,18 +1374,20 @@ namespace VcpCore.Plugins
                                         var monitor = _AllInfoMonitors_Mix.FirstOrDefault(t => t.Item1.edid.Equals(monitorInfoX.edid));
                                         if (monitor.Item1 != null && monitor.Item2 != null)
                                         {
-                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability tmp.Item1 : " + tmp.Item1);
-                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability tmp.Item2 : " + tmp.Item2);
+
                                             monitor.Item1.inputSource = tmp.Item2;
                                             monitor.Item1.inputCable = tmp.Item1;
                                             monitor.Item2.inputSource = tmp.Item2;
                                             monitor.Item2.inputCable = tmp.Item1;
-                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability monitor.Item1.inputSource : " + monitor.Item1.inputSource);
-                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability monitor.Item1.inputCable : " + monitor.Item1.inputCable);
-                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability monitor.Item2.inputSource : " + monitor.Item2.inputSource);
-                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability monitor.Item2.inputCable : " + monitor.Item2.inputCable);
 
                                             Initialize2TypesMonitorInfo(false, CancellationToken.None);
+
+                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability \"INPUT SELECT\" [inputCable] : " + tmp.Item1);
+                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability \"INPUT SELECT\" [inputSource] : " + tmp.Item2);
+                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability \"INPUT SELECT\" [monitor.Item1.inputSource] : " + monitor.Item1.inputSource);
+                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability \"INPUT SELECT\" [monitor.Item1.inputCable] : " + monitor.Item1.inputCable);
+                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability \"INPUT SELECT\" [monitor.Item2.inputSource] : " + monitor.Item2.inputSource);
+                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability \"INPUT SELECT\" [monitor.Item2.inputCable] : " + monitor.Item2.inputCable);
 
                                             ro = tmp.Item2;
                                         }
