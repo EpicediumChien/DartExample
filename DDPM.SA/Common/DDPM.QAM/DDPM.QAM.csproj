@@ -9,9 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Imgs\AppLogo.png" />
     <None Remove="imgs\cursor\FistCursor.cur" />
     <None Remove="imgs\cursor\HandCursor.cur" />
+    <None Remove="Imgs\ddpm-24-dark.png" />
+    <None Remove="Imgs\ddpm-24-light.png" />
+    <None Remove="Imgs\ddpm-dark.png" />
+    <None Remove="Imgs\ddpm-light.png" />
   </ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
@@ -29,8 +32,11 @@
 	  </Reference>
 	</ItemGroup>
 	<ItemGroup>
-	  <Resource Include="imgs\AppLogo.png" />
 	  <Resource Include="imgs\cursor\FistCursor.cur" />
 	  <Resource Include="imgs\cursor\HandCursor.cur" />
+	  <Resource Include="Imgs\ddpm-24-dark.png" />
+	  <Resource Include="Imgs\ddpm-24-light.png" />
+	  <Resource Include="Imgs\ddpm-dark.png" />
+	  <Resource Include="Imgs\ddpm-light.png" />
 	</ItemGroup>
 </Project>
