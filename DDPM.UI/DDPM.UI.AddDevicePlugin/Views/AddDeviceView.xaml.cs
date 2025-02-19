@@ -390,6 +390,9 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
             OnDeviceBarItemClicked(_vm.DeviceBarItems[_vm.DeviceBarSelectedIndex]);
             _vm.DeviceBarItems[_vm.DeviceBarSelectedIndex].IsSelected = true;
+
+            //Robert_Ln 2025-2-19 for Narrator, setup the focus to the left Arrow at start up
+            ArrowLeft.Focus();
         }
 
         private void Pairing(object sender, StylusDownEventArgs e)
