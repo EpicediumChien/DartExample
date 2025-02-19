@@ -235,9 +235,12 @@ namespace DDPM.CLI.Plugins.Display
             result.command_guid_string = input.command_guid_string;
             result.ticket = DateTime.Now;
 
-            if (!input_param_validation(devMgr, commandLineInput, ref result))
-                return result;
-
+            if(commandLineInput.Options.Count > 0)
+            {
+                if (commandLineInput.Options[0].Option_Value.Equals("Display", StringComparison.OrdinalIgnoreCase) && !input_param_validation(devMgr, commandLineInput, ref result))
+                    return result;
+            }
+            
             switch (commandLineInput.TargetFeature)
             {
                 case "CONNECTEDDEVICES":
@@ -8823,7 +8826,7 @@ namespace DDPM.CLI.Plugins.Display
             bool recode_per = false;
 
             List<int> _monitorIndeies = new List<int>();
-            List<int> _deviceIndeies = new List<int>();
+            List<DeviceInfo> _deviceInfoFinal = new List<DeviceInfo>();
             /*_deviceHelper = new DeviceHelper
             {
                 deviceInfo = new List<DeviceInfo>()
@@ -8835,7 +8838,7 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = devMgr.GetMonitors().Result;
             _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
-            //_deviceIndeies = GetDDeviceIndeies(commandLineInput, _deviceinfo);
+            _deviceInfoFinal = GetDDeviceIndeies(commandLineInput, _deviceinfo);
 
             int index = 0;
 
@@ -9105,7 +9108,7 @@ namespace DDPM.CLI.Plugins.Display
                         case "HEADSET":
                         case "PEN":
                         case "DOCK":
-                            foreach (var device in _deviceinfo)
+                            foreach (var device in _deviceInfoFinal)
                             {
                                 if (device.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
                                 {
@@ -9749,7 +9752,7 @@ namespace DDPM.CLI.Plugins.Display
             writelog($"Energysaver return exit value{output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
-
+        
         private static List<int>? GetMonitorIndeies(CommandLineInput cmdLineInput, List<MonitorInfo> allMonitors)
         {
             if (allMonitors == null)
@@ -9820,7 +9823,61 @@ namespace DDPM.CLI.Plugins.Display
             }
             return listOut;
         }
+        private static List<DeviceInfo>? GetDDeviceIndeies(CommandLineInput cmdLineInput, List<DeviceInfo> allDevices)
+        {
+            if (allDevices == null)
+                return null;
 
+            List<DeviceInfo> listOut = new List<DeviceInfo>();
+            bool isAllDevices = true;
+
+            //If -ServiceTag=[{tag0}],[{tag1}],[{tag2}],... is specified
+            if (cmdLineInput.ServiceTag.Count > 0)
+            {
+                isAllDevices = false;
+                foreach (DeviceInfo mi in allDevices)
+                {
+                    if (!String.IsNullOrWhiteSpace(mi.DockServiceTag))
+                    {
+                        //Check if this monitor's service tag in in the -ServiceTag list
+                        string? match = cmdLineInput.ServiceTag.FirstOrDefault(x => x.Equals(mi.DockServiceTag, StringComparison.OrdinalIgnoreCase));
+                        if (match != null) //If found, add index value to listOut
+                            listOut.Add(mi);
+                    }
+                    //Empty ServiceTage will not be added
+                }
+            }
+
+            //If -model=[{model0}],[{model1}],[{model2}],... is specified
+            if (cmdLineInput.Model.Count > 0)
+            {
+                isAllDevices = false;
+                foreach (DeviceInfo mi in allDevices)
+                {
+                    if (!String.IsNullOrWhiteSpace(mi.ModelNumber))
+                    {
+                        //Check if this monitor's model name in in the -model list
+                        string? match = cmdLineInput.Model.FirstOrDefault(x => x.Equals(mi.ModelNumber, StringComparison.OrdinalIgnoreCase));
+                        if (match != null) //If found, add index value to listOut
+                            listOut.Add(mi);
+                    }
+                }
+            }
+
+            if (isAllDevices)
+            {
+                foreach (DeviceInfo mi in allDevices)
+                {
+                    listOut.Add(mi);
+                }
+            }
+            else
+            {
+                //Remove duplicated
+                listOut = listOut.Distinct().ToList();
+            }
+            return listOut;
+        }
         private (int code, string result) AutocolorpresetX(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             if (commandLineInput.Options.Count > 2)
@@ -12002,8 +12059,8 @@ namespace DDPM.CLI.Plugins.Display
         {
             switch (input)
             {
-                case "VGA-1": return "0x01";
-                case "VGA-2": return "0x02";
+                case "VGA1": return "0x01";
+                case "VGA2": return "0x02";
                 case "DVI-1": return "0x03";
                 case "DVI-2": return "0x04";
                 case "Composite video 1": return "0x05";
@@ -12016,18 +12073,18 @@ namespace DDPM.CLI.Plugins.Display
                 case "Component video (YPrPb/YCrCb) 1": return "0x0c";
                 case "Component video (YPrPb/YCrCb) 2": return "0x0d";
                 case "Component video (YPrPb/YCrCb) 3": return "0x0e";
-                case "DISPLAYPORT-1": return "0x0f";
+                case "DISPLAYPORT1": return "0x0f";
                 case "Mini DisplayPort-1": return "0x10";
-                case "HDMI-1": return "0x11";
-                case "HDMI-2": return "0x12";
-                case "DISPLAYPORT-2": return "0x13";
+                case "HDMI1": return "0x11";
+                case "HDMI2": return "0x12";
+                case "DISPLAYPORT2": return "0x13";
                 case "Mini DisplayPort-2": return "0x14";
                 case "HDMI3": return "0x15";
                 case "HDMI4": return "0x16";
-                case "DISPLAYPORT-3": return "0x17";
+                case "DISPLAYPORT3": return "0x17";
                 case "Mini DisplayPort-3": return "0x18";
-                case "Thunderbolt-1": return "0x19";
-                case "Thunderbolt-2": return "0x1a";
+                case "Thunderbolt1": return "0x19";
+                case "Thunderbolt2": return "0x1a";
                 case "USB-C1": return "0x1b";
                 case "USB-C2": return "0x1c";
                 case "USB-C3": return "0x1d";
