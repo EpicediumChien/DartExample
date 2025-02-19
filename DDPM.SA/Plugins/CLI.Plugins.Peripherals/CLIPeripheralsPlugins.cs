@@ -2322,6 +2322,31 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     }
                                 }
 
+                                if (commandLineInput.Model.Count > 0)
+                                {
+                                    if (model == null)
+                                    {
+                                        model = commandLineInput.Model;
+                                    }
+                                    else
+                                    {
+                                        model.AddRange(commandLineInput.Model);
+                                        model = model.Select(x => x.ToLower()).Distinct().ToList();
+                                    }
+                                }
+                                if (commandLineInput.ServiceTag.Count > 0)
+                                {
+                                    if (serviceTag == null)
+                                    {
+                                        serviceTag = commandLineInput.ServiceTag;
+                                    }
+                                    else
+                                    {
+                                        serviceTag.AddRange(commandLineInput.ServiceTag);
+                                        serviceTag = serviceTag.Select(x => x.ToLower()).Distinct().ToList();
+                                    }
+                                }
+
                                 switch (commandLineInput.TargetFeature)
                                 {
                                     case "FIRMWAREUPDATE":
@@ -2720,6 +2745,31 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                     writelog("FAIL No AUDIO connected");
                                                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
+                                                }
+
+                                                if (commandLineInput.Model.Count > 0)
+                                                {
+                                                    if (model == null)
+                                                    {
+                                                        model = commandLineInput.Model;
+                                                    }
+                                                    else
+                                                    {
+                                                        model.AddRange(commandLineInput.Model);
+                                                        model = model.Select(x => x.ToLower()).Distinct().ToList();
+                                                    }
+                                                }
+                                                if (commandLineInput.ServiceTag.Count > 0)
+                                                {
+                                                    if (serviceTag == null)
+                                                    {
+                                                        serviceTag = commandLineInput.ServiceTag;
+                                                    }
+                                                    else
+                                                    {
+                                                        serviceTag.AddRange(commandLineInput.ServiceTag);
+                                                        serviceTag = serviceTag.Select(x => x.ToLower()).Distinct().ToList();
+                                                    }
                                                 }
 
                                                 switch (commandLineInput.TargetFeature)
