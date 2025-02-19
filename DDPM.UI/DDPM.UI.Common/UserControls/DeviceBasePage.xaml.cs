@@ -89,8 +89,12 @@ namespace DDPM.UI.Common.UserControls
         #region Leave from LandingMode
         private void OnLeaveLandingMode(object sender, RoutedEventArgs e)
         {
+            ViewModel.LogInfo("@OnLeaveLandingMode() Entering...");
+            Stopwatch sw = Stopwatch.StartNew();
             //Transit to TwoView mode
             InvokeGotoTwoViewModeAnimation();
+            sw.Stop();
+            ViewModel.LogInfo($"@OnLeaveLandingMode(), InvokeGotoTwoViewModeAnimation Elapsed={sw.ElapsedMilliseconds} msec");
 
             //    //Set the RightViewHeader seklection to 0
             //    //_ivm.RightViewHeaderSelectedIndex = 0;
@@ -99,7 +103,10 @@ namespace DDPM.UI.Common.UserControls
             //System.Windows.MessageBox.Show("OnLeaveLandingMode");
 
             isFirstEntryNonLandingMode = true;
+            sw.Restart();
             ChangeToNonLandingMode();
+            sw.Stop();
+            ViewModel.LogInfo($"@OnLeaveLandingMode(), ChangeToNonLandingMode Elapsed={sw.ElapsedMilliseconds} msec");
         }
 
         private void OnSelectedHomeDeviceChanged(object sender, EventArgs e)
