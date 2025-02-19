@@ -3102,7 +3102,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     {
                         fwUpdateInfoPackage.FWUpdateInfo.ForEach(_ =>
                         {
-                            var msg = $"Ready to start updating Device: {_.DeviceName}" + (!string.IsNullOrWhiteSpace(_.ServiceTag) ? $", ServiceTag: {_.ServiceTag}" : "") + $" to Version: {_.TheLatestVersion}";
+                            var msg = $"Ready to start updating Device: {_.Model}" + (!string.IsNullOrWhiteSpace(_.ServiceTag) ? $", ServiceTag: {_.ServiceTag}" : "") + $" to Version: {_.TheLatestVersion}";
                             cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
                         });
 
@@ -3122,12 +3122,12 @@ namespace DDPM.CLI.Plugins.Peripherals
                             {
                                 if (retFWUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
                                 {
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update success.");
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.Model} update success.");
                                     cli_FWU_RESPONSE.Result = "PASS";
                                 }
                                 else
                                 {
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update fail. Fail message:{retFWUpdateInfo.FWUErrorCode.ToString()}");
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.Model} update fail. Fail message:{retFWUpdateInfo.FWUErrorCode.ToString()}");
                                     cli_FWU_RESPONSE.Result = "FAIL";
                                 }
                             }
@@ -3226,7 +3226,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
 
-                    cli_FWU_RESPONSE.FWUpdateRESPONSE.AddRange(fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.DeviceName}, ServiceTag: {_.ServiceTag} to Version: {_.TheLatestVersion}"));
+                    cli_FWU_RESPONSE.FWUpdateRESPONSE.AddRange(fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.Model}, ServiceTag: {_.ServiceTag} to Version: {_.TheLatestVersion}"));
 
                     fwUpdateMonitorInfos.Where(_ => !fwUpdateInfoPackage.FWUpdateInfo.Select(x => x.ServiceTag).Contains(_.edid.ServiceTag))
                             .ToList()
@@ -3240,12 +3240,12 @@ namespace DDPM.CLI.Plugins.Peripherals
                         {
                             if (retFWUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
                             {
-                                cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update success.");
+                                cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.Model} update success.");
                                 cli_FWU_RESPONSE.Result = "PASS";
                             }
                             else
                             {
-                                cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update fail. Fail message:{retFWUpdateInfo.FWUErrorCode.ToString()}");
+                                cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.Model} update fail. Fail message:{retFWUpdateInfo.FWUErrorCode.ToString()}");
                                 cli_FWU_RESPONSE.Result = "FAIL";
                             }
                         }
