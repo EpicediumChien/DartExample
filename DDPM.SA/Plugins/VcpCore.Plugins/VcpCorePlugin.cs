@@ -1538,7 +1538,7 @@ namespace VcpCore.Plugins
             catch (Exception ex)
             {
                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetVCPCapability_ ex: " + ex.Message);
-                return string.Empty;
+                return null;
             }
         }
 
