@@ -141,7 +141,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     });
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog($"[DdpmHomePage.] throws exception: {ex.Message}; StackTrace: {ex.StackTrace}", log_type: DdpmCommonHelper.log_type.error, memberName: nameof(ImportNotifyEventHandler));
                 return;
@@ -172,7 +172,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (_ddpmHomePageViewModel != null)
             {
                 _ddpmHomePageViewModel.IsSmallScreenResolution = screenNow.Bounds.Width < 1050;
-            }   
+            }
 
             //Reference to [https://stackoverflow.com/questions/27729881/which-event-fires-after-all-items-are-loaded-and-shown-in-a-listview]
             //To get into RenderingDone() when UI is render done.
@@ -598,6 +598,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     return;
 
                 IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
+                DdpmCommonHelper.WriteUILog($"Homepage Show Keyboard Landing Page timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
                 _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.KeyboardPluginId, selectedHomeDevice.DeviceInfo.ID.ToString() + instanceNo);
             }
             if (selectedHomeDevice?.DeviceCategory == eDeviceCategory.Mouse)
@@ -607,6 +608,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     return;
 
                 IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
+                DdpmCommonHelper.WriteUILog($"Homepage Show Mouse Landing Page timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
                 _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.MousePluginId, selectedHomeDevice.DeviceInfo.ID.ToString() + instanceNo);
             }
             // 240722 Added by Hess to show Pen landing page
@@ -615,6 +617,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 if (selectedHomeDevice.DeviceInfo == null)
                     return;
                 IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
+                DdpmCommonHelper.WriteUILog($"Homepage Show Pen Landing Page timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
                 _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.PenPluginId, selectedHomeDevice.DeviceInfo.ID.ToString() + instanceNo);
             }
             // jim add 20240613
@@ -625,6 +628,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     return;
 
                 IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
+                DdpmCommonHelper.WriteUILog($"Homepage Show Webcam Landing Page timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
                 _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WebCameraPluginId, selectedHomeDevice.DeviceInfo.ID.ToString() + instanceNo);
             }
             //0614 Bruce 新增Dock UI

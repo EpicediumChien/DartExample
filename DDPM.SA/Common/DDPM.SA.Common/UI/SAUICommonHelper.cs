@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using System.Windows.Resources;
 using Windows.UI.ViewManagement;
 
@@ -70,6 +71,24 @@ namespace DDPM.SA.Common.UI
                 // [20241122] SonarQube: Remove or correct this useless self-assignment.
                 //Application.Current.Resources[resourceKey] = Application.Current.Resources[resourceKey];// Force Refresh
             }
+        }
+
+        /// <summary>
+        /// Create new BitmapImage
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Please set image files "<CopyToOutputDirectory>Always</CopyToOutputDirectory>"
+        /// </remarks>
+        public static void UpdateBitmapImage(string resourceKey, Uri uri)
+        {
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.UriSource = uri;
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.EndInit();
+            Application.Current.Resources[resourceKey] = bitmapImage;
         }
 
         public static string MappingModel(string modelNumber)
