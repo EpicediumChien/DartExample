@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Forms;
 using System.Windows.Interop;
+using Microsoft.Win32;
+using System.Windows.Media.Imaging;
 
 namespace DDPM.QAM
 {

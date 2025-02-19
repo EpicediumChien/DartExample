@@ -89,7 +89,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\MousePlugin.cs  DeviceManager_DeviceChanged ex:" + ex.Message);
             }
@@ -171,6 +171,7 @@ namespace DDPM.UI.Plugin.MousePlugin
         /// <inheritdoc/>
         public void OnShown(string pluginParameter)
         {
+            DdpmCommonHelper.WriteUILog($"Mouse pugin OnShown Begin timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
             if (!IsEventRegistered)
             {
                 DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
@@ -181,6 +182,7 @@ namespace DDPM.UI.Plugin.MousePlugin
             if (_viewModel != null && !_viewModel.SetCurrentDevice(pluginParameter))
             { }
             Mouse.OverrideCursor = null;
+            DdpmCommonHelper.WriteUILog($"Mouse pugin OnShown End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
 
         #endregion Interface IConsolePluginSupportsActivations

@@ -2534,7 +2534,7 @@ namespace DDPM.UI.Module.Brightness
             if (SelectedHomeDevice == null)
                 return 0;
 
-            ObjGetVCP obj = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x10, 0).Result;
+            ObjGetVCP obj = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x10, opt: 0).Result;
             if (obj.result)
             {
                 //if (Brightness_Value < 0)
@@ -2584,7 +2584,7 @@ namespace DDPM.UI.Module.Brightness
             if (SelectedHomeDevice == null)
                 return 0;
 
-            ObjGetVCP obj = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x10, 0).Result;
+            ObjGetVCP obj = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x10, opt: 0).Result;
             if (obj.result)
             {
                 //if (Luminance_Value < 0)
@@ -2603,7 +2603,7 @@ namespace DDPM.UI.Module.Brightness
             if (SelectedHomeDevice == null)
                 return 0;
 
-            ObjGetVCP obj = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x10, 1).Result;
+            ObjGetVCP obj = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x10, opt: 1).Result;
             if (obj.result)
                 LuminanceMax_Value = Convert.ToDouble((uint)(long)obj.value);
 
@@ -2721,7 +2721,7 @@ namespace DDPM.UI.Module.Brightness
             if (SelectedHomeDevice == null)
                 return 0;
 
-            ObjGetVCP obj = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x12, 0).Result;
+            ObjGetVCP obj = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x12, opt: 0).Result;
             if (obj.result)
             {
                 //if (Contrast_Value < 0)
@@ -3402,12 +3402,18 @@ namespace DDPM.UI.Module.Brightness
             {
                 if (Start_ALSConfig.AutoBrightnessRangeLevel.Count == 0)
                     return "";
+
+                //all return same string? no need to use if-else
+                /*
                 if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 0)
                     return LangHelper.Instance["BrightnessLevel"] + ": " + BrightnessValue.ToString() + "%";//40%";
                 else if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 1)
                     return LangHelper.Instance["BrightnessLevel"] + ": " + BrightnessValue.ToString() + "%";//60%";
                 else
                     return LangHelper.Instance["BrightnessLevel"] + ": " + BrightnessValue.ToString() + "%";//100%";
+                */
+
+                return LangHelper.Instance["BrightnessLevel"] + ": " + BrightnessValue.ToString() + "%";
             }
         }
 
@@ -3810,13 +3816,13 @@ namespace DDPM.UI.Module.Brightness
             else
                 _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x05, 1).Result;
 
-            ObjGetVCP rb_10 = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x10, 0).Result;
+            ObjGetVCP rb_10 = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x10, opt: 0).Result;
             if (rb_10.result)
             {
                 Brightness_Value = (uint)((long)rb_10.value);
                 Luminance_Value = BrightnessValue;
             }
-            ObjGetVCP rb_12 = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x12, 0).Result;
+            ObjGetVCP rb_12 = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x12, opt: 0).Result;
             if (rb_12.result)
                 Contrast_Value = (uint)((long)rb_12.value);
         }

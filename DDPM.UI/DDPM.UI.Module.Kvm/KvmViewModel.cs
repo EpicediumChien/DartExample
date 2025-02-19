@@ -515,6 +515,8 @@ namespace DDPM.UI.Module.Kvm
 
         public bool isScreenPartition = false;
 
+        public bool LeftButtonEnable { get; set; } = true;
+
         #region Hotkey
 
         private string _kvmHotkeyTooltip = LangHelper.Instance["None"];
@@ -935,6 +937,11 @@ namespace DDPM.UI.Module.Kvm
                 MonitorInfo mi = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
 
                 USBKVMisON = /*KvmModule.isUSBKVM;*/ DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(mi).Result;
+                if (USBKVMisON)
+                {
+                    LeftButtonEnable = false;
+                    OnPropertyChanged("LeftButtonEnable");
+                }
             }
             else
             {
@@ -1141,7 +1148,7 @@ namespace DDPM.UI.Module.Kvm
                 //    _log?.Info("[KvmViewModel]isScreenPartition.");
                 //    return;
                 //}
-
+                
                 if (mi.CapabilityDic.ContainsKey("E7"))
                 {
                     _log?.Info("[KvmViewModel]Have 0xEE");
@@ -1526,6 +1533,8 @@ namespace DDPM.UI.Module.Kvm
             //OnPropertyChanged("PC3USB_Selected");
             //OnPropertyChanged("PC4USB_Selected");
             //OnPropertyChanged("PCImage");
+            LeftButtonEnable = true;
+            OnPropertyChanged("LeftButtonEnable");
             if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E9"))
             {
                 PxPCode = _curPxpMode;

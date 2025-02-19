@@ -24,10 +24,10 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         public LaunchView()
         {
-
+            DdpmCommonHelper.WriteUILog($"Pen UI LaunchView Begin timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
             try
             {
-
+                Loaded += LaunchView_Loaded;
                 InitializeComponent();
                 _vm = (PenViewModel?)Penplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
                 if (_vm == null)
@@ -87,10 +87,16 @@ namespace DDPM.UI.Plugin.PenPlugin
                 if (_vm.Model == "PN5122W")
                     imgInfo.Visibility = Visibility.Collapsed;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs  LaunchView() ex:" + ex.Message);
             }
+            DdpmCommonHelper.WriteUILog($"Pen UI LaunchView End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
+        }
+
+        private void LaunchView_Loaded(object sender, RoutedEventArgs e)
+        {
+            DdpmCommonHelper.WriteUILog($"Pen UI Loaded timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
 
         ~LaunchView()
@@ -219,7 +225,7 @@ namespace DDPM.UI.Plugin.PenPlugin
                 else
                 { _vm.IsAllButtonsVisible = Visibility.Visible; }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs OnVbarItemClicked() ex:" + ex.Message);
             }
@@ -335,7 +341,7 @@ namespace DDPM.UI.Plugin.PenPlugin
                     });
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs Unpair_Click() ex:" + ex.Message);
             }
@@ -371,7 +377,7 @@ namespace DDPM.UI.Plugin.PenPlugin
                 _vm.IsAllButtonsVisible = Visibility.Visible;
                 _vm.SelectedBehavior = "";
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs Mainframe_MouseLeftButtonDown() ex:" + ex.Message);
             }
@@ -395,7 +401,7 @@ namespace DDPM.UI.Plugin.PenPlugin
                 }
                 btnRestore.Visibility = Visibility.Collapsed;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs Restore_Click() ex:" + ex.Message);
             }
@@ -408,7 +414,7 @@ namespace DDPM.UI.Plugin.PenPlugin
                 var btnName = ((Image)sender).Name;
                 _vm!.RefreshButtonImageFile(btnName, true, btnName == _vm.SelectedButton);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs ButtonHoverIn() ex:" + ex.Message);
             }
@@ -421,7 +427,7 @@ namespace DDPM.UI.Plugin.PenPlugin
                 var btnName = ((Image)sender).Name;
                 _vm!.RefreshButtonImageFile(btnName, false, btnName == _vm.SelectedButton);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs ButtonHoverOut() ex:" + ex.Message);
             }
@@ -447,7 +453,7 @@ namespace DDPM.UI.Plugin.PenPlugin
                     OnVbarItemClicked(_vm.VbarItems[1]);
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs ButtonClicked() ex:" + ex.Message);
             }
@@ -462,7 +468,7 @@ namespace DDPM.UI.Plugin.PenPlugin
                     Mainframe_MouseLeftButtonDown(this, e);
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs PushBack() ex:" + ex.Message);
             }

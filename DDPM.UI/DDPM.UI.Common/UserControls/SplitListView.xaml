@@ -4,8 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Common.UserControls"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
+             
+             KeyboardNavigation.TabNavigation="Continue"
+             AutomationProperties.LiveSetting="Off"
+
              mc:Ignorable="d"
              d:DesignHeight="64" d:DesignWidth="616">
+    <!-- 
+               KeyboardNavigation.IsTabStop="True"
+             KeyboardNavigation.TabNavigation="Continue"
+  
+    -->
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -67,12 +77,16 @@
             <!-- 
                 <Setter Property="Width" Value="88" />
                 <Setter Property="Height" Value="68" />
+                <Setter Property="Focusable" Value="True"/>
+                <Setter Property="KeyboardNavigation.IsTabStop" Value="True"/>
+                <Setter Property="AutomationProperties.Name" Value="{Binding CustomName}"/>
             -->
             <Style x:Key="ContentControlStyle_SplitItem" TargetType="ContentControl">
                 <Setter Property="Width" Value="88" />
                 <Setter Property="Height" Value="68" />
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding DataContext.IsVertical, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                         <Setter Property="Width" Value="68"/>
@@ -105,7 +119,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <!-- rootGrid -->
+    <!-- rootGrid
+     KeyboardNavigation.TabNavigation="Continue"
+    -->
     <Grid>
         <!-- Col0=prevBtn, Col2=nextBtn, Col1=Split items -->
         <Grid.ColumnDefinitions>
@@ -114,68 +130,6 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <!-- (Unused) Left, Prev Border
-        <Border Grid.Column="0" Name="splitArrowPrev" Visibility="Collapsed"
-        Style="{StaticResource PrevNextBorderStyle}"
-        IsEnabled="{Binding IsPrevButtonEnabled}"
-        MouseLeftButtonDown="splitArrowPrev_MouseLeftButtonDown">
-        <Border.Effect>
-        <DropShadowEffect BlurRadius="10" />
-        </Border.Effect>
-
-        <Viewbox Width="16" Height="16">
-        <Grid Width="16" Height="16">
-        <Path Name="splitLeftArrowPath"
-        Data="M0,8 L7.77914,1.17791 L8.46626,2 L2.3313,7.5 L16,7.5 L16,8.5 L2.3313,8.5 L8.46626,14 L7.77914,14.7975 Z">
-        <Path.Style>
-        <Style TargetType="Path">
-        <Setter Property="Fill" Value="{StaticResource SplitArrowPathColor_Enabled}" />
-        <Style.Triggers>
-        <DataTrigger Binding="{Binding ElementName=splitArrowPrev, Path=IsEnabled}" Value="False">
-        <Setter Property="Fill" Value="{StaticResource SplitArrowPathColor_Disabled}" />
-        </DataTrigger>
-        </Style.Triggers>
-        </Style>
-        </Path.Style>
-        </Path>
-        </Grid>
-        </Viewbox>
-        </Border>
-        -->
-        <!-- (Unused)
-        IsEnabled="{Binding IsNextButtonEnabled}"
-        Width="46" Height="60" Background="{StaticResource SplitArrowBkColor}"
-        BorderBrush="{StaticResource SplitArrowBdColor}" BorderThickness="1" CornerRadius="6"
-        -->
-        <!-- Robert_Lin, 2024-7-6, Unused
-        <Border Grid.Column="2" Name="splitArrowNext" Visibility="Collapsed"
-        Style="{StaticResource PrevNextBorderStyle}"
-        IsEnabled="{Binding IsNextButtonEnabled}"
-        MouseLeftButtonDown="splitArrowNext_MouseLeftButtonDown">
-        <Border.Effect>
-        <DropShadowEffect Color="#7F000000" ShadowDepth="0" BlurRadius="12" Opacity="1" Direction="0" />
-        </Border.Effect>
-
-        <Viewbox Width="16" Height="16">
-        <Grid Width="16" Height="16">
-        <Path Name="splitRightArrowPath"
-        Data="M0,7.5 L13.7548,7.5 L7.50968,2 L8.20645,1.2129 L16,8 L8.20645,14.8387 L7.48387,14 L13.7806,8.5 L0,8.5 Z"
-        Fill="{StaticResource SplitArrowPathColor_Enabled}">
-        <Path.Style>
-        <Style TargetType="Path">
-        <Setter Property="Fill" Value="{StaticResource SplitArrowPathColor_Enabled}" />
-        <Style.Triggers>
-        <DataTrigger Binding="{Binding ElementName=splitArrowNext, Path=IsEnabled}" Value="False">
-        <Setter Property="Fill" Value="{StaticResource SplitArrowPathColor_Disabled}" />
-        </DataTrigger>
-        </Style.Triggers>
-        </Style>
-        </Path.Style>
-        </Path>
-        </Grid>
-        </Viewbox>
-        </Border>        -->
-
         <!-- Robert_Lin, 2024-7-6, NEW, to fix UX team report issue: need to follow Figma design:
         1. Hover state color is not follow requirements
         2. Disable state arrow color is not follow requirements.
@@ -183,56 +137,131 @@
         4. The button shadow effect need to follow requirements.
         -->
         <!-- prevBtn -->
-        <Border Grid.Column="0" Name="prevBtn" IsEnabled="{Binding IsPrevButtonEnabled}"
-                MouseLeftButtonDown="prevBtn_MouseLeftButtonDown">
-            <Border.Style>
-                <Style TargetType="Border" BasedOn="{StaticResource EzBtnStyle}">
+        <Button Grid.Column="0" Name="prevButton"
+                IsEnabled="{Binding IsPrevButtonEnabled}" Click="prevButton_Click"
+                Focusable="True" KeyboardNavigation.IsTabStop="True" KeyboardNavigation.TabIndex="1"
+                AutomationProperties.Name="{Binding [Left], Source={x:Static lang:LangHelper.Instance}}"
+                AutomationProperties.IsOffscreenBehavior="Onscreen"
+                >
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource StatelessButton}">
+                    <Setter Property="AutomationProperties.ItemStatus" Value="Enabled"/>
                     <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <!--
-                            <Setter Property="Background" Value="{StaticResource EzBtn_BkColor_Hover}" />
-                            -->
-                            <Setter Property="Background" Value="{DynamicResource Brush_GradientButtonCyan}" />
-                        </Trigger>
-                        <DataTrigger Binding="{Binding IsPrevButtonEnabled}" Value="False">
-                            <Setter Property="Background" Value="{DynamicResource EzBtn_BkColor_Disabled}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource EzBtn_BdColor_Disabled}" />
+                        <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                            <Setter Property="AutomationProperties.ItemStatus"
+                                    Value="{Binding [RadiaMenu.1], Source={x:Static lang:LangHelper.Instance}}"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </Border.Style>
-            <Viewbox Width="16" Height="16">
-                <Grid Width="16" Height="16">
-                    <Path Name="ezBtnLeftArrow"
+            </Button.Style>
+            <!-- 
+                    IsEnabled="{Binding IsPrevButtonEnabled}">
+            -->
+            <Border Grid.Column="0" Name="prevBtn" 
+                    >
+                <Border.Style>
+                    <Style TargetType="Border" BasedOn="{StaticResource EzBtnStyle}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource Brush_GradientButtonCyan}" />
+                            </Trigger>
+                            <DataTrigger Binding="{Binding IsPrevButtonEnabled}" Value="False">
+                                <Setter Property="Background" Value="{DynamicResource EzBtn_BkColor_Disabled}" />
+                                <Setter Property="BorderBrush" Value="{DynamicResource EzBtn_BdColor_Disabled}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Viewbox Width="16" Height="16">
+                    <Grid Width="16" Height="16">
+                        <Path Name="ezBtnLeftArrow"
                           Data="M7.79 14.79L8.49 13.99L2.23 8.53004L16 8.53004L16 7.47004L2.23 7.47004L8.49 2.00004L7.79 1.20004L5.93601e-07 8.00004L7.79 14.79Z">
-                        <Path.Style>
-                            <Style TargetType="Path">
-                                <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Default}" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=prevBtn, Path=IsMouseOver}" Value="True">
-                                        <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Hover}" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Border}}"
+                            <Path.Style>
+                                <Style TargetType="Path">
+                                    <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Default}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=prevButton, Path=IsMouseOver}" Value="True">
+                                            <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Hover}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Button}}"
                                                  Value="False">
-                                        <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Disabled}" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Path.Style>
-                    </Path>
-                </Grid>
-            </Viewbox>
-        </Border>
+                                            <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Disabled}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Path.Style>
+                        </Path>
+                    </Grid>
+                </Viewbox>
+            </Border>
+        </Button>
         <!-- nextBtn -->
-        <Border Grid.Column="2" Name="nextBtn" IsEnabled="{Binding IsNextButtonEnabled}" MouseLeftButtonDown="nextBtn_MouseLeftButtonDown">
+        <!-- NEW for Narrator, change it as a Button -->
+        <Button Grid.Column="2" Name="nextButton"
+                IsEnabled="{Binding IsNexButtonEnabled}" Click="nextButton_Click"
+                Focusable="True" KeyboardNavigation.IsTabStop="True" KeyboardNavigation.TabIndex="8"
+                AutomationProperties.Name="{Binding [Right], Source={x:Static lang:LangHelper.Instance}}"
+                AutomationProperties.IsOffscreenBehavior="Onscreen">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource StatelessButton}">
+                    <Setter Property="AutomationProperties.ItemStatus" Value="Enabled"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                            <Setter Property="AutomationProperties.ItemStatus"
+                                   Value="{Binding [RadiaMenu.1], Source={x:Static lang:LangHelper.Instance}}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+
+            <Border Name="nextBtn" IsEnabled="{Binding IsNextButtonEnabled}"
+            >
+                <Border.Style>
+                    <Style TargetType="Border" BasedOn="{StaticResource EzBtnStyle}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource Brush_GradientButtonCyan}" />
+                            </Trigger>
+                            <DataTrigger Binding="{Binding IsNextButtonEnabled}" Value="False">
+                                <Setter Property="Background" Value="{DynamicResource EzBtn_BkColor_Disabled}" />
+                                <Setter Property="BorderBrush" Value="{DynamicResource EzBtn_BdColor_Disabled}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Viewbox Width="16" Height="16">
+                    <Grid Width="16" Height="16">
+                        <Path Name="ezBtnRightArrow"
+                          Data="M8.21 1.20996L7.51 2.00996L13.77 7.46996H0V8.52996H13.77L7.51 14L8.21 14.8L16 7.99996L8.21 1.20996Z">
+                            <Path.Style>
+                                <Style TargetType="Path">
+                                    <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Default}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=nextButton, Path=IsMouseOver}" Value="True">
+                                            <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Hover}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=nextButton, Path=IsEnabled}" Value="False">
+                                            <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Disabled}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Path.Style>
+                        </Path>
+                    </Grid>
+                </Viewbox>
+            </Border>
+
+        </Button>
+        <!-- OLD:
+        
+        <Border Grid.Column="2" Name="nextBtn" IsEnabled="{Binding IsNextButtonEnabled}" MouseLeftButtonDown="nextBtn_MouseLeftButtonDown"
+                                Focusable="True" KeyboardNavigation.IsTabStop="True" KeyboardNavigation.TabIndex="7"
+        >
             <Border.Style>
                 <Style TargetType="Border" BasedOn="{StaticResource EzBtnStyle}">
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <!--
-                            <Setter Property="Background" Value="{StaticResource EzBtn_BkColor_Hover}" />
-                            -->
-                            <Setter Property="Background" Value="{DynamicResource Brush_GradientButtonCyan}" />
+                             <Setter Property="Background" Value="{DynamicResource Brush_GradientButtonCyan}" />
                         </Trigger>
                         <DataTrigger Binding="{Binding IsNextButtonEnabled}" Value="False">
                             <Setter Property="Background" Value="{DynamicResource EzBtn_BkColor_Disabled}" />
@@ -255,12 +284,6 @@
                                     <DataTrigger Binding="{Binding ElementName=nextBtn, Path=IsEnabled}" Value="False">
                                         <Setter Property="Fill" Value="{DynamicResource EzBtn_Arrow_Disabled}" />
                                     </DataTrigger>
-                                    <!--
-                                    <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Border}}"
-                                    Value="False">
-                                    <Setter Property="Fill" Value="{StaticResource EzBtn_Arrow_Disabled}" />
-                                    </DataTrigger>
-                                    -->
                                 </Style.Triggers>
                             </Style>
                         </Path.Style>
@@ -268,6 +291,7 @@
                 </Grid>
             </Viewbox>
         </Border>
+        -->
 
         <Grid Grid.Column="1">
             <Grid.ColumnDefinitions>
@@ -278,13 +302,14 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <ContentControl Grid.Column="0" Content="{Binding SplitItem0}" Style="{StaticResource ContentControlStyle_SplitItem}" />
-            <ContentControl Grid.Column="1" Content="{Binding SplitItem1}" Style="{StaticResource ContentControlStyle_SplitItem}" />
-            <ContentControl Grid.Column="2" Content="{Binding SplitItem2}" Style="{StaticResource ContentControlStyle_SplitItem}" />
-            <ContentControl Grid.Column="3" Content="{Binding SplitItem3}" Style="{StaticResource ContentControlStyle_SplitItem}" />
-            <ContentControl Grid.Column="4" Content="{Binding SplitItem4}" Style="{StaticResource ContentControlStyle_SplitItem}" />
+            <ContentControl Grid.Column="0" Content="{Binding SplitItem0}" Style="{StaticResource ContentControlStyle_SplitItem}" KeyboardNavigation.TabIndex="2"/>
+            <ContentControl Grid.Column="1" Content="{Binding SplitItem1}" Style="{StaticResource ContentControlStyle_SplitItem}" KeyboardNavigation.TabIndex="3"/>
+            <ContentControl Grid.Column="2" Content="{Binding SplitItem2}" Style="{StaticResource ContentControlStyle_SplitItem}" KeyboardNavigation.TabIndex="4" />
+            <ContentControl Grid.Column="3" Content="{Binding SplitItem3}" Style="{StaticResource ContentControlStyle_SplitItem}" KeyboardNavigation.TabIndex="5"/>
+            <ContentControl Grid.Column="4" Content="{Binding SplitItem4}" Style="{StaticResource ContentControlStyle_SplitItem}" KeyboardNavigation.TabIndex="6" />
 
             <local:AddCustomLayoutButton x:Name="addButton" Grid.Column="{Binding AddButtonColumn}"
+                                         Focusable="True" KeyboardNavigation.IsTabStop="True" KeyboardNavigation.TabIndex="7"
                                          HorizontalAlignment="Center" Margin="0,0,40,0">
                 <local:AddCustomLayoutButton.Style>
                     <Style TargetType="local:AddCustomLayoutButton">

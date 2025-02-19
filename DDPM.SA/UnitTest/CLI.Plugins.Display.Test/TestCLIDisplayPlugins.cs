@@ -1,5 +1,4 @@
-﻿using DDPM.CLI.Plugins.Display;
-using DDPM.SA.Common;
+﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Interfaces;
@@ -17,11 +16,11 @@ namespace DDPM.CLI.Plugins.Display.Test
         private Mock<IAgent> VcpCoreAgent { get; } = new();
         private Mock<IAgent> CLIDisplayPluginsAgent { get; } = new();
 
-        MonitorInfo monitorInfo = new MonitorInfo();
+        private MonitorInfo monitorInfo = new MonitorInfo();
         private Mock<IDeviceManagerSA> DeviceManagerSAService { get; } = new();
         private IDeviceManagerSA? _deviceManagerPlugin;
 
-        MonitorInfo monitorInfo1 = new MonitorInfo()
+        private MonitorInfo monitorInfo1 = new MonitorInfo()
         {
             AliasDeviceName = "Dell U2724DE(HDMI)",
             IsDellMonitor = true,
@@ -51,7 +50,6 @@ namespace DDPM.CLI.Plugins.Display.Test
                 ServiceTag = "CN073K0",
                 SerialNumber = "808597589",
                 Edid = "00FFFFFFFFFFFF0010ACDC425538323016210103803C2278EA62A5AD5046AB240E5054A54B00714F8180A940D1C081C0A9C001010101565E00A0A0A029503020350055502100001A000000FF00434E3037334B300A2020202020000000FC0044454C4C20553237323444450A000000FD0030781EB23C000A20202020202001ED"
-
             },
         };
 
@@ -199,7 +197,7 @@ namespace DDPM.CLI.Plugins.Display.Test
             List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
             _allInfoMonitors.Add(monitorInfo1);
             devMgr2.Setup(m => m.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
-            devMgr2.Setup(m => m.GetCapabilitiesString(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(monitorInfo1.CapabilityString));
+            devMgr2.Setup(m => m.GetCapabilitiesString(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(monitorInfo1.CapabilityString));
             if (devMgr2 != null)
             {
                 var GetCapabilitiesString_Result2 = (Task<int>)privatetecLIDisplayPlugins.Invoke("GetCapabilitiesString", devMgr2.Object, index);   //devMgr2 != null
@@ -227,7 +225,7 @@ namespace DDPM.CLI.Plugins.Display.Test
             List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
             _allInfoMonitors.Add(monitorInfo1);
             devMgr2.Setup(m => m.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
-            devMgr2.Setup(m => m.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(monitorInfo1.CapabilityString));
+            devMgr2.Setup(m => m.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(monitorInfo1.CapabilityString));
             if (devMgr2 != null)
             {
                 var GetVCPCapabilities_Result2 = (Task<int>)privatetecLIDisplayPlugins.Invoke("GetVCPCapabilities", devMgr2.Object, index);  //devMgr2 != null
@@ -1039,7 +1037,7 @@ namespace DDPM.CLI.Plugins.Display.Test
             Assert.IsNotNull(get_display_technology_type_Result);
             Assert.That(display_technology_type, Is.EqualTo(get_display_technology_type_Result));
 
-            // Default 
+            // Default
             index = "10";
             display_technology_type = "Unknown";
             get_display_technology_type_Result = (string)privatetecLIDisplayPlugins.Invoke("get_display_technology_type", index);
@@ -1177,7 +1175,7 @@ namespace DDPM.CLI.Plugins.Display.Test
             Assert.IsNotNull(Get_AR_Result);
             Assert.That(Get_AR, Is.EqualTo(Get_AR_Result));
 
-            // default  
+            // default
             value = 1;
             Get_AR = "N/A";
             Get_AR_Result = (string)privatetecLIDisplayPlugins.Invoke("Get_AR", value);
@@ -1451,7 +1449,7 @@ namespace DDPM.CLI.Plugins.Display.Test
             Assert.IsNotNull(GetOSDLanguage_index_Result);
             Assert.That(GetOSDLanguage_index, Is.EqualTo(GetOSDLanguage_index_Result));
 
-            // Default 
+            // Default
             language = "OtherLanguage";
             GetOSDLanguage_index = 0xff;
             GetOSDLanguage_index_Result = (int)privatetecLIDisplayPlugins.Invoke("GetOSDLanguage_index", language);
@@ -2233,7 +2231,7 @@ namespace DDPM.CLI.Plugins.Display.Test
             List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
             _allInfoMonitors.Add(monitorInfo1);
             devMgr2.Setup(m => m.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
-            devMgr2.Setup(m => m.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            devMgr2.Setup(m => m.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
             if (devMgr2 != null)
             {
                 var SetCurrentInput_Result2 = (Task<int>)privatetecLIDisplayPlugins.Invoke("SetCurrentInput", devMgr2.Object, index, input); //devMgr2 != null
@@ -2411,15 +2409,15 @@ namespace DDPM.CLI.Plugins.Display.Test
             devMgr.Setup(m => m.GetMonitorProfile(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(MonitorProfile));
             devMgr.Setup(m => m.WriteColorPresetByColorProfile(It.IsAny<MonitorInfo>(), It.IsAny<string>())).Returns(Task.FromResult(WriteColorPresetByColorProfile));
             devMgr.Setup(m => m.GetColorManagementStatus(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(GetColorManagementStatus));
-            devMgr.Setup(m => m.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(SetVCPCapability));
-            devMgr.Setup(m => m.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(objGetVCP));
+            devMgr.Setup(m => m.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(SetVCPCapability));
+            devMgr.Setup(m => m.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(objGetVCP));
             devMgr.Setup(m => m.GetPipPbpCapabilitiesWords(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(ushorts));
             devMgr.Setup(m => m.GetPxpMode(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(objGetPxpMode)); //off", 0x00, "PIP/PBP off, full screen"
             devMgr.Setup(m => m.ReadPowerNapSettings()).Returns(Task.FromResult(powerNapSettings));
             devMgr.Setup(m => m.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(ddpmSettings));
             devMgr.Setup(m => m.SetAppConfigData(It.IsAny<DDPMSettings>())).Returns(Task.FromResult(SetAppConfigDataDDPMSettings));
             devMgr.Setup(m => m.AutoSetColorPresetForMonitorConfig(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>())).Returns(Task.FromResult(AutoSetColorPresetForMonitorConfig));
-            devMgr.Setup(m => m.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(GetVCPCapabilities));
+            devMgr.Setup(m => m.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(GetVCPCapabilities));
             //Robert_Lin, 2025-1-7 comment-out due to GetEAFunctionEnabled() is deleted.
             //devMgr.Setup(m => m.GetEAFunctionEnabled()).Returns(Task.FromResult(objGetGetEAFunctionEnabled));
             devMgr.Setup(m => m.GetOnUSBKVM(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(objGetOnUSBKVM));

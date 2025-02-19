@@ -190,7 +190,7 @@ namespace DDPM.UI.Common
           { 71, new ActionItem(ActionCategory.ProductivityAction, Strings.PenPageDown, true, true) },
           { 73, new ActionItem(ActionCategory.WindowsAction, Strings.PenMenu, true, false) },
           { 75, new ActionItem(ActionCategory.WindowsAction, Strings.StickyNotes, true, false) },
-          { 79, new ActionItem(ActionCategory.WindowsAction, Strings.WebBrowser, false, true) },
+          { 79, new ActionItem(ActionCategory.WindowsAction, Strings.OpenNewBrowserTab, false, true) },
           { 80, new ActionItem(ActionCategory.WindowsAction, Strings.EMail, false, true) },
           { 81, new ActionItem(ActionCategory.MultimediaAction, Strings.MediaPlayPause, true, true) },
           { 82, new ActionItem(ActionCategory.MultimediaAction, Strings.MediaNextTrack, true, true) },

@@ -85,8 +85,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private SoftwareBitmap backBitmapBuffer;
 
         private readonly string[] PresetNames = [LangHelper.Instance["Default"], LangHelper.Instance["Smooth"], LangHelper.Instance["Vibrant"], LangHelper.Instance["Warm"]];
-        private string EditMode = string.Empty;
-        private string EditingProfileName = string.Empty;
+        private string EditMode = "";
+        private string EditingProfileName = "";
         private static PowerEventControl _pwr_Mon;
 
         public Thread status_thread;
@@ -97,12 +97,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         public LaunchView()
         {
-
-            DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView() start");
-
+            DdpmCommonHelper.WriteUILog($"Webcam UI LaunchView Begin timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
             try
             {
-
                 _vm = (WebCameraViewModel?)WebCameraplugin.PluginIoc?.GetService<IPeripheralViewModel>();
                 if (_vm == null)
                 {
@@ -120,7 +117,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 InitializeComponent();
                 _vm.Reset();
                 DataContext = _vm;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                //_vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
 
                 //leo 2024/12/09 因為多加條件判斷,改變呼叫位置
                 //BuildModuleGroups();
@@ -256,21 +253,21 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 //因為需要處理PresenceDetection分頁是否出現判斷,改變呼叫順序
                 check_PresenceFunction();
-                BuildModuleGroups();
+                //BuildModuleGroups();
                 //initResolutionFPS();
                 //usb 2.0限制規則要放在最後做校正
                 CheckUSBtype();
 
                 //grdPreview.Visibility = _vm.WebcamGrid ? Visibility.Visible : Visibility.Hidden;
-
+                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                BuildModuleGroups();
                 DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             }
             catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView() ex:" + ex.Message);
             }
-
-            DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView() end");
+            DdpmCommonHelper.WriteUILog($"Webcam UI LaunchView End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
 
         private void OnWebcamCloseEvent(object sender, EventManagerArgs e)
@@ -295,7 +292,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void DeviceManagerSA_UIUpdateNotify(object? sender, UpdateUINotify e)
         {
             if (e == null || e == EventArgs.Empty || e.UI_Field_Name == null
-                || e.UI_Field_Name == string.Empty)
+                || string.IsNullOrEmpty(e.UI_Field_Name))
                 return;
 
             //DdpmCommonHelper.WriteUILog($"WebcamLanuchView_UIUpdateNotify catch event msg: {e.UI_Field_Name}");
@@ -465,7 +462,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             print_debug("AllSupportedResolutions:" + AllSupportedResolutions);
 
             print_debug("check_PresenceFunction() s0 model-" + model);
-            
+
             if (is_camera_dell7)
             {
                 print_debug("check_PresenceFunction() s1");
@@ -511,7 +508,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                 _vm.MPS_Setting_Visibility = Visibility.Collapsed;
                                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
                             }
-                        }                       
+                        }
 
                         //dell 7 韌體升級畫面需要在 usb 3.0下,如果在2.0模式整個分頁關閉
                         if (!AllSupportedResolutions)
@@ -1256,12 +1253,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         }
 
 
-        private void LaunchView_Loaded(object sender, RoutedEventArgs e)
-        {
-            //if (!_vm!.IsDTPReady)
-            //    DdpmCommonHelper.MyConsole!.ShowHomePage();
-        }
-
         //bool WebcamGrid_old_ststus = false;
         private void status_change()
         {
@@ -1440,7 +1431,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                     //var microphone = audioDevices.FirstOrDefault();
 
-                    string AudioDeviceId = string.Empty; // 2024/12/31 Elie.
+                    string AudioDeviceId = ""; // 2024/12/31 Elie.
                     if (microphone != null)
                     {
                         AudioDeviceId = microphone.Id;
@@ -2789,7 +2780,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm!.DisableVBar();
                 gdBattery.Visibility = Visibility.Collapsed;
                 gdAddProfile.Visibility = Visibility.Visible;
-                txbName.Text = string.Empty;
+                txbName.Text = "";
                 txbName.Focus();
                 _vm.TooltipVisibility = Visibility.Visible;
             }
@@ -2975,7 +2966,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     blSystemcompatibility_MPS = false;
             }
 
-            string strComputerManufacturer = string.Empty;
+            string strComputerManufacturer = "";
 
             strComputerManufacturer = WinVersion.GetComputerManufacturer();
 
@@ -3099,8 +3090,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 DdpmCommonHelper.WriteUILog($"UserControl_Loaded catch exception: {ex.Message}");
             }
-
-            //DdpmCommonHelper.WriteUILog($"Webcam landing page UserControl_Loaded");
+            DdpmCommonHelper.WriteUILog($"Webcam UI Loaded timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
 
         private void txbName_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

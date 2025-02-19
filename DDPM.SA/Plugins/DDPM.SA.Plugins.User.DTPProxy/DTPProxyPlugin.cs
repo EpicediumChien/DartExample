@@ -102,6 +102,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private const string KeyboardItemID0 = "DellPeripheral.Keyboard.0";
         private const string WebcamItemID = "DellPeripheral.Webcam";
         private const string HeadsetItemID = "DellPeripheral.Headset";
+        private const string SpeakerItemID = "DellPeripheral.Speaker";
         private const string AirAudioItemID = "DellPeripheral.AirAudio";
         private bool IsDTPReady = false;
 
@@ -130,6 +131,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             public string ModelNumber { get; set; } = string.Empty;
         };
 
+        private ICommodity _comditySpeaker = null;
+        private List<SpeakerEventHandleObject> speakerList = new List<SpeakerEventHandleObject>();
+        internal class SpeakerEventHandleObject
+        {
+            public ICommodity speakerCommodity = null;
+            public string speakerIndex = string.Empty;
+            public string DeviceName { get; set; } = string.Empty;
+            public string DeviceId { get; set; } = string.Empty;
+            public string ModelNumber { get; set; } = string.Empty;
+        };
 
         private ICommodity _comdityAirAudio = null;
         private List<AirAudioEventHandleObject> airaudioList = new List<AirAudioEventHandleObject>();
@@ -8267,7 +8278,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             catch (Exception e)
             {
-                writelog($"Webcam{devcieID} UnregisterEventsForWebcam Exception {e.Message}");
+                writelog($"Headset{devcieID} UnregisterEventsForHeadset Exception {e.Message}");
 
                 return false;
             }
@@ -8279,7 +8290,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             SendDTPEventToUI(CreateEventMsg("Headset", "Headset_Disconnected", e.DeviceId));
 
-            writelog($"Catch event _Headset_Disconnected, unregister events result is {result.Result}, current devCount is {webcamList.Count} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Headset_Disconnected, unregister events result is {result.Result}, current devCount is {headsetList.Count} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private async Task<bool> RegisterEventsForHeadsetAsync(string deviceID)
@@ -8409,27 +8420,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             writelog($"Catch event _Headset_Connected, register events result is {result.Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
-
-        //private void Headset_Disconnected(object sender, DisconnectedArgs e)
-        //{
-        //    _ = UnregisterEventsForAllHeadsetAsync();
-
-        //    //_ = RegisterEventsForAllHeadsetAsync();
-
-        //    //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Disconnected", e.DeviceId));
-
-        //    writelog($"[Headset] Catch event _Headset_Disconnected, current devCount is {GetHeadsetDevsCountAsync().Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-        //}
-
-        //private void Headset_Connected(object sender, ConnectedArgs e)
-        //{
-        //    Task<int> headsets = GetHeadsetDevsCountAsync();
-        //    bool result = RegisterEventsForHeadsetAsync(headsets.Result - 1).Result;
-
-        //    //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Connected", e.DeviceId));
-
-        //    writelog($"[Headset] Catch event _Headset_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-        //}
 
         private void Headset_MuteStatusChanged(object sender, MuteStatusChangedArgs e)
         {
@@ -8896,6 +8886,34 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
 
         /////////////////////////Get////////////////////////////////
+
+        public async Task<JArray> GetSpeakerDeviceItemsExAsync()
+        {
+            try
+            {
+                _itemID = new ItemId(SpeakerItemID);
+
+                if (_speakerMethodInfo != null)
+                {
+                    var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                    if (commodity is ICommodity)
+                    {
+                        var value = GetPropertyValue(_speakerInterfaceType, commodity, "DeviceItemsEx");
+                        writelog($"[DTPProxyPlugin] [Speaker] GetDeviceItemsExAsync succeeded");
+                        return value == null ? new JArray() : (JArray)value;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [Speaker] GetDeviceItemsExAsync failed: Could not retrieve commodity interface");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Speaker] GetDeviceItemsExAsync failed - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
         public async Task<string> GetProfileNameAsync(string item)
         {
             string guid = item;
@@ -9562,6 +9580,416 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"[Speaker] GetIsTrebleEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
+        }
+
+        #endregion
+
+        #region Wired Audio Event
+
+        #region Speaker Already connected do this
+        /// <summary>
+        /// Already connected do this
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> RegisterEventsForAllSpeakerAsync()
+        {
+            bool result = false;
+            var speakers = await GetSpeakerDevsCountAsync();
+            if (speakers > 0)
+            {
+                writelog($"Speaker instance count: {speakers} to register");
+
+                for (int i = 0; i < speakers; i++)
+                {
+                    result = await RegisterEventsForSpeakerAsync(i);
+
+                    if (!result)
+                    {
+                        writelog($"[Speaker] Register Events For Speaker{i} fail, try un-register and register again");
+
+                        result = await UnregisterEventsForSpeakerAsync(i);
+                        result = await RegisterEventsForSpeakerAsync(i);
+                        writelog($"[Speaker] Retry register result is {result}");
+                    }
+                }
+            }
+            else
+            {
+                writelog($"[Speaker] No any headset instance to register.");
+                return false;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Already connected do this
+        /// </summary>
+        /// <returns></returns>
+        private async Task UnregisterEventsForAllSpeakerAsync()
+        {
+            bool result = false;
+            var speakers = await GetSpeakerDevsCountAsync();
+            if (speakers > 0)
+            {
+                writelog($"[Speaker] instance count: {speakers} to unregister.");
+
+                for (int i = speakers - 1; i >= 0; i--)
+                {
+                    result = await UnregisterEventsForSpeakerAsync(i);
+                }
+            }
+            else
+                writelog($"[Speaker] No any speaker instance to unregister.");
+        }
+
+        private async Task<bool> RegisterEventsForSpeakerAsync(int index)
+        {
+            if (null == _commSdk || null == _comdity || index < 0)
+                return false;
+
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<ISpeakerCommodity>(new ItemId($"DellPeripheral.Speaker.{index}"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.ISpeakerCommodity _Speakercom)
+                {
+                    _Speakercom.FirmwareVersionChanged += Speaker_OnFirmwareVersionChanged;
+                    _Speakercom.MuteStatusChanged += Speaker_OnMuteStatusChanged;
+                    _Speakercom.InstanceNumberChanged += Speaker_OnInstanceNumberChanged;
+                    _Speakercom.CurrentSelectedProfileChanged += Speaker_OnCurrentSelectedProfileChanged;
+                    _Speakercom.IsIMicNSEnabledChanged += Speaker_OnIsIMicNSEnabledChanged;
+                    _Speakercom.VolumeAdjustmentToneChanged += Speaker_OnVolumeAdjustmentToneChanged;
+                    _Speakercom.IsMicMuteSoundEnabledChanged += Speaker_OnIsMicMuteSoundEnabledChanged;
+                    _Speakercom.BassChanged += Speaker_OnBassChanged;
+                    _Speakercom.MidRangeChanged += Speaker_OnMidRangeChanged;
+                    _Speakercom.TrebleChanged += Speaker_OnTrebleChanged;
+
+                    writelog($"Speaker{index} Commodity events registered successfully");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"[Speaker] {index} RegisterEventsForSpeaker Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private async Task<bool> UnregisterEventsForSpeakerAsync(int index)
+        {
+            if (null == _commSdk || null == _comdity || index < 0)
+                return false;
+
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<ISpeakerCommodity>(new ItemId($"DellPeripheral.Speaker.{index}"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.ISpeakerCommodity _Speakercom)
+                {
+                    _Speakercom.FirmwareVersionChanged -= Speaker_OnFirmwareVersionChanged;
+                    _Speakercom.MuteStatusChanged -= Speaker_OnMuteStatusChanged;
+                    _Speakercom.InstanceNumberChanged -= Speaker_OnInstanceNumberChanged;
+                    _Speakercom.CurrentSelectedProfileChanged -= Speaker_OnCurrentSelectedProfileChanged;
+                    _Speakercom.IsIMicNSEnabledChanged -= Speaker_OnIsIMicNSEnabledChanged;
+                    _Speakercom.VolumeAdjustmentToneChanged -= Speaker_OnVolumeAdjustmentToneChanged;
+                    _Speakercom.IsMicMuteSoundEnabledChanged -= Speaker_OnIsMicMuteSoundEnabledChanged;
+                    _Speakercom.BassChanged -= Speaker_OnBassChanged;
+                    _Speakercom.MidRangeChanged -= Speaker_OnMidRangeChanged;
+                    _Speakercom.TrebleChanged -= Speaker_OnTrebleChanged;
+
+                    writelog($"[Speaker] Speaker{index} Commodity events unregistered successfully");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"[Speaker] Speaker{index} UnregisterEventsForSpeaker Exception {e.Message}");
+
+                return false;
+            }
+            return false;
+        }
+
+        #endregion  Speaker Already connected do this
+
+        private bool UnregisterEventsForSpeaker(SpeakerEventHandleObject obj)
+        {
+            if (obj.speakerCommodity is Dell.TechHub.Commodity.Peripheral.ISpeakerCommodity _Speakercom)
+            {
+                _Speakercom.FirmwareVersionChanged -= Speaker_OnFirmwareVersionChanged;
+                _Speakercom.MuteStatusChanged -= Speaker_OnMuteStatusChanged;
+                _Speakercom.InstanceNumberChanged -= Speaker_OnInstanceNumberChanged;
+                _Speakercom.CurrentSelectedProfileChanged -= Speaker_OnCurrentSelectedProfileChanged;
+                _Speakercom.IsIMicNSEnabledChanged -= Speaker_OnIsIMicNSEnabledChanged;
+                _Speakercom.VolumeAdjustmentToneChanged -= Speaker_OnVolumeAdjustmentToneChanged;
+                _Speakercom.IsMicMuteSoundEnabledChanged -= Speaker_OnIsMicMuteSoundEnabledChanged;
+                _Speakercom.BassChanged -= Speaker_OnBassChanged;
+                _Speakercom.MidRangeChanged -= Speaker_OnMidRangeChanged;
+                _Speakercom.TrebleChanged -= Speaker_OnTrebleChanged;
+
+                writelog($"Speaker {obj.speakerIndex}/{obj.ModelNumber} Commodity events unregistered successfully");
+
+                return true;
+            }
+            else
+                writelog($"obj.speakerCommodity is not Dell.TechHub.Commodity.Peripheral.ISpeakerCommodity for {obj.ModelNumber}");
+
+            return false;
+        }
+
+        private async Task<bool> UnregisterEventsForSpeakerAsync(string devcieID)
+        {
+            if (devcieID == null || devcieID == string.Empty || speakerList.Count == 0)
+            {
+                writelog($"devcieID == string.Empty || devcieID == null || speakerList.Count == 0");
+
+                return false;
+            }
+
+            try
+            {
+                // find _comdity object for this device
+                writelog($"Search {devcieID} from speakerList for Unregister Events");
+
+                bool result = false;
+                foreach (var item in speakerList)
+                {
+                    if (item.DeviceId == devcieID)
+                    {
+                        result = true;
+                        writelog($"Found object {item.DeviceName} from speakerList for Unregister Events");
+                        result = UnregisterEventsForSpeaker(item);
+                        writelog($"UnregisterEventsForSpeaker result is {result}");
+                        result = speakerList.Remove(item);
+                        writelog($"speakerList.Remove(item) result is {result}");
+                        break;
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                writelog($"Speaker{devcieID} UnregisterEventsForSpeaker Exception {e.Message}");
+
+                return false;
+            }
+        }
+
+        private async Task<bool> RegisterEventsForSpeakerAsync(string deviceID)
+        {
+            if (null == _comdityHeadset || deviceID == null || deviceID == string.Empty)
+            {
+                writelog($"null == _comditySpeaker || deviceID == null || deviceID == string.Empty");
+
+                return false;
+            }
+
+            try
+            {
+                if (_comditySpeaker is Dell.TechHub.Commodity.Peripheral.ISpeakerCommodity _SpeakerComObj)
+                {
+                    writelog($"connected _SpeakerComObj.DeviceItems = {_SpeakerComObj.DeviceItems.Length}");
+
+                    int i = 0;
+                    foreach (var item in _SpeakerComObj.DeviceItems)
+                    {
+                        writelog($"connected _SpeakerComObj.DeviceItems[{i}] = {item}");
+                        string jsonStr = _SpeakerComObj.DeviceItemsEx[i++].ToString();
+                        writelog($"connected _SpeakerComObj.DeviceItems = {jsonStr}");
+
+                        SpeakerEventHandleObject jsonObject = JsonSerializer.Deserialize<SpeakerEventHandleObject>(jsonStr)!;
+
+                        if (jsonObject != null && jsonObject.DeviceId == deviceID)
+                        {
+                            writelog($"jsonObject values: {item}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
+
+                            ICommodity _comditySpeakerTmp = await _commSdk.GetCommodityAsync<ISpeakerCommodity>(new ItemId(item), CancellationToken.None);
+
+                            if (RegisterEventsForSpeaker(_comditySpeakerTmp))
+                            {
+                                jsonObject.speakerIndex = item;
+                                jsonObject.speakerCommodity = _comditySpeakerTmp;
+                                speakerList.Add(jsonObject);
+
+                                writelog($"Speaker {deviceID} Commodity events registered successfully");
+
+                                return true;
+                            }
+                            else
+                            {
+                                writelog($"Speaker {deviceID} Commodity events registered fail");
+
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Speaker{deviceID} RegisterEventsForSpeakerAsync Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private bool RegisterEventsForSpeaker(ICommodity _comditySpeaker)
+        {
+            if (null == _comditySpeaker)
+            {
+                writelog($"_comditySpeaker == null");
+
+                return false;
+            }
+
+            try
+            {
+                if (_comditySpeaker is Dell.TechHub.Commodity.Peripheral.ISpeakerCommodity _Speakercom)
+                {
+                    _Speakercom.FirmwareVersionChanged += Speaker_OnFirmwareVersionChanged;
+                    _Speakercom.MuteStatusChanged += Speaker_OnMuteStatusChanged;
+                    _Speakercom.InstanceNumberChanged += Speaker_OnInstanceNumberChanged;
+                    _Speakercom.CurrentSelectedProfileChanged += Speaker_OnCurrentSelectedProfileChanged;
+                    _Speakercom.IsIMicNSEnabledChanged += Speaker_OnIsIMicNSEnabledChanged;
+                    _Speakercom.VolumeAdjustmentToneChanged += Speaker_OnVolumeAdjustmentToneChanged;
+                    _Speakercom.IsMicMuteSoundEnabledChanged += Speaker_OnIsMicMuteSoundEnabledChanged;
+                    _Speakercom.BassChanged += Speaker_OnBassChanged;
+                    _Speakercom.MidRangeChanged += Speaker_OnMidRangeChanged;
+                    _Speakercom.TrebleChanged += Speaker_OnTrebleChanged;
+
+                    writelog($"Speakercom Commodity {_Speakercom.DeviceName}/{_Speakercom.DeviceId}/{_Speakercom.ModelNumber} events registered successfully");
+
+                    return true;
+                }
+                else
+                {
+                    writelog($"_comditySpeaker is not Dell.TechHub.Commodity.Peripheral.ISpeakerCommodity");
+
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch exception {e.Message} when run RegisterEventsForSpeaker");
+
+                return false;
+            }
+        }
+
+        private void Speaker_Connected(object sender, ConnectedArgs e)
+        {
+            Task<bool> result = RegisterEventsForSpeakerAsync(e.DeviceId);
+
+            SendDTPEventToUI(CreateEventMsg("Speaker", "Speaker_Connected", e.DeviceId));
+
+            writelog($"Catch event Speaker_Connected, register events result is {result.Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Speaker_Disconnected(object sender, DisconnectedArgs e)
+        {
+            Task<bool> result = UnregisterEventsForSpeakerAsync(e.DeviceId);
+
+            SendDTPEventToUI(CreateEventMsg("Speaker", "Speaker_Disconnected", e.DeviceId));
+
+            writelog($"Catch event Speaker_Disconnected, unregister events result is {result.Result}, current devCount is {speakerList.Count} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Speaker_OnFirmwareVersionChanged(object sender, FirmwareVersionChangedArgs e)
+        {
+            SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_OnFirmwareVersionChanged",
+                                    e.DeviceId, $"Speaker_OnFirmwareVersionChanged:{e.FirmwareVersion.ToString()}"));
+
+            writelog($"[Speaker] Catch event  Speaker_OnFirmwareVersionChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Speaker_OnMuteStatusChanged(object sender, MuteStatusChangedArgs e)
+        {
+            SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_OnMuteStatusChanged",
+                                    e.DeviceId, $"Speaker_OnMuteStatusChanged:{e.MuteStatus.ToString()}"));
+
+            writelog($"[Speaker] Catch event  Speaker_OnMuteStatusChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Speaker_OnInstanceNumberChanged(object sender, InstanceNumberChangedArgs e)
+        {
+            SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker",
+                                    e.DeviceId, $"Speaker_OnInstanceNumberChanged:{e.InstanceNumber.ToString()}"));
+
+            writelog($"[Speaker] Catch event Speaker_OnInstanceNumberChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Speaker_OnCurrentSelectedProfileChanged(object sender, CurrentSelectedProfileChangedArgs e)
+        {
+            SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_OnCurrentSelectedProfileChanged",
+                                    e.DeviceId, $"Speaker_OnCurrentSelectedProfileChanged:{e.ProfileId.ToString()}"));
+
+            writelog($"[Speaker] Catch event Speaker_OnCurrentSelectedProfileChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Speaker_OnIsIMicNSEnabledChanged(object sender, IsIMicNSEnabledChangedArgs e)
+        {
+            SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_OnIsIMicNSEnabledChanged",
+                                    e.DeviceId, $"Speaker_OnIsIMicNSEnabledChanged:{e.IsIMicNSEnabled}"));
+
+            writelog($"[Speaker] Catch event Speaker_OnIsIMicNSEnabledChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+        private void Speaker_OnVolumeAdjustmentToneChanged(object sender, VolumeAdjustmentToneChangedArgs e)
+        {
+            SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_OnVolumeAdjustmentToneChanged",
+                                    e.DeviceId, $"Speaker_OnVolumeAdjustmentToneChanged:{e.VolumeAdjustmentTone.ToString()}"));
+
+            writelog($"[Speaker] Catch event Speaker_OnVolumeAdjustmentToneChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Speaker_OnIsMicMuteSoundEnabledChanged(object sender, IsMicMuteSoundEnabledChangedArgs e)
+        {
+            SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_OnIsMicMuteSoundEnabledChanged",
+                                    e.DeviceId, $"Speaker_OnIsMicMuteSoundEnabledChanged:{e.IsMicMuteSoundEnabled.ToString()}"));
+
+            writelog($"[Speaker] Catch event Speaker_OnIsMicMuteSoundEnabledChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Speaker_OnBassChanged(object sender, BassChangedArgs e)
+        {
+            SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_OnBassChanged",
+                                    e.DeviceId, $"Speaker_OnBassChanged:{e.Bass.ToString()}"));
+
+            writelog($"[Speaker] Catch event Speaker_OnBassChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Speaker_OnMidRangeChanged(object sender, MidRangeChangedArgs e)
+        {
+            SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_OnMidRangeChanged",
+                                    e.DeviceId, $"Speaker_OnMidRangeChanged:{e.MidRange.ToString()}"));
+
+            writelog($"[Speaker] Catch event Speaker_OnMidRangeChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Speaker_OnTrebleChanged(object sender, TrebleChangedArgs e)
+        {
+            SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_OnTrebleChanged",
+                                    e.DeviceId, $"Speaker_OnTrebleChanged:{e.Treble.ToString()}"));
+
+            writelog($"[Speaker] Catch event Speaker_OnTrebleChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private string CreateSpeakerEventMsg(string devType, string eventType, string devID, string eventContent = "NewValue:NoContent")
+        {
+            writelog($"[Speaker] Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}");
+            return $"SpeakerEvent_5;Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}";
+        }
+
+        public void SendSpeakerEventToUI(string sendMsg)
+        {
+            UpdateUINotify sEventNotify = new UpdateUINotify();
+            sEventNotify.UI_Field_Name = $"{sendMsg}";
+            OnUIUpdateNotify(sEventNotify);
         }
 
         #endregion
@@ -10265,22 +10693,39 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             await RegisterEventsForAllHeadsetAsync();
 
-            writelog($"Register Commodity event...");
+            writelog($"Register Speaker Commodity event by DellPeripheral.Speaker...");
             _comdity = await _commSdk.GetCommodityAsync<ISpeakerCommodity>(new ItemId("DellPeripheral.Speaker"), CancellationToken.None);
             if (_comdity is Dell.TechHub.Commodity.Peripheral.ISpeakerCommodity _speakercom)
             {
                 try
                 {
-                    _speakercom.Connected += _comdity_Connected;
-                    _speakercom.Disconnected += _comdity_Disconnected;
-                    _speakercom.MuteStatusChanged += _speakercomdity_IsMuteStatusChanged;
-                    writelog($"Speaker Commodity event registered");
+                    _speakercom.Connected += Speaker_Connected;
+                    _speakercom.Disconnected += Speaker_Disconnected;
+                    writelog($"Speaker Commodity event registered, connected _speakercom.DeviceItems = {_speakercom.DeviceItems.Length}");
+                    int i = 0;
+                    foreach (var item in _speakercom.DeviceItems)
+                    {
+                        writelog($"connected _speakercom.DeviceItems[{i}] = {item}");
+                        string jsonStr = _speakercom.DeviceItemsEx[i++].ToString();
+                        writelog($"connected _speakercom.DeviceItems, jsonStr = {jsonStr}");
+
+                        if (jsonStr != null && jsonStr != string.Empty)
+                        {
+                            SpeakerEventHandleObject jsonObject = JsonSerializer.Deserialize<SpeakerEventHandleObject>(jsonStr)!;
+                            jsonObject.speakerCommodity = null;
+                            jsonObject.speakerIndex = item;
+                            writelog($"jsonObject values: {jsonObject.speakerIndex}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
+                            speakerList.Add(jsonObject);
+                        }
+                    }
+                    writelog($"connected _speakercom.DeviceItemsEx.Count = {_speakercom.DeviceItemsEx.Count}");
                 }
                 catch (Exception e)
                 {
                     writelog($"Find ISpeakerCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
                 }
             }
+            await RegisterEventsForAllSpeakerAsync();
 
             writelog($"Register Commodity event...");
             _comdity = await _commSdk.GetCommodityAsync<IDongleCommodity>(new ItemId("DellPeripheral.Dongle"), CancellationToken.None);
@@ -10494,6 +10939,27 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 else
                     writelog($"UnsubscribeDTPGlobalEvents _comdityHeadset is not a IHeadsetCommodity object");
 
+                //////////////////////////////////////////////////////////////////////////////////////////////
+
+                if (null == _comditySpeaker)
+                {
+                    writelog($"UnsubscribeDTPGlobalEvents _comditySpeaker is null");
+
+                    return false;
+                }
+
+                if (_comditySpeaker is Dell.TechHub.Commodity.Peripheral.ISpeakerCommodity _SpeakerGlobalEvent)
+                {
+                    _SpeakerGlobalEvent.Connected -= Speaker_Connected;
+                    _SpeakerGlobalEvent.Disconnected -= Speaker_Disconnected;
+
+                    writelog($"UnsubscribeDTPGlobalEvents Speaker global events successfully");
+
+                    return true;
+                }
+                else
+                    writelog($"UnsubscribeDTPGlobalEvents _comditySpeaker is not a ISpeakerCommodity object");
+
                 return false;
             }
             catch (Exception e)
@@ -10504,25 +10970,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        //private void UnsubscribeEventsFromDeviceList<T>(List<T> deviceList, string deviceType) where T : class
-        //{
-        //    foreach (var device in deviceList)
-        //    {
-        //        if (device is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity webcam)
-        //        {
-        //            webcam.Connected -= Webcam_Connected;
-        //            webcam.Disconnected -= Webcam_Disconnected;
-        //            writelog($"UnsubscribeEventsFromDeviceList {deviceType} {webcam.DeviceName} events successfully");
-        //        }
-        //        if (device is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity headset)
-        //        {
-        //            headset.Connected -= Headset_Connected;
-        //            headset.Disconnected -= Headset_Disconnected;
-        //            writelog($"UnsubscribeEventsFromDeviceList {deviceType} {headset.DeviceName} events successfully");
-        //        }
-        //    }
-        //}
-
         private async Task<int> GetHeadsetDevsCountAsync()
         {
             var headsets = await GetHeadsetDeviceItemsExAsync();
@@ -10530,6 +10977,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 Trace.WriteLine("RegisterEventsForAllHeadsetAsync ********** " + headsets.ToString() + " ********** ");
                 return headsets.Count;
+            }
+            else
+                return 0;
+        }
+
+        private async Task<int> GetSpeakerDevsCountAsync()
+        {
+            var speakers = await GetSpeakerDeviceItemsExAsync();
+            if (speakers != null)
+            {
+                Trace.WriteLine("RegisterEventsForAllSpeakerAsync ********** " + speakers.ToString() + " ********** ");
+                return speakers.Count;
             }
             else
                 return 0;
@@ -14630,8 +15089,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (_comdity is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _AirAudiocom)
                 {
                     _AirAudiocom.FirmwareVersionChanged += AirAudio_FirmwareVersionChanged;
-                    _AirAudiocom.BatteryLevelChanged += AirAudio_BatteryLevelChanged;
-                    _AirAudiocom.BatteryStatusChanged += AirAudio_BatteryStatusChanged;
+                    //_AirAudiocom.BatteryLevelChanged += AirAudio_BatteryLevelChanged;
+                    //_AirAudiocom.BatteryStatusChanged += AirAudio_BatteryStatusChanged;
                     _AirAudiocom.PairedHostNameChanged += AirAudio_PairedHostNameChanged;
                     _AirAudiocom.InstanceNumberChanged += AirAudio_InstanceNumberChanged;
                     _AirAudiocom.IsReadyChanged += AirAudio_IsReadyChanged;
@@ -14682,8 +15141,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (_comdity is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _AirAudiocom)
                 {
                     _AirAudiocom.FirmwareVersionChanged -= AirAudio_FirmwareVersionChanged;
-                    _AirAudiocom.BatteryLevelChanged -= AirAudio_BatteryLevelChanged;
-                    _AirAudiocom.BatteryStatusChanged -= AirAudio_BatteryStatusChanged;
+                    //_AirAudiocom.BatteryLevelChanged -= AirAudio_BatteryLevelChanged;
+                    //_AirAudiocom.BatteryStatusChanged -= AirAudio_BatteryStatusChanged;
                     _AirAudiocom.PairedHostNameChanged -= AirAudio_PairedHostNameChanged;
                     _AirAudiocom.InstanceNumberChanged -= AirAudio_InstanceNumberChanged;
                     _AirAudiocom.IsReadyChanged -= AirAudio_IsReadyChanged;
@@ -14728,8 +15187,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (obj.airaudioCommodity is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _AirAudiocom)
             {
                 _AirAudiocom.FirmwareVersionChanged -= AirAudio_FirmwareVersionChanged;
-                _AirAudiocom.BatteryLevelChanged -= AirAudio_BatteryLevelChanged;
-                _AirAudiocom.BatteryStatusChanged -= AirAudio_BatteryStatusChanged;
+                //_AirAudiocom.BatteryLevelChanged -= AirAudio_BatteryLevelChanged;
+                //_AirAudiocom.BatteryStatusChanged -= AirAudio_BatteryStatusChanged;
                 _AirAudiocom.PairedHostNameChanged -= AirAudio_PairedHostNameChanged;
                 _AirAudiocom.InstanceNumberChanged -= AirAudio_InstanceNumberChanged;
                 _AirAudiocom.IsReadyChanged -= AirAudio_IsReadyChanged;
@@ -14886,8 +15345,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (_comdityAirAudio is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _AirAudiocom)
                 {
                     _AirAudiocom.FirmwareVersionChanged += AirAudio_FirmwareVersionChanged;
-                    _AirAudiocom.BatteryLevelChanged += AirAudio_BatteryLevelChanged;
-                    _AirAudiocom.BatteryStatusChanged += AirAudio_BatteryStatusChanged;
+                    //_AirAudiocom.BatteryLevelChanged += AirAudio_BatteryLevelChanged;
+                    //_AirAudiocom.BatteryStatusChanged += AirAudio_BatteryStatusChanged;
                     _AirAudiocom.PairedHostNameChanged += AirAudio_PairedHostNameChanged;
                     _AirAudiocom.InstanceNumberChanged += AirAudio_InstanceNumberChanged;
                     _AirAudiocom.IsReadyChanged += AirAudio_IsReadyChanged;
