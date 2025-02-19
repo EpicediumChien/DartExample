@@ -3109,7 +3109,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                                           Version = _.DeviceVersion
                                                                       })
                                                                       .Concat(fwUpdateDeviceInfos.Where(_ => !fwUpdateInfoPackage.FWUpdateInfo
-                                                                                                                                 .Select(x => x.DeviceId)
+                                                                                                                                 .Select(x => x.DeviceId
+                                                                                                                                               .Replace("{", "")
+                                                                                                                                               .Replace("}", ""))
                                                                                                                                  .Contains(_.ID.ToString()))
                                                                                                  .Select(_ => new FWUpdateResponseInfo
                                                                                                  {
@@ -3156,7 +3158,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
                         });
 
-                        fwUpdateDeviceInfos.Where(_ => !fwUpdateInfoPackage.FWUpdateInfo.Select(x => x.DeviceId).Contains(_.ID.ToString()))
+                        fwUpdateDeviceInfos.Where(_ => !fwUpdateInfoPackage.FWUpdateInfo.Select(x => x.DeviceId.Replace("{", "").Replace("}", "")).Contains(_.ID.ToString()))
                                            .ToList()
                                            .ForEach(_ => 
                                            {
