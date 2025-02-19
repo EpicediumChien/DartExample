@@ -485,7 +485,7 @@ namespace nsWinEventHook
             if (!rst)
             {
 #if DEBUG
-                Console.WriteLine("[WindowFocusWatcher] UnhookWinEvent failed");
+                Console.WriteLine("[WinEventHook] UnhookWinEvent failed");
 #endif
             }
             return rst;
@@ -502,7 +502,7 @@ namespace nsWinEventHook
             if (rst == 0)
             {
 #if DEBUG
-                Console.WriteLine("[WindowFocusWatcher] GetWindowThreadProcessId failed");
+                Console.WriteLine("[WinEventHook] GetWindowThreadProcessId failed");
 #endif
             }
 
@@ -524,7 +524,7 @@ namespace nsWinEventHook
             if (rst == IntPtr.Zero)
             {
 #if DEBUG
-                Console.WriteLine("[WindowFocusWatcher] GetWindowThreadProcessId failed");
+                Console.WriteLine("[WinEventHook] SetWindowPos failed");
 #endif
             }
 
@@ -537,7 +537,15 @@ namespace nsWinEventHook
 
         public static int _MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint)
         {
-            return MoveWindow(hWnd, x, y, nWidth, nHeight, bRepaint);
+            int rst = MoveWindow(hWnd, x, y, nWidth, nHeight, bRepaint);
+
+            if (rst == 0)
+            {
+#if DEBUG
+                Console.WriteLine("[WinEventHook] MoveWindow failed");
+#endif
+            }
+            return rst;
         }
 
         //[DllImport("dwmapi")]
@@ -622,7 +630,15 @@ namespace nsWinEventHook
 
         private static bool _GetCursorInfo(out CURSORINFO pci)
         {
-            return GetCursorInfo(out pci);
+            bool rst = GetCursorInfo(out pci);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[WinEventHook] GetCursorInfo failed");
+#endif
+            }
+            return rst;
         }
 
         //GetCursorPos()
@@ -633,7 +649,15 @@ namespace nsWinEventHook
 
         public static bool _GetCursorPos(out POINT lpPoint)
         {
-            return GetCursorPos(out lpPoint);
+            bool rst = GetCursorPos(out lpPoint);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[WinEventHook] GetCursorPos failed");
+#endif
+            }
+            return rst;
         }
 
         #endregion Win32 - GetCursorType
