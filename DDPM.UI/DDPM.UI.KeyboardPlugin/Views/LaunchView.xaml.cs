@@ -33,6 +33,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         public LaunchView()
         {
+            DdpmCommonHelper.WriteUILog($"Keyboard UI LaunchView Begin timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
             InitializeComponent();
             _vm = (KeyboardViewModel?)Keyboardplugin.PluginIoc?.GetService<IPeripheralViewModel>();
             if (_vm == null)
@@ -101,7 +102,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                         RestoreLockIcon.Visibility = data.LockSettings.Lock_Keyboard_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
                         //Lock Functionality 9/7
                         //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Keyboard]
-                        if (data.LockSettings != null && 
+                        if (data.LockSettings != null &&
                             DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Keyboard"))
                         {
                             RestoreLockIcon.Visibility = Visibility.Visible;
@@ -111,11 +112,18 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 }
             }
             Unloaded += LaunchView_Unloaded;
+            Loaded += LaunchView_Loaded;
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 //DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
             }
+            DdpmCommonHelper.WriteUILog($"Keyboard UI LaunchView End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
+        }
+
+        private void LaunchView_Loaded(object sender, RoutedEventArgs e)
+        {
+            DdpmCommonHelper.WriteUILog($"Keyboard UI Loaded timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
 
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
