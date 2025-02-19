@@ -615,9 +615,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _automatedActionsSensitivityUpPageShow = true;
                     _automatedActionsWhenHeadsetIsRemovedPageShow = true;
                     _automatedActionsAnswerCallPageShow = DeviceInfoDTP.IsAnswerCallSupported; //true; //WL5024 page2, not only AnswerCall  // always show, but need to detect disable/enable
-                    _supportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
-                    SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
-                    //OnPropertyChanged(nameof(AnswerCalls_String));
+                    _supportedAnswerCalls = true; //WL5024 page2, always need to show
+                    //SupportedAnswerCalls = true;
                     //Page 3
                     _voiceGuidancePageShow = true;
                     //_deviceSettingsDownloadDellAudioPageShow = false;
@@ -630,8 +629,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     //Page 2                  
                     _automatedActionsAnswerCallPageShow = true;//DELL 說拿掉;// only AnswerCall // always show, but need to detect disable/enable
                     _supportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
-                    SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
-                    //OnPropertyChanged(nameof(AnswerCalls_String));
+                    //SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
                     //Page 3
                     _voiceGuidancePageShow = true;
                     _deviceSettingsDownloadDellAudioPageShow = false;
@@ -641,10 +639,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     //Page 1
                     _configureMyAudioModesPageShow = true;
                     //Page 2                   
-                    _automatedActionsAnswerCallPageShow = true;// only AnswerCall // always show, but need to detect disable/enable
+                    _automatedActionsAnswerCallPageShow = true;
                     _supportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
-                    SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
-                    //OnPropertyChanged(nameof(AnswerCalls_String));
+                    //SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
                     //Page 3
                     _voiceGuidancePageShow = true;
                     //_deviceSettingsDownloadDellAudioPageShow = false;
@@ -656,9 +653,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _configureMyAudioModesPageShow = true;
                     //Page 2
                     _supportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
-                    SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
-                    _automatedActionsAnswerCallPageShow = true;//DELL 說拿掉;// only AnswerCall // always show, but need to detect disable/enable
-                    //OnPropertyChanged(nameof(AnswerCalls_String));
+                    //SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
+                    _automatedActionsAnswerCallPageShow = true;
                     //Page 3
                     _deviceSettingsDownloadDellAudioPageShow = false;
                     //defult page
