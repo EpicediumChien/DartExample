@@ -2333,6 +2333,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         model.AddRange(commandLineInput.Model);
                                         model = model.Select(x => x.ToLower()).Distinct().ToList();
                                     }
+                                    fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => model.Contains(x.modelName, StringComparer.OrdinalIgnoreCase)).ToList();
                                 }
                                 if (commandLineInput.ServiceTag.Count > 0)
                                 {
@@ -2345,6 +2346,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         serviceTag.AddRange(commandLineInput.ServiceTag);
                                         serviceTag = serviceTag.Select(x => x.ToLower()).Distinct().ToList();
                                     }
+                                    fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => serviceTag.Contains(x.edid.ServiceTag, StringComparer.OrdinalIgnoreCase)).ToList();
                                 }
 
                                 switch (commandLineInput.TargetFeature)
@@ -2758,6 +2760,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         model.AddRange(commandLineInput.Model);
                                                         model = model.Select(x => x.ToLower()).Distinct().ToList();
                                                     }
+                                                    fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => model.Contains(x.ModelNumber, StringComparer.OrdinalIgnoreCase)).ToList();
                                                 }
                                                 if (commandLineInput.ServiceTag.Count > 0)
                                                 {
@@ -2770,6 +2773,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         serviceTag.AddRange(commandLineInput.ServiceTag);
                                                         serviceTag = serviceTag.Select(x => x.ToLower()).Distinct().ToList();
                                                     }
+                                                    fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => serviceTag.Contains(x.DockServiceTag, StringComparer.OrdinalIgnoreCase)).ToList();
                                                 }
 
                                                 switch (commandLineInput.TargetFeature)
@@ -3265,15 +3269,30 @@ namespace DDPM.CLI.Plugins.Peripherals
                     cli_FWU_RESPONSE.Model = string.Join(",", allFWUpdateResponseInfos.Select(_ => _.Model));
                     cli_FWU_RESPONSE.ServiceTag = string.Join(",", allFWUpdateResponseInfos.Select(_ => !string.IsNullOrWhiteSpace(_.ServiceTag) ? _.ServiceTag : "N/A"));
                     cli_FWU_RESPONSE.FWVersion = string.Join(",", allFWUpdateResponseInfos.Select(_ => $"[{_.Version}]"));
+
+                    var serialNumbers = new List<string>();
+                    var marketingNames = new List<string>();
+                    var indexs = new List<int>();
+                    foreach (var info in allFWUpdateResponseInfos)
+                    {
+                        var monitor = fwUpdateMonitorInfos.FirstOrDefault(_ => _.modelName.Equals(info.Model, StringComparison.OrdinalIgnoreCase) && _.edid.ServiceTag.Equals(info.ServiceTag, StringComparison.OrdinalIgnoreCase));
+
+                        if (monitor != null)
+                        {
+                            serialNumbers.Add(monitor.edid.SerialNumber);
+                            marketingNames.Add(monitor.MarketingName);
+                            indexs.Add(monitor.Index);
+                        }
+                    }
+                    cli_FWU_RESPONSE.SerialNumber = string.Join(",", serialNumbers);
+                    cli_FWU_RESPONSE.MarketingName = string.Join(",", marketingNames);
+                    cli_FWU_RESPONSE.Index = string.Join(",", indexs);
                     cli_FWU_RESPONSE.Result = "PASS";
 
                     if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
                     {
                         fwUpdateMonitorInfos.ForEach(_ => cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {_.modelName}, ServiceTag: {_.edid.ServiceTag} Version: {_.FwVersion}"));
                         cli_FWU_RESPONSE.Message = "No updates available";
-                        cli_FWU_RESPONSE.SerialNumber = string.Join(",", fwUpdateMonitorInfos.Select(_ => _.edid.SerialNumber));
-                        cli_FWU_RESPONSE.MarketingName = string.Join(",", fwUpdateMonitorInfos.Select(_ => _.MarketingName));
-                        cli_FWU_RESPONSE.Index = string.Join(",", fwUpdateMonitorInfos.Select(_ => _.Index + 1));
                         writelog("Auto_FWUpdate_display No updates available");
                         return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
