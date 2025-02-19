@@ -3281,7 +3281,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         {
                             serialNumbers.Add(monitor.edid.SerialNumber);
                             marketingNames.Add(monitor.MarketingName);
-                            indexs.Add(monitor.Index);
+                            indexs.Add(monitor.Index + 1);
                         }
                     }
                     cli_FWU_RESPONSE.SerialNumber = string.Join(",", serialNumbers);
