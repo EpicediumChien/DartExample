@@ -10994,7 +10994,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 int devCnt = GetWebcamDeviceCount();
-                writelog($"GetWebcamDeviceCount = {devCnt}, current webcam device ID = {QAMWebcamDeviceGuid}");
+                writelog($"GetWebcamDeviceCount = {devCnt}, GetWebcamDeviceCountAsync = {GetWebcamDeviceCountAsync().Result}, current webcam device ID = {GetWebcamDeviceID().Result}");
 
                 if (1 != devCnt || _GlobalSettingParam == null || !isWindowsScreenNotLocked ||
                     _GlobalSettingParam.GlobalSetting_WidgetSettings == null //||
@@ -11212,7 +11212,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case "Webcam_IsZoomMeetingActiveChanged":
-                    writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomMeetingActiveChanged");
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomMeetingActiveChanged start");
                     isQAMHandleEvent = true;
 
                     if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
@@ -11226,11 +11226,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_IsZoomScreenShareActiveChanged");
                     //}
 
-                    writelog($"HandleQAMV2 launched by event Webcam_IsZoomMeetingActiveChanged");
+                    writelog($"HandleQAMV2 launched by event Webcam_IsZoomMeetingActiveChanged end");
                     break;
 
                 case "Webcam_IsZoomScreenShareActiveChanged":
-                    writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomScreenShareActiveChanged");
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomScreenShareActiveChanged start");
                     isQAMHandleEvent = true;
 
                     if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
@@ -11244,11 +11244,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_IsZoomScreenShareActiveChanged");
                     //}
 
-                    writelog($"HandleQAMV2 launched by event Webcam_IsZoomScreenShareActiveChanged");
+                    writelog($"HandleQAMV2 launched by event Webcam_IsZoomScreenShareActiveChanged end");
                     break;
 
                 case "Webcam_ZoomMeetingTypeChanged":
-                    writelog($"HandleQAMV2 launch by webcam event Webcam_ZoomMeetingTypeChanged");
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_ZoomMeetingTypeChanged start");
                     isQAMHandleEvent = true;
 
                     int type = (int)ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
@@ -11266,11 +11266,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_ZoomMeetingTypeChanged");
                     //}
 
-                    writelog($"HandleQAMV2 launched by event Webcam_ZoomMeetingTypeChanged");
+                    writelog($"HandleQAMV2 launched by event Webcam_ZoomMeetingTypeChanged end");
                     break;
 
                 case "Webcam_Disconnected":
-                    writelog($"HandleQAMV2 launch by webcam event Webcam_Disconnected");
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_Disconnected start");
                     isQAMHandleEvent = true;
                     //Derek 1221 if there is only one device after this event, should update QAMWebcamDeviceGuid
                     //if (1 == WebcamDevCnt)
@@ -11279,11 +11279,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     //    writelog($"There is only one device after this event, should update QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid}");
                     //}
-                    writelog($"HandleQAMV2 launched by event Webcam_Disconnected");
+                    writelog($"HandleQAMV2 launched by event Webcam_Disconnected end");
                     break;
 
                 case "Webcam_Connected":
-                    writelog($"HandleQAMV2 launch by webcam event Webcam_Connected");
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_Connected start");
                     isQAMHandleEvent = true;
 
                     //if (1 == WebcamDevCnt)
@@ -11294,7 +11294,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_Connected");
                     //}
 
-                    writelog($"HandleQAMV2 launched by event Webcam_Connected");
+                    writelog($"HandleQAMV2 launched by event Webcam_Connected end");
                     break;
 
                 default:
@@ -11308,6 +11308,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<string> GetWebcamDeviceID()
         {
             return _DTPProxyPlugin.GetWebcamDeviceID();
+        }
+
+        public Task<int> GetWebcamDeviceCountAsync()
+        {
+            return _DTPProxyPlugin.GetWebcamDeviceCountAsync();
         }
 
         //Marked by Derek 1125 because they had covered by WebcamEventHandler

@@ -236,6 +236,7 @@ namespace DDPM.SA.Common
 
         //Derek 1221 for QAM
         Task<string> GetWebcamDeviceID();
+        Task<int> GetWebcamDeviceCountAsync();  //Derek 2025/02/19
 
         #endregion
 
