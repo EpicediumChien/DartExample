@@ -272,7 +272,7 @@ namespace DDPM.SA.Common
         #endregion Display FWU Metadata
 
         #region DisplayData
-        Task initDisplayData(List<MonitorInfo> monitorInfos);
+        Task InitDisplayData(List<MonitorInfo> monitorInfos);
         #endregion
     }
 }
