@@ -305,6 +305,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.CompletedTask;
         }
 
+        public Task CancelVcpTask(Guid user_guid)
+        {
+            _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received CancelVcpTask: " + user_guid.ToString() + " requested ...");
+
+            if (_VcpCorePlugin != null)
+                _VcpCorePlugin.CancelVcpTask(user_guid);
+
+            return Task.CompletedTask;
+        }
+
         private Task<bool> CreateProcessExitEvent(int processID)
         {
             bool result = true;
@@ -381,7 +391,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
-        public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo)
+        public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetCapabilitiesString requested ...");
             _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -390,12 +400,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             string r = string.Empty;
 
             if (_VcpCorePlugin != null)
-                r = _VcpCorePlugin.GetCapabilitiesString(monitorInfo).Result;
+                r = _VcpCorePlugin.GetCapabilitiesString(monitorInfo, guid).Result;
 
             return Task.FromResult(r);
         }
 
-        public Task<string> GetVCPCapabilities(MonitorInfo monitorInfo)
+        public Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid guid = default)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetVCPCapabilities requested ...");
             _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -404,12 +414,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             string r = string.Empty;
 
             if (_VcpCorePlugin != null)
-                r = _VcpCorePlugin.GetVCPCapabilities(monitorInfo).Result;
+                r = _VcpCorePlugin.GetVCPCapabilities(monitorInfo, guid).Result;
 
             return Task.FromResult(r);
         }
 
-        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, int opt = 0)
+        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, Guid guid = default, int opt = 0)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetVCPCapability requested ...");
             _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -420,12 +430,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ObjGetVCP result = new ObjGetVCP();
 
             if (_VcpCorePlugin != null)
-                result = _VcpCorePlugin.GetVCPCapability(monitorInfo, code, opt).Result;
+                result = _VcpCorePlugin.GetVCPCapability(monitorInfo, code, guid, opt).Result;
 
             return Task.FromResult(result);
         }
 
-        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, int opt = 0)
+        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, Guid guid = default, int opt = 0)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetVCPCapability requested ...");
             _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -436,12 +446,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ObjGetVCP result = new ObjGetVCP();
 
             if (_VcpCorePlugin != null)
-                result = _VcpCorePlugin.GetVCPCapability(monitorInfo, FunctionName, opt).Result;
+                result = _VcpCorePlugin.GetVCPCapability(monitorInfo, FunctionName, guid, opt).Result;
 
             return Task.FromResult(result);
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val)
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val, Guid guid = default)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received SetVCPCapability requested ...");
             _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -452,12 +462,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             bool r = false;
 
             if (_VcpCorePlugin != null)
-                r = _VcpCorePlugin.SetVCPCapability(monitorInfo, code, val).Result;
+                r = _VcpCorePlugin.SetVCPCapability(monitorInfo, code, val, guid).Result;
 
             return Task.FromResult(r);
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val)
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val, Guid guid = default)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received SetVCPCapability requested ...");
             _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor DisplayName is " + monitorInfoX.DisplayName);
@@ -468,7 +478,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             bool r = false;
 
             if (_VcpCorePlugin != null)
-                r = _VcpCorePlugin.SetVCPCapability(monitorInfoX, FunctionName, val).Result;
+                r = _VcpCorePlugin.SetVCPCapability(monitorInfoX, FunctionName, val, guid).Result;
 
             if (r && FunctionName == "Input Select")
             {
@@ -1770,7 +1780,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             ObjGetVCP result = new ObjGetVCP();
             ////==Multi - Monitor Sync(MMS)==//0x00 MMS Off; 0x01 MMS On (DUT1); 0x03 (On, DP-out, MST)
-            result = GetVCPCapability(monitorInfos, 0xEF, 0).Result;
+            result = GetVCPCapability(monitorInfos, 0xEF, opt: 0).Result;
             if (result != null && result.result)
             {
                 param.isMMSEnable = System.Convert.ToBoolean(result.value);
@@ -1818,7 +1828,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             ObjGetVCP result = new ObjGetVCP();
             //==Primary ==//Bit 5 : 0 = UnSelected, 1 = Selected
-            result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
+            result = GetVCPCapability(monitorInfos, 0x66, opt: 0).Result;
             if (result != null && result.result)
             {
                 param.isPrimaryMonitorSync = ((uint)result.value & (1u << 5)) != 0;
@@ -1844,7 +1854,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //==Primary ==//Bit 5 : 0 = UnSelected, 1 = Selected
             if (monitorInfos.CapabilityDic.ContainsKey("66"))
             {
-                result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
+                result = GetVCPCapability(monitorInfos, 0x66, opt: 0).Result;
                 if (result != null && result.result)
                 {
                     uint val = SetBitValue((uint)result.value, 5, (int)StrConvertUint(value));
@@ -1874,7 +1884,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             ObjGetVCP result = new ObjGetVCP();
             //==Auto Color Temperature==//Bit 4 : 0 = Off, 1 = On
-            result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
+            result = GetVCPCapability(monitorInfos, 0x66, opt: 0).Result;
             if (result != null && result.result)
             {
                 param.isAutoColorTemp = ((uint)result.value & (1u << 4)) != 0;
@@ -1900,7 +1910,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //==Auto Color Temperature==//Bit 4 : 0 = Off, 1 = On
             if (monitorInfos.CapabilityDic.ContainsKey("66"))
             {
-                result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
+                result = GetVCPCapability(monitorInfos, 0x66, opt: 0).Result;
                 if (result != null && result.result)
                 {
                     uint val = SetBitValue((uint)result.value, 4, (int)StrConvertUint(value));
@@ -1930,7 +1940,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             ObjGetVCP result = new ObjGetVCP();
             //==AutoBrightness==//Bit 0: 0 = Reserved, 1 = AutoBrightness Off || Bit 1: 0 = Reserved, 1 = AutoBrightness On
-            result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
+            result = GetVCPCapability(monitorInfos, 0x66, opt: 0).Result;
             if (result != null && result.result)
             {
                 uint val = GetBitsValue((uint)result.value, 0);
@@ -1957,7 +1967,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (monitorInfos.CapabilityDic.ContainsKey("66"))
             {
                 //==AutoBrightness==//Bit 0: 0 = Reserved, 1 = AutoBrightness Off || Bit 1: 0 = Reserved, 1 = AutoBrightness On
-                result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
+                result = GetVCPCapability(monitorInfos, 0x66, opt: 0).Result;
                 if (result != null && result.result)
                 {
                     uint val;
@@ -1994,7 +2004,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             List<AutoBrightnessRangeLevel> brightnessrangelevellist = new List<AutoBrightnessRangeLevel>();
             AutoBrightnessRangeLevel brightnessrangelevel = new AutoBrightnessRangeLevel();
             //==Auto Brightness Range  Level==//Bit 6~7 : 0=Leve 1 | 1=Level 2 | 2=Level 3
-            result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
+            result = GetVCPCapability(monitorInfos, 0x66, opt: 0).Result;
             if (result != null && result.result)
             {
                 brightnessrangelevel.level_value = GetBitsValue((uint)result.value, 6);
@@ -2037,7 +2047,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (monitorInfos.CapabilityDic.ContainsKey("66"))
             {
                 //==Auto Brightness Range  Level==//Bit 6~7 : 0=Leve 1 | 1=Level 2 | 2=Level 3
-                result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
+                result = GetVCPCapability(monitorInfos, 0x66, opt: 0).Result;
                 if (result != null && result.result)
                 {
                     uint val = SetBitsValue((uint)result.value, 6, int.Parse(value));
@@ -2084,7 +2094,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //AutoBrightnessRangeLevel brightnessrangelevel = new AutoBrightnessRangeLevel();
             if (monitorInfos.CapabilityString.Contains("66"))//Directly determine CapabilityString to improve performance
             {
-                result = GetVCPCapability(monitorInfos, 0x66, 0).Result;
+                result = GetVCPCapability(monitorInfos, 0x66, opt: 0).Result;
             }
 
             if (result != null && result.result)

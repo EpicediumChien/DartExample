@@ -115,16 +115,21 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     }
                     DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
                     Loaded += LaunchView_LoadedStatus;
+                    Unloaded += LaunchView_UnLoadedStatus;
                 }
             }
         }
-        ~LaunchView()
+
+        private async void LaunchView_UnLoadedStatus(object sender, RoutedEventArgs e)
         {
+            if (_vm == null) return;
+            _vm.UloadHeadset_DTPNotify();
             if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
+            {               
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
                 DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
                 Loaded -= LaunchView_LoadedStatus;
+                Unloaded -= LaunchView_UnLoadedStatus;
                 DdpmCommonHelper.WriteUILog($"[Headset] ~LaunchView");
             }
         }

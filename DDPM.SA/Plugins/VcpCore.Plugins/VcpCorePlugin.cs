@@ -81,6 +81,7 @@ namespace VcpCore.Plugins
         private static Dictionary<string, List<modelinfos>> _SupportDictionary;
         private static readonly string targetFile = "LSTDDPM";
         private static VcpLockCache _CacheTable;
+        private static HashSet<Guid> _CancelhashSet;
         private static ManualResetEvent _pauseEvent = new ManualResetEvent(true);
         private static SemaphoreSlim _LockerSemaphoreSlim = new SemaphoreSlim(1, 1);
         private int _CoWorkSignal = 0;
@@ -119,6 +120,7 @@ namespace VcpCore.Plugins
             _AllInfoMonitors ??= new List<MonitorInfo_complex>();
             _AllInfoMonitors_Mix ??= new List<(MonitorInfo_complex, MonitorInfo)>();
             _CacheTable ??= new VcpLockCache(_logs);
+            _CancelhashSet ??= new HashSet<Guid>();
             _ColorPresets ??= new Dictionary<string, Dictionary<string, string>>();
             _TaskQueue ??= new TaskLockQueue<ParameterType>();
             _TaskQueueExecutor ??= new BackgroundWorker();
@@ -214,6 +216,7 @@ namespace VcpCore.Plugins
                         _TaskQueue = new TaskLockQueue<ParameterType>();
                         _TaskQueueResult = new ResultLockPool();
                     }
+                    _CancelhashSet.Clear();
                 }
 
                 _AddSignalfor0X52 = 0;
@@ -228,6 +231,20 @@ namespace VcpCore.Plugins
                 OnDisplaychanged(_displaychangedEventArgss);
                 //------------------------------------------------------------------------------------------------//
             }
+
+            return Task.CompletedTask;
+        }
+
+        public Task CancelVcpTask(Guid user_guid)
+        {
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received CancelVCPTask requested ...");
+
+            _logs.DebugMsg($"[VcpCorePlugin] Before CancelhashSet Count : {_CancelhashSet.Count}");
+
+            if (user_guid != default)
+                _CancelhashSet.Add(user_guid);
+
+            _logs.DebugMsg($"[VcpCorePlugin] After CancelhashSet Count : {_CancelhashSet.Count}");
 
             return Task.CompletedTask;
         }
@@ -277,7 +294,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo)
+        public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid uguid = default)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetCapabilitiesString requested ...");
 
@@ -297,7 +314,7 @@ namespace VcpCore.Plugins
                         {
                             object or;
 
-                            if ((or = _CacheTable.GetFromCacheTable(moX.Item1, "CapibilityString".ToLower())) != null)
+                            if ((or = _CacheTable.GetFromCacheTable(moX.Item1, "CapibilityString".ToLower(CultureInfo.InvariantCulture))) != null)
                                 return Task.FromResult(or.ToString());
                             else
                             {
@@ -305,7 +322,7 @@ namespace VcpCore.Plugins
                                 Guid _guid = Guid.NewGuid();
                                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                                ParameterType parameterType = new ParameterType(Queue_CommandType.GetCapabilitiesString, new Type_GetCapabilitiesString(_guid, moX.Item1));
+                                ParameterType parameterType = new ParameterType(Queue_CommandType.GetCapabilitiesString, new Type_GetCapabilitiesString(_guid, moX.Item1, uguid));
                                 _TaskQueue.Enqueue(parameterType);
 
                                 Launch_TaskQueueExecutor();
@@ -335,7 +352,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        public Task<string> GetVCPCapabilities(MonitorInfo monitorInfo)
+        public Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid uguid = default)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapabilities requested ...");
 
@@ -355,7 +372,7 @@ namespace VcpCore.Plugins
                         {
                             object or;
 
-                            if ((or = _CacheTable.GetFromCacheTable(moX.Item1, "Capabilities".ToLower())) != null)
+                            if ((or = _CacheTable.GetFromCacheTable(moX.Item1, "Capabilities".ToLower(CultureInfo.InvariantCulture))) != null)
                                 return Task.FromResult(or.ToString());
                             else
                             {
@@ -363,7 +380,7 @@ namespace VcpCore.Plugins
                                 Guid _guid = Guid.NewGuid();
                                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                                ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapabilities, new Type_GetVCPCapabilities(_guid, moX.Item1));
+                                ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapabilities, new Type_GetVCPCapabilities(_guid, moX.Item1, uguid));
                                 _TaskQueue.Enqueue(parameterType);
 
                                 Launch_TaskQueueExecutor();
@@ -393,7 +410,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, int opt = 0)
+        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, Guid uguid = default, int opt = 0)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapability requested ...");
 
@@ -425,7 +442,7 @@ namespace VcpCore.Plugins
                                     Guid _guid = Guid.NewGuid();
                                     _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                                    ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapability_I, new Type_GetVCPCapability_I(_guid, moX.Item1, code, opt));
+                                    ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapability_I, new Type_GetVCPCapability_I(_guid, moX.Item1, code, uguid, opt));
                                     _TaskQueue.Enqueue(parameterType);
 
                                     Launch_TaskQueueExecutor();
@@ -461,7 +478,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, int opt = 0)
+        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, Guid uguid = default, int opt = 0)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapability requested ...");
 
@@ -483,7 +500,7 @@ namespace VcpCore.Plugins
                         {
                             object or;
 
-                            if ((or = _CacheTable.GetFromCacheTable(moX.Item1, FunctionName.ToLower())) != null)
+                            if ((or = _CacheTable.GetFromCacheTable(moX.Item1, FunctionName.ToLower(CultureInfo.InvariantCulture))) != null)
                                 return Task.FromResult(new ObjGetVCP() { value = or, result = true });
                             else
                             {
@@ -491,7 +508,7 @@ namespace VcpCore.Plugins
                                 Guid _guid = Guid.NewGuid();
                                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                                ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapability_II, new Type_GetVCPCapability_II(_guid, moX.Item1, FunctionName, opt));
+                                ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapability_II, new Type_GetVCPCapability_II(_guid, moX.Item1, FunctionName, uguid, opt));
                                 _TaskQueue.Enqueue(parameterType);
 
                                 Launch_TaskQueueExecutor();
@@ -521,7 +538,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val)
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val, Guid uguid = default)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received SetVCPCapability requested ...");
 
@@ -547,7 +564,7 @@ namespace VcpCore.Plugins
                                 Guid _guid = Guid.NewGuid();
                                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                                ParameterType parameterType = new ParameterType(Queue_CommandType.SetVCPCapability_I, new Type_SetVCPCapability_I(_guid, moX.Item1, code, val));
+                                ParameterType parameterType = new ParameterType(Queue_CommandType.SetVCPCapability_I, new Type_SetVCPCapability_I(_guid, moX.Item1, code, val, uguid));
                                 _TaskQueue.Enqueue(parameterType);
 
                                 Launch_TaskQueueExecutor();
@@ -582,7 +599,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, string FunctionName, string val)
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, string FunctionName, string val, Guid uguid = default)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received SetVCPCapability requested ...");
 
@@ -606,7 +623,7 @@ namespace VcpCore.Plugins
                             Guid _guid = Guid.NewGuid();
                             _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                            ParameterType parameterType = new ParameterType(Queue_CommandType.SetVCPCapability_II, new Type_SetVCPCapability_II(_guid, moX.Item1, FunctionName, val));
+                            ParameterType parameterType = new ParameterType(Queue_CommandType.SetVCPCapability_II, new Type_SetVCPCapability_II(_guid, moX.Item1, FunctionName, val, uguid));
                             _TaskQueue.Enqueue(parameterType);
 
                             Launch_TaskQueueExecutor();
@@ -664,7 +681,7 @@ namespace VcpCore.Plugins
                 Guid _guid = Guid.NewGuid();
                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                ParameterType parameterType = new ParameterType(Queue_CommandType.Initialize0x52toEmpty, new Type_Initialize0x52toEmpty(_guid));
+                ParameterType parameterType = new ParameterType(Queue_CommandType.Initialize0x52toEmpty, new Type_Initialize0x52toEmpty(_guid, default));
                 _TaskQueue.Enqueue(parameterType);
 
                 Launch_TaskQueueExecutor();
@@ -688,7 +705,7 @@ namespace VcpCore.Plugins
                     Guid _guid = Guid.NewGuid();
                     _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                    ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x52, new Type_Watcher0x52(_guid));
+                    ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x52, new Type_Watcher0x52(_guid, default));
                     _TaskQueue.Enqueue(parameterType);
 
                     Launch_TaskQueueExecutor();
@@ -715,7 +732,7 @@ namespace VcpCore.Plugins
                     Guid _guid = Guid.NewGuid();
                     _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                    ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x02forStatusCheck, new Type_Watcher0x02forStatusCheck(_guid));
+                    ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x02forStatusCheck, new Type_Watcher0x02forStatusCheck(_guid, default));
                     _TaskQueue.Enqueue(parameterType);
 
                     Launch_TaskQueueExecutor();
@@ -883,6 +900,7 @@ namespace VcpCore.Plugins
                         _logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork _TaskQueue cleaning...");
                         _TaskQueue = new TaskLockQueue<ParameterType>();
                         _TaskQueueResult = new ResultLockPool();
+                        _CancelhashSet.Clear();
                         _logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork _TaskQueue.IsEmpty(): " + _TaskQueue.IsEmpty().ToString());
                         e.Cancel = true;
                         return;
@@ -895,62 +913,115 @@ namespace VcpCore.Plugins
                             case Queue_CommandType.GetCapabilitiesString:
                                 {
                                     Type_GetCapabilitiesString parameter = (Type_GetCapabilitiesString)p.Parameter;
-                                    _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetCapabilitiesString GUID => " + parameter.guid);
-                                    var rt = GetCapabilitiesString_(parameter.monitorInfoX);
-                                    _TaskQueueResult.Add(parameter.guid, rt);
+                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    {
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetCapabilitiesString GUID => " + parameter.guid);
+                                        var rt = GetCapabilitiesString_(parameter.monitorInfoX);
+                                        _TaskQueueResult.Add(parameter.guid, rt);
+                                    }
+                                    else
+                                    {
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetCapabilitiesString GUID in CancelhashSet =>" + parameter.guid);
+                                        _TaskQueueResult.Add(parameter.guid, string.Empty);
+                                    }
                                 }
                                 break;
 
                             case Queue_CommandType.GetVCPCapabilities:
                                 {
                                     Type_GetVCPCapabilities parameter = (Type_GetVCPCapabilities)p.Parameter;
-                                    _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetVCPCapabilities GUID => " + parameter.guid);
-                                    var rt = GetVCPCapabilities_(parameter.monitorInfoX);
-                                    _TaskQueueResult.Add(parameter.guid, rt);
+                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    {
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetVCPCapabilities GUID => " + parameter.guid);
+                                        var rt = GetVCPCapabilities_(parameter.monitorInfoX);
+                                        _TaskQueueResult.Add(parameter.guid, rt);
+                                    }
+                                    else
+                                    {
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetVCPCapabilities GUID in CancelhashSet => " + parameter.guid);
+                                        _TaskQueueResult.Add(parameter.guid, string.Empty);
+                                    }
                                 }
                                 break;
 
                             case Queue_CommandType.GetVCPCapability_I:
                                 {
                                     Type_GetVCPCapability_I parameter = (Type_GetVCPCapability_I)p.Parameter;
-                                    _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetVCPCapability_I GUID => " + parameter.guid);
-                                    var rt = GetVCPCapability_(parameter.monitorInfoX, parameter.code, parameter.opt);
-                                    _TaskQueueResult.Add(parameter.guid, rt);
+                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    {
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetVCPCapability_I GUID => " + parameter.guid);
+                                        var rt = GetVCPCapability_(parameter.monitorInfoX, parameter.code, parameter.opt);
+                                        _TaskQueueResult.Add(parameter.guid, rt);
+                                    }
+                                    else
+                                    {
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetVCPCapability_I GUID in CancelhashSet => " + parameter.guid);
+                                        _TaskQueueResult.Add(parameter.guid, null);
+                                    }
                                 }
                                 break;
 
                             case Queue_CommandType.GetVCPCapability_II:
                                 {
                                     Type_GetVCPCapability_II parameter = (Type_GetVCPCapability_II)p.Parameter;
-                                    _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetVCPCapability_II GUID => " + parameter.guid);
-                                    var rt = GetVCPCapability_(parameter.monitorInfoX, parameter.FunctionName, parameter.opt);
-                                    _TaskQueueResult.Add(parameter.guid, rt);
+                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    {
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetVCPCapability_II GUID => " + parameter.guid);
+                                        var rt = GetVCPCapability_(parameter.monitorInfoX, parameter.FunctionName, parameter.opt);
+                                        _TaskQueueResult.Add(parameter.guid, rt);
+                                    }
+                                    else
+                                    {
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetVCPCapability_II GUID in CancelhashSet => " + parameter.guid);
+                                        _TaskQueueResult.Add(parameter.guid, null);
+                                    }
                                 }
                                 break;
 
                             case Queue_CommandType.SetVCPCapability_I:
                                 {
                                     Type_SetVCPCapability_I parameter = (Type_SetVCPCapability_I)p.Parameter;
-                                    _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing SetVCPCapability_I GUID => " + parameter.guid);
-                                    var rt = SetVCPCapability_(parameter.monitorInfoX, parameter.code, parameter.val);
-                                    _TaskQueueResult.Add(parameter.guid, rt);
+                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    {
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing SetVCPCapability_I GUID => " + parameter.guid);
+                                        var rt = SetVCPCapability_(parameter.monitorInfoX, parameter.code, parameter.val);
+                                        _TaskQueueResult.Add(parameter.guid, rt);
+                                    }
+                                    else
+                                    {
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing SetVCPCapability_I GUID in CancelhashSet => " + parameter.guid);
+                                        _TaskQueueResult.Add(parameter.guid, false);
+                                    }
                                 }
                                 break;
 
                             case Queue_CommandType.SetVCPCapability_II:
                                 {
                                     Type_SetVCPCapability_II parameter = (Type_SetVCPCapability_II)p.Parameter;
-                                    _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing SetVCPCapability_II GUID => " + parameter.guid);
-                                    var rt = SetVCPCapability_(parameter.monitorInfoX, parameter.FunctionName, parameter.val);
-                                    _TaskQueueResult.Add(parameter.guid, rt);
+                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    {
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing SetVCPCapability_II GUID => " + parameter.guid);
+                                        var rt = SetVCPCapability_(parameter.monitorInfoX, parameter.FunctionName, parameter.val);
+                                        _TaskQueueResult.Add(parameter.guid, rt);
+                                    }
+                                    else
+                                    {
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing SetVCPCapability_II GUID in CancelhashSet => " + parameter.guid);
+                                        _TaskQueueResult.Add(parameter.guid, false);
+                                    }
                                 }
                                 break;
 
                             case Queue_CommandType.Initialize0x52toEmpty:
                                 {
                                     Type_Initialize0x52toEmpty parameter = (Type_Initialize0x52toEmpty)p.Parameter;
-                                    _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Initialize0x52toEmpty GUID => " + parameter.guid);
-                                    Initialize0x52toEmpty_();
+                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    {
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Initialize0x52toEmpty GUID => " + parameter.guid);
+                                        Initialize0x52toEmpty_();
+                                    }
+                                    else
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Initialize0x52toEmpty GUID in CancelhashSet => " + parameter.guid);
                                 }
                                 break;
 
@@ -962,8 +1033,13 @@ namespace VcpCore.Plugins
                                     _logs.DebugMsg($"[VcpCorePlugin] After Dequeue Watcher0x52 Task _AddSignalfor0X52: {_AddSignalfor0X52}");
 
                                     Type_Watcher0x52 parameter = (Type_Watcher0x52)p.Parameter;
-                                    _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Watcher0x52 GUID => " + parameter.guid);
-                                    Watcher0x52_();
+                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    {
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Watcher0x52 GUID => " + parameter.guid);
+                                        Watcher0x52_();
+                                    }
+                                    else
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Watcher0x52 GUID in CancelhashSet => " + parameter.guid);
                                 }
                                 break;
 
@@ -975,8 +1051,13 @@ namespace VcpCore.Plugins
                                     _logs.DebugMsg($"[VcpCorePlugin] After Dequeue Watcher0x02forStatusCheck Task _AddSignalforStatusCheck: {_AddSignalforStatusCheck}");
 
                                     Type_Watcher0x02forStatusCheck parameter = (Type_Watcher0x02forStatusCheck)p.Parameter;
-                                    _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Watcher0x02forStatusCheck GUID => " + parameter.guid);
-                                    Watcher0x02forStatusCheck_();
+                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    {
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Watcher0x02forStatusCheck GUID => " + parameter.guid);
+                                        Watcher0x02forStatusCheck_();
+                                    }
+                                    else
+                                        _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Watcher0x02forStatusCheck GUID in CancelhashSet => " + parameter.guid);
                                 }
                                 break;
 
@@ -991,6 +1072,7 @@ namespace VcpCore.Plugins
                 _logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork Exception : " + ex.Message);
                 _TaskQueue = new TaskLockQueue<ParameterType>();
                 _TaskQueueResult = new ResultLockPool();
+                _CancelhashSet.Clear();
             }
         }
 
@@ -1064,7 +1146,7 @@ namespace VcpCore.Plugins
             {
                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin started GetVCPCapabilities_ ...");
 
-                var rcCache = _CacheTable.GetFromCacheTable(monitorInfoX, "Capabilities".ToLower())?.ToString();
+                var rcCache = _CacheTable.GetFromCacheTable(monitorInfoX, "Capabilities".ToLower(CultureInfo.InvariantCulture))?.ToString();
 
                 if (!string.IsNullOrWhiteSpace(rcCache))
                     return rcCache;
@@ -1282,7 +1364,7 @@ namespace VcpCore.Plugins
                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCode is " + func);
                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] opt is " + opt.ToString());
 
-                        switch (func.ToUpper())
+                        switch (func.ToUpper(CultureInfo.InvariantCulture))
                         {
                             case "INPUT SELECT":
                                 {
@@ -1292,18 +1374,20 @@ namespace VcpCore.Plugins
                                         var monitor = _AllInfoMonitors_Mix.FirstOrDefault(t => t.Item1.edid.Equals(monitorInfoX.edid));
                                         if (monitor.Item1 != null && monitor.Item2 != null)
                                         {
-                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability tmp.Item1 : " + tmp.Item1);
-                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability tmp.Item2 : " + tmp.Item2);
+
                                             monitor.Item1.inputSource = tmp.Item2;
                                             monitor.Item1.inputCable = tmp.Item1;
                                             monitor.Item2.inputSource = tmp.Item2;
                                             monitor.Item2.inputCable = tmp.Item1;
-                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability monitor.Item1.inputSource : " + monitor.Item1.inputSource);
-                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability monitor.Item1.inputCable : " + monitor.Item1.inputCable);
-                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability monitor.Item2.inputSource : " + monitor.Item2.inputSource);
-                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability monitor.Item2.inputCable : " + monitor.Item2.inputCable);
 
                                             Initialize2TypesMonitorInfo(false, CancellationToken.None);
+
+                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability \"INPUT SELECT\" [inputCable] : " + tmp.Item1);
+                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability \"INPUT SELECT\" [inputSource] : " + tmp.Item2);
+                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability \"INPUT SELECT\" [monitor.Item1.inputSource] : " + monitor.Item1.inputSource);
+                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability \"INPUT SELECT\" [monitor.Item1.inputCable] : " + monitor.Item1.inputCable);
+                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability \"INPUT SELECT\" [monitor.Item2.inputSource] : " + monitor.Item2.inputSource);
+                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability \"INPUT SELECT\" [monitor.Item2.inputCable] : " + monitor.Item2.inputCable);
 
                                             ro = tmp.Item2;
                                         }
@@ -1321,13 +1405,13 @@ namespace VcpCore.Plugins
                                 {
                                     if (IsVcpFunctionSupport(monitorInfoX, 0x60))
                                     {
-                                        ro = _CacheTable.GetFromCacheTable(monitorInfoX, func.ToLower());
+                                        ro = _CacheTable.GetFromCacheTable(monitorInfoX, func.ToLower(CultureInfo.InvariantCulture));
                                         if (ro == null)
                                         {
                                             string VCPCapabilities_ = GetVCPCapabilities_(monitorInfoX);
 
                                             if (!string.IsNullOrWhiteSpace(VCPCapabilities_))
-                                                _CacheTable.SetToCacheTable(monitorInfoX, "Capabilities".ToLower(), VCPCapabilities_);
+                                                _CacheTable.SetToCacheTable(monitorInfoX, "Capabilities".ToLower(CultureInfo.InvariantCulture), VCPCapabilities_);
 
                                             var obj = JObject.Parse(VCPCapabilities_);
                                             if (obj.ContainsKey("CapsDataMap"))
@@ -1349,7 +1433,7 @@ namespace VcpCore.Plugins
                                                         list.Add(new InputSourceObject() { Name = R_, value = value });
                                                 }
                                                 ro = list;
-                                                _CacheTable.SetToCacheTable(monitorInfoX, "inputsourcelist".ToLower(), ro);
+                                                _CacheTable.SetToCacheTable(monitorInfoX, "inputsourcelist".ToLower(CultureInfo.InvariantCulture), ro);
                                             }
                                         }
                                     }
@@ -1456,7 +1540,7 @@ namespace VcpCore.Plugins
             catch (Exception ex)
             {
                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetVCPCapability_ ex: " + ex.Message);
-                return string.Empty;
+                return null;
             }
         }
 
@@ -1533,7 +1617,7 @@ namespace VcpCore.Plugins
                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] FunctionName is " + FunctionName);
                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] val is " + val);
 
-                        switch (FunctionName.ToLower())
+                        switch (FunctionName.ToLower(CultureInfo.InvariantCulture))
                         {
                             case "colorpreset":
                                 {
@@ -1541,10 +1625,10 @@ namespace VcpCore.Plugins
 
                                     if (rc)
                                     {
-                                        //_CacheTable.SetToCacheTable(monitorInfoX, FunctionName.ToLower(), val); // Jim modify to fix 0x52 colore preset no Synchronization issue 
+                                        //_CacheTable.SetToCacheTable(monitorInfoX, FunctionName.ToLower(CultureInfo.InvariantCulture), val); // Jim modify to fix 0x52 colore preset no Synchronization issue
 
                                         VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
-                                        _VCPchangedEventArgs.vcpcode = FunctionName.ToLower();
+                                        _VCPchangedEventArgs.vcpcode = FunctionName.ToLower(CultureInfo.InvariantCulture);
                                         _VCPchangedEventArgs.value = val;
                                         _VCPchangedEventArgs.monitor = (_AllInfoMonitors_Mix.Find(M => M.Item1.edid.Equals(monitorInfoX.edid))).Item2.Clone();
 
@@ -1571,7 +1655,7 @@ namespace VcpCore.Plugins
 
                                             if (rc)
                                             {
-                                                var inputsourcelist = _CacheTable.GetFromCacheTable(monitorInfoX, "inputsourcelist".ToLower());
+                                                var inputsourcelist = _CacheTable.GetFromCacheTable(monitorInfoX, "inputsourcelist".ToLower(CultureInfo.InvariantCulture));
                                                 if (inputsourcelist != null)
                                                 {
                                                     var inputsourcelist_ = inputsourcelist as List<InputSourceObject>;
@@ -1600,7 +1684,7 @@ namespace VcpCore.Plugins
                                                     }
                                                 }
 
-                                                _CacheTable.SetToCacheTable(monitorInfoX, FunctionName.ToLower(), val);
+                                                _CacheTable.SetToCacheTable(monitorInfoX, FunctionName.ToLower(CultureInfo.InvariantCulture), val);
 
                                                 foreach ((MonitorInfo_complex x, MonitorInfo o) in _AllInfoMonitors_Mix)
                                                 {
@@ -1616,7 +1700,7 @@ namespace VcpCore.Plugins
                                                 Initialize2TypesMonitorInfo(false, CancellationToken.None);
 
                                                 VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
-                                                _VCPchangedEventArgs.vcpcode = FunctionName.ToLower();
+                                                _VCPchangedEventArgs.vcpcode = FunctionName.ToLower(CultureInfo.InvariantCulture);
                                                 _VCPchangedEventArgs.value = val;
                                                 _VCPchangedEventArgs.monitor = (_AllInfoMonitors_Mix.Find(M => M.Item1.edid.Equals(monitorInfoX.edid))).Item2.Clone();
 
@@ -1641,10 +1725,10 @@ namespace VcpCore.Plugins
 
                                             if (rc)
                                             {
-                                                _CacheTable.SetToCacheTable(monitorInfoX, FunctionName.ToLower(), val);
+                                                _CacheTable.SetToCacheTable(monitorInfoX, FunctionName.ToLower(CultureInfo.InvariantCulture), val);
 
                                                 VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
-                                                _VCPchangedEventArgs.vcpcode = FunctionName.ToLower();
+                                                _VCPchangedEventArgs.vcpcode = FunctionName.ToLower(CultureInfo.InvariantCulture);
                                                 _VCPchangedEventArgs.value = val;
                                                 _VCPchangedEventArgs.monitor = (_AllInfoMonitors_Mix.Find(M => M.Item1.edid.Equals(monitorInfoX.edid))).Item2.Clone() ?? new MonitorInfo();
 
@@ -1886,7 +1970,7 @@ namespace VcpCore.Plugins
                                         {
                                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin VCP " + Convert.ToUInt32(object_0x52).ToString("X") + " is " + Convert.ToUInt32(tmp).ToString());
 
-                                            if (((uint)object_0x52).ToString("X").ToUpper().Equals("E2"))
+                                            if (((uint)object_0x52).ToString("X").ToUpper(CultureInfo.InvariantCulture).Equals("E2"))
                                             {
                                                 uint val = (Convert.ToUInt32(tmp) & 0XFFFF);
                                                 string valstring = val.ToString("X2");
@@ -1898,17 +1982,17 @@ namespace VcpCore.Plugins
                                                     _CacheTable.SetToCacheTable(monitor.Item1, Convert.ToByte(object_0x52), val);
 
                                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ 0x52 ctr code is " + ((uint)object_0x52).ToString("X"));
-                                                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ 0x52 ctr code value is " + NodeFormatter.FormatVCP_E2(rc_str.ToLower()));
+                                                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ 0x52 ctr code value is " + NodeFormatter.FormatVCP_E2(rc_str.ToLower(CultureInfo.InvariantCulture)));
 
                                                     VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                                     _VCPchangedEventArgs.vcpcode = ((uint)object_0x52).ToString("X");
-                                                    _VCPchangedEventArgs.value = NodeFormatter.FormatVCP_E2(rc_str.ToLower());
+                                                    _VCPchangedEventArgs.value = NodeFormatter.FormatVCP_E2(rc_str.ToLower(CultureInfo.InvariantCulture));
                                                     _VCPchangedEventArgs.monitor = monitor.Item2.Clone();
 
                                                     OnVCPchanged(_VCPchangedEventArgs);
                                                 }
                                             }
-                                            else if (((uint)object_0x52).ToString("X").ToUpper().Equals("60"))
+                                            else if (((uint)object_0x52).ToString("X").ToUpper(CultureInfo.InvariantCulture).Equals("60"))
                                             {
                                                 string rstring = string.Empty;
                                                 uint val = Convert.ToUInt32(tmp) & 0xFF;
@@ -1917,11 +2001,11 @@ namespace VcpCore.Plugins
                                                 if (!string.IsNullOrWhiteSpace(rc_str))
                                                 {
                                                     List<InputSourceObject> r = new List<InputSourceObject>();
-                                                    var R = _CacheTable.GetFromCacheTable(monitor.Item1, "inputsourcelist".ToLower());
+                                                    var R = _CacheTable.GetFromCacheTable(monitor.Item1, "inputsourcelist".ToLower(CultureInfo.InvariantCulture));
                                                     if (R != null)
                                                         r.AddRange(R as List<InputSourceObject>);
 
-                                                    var n = NodeFormatter.FormatVCP_60(rc_str.ToLower());
+                                                    var n = NodeFormatter.FormatVCP_60(rc_str.ToLower(CultureInfo.InvariantCulture));
 
                                                     bool rv = false;
                                                     if (r.Count > 0)
@@ -2123,6 +2207,7 @@ namespace VcpCore.Plugins
                             _TaskQueue = new TaskLockQueue<ParameterType>();
                             _TaskQueueResult = new ResultLockPool();
                         }
+                        _CancelhashSet.Clear();
                     }
 
                     _AddSignalfor0X52 = 0;
@@ -2228,6 +2313,7 @@ namespace VcpCore.Plugins
                                                         _TaskQueue = new TaskLockQueue<ParameterType>();
                                                         _TaskQueueResult = new ResultLockPool();
                                                     }
+                                                    _CancelhashSet.Clear();
                                                 }
 
                                                 TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
@@ -2382,6 +2468,7 @@ namespace VcpCore.Plugins
                                                         _TaskQueue = new TaskLockQueue<ParameterType>();
                                                         _TaskQueueResult = new ResultLockPool();
                                                     }
+                                                    _CancelhashSet.Clear();
                                                 }
 
                                                 TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
@@ -2723,7 +2810,7 @@ namespace VcpCore.Plugins
                 else if (category.Equals(@"Input Select", StringComparison.OrdinalIgnoreCase))
                 {
                     var defaultValue = default(KeyValuePair<string, uint>);
-                    var input = VcpCodeList.VCP60.FirstOrDefault(x => x.Key.ToLower().Equals(str.ToLower()));
+                    var input = VcpCodeList.VCP60.FirstOrDefault(x => x.Key.ToLower(CultureInfo.InvariantCulture).Equals(str.ToLower(CultureInfo.InvariantCulture)));
                     if (!input.Equals(defaultValue))
                         rc = input.Value;
                 }
@@ -2928,7 +3015,7 @@ namespace VcpCore.Plugins
 
                                 if (!string.IsNullOrWhiteSpace(edid.ManufactureID))
                                 {
-                                    if (edid.ManufactureID.ToUpper() == "DEL")
+                                    if (edid.ManufactureID.ToUpper(CultureInfo.InvariantCulture) == "DEL")
                                         _TargetMonitor.IsDellMonitor = true;
 
                                     _TargetMonitor.edid = edid;
@@ -2964,7 +3051,7 @@ namespace VcpCore.Plugins
                                             }
                                         }
 
-                                        if (dd.DeviceID.ToUpper().Contains("DEL"))
+                                        if (dd.DeviceID.ToUpper(CultureInfo.InvariantCulture).Contains("DEL"))
                                         {
                                             if (string.IsNullOrWhiteSpace(_TargetMonitor.AliasDeviceName))
                                                 GetAliasDeviceName(dd.DeviceString, ref _TargetMonitor.AliasDeviceName);
@@ -3000,7 +3087,7 @@ namespace VcpCore.Plugins
 
                             //--------------------------------------------------------------------
 
-                            _TargetMonitor.modelName = _TargetMonitor.edid.ModelName.ToUpper();
+                            _TargetMonitor.modelName = _TargetMonitor.edid.ModelName.ToUpper(CultureInfo.InvariantCulture);
                             _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors ModelName Get by EDID is " + _TargetMonitor.modelName);
 
                             bool IsSupportDisplay = CheckIsSupportDisplay(ref _TargetMonitor);
@@ -3013,7 +3100,7 @@ namespace VcpCore.Plugins
                                 {
                                     token.ThrowIfCancellationRequested();  //*****EXTRA CHECK*****//
 
-                                    var ro = _CacheTable.GetFromCacheTable(new MonitorInfo_complex() { edid = _TargetMonitor.edid, AliasDeviceName = _TargetMonitor.AliasDeviceName }, "CapibilityString".ToLower());
+                                    var ro = _CacheTable.GetFromCacheTable(new MonitorInfo_complex() { edid = _TargetMonitor.edid, AliasDeviceName = _TargetMonitor.AliasDeviceName }, "CapibilityString".ToLower(CultureInfo.InvariantCulture));
                                     if (ro != null)
                                     {
                                         _TargetMonitor.CapabilityString = ro.ToString();
@@ -3059,7 +3146,7 @@ namespace VcpCore.Plugins
                                 {
                                     token.ThrowIfCancellationRequested();  //*****EXTRA CHECK*****//
 
-                                    if (screen.DeviceName.ToUpper().Equals(DeviceName.ToUpper(), StringComparison.OrdinalIgnoreCase))
+                                    if (screen.DeviceName.ToUpper(CultureInfo.InvariantCulture).Equals(DeviceName.ToUpper(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase))
                                         _TargetMonitor.scalingFactor = dpiX * Decimal.ToDouble(Math.Round(Decimal.Divide(devmode.dmPelsWidth, screen.Bounds.Width), 2));
                                 }
 
@@ -3326,12 +3413,12 @@ namespace VcpCore.Plugins
                         if (!string.IsNullOrWhiteSpace(rc_H) && !string.IsNullOrWhiteSpace(rc_L))
                         {
                             List<InputSourceObject> r = new List<InputSourceObject>();
-                            var R = _CacheTable.GetFromCacheTable(monitorInfo_, "inputsourcelist".ToLower());
+                            var R = _CacheTable.GetFromCacheTable(monitorInfo_, "inputsourcelist".ToLower(CultureInfo.InvariantCulture));
                             if (R != null)
                                 r.AddRange(R as List<InputSourceObject>);
 
-                            var n_H = NodeFormatter.FormatVCP_60(rc_H.ToLower());
-                            var n_L = NodeFormatter.FormatVCP_60(rc_L.ToLower());
+                            var n_H = NodeFormatter.FormatVCP_60(rc_H.ToLower(CultureInfo.InvariantCulture));
+                            var n_L = NodeFormatter.FormatVCP_60(rc_L.ToLower(CultureInfo.InvariantCulture));
 
                             if (string.IsNullOrWhiteSpace(n_H))
                                 n_H = n_L;
@@ -3596,7 +3683,7 @@ namespace VcpCore.Plugins
                     }
 
                     if (!string.IsNullOrWhiteSpace(rc))
-                        return NodeFormatter.FormatVCP_E2(rc.ToLower());
+                        return NodeFormatter.FormatVCP_E2(rc.ToLower(CultureInfo.InvariantCulture));
 
                     count++;
                     _logs.DebugMsg($"[VcpCorePlugin] GetCurrentColorPreset retry ({count})");
@@ -3757,11 +3844,11 @@ namespace VcpCore.Plugins
             try
             {
                 AliasDeviceName = devicedescription;
-                if (devicedescription.ToUpper().Contains("DELL"))
+                if (devicedescription.ToUpper(CultureInfo.InvariantCulture).Contains("DELL"))
                 {
-                    if (devicedescription.ToUpper().Split(' ').Length > 1)
+                    if (devicedescription.ToUpper(CultureInfo.InvariantCulture).Split(' ').Length > 1)
                     {
-                        foreach (string tmp in devicedescription.ToUpper().Split(' '))
+                        foreach (string tmp in devicedescription.ToUpper(CultureInfo.InvariantCulture).Split(' '))
                         {
                             if (tmp.StartsWith("AW"))
                             {
@@ -3773,7 +3860,7 @@ namespace VcpCore.Plugins
                     else
                     {
                         string dell = "DELL";
-                        int nStartIndex = devicedescription.ToUpper().IndexOf(dell) + dell.Length;
+                        int nStartIndex = devicedescription.ToUpper(CultureInfo.InvariantCulture).IndexOf(dell) + dell.Length;
 
                         string tmp = devicedescription.Substring(nStartIndex);
 
@@ -4286,7 +4373,7 @@ namespace VcpCore.Plugins
                     int nRetryCount = 0;
                     do
                     {
-                        var ro = _CacheTable.GetFromCacheTable(_TargetMonitorx, "CapibilityString".ToLower());
+                        var ro = _CacheTable.GetFromCacheTable(_TargetMonitorx, "CapibilityString".ToLower(CultureInfo.InvariantCulture));
                         if (ro != null)
                         {
                             if (!string.IsNullOrWhiteSpace(ro.ToString()))
@@ -4309,7 +4396,7 @@ namespace VcpCore.Plugins
                     double dpiX = (double)varX / (double)96;
                     foreach (Screen screen in screenList)
                     {
-                        if (screen.DeviceName.ToUpper().Equals(_TargetMonitorx.DisplayName.ToUpper(), StringComparison.OrdinalIgnoreCase))
+                        if (screen.DeviceName.ToUpper(CultureInfo.InvariantCulture).Equals(_TargetMonitorx.DisplayName.ToUpper(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase))
                             _TargetMonitorx.scalingFactor = dpiX * Decimal.ToDouble(Math.Round(Decimal.Divide(_TargetMonitorx.pDevmode.dmPelsWidth, screen.Bounds.Width), 2));
                     }
 
@@ -4621,7 +4708,7 @@ namespace VcpCore.Plugins
 
             var result = Series.Trim();
 
-            switch (Series.Trim().ToUpper())
+            switch (Series.Trim().ToUpper(CultureInfo.InvariantCulture))
             {
                 case "AW":
                     return "Alienware Monitors";
@@ -4691,8 +4778,8 @@ namespace VcpCore.Plugins
                     _logs.DebugMsg("[VcpCorePlugin] FwVersion 0XC9 : 0X" + Convert.ToUInt32(OFWstring).ToString("X"));
                     _logs.DebugMsg("[VcpCorePlugin] FwVersion 0XFD : 0X" + Convert.ToUInt32(OEMID).ToString("X"));
 
-                    //Version = FormatFwVersion(Convert.ToUInt32(OFWstring), Convert.ToUInt32(ScalarICID), Convert.ToUInt32(OEMID), modelName.ToUpper());
-                    Version = getFW2(modelName.ToUpper(), Convert.ToInt32(Convert.ToUInt32(OFWstring)), Convert.ToInt32(Convert.ToUInt32(ScalarICID)), Convert.ToInt32(Convert.ToUInt32(OEMID)));
+                    //Version = FormatFwVersion(Convert.ToUInt32(OFWstring), Convert.ToUInt32(ScalarICID), Convert.ToUInt32(OEMID), modelName.ToUpper(CultureInfo.InvariantCulture));
+                    Version = getFW2(modelName.ToUpper(CultureInfo.InvariantCulture), Convert.ToInt32(Convert.ToUInt32(OFWstring)), Convert.ToInt32(Convert.ToUInt32(ScalarICID)), Convert.ToInt32(Convert.ToUInt32(OEMID)));
 
                     if (!string.IsNullOrWhiteSpace(Version.Item1))
                     {
@@ -4874,7 +4961,7 @@ namespace VcpCore.Plugins
                     text += c;
             }
 
-            switch (text.ToUpper())
+            switch (text.ToUpper(CultureInfo.InvariantCulture))
             {
                 case "C":
                     SupplierID = "TPV";
@@ -4900,7 +4987,7 @@ namespace VcpCore.Plugins
                     break;
             }
 
-            return text.ToUpper();
+            return text.ToUpper(CultureInfo.InvariantCulture);
         }
 
         private string GetC9High(string HH, string name)
@@ -4954,7 +5041,7 @@ namespace VcpCore.Plugins
         {
             string str_fwVersion = string.Empty;
             string str_ScalarICID = (ScalarICID & 0xff).ToString("X2");
-            string str_OEMID = Encoding.ASCII.GetString(new byte[] { Convert.ToByte(OEMID) }).ToUpper();
+            string str_OEMID = Encoding.ASCII.GetString(new byte[] { Convert.ToByte(OEMID) }).ToUpper(CultureInfo.InvariantCulture);
 
             string SupplierID = string.Empty;
             switch (str_OEMID)
@@ -4988,7 +5075,7 @@ namespace VcpCore.Plugins
             int nLen = hexValue.Length;
             if (nLen > 0)
             {
-                switch (hexValue.ToLower())
+                switch (hexValue.ToLower(CultureInfo.InvariantCulture))
                 {
                     case "05":
                         D_Ctrl = "Mediatek";
@@ -5122,7 +5209,7 @@ namespace VcpCore.Plugins
 
         private int WhichCase(string Model, string D_Ctrl, string SI)
         {
-            switch (Model.ToUpper())
+            switch (Model.ToUpper(CultureInfo.InvariantCulture))
             {
                 case "AW2724DM": return 1;
                 case "AW2723DF": return 4;

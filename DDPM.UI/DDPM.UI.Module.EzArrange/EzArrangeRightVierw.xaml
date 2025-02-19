@@ -9,7 +9,8 @@
              xmlns:ezCommon="clr-namespace:DDPM.Easy.Common;assembly=DDPM.Easy.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
-             KeyboardNavigation.TabNavigation="Local"
+             
+             KeyboardNavigation.TabNavigation="Continue"
              d:DesignHeight="1000" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <!-- 
              KeyboardNavigation.TabNavigation="Local"
@@ -27,6 +28,7 @@
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="Margin" Value="0,0,8,0" />
                 <Setter Property="Focusable" Value="True"/>
+                <Setter Property="KeyboardNavigation.IsTabStop" Value="True"/>
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -40,22 +42,25 @@
 
                             <!-- Recent -->
                             <Grid Height="40">
-                                <UXControls:UXTextBlock Text="{Binding [Recent], Source={x:Static lang:LangHelper.Instance}}" 
+                                <UXControls:UXTextBlock Text="{Binding [Recent], Source={x:Static lang:LangHelper.Instance}}" d:Text="Recent"
                                                         Style="{StaticResource UXTextBlock_Caption}" 
                                                         KeyboardNavigation.TabIndex="1"/>
                             </Grid>
-                            <!-- -->
+                            <!-- Narrator: dont need stop at SplitListViewItem, jump into "left arrow" directly even if it's disabled.
+                                                      Focusable="True" KeyboardNavigation.TabNavigation="Continue"
+                                                      AutomationProperties.Name="{Binding [Recent], Source={x:Static lang:LangHelper.Instance}}"
+                                                      KeyboardNavigation.IsTabStop="True"
+                            -->
                             <commonCtrl:SplitListView Name="splitListView_Recent" Margin="0,4"
                                                       ItemClickCommand="{Binding ListViewItemClickCommand}" 
-                                                      Focusable="True"
-                                                      KeyboardNavigation.IsTabStop="True"
                                                       KeyboardNavigation.TabIndex="2"/>
                             <!--
                             <ezCommon:EzListView />
                             -->
                             <!-- Custom -->
-                            <StackPanel Orientation="Horizontal" Height="40" Margin="0,16,0,0">
-                                <UXControls:UXTextBlock Text="{Binding [Custom], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource UXTextBlock_Caption}" 
+                            <StackPanel Orientation="Horizontal" Height="40" Margin="0,16,0,0" KeyboardNavigation.TabNavigation="Continue">
+                                <UXControls:UXTextBlock Text="{Binding [Custom], Source={x:Static lang:LangHelper.Instance}}" d:Text="Custom"
+                                                        Style="{StaticResource UXTextBlock_Caption}" 
                                                         KeyboardNavigation.TabIndex="3"/>
                                 <Viewbox Width="16" Height="16" Stretch="Uniform"
                                          Focusable="True" KeyboardNavigation.IsTabStop="True" KeyboardNavigation.TabIndex="4"
@@ -82,12 +87,17 @@
                                     </Grid>
                                 </Viewbox>
                             </StackPanel>
+                            <!-- 
+                                                      Focusable="True" KeyboardNavigation.IsTabStop="True" 
+                                                      KeyboardNavigation.TabNavigation="Continue"
+                            -->
                             <commonCtrl:SplitListView Name="splitListView_Custom" Margin="0,4"
                                                       ItemClickCommand="{Binding ListViewItemClickCommand}" 
                                                       KeyboardNavigation.TabIndex="5"/>
                             <!-- 2 Windows -->
                             <Grid Height="40" Margin="0,16,0,0">
-                                <UXControls:UXTextBlock Text="{Binding [Windows], Source={x:Static lang:LangHelper.Instance},StringFormat={}2 {0}}" Style="{StaticResource UXTextBlock_Caption}" 
+                                <UXControls:UXTextBlock Text="{Binding [Windows], Source={x:Static lang:LangHelper.Instance},StringFormat={}2 {0}}"
+                                                        Style="{StaticResource UXTextBlock_Caption}" 
                                                         KeyboardNavigation.TabIndex="6"/>
                             </Grid>
                             <commonCtrl:SplitListView Name="splitListView_2w" Margin="0,4"
@@ -96,7 +106,8 @@
                             <!-- 3 Windows -->
                             <Grid Height="40" Margin="0,16,0,0">
                                 <UXControls:UXTextBlock Text="{Binding [Windows], Source={x:Static lang:LangHelper.Instance},StringFormat={}3 {0}}" Style="{StaticResource UXTextBlock_Caption}" 
-                                                        KeyboardNavigation.TabIndex="8"/>
+                                                        KeyboardNavigation.TabIndex="8"
+                                                        Focusable="True" KeyboardNavigation.IsTabStop="True"/>
                             </Grid>
                             <commonCtrl:SplitListView Name="splitListView_3w" Margin="0,4"
                                                       ItemClickCommand="{Binding ListViewItemClickCommand}" 
