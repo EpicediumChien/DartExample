@@ -462,9 +462,16 @@ namespace nsWinEventHook
                                             WinEventDelegate lpfnWinEventProc, uint idProcess,
                                             uint idThread, uint dwFlags)
         {
-            return SetWinEventHook(eventMin, eventMax, hmodWinEventProc,
+            IntPtr rst = SetWinEventHook(eventMin, eventMax, hmodWinEventProc,
                                             lpfnWinEventProc, idProcess,
                                             idThread, dwFlags);
+            if (rst == IntPtr.Zero)
+            {
+#if DEBUG
+                Console.WriteLine("[WinEventHook] SetWinEventHook failed");
+#endif
+            }
+            return rst;
         }
 
         //UnhookWinEvent()
@@ -474,7 +481,14 @@ namespace nsWinEventHook
 
         private static bool _UnhookWinEvent(IntPtr hWinEventHook)
         {
-            return UnhookWinEvent(hWinEventHook);
+            bool rst = UnhookWinEvent(hWinEventHook);
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[WindowFocusWatcher] UnhookWinEvent failed");
+#endif
+            }
+            return rst;
         }
 
         //GetWindowThreadProcessId()
@@ -484,7 +498,15 @@ namespace nsWinEventHook
 
         public static uint _GetWindowThreadProcessId(IntPtr hWnd, out uint processId)
         {
-            return GetWindowThreadProcessId(hWnd, out processId);
+            uint rst = GetWindowThreadProcessId(hWnd, out processId);
+            if (rst == 0)
+            {
+#if DEBUG
+                Console.WriteLine("[WindowFocusWatcher] GetWindowThreadProcessId failed");
+#endif
+            }
+
+            return rst;
         }
 
         public const short SWP_NOMOVE = 0X2;
@@ -498,7 +520,15 @@ namespace nsWinEventHook
 
         public static IntPtr _SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags)
         {
-            return SetWindowPos(hWnd, hWndInsertAfter, x, Y, cx, cy, wFlags);
+            IntPtr rst = SetWindowPos(hWnd, hWndInsertAfter, x, Y, cx, cy, wFlags);
+            if (rst == IntPtr.Zero)
+            {
+#if DEBUG
+                Console.WriteLine("[WindowFocusWatcher] GetWindowThreadProcessId failed");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
