@@ -3014,8 +3014,8 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                 _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
                 _devMgr.ProgressUpdate_Notify += _FWUpdatePlugin_ProgressUpdate;
-                _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
-                _devMgr.DownloadAndInstall_Result_Notify += Download_Event;
+                //_devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
+                //_devMgr.DownloadAndInstall_Result_Notify += Download_Event;
                 if (installPath != "")
                 {
                     cli_FWU_RESPONSE.Result = "PASS";
@@ -3095,10 +3095,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                         cli_FWU_RESPONSE.Result = "PASS";
                         Task.Run(new Action(() =>
                         {
-                            do
-                            {
-                                Thread.Sleep(100);
-                            } while (retFWUpdateInfos == null);
+                            retFWUpdateInfos = _devMgr.DownloadAndInstall(fwUpdateInfoPackage.FWUpdateInfo).Result;
+                            //do
+                            //{
+                            //    Thread.Sleep(100);
+                            //} while (retFWUpdateInfos == null);
 
                             foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
                             {
@@ -3116,7 +3117,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             FWResultReceived_List?.Invoke(this, (retFWUpdateInfos, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented)));
                             _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
-                            _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
+                            //_devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
                         }));
                         writelog("Auto_FWUpdate2 SUCCESS");
                         return ((int)CLI_ExitCode.success, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
@@ -3145,8 +3146,8 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
                 _devMgr.ProgressUpdate_Notify += _FWUpdatePlugin_ProgressUpdate;
-                _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
-                _devMgr.DownloadAndInstall_Result_Notify += Download_Event;
+                //_devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
+                //_devMgr.DownloadAndInstall_Result_Notify += Download_Event;
                 if (installPath != "")
                 {
                     cli_FWU_RESPONSE.Result = "PASS";
@@ -3202,10 +3203,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                     cli_FWU_RESPONSE.Result = "PASS";
                     Task.Run(new Action(() =>
                     {
-                        do
-                        {
-                            Thread.Sleep(100);
-                        } while (retFWUpdateInfos == null);
+                        retFWUpdateInfos = _devMgr.DownloadAndInstall(fwUpdateInfoPackage.FWUpdateInfo).Result;
+                        //do
+                        //{
+                        //    Thread.Sleep(100);
+                        //} while (retFWUpdateInfos == null);
 
                         foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
                         {
@@ -3223,7 +3225,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                         FWResultReceived_List?.Invoke(this, (retFWUpdateInfos, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented)));
                         _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
-                        _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
+                        //_devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
                     }));
                 }
                 writelog("Auto_FWUpdate_display success");
