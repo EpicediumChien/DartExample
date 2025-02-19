@@ -44,8 +44,15 @@
         </Style>
     </UserControl.Style>
 
-    <Grid KeyboardNavigation.DirectionalNavigation="{Binding TabSTOP}" KeyboardNavigation.TabNavigation="{Binding TabSTOP}">
-        <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Hidden">
+    <!-- Robert_Lin 2025-2-18 Modify for Narrator:
+         1 Rewrite/modify all proerties of KayboardNavigation.*, AutomationProperties.*
+         2 
+    -->
+    <!-- <Grid>
+     KeyboardNavigation.DirectionalNavigation="{Binding TabSTOP}" KeyboardNavigation.TabNavigation="{Binding TabSTOP}"
+    -->
+    <Grid>
+        <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Hidden" >
             <Grid>
                 <StackPanel>
                     <Grid>
@@ -100,9 +107,15 @@
                         Style="{DynamicResource RightGroupBorderStyle}"
                         Visibility="{Binding isNormalBrightness}">
 
+                        <!-- 
+                            KeyboardNavigation.TabNavigation="None"
+                            Focusable="False" KeyboardNavigation.IsTabStop="False"
+        
+                        -->
                         <Expander
                             Name="Expander_Manual"
                             Expanded="Expander_Manual_Expanded"
+                            AutomationProperties.Name="{Binding [Manual], Source={x:Static lang:LangHelper.Instance}}"
                             Style="{StaticResource RightExpanderStyle}">
                             <!--  IsExpanded="{Binding ExpanderGroup, Mode=TwoWay, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=0}">  -->
                             <Expander.Header>
@@ -116,6 +129,7 @@
                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                         Text="{Binding [Manual], Source={x:Static lang:LangHelper.Instance}}"
                                         TextBlockSemanticColorType="Light"
+                                        Focusable="True"
                                         TextBlockType="Caption" />
                                 </Grid>
                             </Expander.Header>
@@ -132,6 +146,7 @@
                                                     FontSize="16"
                                                     Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                     Text="{Binding [Brightness], Source={x:Static lang:LangHelper.Instance}}"
+                                                    Focusable="True"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
                                             </Grid>
@@ -157,6 +172,8 @@
                                                                 HorizontalAlignment="Center"
                                                                 VerticalAlignment="Center"
                                                                 Template="{StaticResource icon_Brightness}"
+                                                                Focusable="True" KeyboardNavigation.IsTabStop="True"
+                                                                AutomationProperties.Name="{Binding [Manual], Source={x:Static lang:LangHelper.Instance}}"
                                                                 Foreground="{DynamicResource DefaultTheme_PathColor}" />
                                                 <UXControls:UXSlider
                                                     Name="B_slider"
@@ -165,7 +182,7 @@
                                                     HorizontalContentAlignment="Stretch"
                                                     AutoToolTipPlacement="None"
                                                     AutomationProperties.AutomationId="UXSlider_HorizontalToolTipNone"
-                                                    AutomationProperties.Name="SliderToolTipNone"
+                                                    AutomationProperties.Name="{Binding [Manual], Source={x:Static lang:LangHelper.Instance}}"
                                                     IsSnapToTickEnabled="True"
                                                     LargeChange="1"
                                                     Maximum="100"
@@ -190,6 +207,7 @@
                                                     FontSize="16"
                                                     Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                     Text="{Binding [Contrast], Source={x:Static lang:LangHelper.Instance}}"
+                                                    Focusable="True"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
                                             </Grid>
@@ -214,6 +232,8 @@
                                                                 Height="20"
                                                                 HorizontalAlignment="Center"
                                                                 VerticalAlignment="Center"
+                                                                Focusable="True" KeyboardNavigation.IsTabStop="True"
+                                                                AutomationProperties.Name="{Binding [Contrast], Source={x:Static lang:LangHelper.Instance}}"
                                                                 Template="{StaticResource icon_Contrast}"
                                                                 Foreground="{DynamicResource DefaultTheme_PathColor}" />
                                                 <UXControls:UXSlider
@@ -223,7 +243,7 @@
                                                     HorizontalContentAlignment="Stretch"
                                                     AutoToolTipPlacement="None"
                                                     AutomationProperties.AutomationId="UXSlider_HorizontalToolTipNone"
-                                                    AutomationProperties.Name="SliderToolTipNone"
+                                                    AutomationProperties.Name="{Binding [Contrast], Source={x:Static lang:LangHelper.Instance}}"
                                                     IsSnapToTickEnabled="True"
                                                     LargeChange="1"
                                                     Maximum="100"
@@ -295,6 +315,7 @@
                                             FontSize="16"
                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             Text="{Binding [Brightness.4], Source={x:Static lang:LangHelper.Instance}}"
+                                            Focusable="True"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
 
@@ -338,7 +359,7 @@
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Center"
                                             VerticalContentAlignment="Center"
-                                            AutomationProperties.Name="ToggleSwitchLeft"
+                                            AutomationProperties.Name="{Binding [Brightness.4], Source={x:Static lang:LangHelper.Instance}}"
                                             Click="SynchronizeSwitch_Click"
                                             Content="{Binding Path=IsSynchronize_String}"
                                             ContentPlacement="Left"
@@ -2444,7 +2465,7 @@
                     </Border>
                 </StackPanel>
 
-                <Border Name="DisableAll" Background="#4C24273C">
+                <Border Name="DisableAll" Background="#4C24273C"  d:Visibility="Collapsed">
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Visibility" Value="Visible" />
@@ -2466,7 +2487,7 @@
                         <UXControls:UXTextBlock Margin="0, 20, 0, 0" Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="#FF797F84" />
                     </StackPanel>
                 </Border>
-                <Border Name="DisableAll2" Background="#4C24273C">
+                <Border Name="DisableAll2" Background="#4C24273C"  d:Visibility="Collapsed">
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Visibility" Value="Visible" />
@@ -2490,7 +2511,7 @@
                 </Border>
             </Grid>
         </UXControls:UXScrollViewer>
-        <Border
+        <Border d:Visibility="Collapsed"
             Background="#132F54"
             CornerRadius="13"
             Opacity="0.6"
