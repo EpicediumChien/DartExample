@@ -69,11 +69,11 @@
                         <common:AddDeviceHeaderCtrl Grid.Row="0" Name="rightViewHeaderCtrl" Margin="17,17,17,0"
                                                     SelectedIndex="{Binding RightViewHeaderSelectedIndex, Mode=TwoWay}"
                                                     ItemsSource="{Binding RightViewHeaders, Mode=TwoWay}"
-                                      KeyboardNavigation.TabIndex="5"
+                                      KeyboardNavigation.TabIndex="20"
                                                     SelectionChanged="RightViewHeaderCtrl_SelectionChanged" />
 
                         <ContentControl Grid.Row="1" Name="RightFrame2" Content="{Binding RightView, Mode=OneWay}" 
-                          KeyboardNavigation.TabIndex="6" />
+                          KeyboardNavigation.TabIndex="30" />
                     </Grid>
                 </Border>
                 <Grid Grid.Column="0">
@@ -81,7 +81,7 @@
                     <!-- DeviceBar -->
                     <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
                         <ItemsControl Name="vbarList" Margin="0,80,0,0" Focusable="False"
-                        KeyboardNavigation.TabIndex="3" KeyboardNavigation.TabNavigation="Continue"
+                        KeyboardNavigation.TabIndex="13" KeyboardNavigation.TabNavigation="Continue"
                                   HorizontalAlignment="Right" VerticalAlignment="Top"
                                   ItemsSource="{Binding DeviceBarItems}">
                             <ItemsControl.ItemTemplate>
@@ -101,11 +101,11 @@
       <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
           <Image x:Name="ArrowLeft" Margin="64,19,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Fill"
-                 Focusable="True" KeyboardNavigation.TabIndex="1" 
+                 Focusable="True" KeyboardNavigation.TabIndex="11" 
                  AutomationProperties.Name="{Binding [Back], Source={x:Static lang:LangHelper.Instance}}" 
                            VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="GoBackHomepage" PreviewKeyDown="ArrowLeft_PreviewKeyDown"/>
           <UXControls:UXTextBlock Name="txtCaption" Margin="12,16,0,0" HorizontalAlignment="Left" Style="{StaticResource ProductNameTextStyle}" VerticalAlignment="Top" 
-                                  Focusable="True" KeyboardNavigation.TabIndex="2"/>
+                                  Focusable="True" KeyboardNavigation.TabIndex="12"/>
         </StackPanel>
       </StackPanel>
     </Grid>

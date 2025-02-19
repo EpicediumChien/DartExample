@@ -59,7 +59,8 @@
                                VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
                                 </Image>
                                 <UXControls:UXTextBlock Name="txtAlert" FontSize="13" Background="{DynamicResource bdrAlert_BgColor}" Foreground="{DynamicResource bdrAlert_FgColor}" 
-                                                TextWrapping="WrapWithOverflow"  Focusable="True"
+                                                TextWrapping="WrapWithOverflow"  
+                                                        Focusable="True" KeyboardNavigation.TabIndex="32"
                                                         AutomationProperties.Name="{Binding DongleAlertHeadset}"
                                                 Margin="36,16,0,13" LineHeight="19.5" Padding="0,3" 
                                                 Text="{Binding DongleAlertHeadset}" FontFamily="Roboto" FontWeight="Normal" />
@@ -73,7 +74,8 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                                     <UXControls:UXTextBlock Text="1." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                                    <UXControls:UXTextBlock Name="txtStep1" Style="{StaticResource TextStyle1}"  Focusable="True"
+                                    <UXControls:UXTextBlock Name="txtStep1" Style="{StaticResource TextStyle1}"  
+                                                            Focusable="True" KeyboardNavigation.TabIndex="33"
                                                     Text="{Binding [AddDevice.KnM.6], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                             </StackPanel>
@@ -84,8 +86,8 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                                     <UXControls:UXTextBlock Text="2." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                                    <UXControls:UXTextBlock Name="txtStep2" Style="{StaticResource TextStyle1}"  Focusable="True"
-
+                                    <UXControls:UXTextBlock Name="txtStep2" Style="{StaticResource TextStyle1}"  
+                                                            Focusable="True" KeyboardNavigation.TabIndex="34"
                                                     Text="{Binding [AddDevice.Headset.4], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                             </StackPanel>
@@ -96,7 +98,8 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                                     <UXControls:UXTextBlock Text="3." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                                    <UXControls:UXTextBlock Name="txtStep3" Style="{StaticResource TextStyle1}"  Focusable="True"
+                                    <UXControls:UXTextBlock Name="txtStep3" Style="{StaticResource TextStyle1}" 
+                                                            Focusable="True" KeyboardNavigation.TabIndex="35"
                                                     Text="{Binding [AddDevice.Headset.5], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                             </StackPanel>

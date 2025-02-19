@@ -42,7 +42,7 @@
                             </Path>
                         </Canvas>
                         <TextBlock Text="{Binding Text1, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14"
-                                   Focusable="True">
+                                   Focusable="True" KeyboardNavigation.TabIndex="21">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -90,7 +90,7 @@
                                   Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
                         </Canvas>
                         <TextBlock Text="{Binding Text2, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" 
-                                   Focusable="True"
+                                   Focusable="True" KeyboardNavigation.TabIndex="22"
                                    TextTrimming="WordEllipsis" x:Name="header1Text" MaxWidth="150">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
@@ -136,7 +136,7 @@
                                   Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
                         </Canvas>
                         <TextBlock Text="{Binding Text3, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14"
-                                   Focusable="True">
+                                   Focusable="True" KeyboardNavigation.TabIndex="23">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />

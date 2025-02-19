@@ -53,6 +53,9 @@ namespace DDPM.UI.Common.UserControls
             //tooltipManufactureMonth.Text = Strings.ManufactureMonth;
 
             breakPoints = DdpmCommonHelper.GetBreakPoints();
+
+            // Set the input method to English for the entire UserControl
+            InputMethod.SetPreferredImeState(this, InputMethodState.Off);
         }
 
         private void OnRightViewHeaderChanged(object sender, RoutedEventArgs e)
