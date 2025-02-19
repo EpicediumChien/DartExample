@@ -179,7 +179,16 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty EditClickCommandProperty =
             DependencyProperty.Register("EditClickCommand", typeof(ICommand), typeof(SplitItem));
 
-        private void pencilIcon_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        //Robert_Lin, 2025-2-16 Replaced by pencileButton_Click
+        //private void pencilIcon_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    e.Handled = true;
+        //    if (EditClickCommand != null)
+        //    {
+        //        EditClickCommand.Execute(this);
+        //    }
+        //}
+        private void pencilButton_Click(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
             if (EditClickCommand != null)
@@ -215,7 +224,16 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty DeleteCommandProperty =
             DependencyProperty.Register("DeleteCommand", typeof(ICommand), typeof(SplitItem));
 
-        private void closeXIcon_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        //Robert_Lin 2025-2-16 Replaced by closeXButton_Click
+        //private void closeXIcon_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    e.Handled = true;
+        //    if (DeleteCommand != null)
+        //    {
+        //        DeleteCommand.Execute(this);
+        //    }
+        //}
+        private void closeXButton_Click(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
             if (DeleteCommand != null)
@@ -446,6 +464,8 @@ namespace DDPM.UI.Common.UserControls
             }
         }
         #endregion For EzMemory
+
+
     }
 
 }

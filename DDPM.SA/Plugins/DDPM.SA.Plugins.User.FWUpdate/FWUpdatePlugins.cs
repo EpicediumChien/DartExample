@@ -2180,9 +2180,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             //if (message.Contains("InvokeDisplay".ToUpper(new CultureInfo("en-US", false))))
             {
                 msg1Node = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/MSG1".ToUpper(new CultureInfo("en-US", false)));//鍵盤滑鼠才會觸發
-                progressNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Progress".ToUpper(new CultureInfo("en-US", false)));
+                /*progressNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Progress".ToUpper(new CultureInfo("en-US", false)));
                 buttonCaptionNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Button-Caption".ToUpper(new CultureInfo("en-US", false)));
-                buttonStateNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Button-State".ToUpper(new CultureInfo("en-US", false)));
+                buttonStateNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Button-State".ToUpper(new CultureInfo("en-US", false)));*/
                 if (msg1Node != null)
                 {
                     if (msg1Node.InnerText == "M1")
@@ -2230,10 +2230,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1("Should got M1 or M2 but got : " + msg1Node.InnerText + Environment.NewLine);
                     }
                 }
-                if (msg1Node == null && progressNode == null && buttonCaptionNode == null && buttonStateNode == null)
+                /*if (msg1Node == null && progressNode == null && buttonCaptionNode == null && buttonStateNode == null)
                 {
                     _logs.DebugMsg_1("Can't heandle: " + message + Environment.NewLine);
-                }
+                }*/
             }
             //else
             {
@@ -2245,7 +2245,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 tPubKeyDev1 = xmlDoc.SelectSingleNode("Root/" + "tpubkeydev1".ToUpper(new CultureInfo("en-US", false)));
                 encBlock = xmlDoc.SelectSingleNode("Root/" + "encblock".ToUpper(new CultureInfo("en-US", false)));
 
-                if (progressNode == null && buttonCaptionNode == null && buttonStateNode == null && stateFlowNode == null && timeOut == null && tPubKeyDev1 == null && encBlock == null)
+                if (msg1Node == null && progressNode == null && buttonCaptionNode == null && buttonStateNode == null && stateFlowNode == null && timeOut == null && tPubKeyDev1 == null && encBlock == null)
                 {
                     _logs.DebugMsg_1("Can't handle: " + message + Environment.NewLine);
                 }

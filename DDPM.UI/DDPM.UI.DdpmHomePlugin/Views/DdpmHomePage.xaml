@@ -79,6 +79,7 @@
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="Padding" Value="0,0,40,0" />
+            <Setter Property="MaxWidth" Value="{Binding ActualWidth, ElementName=rootUserControl}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListView}">
@@ -109,6 +110,9 @@
                 <DataTrigger Binding="{Binding HomeDeviceCount}" Value="0">
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
+                <DataTrigger Binding="{Binding IsSmallScreenResolution}" Value="True">
+                    <Setter Property="MaxWidth" Value="1050" />
+                </DataTrigger>
             </Style.Triggers>
         </Style>
 
@@ -134,6 +138,10 @@
                 </DrawingGroup>
             </DrawingBrush.Drawing>
         </DrawingBrush>
+
+        <DDPMUserControls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter"
+                                                             TrueValue="Auto" FalseValue="Hidden" />
+
     </UserControl.Resources>
 
     <Grid>
@@ -174,7 +182,7 @@
         <Grid Grid.Row="2">
 
             <!-- #region Add Your first device -->
-            <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Visible"
+            <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Auto" 
                                        VerticalScrollBarVisibility="Hidden">
                 <!-- 
                 Original:
@@ -190,8 +198,10 @@
                   be >= 1050. So the horz scrollbar will not appear if we set Grid.Width=860
                   For these reason, we will set Grid.Width=1050 or larger (for example 1051) to force enable horz 
                   scrollbar when MainWindow.Width <= 1050
+                
+                MinWidth="1050"
                 -->
-                <Grid MinWidth="1050" Height="220" d:Visibility="Visible" Margin="40,0">
+                <Grid  Height="220" d:Visibility="Visible" Margin="40,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -240,52 +250,62 @@
             <!-- #endregion Add Your first device -->
 
             <!-- Robert_Lin, 2024-8-5 Add handle PreviewKeyboard to eneble slecte a device with keyboard -->
-            <ListView x:Name="HomeDevicesListView"  StylusDown="Pairing" d:Visibility="Hidden"
+            <!-- 
+            
+             <UXControls:UXScrollViewer HorizontalScrollBarVisibility="{Binding IsSmallScreenResolution, Converter={StaticResource BoolToScrollBarVisibilityConverter}}" 
+                                      VerticalScrollBarVisibility="{Binding IsSmallScreenResolution, Converter={StaticResource BoolToScrollBarVisibilityConverter}}" >
+            
+            <UXControls:UXScrollViewer HorizontalScrollBarVisibility="{Binding IsSmallScreenResolution, Converter={StaticResource BoolToScrollBarVisibilityConverter}}" 
+                                      VerticalScrollBarVisibility="Hidden" >
+            
+           -->
+                <ListView x:Name="HomeDevicesListView"  StylusDown="Pairing" d:Visibility="Hidden"
                       Style="{StaticResource ListViewStyle1}"
+                      KeyboardNavigation.TabNavigation="Continue"
                       ItemsSource="{Binding HomeDevices}" PreviewKeyDown="HomeDevicesListView_PreviewKeyDown">
-                <ListView.Resources>
-                    <!-- Setup for Narrator -->
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="AutomationProperties.Name" Value="{Binding TooltipModelName}"/>
-                    </Style>
-                </ListView.Resources>
-                <ListView.ItemContainerStyle>
-                    <!-- ListView.ItemContainerStyle : Apply custom style to remove selection hover border -->
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="SnapsToDevicePixels" Value="True" />
-                        <Setter Property="Margin" Value="40,0,0,0" />
-                        <Setter Property="MinWidth" Value="{Binding ItemMinWidth}" />
-                        <Setter Property="MinHeight" Value="{Binding ItemMinWidth}" />
-                        <Setter Property="MaxWidth" Value="{Binding ItemMaxWidth}" />
-                        <Setter Property="MaxHeight" Value="{Binding ItemMaxWidth}" />
-                        <Setter Property="Width" Value="{Binding ItemWidth}"/>
-                        <Setter Property="Height" Value="{Binding ItemWidth}"/>
-                        <Setter Property="AutomationProperties.Name" Value="{Binding TooltipModelName}"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListViewItem">
-                                    <Border x:Name="bd"
+                    <ListView.Resources>
+                        <!-- Setup for Narrator -->
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="AutomationProperties.Name" Value="{Binding TooltipModelName}"/>
+                        </Style>
+                    </ListView.Resources>
+                    <ListView.ItemContainerStyle>
+                        <!-- ListView.ItemContainerStyle : Apply custom style to remove selection hover border -->
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="SnapsToDevicePixels" Value="True" />
+                            <Setter Property="Margin" Value="40,0,0,0" />
+                            <Setter Property="MinWidth" Value="{Binding ItemMinWidth}" />
+                            <Setter Property="MinHeight" Value="{Binding ItemMinWidth}" />
+                            <Setter Property="MaxWidth" Value="{Binding ItemMaxWidth}" />
+                            <Setter Property="MaxHeight" Value="{Binding ItemMaxWidth}" />
+                            <Setter Property="Width" Value="{Binding ItemWidth}"/>
+                            <Setter Property="Height" Value="{Binding ItemWidth}"/>
+                            <Setter Property="AutomationProperties.Name" Value="{Binding TooltipModelName}"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListViewItem">
+                                        <Border x:Name="bd"
                                             BorderBrush="{TemplateBinding BorderBrush}"
                                             BorderThickness="{TemplateBinding BorderThickness}"
                                             Background="{TemplateBinding Background}"
                                             Padding="{TemplateBinding Padding}"
                                             SnapsToDevicePixels="True">
-                                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                               VerticalAlignment="Stretch" />
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <local:HomeDevicesPanel HorizontalContentAlignment="Center" VerticalAlignment="Center" />
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <local:HomeDevicesPanel HorizontalContentAlignment="Center" VerticalAlignment="Center" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
 
-                <!-- Robert_Lin 2025-1-21 PIMS-341710] [DDPM WIN 2.0][R20_Peripheral] The position of connection menu in DDPM is different from the position of connection menu in Figma
+                    <!-- Robert_Lin 2025-1-21 PIMS-341710] [DDPM WIN 2.0][R20_Peripheral] The position of connection menu in DDPM is different from the position of connection menu in Figma
                     1 Item Width binding to HoverWidth at outer Grid.
                     2 Move the Indicators outside Image rect: Use a 2 rows Grid (Height=*,Auto)
                     3 Enlarge Image using ScaleTransform + Animatio ScaleX and ScaleY 
@@ -301,19 +321,19 @@
                 
                     <DataTemplate x:Name="lvItemTemplate" DataType="{x:Type commonModel:HomeDevice}">
                 -->
-                <ListView.ItemTemplate>
-                    <DataTemplate x:Name="lvItemTemplate" DataType="{x:Type commonModel:HomeDevice}">
-                        <!-- 
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:Name="lvItemTemplate" DataType="{x:Type commonModel:HomeDevice}">
+                            <!-- 
                         
                         <DockPanel>
                         AutomationProperties.Name="{Binding TooltipModelName}"  Focusable="True"
                         -->
-                        <Grid Width="{Binding HoverWidth}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="50"/>
-                            </Grid.RowDefinitions>
-                            <!-- 
+                            <Grid Width="{Binding HoverWidth}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="50"/>
+                                </Grid.RowDefinitions>
+                                <!-- 
                             
                                  <Grid Name="devListViewItemRoot"
                                  Margin="0"
@@ -321,14 +341,14 @@
                                  VerticalAlignment="Stretch"
                                  MouseLeftButtonDown="devListViewItemRoot_MouseLeftButtonDown">
                               -->
- 
-                            <Grid Name="devListViewItemRoot"
+
+                                <Grid Name="devListViewItemRoot"
                                   Margin="0"
                                   HorizontalAlignment="Center"
                                   VerticalAlignment="Center"
                                   MouseLeftButtonDown="devListViewItemRoot_MouseLeftButtonDown">
 
-                                <!-- BorderBrush="{StaticResource FocusDotBrush}" 
+                                    <!-- BorderBrush="{StaticResource FocusDotBrush}" 
                                   <Border Name="bdItem" BorderBrush="{StaticResource FocusDotBrush}" Background="#02000000"
                                        Margin="0" Padding="0"
                                        Width="auto" Height="auto"
@@ -455,9 +475,9 @@
                                                         BorderBrush="{DynamicResource Tooltip_BdColor}"
                                                         CornerRadius="4" Padding="8,12">
                                             -->
-                                            <Border>
-                                                <!-- Robert_Lin, 2025-1-9 comment-out to use DDPM Standard style -->
-                                                <!--<Border.Resources>
+                                                <Border>
+                                                    <!-- Robert_Lin, 2025-1-9 comment-out to use DDPM Standard style -->
+                                                    <!--<Border.Resources>
                                                     <Style TargetType="TextBlock">
                                                         <Setter Property="Foreground" Value="{DynamicResource Tooltip_TextColor}" />
                                                         <Setter Property="FontSize" Value="12" />
@@ -506,7 +526,7 @@
                                 
                                 <Grid Name="Indicators" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,40">
                                 -->
-                                <!-- 
+                                    <!-- 
                                 <Grid Name="Indicators" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,0" Visibility="Collapsed">
                                    <StackPanel>
 
@@ -526,24 +546,24 @@
                                     </StackPanel>
                                 </Grid>
                                 -->
-                                
-                                
-                                <!-- Robert_Lin, 2024-6-7 BatteryIndicator position improvement
+
+
+                                    <!-- Robert_Lin, 2024-6-7 BatteryIndicator position improvement
                                 If it's need to move up a litter, you can use margin to archieve -->
-                                <!-- Robert_Lin, 2024-7-21 Move into Indicators Grid
+                                    <!-- Robert_Lin, 2024-7-21 Move into Indicators Grid
                                 <DDPMUserControls:BatteryIndicator  Margin="0,0,0,4" HorizontalAlignment="Center"
                                 BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}"
                                 ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" Text1="{Binding Text1}"
                                 NoBattery="{Binding NoBattery}" />
                                 -->
-                            </Grid>
+                                </Grid>
 
-                            <!--
+                                <!--
                             <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center"
                             BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}"
                             ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
                             -->
-                            <!-- Robert_Lin remarked 2026-6-7 : Move it inside Grid above 'devListViewItemRoot'
+                                <!-- Robert_Lin remarked 2026-6-7 : Move it inside Grid above 'devListViewItemRoot'
                             <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center"
                             BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}"
                             ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" Text1="{Binding Text1}"
@@ -554,9 +574,9 @@
                                   Visibility="{Binding IsNotBootloader, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <StackPanel>
 
-                                    <local:ConnectionHoverView DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListViewItem}}" />
+                                        <local:ConnectionHoverView DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListViewItem}}" />
 
-                                     <DDPMUserControls:BatteryIndicator Name="batteryIndicator"
+                                        <DDPMUserControls:BatteryIndicator Name="batteryIndicator"
                                                                            Margin="0,8,0,4" HorizontalAlignment="Center"
                                                                            BatteryLevel="{Binding BatteryLevel}"
                                                                            BatteryStatus="{Binding BatteryStatus}"
@@ -565,14 +585,17 @@
                                                                            NoBattery="{Binding NoBattery}"
                                                                            MouseEnter="batteryIndicator_MouseEnter"
                                                                            MouseLeave="batteryIndicator_MouseLeave" />
-                                </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+
                             </Grid>
 
-                        </Grid>
-
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            <!-- 
+            </UXControls:UXScrollViewer>
+            -->
 
             <!-- Please Wait -->
             <!-- Robert_Lin, 2024-11-30, for LightMode, remove to balck background of Please Wait -->
