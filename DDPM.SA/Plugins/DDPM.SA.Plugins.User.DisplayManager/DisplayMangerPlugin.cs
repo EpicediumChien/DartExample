@@ -120,6 +120,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         //Derek 2024/10/21
         private Process uiProcess = null;
 
+        private DisplayDataManger _displayDataManger = new DisplayDataManger();
+
         #endregion
 
         #region Public Members
@@ -804,8 +806,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<string> GetUSBUpstream(MonitorInfo monitorInfo, string inputsource)
         {
+            string usbUpstream = string.Empty;
+            _displayDataManger.GetMonitorUSB(monitorInfo, inputsource, out usbUpstream);
+            if (!string.IsNullOrEmpty(usbUpstream))
+            {
+                return Task.FromResult(usbUpstream);
+            }
             int input_num = 0;
             ObjGetVCP objGetVCP = new ObjGetVCP();
+            InputSource_USB inputSource_USB = new InputSource_USB();
             if (monitorInfo.CapabilityDic.ContainsKey("E7"))
             {
                 usbUpstreamList = GetUSBUpstreamList(monitorInfo).Result;
@@ -864,6 +873,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         {
                                             if (subUpstream == tmp.Value)
                                             {
+                                                inputSource_USB.inputSource = inputsource;
+                                                inputSource_USB.USB = tmp.Key;
+                                                _displayDataManger.SetMonitorUSB(monitorInfo, inputSource_USB);
                                                 return Task.FromResult(tmp.Key);
                                             }
                                         }
@@ -902,6 +914,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //inputSourcelist[input].USBUpstream = upstream;
             int input_num = 0;
             ObjGetVCP objGetVCP = new ObjGetVCP();
+            InputSource_USB inputSource_USB = new InputSource_USB();
             if (monitorInfo.CapabilityDic.ContainsKey("E7"))
             {
                 objGetVCP = GetVCPCapability(monitorInfo, 0xE7).Result;
@@ -956,6 +969,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     uint code = Convert.ToUInt16(strsetUpstream, 2);
                                     Trace.WriteLine("strsetUpstream:" + code.ToString());
                                     bool b = SetVCPCapability(monitorInfo, 0xE7, code).Result;
+                                    if (b) 
+                                    {
+                                        inputSource_USB.inputSource = inputsource;
+                                        inputSource_USB.USB = upstream;
+                                        _displayDataManger.SetMonitorUSB(monitorInfo, inputSource_USB);
+                                    }
                                     return Task.FromResult(b);
                                 }
                             }
@@ -4979,6 +4998,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
+        #endregion
+
+        #region DisplayData
+        public Task InitDisplayData(List<MonitorInfo> monitorInfos)
+        {
+            if (monitorInfos != null)
+            {
+                _displayDataManger.InitDisplayData(monitorInfos);
+            }
+            return Task.CompletedTask;
+        }
         #endregion
     }
 }
