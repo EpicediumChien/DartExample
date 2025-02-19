@@ -680,6 +680,19 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _logs.DebugMsg_1($"_fWUpdateInfoPackage.FWUpdateInfo.Count : {_fWUpdateInfoPackage.FWUpdateInfo.Count}");
                 if (_fWUpdateInfoPackage.FWUpdateInfo.Count > 0)
                 {
+                    if (deviceInfos != null)
+                    {
+                        //Bruce 02/19 If multiple docks are docked consecutively, all docks will remove
+                        int isDockCanFWUCount = _fWUpdateInfoPackage.FWUpdateInfo.FindAll(x => x.DeviceType.Equals(DeviceType.LogicalDock) || x.DeviceType.Equals(DeviceType.PhysicalWiredDock)).Count;
+                        int isDockConnectCount = deviceInfos.FindAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock)).Count;
+                        _logs.DebugMsg_1($"isDockCanFWUCount : {isDockCanFWUCount}");
+                        _logs.DebugMsg_1($"isDockConnectCount : {isDockConnectCount}");
+                        if (isDockCanFWUCount >= 1 && isDockConnectCount <= 0)
+                        {
+                            _fWUpdateInfoPackage.FWUpdateInfo.RemoveAll(x => x.DeviceType.Equals(DeviceType.LogicalDock) || x.DeviceType.Equals(DeviceType.PhysicalWiredDock));
+                        }
+                    }
+
                     if (!_IsUITrigger)
                     {
                         if (_isDefer || _isForce)
