@@ -920,7 +920,10 @@ namespace VcpCore.Plugins
                                         _TaskQueueResult.Add(parameter.guid, rt);
                                     }
                                     else
+                                    {
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetCapabilitiesString GUID in CancelhashSet =>" + parameter.guid);
+                                        _TaskQueueResult.Add(parameter.guid, string.Empty);
+                                    }
                                 }
                                 break;
 
@@ -934,7 +937,10 @@ namespace VcpCore.Plugins
                                         _TaskQueueResult.Add(parameter.guid, rt);
                                     }
                                     else
+                                    {
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetVCPCapabilities GUID in CancelhashSet => " + parameter.guid);
+                                        _TaskQueueResult.Add(parameter.guid, string.Empty);
+                                    }
                                 }
                                 break;
 
@@ -948,7 +954,10 @@ namespace VcpCore.Plugins
                                         _TaskQueueResult.Add(parameter.guid, rt);
                                     }
                                     else
+                                    {
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetVCPCapability_I GUID in CancelhashSet => " + parameter.guid);
+                                        _TaskQueueResult.Add(parameter.guid, null);
+                                    }
                                 }
                                 break;
 
@@ -962,7 +971,10 @@ namespace VcpCore.Plugins
                                         _TaskQueueResult.Add(parameter.guid, rt);
                                     }
                                     else
+                                    {
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetVCPCapability_II GUID in CancelhashSet => " + parameter.guid);
+                                        _TaskQueueResult.Add(parameter.guid, null);
+                                    }
                                 }
                                 break;
 
@@ -976,7 +988,10 @@ namespace VcpCore.Plugins
                                         _TaskQueueResult.Add(parameter.guid, rt);
                                     }
                                     else
+                                    {
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing SetVCPCapability_I GUID in CancelhashSet => " + parameter.guid);
+                                        _TaskQueueResult.Add(parameter.guid, false);
+                                    }
                                 }
                                 break;
 
@@ -990,7 +1005,10 @@ namespace VcpCore.Plugins
                                         _TaskQueueResult.Add(parameter.guid, rt);
                                     }
                                     else
+                                    {
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing SetVCPCapability_II GUID in CancelhashSet => " + parameter.guid);
+                                        _TaskQueueResult.Add(parameter.guid, false);
+                                    }
                                 }
                                 break;
 
