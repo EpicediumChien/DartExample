@@ -940,7 +940,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         bool SmartHDR_ON = GetHDRStatus(m).Result;
 
                         _SupportedColorPreset = _ColorPresetPlugin.ReadColorPreset(m, VCP_capbility, SmartHDR_ON).Result;
-                        //20250219 Elsa add for PIMS-334913 about Display->Color->Color Profle support multilanguage
+                        //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
                         foreach (string info in _SupportedColorPreset)
                         {
                             _supportedColorPreset.Add(ColorpfofileMutil(info));
@@ -952,7 +952,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(_supportedColorPreset);
         }
 
-        //20250219 Elsa add for PIMS-334913 about Display->Color->Color Profle support multilanguage
+        //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
         private string ColorpfofileMutil(string info)
         {
             string ret = string.Empty;
@@ -1116,7 +1116,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 var result = _DisplayManagerPlugin.GetVCPCapability(m, "colorpreset").Result;
                 if (result.result)
                 {
-                    //20250219 Elsa add for PIMS-334913 about Display->Color->Color Profle support multilanguage
+                    //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
                     var res = ColorpfofileMutil(result.value.ToString());
                     return Task.FromResult(res);
                 }
