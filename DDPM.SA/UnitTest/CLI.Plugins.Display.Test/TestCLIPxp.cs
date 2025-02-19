@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CLI.Plugins.Display;
-using DDPM.CLI.Plugins.Display;
-using DDPM.SA.Common;
+﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
-using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UnitTestShared.Tests;
 using Moq;
 using VcpCore.Common;
@@ -18,8 +10,9 @@ namespace CLI.Plugins.Display.Test
     public class TestCLIPxp
     {
         private CLIPxp cLIPxp;
-        PrivateObject PrivateObjectCLIPxp;
-        MonitorInfo monitorInfo1 = new MonitorInfo()
+        private PrivateObject PrivateObjectCLIPxp;
+
+        private MonitorInfo monitorInfo1 = new MonitorInfo()
         {
             AliasDeviceName = "Dell U2724DE(HDMI)",
             IsDellMonitor = true,
@@ -49,7 +42,6 @@ namespace CLI.Plugins.Display.Test
                 ServiceTag = "CN073K0",
                 SerialNumber = "808597589",
                 Edid = "00FFFFFFFFFFFF0010ACDC425538323016210103803C2278EA62A5AD5046AB240E5054A54B00714F8180A940D1C081C0A9C001010101565E00A0A0A029503020350055502100001A000000FF00434E3037334B300A2020202020000000FC0044454C4C20553237323444450A000000FD0030781EB23C000A20202020202001ED"
-
             },
         };
 
@@ -108,10 +100,10 @@ namespace CLI.Plugins.Display.Test
             devMgr.Setup(m => m.GetPipPbpCapabilitiesWords(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(caps));
             devMgr.Setup(m => m.GetPxpMode(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(objGetVCPGetPxpMode));
             devMgr.Setup(m => m.GetSubInputs(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(inputSources));
-            devMgr.Setup(m => m.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(objGetVCPCapability));
+            devMgr.Setup(m => m.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(objGetVCPCapability));
             devMgr.Setup(m => m.SetPbpMode(It.IsAny<MonitorInfo>(), It.IsAny<UInt16>())).Returns(Task.FromResult(SetPbpMode));
             devMgr.Setup(m => m.SetSubInputs(It.IsAny<MonitorInfo>(), It.IsAny<InputSourceObj>(), It.IsAny<InputSourceObj>(), It.IsAny<InputSourceObj>())).Returns(Task.FromResult(SetSubInputs));
-            devMgr.Setup(m => m.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(SetVCPCapability));
+            devMgr.Setup(m => m.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(SetVCPCapability));
             var devMgrObj = devMgr.Object;
 
             var Execute_result2 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null,Get, TargetFeature PxP,"pip", 0x21, "PIP small"
@@ -127,7 +119,7 @@ namespace CLI.Plugins.Display.Test
                 Options = new List<CommandType_Option>() { new CommandType_Option("SubInput", "0x21") { Option_Name = "PxP" } },
             };
 
-            var Execute_result3 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null,Get, TargetFeature SubInput,"pip", 
+            var Execute_result3 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null,Get, TargetFeature SubInput,"pip",
             Assert.IsNotNull(Execute_result3);
 
             cmdLineInput = new CommandLineInput()
@@ -140,7 +132,7 @@ namespace CLI.Plugins.Display.Test
                 Options = new List<CommandType_Option>() { new CommandType_Option("PxPZoom", "0x21") { Option_Name = "PxP" } },
             };
 
-            var Execute_result4 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null, Get, TargetFeature PxPZoom,"pip", 
+            var Execute_result4 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null, Get, TargetFeature PxPZoom,"pip",
             Assert.IsNotNull(Execute_result4);
 
             cmdLineInput = new CommandLineInput()
@@ -153,7 +145,7 @@ namespace CLI.Plugins.Display.Test
                 Options = new List<CommandType_Option>() { new CommandType_Option("SwapVideo", "0x21") { Option_Name = "value" } },
             };
 
-            var Execute_result5 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null, Set, TargetFeature SwapVideo,"pip", 
+            var Execute_result5 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null, Set, TargetFeature SwapVideo,"pip",
             Assert.IsNotNull(Execute_result5);
 
             cmdLineInput = new CommandLineInput()
@@ -166,7 +158,7 @@ namespace CLI.Plugins.Display.Test
                 Options = new List<CommandType_Option>() { new CommandType_Option("pip-small", "pip-small") { Option_Name = "value" } },
             };
 
-            var Execute_result6 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null, Set, TargetFeature PxP,"pip", 
+            var Execute_result6 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null, Set, TargetFeature PxP,"pip",
             Assert.IsNotNull(Execute_result6);
 
             cmdLineInput = new CommandLineInput()
@@ -179,7 +171,7 @@ namespace CLI.Plugins.Display.Test
                 Options = new List<CommandType_Option>() { new CommandType_Option("SubInput", "HDMI") { Option_Name = "value" } },
             };
 
-            var Execute_result7 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null, Set, TargetFeature SubInput,"pip", 
+            var Execute_result7 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null, Set, TargetFeature SubInput,"pip",
             Assert.IsNotNull(Execute_result7);
 
             cmdLineInput = new CommandLineInput()
@@ -192,7 +184,7 @@ namespace CLI.Plugins.Display.Test
                 Options = new List<CommandType_Option>() { new CommandType_Option("PxPZoom", "HDMI") { Option_Name = "value" } },
             };
 
-            var Execute_result8 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null, Set, TargetFeature PxPZoom,"pip", 
+            var Execute_result8 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null, Set, TargetFeature PxPZoom,"pip",
             Assert.IsNotNull(Execute_result8);
 
             cmdLineInput = new CommandLineInput()
@@ -205,7 +197,7 @@ namespace CLI.Plugins.Display.Test
                 Options = new List<CommandType_Option>() { new CommandType_Option("SwapUSB", "HDMI") { Option_Name = "value" } },
             };
 
-            var Execute_result9 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null, Set, TargetFeature SwapUSB,"pip", 
+            var Execute_result9 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null, Set, TargetFeature SwapUSB,"pip",
             Assert.IsNotNull(Execute_result9);
 
             cmdLineInput = new CommandLineInput()
@@ -218,7 +210,7 @@ namespace CLI.Plugins.Display.Test
                 Options = new List<CommandType_Option>() { new CommandType_Option("SwapUSB", "HDMI") { Option_Name = "value" } },
             };
             int fail_NotSupport = 103;
-            var Execute_result10 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null, Set, TargetFeature SwapUSB,"pip", 
+            var Execute_result10 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null, Set, TargetFeature SwapUSB,"pip",
             Assert.IsNotNull(Execute_result10);
             Assert.That(fail_NotSupport, Is.EqualTo(Execute_result10));
         }
@@ -812,6 +804,5 @@ namespace CLI.Plugins.Display.Test
             Assert.IsNotNull(get_InputSource_code_Result);
             Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
         }
-
     }
 }
