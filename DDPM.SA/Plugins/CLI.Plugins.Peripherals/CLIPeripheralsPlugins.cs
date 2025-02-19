@@ -3002,6 +3002,13 @@ namespace DDPM.CLI.Plugins.Peripherals
         //0531 Bruce 因應IL的現有安裝包修改判斷，CLIPeripheralsPlugins.cs中Auto_FWUpdate方法修改回傳值型態和新增判斷
         private List<FWUpdateInfo> retFWUpdateInfos;
 
+        private class FWUpdateResponseInfo
+        {
+            public string Model { get; set; }
+            public string ServiceTag { get; set; }
+            public string Version { get; set; }
+        }
+
         private (int code, string result) Auto_FWUpdate2(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, List<DeviceInfo> fwUpdateDeviceInfos, bool isUODMode, string installPath, bool isShowInfo = true, bool isForce = false, List<string> guid = null, List<string> model = null, string miniver = null, bool isDefer = false, List<string> serviceTag = null)
         {
             try
@@ -3044,18 +3051,37 @@ namespace DDPM.CLI.Plugins.Peripherals
                     FWUpdateInfoPackage allFWUpdateInfo = _devMgr.GetFWUpdateInfo(isShowInfo, true).Result;
                     var fwUpdateInfoPackage = Filter(allFWUpdateInfo, guid, serviceTag, model, miniver, deviceTypes);
 
+                    var allFWUpdateResponseInfos = fwUpdateInfoPackage.FWUpdateInfo
+                                                                      .Select(_ => new FWUpdateResponseInfo
+                                                                      {
+                                                                          Model = _.Model,
+                                                                          ServiceTag = _.ServiceTag,
+                                                                          Version = _.DeviceVersion
+                                                                      })
+                                                                      .Concat(fwUpdateDeviceInfos.Where(_ => !fwUpdateInfoPackage.FWUpdateInfo
+                                                                                                                                 .Select(x => x.DeviceId)
+                                                                                                                                 .Contains(_.ID.ToString()))
+                                                                                                 .Select(_ => new FWUpdateResponseInfo
+                                                                                                 {
+                                                                                                     Model = _.ModelNumber,
+                                                                                                     ServiceTag = _.DockServiceTag,
+                                                                                                     Version = _.FirmwareVersion
+                                                                                                 }))
+                                                                      .ToList();
+
+                    cli_FWU_RESPONSE.Model = string.Join(",", allFWUpdateResponseInfos.Select(_ => _.Model));
+                    cli_FWU_RESPONSE.ServiceTag = string.Join(",", allFWUpdateResponseInfos.Select(_ => !string.IsNullOrWhiteSpace(_.ServiceTag) ? _.ServiceTag : "N/A"));
+                    cli_FWU_RESPONSE.FWVersion = string.Join(",", allFWUpdateResponseInfos.Select(_ => $"[{_.Version}]"));
+                    cli_FWU_RESPONSE.Result = "PASS";
+
                     if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
                     {
-                        fwUpdateDeviceInfos.ForEach(_ =>
+                        allFWUpdateResponseInfos.ForEach(_ =>
                         {
-                            var msg = $"No updates available: {_.ModelNumber}" + (_.LogicalDeviceType.Contains("DOCK", StringComparison.OrdinalIgnoreCase) ? $", ServiceTag: {_.DockServiceTag}" : "") + $" Version: {_.FirmwareVersion}";
+                            var msg = $"No updates available: {_.Model}" + (!string.IsNullOrWhiteSpace(_.ServiceTag) ? $", ServiceTag: {_.ServiceTag}" : "") + $" Version: {_.Version}";
                             cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
                         });
                         cli_FWU_RESPONSE.Message = "No updates available";
-                        cli_FWU_RESPONSE.Result = "PASS";
-                        cli_FWU_RESPONSE.Model = string.Join(",", fwUpdateDeviceInfos.Select(_ => _.ModelNumber));
-                        cli_FWU_RESPONSE.ServiceTag = string.Join(",", fwUpdateDeviceInfos.Select(_ => _.DockServiceTag ?? "N/A"));
-                        cli_FWU_RESPONSE.FWVersion = string.Join(",", fwUpdateDeviceInfos.Select(_ => $"[{_.FirmwareVersion}]"));
                         writelog("Auto_FWUpdate2 No updates available");
                         return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
@@ -3074,10 +3100,6 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                     if (deviceTypes.Count != 0)
                     {
-                        cli_FWU_RESPONSE.Model = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => _.Model));
-                        cli_FWU_RESPONSE.ServiceTag = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => _.ServiceTag ?? "N/A"));
-                        cli_FWU_RESPONSE.FWVersion = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"[{_.DeviceVersion}]"));
-
                         fwUpdateInfoPackage.FWUpdateInfo.ForEach(_ =>
                         {
                             var msg = $"Ready to start updating Device: {_.DeviceName}" + (!string.IsNullOrWhiteSpace(_.ServiceTag) ? $", ServiceTag: {_.ServiceTag}" : "") + $" to Version: {_.TheLatestVersion}";
@@ -3092,18 +3114,12 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
                                            });
 
-                        cli_FWU_RESPONSE.Result = "PASS";
                         Task.Run(new Action(() =>
                         {
                             retFWUpdateInfos = _devMgr.DownloadAndInstall(fwUpdateInfoPackage.FWUpdateInfo).Result;
-                            //do
-                            //{
-                            //    Thread.Sleep(100);
-                            //} while (retFWUpdateInfos == null);
 
                             foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
                             {
-                                //cli_FWU_RESPONSE.Model = retFWUpdateInfo.Model;
                                 if (retFWUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
                                 {
                                     cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update success.");
@@ -3176,42 +3192,52 @@ namespace DDPM.CLI.Plugins.Peripherals
                     FWUpdateInfoPackage allFWUpdateInfo = _devMgr.GetFWUpdateInfo(isShowInfo, true).Result;
                     var fwUpdateInfoPackage = Filter(allFWUpdateInfo, null, null, model, miniver, null);
 
+                    var allFWUpdateResponseInfos = fwUpdateInfoPackage.FWUpdateInfo
+                                                                      .Select(_ => new FWUpdateResponseInfo
+                                                                      {
+                                                                          Model = _.Model,
+                                                                          ServiceTag = _.ServiceTag,
+                                                                          Version = _.DeviceVersion
+                                                                      })
+                                                                      .Concat(fwUpdateMonitorInfos.Where(_ => !fwUpdateInfoPackage.FWUpdateInfo
+                                                                                                                                  .Select(x => x.ServiceTag)
+                                                                                                                                  .Contains(_.edid.ServiceTag))
+                                                                                                 .Select(_ => new FWUpdateResponseInfo
+                                                                                                 {
+                                                                                                     Model = _.modelName,
+                                                                                                     ServiceTag = _.edid.ServiceTag,
+                                                                                                     Version = _.FwVersion
+                                                                                                 }))
+                                                                      .ToList();
+
+                    cli_FWU_RESPONSE.Model = string.Join(",", allFWUpdateResponseInfos.Select(_ => _.Model));
+                    cli_FWU_RESPONSE.ServiceTag = string.Join(",", allFWUpdateResponseInfos.Select(_ => !string.IsNullOrWhiteSpace(_.ServiceTag) ? _.ServiceTag : "N/A"));
+                    cli_FWU_RESPONSE.FWVersion = string.Join(",", allFWUpdateResponseInfos.Select(_ => $"[{_.Version}]"));
+                    cli_FWU_RESPONSE.Result = "PASS";
+
                     if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
                     {
                         fwUpdateMonitorInfos.ForEach(_ => cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {_.modelName}, ServiceTag: {_.edid.ServiceTag} Version: {_.FwVersion}"));
                         cli_FWU_RESPONSE.Message = "No updates available";
-                        cli_FWU_RESPONSE.Result = "PASS";
-                        cli_FWU_RESPONSE.FWVersion = string.Join(",", fwUpdateMonitorInfos.Select(_ => $"[{_.FwVersion}]"));
-                        cli_FWU_RESPONSE.Model = string.Join(",", fwUpdateMonitorInfos.Select(_ => _.modelName));
                         cli_FWU_RESPONSE.SerialNumber = string.Join(",", fwUpdateMonitorInfos.Select(_ => _.edid.SerialNumber));
                         cli_FWU_RESPONSE.MarketingName = string.Join(",", fwUpdateMonitorInfos.Select(_ => _.MarketingName));
                         cli_FWU_RESPONSE.Index = string.Join(",", fwUpdateMonitorInfos.Select(_ => _.Index + 1));
-                        cli_FWU_RESPONSE.ServiceTag = string.Join(",", fwUpdateMonitorInfos.Select(_ => _.edid.ServiceTag));
                         writelog("Auto_FWUpdate_display No updates available");
                         return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
 
-                    cli_FWU_RESPONSE.Model = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => _.Model));
-                    cli_FWU_RESPONSE.ServiceTag = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => _.ServiceTag ?? "N/A"));
-                    cli_FWU_RESPONSE.FWVersion = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"[{_.DeviceVersion}]"));
                     cli_FWU_RESPONSE.FWUpdateRESPONSE.AddRange(fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.DeviceName}, ServiceTag: {_.ServiceTag} to Version: {_.TheLatestVersion}"));
 
                     fwUpdateMonitorInfos.Where(_ => !fwUpdateInfoPackage.FWUpdateInfo.Select(x => x.ServiceTag).Contains(_.edid.ServiceTag))
                             .ToList()
                             .ForEach(_ => cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {_.modelName}, ServiceTag: {_.edid.ServiceTag} Version: {_.FwVersion}"));
 
-                    cli_FWU_RESPONSE.Result = "PASS";
                     Task.Run(new Action(() =>
                     {
                         retFWUpdateInfos = _devMgr.DownloadAndInstall(fwUpdateInfoPackage.FWUpdateInfo).Result;
-                        //do
-                        //{
-                        //    Thread.Sleep(100);
-                        //} while (retFWUpdateInfos == null);
 
                         foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
                         {
-                            //cli_FWU_RESPONSE.Model = retFWUpdateInfo.Model;
                             if (retFWUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
                             {
                                 cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update success.");
