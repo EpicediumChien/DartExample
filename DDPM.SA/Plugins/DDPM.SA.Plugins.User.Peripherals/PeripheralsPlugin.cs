@@ -2666,7 +2666,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     //    OnNotify(_EventArgs);
                     //});
 
-                    ILogicalDevice iLogicalDevice = _iDeviceManager.Devices.SelectMany(device => device.Devices).FirstOrDefault(x => x.Id == deviceGuid);
+                    //ILogicalDevice iLogicalDevice = _iDeviceManager.Devices.SelectMany(device => device.Devices).FirstOrDefault(x => x.Id == deviceGuid);
+                    ILogicalDevice iLogicalDevice = (ILogicalDevice)_deviceHelper.deviceInfo.Where(x => x.ID == deviceGuid).FirstOrDefault();
 
                     if (iLogicalDevice == null)
                     {
@@ -2729,6 +2730,33 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             LogicalDevicHeadset.Remove(iLogicalDevice.Id);
                             _logs.DebugMsg_1($"[LogicalDevicHeadset] IPhysicalDevice_DeviceRemovedEvent Remove ID : {iLogicalDevice.Id.ToString()} ... ");
                         }
+                        // << 250218 added by Hess for PIMS-328225
+                        if (iLogicalDevice is ILogicalDevice logicalDevice)
+                        {
+                            if (LowBatteryIDs.Contains(logicalDevice.Id.ToString()))
+                            {
+                                OSDEventArgs args = new OSDEventArgs()
+                                {
+                                    Requester = "CloseBatteryLowOSD",
+                                    osd_type = OSDType.BatteryLow,
+                                    Guid = ""
+                                };
+                                var type = logicalDevice.Type.ToString();
+                                if (type.Contains("Keyboard"))
+                                    args.osd_device = OSDType_Device.Keyboard;
+                                else if (type.Contains("Mouse"))
+                                    args.osd_device = OSDType_Device.Mouse;
+                                else if (type.Contains("Headset"))
+                                    args.osd_device = OSDType_Device.Headset;
+                                else if (type.Contains("Pen"))
+                                    args.osd_device = OSDType_Device.Pen;
+                                else
+                                    return;
+
+                                OnOSDNotify(args);
+                            }
+                        }
+                        // >>
                     }
 
                     //if (LowBatteryIDs.Contains(iLogicalDevice.Id.ToString()))
@@ -3050,9 +3078,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             writelog($"UpdateLowBatteryOSD: Value: {showOSD}");
             if (_deviceHelper is { deviceInfo: not null })
             {
-                foreach (var di in _deviceHelper.deviceInfo)
+                if (showOSD)
                 {
-                    if (showOSD)
+                    foreach (var di in _deviceHelper.deviceInfo)
                     {
                         try
                         {
@@ -3110,25 +3138,31 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             writelog($"General setting Check [Low battery level] fail with exception:{e.Message}");
                         }
                     }
-                    else
+                }
+                else
+                {
+                    try
                     {
-                        try
+                        OSDEventArgs args = new OSDEventArgs()
                         {
-                            OSDEventArgs args = new OSDEventArgs()
-                            {
-                                Requester = "CloseBatteryLowOSD",
-                                DeviceName = Screen.PrimaryScreen.DeviceName,
-                                osd_type = OSDType.BatteryLow,
-                                //Message = message
-                            };
-                            OnOSDNotify(args);
-                        }
-                        catch (Exception e)
-                        {
-                            writelog($"General setting Uncheck [Low battery level] fail with exception:{e.Message}");
-                        }
-                        LowBatteryIDs.Clear();
+                            Requester = "CloseBatteryLowOSD",
+                            osd_type = OSDType.BatteryLow,
+                            osd_device = OSDType_Device.Keyboard,
+                            Guid = ""
+                        };
+                        OnOSDNotify(args);
+                        args.osd_device = OSDType_Device.Mouse;
+                        OnOSDNotify(args);
+                        args.osd_device = OSDType_Device.Headset;
+                        OnOSDNotify(args);
+                        args.osd_device = OSDType_Device.Pen;
+                        OnOSDNotify(args);
                     }
+                    catch (Exception e)
+                    {
+                        writelog($"General setting Uncheck [Low battery level] fail with exception:{e.Message}");
+                    }
+                    LowBatteryIDs.Clear();
                 }
             }
 
