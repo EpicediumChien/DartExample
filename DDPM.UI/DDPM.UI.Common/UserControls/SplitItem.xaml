@@ -8,8 +8,21 @@
              mc:Ignorable="d"
              d:DesignHeight="68" d:DesignWidth="88"
              Background="#02000000"
-             Focusable="True"
+             
+             Focusable="True" KeyboardNavigation.IsTabStop="True"
+             KeyboardNavigation.TabNavigation="Continue"
+             AutomationProperties.Name="{Binding ToolTipText}"
+             
              Name="root">
+    <!-- 
+             Focusable="True"
+             IsTabStop="True"
+             AutomationProperties.Name="{Binding ToolTipText, RelativeSource={RelativeSource Self}}"
+             KeyboardNavigation.TabNavigation="Continue"
+             AutomationProperties.IsOffscreenBehavior="Onscreen"
+             AutomationProperties.LiveSetting="Off"
+
+    -->
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -87,10 +100,16 @@
                 </Style.Resources>
                 <Setter Property="MaxWidth" Value="200" />
             </Style>-->
+            
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="{StaticResource FakeTransparent}" MouseLeftButtonDown="rootGrid_MouseLeftButtonDown">
+    <!-- 
+    KeyboardNavigation.TabNavigation="Contained"
+    -->
+    <Grid Background="{StaticResource FakeTransparent}" MouseLeftButtonDown="rootGrid_MouseLeftButtonDown"
+          >
         <Grid.ToolTip>
             <ToolTip Visibility="{Binding ToolTipText, Converter={StaticResource StringEmptyToVisibilityConverter}}">
                 <!-- Robert_Lin, 2025-1-9 SplitItem Tooltip outerborder will apply DDPM standard style 
@@ -115,19 +134,24 @@
             </ToolTip>
         </Grid.ToolTip>
 
-
-        <Border BorderBrush="{DynamicResource FakeTransparent}" Margin="4"
+        <!-- #region SplitItem Background Board -->
+        <Border BorderBrush="{DynamicResource FakeTransparent}" Margin="4" Focusable="False"
                 CornerRadius="6" BorderThickness="1"
                 Background="{DynamicResource SplitItem_BkColor}"/>
-        
-        <ContentControl Content="{Binding InnerContent, ElementName=root}" Margin="4"
+        <!-- #endregion SplitItem Background Board -->
+
+        <!-- #region SplitCtrl -->
+        <ContentControl Content="{Binding InnerContent, ElementName=root}" Margin="4" Focusable="False"
                         Background="{DynamicResource FakeTransparent}"
                         MouseLeftButtonDown="spItem_MouseLeftButtonDown" />
+        <!-- #endregion SplitCtrl -->
 
+        <!-- #region HoverLayer - Pencil and closeX -->
         <!-- Hover Layer 
         <Border Name="bdHover" Width="88" Height="68" CornerRadius="6">
+        KeyboardNavigation.TabNavigation="Continue"
         -->
-        <Border Name="bdHover" CornerRadius="6">
+        <Border Name="bdHover" CornerRadius="6"  d:Visibility="Visible">
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
@@ -146,13 +170,44 @@
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Visibility" Value="Visible" />
                         </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ElementName=root, Path=IsKeyboardFocusWithin}" Value="True"/>
+                                <Condition Binding="{Binding IsHoverable}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible" />
+                        </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
             </Border.Style>
 
             <Grid>
-                <!-- Pencil icon -->
-                <Border Width="16" Height="16" Margin="8.5,9,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"
+                <!-- #region Pencil -->
+                <!-- 
+                        Focusable="True" AutomationProperties.Name="Modify current layout" KeyboardNavigation.IsTabStop="True"
+                -->
+                <!-- NEW: Button for Narrator -->
+                <!-- 
+                        Focusable="True" IsTabStop="True" d:Visibility="Visible" 
+                        KeyboardNavigation.TabIndex="81" 
+                        AutomationProperties.Name="Modify current layout">
+                -->
+                <Button x:Name="pencilButton" Style="{StaticResource StatelessButton}"
+                        Width="16" Height="16"  Margin="8.5,9,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"
+                        Visibility="{Binding IsEditEnabled, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Click="pencilButton_Click" Cursor="Hand"
+                        AutomationProperties.Name="Modify current layout"
+                        >
+
+                   <Border Background="{StaticResource Brush_GradientButtonCyan}" CornerRadius="3"
+                           DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}">
+                        <Path Data="M7.035 0L1.42 5.615L0.59 7.745L0.5 8L0.755 7.91L2.89 7.075L8.5 1.465L7.035 0ZM1.435 7.065L1.865 5.955L2.55 6.63L1.435 7.065ZM2.935 6.26L2.23 5.56L6.23 1.56L6.935 2.255L2.935 6.255V6.26ZM6.62 1.18L7.035 0.765L7.735 1.465L7.325 1.875L6.62 1.18Z"
+                              Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                     </Border>
+                </Button>
+                
+                <!-- OLD: Border -->
+                <!--<Border Width="16" Height="16" Margin="8.5,9,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Collapsed"
                         Background="{StaticResource Brush_GradientButtonCyan}" CornerRadius="3"
                         DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
                         MouseLeftButtonDown="pencilIcon_MouseLeftButtonDown">
@@ -169,10 +224,31 @@
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
-                </Border>
+                </Border>-->
+                <!-- #endregion Pencil icon -->
 
                 <!-- closeX icon -->
-                <Border Width="16" Height="16" Margin="0,9,8.5,0" HorizontalAlignment="Right" VerticalAlignment="Top"
+                <!-- NEW: Button for Narrator -->
+                <!-- 
+                        Focusable="True" IsTabStop="True" d:Visibility="Visible"
+                        KeyboardNavigation.TabIndex="82"
+                        AutomationProperties.Name="Delete current layout">
+                -->
+                <Button x:Name="closeXButton" Style="{StaticResource StatelessButton}"
+                        Width="16" Height="16" Margin="0,9,8.5,0" HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Visibility="{Binding IsDeleteEnabled, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                        Cursor="Hand" Click="closeXButton_Click"
+                        AutomationProperties.Name="Delete current layout"
+                        >
+
+                    <Border Background="{StaticResource Brush_GradientButtonCyan}" CornerRadius="3"
+                            DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}">
+                        <Path Data="M8.5 0.41L8.09 0L4.5 3.6L0.91 0.025L0.5 0.435L4.075 4L0.525 7.565L0.935 8L4.5 4.425L8.065 8L8.475 7.59L4.9 4L8.5 0.41Z"
+                              Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    </Border>
+                </Button>
+                <!-- OLD: Border-->
+                <!--<Border Width="16" Height="16" Margin="0,9,8.5,0" HorizontalAlignment="Right" VerticalAlignment="Top"
                         Background="{StaticResource Brush_GradientButtonCyan}" CornerRadius="3" MouseLeftButtonDown="closeXIcon_MouseLeftButtonDown">
                     <Path Data="M8.5 0.41L8.09 0L4.5 3.6L0.91 0.025L0.5 0.435L4.075 4L0.525 7.565L0.935 8L4.5 4.425L8.065 8L8.475 7.59L4.9 4L8.5 0.41Z"
                           Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center" />
@@ -187,29 +263,16 @@
                         </Style>
                     </Border.Style>
                 </Border>
+                -->
             </Grid>
-
-            <!-- It seems unused, Robert_Lin, 2024-11-21-->
-            <!--<Border.ToolTip>
-                <ToolTip MaxWidth="200" Visibility="{Binding ToolTipText, Converter={StaticResource StringEmptyToVisibilityConverter}}">
-                    <Border Background="{DynamicResource ToolipBkColor}"
-                            BorderBrush="{DynamicResource ToolipBdColor}"
-                            CornerRadius="4" Padding="8,12">
-                        <Border.Resources>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Foreground" Value="{DynamicResource ToolipTextColor}" />
-                                <Setter Property="FontSize" Value="12" />
-                                <Setter Property="TextWrapping" Value="Wrap"/>
-                            </Style>
-                        </Border.Resources>
-
-                        <StackPanel>
-                            <TextBlock Text="{Binding ToolTipText}" />
-                        </StackPanel>
-                    </Border>
-                </ToolTip>
-            </Border.ToolTip>-->
         </Border>
+
+        <!-- #region Pencil Button -->
+        <!-- #endregion Pencil Button -->
+
+        <!-- #region closeX Button -->
+        <!-- #endregion closeX Button -->
+        <!-- #endregion HoverLayer - Pencil and closeX -->
 
         <!--  Background="{StaticResource FakeTransparent}" 
         

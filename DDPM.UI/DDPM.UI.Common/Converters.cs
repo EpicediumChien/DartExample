@@ -11,6 +11,7 @@ using FontFamily = System.Windows.Media.FontFamily;
 using FlowDirection=System.Windows.FlowDirection;
 using Brushes=System.Windows.Media.Brushes;
 using FormattedText=System.Windows.Media.FormattedText;
+using System.Windows.Controls;
 
 namespace DDPM.UI.Common
 {
@@ -101,6 +102,45 @@ namespace DDPM.UI.Common
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Convert bool to ScrollBarVisibility, set TrueValue and FalseValue to specify the ScrollBarVisibility when true or false.
+    /// </summary>
+    /// <example>
+    /// Example:
+    /// 1 Apply TrueValue and FalseValue in <ScrollViewer></ScrollViewer>
+    /// <ScrollViewer VerticalScrollBarVisibility="{Binding IsVerticalScrollBarVisible, Converter={StaticResource BoolToScrollBarVisibilityConverter}, ConverterParameter='Hidden,Auto'}">
+    /// 2 Apply value in Resources of the Converter key
+    ///   <cvrs:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter"
+    ///         TrueValue="Visible" FalseValue="Hidden" />
+    ///         
+    ///   <ScrollViewer VerticalScrollBarVisibility="{Binding IsScrollBarVisible, Converter={StaticResource BoolToScrollBarVisibilityConverter}}">
+    ///
+    /// </example>
+    ///  
+    public class BoolToScrollBarVisibilityConverter : IValueConverter
+    {
+        public ScrollBarVisibility TrueValue { get; set; }
+        public ScrollBarVisibility FalseValue { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool boolValue)
+            {
+                return boolValue ? TrueValue : FalseValue;
+            }
+            return DependencyProperty.UnsetValue;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is ScrollBarVisibility visibility)
+            {
+                return visibility == TrueValue;
+            }
+            return DependencyProperty.UnsetValue;
         }
     }
 }

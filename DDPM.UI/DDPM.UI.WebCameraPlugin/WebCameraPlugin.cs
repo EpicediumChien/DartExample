@@ -188,7 +188,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             //Derek 1212
             if (e == null || e == EventArgs.Empty || e.UI_Field_Name == null
-                || e.UI_Field_Name == string.Empty)
+                || string.IsNullOrEmpty(e.UI_Field_Name))
                 return;
 
             //Open this to get the message format of Webcam event
@@ -749,6 +749,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         /// <inheritdoc/>
         public void OnShown(string parameter)
         {
+            DdpmCommonHelper.WriteUILog($"Webcam pugin OnShown Begin timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
             ConfigureServices();
             GetPeripheralsAsync();
             if (_viewModel != null)
@@ -758,6 +759,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
             DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += WebCameraplugin_UIUpdateNotify;
             Mouse.OverrideCursor = null;
+            DdpmCommonHelper.WriteUILog($"Webcam pugin OnShown End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
 
         #endregion Interface IConsolePluginSupportsActivations

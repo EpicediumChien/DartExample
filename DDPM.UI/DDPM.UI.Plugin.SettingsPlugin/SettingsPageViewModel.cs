@@ -835,7 +835,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             //12/25 add Model
             if (fwUpdateInfo.IsDisplay)
             {
-                UpdateInfo = $"{LangHelper.Instance["Firmware_update"]} {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName} ({fwUpdateInfo.ServiceTag})";
+                UpdateInfo = $"{LangHelper.Instance["Firmware_update"]} {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName} {fwUpdateInfo.Model} ({fwUpdateInfo.ServiceTag})";
             }
             else
             {

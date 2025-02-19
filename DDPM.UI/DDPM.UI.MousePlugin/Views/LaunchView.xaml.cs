@@ -41,8 +41,10 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         public LaunchView()
         {
+            DdpmCommonHelper.WriteUILog($"Mouse UI LaunchView Begin timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
             try
             {
+                Loaded += LaunchView_Loaded;
                 InitializeComponent();
                 _vm = (MouseViewModel?)Mouseplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
                 if (_vm == null)
@@ -151,7 +153,14 @@ namespace DDPM.UI.Plugin.MousePlugin
             capAreaDefaultWidth = AppCaptionArea.Width;
             LeftBorder.SizeChanged -= CapAreaSizeChange;
             LeftBorder.SizeChanged += CapAreaSizeChange;
+            DdpmCommonHelper.WriteUILog($"Mouse UI LaunchView End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
+
+        private void LaunchView_Loaded(object sender, RoutedEventArgs e)
+        {
+            DdpmCommonHelper.WriteUILog($"Mouse UI Loaded timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
+        }
+
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
         {
             try
@@ -852,7 +861,8 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private void CapAreaSizeChange(object sender, SizeChangedEventArgs e)
         {
-            if (LeftBorder != null && leftBorderDefaultWidth != 0 && capAreaDefaultWidth != 0) {
+            if (LeftBorder != null && leftBorderDefaultWidth != 0 && capAreaDefaultWidth != 0)
+            {
                 double scalingFactor = LeftBorder.ActualWidth / leftBorderDefaultWidth;
                 AppCaptionArea.LayoutTransform = new ScaleTransform(scalingFactor, scalingFactor);
             }

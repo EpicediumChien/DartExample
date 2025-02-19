@@ -352,11 +352,11 @@ namespace DDPM.SA.Common
                                         t = tS;
                                     if (t.Length > 1 && t.EndsWith("]"))
                                         t = t.Substring(0, t.Length - 1);
-                                    if (tmpSS[0].ToUpper().Contains("SERVICETAG") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DEVICEDATA") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
+                                    if (tmpSS[0].ToUpper().Contains("SERVICETAG") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                     {
                                         commandInput.ServiceTag.Add(t);
                                     }
-                                    else if (tmpSS[0].ToUpper().Contains("MODEL") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DEVICEDATA") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
+                                    else if (tmpSS[0].ToUpper().Contains("MODEL") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                     {
                                         commandInput.Model.Add(t);
                                     }
@@ -722,6 +722,18 @@ namespace DDPM.SA.Common
                     return;
                 }
                 if (commandInput.Command == "SET" && commandInput.TargetFeature == "TELEMETRYCONSENT")
+                {
+                    commandInput.isITCommands = true;
+                    commandInput.isNormalCommands = true;
+                    return;
+                }
+                if (commandInput.Command == "SET" && commandInput.TargetType == "APP" && commandInput.TargetFeature == "RESTOREFACTORYDEFAULTS" && commandInput.Options.Count == 0)
+                {
+                    commandInput.isITCommands = true;
+                    commandInput.isNormalCommands = true;
+                    return;
+                }
+                if (commandInput.Command == "SET" && commandInput.TargetFeature == "SCREENNOTIFICATION" && (commandInput.Options[0].Option_Value == "ON" || commandInput.Options[0].Option_Value == "OFF"))
                 {
                     commandInput.isITCommands = true;
                     commandInput.isNormalCommands = true;

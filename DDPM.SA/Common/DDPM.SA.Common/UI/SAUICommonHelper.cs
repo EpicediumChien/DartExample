@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using System.Windows.Resources;
 using Windows.UI.ViewManagement;
 
@@ -70,6 +71,24 @@ namespace DDPM.SA.Common.UI
                 // [20241122] SonarQube: Remove or correct this useless self-assignment.
                 //Application.Current.Resources[resourceKey] = Application.Current.Resources[resourceKey];// Force Refresh
             }
+        }
+
+        /// <summary>
+        /// Create new BitmapImage
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Please set image files "<CopyToOutputDirectory>Always</CopyToOutputDirectory>"
+        /// </remarks>
+        public static void UpdateBitmapImage(string resourceKey, Uri uri)
+        {
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.UriSource = uri;
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.EndInit();
+            Application.Current.Resources[resourceKey] = bitmapImage;
         }
 
         public static string MappingModel(string modelNumber)
@@ -153,7 +172,7 @@ namespace DDPM.SA.Common.UI
         }
 
         //[Dean]0115 move this from UI DdpmCommonHelper to SA SACommonHelper, Major consumer is DDPM UI
-        public static string MappingName(string model, string name)
+        public static string MappingWebCamName(string model, string name)
         {
             name = name.Replace(model, "").Trim();
             switch (CultureInfo.InstalledUICulture.Name)
@@ -168,6 +187,26 @@ namespace DDPM.SA.Common.UI
                     return name;
                 default:
                     if (model == "U3224KB")                   
+                        return "Dell UltraSharp 32 6K Monitor";
+                    return name;
+            }
+        }
+
+        public static string MappingName(string model, string name)
+        {
+            name = name.Replace(model, "").Trim();
+            switch (CultureInfo.InstalledUICulture.Name)
+            {
+                case "ja-JP":
+                    if (model == "WB7022")
+                        return "Dell Digital Hi-Resolution Webcam";
+                    if (model == "U3223QZ")
+                        return "Dell Digital Hi-End 32 4K Video Conferencing Monitor";
+                    if (model == "U3224KB")
+                        return "Dell Digital Hi-End 32 6K Monitor";
+                    return name;
+                default:
+                    if (model == "U3224KB")
                         return "Dell UltraSharp 32 6K Monitor U3224KB";
                     return name;
             }

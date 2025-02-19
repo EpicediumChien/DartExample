@@ -135,5 +135,15 @@ namespace DDPM.UI.Common.ViewModels
         }
         #endregion Add Custom Layout Button
 
+        #region Flags for Narrator
+        public bool IsEditButtonVisible
+        {
+            get
+            {
+                return true;
+            }
+        }
+        #endregion Flags for Narrator
+
     }
 }

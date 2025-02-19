@@ -656,8 +656,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 NeedUpdated = true,
                                 DeviceType = DeviceType.Unknown,
                                 ServerPath = displayUpdateHelper.Firmwares[i].url,
-                                Model = "",
-                                DeviceName = displayUpdateHelper.Firmwares[i].id,
+                                Model = displayUpdateHelper.Firmwares[i].id,
+                                DeviceName = "Dell Monitor",
                                 SHA256 = displayUpdateHelper.Firmwares[i].SHA256,
                                 //SHA512 = displayUpdateHelper.Firmwares[i].SHA512,
                                 Thumbprint = displayUpdateHelper.Firmwares[i].Thumbprint,
@@ -1217,7 +1217,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} {_fWUpdateInfo.DeviceName} Error : {ex.Message}"); // 輸出錯誤訊息
+                _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} {_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Error : {ex.Message}"); // 輸出錯誤訊息
                 StartService();
                 _isDefer = false;
                 _isForce = false;
@@ -1469,7 +1469,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         if (battery.BatteryLifePercent <= 10)
                         {
                             _notificationStr = $"{currentFWInfo.DeviceName} {currentFWInfo.Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
-                            _logs.DebugMsg_1($"{nameof(CheckPCBattery_IsStopUpdate)} {_fWUpdateInfo.DeviceName} update download cancel, because PC battery too low.");
+                            _logs.DebugMsg_1($"{nameof(CheckPCBattery_IsStopUpdate)} {_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} update download cancel, because PC battery too low.");
                             ret = true;
                         }
                     }
@@ -2101,7 +2101,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 };
                 sendMessageToEvent(fWUpdateInfo);
             }
-            if (_timeOutCount <= 60 && 
+            if (_timeOutCount <= 60 &&
                 _fWUpdateInfo.DeviceType == DeviceType.LogicalHeadset &&
                 _fWUpdateInfo.Model.Contains("7024") &&
                 _CurrentProcess >= 100)
@@ -2154,7 +2154,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         private void pasreMessage(string message)
         {
-            message = Regex.Replace(message, @"(<.*?>)", match => match.Value.ToUpper());
+            message = Regex.Replace(message, @"(<.*?>)", match => match.Value.ToUpper(new CultureInfo("en-US", false)));
             string messageWithRoot = "<Root>" + message;
             messageWithRoot += "</Root>";
 
@@ -2177,12 +2177,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             XmlNode? tPubKeyDev1;
             XmlNode? encBlock;
 
-            if (message.Contains("InvokeDisplay".ToUpper()))
+            //if (message.Contains("InvokeDisplay".ToUpper(new CultureInfo("en-US", false))))
             {
-                msg1Node = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/MSG1".ToUpper());//鍵盤滑鼠才會觸發
-                progressNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Progress".ToUpper());
-                buttonCaptionNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Button-Caption".ToUpper());
-                buttonStateNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Button-State".ToUpper());
+                msg1Node = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/MSG1".ToUpper(new CultureInfo("en-US", false)));//鍵盤滑鼠才會觸發
+                /*progressNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Progress".ToUpper(new CultureInfo("en-US", false)));
+                buttonCaptionNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Button-Caption".ToUpper(new CultureInfo("en-US", false)));
+                buttonStateNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Button-State".ToUpper(new CultureInfo("en-US", false)));*/
                 if (msg1Node != null)
                 {
                     if (msg1Node.InnerText == "M1")
@@ -2230,22 +2230,22 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1("Should got M1 or M2 but got : " + msg1Node.InnerText + Environment.NewLine);
                     }
                 }
-                if (msg1Node == null && progressNode == null && buttonCaptionNode == null && buttonStateNode == null)
+                /*if (msg1Node == null && progressNode == null && buttonCaptionNode == null && buttonStateNode == null)
                 {
                     _logs.DebugMsg_1("Can't heandle: " + message + Environment.NewLine);
-                }
+                }*/
             }
-            else
+            //else
             {
-                progressNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='progress']");
-                buttonCaptionNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='button-caption']");
-                buttonStateNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='button-state']");
-                stateFlowNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='stateflow']");
-                timeOut = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='timeout']");
-                tPubKeyDev1 = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='tpubkeydev1']");
-                encBlock = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='encblock']");
+                progressNode = xmlDoc.SelectSingleNode("Root/" + "progress".ToUpper(new CultureInfo("en-US", false)));
+                buttonCaptionNode = xmlDoc.SelectSingleNode("Root/" + "button-caption".ToUpper(new CultureInfo("en-US", false)));
+                buttonStateNode = xmlDoc.SelectSingleNode("Root/" + "button-state".ToUpper(new CultureInfo("en-US", false)));
+                stateFlowNode = xmlDoc.SelectSingleNode("Root/" + "stateflow".ToUpper(new CultureInfo("en-US", false)));
+                timeOut = xmlDoc.SelectSingleNode("Root/" + "timeout".ToUpper(new CultureInfo("en-US", false)));
+                tPubKeyDev1 = xmlDoc.SelectSingleNode("Root/" + "tpubkeydev1".ToUpper(new CultureInfo("en-US", false)));
+                encBlock = xmlDoc.SelectSingleNode("Root/" + "encblock".ToUpper(new CultureInfo("en-US", false)));
 
-                if (progressNode == null && buttonCaptionNode == null && buttonStateNode == null && stateFlowNode == null && timeOut == null && tPubKeyDev1 == null && encBlock == null)
+                if (msg1Node == null && progressNode == null && buttonCaptionNode == null && buttonStateNode == null && stateFlowNode == null && timeOut == null && tPubKeyDev1 == null && encBlock == null)
                 {
                     _logs.DebugMsg_1("Can't handle: " + message + Environment.NewLine);
                 }
@@ -2293,7 +2293,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     else if (stateFlowNode.InnerText == "AF")
                     {
                         _logs.DebugMsg_1("Get AF:");
-                        var errorCodeNode = xmlDoc.SelectSingleNode("Root/ErrorCode");
+                        var errorCodeNode = xmlDoc.SelectSingleNode("Root/" + "ErrorCode".ToUpper(new CultureInfo("en-US", false)));
                         if (errorCodeNode != null)
                         {
                             if (errorCodeNode.InnerText == "E2")
@@ -2398,7 +2398,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             string result_string = _KeyGenerator.ProcessX0State(tPubKeyDev1.InnerText);
                             if (!string.IsNullOrEmpty(result_string))
                             {
-                                s = $"<StateFlow>X1</StateFlow><TPubKeyPC1>{result_string.ToLower().Replace("-", "")}</TPubKeyPC1>";
+                                s = $"<StateFlow>X1</StateFlow><TPubKeyPC1>{result_string.ToLower(new CultureInfo("en-US", false)).Replace("-", "")}</TPubKeyPC1>";
                                 _logs.DebugMsg_1("SendMessage : " + s);
                             }
                             if (_namedPipeServer != null)
@@ -2427,7 +2427,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 _KeyGenerator = null;
                                 if (!string.IsNullOrEmpty(result_string))
                                 {
-                                    s = $"<StateFlow>X3</StateFlow><K2EncBlock>{result_string.ToLower().Replace("-", "")}</K2EncBlock><CCMTAG>4Bytes</CCMTag><version>01</version>";
+                                    s = $"<StateFlow>X3</StateFlow><K2EncBlock>{result_string.ToLower(new CultureInfo("en-US", false)).Replace("-", "")}</K2EncBlock><CCMTAG>4Bytes</CCMTag><version>01</version>";
                                     _logs.DebugMsg_1("SendMessage : " + s);
                                 }
                                 if (_namedPipeServer != null)

@@ -394,7 +394,12 @@ namespace DDPM.UI.Common.ViewModels
 
             DateTime launchTime = DateTime.Today.Add(time);
 
-            string formattedTime = launchTime.ToString("h:mm tt", System.Globalization.CultureInfo.CurrentCulture);
+            //CultureInfo.InvariantCulture must be AM/PM
+            string formattedTime = launchTime.ToString("h:mm tt", CultureInfo.InvariantCulture);
+
+            string amDesignator = Strings.Am;
+            string pmDesignator = Strings.Pm;
+            formattedTime = formattedTime.Replace("AM", amDesignator).Replace("PM", pmDesignator);
 
             return formattedTime;
         }

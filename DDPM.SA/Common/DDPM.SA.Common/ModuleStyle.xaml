@@ -376,4 +376,6 @@
     </LinearGradientBrush>
     <!-- #region MsgBoxLinearGradientBrush-->
 
+    <BitmapImage x:Key="QAMImage_CallDDPM" UriSource="pack://application:,,,/DDPM.QAM;component/Imgs/ddpm-dark.png" />
+
 </ResourceDictionary>
