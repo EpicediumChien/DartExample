@@ -109,6 +109,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             _deviceBarItems.Clear();
 
+            int tabIdx = 14;
             int idx = 0;
             foreach (ModuleGroup mg in ModuleGroups)
             {
@@ -118,6 +119,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         ClickCommand = DeviceBarItemClickCommand
                     };
+                    deviceBarItem.TabIndex = tabIdx++;
                     _deviceBarItems.Add(deviceBarItem);
                     idx++;
                 }

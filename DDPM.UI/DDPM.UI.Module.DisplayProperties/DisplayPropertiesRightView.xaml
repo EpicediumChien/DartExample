@@ -16,6 +16,9 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+    <!-- Robert_Lin 2025-2-19 Add Narrator Support
+    1 All TextBlock: add Focusable=True
+    -->
     <Grid>
         <UXControls:UXScrollViewer>
             <!-- Container -->
@@ -36,10 +39,11 @@
                                     <UXControls:UXTextBlock Text="{Binding [DisplayProperties.2], Source={x:Static lang:LangHelper.Instance}}"
                                                             FontSize="16" MaxWidth="345" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                                            TextBlockSemanticColorType="Light"
+                                                            TextBlockSemanticColorType="Light" 
+                                                            Focusable="True" KeyboardNavigation.TabIndex="1" x:Name="labelResolution"
                                                             TextBlockType="Caption"
                                                             VerticalAlignment="Center" />
-                                    <Grid VerticalAlignment="Center"
+                                    <Grid VerticalAlignment="Center" 
                                           Margin="15,0,0,0"
                                           Visibility="{Binding RefreshRateUI_LockTooltip}">
                                         <Path Data="M12.1 6.40012V4.00012C12.2 1.80012 10.5 0.100122 8.30005 0.00012207H8.10005C5.90005 0.00012207 4.10005 1.80012 4.10005 4.00012V6.40012H1.80005V16.0001H14.1V6.40012H12.1ZM5.30005 4.00012C5.20005 2.50012 6.40005 1.30012 7.80005 1.20012H8.20005C9.80005 1.20012 11 2.50012 11 4.00012V6.40012H5.30005V4.00012ZM13.1 14.9001H3.00005V7.50012H13.1V14.9001Z M7.60005 12.5001H8.60005V9.30012H6.80005V10.3001H7.60005V12.5001Z"
@@ -63,11 +67,19 @@
                                           VerticalAlignment="Center"
                                           ItemsSource="{Binding Resolution_ItemsCollection}"
                                           SelectedItem="{Binding SelectedResolution, Mode=TwoWay}"
-                                          TabIndex="1"
                                           DisplayMemberPath="DisplayText"
                                           Width="200"
                                           IsEnabled="{Binding RefreshRateUI_IsEnable}"
-                                          Opacity="{Binding RefreshRateUI_Opacity}" />
+                                          KeyboardNavigation.TabIndex="2"
+                                          AutomationProperties.LabeledBy="{Binding ElementName=labelResolution}"
+                                          Opacity="{Binding RefreshRateUI_Opacity}" >
+                                    <!-- Robert_Lin 2025-2-19 for Narrator. read the DisplayText instead of ItemsSource's class name -->
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource DdpmComboBoxItemContainerStyle}">
+                                            <Setter Property="AutomationProperties.Name" Value="{Binding DisplayText}"/>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+                                </ComboBox>
                             </Grid>
                             <Grid Height="50"
                                   Margin="0,8"
@@ -79,6 +91,7 @@
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Caption"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="3" x:Name="labelOrientation"
                                                         VerticalAlignment="Center"
                                                         HorizontalAlignment="Left" />
                                 <ComboBox Style="{StaticResource DdpmComboBoxStyle}"
@@ -87,7 +100,17 @@
                                           ItemsSource="{Binding Orientation_ItemsCollection}"
                                           SelectedItem="{Binding SelectedOrientation, Mode=TwoWay}"
                                           DisplayMemberPath="DisplayText"
-                                          Width="200" />
+                                          KeyboardNavigation.TabIndex="4"
+                                          AutomationProperties.LabeledBy="{Binding ElementName=labelOrientation}"
+                                          Width="200" >
+                                    <!-- Robert_Lin 2025-2-19 for Narrator. read the displayText instead of ItemsSource's class name -->
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource DdpmComboBoxItemContainerStyle}">
+                                            <Setter Property="AutomationProperties.Name" Value="{Binding DisplayText}"/>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+
+                                </ComboBox>
                             </Grid>
                             <Grid Height="40"
                                   Margin="0,8"
@@ -99,6 +122,7 @@
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Caption"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="5" x:Name="labelHDR"
                                                         VerticalAlignment="Center"
                                                         HorizontalAlignment="Left" />
                                 <UXControls:UXToggleSwitch IsChecked="{Binding Path= HDRStatus}"
@@ -106,16 +130,25 @@
                                                            Content="{Binding Path=HDRStatus_String}"
                                                            HorizontalAlignment="Right"
                                                            VerticalAlignment="Center"
+                                                           Focusable="True" KeyboardNavigation.TabIndex="6"
+                                                           AutomationProperties.LabeledBy="{Binding ElementName=labelHDR}"
                                                            Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                             </Grid>
                             <Grid Height="60"
                                   Margin="0,8">
+                                <!-- Robert_Lin 2025-2-19 PIMS-347082 The link to "Windows settings" in this option is not aligned with the
+                                    "Change the size of text..." option
+                                Problem: "the Change the size..." not vertical center
+                                Fix: 1 Add VerticalAlignment="Center" to the UXTextBlock. 2 Remove Margin="0,25,0,0" from UXLink
+                                -->
                                 <!-- Elsa 20250121 For [PIMS-334008] add MaxWidth="345" HorizontalAlignment="Left" -->
                                 <UXControls:UXTextBlock Text="{Binding [DisplayProperties.3], Source={x:Static lang:LangHelper.Instance}}"
                                                         FontSize="16" MaxWidth="345" HorizontalAlignment="Left"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Caption"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="7" x:Name="labelTextSize"
+                                                        VerticalAlignment="Center"
                                                         TextWrapping="WrapWithOverflow" />
 
                                 <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}"
@@ -126,7 +159,8 @@
                                                    LinkType="InLine"
                                                    Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z"
                                                    HorizontalAlignment="Right"
-                                                   VerticalAlignment="Center" Margin="0,25,0,0"
+                                                   VerticalAlignment="Center" 
+                                                   Focusable="True" KeyboardNavigation.TabIndex="8"
                                                    Height="40">
                                     <UXControls:UXLink.Resources>
                                         <Style TargetType="Border">
@@ -136,7 +170,7 @@
                                 </UXControls:UXLink>
                             </Grid>
                             <!-- RightPartBorder -->
-                            <Border Style="{StaticResource RightPartBorderStyle}"
+                            <Border Style="{StaticResource RightPartBorderStyle}" 
                                     Margin="0,24,0,0"
                                     Visibility="{Binding Path=SupportedUSBCPrioeitization}">
                                 <UXControls:UXExpander ExpanderType="Secondary"
@@ -146,13 +180,14 @@
                                                        Background="{DynamicResource PartBorderColor}">
                                     <UXControls:UXExpander.Header>
                                         <UXControls:UXTextBlock  Text="{Binding [AdvancedSettings], Source={x:Static lang:LangHelper.Instance}}"
-                                                                 FontSize="16"
+                                                                 FontSize="16" Focusable="True" KeyboardNavigation.TabIndex="9"
                                                                  Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                                     </UXControls:UXExpander.Header>
                                     <StackPanel>
                                         <UXControls:UXAlert Margin="0,20"
                                                             Visibility="{Binding USBCrioritizationUI_NoLock}">
-                                            <UXControls:UXAlertItem AlertItemType="Info"
+                                            <UXControls:UXAlertItem AlertItemType="Info" 
+                                                                    Focusable="True" KeyboardNavigation.TabIndex="10"
                                                                     Margin="8,8,8,8"
                                                                     Label=""
                                                                     Message="{Binding [Disconnect_all_USB_storage_devices_from_monitor], Source={x:Static lang:LangHelper.Instance}}" />
@@ -166,6 +201,7 @@
                                                                     Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                                     TextBlockSemanticColorType="Light"
                                                                     TextBlockType="Caption"
+                                                                    Focusable="True" KeyboardNavigation.TabIndex="11"
                                                                     VerticalAlignment="Center"
                                                                     HorizontalAlignment="Left" />
                                             <Grid VerticalAlignment="Center"
