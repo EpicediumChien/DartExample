@@ -2422,6 +2422,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 btnPreset.IsEnabled = false;
 
                 StartRecord();
+
+                //Derek 2025/02/20 for PIMS 338464
+                _vm?.SaveWALSettings();
             }
             catch (Exception ex)
             {
@@ -2442,6 +2445,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             try
             {
                 StopRecord();
+
+                //Derek 2025/02/20 for PIMS 338464
+                _vm?.RecoverWALSettings();
 
                 RecordingTimer.Stop();
                 stopwatch.Stop();

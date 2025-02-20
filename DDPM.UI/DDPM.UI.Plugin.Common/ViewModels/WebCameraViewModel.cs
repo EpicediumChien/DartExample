@@ -149,7 +149,8 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         // webcam presence sensing
-
+        //Derek 2025/02/14 for PIMS 338464 Observe WAL occurs during Recording of DDPM (No one in Field of View)
+        private bool bCurrentProximitySensorCheckStatus = false;
         private bool _isChecked_ProximitySensor = false;
         public bool IsChecked_ProximitySensor
         {
@@ -240,6 +241,9 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
+        //Derek 2025/02/14 for PIMS 338464 Observe WOA occurs during Recording of DDPM (No one in Field of View)
+        private bool bCurrentWOACheckStatus = false;
+
         private bool _isChecked_WakeOnApproach = false;
         public bool IsChecked_WakeOnApproach
         {
@@ -262,6 +266,8 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
+        //Derek 2025/02/14 for PIMS 338464 Observe WAL occurs during Recording of DDPM (No one in Field of View)
+        private bool bCurrentWALCheckStatus = false;
 
         private bool _isChecked_WalkAwayLock = false;
         public bool IsChecked_WalkAwayLock
@@ -1166,12 +1172,17 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         public bool is_ProximitySensor_enable = true;
-        //public bool IsProximitySensorEnable
-        //{
-        //    get => IsProximitySensorEnable;
+        public bool IsProximitySensorEnable
+        {
+            get => is_ProximitySensor_enable;
 
-        //    //set { }
-        //}
+            set
+            {
+                is_ProximitySensor_enable = value;
+                OnPropertyChanged();
+            }
+            
+        }
 
         private bool _isChecked_Autofocus;
 
@@ -2014,10 +2025,102 @@ namespace DDPM.UI.Plugin.ViewModels
                 try
                 {
                     _ = MediaCapture.StopRecordAsync();
+
+                    //Derek 2025/02/20 for PIMS 338464 Observe WOA occurs during Recording of DDPM (No one in Field of View)
+                    RecoverWALSettings();
                 }
                 catch { }
             }
             base.OnGoBackClicked();
+        }
+
+        //Derek 2025/02/20 Save current WAL status and stop it
+        private bool bNeedToRecoverWALStatus = false;
+        public void SaveWALSettings()
+        {
+            if (!IsProximitySensorEnable)
+            {
+                DdpmCommonHelper.WriteUILog($"Don't need to save current WAL status due to IsProximitySensorEnable = {IsProximitySensorEnable}");
+
+                return;
+            }
+
+            bNeedToRecoverWALStatus = true;
+
+            if (IsChecked_WalkAwayLock)
+            {
+                bCurrentWALCheckStatus = IsChecked_WalkAwayLock;
+                IsChecked_WalkAwayLock = false;
+            }
+
+            if (IsChecked_WakeOnApproach)
+            {
+                bCurrentWOACheckStatus = IsChecked_WakeOnApproach;
+                IsChecked_WakeOnApproach = false;
+            }
+
+            if (IsChecked_ProximitySensor)
+            {
+                bCurrentProximitySensorCheckStatus = IsChecked_ProximitySensor;
+                IsChecked_ProximitySensor = false;
+            }
+
+            IsProximitySensorEnable = false;  //grey out UI
+            DdpmCommonHelper.WriteUILog("Save current WAL status and stop it done");
+        }
+
+        //Derek 2025/02/20 recover previous WAL status
+        public void RecoverWALSettings()
+        {
+
+            if (!bNeedToRecoverWALStatus)
+            {
+                DdpmCommonHelper.WriteUILog($"Don't need to recover previous WAL status due to bNeedToRecoverWALStatus = {bNeedToRecoverWALStatus}");
+
+                return;
+            }
+
+            IsProximitySensorEnable = true;
+
+            if (bCurrentProximitySensorCheckStatus)
+            {
+                IsChecked_ProximitySensor = bCurrentProximitySensorCheckStatus;
+                bCurrentProximitySensorCheckStatus = false;
+            }
+
+            if (bCurrentWALCheckStatus)
+            {
+                IsChecked_WalkAwayLock = bCurrentWALCheckStatus;
+                bCurrentWALCheckStatus = false;
+            }
+
+            if (bCurrentWOACheckStatus)
+            {
+                IsChecked_WakeOnApproach = bCurrentWOACheckStatus;
+                bCurrentWOACheckStatus = false;
+            }
+
+            DdpmCommonHelper.WriteUILog("Recover previous WAL status done");
+        }
+
+        public void OnMainWindowClosed()
+        {
+            DdpmCommonHelper.WriteUILog("Webcam view model receive DDPM main window closing event start");
+
+            if (MediaCapture != null)
+            {
+                try
+                {
+                    MediaCapture.StopRecordAsync().Wait();
+                    RecoverWALSettings();
+                }
+                catch (Exception e)
+                {
+                    DdpmCommonHelper.WriteUILog($"Catch exception[{e.Message}] when try to RecoverWALSettings");
+                }
+            }
+
+            DdpmCommonHelper.WriteUILog("Webcam view model receive DDPM main window closing event end");
         }
         public async Task CleanupMediaCapture()
         {
