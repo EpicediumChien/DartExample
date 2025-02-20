@@ -135,7 +135,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private List<string> _SupportedColorPreset = new List<string>();
-
+        private List<string> _supportedColorPreset = new List<string>();
         private readonly object _CheckAutoLock = new object();
 
         // Jim move to here 20240621
@@ -942,12 +942,121 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         bool SmartHDR_ON = GetHDRStatus(m).Result;
 
                         _SupportedColorPreset = _ColorPresetPlugin.ReadColorPreset(m, VCP_capbility, SmartHDR_ON).Result;
+                        //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue                      
+                        foreach (string info in _SupportedColorPreset)
+                        {
+                            _supportedColorPreset.Add(ColorpfofileMutil(info));
+                        }
                     }
                 }
             }
 
-            return Task.FromResult(_SupportedColorPreset);
+            return Task.FromResult(_supportedColorPreset);
         }
+
+        //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
+        private string ColorpfofileMutil(string info)
+        {
+            string ret = string.Empty;
+            switch (info)
+            {
+                case "Standard":
+                    ret = LangHelper.Instance["Standard_0"];
+                    break;
+                case "Standard HDR":
+                    ret = LangHelper.Instance["Standard_HDR"];
+                    break;
+                case "Native":
+                    ret = LangHelper.Instance["Native_0"];
+                    break;
+                case "Movie":
+                    ret = LangHelper.Instance["Movie_0"];
+                    break;
+                case "Game":
+                    ret = LangHelper.Instance["Game_0"];
+                    break;
+                case "Game1":
+                    ret = LangHelper.Instance["Game_1"];
+                    break;
+                case "Game2":
+                    ret = LangHelper.Instance["Game_2"];
+                    break;
+                case "Game3":
+                    ret = LangHelper.Instance["Game_3"];
+                    break;
+                case "Warm":
+                    ret = LangHelper.Instance["Warm"];
+                    break;
+                case "Cool":
+                    ret = LangHelper.Instance["Cool_0"];
+                    break;
+                case "Custom Color":
+                    ret = LangHelper.Instance["Custom_Color"];
+                    break;
+                case "Custom 1":
+                    ret = LangHelper.Instance["Custom_1"];
+                    break;
+                //case "Custom 1 / User 1":
+                //    ret = LangHelper.Instance["Custom_1"] + " / " + LangHelper.Instance["User_1"];
+                //    break;
+                case "Custom 2":
+                    ret = LangHelper.Instance["Custom_2"];
+                    break;
+                //case "Custom 2 / User 2":
+                //    ret = LangHelper.Instance["Custom_2"] + " / " + LangHelper.Instance["User_2"];
+                //    break;
+                case "Custom 3":
+                    ret = LangHelper.Instance["Custom_3"];
+                    break;
+                //case "Custom 3 / User 3":
+                //    ret = LangHelper.Instance["Custom_3"] + " / " + LangHelper.Instance["User_3"];
+                //    break;
+                case "User 1":
+                    ret = LangHelper.Instance["User_1"];
+                    break;
+                case "User 2":
+                    ret = LangHelper.Instance["User_2"];
+                    break;
+                case "User 3":
+                    ret = LangHelper.Instance["User_3"];
+                    break;
+                case "SPORTS Game":
+                    ret = LangHelper.Instance["SPORTS_Game"];
+                    break;
+                case "Movie HDR":
+                    ret = LangHelper.Instance["Movie_HDR"];
+                    break;
+                case "Game HDR":
+                    ret = LangHelper.Instance["Game_HDR"];
+                    break;
+                case "Metro":
+                    ret = LangHelper.Instance["Metro_0"];
+                    break;
+                case "FPS Game":
+                    ret = LangHelper.Instance["FPS_Game"];
+                    break;
+                case "RTS Game":
+                    ret = LangHelper.Instance["RTS_Game"];
+                    break;
+                case "RPG Game":
+                    ret = LangHelper.Instance["RPG_Game"];
+                    break;
+                case "ComfortView":
+                    ret = LangHelper.Instance["ComfortView_0"];
+                    break;
+                case "Paper":
+                    ret = LangHelper.Instance["Paper_0"];
+                    break;
+                case "Display P3":
+                    ret = LangHelper.Instance["Display_P3"];
+                    break;
+                default:
+                    ret = info;
+                    break;
+            }
+            return ret;
+        }
+
 
         public Task<string> GetMonitorProfile(MonitorInfo m)
         {
@@ -1017,7 +1126,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 var result = _DisplayManagerPlugin.GetVCPCapability(m, "colorpreset").Result;
                 if (result.result)
-                    return Task.FromResult(result.value.ToString());
+                {
+                    //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
+                    var res = ColorpfofileMutil(result.value.ToString());
+                    return Task.FromResult(res);
+                }
+                    //return Task.FromResult(result.value.ToString());
             }
             return Task.FromResult("");
         }
