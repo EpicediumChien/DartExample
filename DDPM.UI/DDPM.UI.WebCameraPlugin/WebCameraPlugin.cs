@@ -797,6 +797,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             try
             {
+                _viewModel.OnMainWindowClosed();
 
                 foreach (Thread t in _viewModel.thread_list)
                 {
