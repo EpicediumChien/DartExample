@@ -115,7 +115,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             Loaded += LaunchView_Loaded;
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                //DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
+                DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
             }
             DdpmCommonHelper.WriteUILog($"Keyboard UI LaunchView End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
@@ -141,6 +141,19 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                                     btnRestore.Visibility = Visibility.Collapsed;
                                 }));
                             break;
+                        case "CopilotEnableChanged":
+                            if (e.device_peripherals != null)
+                            {
+                                _vm.IsCopilotEnabled = e.device_peripherals.Message != "false";
+                                if (!_vm.IsCopilotEnabled)
+                                    _vm.RemoveCopilotAction();
+                                Dispatcher.Invoke(new Action(() =>
+                                {
+                                    if (_vm.VbarSelectedIndex == 0)
+                                        _vm.ActiveModule!.OnActivated();
+                                }));
+                            }
+                            break;
                         default:
                             return;
                     }
@@ -150,32 +163,13 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.KeyboardPlugin\\Views\\LaunchView.xaml.cs  DeviceManagerSA_DeviceChanged ex:" + ex.Message);
             }
-            //if (_vm != null && e.type == DeviceChangedType.Peripherals_SettingsChange && e.changedProperty == "CopilotEnableChanged")
-            //{
-            //    _vm.IsCopilotEnabled = e.device_peripherals.Message != "false";
-            //    if (!_vm.IsCopilotEnabled)
-            //        _vm.RemoveCopilotAction();
-            //    Dispatcher.Invoke(new Action(() =>
-            //    {
-            //        _vm.RefreshKeyImageFile(_vm.SelectedKey, false, true);
-
-            //        if (_vm.VbarSelectedIndex == 0)
-            //        {
-            //            _vm.ActiveModule!.OnActivated();
-            //        }
-            //        else
-            //        {
-            //            OnVbarItemClicked(_vm.VbarItems[0]);
-            //        }
-            //    }));
-            //}
         }
 
         private void LaunchView_Unloaded(object sender, RoutedEventArgs e)
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                //DdpmCommonHelper.DeviceManagerSA.StopCopilotRegistryMonitor();
+                DdpmCommonHelper.DeviceManagerSA.StopCopilotRegistryMonitor();
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
             }
         }
