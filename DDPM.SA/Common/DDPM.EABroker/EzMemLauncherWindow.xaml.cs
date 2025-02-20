@@ -44,7 +44,15 @@ namespace DDPM.EABroker
         private static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId);
         public static IntPtr _GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId)
         {
-            return GetWindowThreadProcessId(hWnd, out nProcessId);
+            IntPtr rst = GetWindowThreadProcessId(hWnd, out nProcessId);
+            if (rst == IntPtr.Zero)
+            {
+                Trace.WriteLine("[EzMemLauncherWindow] GetWindowThreadProcessId failed");
+#if DEBUG
+                Console.WriteLine("[EzMemLauncherWindow] GetWindowThreadProcessId failed");
+#endif
+            }
+            return rst;
         }
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -52,7 +60,15 @@ namespace DDPM.EABroker
         private static extern bool IsWindowVisible(IntPtr hWnd);
         public static bool _IsWindowVisible(IntPtr hWnd)
         {
-            return IsWindowVisible(hWnd);
+            bool rst = IsWindowVisible(hWnd);
+            if (!rst)
+            {
+                Trace.WriteLine("[EzMemLauncherWindow] IsWindowVisible is false");
+#if DEBUG
+                Console.WriteLine("[EzMemLauncherWindow] IsWindowVisible is false");
+#endif
+            }
+            return rst;
         }
 
         /*[DllImport("user32.dll", SetLastError = true)]
@@ -848,7 +864,15 @@ namespace DDPM.EABroker
         private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
         private static bool EzMemoryEnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam)
         {
-            return EnumWindows(lpEnumFunc, lParam);
+            bool rst = EnumWindows(lpEnumFunc, lParam);
+            if (!rst)
+            {
+                Trace.WriteLine("[EzMemLauncherWindow] EnumWindows failed");
+#if DEBUG
+                Console.WriteLine("[EzMemLauncherWindow] EnumWindows failed");
+#endif
+            }
+            return rst;
         }
         #endregion Phase II - Launch App and Arrange to Layout's CellBorder
 
