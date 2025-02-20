@@ -940,7 +940,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         bool SmartHDR_ON = GetHDRStatus(m).Result;
 
                         _SupportedColorPreset = _ColorPresetPlugin.ReadColorPreset(m, VCP_capbility, SmartHDR_ON).Result;
-                        //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
+                        //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue                      
                         foreach (string info in _SupportedColorPreset)
                         {
                             _supportedColorPreset.Add(ColorpfofileMutil(info));
@@ -994,11 +994,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case "Custom 1":
                     ret = LangHelper.Instance["Custom_1"];
                     break;
+                case "Custom 1 / User 1":
+                    ret = LangHelper.Instance["Custom_1"] + " / " + LangHelper.Instance["User_1"];
+                    break;
                 case "Custom 2":
                     ret = LangHelper.Instance["Custom_2"];
                     break;
+                case "Custom 2 / User 2":
+                    ret = LangHelper.Instance["Custom_2"] + " / " + LangHelper.Instance["User_2"];
+                    break;
                 case "Custom 3":
                     ret = LangHelper.Instance["Custom_3"];
+                    break;
+                case "Custom 3 / User 3":
+                    ret = LangHelper.Instance["Custom_3"] + " / " + LangHelper.Instance["User_3"];
                     break;
                 case "User 1":
                     ret = LangHelper.Instance["User_1"];
