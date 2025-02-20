@@ -37,7 +37,7 @@ namespace DDPM.ColorApp
         public static int _GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId)
         {
             int rst = GetWindowThreadProcessId(hWnd, out nProcessId);
-            if (rst == 0) 
+            if (rst == 0)
             {
                 writelog($"[AppStatusQuery] GetWindowThreadProcessId failed");
             }
@@ -112,13 +112,13 @@ namespace DDPM.ColorApp
                 focusWatcher = new WindowFocusWatcher(WindowFocusWatcherEvent, Native.EVENT_OBJECT_FOCUS);
                 moveWatcher = new WindowFocusWatcher(WindowMoveResizeWatcherEvent, Native.EVENT_SYSTEM_MOVESIZEEND);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 writelog($"[AppStatusQuery] AppStatusQuery initial failed, message: {ex.Message}");
             }
         }
 
-    ~AppStatusQuery()
+        ~AppStatusQuery()
         {
         }
 
@@ -177,7 +177,7 @@ namespace DDPM.ColorApp
                 //return false;
             }
 
-            strlog = String.Format($"[Watcher-callback] process: ModuleName[{process.MainModule.ModuleName}]Title[{process.MainWindowTitle}]");
+            strlog = $"[Watcher-callback] process: ModuleName[{process.MainModule.ModuleName}]Title[{process.MainWindowTitle}]";
             writelog(strlog);
 
             return true;
@@ -227,7 +227,7 @@ namespace DDPM.ColorApp
                     //forgroundProcess = _realProcess;
                 }
 
-                strlog = String.Format($"[Watcher-callback] foregroundProcess.ProcessName = {forgroundProcess.ProcessName} process id({pid}) Title({forgroundTitle}) ");
+                strlog = $"[Watcher-callback] foregroundProcess.ProcessName = {forgroundProcess.ProcessName} process id({pid}) Title({forgroundTitle}) ";
                 writelog(strlog);
 
                 //check process content
@@ -237,7 +237,7 @@ namespace DDPM.ColorApp
                     ///////logger.WriteLog($"[Watcher-callback] process id({pid}) Title({forgroundTitle}) to Process object got null content, drop it");
 
                     //string strlog;
-                    strlog = String.Format($"[Watcher-callback] process id({pid}) Title({forgroundTitle}) to Process object got null content, drop it");
+                    strlog = $"[Watcher-callback] process id({pid}) Title({forgroundTitle}) to Process object got null content, drop it";
                     writelog(strlog);
 
                     return;
@@ -248,7 +248,7 @@ namespace DDPM.ColorApp
                 ///////logger.WriteLog($"[Watcher-callback] {strProcessName}:>Title({forgroundTitle}):PID({pid}):hWnd({hWnd}):Path({strFilePath})");
 
                 //string strlog;
-                strlog = String.Format($"[Watcher-callback] {strProcessName}:>Title({forgroundTitle}):PID({pid})");
+                strlog = $"[Watcher-callback] {strProcessName}:>Title({forgroundTitle}):PID({pid})";
                 writelog(strlog);
 
                 if (SendValue != null)
@@ -294,13 +294,13 @@ namespace DDPM.ColorApp
             ///
             string strlog;
             //strlog = String.Format($"[Watcher-Focus] found:{forgroundTitle}");
-            strlog =$"[Watcher-Focus] found:{forgroundTitle}";
+            strlog = $"[Watcher-Focus] found:{forgroundTitle}";
             writelog(strlog);
 
             //Screen screen = Screen.FromHandle(hWnd);
             Screen screen = Screen.FromHandle(hwnd);
 
-            if (!string.IsNullOrEmpty(_LastforgroundTitle) && String.Compare(_LastforgroundTitle, forgroundTitle) == 0)
+            if (!string.IsNullOrEmpty(_LastforgroundTitle) && string.Compare(_LastforgroundTitle, forgroundTitle, StringComparison.OrdinalIgnoreCase) == 0)
             {
                 //string strlog;
                 strlog = $"[Watcher-Focus]  Same as last app, drop event";
@@ -339,13 +339,14 @@ namespace DDPM.ColorApp
             ///////logger.WriteLog($"[Watcher-Move] found:{forgroundTitle}");
 
             string strlog;
-            strlog = String.Format($"[Watcher-Move] found:{forgroundTitle}");
+            strlog = $"[Watcher-Move] found:{forgroundTitle}";
             writelog(strlog);
 
             //Screen screen = Screen.FromHandle(hWnd);
             Screen screen = Screen.FromHandle(hwnd);
 
-            if (String.Compare(_LastforgroundTitle, forgroundTitle) == 0)
+
+            if (string.Compare(_LastforgroundTitle, forgroundTitle, StringComparison.OrdinalIgnoreCase) == 0)
             {
                 //string strlog;
                 strlog = "[Watcher-Move]  Same as last app, check screen location";
@@ -354,7 +355,7 @@ namespace DDPM.ColorApp
                 ///////logger.WriteLog($"[Watcher-Move]  Same as last app, check screen location");
 
                 //check if differenct screen
-                if (String.Compare(_LastLocatedScreen, screen.DeviceName) == 0)
+                if (string.Compare(_LastLocatedScreen, screen.DeviceName, StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     //string strlog;
                     strlog = "[Watcher-Move]  Same as last monitor, drop move event";
@@ -378,7 +379,7 @@ namespace DDPM.ColorApp
             //logger.WriteLog($"[{requestor}]  Clear app record by requestor");
 
             string strlog;
-            strlog = String.Format($"[{requestor}]  Clear app record by requestor");
+            strlog = $"[{requestor}]  Clear app record by requestor";
             writelog(strlog);
         }
 
