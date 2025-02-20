@@ -38,7 +38,7 @@
                                   Fill="white" />
                         </Grid>
                     </StackPanel>
-                    <Grid Margin="20,20,8,8">
+                    <Grid Margin="20,20,8,8" Opacity="{Binding GeneralPageLock_Opacity}">
                         <Border Style="{StaticResource PartBorderStyle}"
                                 BorderThickness="0" CornerRadius="6">
                             <StackPanel Orientation="Vertical"
@@ -59,12 +59,12 @@
                                                        IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
                             </StackPanel>
                         </Border>
-                        <Border Background="#132F54"
+                        <Border Background="#132F54" d:Visibility="Collapsed"
                                 Opacity="0.2"
                                 CornerRadius="13"
                                 Visibility="{Binding GeneralUI_LockTooltip}" />
                     </Grid>
-                    <Grid Margin="20,20,8,8">
+                    <Grid Margin="20,20,8,8" Opacity="{Binding GeneralPageLock_Opacity}">
                         <Border Style="{StaticResource PartBorderStyle}"
                                 BorderThickness="0" CornerRadius="6">
                             <StackPanel Orientation="Vertical"
@@ -114,7 +114,7 @@
                                                        IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
                             </StackPanel>
                         </Border>
-                        <Border Background="#132F54"
+                        <Border Background="#132F54" d:Visibility="Collapsed"
                                 Opacity="0.2"
                                 CornerRadius="13"
                                 Visibility="{Binding GeneralUI_LockTooltip}" />

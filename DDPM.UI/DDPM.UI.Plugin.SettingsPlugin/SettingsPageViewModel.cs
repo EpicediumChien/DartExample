@@ -430,7 +430,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         Log?.Info($"[CheckUpdate] UI locked, drop the update checking");
                         IsBusy_UpdatePage = false;
                         OnPropertyChanged("IsBusy_UpdatePage");
-                        return false;
+                        return true;
                     }
                     else
                     {
@@ -446,7 +446,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 Log?.Info($"[CheckUpdate] can't read DDPM settings to check if UI locked, continue to check update");
             }
-            return true;
+            return false;
         }
 
         public void CheckUpdate()
@@ -597,6 +597,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 OnPropertyChanged("GeneralUI_IsTabStoppable");
                 OnPropertyChanged("GeneralUI_Opacity");
                 OnPropertyChanged("GeneralUI_LockTooltip");
+                OnPropertyChanged("GeneralPageLock_Opacity");
+            }
+        }
+        public string GeneralPageLock_Opacity
+        {
+            get
+            {
+                return _Lock_GeneralPage ? "0.5" : "1.0";
             }
         }
         public bool GeneralUI_IsTabStoppable
