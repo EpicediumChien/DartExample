@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
+using System.Windows.Input;
+using VcpCore.Common;
 
 namespace DDPM.SA.Common.Screen
 {
@@ -253,7 +255,16 @@ namespace DDPM.SA.Common.Screen
         private static int _GetDisplayConfigBufferSizes(
             QUERY_DEVICE_CONFIG_FLAGS flags, out uint numPathArrayElements, out uint numModeInfoArrayElements)
         {
-            return GetDisplayConfigBufferSizes( flags, out numPathArrayElements, out numModeInfoArrayElements);
+            int rst = GetDisplayConfigBufferSizes(flags, out numPathArrayElements, out numModeInfoArrayElements);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[ScreenInterrogatory] GetDisplayConfigBufferSizes failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -271,8 +282,17 @@ namespace DDPM.SA.Common.Screen
             IntPtr currentTopologyId
             )
         {
-            return QueryDisplayConfig(flags, ref numPathArrayElements, PathInfoArray,
+            int rst = QueryDisplayConfig(flags, ref numPathArrayElements, PathInfoArray,
               ref numModeInfoArrayElements, ModeInfoArray, currentTopologyId);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[ScreenInterrogatory] QueryDisplayConfig failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -280,7 +300,16 @@ namespace DDPM.SA.Common.Screen
         private static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_DEVICE_NAME deviceName);
         private static int _DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_DEVICE_NAME deviceName)
         {
-            return DisplayConfigGetDeviceInfo(ref deviceName);
+            int rst = DisplayConfigGetDeviceInfo(ref deviceName);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[ScreenInterrogatory] DisplayConfigGetDeviceInfo failed.");
+#endif
+            }
+
+            return rst;
         }
 
         #endregion
