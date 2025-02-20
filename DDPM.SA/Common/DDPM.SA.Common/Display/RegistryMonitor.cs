@@ -9,6 +9,8 @@ using System.Windows.Threading;
 using static System.Windows.Forms.Design.AxImporter;
 //using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Reflection;
+using static System.Formats.Asn1.AsnWriter;
+using static DDPM.RemoteManagement.Common.Interfaces.InfoJsonGenerator.TaskJson;
 
 namespace DDPM.SA.Common
 {
@@ -24,7 +26,16 @@ namespace DDPM.SA.Common
         private static int _RegOpenKeyEx(IntPtr hKey, string subKey, uint options, int samDesired,
                                                out IntPtr phkResult)
         {
-            return RegOpenKeyEx(hKey, subKey, options, samDesired, out phkResult);
+            int rst = RegOpenKeyEx(hKey, subKey, options, samDesired, out phkResult);
+
+            if (rst != 0) 
+            {
+#if DEBUG
+                Console.WriteLine("[RegistryMonitor_NightLight] RegOpenKeyEx failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("advapi32.dll", SetLastError = true)]
@@ -36,7 +47,16 @@ namespace DDPM.SA.Common
                                                   RegChangeNotifyFilter dwNotifyFilter, IntPtr hEvent,
                                                   bool fAsynchronous)
         {
-            return RegNotifyChangeKeyValue(hKey, bWatchSubtree, dwNotifyFilter, hEvent, fAsynchronous);
+            int rst = RegNotifyChangeKeyValue(hKey, bWatchSubtree, dwNotifyFilter, hEvent, fAsynchronous);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[RegistryMonitor_NightLight] RegNotifyChangeKeyValue failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("advapi32.dll", SetLastError = true)]
@@ -44,7 +64,16 @@ namespace DDPM.SA.Common
         private static extern int RegCloseKey(IntPtr hKey);
         private static int _RegCloseKey(IntPtr hKey)
         {
-            return RegCloseKey(hKey);
+            int rst = RegCloseKey(hKey);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[RegistryMonitor_NightLight] RegCloseKey failed.");
+#endif
+            }
+
+            return rst;
         }
 
         private const int KEY_QUERY_VALUE = 0x0001;
@@ -326,7 +355,16 @@ namespace DDPM.SA.Common
         private static int _RegOpenKeyEx(IntPtr hKey, string subKey, uint options, int samDesired,
                                                out IntPtr phkResult)
         {
-            return RegOpenKeyEx(hKey, subKey, options, samDesired, out phkResult);
+            int rst = RegOpenKeyEx(hKey, subKey, options, samDesired, out phkResult);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[RegistryMonitor_NightLight] RegOpenKeyEx failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("advapi32.dll", SetLastError = true)]
@@ -338,7 +376,16 @@ namespace DDPM.SA.Common
                                                           RegChangeNotifyFilter dwNotifyFilter, IntPtr hEvent,
                                                           bool fAsynchronous)
         {
-            return RegNotifyChangeKeyValue(hKey, bWatchSubtree, dwNotifyFilter, hEvent, fAsynchronous);
+            int rst = RegNotifyChangeKeyValue(hKey, bWatchSubtree, dwNotifyFilter, hEvent, fAsynchronous);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[RegistryMonitor_NightLight] RegNotifyChangeKeyValue failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("advapi32.dll", SetLastError = true)]
@@ -346,7 +393,16 @@ namespace DDPM.SA.Common
         private static extern int RegCloseKey(IntPtr hKey);
         private static int _RegCloseKey(IntPtr hKey)
         {
-            return RegCloseKey(hKey);
+            int rst = RegCloseKey(hKey);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[RegistryMonitor_NightLight] RegCloseKey failed.");
+#endif
+            }
+
+            return rst;
         }
 
         private const int KEY_QUERY_VALUE = 0x0001;
@@ -621,7 +677,16 @@ namespace DDPM.SA.Common
         private static int _RegOpenKeyEx(IntPtr hKey, string subKey, uint options, int samDesired,
                                                out IntPtr phkResult)
         {
-            return RegOpenKeyEx(hKey, subKey, options, samDesired, out phkResult);
+            int rst = RegOpenKeyEx(hKey, subKey, options, samDesired, out phkResult);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[RegistryMonitor_NightLight] RegOpenKeyEx failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("advapi32.dll", SetLastError = true)]
@@ -633,7 +698,16 @@ namespace DDPM.SA.Common
                                                   RegChangeNotifyFilter dwNotifyFilter, IntPtr hEvent,
                                                   bool fAsynchronous)
         {
-            return RegNotifyChangeKeyValue(hKey, bWatchSubtree, dwNotifyFilter, hEvent, fAsynchronous);
+            int rst = RegNotifyChangeKeyValue(hKey, bWatchSubtree, dwNotifyFilter, hEvent, fAsynchronous);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[RegistryMonitor_NightLight] RegNotifyChangeKeyValue failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("advapi32.dll", SetLastError = true)]
@@ -641,7 +715,16 @@ namespace DDPM.SA.Common
         private static extern int RegCloseKey(IntPtr hKey);
         private static int _RegCloseKey(IntPtr hKey)
         {
-            return RegCloseKey(hKey);
+            int rst = RegCloseKey(hKey); ;
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[RegistryMonitor_NightLight] RegCloseKey failed.");
+#endif
+            }
+
+            return rst;
         }
 
         private const int KEY_QUERY_VALUE = 0x0001;
