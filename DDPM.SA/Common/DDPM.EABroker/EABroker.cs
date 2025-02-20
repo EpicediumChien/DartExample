@@ -421,7 +421,7 @@ namespace DDPM.EABroker
             ///////////////////////
 
             //Phase C. Show EzMemLauncherWindow
-            EzMemLauncherWindow emWin = new EzMemLauncherWindow(ispLayout, workingArea, arrangeCount, VM);
+            EzMemLauncherWindow emWin = new EzMemLauncherWindow(ispLayout, workingArea, arrangeCount, VM, _deviceManagerSA);
 
             //Wayn's v1
             ///*

@@ -2583,7 +2583,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (e.vcpcode.Equals("10") || e.vcpcode.Equals("12") || e.vcpcode.Equals("E2") || e.vcpcode.Equals("14") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("DC"))
             {
                 //1.if current primary monitor
-                ALSConfig findconfig = AllALSConfig.Find(x => x.DisplayName.ToUpper().Equals(e.monitor.DisplayName.ToUpper()));
+                ALSConfig findconfig = AllALSConfig.Find(x => x.DisplayName.ToUpper(CultureInfo.InvariantCulture).Equals(e.monitor.DisplayName.ToUpper(CultureInfo.InvariantCulture)));
 
                 ////DDPMW-771 OSD PASS but UI cause loop
                 //if (findconfig == null || findconfig.isSupportALS == 0 )
@@ -2607,7 +2607,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         MonitorInfo mo = _AllInfoMonitors[i];
                         if (e.monitor.DisplayName.Equals(mo.DisplayName) == false)
                         {
-                            ALSConfig findconfigtocheckmms = AllALSConfig.Find(x => x.DisplayName.ToUpper().Equals(mo.DisplayName.ToUpper()));
+                            ALSConfig findconfigtocheckmms = AllALSConfig.Find(x => x.DisplayName.ToUpper(CultureInfo.InvariantCulture).Equals(mo.DisplayName.ToUpper(CultureInfo.InvariantCulture)));
                             bool r = false;
                             if (findconfigtocheckmms != null)// || findconfigtocheckmms.isMMSEnable == false)//False need to set, if null or MMS true no action
                             {
