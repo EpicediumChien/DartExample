@@ -304,7 +304,7 @@ namespace DDPM.UI.Module.Brightness.Tests
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             var monitorInfo = new MonitorInfo();
             brightnessViewModel.SelectedHomeDevice.MonitorInfo = monitorInfo;
-            deviceManagerMock.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(new ObjGetVCP() { result = true, value = Convert.ToInt64(6) }));
+            deviceManagerMock.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<Priority>())).Returns(Task.FromResult(new ObjGetVCP() { result = true, value = Convert.ToInt64(6) }));
 
             brightnessViewModel.UpdateBrightnessContrast();
             var privateObject = new PrivateObject(brightnessViewModel);
@@ -323,7 +323,7 @@ namespace DDPM.UI.Module.Brightness.Tests
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             var monitorInfo = new MonitorInfo();
             brightnessViewModel.SelectedHomeDevice.MonitorInfo = monitorInfo;
-            deviceManagerMock.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(new ObjGetVCP() { result = true, value = Convert.ToInt64(10) }));
+            deviceManagerMock.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<Priority>())).Returns(Task.FromResult(new ObjGetVCP() { result = true, value = Convert.ToInt64(10) }));
 
             brightnessViewModel.UpdateLuminance();
             var privateObject = new PrivateObject(brightnessViewModel);
@@ -449,7 +449,7 @@ namespace DDPM.UI.Module.Brightness.Tests
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             var monitorInfo = new MonitorInfo();
             brightnessViewModel.SelectedHomeDevice.MonitorInfo = monitorInfo;
-            deviceManagerMock.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(new ObjGetVCP() { result = true, value = Convert.ToInt64(10) }));
+            deviceManagerMock.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<Priority>())).Returns(Task.FromResult(new ObjGetVCP() { result = true, value = Convert.ToInt64(10) }));
             deviceManagerMock.Setup(x => x.GetAllExistAlsConfig()).Returns(Task.FromResult(new List<ALSConfig> { new ALSConfig() { isSupportALS = 2 } }));
 
             brightnessViewModel.MyModule = new BrightnessModule();
@@ -465,7 +465,7 @@ namespace DDPM.UI.Module.Brightness.Tests
             myAutoBrightnessStatus = true;
             brightnessViewModel.ModuleOwner.SelectedHomeDevice.MonitorInfo = monitorInfo;
             deviceManagerMock.Setup(x => x.ReadColorPreset(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new List<string> { "CUSTOM", "123" }));
-            deviceManagerMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+            deviceManagerMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(true));
 
             brightnessViewModel.AutoBrightnessStatus = myAutoBrightnessStatus;
             Assert.That(brightnessViewModel.AutoBrightnessStatus, Is.EqualTo(myAutoBrightnessStatus));

@@ -100,10 +100,10 @@ namespace CLI.Plugins.Display.Test
             devMgr.Setup(m => m.GetPipPbpCapabilitiesWords(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(caps));
             devMgr.Setup(m => m.GetPxpMode(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(objGetVCPGetPxpMode));
             devMgr.Setup(m => m.GetSubInputs(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(inputSources));
-            devMgr.Setup(m => m.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(objGetVCPCapability));
+            devMgr.Setup(m => m.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<Priority>())).Returns(Task.FromResult(objGetVCPCapability));
             devMgr.Setup(m => m.SetPbpMode(It.IsAny<MonitorInfo>(), It.IsAny<UInt16>())).Returns(Task.FromResult(SetPbpMode));
             devMgr.Setup(m => m.SetSubInputs(It.IsAny<MonitorInfo>(), It.IsAny<InputSourceObj>(), It.IsAny<InputSourceObj>(), It.IsAny<InputSourceObj>())).Returns(Task.FromResult(SetSubInputs));
-            devMgr.Setup(m => m.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(SetVCPCapability));
+            devMgr.Setup(m => m.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(SetVCPCapability));
             var devMgrObj = devMgr.Object;
 
             var Execute_result2 = CLIPxp.Execute(devMgrObj, cmdLineInput);  //devMgr not null,Get, TargetFeature PxP,"pip", 0x21, "PIP small"
