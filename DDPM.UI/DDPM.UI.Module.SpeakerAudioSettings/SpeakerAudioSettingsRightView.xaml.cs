@@ -14,7 +14,7 @@ namespace DDPM.UI.Module.SpeakerAudioSettings
         {
             InitializeComponent();
             _vm = vm;
-            _vm.CheckSpeakerFunc();
+            //_vm.CheckSpeakerFunc();
         }
     }
 }

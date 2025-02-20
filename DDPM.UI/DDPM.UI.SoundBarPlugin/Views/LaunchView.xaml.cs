@@ -79,17 +79,21 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                     txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount, _vm.CurrentDeviceInfo.MaxPairingSlots);
                     DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
                     Loaded += LaunchView_LoadedStatus;
+                    Unloaded += LaunchView_UnLoadedStatus;
                 }
             }
         }
 
-        ~LaunchView()
+        private async void LaunchView_UnLoadedStatus(object sender, RoutedEventArgs e)
         {
+            if (_vm == null) return;
+            _vm.UloadSpeaker_DTPNotify();
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+                DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;              
                 Loaded -= LaunchView_LoadedStatus;
-                DdpmCommonHelper.WriteUILog($"[SoundBar] ~LaunchView");
+                Unloaded -= LaunchView_UnLoadedStatus;
+                DdpmCommonHelper.WriteUILog($"[SoundBar] ~LaunchView_UnLoadedStatus");
             }
         }
 

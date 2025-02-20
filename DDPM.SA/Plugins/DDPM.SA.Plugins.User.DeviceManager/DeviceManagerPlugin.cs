@@ -54,6 +54,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Security.Policy;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -233,7 +234,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static CancellationTokenSource _ReGetcancellationTokenSource = null;
 
         private static bool _isSubagentActive = true;
-        private bool userClosedPopup = false;
 
         private static PowerEventControl _pwr_Mon = null;
         private static DisplayDeviceHelper _disDevHelper = null;
@@ -255,12 +255,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private DDMtoDDPM dDMtodDPM = new DDMtoDDPM();
         private HotkeySettings hotkeySettings = new HotkeySettings();
+
         /// <summary>
         ///Check ICC profile update timers
         /// </summary>
         private System.Timers.Timer _checkICCProfileScheduleTimer;//Added 02/10 by Bruce
-        bool isDownloadingICC = false;//Added 02/13 by Bruce
-        bool isNeedPreDownloadingICC = false;//Added 02/13 by Bruce
+
+        private bool isDownloadingICC = false;//Added 02/13 by Bruce
+        private bool isNeedPreDownloadingICC = false;//Added 02/13 by Bruce
 
         #endregion
 
@@ -295,7 +297,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Microsoft.Win32.SystemEvents.PowerModeChanged += OnPowerModeChanged;//Added 01/07 by Bruce
             DdpmSACommonHelper.SAUserPluginReady(nameof(DeviceMangerPlugin));
         }
-
 
         private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
         {
@@ -555,6 +556,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         case 0x00://off
                             usbKvmPBP.isPBPmode = false;
                             break;
+
                         case 0x21://PIP small
                             usbKvmPBP.isPBPmode = false;
                             break;
@@ -562,6 +564,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         case 0x22://PIP large
                             usbKvmPBP.isPBPmode = false;
                             break;
+
                         case 0x23:
                         case 0x24:
                         case 0x25:
@@ -637,7 +640,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,hotkeysetting is null.");
                         }
-
                     }
                 }
             }
@@ -1815,6 +1817,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             return Task.FromResult(true);
         }
+
         /// <summary>
         /// 定期檢查color profile排程
         /// </summary>
@@ -1858,6 +1861,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"{nameof(PreDownloadICC)} done");
         }
+
         #endregion
 
         #region Schedule Manger implementation
@@ -2027,6 +2031,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.CompletedTask;
         }
 
+        public Task CancelVcpTask(Guid user_guid)
+        {
+            writelog("DeviceMangerPlugin received CancelVcpTask: " + user_guid.ToString() + " requested ...");
+
+            if (_DisplayManagerPlugin != null)
+                _DisplayManagerPlugin.CancelVcpTask(user_guid);
+            else
+                writelog("_DisplayManagerPlugin is Null");
+
+            return Task.CompletedTask;
+        }
+
         public Task<List<MonitorInfo>> GetMonitors()
         {
             lock (_MoLock)//this) //Dean 0626 fix SAST issue, do not lock over this object
@@ -2049,8 +2065,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 //review monitor list to check duplicated data
                 ReviewAllMonitorToAvoidDuplicatedInfo();
-
                 InitMonitorSettings();
+                _DisplayManagerPlugin.InitDisplayData(_AllInfoMonitors);
                 UpdateHotkeyInfo();
 
                 Task.Run(() => //support last selected monitor info from settings
@@ -2098,7 +2114,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(_AllInfoMonitors.ToList());
         }
 
-        public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo)
+        public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default)
         {
             writelog("DeviceMangerPlugin received GetCapabilitiesString requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -2107,12 +2123,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string r = string.Empty;
 
             if (_DisplayManagerPlugin != null)
-                r = _DisplayManagerPlugin.GetCapabilitiesString(monitorInfo).Result;
+                r = _DisplayManagerPlugin.GetCapabilitiesString(monitorInfo, guid).Result;
 
             return Task.FromResult(r);
         }
 
-        public Task<string> GetVCPCapabilities(MonitorInfo monitorInfo)
+        public Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid guid = default)
         {
             writelog("DeviceMangerPlugin received GetVCPCapabilities requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -2121,12 +2137,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string r = string.Empty;
 
             if (_DisplayManagerPlugin != null)
-                r = _DisplayManagerPlugin.GetVCPCapabilities(monitorInfo).Result;
+                r = _DisplayManagerPlugin.GetVCPCapabilities(monitorInfo, guid).Result;
 
             return Task.FromResult(r);
         }
 
-        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, int opt = 0)
+        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, Guid guid = default, int opt = 0)
         {
             writelog("DeviceMangerPlugin received GetVCPCapability requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -2137,12 +2153,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ObjGetVCP r = new ObjGetVCP();
 
             if (_DisplayManagerPlugin != null)
-                r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, code, opt).Result;
+                r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, code, guid, opt).Result;
 
             return Task.FromResult(r);
         }
 
-        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, int opt = 0)//Dean 0626 fix SAST issue, syncup param name as well
+        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, Guid guid = default, int opt = 0)//Dean 0626 fix SAST issue, syncup param name as well
         {
             writelog("DeviceMangerPlugin received GetVCPCapability requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -2153,12 +2169,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ObjGetVCP r = new ObjGetVCP();
 
             if (_DisplayManagerPlugin != null)
-                r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, FunctionName, opt).Result;
+                r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, FunctionName, guid, opt).Result;
 
             return Task.FromResult(r);
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val)
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val, Guid guid = default)
         {
             writelog("DeviceMangerPlugin received SetVCPCapability requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -2169,7 +2185,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool r = false;
 
             if (_DisplayManagerPlugin != null)
-                r = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, code, val).Result;
+                r = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, code, val, guid).Result;
 
             //0715 Jason add
             if (r && code == 0x04 && _NKVMPlugin != null)
@@ -2246,7 +2262,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(r);
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val)//Dean 0626 fix SAST issue, syncup param name as well
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val, Guid guid = default)//Dean 0626 fix SAST issue, syncup param name as well
         {
             writelog("DeviceMangerPlugin received SetVCPCapability requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfoX.DisplayName);
@@ -2261,7 +2277,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (!string.IsNullOrEmpty(val))
                 {
                     if (_DisplayManagerPlugin != null)
-                        r = _DisplayManagerPlugin.SetVCPCapability(monitorInfoX, FunctionName, val).Result;
+                        r = _DisplayManagerPlugin.SetVCPCapability(monitorInfoX, FunctionName, val, guid).Result;
 
                     //Telementry Collection
                     var Displaysettings_Function = new Displaysettings_Function();
@@ -2630,7 +2646,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //ChangeSB725(deviceHelper);
             ChangeHeadset(deviceHelper);
             ChangeDock(deviceHelper);
+            FormatFWVersion(deviceHelper);
             return await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
+        }
+
+        private void FormatFWVersion(DeviceHelper deviceHelper)
+        {
+            writelog("FormatFWVersion start");
+            var GetDeviceInfos = deviceHelper.deviceInfo.Where(x => !x.FirmwareVersion.Contains('.')).ToList();
+            foreach (var deviceInfo in GetDeviceInfos)
+            {
+                if (deviceInfo.LogicalDeviceType.Contains("DOCK", StringComparison.OrdinalIgnoreCase))
+                {
+                    deviceInfo.FirmwareVersion = Regex.Replace(deviceInfo.FirmwareVersion, "(\\w{2})", "$1.").TrimEnd('.');
+                }
+                else
+                {
+                    deviceInfo.FirmwareVersion = Regex.Replace(deviceInfo.FirmwareVersion, "(\\w)", "$1.").TrimEnd('.');
+                }
+                writelog($"FormatFWVersion for {deviceInfo.LogicalDeviceType}: {deviceInfo.FirmwareVersion}");
+            }
+            writelog("FormatFWVersion done");
         }
 
         private static void ChangeSB725(DeviceHelper deviceHelper)
@@ -3073,11 +3109,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             nRes = _PeripheralsPlugin.GetSnoozeLength(deviceId);
             return Task.FromResult(nRes);
         }
+
         public Task<bool> StartCopilotRegistryMonitor()
         {
             writelog("DeviceMangerPlugin received StartCopilotRegistryMonitor requested ...");
             return Task.Run(() => _PeripheralsPlugin.StartCopilotRegistryMonitor());
         }
+
         public Task<bool> StopCopilotRegistryMonitor()
         {
             writelog("DeviceMangerPlugin received StopCopilotRegistryMonitor requested ...");
@@ -3093,6 +3131,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(retCount);
         }
+
         #endregion
 
         #region Headset
@@ -5495,7 +5534,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             //Derek 1125
             //if (e != null && e != EventArgs.Empty && e.UI_Field_Name.StartsWith("WebcamEvent"))
-            // Jim 20250106 modify 
+            // Jim 20250106 modify
             if (e != null && e != EventArgs.Empty && e.UI_Field_Name != null && e.UI_Field_Name.StartsWith("WebcamEvent"))
             {
                 // Jim 20250104 add for PIMS-335905 [DDPM Win 2.0][R19] Observe no WAL Countdown OSD is seen when WAL is act=tivated
@@ -5859,7 +5898,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _FWUpdatePlugin.setFWUpdateInfoPackage(pkg);
         }
 
-        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUITrigger = false, List<string> giuds = null, List<string> serviceTags = null, List<string> models = null, string minVersion = "")
+        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify, bool reScan)
         {
             writelog("[DeviceMangerPlugin] GetFWUpdateInfo start");
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null && _SettingsPlugin != null)
@@ -5895,7 +5934,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 writelog("[DeviceMangerPlugin] _FWUpdatePlugin.GetFWUpdateInfo go");
                 ResetTimer();
-                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, deviceInfos, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, displayUpdateHelper, isOnlyDisplay, reScan, isUITrigger, giuds, serviceTags, models, minVersion).Result);
+                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, deviceInfos, isShowNotify, displayUpdateHelper, reScan).Result);
             }
             writelog("[DeviceMangerPlugin] GetFWUpdateInfo done, But all obj is null");
             return Task.FromResult(new FWUpdateInfoPackage());
@@ -5905,27 +5944,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("[DeviceMangerPlugin] DownloadAndInstall start");
             writelog($"[DeviceMangerPlugin] DownloadAndInstall isUITrigger : {isUITrigger}");
-            GetDeviceinfos().Wait();
             if (_FWUpdatePlugin == null)
             {
                 writelog("[DeviceMangerPlugin] _FWUpdatePlugin is null");
                 return Task.FromResult(new List<FWUpdateInfo>());
             }
+            if (_PeripheralsPlugin == null)
+            {
+                writelog("[DeviceMangerPlugin] _PeripheralsPlugin is null");
+                return Task.FromResult(new List<FWUpdateInfo>());
+            }
             _FWUpdatePlugin.SetLang(LangHelper.GetLanguage());
             _UpdateProgress = null;
-            writelog($"[DeviceMangerPlugin] SetDelayFWUpdateInfoPackage go");
-            SetDelayFWUpdateInfoPackage();
+            _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
             if (isUITrigger)
             {
                 writelog($"[DeviceMangerPlugin] CallUpdateProgressUI() go");
                 CallUpdateProgressUI().Wait();
             }
             writelog($"[DeviceMangerPlugin] _FWUpdatePlugin.DownloadAndInstall go");
-            List<FWUpdateInfo> tmpFWUpdateInfos = _FWUpdatePlugin.DownloadAndInstall(fwUpdateInfos, isUITrigger, installPath).Result;
+            List<FWUpdateInfo> tmpFWUpdateInfos = _FWUpdatePlugin.DownloadAndInstall(fwUpdateInfos, _PeripheralsPlugin.GetDevices().Result.deviceInfo, _PeripheralsPlugin.GetIODongleCountGen3AgoCount().Result, isUITrigger, installPath).Result;
+            _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
             if (_UpdateProgress != null)
             {
                 writelog($"[DeviceMangerPlugin] _UpdateProgress.CloseWindow go");
-                _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
                 ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
                 _UpdateProgress.CloseWindow();
                 _UpdateProgress = null;
@@ -5966,8 +6008,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
                 _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
-                writelog($"[DeviceMangerPlugin] Install SetDelayFWUpdateInfoPackage go");
-                SetDelayFWUpdateInfoPackage();
                 _FWUpdatePlugin.SetLang(LangHelper.GetLanguage());
                 //if (_UpdateProgress != null)
                 //{
@@ -6267,27 +6307,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        private Task<bool> SetFWUpdateInfoPackage(FWUpdateInfoPackage fwUpdateInfoPackage)
-        {
-            if (_SettingsPlugin != null)
-            {
-                DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (config != null)
-                {
-                    foreach (FWUpdateInfo updateInfo in fwUpdateInfoPackage.FWUpdateInfo)
-                    {
-                        updateInfo.ServerPath = "";
-                        updateInfo.SHA256 = "";
-                        //updateInfo.SHA512 = "";
-                        updateInfo.Thumbprint = "";
-                    }
-                    config.UserSettings.DelayFWUpdateInfoPackage = fwUpdateInfoPackage;
-                    return Task.FromResult(_SettingsPlugin.SetAppConfigData(config).Result);
-                }
-            }
-            return Task.FromResult(false);
-        }
-
         private Task<bool> CheckUpdate()
         {
             if (_PeripheralsPlugin == null)
@@ -6339,8 +6358,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(false);
             try
             {
-                SetDelayFWUpdateInfoPackage();
-                FWUpdateInfoPackage fwUpdateInfos = _FWUpdatePlugin.GetFWUpdateInfo(updateHelper, deviceInfos, true, false, false, null, false, localDisplayUpdateHelper, false, true, false, null, null, null, "").Result;
+                FWUpdateInfoPackage fwUpdateInfos = _FWUpdatePlugin.GetFWUpdateInfo(updateHelper, deviceInfos, false, localDisplayUpdateHelper, true).Result;
                 return Task.FromResult(true);
             }
             catch (Exception ex)
@@ -6348,16 +6366,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"{nameof(CheckUpdate)} _FWUpdatePlugin.CheckUpdate Error:{ex.Message}");
                 return Task.FromResult(false);
             }
-        }
-
-        private Task<bool> GetDeviceinfos()
-        {
-            if (_PeripheralsPlugin != null && _FWUpdatePlugin != null)
-            {
-                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo, _PeripheralsPlugin.GetIODongleCountGen3AgoCount().Result);
-                return Task.FromResult(true);
-            }
-            return Task.FromResult(false);
         }
 
         private Task<bool> SetUODFWUInfoPackage(DokcUODUpdateInfoPackage UODFWUInfo)
@@ -6394,23 +6402,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
-
-        private void SetDelayFWUpdateInfoPackage()
-        {
-            if (_SettingsPlugin != null && _FWUpdatePlugin != null)
-            {
-                DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (config != null && config.UserSettings != null)
-                {
-                    _FWUpdatePlugin.SetDelayFWUpdateInfoPackage(config.UserSettings.DelayFWUpdateInfoPackage);
-                }
-                else
-                {
-                    writelog("[SetDelayFWUpdateInfoPackage], ReloadAppConfigData is null.");
-                }
-            }
-        }
-
         private Task CallUpdateProgressUI()
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
@@ -6422,7 +6413,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _UpdateProgress.Dispatcher.InvokeShutdown();
                 };
                 _UpdateProgress.Dispatcher.Invoke(() => _UpdateProgress.Show());
-                _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
+                
                 ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
                 MiniMizeDDPMUI().Wait();
                 tcs.SetResult(true);
@@ -6432,6 +6423,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread1.Start();
             return tcs.Task;
         }
+
         private void CallOSD(object o, (string, string, bool) args)
         {
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, false, args);
@@ -6452,7 +6444,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool isOnlyUpdate = popupContentPackage.IsOnlyUpdate;
             if (!string.IsNullOrEmpty(json))
             {
-                userClosedPopup = false;
                 Task.Run(async () =>
                 {
                     ToastContentBuilder toastContentBuilder = new ToastContentBuilder();
@@ -6481,26 +6472,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         toastContentBuilder.AddText(info);
                     }
                     ClosePopup();
-                    toastContentBuilder.Show(); // 顯示Toast通知
                     writelog("[CallPopup], popup Show.");
-                    Thread.Sleep(5000);
-                    if (!userClosedPopup)
-                    {
-                        writelog("[CallPopup], is no user closed popup.");
-                        if (!isInfo)
-                        {
-                            if (!isOnlyUpdate)
-                            {
-                                writelog("[CallPopup], go to DelayEvent.");
-                                DelayEvent(this, popupContentPackage.PopupType.ToString());
-                            }
-                            else
-                            {
-                                writelog("[CallPopup], go to UpdateEvent.");
-                                UpdateEvent(this, popupContentPackage.PopupType.ToString());
-                            }
-                        }
-                    }
+                    toastContentBuilder.Show(); // 顯示Toast通知
                 });
             }
         }
@@ -6508,19 +6481,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void CheckInput(ToastNotificationActivatedEventArgsCompat e)
         {
             string[] ret = e.Argument.Split(" ");
-            if (ret.Length >= 2)
-            {
-                userClosedPopup = true;
-                if (e.Argument.StartsWith("Update"))
-                {
-                    UpdateEvent(this, ret[1]);
-                }
-                else if (e.Argument.StartsWith("Delay"))
-                {
-                    DelayEvent(this, ret[1]);
-                }
-            }
-            else if (ret.Length == 1)
+            if (ret.Length == 1)
             {
                 if (e.Argument.StartsWith("left_btn"))
                 {
@@ -6531,98 +6492,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog("*** right_button_action");
                 }
             }
-        }
-
-        private void UpdateEvent(object o, string ob)
-        {
-            writelog($"[UpdateEvent],{ob} start.");
-            ////// 將 e 轉換成 JSON 字串
-            ////string json = JsonConvert.SerializeObject(ob);
-            //// 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
-            //FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(ob.ToString());
-            //// 將 JSON 字串轉換成 SWUpdateInfoPackage 對象
-            //SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(ob.ToString());
-            if (!string.IsNullOrEmpty(ob))
-            {
-                if (ob.Equals(PopupContentPackage_Enum.SWU.ToString()))
-                {
-                    if (_SWUpdatePlugin != null)
-                    {
-                        writelog("[UpdateEvent], go to _SWUpdatePlugin.UpdateEvent.");
-                        _SWUpdatePlugin.SetLang(LangHelper.GetLanguage());
-                        _SWUpdatePlugin.UpdateEvent();
-                    }
-                }
-                else
-                {
-                    if (_FWUpdatePlugin != null)
-                    {
-                        writelog("[UpdateEvent], go to _FWUpdatePlugin.UpdateEvent.");
-                        List<FWUpdateInfo> fWUpdateInfos = new List<FWUpdateInfo>();
-                        _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
-                        GetDeviceinfos().Wait();
-                        _FWUpdatePlugin.SetLang(LangHelper.GetLanguage());
-                        fWUpdateInfos = _FWUpdatePlugin.UpdateEvent().Result;
-                        _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
-                        List<FWUpdateInfo> DisplayList = fWUpdateInfos.FindAll(o => o.IsDisplay);
-                        List<FWUpdateInfo> PeripheralsList = fWUpdateInfos.FindAll(o => o.IsDisplay == false);
-                        //Telementry Collection
-                        var rt = false;
-                        var ApplicationSettings_Function = new DeviceFirmware_Functions();
-                        if (DisplayList != null && DisplayList.Count > 0)
-                        {
-                            writelog("[DeviceMangerPlugin] Send Telementry for DisplayDeviceFirmware...");
-                            rt = ApplicationSettings_Function.Send_DisplayDeviceFirmware_Telementry(_TelementryScheduler, DisplayList);
-                            if (rt)
-                                writelog("[DeviceMangerPlugin] Send Telementry for DisplayDeviceFirmware Success ...");
-                            else
-                                writelog("[DeviceMangerPlugin] Send Telementry for DisplayDeviceFirmware Fail ...");
-                        }
-                        if (PeripheralsList != null && PeripheralsList.Count > 0)
-                        {
-                            rt = false;
-                            writelog("[DeviceMangerPlugin] Send Telementry for PeripheralsDeviceFirmware...");
-                            rt = ApplicationSettings_Function.Send_PeripheralsDeviceFirmware_Telementry(_TelementryScheduler, PeripheralsList);
-                            if (rt)
-                                writelog("[DeviceMangerPlugin] Send Telementry for PeripheralsDeviceFirmware Success ...");
-                            else
-                                writelog("[DeviceMangerPlugin] Send Telementry for PeripheralsDeviceFirmware Fail ...");
-                        }
-                    }
-                }
-            }
-            writelog($"[UpdateEvent],{ob} done.");
-        }
-
-        private void DelayEvent(object o, string ob)
-        {
-            writelog($"[DelayEvent],{ob} start.");
-            ////// 將 e 轉換成 JSON 字串
-            ////string json = JsonConvert.SerializeObject(ob);
-            //// 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
-            //FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(ob.ToString());
-            //// 將 JSON 字串轉換成 SWUpdateInfoPackage 對象
-            //SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(ob.ToString());
-            if (!string.IsNullOrEmpty(ob))
-            {
-                if (ob.Equals(PopupContentPackage_Enum.SWU.ToString()))
-                {
-                    if (_SWUpdatePlugin != null)
-                    {
-                        writelog("[DelayEvent], go to _SWUpdatePlugin.DelayEvent.");
-                        _SWUpdatePlugin.DelayEvent();
-                    }
-                }
-                else
-                {
-                    if (_FWUpdatePlugin != null)
-                    {
-                        writelog("[DelayEvent], go to _FWUpdatePlugin.DelayEvent.");
-                        _FWUpdatePlugin.DelayEvent();
-                    }
-                }
-            }
-            writelog($"[DelayEvent],{ob} done.");
         }
         /// <summary>
         /// 定期檢查更新排程
@@ -6635,7 +6504,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ResetTimer();
             if (_SettingsPlugin != null)
             {
-                GetFWUpdateInfo(false, false, false, null, false, false, true, false).Wait();
+                GetFWUpdateInfo(false, true).Wait();
                 SW_GetSWUpdateInfo(false).Wait();
             }
             else
@@ -6643,6 +6512,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _SettingsPlugin is null");
             }
         }
+
         private void UpdateLockSettingChange(ITSettingEventArgs e)
         {
             writelog($"UpdateLockSettingChange start");
@@ -6686,6 +6556,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"UpdateLockSettingChange done");
         }
+
         private void OnPowerModeChanged(object sender, Microsoft.Win32.PowerModeChangedEventArgs e)
         {
             if (_checkUpdateScheduleTimer != null)
@@ -6708,6 +6579,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
+
         private void ResetTimer()
         {
             writelog($"ResetTimer start");
@@ -6720,6 +6592,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"ResetTimer done");
         }
+
         private void DisplayFWCheck()
         {
             writelog($"DisplayFWCheck start");
@@ -6734,6 +6607,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"DisplayFWCheck done");
         }
+
         #endregion
 
         #region USBKVM implementation
@@ -8312,12 +8186,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region SW Update implementation
 
-        public Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, bool reScan = true, bool isUITrigger = false)
+        public Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify, bool reScan = true)
         {
             if (_SWUpdatePlugin != null)
             {
                 ResetTimer();
-                return Task.FromResult(_SWUpdatePlugin.GetSWUpdateInfo(isShowNotify, isForce, isDefer, _GlobalSettingParam.GlobalSetting_About.SWVersion, reScan, isUITrigger).Result);
+                return Task.FromResult(_SWUpdatePlugin.GetSWUpdateInfo(isShowNotify, _GlobalSettingParam.GlobalSetting_About.SWVersion, reScan).Result);
             }
             return Task.FromResult(new SWUpdateInfoPackage());
         }
@@ -8413,33 +8287,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("[InterruptScreen_Metadata], done.");
             return Task.FromResult(result);
         }
-
-        private Task<bool> SW_SetSWUpdateInfoPackage(SWUpdateInfoPackage swUpdateInfoPackage)
-        {
-            writelog("[SW_SetSWUpdateInfoPackage], start.");
-            bool ret = false;
-            if (_SettingsPlugin != null)
-            {
-                writelog("[SW_SetSWUpdateInfoPackage], _SettingsPlugin.ReloadAppConfigData go.");
-                DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (config != null)
-                {
-                    foreach (SWUpdateInfo updateInfo in swUpdateInfoPackage.SWUpdateInfo)
-                    {
-                        updateInfo.ServerPath = "";
-                        updateInfo.SHA256 = "";
-                        updateInfo.SHA512 = "";
-                        updateInfo.Thumbprint = "";
-                    }
-                    config.UserSettings.DelaySWUpdateInfoPackage = swUpdateInfoPackage;
-                    writelog("[SW_SetSWUpdateInfoPackage], _SettingsPlugin.SetAppConfigData go.");
-                    ret = (_SettingsPlugin.SetAppConfigData(config).Result);
-                }
-            }
-            writelog("[SW_SetSWUpdateInfoPackage], done.");
-            return Task.FromResult(ret);
-        }
-
         private Task<bool> SW_CheckSWUpdate()
         {
             writelog("[SW_CheckSWUpdate], start.");
@@ -8450,8 +8297,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _GlobalSettingParam.GlobalSetting_About != null &&
                     !string.IsNullOrEmpty(_GlobalSettingParam.GlobalSetting_About.SWVersion))
                 {
-                    SW_SetDelaySWUpdateInfoPackage();
-                    SWUpdateInfoPackage swUpdateInfos = _SWUpdatePlugin.GetSWUpdateInfo(true, false, false, _GlobalSettingParam.GlobalSetting_About.SWVersion, true, false).Result;
+                    SWUpdateInfoPackage swUpdateInfos = _SWUpdatePlugin.GetSWUpdateInfo(false, _GlobalSettingParam.GlobalSetting_About.SWVersion, true).Result;
                     ret = true;
                 }
                 else
@@ -8468,21 +8314,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog("[SW_CheckSWUpdate], done.");
             return Task.FromResult(ret);
-        }
-
-        private void SW_SetDelaySWUpdateInfoPackage()
-        {
-            if (_SettingsPlugin != null && _SWUpdatePlugin != null)
-            {
-                DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-
-                if (config != null && config.UserSettings != null) // 2024-08-16 Elie, check if null before using.
-                    _SWUpdatePlugin.SetDelaySWUpdateInfoPackage(config.UserSettings.DelaySWUpdateInfoPackage);
-                else
-                {
-                    writelog("[SW_SetDelaySWUpdateInfoPackage], ReloadAppConfigData is null.");
-                }
-            }
         }
 
         private void DeleteDdpmSwUpdaterFolder()
@@ -9367,6 +9198,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetMouseAssignableActions(Guid));
         }
+
         public async Task<JArray> GetMouseAssignedActions(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetMouseAssignedActions(Guid));
@@ -9401,6 +9233,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.StopMouseKeystrokeRecording(Guid));
         }
+
         public async Task<int> GetTouchScrollSensitivityLevel(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetTouchScrollSensitivityLevel(Guid));
@@ -9471,6 +9304,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received SetReportRate requested ...");
             return _DTPProxyPlugin.SetReportRate(Guid, newValue);
         }
+
         public Task<bool> SetTouchScrollSensitivityLevel(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetTouchScrollSensitivityLevel requested ...");
@@ -9500,6 +9334,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return _DTPProxyPlugin.KeyCaptureData();
         }
+
         public Task<string> GetIsdDriverVersion()
         {
             return _DTPProxyPlugin.GetIsdDriverVersion();
@@ -9733,6 +9568,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return Task.Run(() => _DTPProxyPlugin.GetKbAssignableActions(Guid));
         }
+
         public Task<JArray> GetKbAssignedActions(string Guid)
         {
             return Task.Run(() => _DTPProxyPlugin.GetKbAssignedActions(Guid));
@@ -9913,6 +9749,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetAutoFramingSensitivity(Guid));
         }
+
         public async Task<string> GetWebcamSerialNumber(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetWebcamSerialNumber(Guid));
@@ -10345,7 +10182,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         /// <summary>
-        /// To confirm whether it is installed and used for the first time, it will check whether there is a REG record, whether DPeM has been installed, and whether the SDK is connected. 
+        /// To confirm whether it is installed and used for the first time, it will check whether there is a REG record, whether DPeM has been installed, and whether the SDK is connected.
         /// </summary>
         /// <returns></returns>
         public async Task<bool> CheckInstallFirstOpen()
@@ -10411,7 +10248,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                         Thread.Sleep(1000);
                     }
-
                 });
                 obj = new Object();
                 return true;
@@ -10423,7 +10259,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             return false;
         }
-
 
         /// <summary>
         /// Confirm that DDPM has been installed
@@ -10722,7 +10557,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             DeleteDdpmSwUpdaterFolder();
             GetSkipCA().Wait();
             SetSkipSHA().Wait();
-            SetDelayFWUpdateInfoPackage();
             CheckUODFWUInfoPackage();
             //CheckICCProfileScheduleTimer_Elapsed(this, null);
             //hook keyboard
@@ -10964,7 +10798,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 int devCnt = GetWebcamDeviceCount();
-                writelog($"GetWebcamDeviceCount = {devCnt}, current webcam device ID = {QAMWebcamDeviceGuid}");
+                writelog($"GetWebcamDeviceCount = {devCnt}, GetWebcamDeviceCountAsync = {GetWebcamDeviceCountAsync().Result}, current webcam device ID = {GetWebcamDeviceID().Result}");
 
                 if (1 != devCnt || _GlobalSettingParam == null || !isWindowsScreenNotLocked ||
                     _GlobalSettingParam.GlobalSetting_WidgetSettings == null //||
@@ -11182,7 +11016,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case "Webcam_IsZoomMeetingActiveChanged":
-                    writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomMeetingActiveChanged");
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomMeetingActiveChanged start");
                     isQAMHandleEvent = true;
 
                     if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
@@ -11196,11 +11030,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_IsZoomScreenShareActiveChanged");
                     //}
 
-                    writelog($"HandleQAMV2 launched by event Webcam_IsZoomMeetingActiveChanged");
+                    writelog($"HandleQAMV2 launched by event Webcam_IsZoomMeetingActiveChanged end");
                     break;
 
                 case "Webcam_IsZoomScreenShareActiveChanged":
-                    writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomScreenShareActiveChanged");
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomScreenShareActiveChanged start");
                     isQAMHandleEvent = true;
 
                     if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
@@ -11214,11 +11048,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_IsZoomScreenShareActiveChanged");
                     //}
 
-                    writelog($"HandleQAMV2 launched by event Webcam_IsZoomScreenShareActiveChanged");
+                    writelog($"HandleQAMV2 launched by event Webcam_IsZoomScreenShareActiveChanged end");
                     break;
 
                 case "Webcam_ZoomMeetingTypeChanged":
-                    writelog($"HandleQAMV2 launch by webcam event Webcam_ZoomMeetingTypeChanged");
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_ZoomMeetingTypeChanged start");
                     isQAMHandleEvent = true;
 
                     int type = (int)ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
@@ -11236,11 +11070,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_ZoomMeetingTypeChanged");
                     //}
 
-                    writelog($"HandleQAMV2 launched by event Webcam_ZoomMeetingTypeChanged");
+                    writelog($"HandleQAMV2 launched by event Webcam_ZoomMeetingTypeChanged end");
                     break;
 
                 case "Webcam_Disconnected":
-                    writelog($"HandleQAMV2 launch by webcam event Webcam_Disconnected");
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_Disconnected start");
                     isQAMHandleEvent = true;
                     //Derek 1221 if there is only one device after this event, should update QAMWebcamDeviceGuid
                     //if (1 == WebcamDevCnt)
@@ -11249,11 +11083,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     //    writelog($"There is only one device after this event, should update QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid}");
                     //}
-                    writelog($"HandleQAMV2 launched by event Webcam_Disconnected");
+                    writelog($"HandleQAMV2 launched by event Webcam_Disconnected end");
                     break;
 
                 case "Webcam_Connected":
-                    writelog($"HandleQAMV2 launch by webcam event Webcam_Connected");
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_Connected start");
                     isQAMHandleEvent = true;
 
                     //if (1 == WebcamDevCnt)
@@ -11264,7 +11098,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_Connected");
                     //}
 
-                    writelog($"HandleQAMV2 launched by event Webcam_Connected");
+                    writelog($"HandleQAMV2 launched by event Webcam_Connected end");
                     break;
 
                 default:
@@ -11278,6 +11112,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<string> GetWebcamDeviceID()
         {
             return _DTPProxyPlugin.GetWebcamDeviceID();
+        }
+
+        public Task<int> GetWebcamDeviceCountAsync()
+        {
+            return _DTPProxyPlugin.GetWebcamDeviceCountAsync();
         }
 
         //Marked by Derek 1125 because they had covered by WebcamEventHandler
@@ -11496,7 +11335,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 else
                 {
-                    //_QAM.Show();                    
+                    //_QAM.Show();
                     _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
                     //Dispatcher.Run(); //may block the process Derek 1219
 
@@ -11956,6 +11795,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #region FW Update
 
         private static bool isThreadRunning = false;
+
         private void PopupBaseCloseEvent(object o, EventArgs e)
         {
             writelog($"_PopupBase PopupBaseCloseEvent");
@@ -11967,6 +11807,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"_PopupBase PopupBaseCloseEvent2 done");
             }
         }
+
         private void OnProgressUpdateEvent(UpdateProgressInfo fWUpdateInfo)
         {
             //writelog($"{nameof(OnProgressUpdateEvent)} start");
@@ -11994,6 +11835,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             //writelog($"{nameof(OnProgressUpdateEvent)} done");
         }
+
         private Task CallPopup()
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
@@ -12037,6 +11879,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread1.Start();
             return tcs.Task;
         }
+
         private void ClosePopup()
         {
             writelog($"ClosePopup start");
@@ -12054,16 +11897,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"ClosePopup error : {ex.Message}");
             }
         }
+
         private void OnUILockEvent(bool isLockFWU_UI)
         {
             EventHandler<bool> handler = FWU_UILock_Notify;
             if (handler != null)
                 handler.Invoke(this, isLockFWU_UI);
-        }
-
-        private void OnFWSaveEvent(FWUpdateInfoPackage fwUpdateInfoPackage)
-        {
-            SetFWUpdateInfoPackage(fwUpdateInfoPackage).Wait();
         }
 
         private void OnCheckUpdateScheduleEvent()
@@ -12076,11 +11915,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     CheckUpdate();
                 }
             }
-        }
-
-        private void OnGetDeviceinfos()
-        {
-            GetDeviceinfos().Wait();
         }
 
         private void OnFWSaveUODEvent(DokcUODUpdateInfoPackage fwUpdateInfo)
@@ -12103,11 +11937,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #region SW Update
-
-        private void OnSWSaveEvent(SWUpdateInfoPackage swUpdateInfoPackage)
-        {
-            SW_SetSWUpdateInfoPackage(swUpdateInfoPackage).Wait();
-        }
 
         private void OnCheckSWUpdateScheduleEvent()
         {
@@ -12294,6 +12123,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"CheckDeviceFirstTimesToConnect Exception : {ex.Message}");
             }
         }
+
         //0613 Bruce 用於看是否連接超過2個dock
         private void CheckDocks()
         {
@@ -12546,16 +12376,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             OnCheckUpdateScheduleEvent();
         }
 
-        private void show_fwSaveUpdateInfoPackage(object sender, FWUpdateInfoPackage e)
-        {
-            OnFWSaveEvent(e);
-        }
-
-        private void show_GetDeviceinfos(object sender, EventArgs e)
-        {
-            OnGetDeviceinfos();
-        }
-
         private void show_fwUODUpdateInfo(object sender, DokcUODUpdateInfoPackage e)
         {
             OnFWSaveUODEvent(e);
@@ -12574,11 +12394,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void show_swCheckUpdateScheduleEvent(object sender, EventArgs e)
         {
             OnCheckSWUpdateScheduleEvent();
-        }
-
-        private void show_swSaveUpdateInfoPackage(object sender, SWUpdateInfoPackage e)
-        {
-            OnSWSaveEvent(e);
         }
 
         //Derek 1210
@@ -13276,7 +13091,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
 
                         //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
-                        //CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);                        
+                        //CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
                     }
                     else
                     {
@@ -13342,12 +13157,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (pluginCondition is PluginRunningCondition)
                     {
                         writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a running condition");
-                        //0531 Bruce 因使用者可能在執行前將裝置移除，故將檢查是否延期的功能修改到底層的排程中
-                        //_FWUpdatePluginCondition = pluginCondition;
-                        _FWUpdatePlugin.CallSaveUpdateInfoPackage += show_fwSaveUpdateInfoPackage;
-                        _FWUpdatePlugin.CallGetDeviceInfos += show_GetDeviceinfos;
                         _FWUpdatePlugin.CallSaveUODFWDeviceInfos += show_fwUODUpdateInfo;
-                        SetDelayFWUpdateInfoPackage();
                         _FWUpdatePlugin.CallCheckUODFWInfos += show_CheckUODUpdateInfo;
                         CheckUODFWUInfoPackage();
                         _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
@@ -13364,12 +13174,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (pluginCondition is PluginStartedCondition)
                     {
                         writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a started condition");
-                        //0531 Bruce 因使用者可能在執行前將裝置移除，故將檢查是否延期的功能修改到底層的排程中
-                        //_FWUpdatePluginCondition = pluginCondition;
-                        _FWUpdatePlugin.CallSaveUpdateInfoPackage += show_fwSaveUpdateInfoPackage;
-                        _FWUpdatePlugin.CallGetDeviceInfos += show_GetDeviceinfos;
                         _FWUpdatePlugin.CallSaveUODFWDeviceInfos += show_fwUODUpdateInfo;
-                        SetDelayFWUpdateInfoPackage();
                         _FWUpdatePlugin.CallCheckUODFWInfos += show_CheckUODUpdateInfo;
                         CheckUODFWUInfoPackage();
                         _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
@@ -13468,8 +13273,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (pluginCondition is PluginRunningCondition)
                     {
                         writelog($"{nameof(GetCurrentSWUpdatePluginCondition)} - SW Update Plugin is in a running condition");
-                        _SWUpdatePlugin.CallSaveUpdateInfoPackage += show_swSaveUpdateInfoPackage;
-                        SW_SetDelaySWUpdateInfoPackage();
                         _SWUpdatePlugin.CallPopup += CallPopup;
                         if (_checkUpdateScheduleTimer == null)
                         {
@@ -13482,8 +13285,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (pluginCondition is PluginStartedCondition)
                     {
                         writelog($"{nameof(GetCurrentSWUpdatePluginCondition)} - SW Update Plugin is in a started condition");
-                        _SWUpdatePlugin.CallSaveUpdateInfoPackage += show_swSaveUpdateInfoPackage;
-                        SW_SetDelaySWUpdateInfoPackage();
                         _SWUpdatePlugin.CallPopup += CallPopup;
                         if (_checkUpdateScheduleTimer == null)
                         {
@@ -14824,7 +14625,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     moInfo += ",(null)";
                 }
-
             }
             writelog($"Toggle_EzRecentSetting({moInfo}) is called.");
 
@@ -15299,6 +15099,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
+
         private bool IsPxPModeOFF(MonitorInfo mo)
         {
             UInt16 pxpModeValue = 0xff;
@@ -15350,12 +15151,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     case 0x00://off
                         ret = false;
                         break;
+
                     case 0x01://01h: PIP size toggling (s->bigger...>s, NOT to off)
                         ret = true;
                         break;
+
                     case 0x02://02h: PIP position toggling (top right->...->top right)
                         ret = true;
                         break;
+
                     case 0x21://PIP small
                         ret = true;
                         break;
@@ -15363,6 +15167,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     case 0x22://PIP large
                         ret = true;
                         break;
+
                     case 0x23:
                     case 0x24:
                     case 0x25:
@@ -15385,6 +15190,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     case 0x42:
                         ret = false;
                         break;
+
                     default:
                         ret = false;
                         break;
@@ -16631,14 +16437,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             monitorSettingsList.Add(settings);
                             bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
 
-                            PreDownloadICC(m);// 
+                            PreDownloadICC(m);//
                         }
                     }
                 }
             }
         }
 
-        //01/03 Jason add Hotkey to same model 
+        //01/03 Jason add Hotkey to same model
         private void UpdateHotkeyInfo()
         {
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
@@ -17669,10 +17475,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.CompletedTask;
         }
 
-        private Object HeadsetBatteryLowObj = new Object();
-        private Object KeybordBatteryLowObj = new Object();
-        private Object MouseBatteryLowObj = new Object();
-        private Object StylusBatteryLowObj = new Object();
+        //private Object HeadsetBatteryLowObj = new Object();
+        //private Object KeybordBatteryLowObj = new Object();
+        //private Object MouseBatteryLowObj = new Object();
+        //private Object StylusBatteryLowObj = new Object();
         private void _showosd(object monitorInfo, OSDType _types, OSDType_Device _DeviceType, string Content, bool State = false, string title = "", bool stayOpen = false)
         {
             //writelog($"For debugging - Skip _showosd().");
@@ -18084,6 +17890,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        private void CloseOSD(OSDType_Device type, string guid)
+        {
+            switch (type)
+            {
+                case OSDType_Device.Keyboard:
+                    _OSD_Controler.KeybordBatteryLow_CloseWindow(null, null);
+                    break;
+                case OSDType_Device.Mouse:
+                    _OSD_Controler.MouseBatteryLow_CloseWindow(null, null);
+                    break;
+                case OSDType_Device.Headset:
+                    _OSD_Controler.HeadsetBatteryLow_CloseWindow(null, null);
+                    break;
+                case OSDType_Device.Pen:
+                    _OSD_Controler.StylusBatteryLow_CloseWindow(null, null);
+                    break;
+                default:
+                    break;
+            }
+
+        }
         private bool IsValidJson(string jsonString)
         {
             try
@@ -18649,11 +18476,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case "CollaborationNotAvailable.Keyboard":
                     ShowOSD(e.DeviceName, e.osd_type, e.osd_device, e.Message);
                     break;
+
                 case "BatteryLow":
                     ShowOSD(e.DeviceName, e.osd_type, e.osd_device, e.Message);
                     break;
+
                 case "Mute.Status":
                     ShowOSD(e.DeviceName, e.osd_type, e.Message, e.Status);
+                    break;
+                case "CloseBatteryLowOSD":
+                    CloseOSD(e.osd_device, e.Guid);
                     break;
                 default:
                     break;
@@ -18663,7 +18495,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         // add @ 20250116 stephen
         public Task<bool> checkDeviceConnStatus(FwRule rule)
         {
-
             if (!rule.devicetype.Equals("display"))
             {
                 return Task.FromResult(true);
@@ -19191,6 +19022,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
         public async Task<bool> GetAirAudioSidetoneAsync(string Guid)
         {
             try
@@ -19496,7 +19328,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
-
 
         public async Task<bool> GetAirAudioIsReadyAsync(string Guid)
         {
@@ -20314,4 +20145,5 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
     }
 }
+
 //GetIsANCSupportedAsync

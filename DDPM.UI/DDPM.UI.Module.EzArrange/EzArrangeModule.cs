@@ -152,6 +152,7 @@ namespace DDPM.UI.Module.EzArrange
         //To be called (from Subagent IDeviceManagerSA, when EAMonitorSettings is changed from Subagent side.
         private void _deviceManagerSA_EASettingsChanged(object? sender, EAArgs e)
         {
+            
             //The quick and easy way: use the SelectedDeviceChange event
             OnSelectedHomeDeviceChanged();
 

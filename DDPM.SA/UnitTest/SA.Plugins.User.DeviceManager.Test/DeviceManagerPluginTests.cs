@@ -4,7 +4,6 @@ using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Common.UpdateProgressPage;
-using DDPM.SA.Plugins.PeripheralsPlugin;
 using DDPM.SA.Plugins.User.DeviceManager;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Interfaces;
@@ -13,8 +12,6 @@ using DPeMPublic.Common.Enums;
 
 //using Microsoft.WindowsAPICodePack.PortableDevices.PropertySystem;
 using Moq;
-using System.Security.Cryptography;
-using System.Windows.Input;
 using VcpCore.Common;
 
 namespace SA.Plugins.User.DeviceManager.Test
@@ -99,7 +96,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             //_ColorPresetPlugin != null
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
-            _DisplayManagerPluginMock.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult("aa"));
+            _DisplayManagerPluginMock.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult("aa"));
             var _ColorPresetPluginMock = new Mock<IColorPresetSA>();
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPluginMock.Object);
             _ColorPresetPluginMock.Setup(x => x.ReadColorPreset(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(Task.FromResult(new List<string>()));
@@ -138,13 +135,13 @@ namespace SA.Plugins.User.DeviceManager.Test
             //_DisplayManagerPlugin != null&&result.result==true
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
-            _DisplayManagerPluginMock.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<int>())).Returns(Task.FromResult(new ObjGetVCP() { result = true, value = "_DisplayManagerPlugin" }));
+            _DisplayManagerPluginMock.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(new ObjGetVCP() { result = true, value = "_DisplayManagerPlugin" }));
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
             result = deviceMangerPlugin.ReadCurrentColorPreset(monitorInfo).Result;
             Assert.That(result, Is.EqualTo("_DisplayManagerPlugin"));
 
             //_DisplayManagerPlugin != null&&result.result==false
-            _DisplayManagerPluginMock.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<int>())).Returns(Task.FromResult(new ObjGetVCP() { result = false }));
+            _DisplayManagerPluginMock.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(new ObjGetVCP() { result = false }));
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
             result = deviceMangerPlugin.ReadCurrentColorPreset(monitorInfo).Result;
             Assert.That(result, Is.EqualTo(""));
@@ -190,7 +187,7 @@ namespace SA.Plugins.User.DeviceManager.Test
 
             List<ALSConfig> aLSConfigs = new List<ALSConfig>() { new ALSConfig() { Edid = monitorInfo.edid, ModelName = monitorInfo.modelName, isPrimaryMonitorSync = false } };
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
-            _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
             _DisplayManagerPluginMock.Setup(x => x.GetMonitorCurrentResolution(It.IsAny<MonitorInfo>())).Returns(Task.FromResult("1920*1080"));
             _DisplayManagerPluginMock.Setup(x => x.GetMonitorMaxResolution(It.IsAny<MonitorInfo>())).Returns(Task.FromResult("1920*1080"));
             _DisplayManagerPluginMock.Setup(x => x.GetAllExistAlsConfig()).Returns(Task.FromResult(aLSConfigs));
@@ -241,7 +238,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             //privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
-            _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
             result = deviceMangerPlugin.WriteColorPreset_AUTO(monitorInfo, "12").Result;
             Assert.That(result, Is.EqualTo(true));
@@ -265,7 +262,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
-            _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
             string colorProfile_Name1 = "Dell_U3224KB_Native_v2.icm";
             if (colorProfile_Name1 == "Dell_U3224KB_Native_v2.icm")
@@ -329,7 +326,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
-            _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
             result = deviceMangerPlugin.FindAppsbyShell(true).Result;
             Assert.That(result.Count, Is.EqualTo(2));
@@ -367,7 +364,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_AllInfoMonitors", _allInfoMonitors);
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
-            _DisplayManagerPluginMock.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult("true"));
+            _DisplayManagerPluginMock.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult("true"));
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
             _SettingsPluginMock.Setup(x => x.ReadColorPresetSettings()).Returns(Task.FromResult(new List<ColorPresetSettings>() { new ColorPresetSettings(), new ColorPresetSettings() }));
             _ColorPresetPluginMock.Setup(x => x.AddColorPresetForMonitorConfig(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>(), It.IsAny<bool>())).Returns(Task.FromResult(new List<ColorPresetSettings>() { new ColorPresetSettings(), new ColorPresetSettings() }));
@@ -621,7 +618,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
-            _DisplayManagerPluginMock.Setup(x => x.GetCapabilitiesString(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(capabilitiesString));
+            _DisplayManagerPluginMock.Setup(x => x.GetCapabilitiesString(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(capabilitiesString));
             var result = deviceMangerPlugin.GetCapabilitiesString(monitorInfo).Result;
             Assert.That(result, Is.EqualTo(monitorInfo.CapabilityString));
         }
@@ -633,7 +630,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
-            _DisplayManagerPluginMock.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(VcpCapabilities));
+            _DisplayManagerPluginMock.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(VcpCapabilities));
             var result = deviceMangerPlugin.GetVCPCapabilities(monitorInfo).Result;
             Assert.Greater(result.Length, 0);
             Assert.That(result, Is.EqualTo(VcpCapabilities));
@@ -648,8 +645,8 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
-            _DisplayManagerPluginMock.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
-            var result = deviceMangerPlugin.GetVCPCapability(monitorInfo, code, 0).Result;
+            _DisplayManagerPluginMock.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            var result = deviceMangerPlugin.GetVCPCapability(monitorInfo, code, opt: 0).Result;
             Assert.IsTrue(result.result);
             Assert.That(ObjGetvcp.value, Is.EqualTo(result.value));
         }
@@ -662,8 +659,8 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
-            _DisplayManagerPluginMock.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
-            var result = deviceMangerPlugin.GetVCPCapability(monitorInfo, funName, 0).Result;
+            _DisplayManagerPluginMock.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            var result = deviceMangerPlugin.GetVCPCapability(monitorInfo, funName, opt: 0).Result;
             Assert.IsTrue(result.result);
             Assert.That(ObjGetvcp.value, Is.EqualTo(result.value));
         }
@@ -677,7 +674,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
-            _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(setVCPCapability));
+            _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(setVCPCapability));
             var result = deviceMangerPlugin.SetVCPCapability(monitorInfo, code, val).Result;
             Assert.IsTrue(result);
 
@@ -699,7 +696,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
-            _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(setVCPCapability_));
+            _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(Task.FromResult(setVCPCapability_));
             var result = deviceMangerPlugin.SetVCPCapability(monitorInfo, funtionName, val).Result;
             Assert.IsTrue(result);
 
@@ -718,7 +715,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _NKVMPlugin = _NKVMPluginMock.Object;
             privateObject.SetFieldOrProperty("_NKVMPlugin", _NKVMPlugin);
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = (UInt32)0xff };
-            _DisplayManagerPluginMock.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            _DisplayManagerPluginMock.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             result = deviceMangerPlugin.SetVCPCapability(monitorInfo, funtionName, val).Result;
             Assert.IsTrue(result);
         }
@@ -889,7 +886,6 @@ namespace SA.Plugins.User.DeviceManager.Test
             Assert.That(result, Is.EqualTo(true));
         }
 
-
         [Test]
         public async Task TestGetDevices()
         {
@@ -938,8 +934,6 @@ namespace SA.Plugins.User.DeviceManager.Test
             // Execute and Verify
             Assert.ThrowsAsync<InvalidOperationException>(async () => await deviceMangerPlugin.GetRFDongleDevices());
         }
-
-
 
         [Test]
         public void TestSetBackLightingControls()
@@ -995,7 +989,6 @@ namespace SA.Plugins.User.DeviceManager.Test
             // Execute and Verify
             Assert.IsNotNull(deviceMangerPlugin.SetCollaborationChatEnable(true, Guid.NewGuid()), $"SetCollaborationChatEnable() returns null");
         }
-
 
         [Test]
         public void TestSetCollaborationDoubleTapEnable()
@@ -1186,7 +1179,6 @@ namespace SA.Plugins.User.DeviceManager.Test
             Assert.IsNotNull(deviceMangerPlugin.SetSelectedPreset(2, Guid.NewGuid()), $"SetSelectedPreset() returns null");
         }
 
-
         [Test]
         public void TestSetBandsGain()
         {
@@ -1307,7 +1299,6 @@ namespace SA.Plugins.User.DeviceManager.Test
             // Execute and Verify
             //Assert.IsNotNull(deviceMangerPlugin.SetSideTopSwitchSinglePressSetting3(new byte[] { 0x11, 0x12 }, Guid.NewGuid()), $"SetSideTopSwitchSinglePressSetting3() returns null");
         }
-
 
         [Test]
         public void TestOnUIUpdateNotify()
@@ -1556,7 +1547,6 @@ namespace SA.Plugins.User.DeviceManager.Test
             Assert.IsNotNull(deviceMangerPlugin.TogglePipSize(new MonitorInfo()), $"TogglePipSize() returns null");
         }
 
-
         [Test]
         public void TestTogglePipPosition()
         {
@@ -1634,7 +1624,6 @@ namespace SA.Plugins.User.DeviceManager.Test
             Assert.IsNotNull(deviceMangerPlugin.SetSubInputs(new MonitorInfo(), new InputSourceObj(), new InputSourceObj(), new InputSourceObj()), $"SetSubInputs() returns null");
         }
 
-
         [Test]
         public void TestUsbSwitch1()
         {
@@ -1649,7 +1638,7 @@ namespace SA.Plugins.User.DeviceManager.Test
         [Test]
         public void TestGetFWUpdateInfo()
         {
-            Assert.IsNotNull(deviceMangerPlugin.GetFWUpdateInfo(true, false, false, null, false), $"GetFWUpdateInfo() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.GetFWUpdateInfo(true, false), $"GetFWUpdateInfo() returns null");
 
             //_PeripheralsPlugin != null && _FWUpdatePlugin != null
             // Setup
@@ -1660,7 +1649,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
 
             // Execute and Verify
-            Assert.IsNotNull(deviceMangerPlugin.GetFWUpdateInfo(true, false, false, null, false), $"GetFWUpdateInfo() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.GetFWUpdateInfo(true, false), $"GetFWUpdateInfo() returns null");
         }
 
         [Test]
@@ -1669,7 +1658,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             // Setup
             var _FWUpdatePluginMock = new Mock<IFWUpdateService>();
             privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
-            _FWUpdatePluginMock.Setup(x => x.DownloadAndInstall(It.IsAny<List<FWUpdateInfo>>(), It.IsAny<bool>(), It.IsAny<string>())).Returns(Task.FromResult(new List<FWUpdateInfo>()));
+            _FWUpdatePluginMock.Setup(x => x.DownloadAndInstall(It.IsAny<List<FWUpdateInfo>>(), It.IsAny<List<DeviceInfo>>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string>())).Returns(Task.FromResult(new List<FWUpdateInfo>()));
 
             // Execute and Verify
             Assert.IsNotNull(deviceMangerPlugin.DownloadAndInstall(new List<FWUpdateInfo>(), false, ""), $"DownloadAndInstall() returns null");
@@ -1678,7 +1667,7 @@ namespace SA.Plugins.User.DeviceManager.Test
         [Test]
         public void TestInstall()
         {
-            //Assert.IsNotNull(deviceMangerPlugin.Install(""), $"Install() returns null"); //method remove _FWUpdatePlugin ==null 
+            //Assert.IsNotNull(deviceMangerPlugin.Install(""), $"Install() returns null"); //method remove _FWUpdatePlugin ==null
 
             // Setup
             var _FWUpdatePluginMock = new Mock<IFWUpdateService>();
@@ -1689,7 +1678,5 @@ namespace SA.Plugins.User.DeviceManager.Test
 
             Assert.IsNotNull(deviceMangerPlugin.Install(""), $"Install() returns null");
         }
-
     }
 }
-

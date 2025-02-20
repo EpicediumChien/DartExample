@@ -1,14 +1,12 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Interfaces;
-using DDPM.SA.Common.Settings;
 using DDPM.SA.Plugins.User.DisplayProperties;
 using DDPM.SA.Plugins.User.EasyArrange;
 using DDPM.SA.Plugins.User.PipPbpManger;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UnitTestShared.Tests;
 using Moq;
-using System.DirectoryServices.ActiveDirectory;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
@@ -46,6 +44,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         };
 
         private static List<ALSConfig> AllALSConfig;
+
         public static List<ALSConfig> _AllALSConfig
         {
             get => AllALSConfig;
@@ -168,7 +167,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetFieldOrProperty("_VcpCorePlugin", VcpCoreServiceObject);
-            VcpCoreService.Setup(x => x.GetCapabilitiesString(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(capabilitiesString));
+            VcpCoreService.Setup(x => x.GetCapabilitiesString(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(capabilitiesString));
             var getCapabilitiesString = displayPlugin.GetCapabilitiesString(monitorInfo1).Result;
             Assert.Greater(capabilitiesString.Length, 0);
             Assert.That(capabilitiesString, Is.EqualTo(getCapabilitiesString));
@@ -178,7 +177,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         public void TestGetVCPCapabilities()
         {
             string VcpCapabilities = "\"{\\r\\n  \\\"Index\\\": 0,\\r\\n  \\\"ModelName\\\": \\\"DELLU2424H\\\",\\r\\n  \\\"SerialNumber\\\": \\\"926168130\\\",\\r\\n  \\\"ServiceTag\\\": \\\"CN073K0\\\"";
-            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(VcpCapabilities));
+            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(VcpCapabilities));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -194,11 +193,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             int opt = 0;
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = "E2" };
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
-            var getVCPCapability = displayPlugin.GetVCPCapability(monitorInfo1, funName, opt).Result;
+            var getVCPCapability = displayPlugin.GetVCPCapability(monitorInfo1, funName, opt: opt).Result;
             Assert.IsTrue(getVCPCapability.result);
             Assert.That(ObjGetvcpValue, Is.EqualTo(getVCPCapability.value));
         }
@@ -210,11 +209,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             int opt = 0;
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 10u }; //0xE7
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
-            var getVCPCapability_ = displayPlugin.GetVCPCapability(monitorInfo1, code, opt).Result;
+            var getVCPCapability_ = displayPlugin.GetVCPCapability(monitorInfo1, code, opt: opt).Result;
             Assert.IsTrue(getVCPCapability_.result);
             Assert.That(ObjGetvcpValue, Is.EqualTo(getVCPCapability_.value));
         }
@@ -225,7 +224,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             byte code = 0X21;
             uint val = 16;    //Brightness = 16
             bool setVCPCapability = true;
-            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(setVCPCapability));
+            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(setVCPCapability));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -239,7 +238,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             string FuntionName = "colorpreset";
             string val = "Warm";
             bool setVCPCapability_ = true;
-            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(setVCPCapability_));
+            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(Task.FromResult(setVCPCapability_));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -251,7 +250,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         public void TestGetInputSourcelist()
         {
             string getVcpCapabilities = "{'CapsDataMap' : {'Input Select': ['Thunderbolt-1', 'DisplayPort-1','HDMI-1']}}";
-            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(getVcpCapabilities));
+            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(getVcpCapabilities));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -275,8 +274,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
 
             ObjGetVCP OBjbjGetVCP2 = new ObjGetVCP() { result = true, value = inputSourceObjects };//0xE7 add input list
             ObjGetVCP OBjbjGetVCP = new ObjGetVCP() { result = true, value = 35856u };//0XEE
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(OBjbjGetVCP));
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<int>())).Returns(Task.FromResult(OBjbjGetVCP2));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(OBjbjGetVCP));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(OBjbjGetVCP2));
             var VcpCoreServiceObject1 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject1);
 
@@ -310,7 +309,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
 
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             ObjGetVCP objGetVCPEE = new ObjGetVCP() { result = true, value = 35856u };//0XEE
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(objGetVCPEE));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(objGetVCPEE));
             var VcpCoreServiceObject1 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject1);
 
@@ -338,12 +337,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             string inputsource1 = "HDMI-1";
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             ObjGetVCP objGetVCPEE = new ObjGetVCP() { result = true, value = 188u };//0xE7 48128u
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(objGetVCPEE));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(objGetVCPEE));
             var VcpCoreServiceObject1 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject1);
 
             string getVcpCapabilities = "{'CapsDataMap' : {'Input Select': ['Thunderbolt-1', 'DisplayPort-1','HDMI-1']}}";
-            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(getVcpCapabilities));
+            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(getVcpCapabilities));
             var VcpCoreServiceObject = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
 
@@ -385,17 +384,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             string inputsource1 = "HDMI-1";
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             ObjGetVCP objGetVCPEE = new ObjGetVCP() { result = true, value = 188u };//0xE7 48128u
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(objGetVCPEE));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(objGetVCPEE));
             var VcpCoreServiceObject1 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject1);
 
             string getVcpCapabilities = "{'CapsDataMap' : {'Input Select': ['Thunderbolt-1', 'DisplayPort-1','HDMI-1']}}";
-            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(getVcpCapabilities));
+            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(getVcpCapabilities));
             var VcpCoreServiceObject = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
 
             bool setVCPCapability = true;
-            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(setVCPCapability));
+            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(setVCPCapability));
             var VcpCoreServiceObject2 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject2);
 
@@ -454,17 +453,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             string inputsource2 = "DisplayPort-1";
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             ObjGetVCP objGetVCPEE = new ObjGetVCP() { result = true, value = 48128u };//0xE7
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(objGetVCPEE));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(objGetVCPEE));
             var VcpCoreServiceObject1 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject1);
 
             string getVcpCapabilities = "{'CapsDataMap' : {'Input Select': ['Thunderbolt-1', 'DisplayPort-1','HDMI-1']}}";
-            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(getVcpCapabilities));
+            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(getVcpCapabilities));
             var VcpCoreServiceObject = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
 
             bool setVCPCapability = true;
-            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(setVCPCapability));
+            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(setVCPCapability));
             var VcpCoreServiceObject2 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject2);
 
@@ -897,7 +896,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         }
         */
 
-
         [Test]
         public void TestGetALSFeatureValue()
         {
@@ -1120,13 +1118,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
 
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 1 }; //0xEF,value设置为0，对应isMMSEnable就是false, 1对应isMMSEnable就是true
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
 
             bool setVCPCapability = true;
-            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(setVCPCapability));
+            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(setVCPCapability));
             var VcpCoreServiceObject1 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject1);
 
@@ -1198,13 +1196,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
 
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 305u }; //0x66
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
 
             string getVcpCapabilities = "{'CapsDataMap' : {'Ambient Light Sensor': ['ALS full function']}}";
-            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(getVcpCapabilities)); //GetALSupport
+            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(getVcpCapabilities)); //GetALSupport
             var VcpCoreServiceObject1 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject1);
 
@@ -1239,7 +1237,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
 
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 0x27u }; //supportedHDR=0x27u
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -1247,7 +1245,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             string setParam = "USB-C Prioritization";
             ObjGetVCP ObjGetvcp2 = new ObjGetVCP() { result = true, value = "High Data Speed" };//supportedUSBC="High Data Speed"
             var ObjGetvcpValue2 = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp2));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp2));
             var VcpCoreServiceObject2 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject2);
 
@@ -1328,7 +1326,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 2u }; //0xAA  "Screen Orientation" 1u=Angle0,2u=Angle90
             var ObjGetvcpValue = 2u;
             var ObjGetvcpResult = true;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -1389,7 +1387,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 2u }; //0xAA  "Screen Orientation" 1u=Angle0,2u=Angle90
             var ObjGetvcpValue = 2u;
             var ObjGetvcpResult = true;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -1407,7 +1405,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                     {
                         if (displayPropertiesPlugin != null)
                         {
-
                             OrientationString_result = OrientationString[retValue];
                             OrientationString[2] = "Portrait";
                         }
@@ -1430,7 +1427,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             Assert.IsNull(SetOSDOrientation_result0);
             Assert.That(ret, Is.EqualTo(SetOSDOrientation_result0));
 
-
             string capabilitystring = "E2(25, 23, 24, 26, 27, 3A, 3B, 3C ) EA(F8, F800, F801) AA(00)"; //capabilitystring need Contains("AA")
             monitorInfo1.CapabilityString = capabilitystring;
 
@@ -1445,7 +1441,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             bool IsLockOrientation = false;
 
             var ObjGetvcpResult = true;
-            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(ObjGetvcpResult));
+            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(ObjGetvcpResult));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -1540,7 +1536,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             monitorInfo1.CapabilityString = capabilitystring;
 
             bool setVCPCapability = true;
-            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(setVCPCapability));
+            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(setVCPCapability));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -1570,7 +1566,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         {
             USBCPrioritizationType type = USBCPrioritizationType.HighDataSpeed;
             bool setVCPCapability_ = true;
-            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(setVCPCapability_));
+            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(Task.FromResult(setVCPCapability_));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -1630,13 +1626,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject); //getmonitors
 
             string getVcpCapabilities = "{'CapsDataMap' : {'Ambient Light Sensor': ['ALS full function']}}";
-            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(getVcpCapabilities)); //GetALSupport GetVCPCapabilities
+            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(getVcpCapabilities)); //GetALSupport GetVCPCapabilities
             var VcpCoreServiceObject1 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject1);
 
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 305u }; //0x66
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject2 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject2);
 
@@ -1657,13 +1653,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
 
             string getVcpCapabilities = "{'CapsDataMap' : {'Ambient Light Sensor': ['ALS full function']}}";
-            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(getVcpCapabilities)); //GetALSupport GetVCPCapabilities
+            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(getVcpCapabilities)); //GetALSupport GetVCPCapabilities
             var VcpCoreServiceObject1 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject1);
 
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 305u }; //0x66
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject2 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject2);
             uint value = 305u;
@@ -1697,7 +1693,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         {
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             string getVcpCapabilities = "{'CapsDataMap' : {'Ambient Light Sensor': ['ALS without sensor']}}";
-            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(getVcpCapabilities)); //GetALSupport GetVCPCapabilities
+            VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(getVcpCapabilities)); //GetALSupport GetVCPCapabilities
             var VcpCoreServiceObject1 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject1);
             ALSConfig aconfig2 = new ALSConfig()
@@ -1752,7 +1748,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
 
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 1 }; //0xEF,value设置为0，对应isMMSEnable就是false, 1对应isMMSEnable就是true
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -1781,7 +1777,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             var ObjGetvcpValue = ObjGetvcp.value;
             bool SetVCPCapabilityValue = true;
 
-            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(SetVCPCapabilityValue));
+            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(SetVCPCapabilityValue));
             var VcpCoreServiceObject = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
             PrivateObject privateObject = new PrivateObject(displayPlugin);
@@ -1813,7 +1809,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         {
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 305u }; //0x66,value设置为305u，==Primary ==//Bit 5 : 0 = UnSelected, 1 = Selected
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -1839,13 +1835,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         {
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 305u }; //0x66,value设置为305u，==Primary ==//Bit 5 : 0 = UnSelected, 1 = Selected
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
 
             bool SetVCPCapabilityValue = true; //0x66
-            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(SetVCPCapabilityValue));
+            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(SetVCPCapabilityValue));
             var VcpCoreServiceObject2 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject2);
 
@@ -1881,7 +1877,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         {
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 305u }; //0x66,==Auto Color Temperature==//Bit 4 : 0 = Off, 1 = On就对应true
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -1907,13 +1903,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         {
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 305u }; //0x66,value设置为305u，==Auto Color Temperature==//Bit 4 : 0 = Off, 1 = On
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
 
             bool SetVCPCapabilityValue = true; //0x66
-            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(SetVCPCapabilityValue));
+            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(SetVCPCapabilityValue));
             var VcpCoreServiceObject2 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject2);
 
@@ -1949,7 +1945,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         {
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 0u }; //0x66,==AutoBrightness==//Bit 0: 0 = Reserved, 1 = AutoBrightness Off || Bit 1: 0 = Reserved, 1 = AutoBrightness On
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -1975,13 +1971,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         {
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 305u }; //0x66,value设置为305u，==AutoBrightness==//Bit 0: 0 = Reserved, 1 = AutoBrightness Off || Bit 1: 0 = Reserved, 1 = AutoBrightness On
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
 
             bool SetVCPCapabilityValue = true; //0x66
-            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(SetVCPCapabilityValue));
+            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(SetVCPCapabilityValue));
             var VcpCoreServiceObject2 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject2);
 
@@ -2037,7 +2033,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
 
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 305u }; //0x66,==Auto Brightness Range  Level==//Bit 6~7 : 0=Leve 1 | 1=Level 2 | 2=Level 3
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -2078,13 +2074,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             };
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 305u }; //0x66,value设置为305u，
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
 
             bool SetVCPCapabilityValue = true; //0x66
-            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(SetVCPCapabilityValue));
+            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(SetVCPCapabilityValue));
             var VcpCoreServiceObject2 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject2);
 
@@ -2125,7 +2121,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         {
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 305u }; //0x66,==AutoBrightness==//Bit 0: 0 = Reserved, 1 = AutoBrightness Off || Bit 1: 0 = Reserved, 1 = AutoBrightness On
             var ObjGetvcpValue = ObjGetvcp.value;
-            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
+            VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(ObjGetvcp));
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
@@ -2197,7 +2193,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
 
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             bool SetVCPCapabilityValue = true; //0x66
-            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(SetVCPCapabilityValue));
+            VcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(SetVCPCapabilityValue));
             var VcpCoreServiceObject2 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject2);
 
@@ -2509,7 +2505,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
 
             vcpcode = "68";
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
-            mockVcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(true));
+            mockVcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
             privatedispalypluginObject.SetFieldOrProperty("_VcpCorePlugin", mockVcpCoreService.Object);
 
             if (vcpcode == "67" || vcpcode == "68")
@@ -2546,10 +2542,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             privatedispalypluginObject.SetFieldOrProperty("_VcpCorePlugin", mockVcpCoreService.Object);
             ObjGetVCP obBrightnessContrast = new ObjGetVCP() { result = true, value = (uint)30 };
             ObjGetVCP obColor = new ObjGetVCP() { result = true, value = (uint)20 };
-            mockVcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(obBrightnessContrast));
-            mockVcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<int>())).Returns(Task.FromResult(obColor));
-            mockVcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(true));
-            mockVcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            mockVcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(obBrightnessContrast));
+            mockVcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(obColor));
+            mockVcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+            mockVcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
             var result = displayPlugin.SyncPrimaryMonitorValueToOtherMonitor(moMain, monitorAll, ref exitAls, moMainvalue, vcpcode).Result;
             Assert.IsTrue(result);
         }
@@ -2579,14 +2575,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             privatedispalypluginObject.SetFieldOrProperty("_VcpCorePlugin", mockVcpCoreService.Object);
             ObjGetVCP isNotScreenPartition = new ObjGetVCP() { result = false, value = (uint)30 };
             ObjGetVCP isScreenPartition = new ObjGetVCP() { result = true, value = (uint)256 };   //The eighth position is 1
-            mockVcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(isNotScreenPartition));
+            mockVcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(isNotScreenPartition));
             if (isNotScreenPartition != null && !isNotScreenPartition.result)
             {
                 var isScreenPartition_result1 = displayPlugin.isScreenPartition(monitorInfo1).Result;
                 Assert.IsFalse(isScreenPartition_result1);
             }
 
-            mockVcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(isScreenPartition));
+            mockVcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(isScreenPartition));
             if (isScreenPartition != null && isScreenPartition.result)
             {
                 var isScreenPartition_result2 = displayPlugin.isScreenPartition(monitorInfo1).Result;

@@ -167,6 +167,8 @@ namespace DDPM.SA.Common
 
         Task SetIsUserActive(bool IsUserActive);
 
+        Task CancelVcpTask(Guid user_guid);
+
         Task<List<MonitorInfo>> GetMonitors();
 
         Task<List<MonitorInfo>> Re_GetMonitors();
@@ -179,17 +181,17 @@ namespace DDPM.SA.Common
 
         event EventHandler<MonitorinfoUpdateEventArgs> MonitorinfoUpdated;
 
-        Task<string> GetCapabilitiesString(MonitorInfo monitorInfo);
+        Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default);
 
-        Task<string> GetVCPCapabilities(MonitorInfo monitorInfo);
+        Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid guid = default);
 
-        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, int opt = 0);
+        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, Guid guid = default, int opt = 0);
 
-        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, int opt = 0);
+        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, Guid guid = default, int opt = 0);
 
-        Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val);
+        Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val, Guid guid = default);
 
-        Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val);
+        Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val, Guid guid = default);
 
         //
         //The idle state of DisplayService is used to block the handling of system display change event
@@ -807,8 +809,7 @@ namespace DDPM.SA.Common
 
         //Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
 
-        Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUITrigger = false, List<string> giuds = null, List<string> serviceTags = null, List<string> models = null, string minVersion = "");
-
+        Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify, bool reScan);
         Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false, DeviceType deviceType = DeviceType.Unknown);
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
@@ -892,7 +893,7 @@ namespace DDPM.SA.Common
 
         #region public for SW Update
 
-        Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, bool reScan = true, bool isUITrigger = false);
+        Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify, bool reScan);
 
         Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUITrigger = false, string installPath = "");
 
@@ -987,6 +988,7 @@ namespace DDPM.SA.Common
         Task<bool> StartMouseKeystrokeRecording(string Guid);
 
         Task<bool> StopMouseKeystrokeRecording(string Guid);
+
         Task<int> GetTouchScrollSensitivityLevel(string Guid);
 
         Task SetDPIValue(string Guid, int newValue);
@@ -1004,6 +1006,7 @@ namespace DDPM.SA.Common
         Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true);
 
         Task<bool> SetReportRate(string Guid, int newValue);
+
         Task<bool> SetTouchScrollSensitivityLevel(string Guid, int newValue);
 
         #endregion Mouse
@@ -1595,6 +1598,7 @@ namespace DDPM.SA.Common
         Task WriteLog(string logMsg); //Derek 1210
 
         Task<string> GetWebcamDeviceID(); //Derek 1225
+        Task<int> GetWebcamDeviceCountAsync(); //Derek 2025/02/19
 
         Task SetQAMOSDVisable(bool visable); //Derek 2025/01/02
 
@@ -1646,107 +1650,188 @@ namespace DDPM.SA.Common
 
         #endregion globalperipheral
 
-        #region  IAirAudioCommodity
+        #region IAirAudioCommodity
+
         Task<bool> GetDTPProxyPluginReady();
 
         #region Get
+
         Task<HeadsetConnectionType> GetAirAudioConnectionTypeAsync(string Guid);
+
         Task<JArray> GetAirAudioDeviceItemsAsync();
+
         Task<string> GetAirAudioSerialNumberAsync(string Guid);
+
         Task<string> GetAirAudioDeviceBatteryStatusAsync(string Guid);
+
         Task<string> GetAirAudioPairingHostName1Async(string Guid);
+
         Task<string> GetAirAudioPairingHostName2Async(string Guid);
+
         Task<string> GetAirAudioPairingHostName3Async(string Guid);
+
         Task<string> GetAirAudioPairingStatusNameAsync(string Guid);
+
         Task<string> GetAirAudioParentDeviceTypeAsync(string Guid);
+
         Task<string> GetAirAudioModelNumberAsync(string Guid);
+
         Task<string> GetAirAudioDeviceTypeAsync(string Guid);
+
         Task<string> GetAirAudioFirmwareVersionAsync(string Guid);
+
         Task<string> GetAirAudioPluginIdAsync(string Guid);
+
         Task<string> GetAirAudioDeviceIdAsync(string Guid);
+
         Task<string> GetAirAudioDeviceNameAsync(string Guid);
+
         Task<DeviceInterfaceType> GetAirAudioDeviceInterfaceTypeAsync(string Guid);
 
         Task<bool> GetAirAudioIsWearDetectionAsync(string Guid);
+
         Task<bool> GetAirAudioMuteStatusAsync(string Guid);
+
         Task<bool> GetAirAudioBoomMicAsync(string Guid);
+
         Task<bool> GetAirAudioIsBoomMicSupportedAsync(string Guid);
+
         Task<bool> GetAirAudioWearDetectionAsync(string Guid);
+
         Task<bool> GetAirAudioVoiceGuidanceAsync(string Guid);
+
         Task<bool> GetAirAudioBusyLightAsync(string Guid);
+
         Task<bool> GetAirAudioSidetoneAsync(string Guid);
+
         Task<bool> GetAirAudioMicNCIncomingAsync(string Guid);
+
         Task<bool> GetAirAudioIsMicNCIncomingSupportedAsync(string Guid);
+
         Task<bool> GetAirAudioIsMicNoiseCancellationAsync(string Guid);
+
         Task<bool> GetAirAudioIsWearDetectionQuickPauseSupportedAsync(string Guid);
+
         Task<bool> GetAirAudioIsWearDetectionMuteMicSupportedAsync(string Guid);
+
         Task<bool> GetAirAudioIsWearDetectionPauseMusicSupportedAsync(string Guid);
+
         Task<bool> GetAirAudioIsWearDetectionSensitivitySupportedAsync(string Guid);
+
         Task<bool> GetAirAudioIsWearDetectionSupportedAsync(string Guid);
+
         Task<bool> GetAirAudioIsANCSupportedAsync(string Guid);
+
         Task<bool> GetAirAudioIsEqualizerSupportedAsync(string Guid);
+
         Task<bool> GetAirAudioIsPresetsSupportedAsync(string Guid);
+
         Task<bool> GetAirAudioIsVoiceGuidanceSupportedAsync(string Guid);
+
         Task<bool> GetAirAudioIsBusyLightSupportedAsync(string Guid);
+
         Task<bool> GetAirAudioIsSidetoneSupportedAsync(string Guid);
+
         Task<bool> GetAirAudioIsMicNoiseCancellationSupportedAsync(string Guid);
+
         Task<bool> GetAirAudioIsDirtyAsync(string Guid);
+
         Task<bool> GetAirAudioIsReadyAsync(string Guid);
+
         Task<bool> GetAirAudioIsWearDetectionPauseMusicEnabledAsync(string Guid);
+
         Task<bool> GetAirAudioIsWearDetectionMuteMicEnabledAsync(string Guid);
+
         Task<bool> GetAirAudioIsBatteryLevelSupportedAsync(string Guid);
 
         Task<int> GetAirAudioWearDetectionSensitivityAsync(string Guid);
+
         Task<int> GetAirAudioIsWearDetectionQuickPauseAsync(string Guid);
+
         Task<int> GetAirAudioAncGainAsync(string Guid);
+
         Task<int> GetAirAudioAncModeAsync(string Guid);
+
         Task<int> GetAirAudioBand1GainAsync(string Guid);
+
         Task<int> GetAirAudioBand2GainAsync(string Guid);
+
         Task<int> GetAirAudioBand3GainAsync(string Guid);
+
         Task<int> GetAirAudioBand4GainAsync(string Guid);
+
         Task<int> GetAirAudioBand5GainAsync(string Guid);
+
         Task<int> GetAirAudioSidetoneLevelAsync(string Guid);
+
         Task<int> GetAirAudioSelectedPresetAsync(string Guid);
+
         Task<int> GetAirAudioBatteryLevelAsync(string Guid);
+
         Task<int> GetAirAudioPairedDeviceCountAsync(string Guid);
+
         Task<int> GetAirAudioMaxPairingSlotsAsync(string Guid);
+
         Task<int> GetAirAudioTotalNumberOfPairedHostNameAsync(string Guid);
+
         Task<int> GetAirAudioInstanceIdAsync(string Guid);
+
         Task<int> GetAirAudioInstanceNumberAsync(string Guid);
+
         Task<int> GetAirAudioODMIdAsync(string Guid);
-        #endregion
+
+        #endregion Get
 
         #region Set
+
         Task<bool> SetAirAudioMicNoiseCancellationAsync(string Guid, bool newValue);
+
         Task<bool> SetAirAudioSidetoneAsync(string Guid, bool newValue);
+
         Task<bool> SetAirAudioBusyLightAsync(string Guid, bool newValue);
+
         Task<bool> SetAirAudioVoiceGuidanceAsync(string Guid, bool newValue);
+
         Task<bool> SetAirAudioSelectedPresetAsync(string Guid, int newValue);
+
         Task<bool> SetAirAudioSidetoneLevelAsync(string Guid, int newValue);
 
         Task<bool> SetAirAudioBandsGainAsync(string Guid, byte[] newValue);
+
         Task<bool> SetAirAudioBand1GainAsync(string Guid, int newValue);
+
         Task<bool> SetAirAudioBand2GainAsync(string Guid, int newValue);
+
         Task<bool> SetAirAudioBand3GainAsync(string Guid, int newValue);
+
         Task<bool> SetAirAudioBand4GainAsync(string Guid, int newValue);
+
         Task<bool> SetAirAudioBand5GainAsync(string Guid, int newValue);
+
         Task<bool> SetAirAudioAncModeAsync(string Guid, int newValue);
+
         Task<bool> SetAirAudioAncGainAsync(string Guid, int newValue);
+
         Task<bool> SetAirAudioWearDetectionAsync(string Guid, bool newValue);
+
         Task<bool> SetAirAudioFactoryResetAsync(string Guid, bool newValue);
 
         Task<bool> SetAirAudioIsBoomMicSupportedAsync(string Guid, bool newValue);
-
 
         Task<bool> SetAirAudioWearDetectionQuickPauseAsync(string Guid, int newValue);
 
         Task<bool> SetAirAudioWearDetectionSensitivityAsync(string Guid, int newValue);
 
         Task<bool> SetAirAudioMicNCIncomingAsync(string Guid, bool newValue);
+
         Task<bool> SetAirAudioUnPairAsync(string Guid, bool newValue);
+
         Task<bool> SetAirAudioIsWearDetectionPauseMusicEnabledAsync(string Guid, bool newValue);
+
         Task<bool> SetAirAudioIsWearDetectionMuteMicEnabledAsync(string Guid, bool newValue);
-        #endregion
-        #endregion
+
+        #endregion Set
+
+        #endregion IAirAudioCommodity
     }
 }

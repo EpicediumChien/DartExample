@@ -54,7 +54,8 @@ namespace DDPM.UI.Plugin.ViewModels
             DebouncerFfunctionInit();
             _log!.Info($"[HeadsetViewModel] HeadsetViewModel Start...");
         }
-        ~HeadsetViewModel()
+
+        public void UloadHeadset_DTPNotify()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
@@ -62,6 +63,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
             }
         }
+
         private void DebouncerFfunctionInit()
         {
             _debouncerHeadset = new Debouncer(1000, ExecuteDebouncedAction);
@@ -613,9 +615,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _automatedActionsSensitivityUpPageShow = true;
                     _automatedActionsWhenHeadsetIsRemovedPageShow = true;
                     _automatedActionsAnswerCallPageShow = DeviceInfoDTP.IsAnswerCallSupported; //true; //WL5024 page2, not only AnswerCall  // always show, but need to detect disable/enable
-                    _supportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
-                    SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
-                    //OnPropertyChanged(nameof(AnswerCalls_String));
+                    _supportedAnswerCalls = true; //WL5024 page2, always need to show
+                    //SupportedAnswerCalls = true;
                     //Page 3
                     _voiceGuidancePageShow = true;
                     //_deviceSettingsDownloadDellAudioPageShow = false;
@@ -628,8 +629,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     //Page 2                  
                     _automatedActionsAnswerCallPageShow = true;//DELL 說拿掉;// only AnswerCall // always show, but need to detect disable/enable
                     _supportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
-                    SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
-                    //OnPropertyChanged(nameof(AnswerCalls_String));
+                    //SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
                     //Page 3
                     _voiceGuidancePageShow = true;
                     _deviceSettingsDownloadDellAudioPageShow = false;
@@ -639,10 +639,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     //Page 1
                     _configureMyAudioModesPageShow = true;
                     //Page 2                   
-                    _automatedActionsAnswerCallPageShow = true;// only AnswerCall // always show, but need to detect disable/enable
+                    _automatedActionsAnswerCallPageShow = true;
                     _supportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
-                    SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
-                    //OnPropertyChanged(nameof(AnswerCalls_String));
+                    //SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
                     //Page 3
                     _voiceGuidancePageShow = true;
                     //_deviceSettingsDownloadDellAudioPageShow = false;
@@ -654,9 +653,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _configureMyAudioModesPageShow = true;
                     //Page 2
                     _supportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
-                    SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
-                    _automatedActionsAnswerCallPageShow = true;//DELL 說拿掉;// only AnswerCall // always show, but need to detect disable/enable
-                    //OnPropertyChanged(nameof(AnswerCalls_String));
+                    //SupportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
+                    _automatedActionsAnswerCallPageShow = true;
                     //Page 3
                     _deviceSettingsDownloadDellAudioPageShow = false;
                     //defult page
@@ -2211,7 +2209,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         break;
                     }
-                    if (tick >= 52) // 51 sec force exit
+                    if (tick >= 20) // 20 sec force exit
                     {
                         //waitHeadsetFW = true;
                         //waitHeadsetReady = true;
