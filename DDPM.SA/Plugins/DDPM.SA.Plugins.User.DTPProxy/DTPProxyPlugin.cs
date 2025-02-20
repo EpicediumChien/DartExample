@@ -2021,6 +2021,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return false;
             }
         }
+
+        // Content is same as GetIsPropertyHDRSupported() ?
+        // Fixed by Elie. 2025/02/20
         public async Task<bool> GeIsPropertyAntiFlickerSupported(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -2030,41 +2033,41 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
                 {
-                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsPropertyHDRSupported");
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsPropertyAntiFlickerSupported");
 
                     if (value == null)
                     {
-                        Debug.WriteLine("GetPropertyValue returned null for IsPropertyHDRSupported.");
-                        writelog("GetPropertyValue returned null for IsPropertyHDRSupported.");
+                        Debug.WriteLine("GetPropertyValue returned null for IsPropertyAntiFlickerSupported.");
+                        writelog("GetPropertyValue returned null for IsPropertyAntiFlickerSupported.");
                         return false;
                     }
                     else
                     {
                         if (value is bool boolValue)
                         {
-                            Debug.WriteLine("GetPropertyValue successfully retrieved IsPropertyHDRSupported.");
-                            writelog("GetPropertyValue successfully retrieved IsPropertyHDRSupported.");
+                            Debug.WriteLine("GetPropertyValue successfully retrieved IsPropertyAntiFlickerSupported.");
+                            writelog("GetPropertyValue successfully retrieved IsPropertyAntiFlickerSupported.");
                             return boolValue;
                         }
                         else
                         {
-                            Debug.WriteLine("GetPropertyValue returned a non-boolean value for IsPropertyHDRSupported.");
-                            writelog("GetPropertyValue returned a non-boolean value for IsPropertyHDRSupported.");
+                            Debug.WriteLine("GetPropertyValue returned a non-boolean value for IsPropertyAntiFlickerSupported.");
+                            writelog("GetPropertyValue returned a non-boolean value for IsPropertyAntiFlickerSupported.");
                             return false;
                         }
                     }
                 }
                 else
                 {
-                    Debug.WriteLine($"[CheckIsPropertyHDRSupported]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"[CheckIsPropertyHDRSupported]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"[IsPropertyAntiFlickerSupported]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[IsPropertyAntiFlickerSupported]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                     return false;
                 }
             }
             else
             {
-                Debug.WriteLine($"[CheckIsPropertyHDRSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
-                writelog($"[CheckIsPropertyHDRSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                Debug.WriteLine($"[IsPropertyAntiFlickerSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[IsPropertyAntiFlickerSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 return false;
             }
         }
@@ -12474,46 +12477,47 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetAirAudioIsWearDetectionAsync(string Guid)
-        {
-            string guid = Guid;
+        //// Content is same as GetAirAudioBoomMicAsync?
+        //public async Task<bool> GetAirAudioIsWearDetectionAsync(string Guid)
+        //{
+        //    string guid = Guid;
 
-            try
-            {
-                if (!await GetItemIDAsync("AirAudio", guid))
-                    return false;
+        //    try
+        //    {
+        //        if (!await GetItemIDAsync("AirAudio", guid))
+        //            return false;
 
-                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
-                if (commodity is ICommodity)
-                {
-                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BoomMic");
-                    if (value == null)
-                    {
-                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is null for {guid}");
-                        return false;
-                    }
+        //        var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+        //        if (commodity is ICommodity)
+        //        {
+        //            var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BoomMic");
+        //            if (value == null)
+        //            {
+        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is null for {guid}");
+        //                return false;
+        //            }
 
-                    if (value is bool boolValue)
-                    {
-                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync succeeded for {guid}");
-                        return boolValue;
-                    }
-                    else
-                    {
-                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is not a boolean for {guid}");
-                        return false;
-                    }
-                }
+        //            if (value is bool boolValue)
+        //            {
+        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync succeeded for {guid}");
+        //                return boolValue;
+        //            }
+        //            else
+        //            {
+        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is not a boolean for {guid}");
+        //                return false;
+        //            }
+        //        }
 
-                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed: Could not retrieve commodity interface for {guid}");
-                return false;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed for {guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
+        //        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed: Could not retrieve commodity interface for {guid}");
+        //        return false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed for {guid} - Exception: {ex.Message}");
+        //        return false;
+        //    }
+        //}
 
         public async Task<bool> GetAirAudioMuteStatusAsync(string Guid)
         {

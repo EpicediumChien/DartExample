@@ -1688,7 +1688,7 @@ namespace DDPM.SA.Common
 
         Task<DeviceInterfaceType> GetAirAudioDeviceInterfaceTypeAsync(string Guid);
 
-        Task<bool> GetAirAudioIsWearDetectionAsync(string Guid);
+        //Task<bool> GetAirAudioIsWearDetectionAsync(string Guid);
 
         Task<bool> GetAirAudioMuteStatusAsync(string Guid);
 
