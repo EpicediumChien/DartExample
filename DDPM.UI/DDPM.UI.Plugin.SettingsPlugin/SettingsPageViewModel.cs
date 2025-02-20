@@ -178,11 +178,13 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 WorkerReportsProgress = false,
                 WorkerSupportsCancellation = false
             };
+            IsBusy_UpdatePage = true;
+            OnPropertyChanged("IsBusy_UpdatePage");
             bw.DoWork += DoWork_RefreshData_1;
             bw.RunWorkerCompleted += Set_Page_Done_1;
             bw.RunWorkerAsync(); //myArg is the optional argument
-            IsBusy_UpdatePage = true;
-            OnPropertyChanged("IsBusy_UpdatePage");
+            //IsBusy_UpdatePage = true;
+            //OnPropertyChanged("IsBusy_UpdatePage");
         }
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
@@ -202,8 +204,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 Trace.WriteLine($"[SettingsPage] Apply General(check) : {data.LockSettings.Lock_Setting_ScreenNotification}");
                 RefreshUI();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log?.Error($"[SettingsPageViewModel][DoWork_RefreshData] exception: {ex}");
             }
         }
 
@@ -218,11 +221,21 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             Log?.Info($"Invoke_RefreshData_1 go");
             try
             {
+                Log?.Info($"Invoke_RefreshData done");
+                if (CheckLockStateToSeeIfSkipUpdateCheck())
+                {
+                    IsBusy_UpdatePage = false;
+                    OnPropertyChanged("IsBusy_UpdatePage");
+                    return;
+                }
                 SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false, false, false, null, false, false, true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, false, true, false).Result);
                 RefreshUI();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log?.Error($"[SettingsPageViewModel][DoWork_RefreshData_1] exception: {ex}");
+                IsBusy_UpdatePage = false;
+                OnPropertyChanged("IsBusy_UpdatePage");
             }
         }
 
@@ -400,12 +413,46 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
         public Visibility IsAnyUpdate
         {
-            get => (Critical_UpdateList_UI?.Count >= 1 ||
+            get => ((Critical_UpdateList_UI?.Count >= 1 ||
                 Recommended_UpdateList_UI?.Count >= 1 ||
-                Optional_UpdateList_UI?.Count >= 1) ? Visibility.Visible : Visibility.Collapsed;
+                Optional_UpdateList_UI?.Count >= 1) && _Lock_UpdatesPage == false) ? Visibility.Visible : Visibility.Collapsed;
         }
+
+        private bool CheckLockStateToSeeIfSkipUpdateCheck()
+        {
+            DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();
+            if (data != null)
+            {
+                if (data.LockSettings != null)
+                {
+                    if (data.LockSettings.Lock_Settings_Updates)
+                    {
+                        Log?.Info($"[CheckUpdate] UI locked, drop the update checking");
+                        IsBusy_UpdatePage = false;
+                        OnPropertyChanged("IsBusy_UpdatePage");
+                        return false;
+                    }
+                    else
+                    {
+                        Log?.Info($"[CheckUpdate] UI unlocked, continue to check update");
+                    }
+                }
+                else
+                {
+                    Log?.Info($"[CheckUpdate] can't read LockSettings to check if UI locked, continue to check update");
+                }
+            }
+            else
+            {
+                Log?.Info($"[CheckUpdate] can't read DDPM settings to check if UI locked, continue to check update");
+            }
+            return true;
+        }
+
         public void CheckUpdate()
         {
+            if (CheckLockStateToSeeIfSkipUpdateCheck())
+                return;
             Log?.Info($"CheckUpdate start");
             BackgroundWorker bw = new BackgroundWorker()
             {
@@ -420,6 +467,12 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         private void Set_CheckUpdate_Dowork(object sender, DoWorkEventArgs e)
         {
+            if (CheckLockStateToSeeIfSkipUpdateCheck())
+            {
+                IsBusy_UpdatePage = false;
+                OnPropertyChanged("IsBusy_UpdatePage");
+                return;
+            }
             Log?.Info($"CheckUpdate start");
             SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false, false, false, null, false, false, true, true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false).Result);
             RefreshUI();
@@ -582,6 +635,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 OnPropertyChanged("UpdatesPageUI_IsEnable");
                 OnPropertyChanged("UpdatesPageUI_Opacity");
                 OnPropertyChanged("UpdatesPageUI_LockTooltip");
+                OnPropertyChanged("IsAnyUpdate");
             }
         }
         public bool UpdatesPageUI_IsEnable
