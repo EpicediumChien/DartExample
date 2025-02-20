@@ -302,5 +302,12 @@ namespace DDPM.UI.Common.UserControls
                 }
             }
         }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Set the input method to English for the entire UserControl
+            InputMethod.SetPreferredImeState(this, InputMethodState.Off);
+
+        }
     }
 }

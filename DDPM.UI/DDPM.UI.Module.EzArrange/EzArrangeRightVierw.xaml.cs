@@ -129,7 +129,7 @@ namespace DDPM.UI.Module.EzArrange
             splitListView_Custom.AddButtonClickCommand = new RelayCommand<SplitListView>(HandleAddButtonClickCommand);
 
             //InitRecentListView();
-            //InitListViewItems();
+            InitListViewItems();
 
             customListTooltipText.Text = CustomListTooltipText;
         }
@@ -139,8 +139,8 @@ namespace DDPM.UI.Module.EzArrange
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //InitRecentListView();
-            CleanUpListViewItems();
-            InitListViewItems();
+            //CleanUpListViewItems();
+            //InitListViewItems();
 
             //Robert_Lin, 2025-1-7, the DDPMDebug.txt solution will be removed, use DevSettings instaed.
             //NEW:
@@ -1471,6 +1471,35 @@ namespace DDPM.UI.Module.EzArrange
             if (isVerticalOrg != isVerticalNew)
             {
                 _vm.IsVertical = isVerticalNew;
+                //Robert_Lin 2025-2-19 try to improve performance when switch Vbar quickly
+                //NEW:
+                InvokeRefreshLViewsIsVeritical(isVerticalNew);
+                //OLD:               
+                //Dispatcher.Invoke(new Action(() =>
+                //{
+                //    Recent ListView
+                //    splitListView_Recent.IsVertical = isVerticalNew;
+
+                //    Custom ListView
+                //    splitListView_Custom.IsVertical = isVerticalNew;
+
+                //    Reset ListViews
+                //    splitListView_2w.IsVertical = isVerticalNew;
+                //    splitListView_3w.IsVertical = isVerticalNew;
+                //    splitListView_4w.IsVertical = isVerticalNew;
+                //    splitListView_5w.IsVertical = isVerticalNew;
+                //    splitListView_6w.IsVertical = isVerticalNew;
+                //    splitListView_7w.IsVertical = isVerticalNew;
+                //}));
+
+
+            }
+        }
+
+        private async void InvokeRefreshLViewsIsVeritical(bool isVerticalNew)
+        {
+            await Task.Run(() =>
+            {
                 Dispatcher.Invoke(new Action(() =>
                 {
                     //Recent ListView
@@ -1487,8 +1516,7 @@ namespace DDPM.UI.Module.EzArrange
                     splitListView_6w.IsVertical = isVerticalNew;
                     splitListView_7w.IsVertical = isVerticalNew;
                 }));
-
-            }
+            });
         }
         #endregion Refresh Data
 
