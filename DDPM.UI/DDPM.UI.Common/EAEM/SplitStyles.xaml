@@ -26,7 +26,7 @@
                Right="{StaticResource SplitItem_bdThick}"
                Bottom="{StaticResource SplitItem_bdThick}" />
 
-    <sys:Double x:Key="SplitItem_BdRadius">6</sys:Double>
+    <sys:Double x:Key="SplitItem_BdRadius">3</sys:Double>
     <CornerRadius x:Key="SplitItem_CornerRadius"
                   TopLeft="{StaticResource SplitItem_BdRadius}"
                   TopRight="{StaticResource SplitItem_BdRadius}"

@@ -11,6 +11,9 @@ using System.Windows.Media.Animation;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using UserControl = System.Windows.Controls.UserControl;
 using VcpCore.Common;
+using Dell.Client.Framework.UX.WPF.Controls;
+using System.Windows.Media;
+
 
 namespace DDPM.UI.Common.UserControls
 {
@@ -490,6 +493,60 @@ namespace DDPM.UI.Common.UserControls
             LeftFrame.Width = LeftGrid.Width;
         }
 
+        private void marketNameText_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UXTextBlock textBlock = (UXTextBlock)sender;
+            if (textBlock != null)
+            {
+                // Measure the actual width of the text
+                var formattedText = new FormattedText(
+                    textBlock.Text, 
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    System.Windows.FlowDirection.LeftToRight,
+                    new Typeface(textBlock.FontFamily, textBlock.FontStyle, textBlock.FontWeight, textBlock.FontStretch),
+                    textBlock.FontSize,
+                    textBlock.Foreground,
+                    1.25);
+
+                // Check if the text is trimmed
+                if (formattedText.Width > textBlock.ActualWidth)
+                {
+                    //textBlock.ToolTip = textBlock.Text;
+                    System.Windows.Controls.ToolTip? tooltip = CreateTooltipContent(textBlock.Text);
+                    if (tooltip != null)
+                    {
+                        textBlock.ToolTip = tooltip;
+                    }
+                }
+                else
+                {
+                    textBlock.ToolTip = null;
+                }
+
+            }
+        }
+
+        private System.Windows.Controls.ToolTip? CreateTooltipContent(string text)
+        {
+            System.Windows.Controls.ToolTip toolTip = new System.Windows.Controls.ToolTip();
+            Border bdOuter = new Border();
+            TextBlock tb = new TextBlock()
+            {
+                Text = text
+            };
+            try
+            {
+                bdOuter.Style = (Style)FindResource("Tooltip_OutterBorderStyle");
+                tb.Style = (Style)FindResource("Tooltip_TextBlockStyle");
+                bdOuter.Child = tb;
+                toolTip.Content = bdOuter;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            return toolTip;
+        }
 
         private void ShowVBar(bool bShowLeft = true)
         {
