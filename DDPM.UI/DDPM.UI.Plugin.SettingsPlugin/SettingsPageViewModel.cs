@@ -228,7 +228,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     OnPropertyChanged("IsBusy_UpdatePage");
                     return;
                 }
-                SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false, false, false, null, false, false, true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, false, true, false).Result);
+                SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false, true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, true).Result);
                 RefreshUI();
             }
             catch (Exception ex)
