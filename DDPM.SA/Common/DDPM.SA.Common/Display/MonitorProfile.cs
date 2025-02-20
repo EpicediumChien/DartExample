@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using VcpCore.Common;
+using Windows.Devices.Enumeration;
 using static System.Reflection.Metadata.BlobBuilder;
 
 namespace DDPM.SA.Common
@@ -160,7 +161,16 @@ namespace DDPM.SA.Common
         private static extern UInt32 EnumDisplayDevices(string s, UInt32 iDevNum, ref DISPLAY_DEVICE displayDevice, UInt32 dwFlags);
         private static UInt32 _EnumDisplayDevices(string s, UInt32 iDevNum, ref DISPLAY_DEVICE displayDevice, UInt32 dwFlags)
         {
-            return EnumDisplayDevices(s, iDevNum, ref displayDevice, dwFlags);
+            UInt32 rst = EnumDisplayDevices(s, iDevNum, ref displayDevice, dwFlags);
+
+            if (rst == 0)
+            {
+#if DEBUG
+                Console.WriteLine("[MonitorProfile] EnumDisplayDevices failed.");
+#endif
+            }
+
+            return rst;
         }
 
 
@@ -172,7 +182,16 @@ namespace DDPM.SA.Common
         string pDeviceName);
         private static bool _AssociateColorProfileWithDevice(IntPtr pMachineName, string pProfileName, string pDeviceName)
         {
-            return AssociateColorProfileWithDevice(pMachineName, pProfileName, pDeviceName);
+            bool rst = AssociateColorProfileWithDevice(pMachineName, pProfileName, pDeviceName);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[MonitorProfile] AssociateColorProfileWithDevice failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("mscms.dll", SetLastError = true)]
@@ -180,7 +199,16 @@ namespace DDPM.SA.Common
         private static extern bool InstallColorProfile(IntPtr pMachineName, string pProfileName);
         private static bool _InstallColorProfile(IntPtr pMachineName, string pProfileName)
         {
-            return InstallColorProfile(pMachineName, pProfileName);
+            bool rst = InstallColorProfile(pMachineName, pProfileName);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[MonitorProfile] InstallColorProfile failed.");
+#endif
+            }
+
+            return rst;
         }
 
         // from: c:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\um\Icm.h
@@ -198,7 +226,16 @@ namespace DDPM.SA.Common
         private static extern UInt32 WcsGetUsePerUserProfiles(string deviceName, DeviceClassFlags deviceClass, out UInt32 usePerUserProfiles);
         private static UInt32 _WcsGetUsePerUserProfiles(string deviceName, DeviceClassFlags deviceClass, out UInt32 usePerUserProfiles)
         {
-            return WcsGetUsePerUserProfiles(deviceName, deviceClass, out usePerUserProfiles);
+            UInt32 rst = WcsGetUsePerUserProfiles(deviceName, deviceClass, out usePerUserProfiles);
+
+            if (rst == 0)
+            {
+#if DEBUG
+                Console.WriteLine("[MonitorProfile] WcsGetUsePerUserProfiles failed.");
+#endif
+            }
+
+            return rst;
         }
         // from: c:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\um\Icm.h
         //BOOL WINAPI WcsGetDefaultColorProfileSize(
@@ -230,7 +267,16 @@ namespace DDPM.SA.Common
             UInt32 dwProfileID,
             out UInt32 cbProfileName)
         {
-            return WcsGetDefaultColorProfileSize(scope, deviceName, colorProfileType, colorProfileSubType, dwProfileID, out cbProfileName);
+            UInt32 rst = WcsGetDefaultColorProfileSize(scope, deviceName, colorProfileType, colorProfileSubType, dwProfileID, out cbProfileName);
+
+            if (rst == 0)
+            {
+#if DEBUG
+                Console.WriteLine("[MonitorProfile] WcsGetDefaultColorProfileSize failed.");
+#endif
+            }
+
+            return rst;
         }
 
         // from: c:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\um\Icm.h
@@ -265,7 +311,16 @@ namespace DDPM.SA.Common
             UInt32 cbProfileName,
             StringBuilder profileName)
         {
-            return WcsGetDefaultColorProfile(scope, deviceName, colorProfileType, colorProfileSubType, dwProfileID, cbProfileName, profileName);
+            UInt32 rst = WcsGetDefaultColorProfile(scope, deviceName, colorProfileType, colorProfileSubType, dwProfileID, cbProfileName, profileName);
+
+            if (rst == 0)
+            {
+#if DEBUG
+                Console.WriteLine("[MonitorProfile] WcsGetDefaultColorProfile failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("Mscms.dll", CharSet = CharSet.Unicode, SetLastError = true)]
@@ -284,7 +339,16 @@ namespace DDPM.SA.Common
             UInt32 dwProfileID,
             StringBuilder profileName)
         {
-            return WcsSetDefaultColorProfile(scope, deviceName, colorProfileType, colorProfileSubType, dwProfileID, profileName);
+            bool rst = WcsSetDefaultColorProfile(scope, deviceName, colorProfileType, colorProfileSubType, dwProfileID, profileName);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[MonitorProfile] WcsSetDefaultColorProfile failed.");
+#endif
+            }
+
+            return rst;
         }
 
 
