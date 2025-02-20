@@ -46,6 +46,15 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 showLockMask = value;
                 LockMaskVisible = showLockMask ? Visibility.Visible : Visibility.Collapsed;
                 NotifyPropertyChanged("ShowLockMask");
+                NotifyPropertyChanged("AnalyticsPageUI_Opacity");
+            }
+        }
+
+        public string AnalyticsPageUI_Opacity
+        {
+            get
+            {
+                return showLockMask ? "0.5" : "1.0";
             }
         }
 
