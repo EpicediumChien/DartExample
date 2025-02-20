@@ -235,7 +235,12 @@ namespace DDPM.CLI.Plugins.Display
             result.command_guid_string = input.command_guid_string;
             result.ticket = DateTime.Now;
 
-            if(commandLineInput.Options.Count > 0)
+            if (commandLineInput.TargetType.Equals("display", StringComparison.OrdinalIgnoreCase) && !input_param_validation(devMgr, commandLineInput, ref result))
+            {
+                return result;
+            }
+
+            if (commandLineInput.Options.Count > 0)
             {
                 if (commandLineInput.Options[0].Option_Value.Equals("Display", StringComparison.OrdinalIgnoreCase) && !input_param_validation(devMgr, commandLineInput, ref result))
                     return result;
