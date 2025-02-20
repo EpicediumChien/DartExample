@@ -757,10 +757,10 @@ namespace DDPM.EABroker
                 {
                     Dictionary<string, InstalledAppInfo> applist = new Dictionary<string, InstalledAppInfo>();
                     if (_deviceManagerSA != null)
-                        return null;
-                    else
                         applist = _deviceManagerSA.GetAllAppList().Result; // 取得所有applist比對UWP
-                   
+                    else
+                        return null;
+
                     if (!applist.Values.Any(app => app.AppUserModelID == appData.AppUserModelID)) // 檢查 AppUserModelID 是否存在
                     {
                         _vm?.WriteLog($"@LaunchApp error: UWP AppUserModelID not found - {appData.AppUserModelID}");
