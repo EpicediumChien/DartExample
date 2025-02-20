@@ -194,7 +194,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
             if (_DisplayManagerPlugin2 != "")
             {
                 PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
-                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(true));
                 privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
                 var SetPipModeOffResult2 = pipPbpMangerPlugin.SetPipModeOff(monitorInfo1).Result;
                 Assert.That(SetPipModeOff2, Is.EqualTo(SetPipModeOffResult2));
@@ -221,7 +221,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
             if (_DisplayManagerPlugin2 != "")
             {
                 PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
-                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(true));
                 privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
                 var SetPipModeSmallResult2 = pipPbpMangerPlugin.SetPipModeSmall(monitorInfo1).Result;
                 Assert.That(SetPipModeSmall2, Is.EqualTo(SetPipModeSmallResult2));
@@ -248,7 +248,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
             if (_DisplayManagerPlugin2 != "")
             {
                 PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
-                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(true));
                 privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
                 var SetPipModeLargeResult2 = pipPbpMangerPlugin.SetPipModeLarge(monitorInfo1).Result;
                 Assert.That(SetPipModeLarge2, Is.EqualTo(SetPipModeLargeResult2));
@@ -275,7 +275,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
             if (_DisplayManagerPlugin2 != "")
             {
                 PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
-                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(true));
                 privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
                 var TogglePipSizeResult2 = pipPbpMangerPlugin.TogglePipSize(monitorInfo1).Result;
                 Assert.That(TogglePipSize2, Is.EqualTo(TogglePipSizeResult2));
@@ -302,7 +302,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
             if (_DisplayManagerPlugin2 != "")
             {
                 PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
-                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(true));
                 privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
                 var TogglePipPositionResult2 = pipPbpMangerPlugin.TogglePipPosition(monitorInfo1).Result;
                 Assert.That(TogglePipPosition2, Is.EqualTo(TogglePipPositionResult2));
@@ -329,7 +329,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
             if (_DisplayManagerPlugin2 != "")
             {
                 PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
-                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(true));
                 privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
                 var SetPbpModeResult2 = pipPbpMangerPlugin.SetPbpMode(monitorInfo1, modeCode).Result;
                 Assert.That(TogglePipPosition2, Is.EqualTo(SetPbpModeResult2));
@@ -357,7 +357,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
             if (_DisplayManagerPlugin2 != "")
             {
                 PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
-                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(true));
                 privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
                 var VideoSwapResult2 = pipPbpMangerPlugin.VideoSwap(monitorInfo1, x, y).Result;
                 Assert.That(VideoSwap2, Is.EqualTo(VideoSwapResult2));
@@ -385,7 +385,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
             if (_DisplayManagerPlugin2 != "")
             {
                 PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
-                DisplayManagerService2.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(GetPxpMode2));
+                DisplayManagerService2.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<Priority>())).Returns(Task.FromResult(GetPxpMode2));
                 privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
                 var GetPxpModeResult2 = pipPbpMangerPlugin.GetPxpMode(monitorInfo1).Result;
                 Assert.That(GetPxpMode2.result, Is.EqualTo(GetPxpModeResult2.result));
@@ -416,7 +416,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
             if (_DisplayManagerPlugin2 != "")
             {
                 PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
-                DisplayManagerService2.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(SubInputList2));
+                DisplayManagerService2.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<Priority>())).Returns(Task.FromResult(SubInputList2));
                 privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
                 var GetSubInputListResult2 = pipPbpMangerPlugin.GetSubInputList(monitorInfo1).Result;
                 Assert.That(GetSubInputList2, Is.EqualTo(GetSubInputListResult2));
@@ -454,8 +454,8 @@ namespace SA.Plugins.User.PipPbpManager.Test
             if (GetSubInputs2 != null)
             {
                 PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
-                DisplayManagerService2.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(SubInputList2));
-                DisplayManagerService2.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(SubInputList3));
+                DisplayManagerService2.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<Priority>())).Returns(Task.FromResult(SubInputList2));
+                DisplayManagerService2.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<Priority>())).Returns(Task.FromResult(SubInputList3));
                 var DisplayManagerService2Object = DisplayManagerService2.Object;
                 privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2Object);   //GetVCPCapability 0x8E :value 15 ,true
 
@@ -502,8 +502,8 @@ namespace SA.Plugins.User.PipPbpManager.Test
             if (_DisplayManagerPlugin2 != null)
             {
                 PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
-                DisplayManagerService2.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(SubInputList2));
-                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+                DisplayManagerService2.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<Priority>())).Returns(Task.FromResult(SubInputList2));
+                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(true));
                 var DisplayManagerService2Object = DisplayManagerService2.Object;
                 privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2Object);   //GetVCPCapability 0x8E :value 15 ,true
 
@@ -545,7 +545,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
                 if (_DisplayManagerPlugin2 != "")
                 {
                     PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
-                    DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+                    DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(true));
                     var displayManagerService2Object = DisplayManagerService2.Object;
                     privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", displayManagerService2Object);
                     var UsbSwitchResult3 = pipPbpMangerPlugin.UsbSwitch(monitorInfo1, target2).Result;

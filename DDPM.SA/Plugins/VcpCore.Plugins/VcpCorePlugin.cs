@@ -294,7 +294,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid uguid = default)
+        public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid uguid = default, Priority priority = Priority.Low)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetCapabilitiesString requested ...");
 
@@ -323,7 +323,7 @@ namespace VcpCore.Plugins
                                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
                                 ParameterType parameterType = new ParameterType(Queue_CommandType.GetCapabilitiesString, new Type_GetCapabilitiesString(_guid, moX.Item1, uguid));
-                                _TaskQueue.Enqueue(parameterType);
+                                _TaskQueue.Enqueue(parameterType, priority);
 
                                 Launch_TaskQueueExecutor();
 
@@ -352,7 +352,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        public Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid uguid = default)
+        public Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid uguid = default, Priority priority = Priority.Low)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapabilities requested ...");
 
@@ -381,7 +381,7 @@ namespace VcpCore.Plugins
                                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
                                 ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapabilities, new Type_GetVCPCapabilities(_guid, moX.Item1, uguid));
-                                _TaskQueue.Enqueue(parameterType);
+                                _TaskQueue.Enqueue(parameterType, priority);
 
                                 Launch_TaskQueueExecutor();
 
@@ -410,7 +410,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, Guid uguid = default, int opt = 0)
+        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, Guid uguid = default, int opt = 0, Priority priority = Priority.Low)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapability requested ...");
 
@@ -443,7 +443,7 @@ namespace VcpCore.Plugins
                                     _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
                                     ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapability_I, new Type_GetVCPCapability_I(_guid, moX.Item1, code, uguid, opt));
-                                    _TaskQueue.Enqueue(parameterType);
+                                    _TaskQueue.Enqueue(parameterType, priority);
 
                                     Launch_TaskQueueExecutor();
 
@@ -478,7 +478,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, Guid uguid = default, int opt = 0)
+        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, Guid uguid = default, int opt = 0, Priority priority = Priority.Low)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapability requested ...");
 
@@ -509,7 +509,7 @@ namespace VcpCore.Plugins
                                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
                                 ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapability_II, new Type_GetVCPCapability_II(_guid, moX.Item1, FunctionName, uguid, opt));
-                                _TaskQueue.Enqueue(parameterType);
+                                _TaskQueue.Enqueue(parameterType, priority);
 
                                 Launch_TaskQueueExecutor();
 
@@ -538,7 +538,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val, Guid uguid = default)
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val, Guid uguid = default, Priority priority = Priority.Low)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received SetVCPCapability requested ...");
 
@@ -565,7 +565,7 @@ namespace VcpCore.Plugins
                                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
                                 ParameterType parameterType = new ParameterType(Queue_CommandType.SetVCPCapability_I, new Type_SetVCPCapability_I(_guid, moX.Item1, code, val, uguid));
-                                _TaskQueue.Enqueue(parameterType);
+                                _TaskQueue.Enqueue(parameterType, priority);
 
                                 Launch_TaskQueueExecutor();
 
@@ -599,7 +599,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, string FunctionName, string val, Guid uguid = default)
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, string FunctionName, string val, Guid uguid = default, Priority priority = Priority.Low)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received SetVCPCapability requested ...");
 
@@ -624,7 +624,7 @@ namespace VcpCore.Plugins
                             _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
                             ParameterType parameterType = new ParameterType(Queue_CommandType.SetVCPCapability_II, new Type_SetVCPCapability_II(_guid, moX.Item1, FunctionName, val, uguid));
-                            _TaskQueue.Enqueue(parameterType);
+                            _TaskQueue.Enqueue(parameterType, priority);
 
                             Launch_TaskQueueExecutor();
 
@@ -682,7 +682,7 @@ namespace VcpCore.Plugins
                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
                 ParameterType parameterType = new ParameterType(Queue_CommandType.Initialize0x52toEmpty, new Type_Initialize0x52toEmpty(_guid, default));
-                _TaskQueue.Enqueue(parameterType);
+                _TaskQueue.Enqueue(parameterType, Priority.Low);
 
                 Launch_TaskQueueExecutor();
             }
@@ -706,7 +706,7 @@ namespace VcpCore.Plugins
                     _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
                     ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x52, new Type_Watcher0x52(_guid, default));
-                    _TaskQueue.Enqueue(parameterType);
+                    _TaskQueue.Enqueue(parameterType, Priority.Low);
 
                     Launch_TaskQueueExecutor();
                 }
@@ -733,7 +733,7 @@ namespace VcpCore.Plugins
                     _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
                     ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x02forStatusCheck, new Type_Watcher0x02forStatusCheck(_guid, default));
-                    _TaskQueue.Enqueue(parameterType);
+                    _TaskQueue.Enqueue(parameterType, Priority.Low);
 
                     Launch_TaskQueueExecutor();
                 }
@@ -1374,7 +1374,6 @@ namespace VcpCore.Plugins
                                         var monitor = _AllInfoMonitors_Mix.FirstOrDefault(t => t.Item1.edid.Equals(monitorInfoX.edid));
                                         if (monitor.Item1 != null && monitor.Item2 != null)
                                         {
-
                                             monitor.Item1.inputSource = tmp.Item2;
                                             monitor.Item1.inputCable = tmp.Item1;
                                             monitor.Item2.inputSource = tmp.Item2;

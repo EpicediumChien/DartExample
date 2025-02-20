@@ -34,12 +34,9 @@ using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UX.WPF.Controls;
-using Dell.TechHub.Sdk.Common.Utilities.Extensions;
 using DPeMPublic.Common.Enums;
-using IndiLogic.DPeM.Broker;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
-using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -50,7 +47,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Security.Policy;
@@ -65,7 +61,6 @@ using VcpCore.Common;
 using Windows.System;
 using static DDPM.SA.Common.Telementry_GeneralFunction;
 using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
-using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 using Point = System.Windows.Point;
 
@@ -2228,7 +2223,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(_AllInfoMonitors.ToList());
         }
 
-        public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default)
+        public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
         {
             writelog("DeviceMangerPlugin received GetCapabilitiesString requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -2237,12 +2232,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string r = string.Empty;
 
             if (_DisplayManagerPlugin != null)
-                r = _DisplayManagerPlugin.GetCapabilitiesString(monitorInfo, guid).Result;
+                r = _DisplayManagerPlugin.GetCapabilitiesString(monitorInfo, guid, priority).Result;
 
             return Task.FromResult(r);
         }
 
-        public Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid guid = default)
+        public Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
         {
             writelog("DeviceMangerPlugin received GetVCPCapabilities requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -2251,12 +2246,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string r = string.Empty;
 
             if (_DisplayManagerPlugin != null)
-                r = _DisplayManagerPlugin.GetVCPCapabilities(monitorInfo, guid).Result;
+                r = _DisplayManagerPlugin.GetVCPCapabilities(monitorInfo, guid, priority).Result;
 
             return Task.FromResult(r);
         }
 
-        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, Guid guid = default, int opt = 0)
+        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, Guid guid = default, int opt = 0, Priority priority = Priority.Low)
         {
             writelog("DeviceMangerPlugin received GetVCPCapability requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -2267,12 +2262,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ObjGetVCP r = new ObjGetVCP();
 
             if (_DisplayManagerPlugin != null)
-                r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, code, guid, opt).Result;
+                r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, code, guid, opt, priority).Result;
 
             return Task.FromResult(r);
         }
 
-        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, Guid guid = default, int opt = 0)//Dean 0626 fix SAST issue, syncup param name as well
+        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, Guid guid = default, int opt = 0, Priority priority = Priority.Low)//Dean 0626 fix SAST issue, syncup param name as well
         {
             writelog("DeviceMangerPlugin received GetVCPCapability requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -2283,12 +2278,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ObjGetVCP r = new ObjGetVCP();
 
             if (_DisplayManagerPlugin != null)
-                r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, FunctionName, guid, opt).Result;
+                r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, FunctionName, guid, opt, priority).Result;
 
             return Task.FromResult(r);
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val, Guid guid = default)
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val, Guid guid = default, Priority priority = Priority.Low)
         {
             writelog("DeviceMangerPlugin received SetVCPCapability requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
@@ -2299,7 +2294,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool r = false;
 
             if (_DisplayManagerPlugin != null)
-                r = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, code, val, guid).Result;
+                r = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, code, val, guid, priority).Result;
 
             //0715 Jason add
             if (r && code == 0x04 && _NKVMPlugin != null)
@@ -2376,7 +2371,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(r);
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val, Guid guid = default)//Dean 0626 fix SAST issue, syncup param name as well
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val, Guid guid = default, Priority priority = Priority.Low)//Dean 0626 fix SAST issue, syncup param name as well
         {
             writelog("DeviceMangerPlugin received SetVCPCapability requested ...");
             writelog("TargetMonitor DisplayName is " + monitorInfoX.DisplayName);
@@ -2391,7 +2386,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (!string.IsNullOrEmpty(val))
                 {
                     if (_DisplayManagerPlugin != null)
-                        r = _DisplayManagerPlugin.SetVCPCapability(monitorInfoX, FunctionName, val, guid).Result;
+                        r = _DisplayManagerPlugin.SetVCPCapability(monitorInfoX, FunctionName, val, guid, priority).Result;
 
                     //Telementry Collection
                     var Displaysettings_Function = new Displaysettings_Function();
@@ -2401,7 +2396,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (_NKVMPlugin != null)
                         {
                             ObjGetVCP objGetVCP = new ObjGetVCP();
-                            objGetVCP = _DisplayManagerPlugin.GetVCPCapability(monitorInfoX, 0x60).Result;
+                            objGetVCP = _DisplayManagerPlugin.GetVCPCapability(monitorInfoX, 0x60, guid, 0, priority).Result;
                             if (objGetVCP.result)
                             {
                                 _NKVMPlugin.SetVCPNotify(monitorInfoX, 0x60, (int)(uint)objGetVCP.value).Wait();
