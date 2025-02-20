@@ -1306,6 +1306,30 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //Robert_Lin, 2024-12-17 add log for trace elapsed time
 
             bool ret = false;
+            DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();
+            if (data != null)
+            {
+                if (data.LockSettings != null)
+                {
+                    if (data.LockSettings.Lock_Settings_Updates)
+                    {
+                        _log.Info($"Peripherals_UpdateNotify UI locked, drop the update checking");
+                        return ret;
+                    }
+                    else
+                    {
+                        _log.Info($"Peripherals_UpdateNotify UI unlocked, continue to check update");
+                    }
+                }
+                else
+                {
+                    _log.Info($"Peripherals_UpdateNotify can't read LockSettings to check if UI locked, continue to check update");
+                }
+            }
+            else
+            {
+                _log.Info($"Peripherals_UpdateNotify can't read DDPM settings to check if UI locked, continue to check update");
+            }
             Requires.NotNull(devMgr, nameof(devMgr));
             //Get FW avaiable count
             //Check SW avaiable count
@@ -1362,6 +1386,30 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// <param name="e"></param>
         private void _deviceManager_Peripherals_UpdateNotify(object? sender, bool e)
         {
+            DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();
+            if (data != null)
+            {
+                if (data.LockSettings != null)
+                {
+                    if (data.LockSettings.Lock_Settings_Updates)
+                    {
+                        _log.Info($"Peripherals_UpdateNotify UI locked, drop the update checking");
+                        return;
+                    }
+                    else
+                    {
+                        _log.Info($"Peripherals_UpdateNotify UI unlocked, continue to check update");
+                    }
+                }
+                else
+                {
+                    _log.Info($"Peripherals_UpdateNotify can't read LockSettings to check if UI locked, continue to check update");
+                }
+            }
+            else
+            {
+                _log.Info($"Peripherals_UpdateNotify can't read DDPM settings to check if UI locked, continue to check update");
+            }
             if (_deviceManager != null)
             {
                 //Get FW/SW update count
