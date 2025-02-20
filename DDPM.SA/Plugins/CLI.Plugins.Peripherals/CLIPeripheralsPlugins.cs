@@ -3694,7 +3694,6 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             //cLI_SWU_RESPONSE.Result = "PASS";
                                         }
                                         Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
-                                        ret = true;
                                         _devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, false, installPath);
                                         ret = true;
                                     }
@@ -3713,7 +3712,6 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             //cLI_SWU_RESPONSE.Result = "PASS";
                                         }
                                         Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
-                                        ret = true;
                                         _devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, false, installPath);
                                         ret = true;
                                     }
