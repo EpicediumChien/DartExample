@@ -755,9 +755,13 @@ namespace DDPM.EABroker
             {
                 if (appData.AppType == "False") //UWP
                 {
-                    Dictionary<string, InstalledAppInfo> applist = _deviceManagerSA.GetAllAppList().Result; // 取得所有applist比對UWP
-                    // 檢查 AppUserModelID 是否存在
-                    if (!applist.Values.Any(app => app.AppUserModelID == appData.AppUserModelID))
+                    Dictionary<string, InstalledAppInfo> applist = new Dictionary<string, InstalledAppInfo>();
+                    if (_deviceManagerSA != null)
+                        return null;
+                    else
+                        applist = _deviceManagerSA.GetAllAppList().Result; // 取得所有applist比對UWP
+                   
+                    if (!applist.Values.Any(app => app.AppUserModelID == appData.AppUserModelID)) // 檢查 AppUserModelID 是否存在
                     {
                         _vm?.WriteLog($"@LaunchApp error: UWP AppUserModelID not found - {appData.AppUserModelID}");
                         return null; // 找不到 UWP 應用程式
@@ -776,7 +780,7 @@ namespace DDPM.EABroker
                 {
                     if (!File.Exists(appData.AppPath)) // Win32直接比對路徑檔案
                     {
-                        _vm?.WriteLog($"@LaunchApp error: File not found - {appData.AppPath}");
+                        _vm?.WriteLog($"@LaunchApp error: Win32 File not found - {appData.AppPath}");
                         return null; // 找不到路徑檔案
                     }
                     // Desktop exe或檔案
