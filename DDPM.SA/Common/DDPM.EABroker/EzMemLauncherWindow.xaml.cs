@@ -1,4 +1,4 @@
-﻿    using DDPM.Easy.Common;
+﻿using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using DDPM.Win32Lib;
 using Dell.Client.Framework.Common;
@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -92,6 +93,7 @@ namespace DDPM.EABroker
         private int _cellBorderCount = 0; //Cell count in the Layout (_inputSplitCtrl)
         private int _toBeArrangedCount = 0; //The count of app wait for arrange
         private int _alreadyArrangedCount = 0; //The count of app window has already been arraged
+        private readonly IDeviceManagerSA _deviceManagerSA;
         #endregion
 
         #region Events
@@ -110,14 +112,14 @@ namespace DDPM.EABroker
         // emWin.Show();
         //
 
-        public EzMemLauncherWindow(ISplitCtrl inputSplitCtrl, Rectangle workingArea, int arrangeCount, ArrangeVM vm)
+        public EzMemLauncherWindow(ISplitCtrl inputSplitCtrl, Rectangle workingArea, int arrangeCount, ArrangeVM vm, IDeviceManagerSA deviceManagerSA)
         {
             InitializeComponent();
             _inputSplitCtrl = inputSplitCtrl;
             _workingArea = workingArea;
             _toBeArrangedCount = arrangeCount;
             _vm = vm;
-
+            _deviceManagerSA = deviceManagerSA;
             RefreshScreenScale();
 
             Left = workingArea.Left / _screenScale;
@@ -290,8 +292,15 @@ namespace DDPM.EABroker
                         Process process = LaunchApp(app);
                         if (process == null)
                         {
+                            idx++; // 找不到則++後continue
+                            _alreadyArrangedCount++; // 找不到則++後continue
                             //_vm.WriteLog($"[LaunchAndArrange] Fail to launchApp: {app.AppName}");
                             _vm.WriteLog($"[LaunchAndArrange] Fail to launchApp.");
+                            if (AreAllAppsArranged && ArrangeDone != null)
+                            {
+                                ArrangeWindow(handle, idxCell); // 如果都沒有Launch，仍須跑最後一次
+                                _vm.WriteLog($"[LaunchAndArrange] Fail to launchApp. Send ArrangeDone event.");
+                            }
                             continue;
                         }
 
@@ -612,7 +621,7 @@ namespace DDPM.EABroker
                         else
                         {
                             // Win32比對包含
-                            if (app.AppPath.ToUpper() == handlePath.ToUpper())
+                            if (app.AppPath.ToUpper(CultureInfo.InvariantCulture) == handlePath.ToUpper(CultureInfo.InvariantCulture))
                             {
                                 Trace.WriteLine($"[LaunchAndArrange] SpecialGetHandle HandlePath == Win32Path.");
                                 _vm.WriteLog($"[LaunchAndArrange] SpecialGetHandle HandlePath == Win32Path.");
@@ -746,6 +755,13 @@ namespace DDPM.EABroker
             {
                 if (appData.AppType == "False") //UWP
                 {
+                    Dictionary<string, InstalledAppInfo> applist = _deviceManagerSA.GetAllAppList().Result; // 取得所有applist比對UWP
+                    // 檢查 AppUserModelID 是否存在
+                    if (!applist.Values.Any(app => app.AppUserModelID == appData.AppUserModelID))
+                    {
+                        _vm?.WriteLog($"@LaunchApp error: UWP AppUserModelID not found - {appData.AppUserModelID}");
+                        return null; // 找不到 UWP 應用程式
+                    }
                     // UWP 應用程式
                     ProcessStartInfo startInfo = new ProcessStartInfo
                     {
@@ -758,6 +774,11 @@ namespace DDPM.EABroker
                 }
                 else //Win32
                 {
+                    if (!File.Exists(appData.AppPath)) // Win32直接比對路徑檔案
+                    {
+                        _vm?.WriteLog($"@LaunchApp error: File not found - {appData.AppPath}");
+                        return null; // 找不到路徑檔案
+                    }
                     // Desktop exe或檔案
                     ProcessStartInfo startInfo = new ProcessStartInfo
                     {
