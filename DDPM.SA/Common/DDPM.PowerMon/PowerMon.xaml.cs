@@ -1,4 +1,5 @@
-﻿using DDPM.SA.Common;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
@@ -22,6 +23,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Xml;
+using VcpCore.Common;
 using Windows.System;
 
 namespace DDPM.PowerMon
@@ -73,7 +75,14 @@ namespace DDPM.PowerMon
         private static extern IntPtr RegisterPowerSettingNotification(IntPtr hRecipient, ref Guid PowerSettingGuid, uint Flags);
         private static IntPtr _RegisterPowerSettingNotification(IntPtr hRecipient, ref Guid PowerSettingGuid, uint Flags)
         {
-            return RegisterPowerSettingNotification(hRecipient, ref PowerSettingGuid, Flags);
+            IntPtr rst = RegisterPowerSettingNotification(hRecipient, ref PowerSettingGuid, Flags);
+
+            if (rst == IntPtr.Zero) 
+            {
+                Debug.WriteLine("[PowerMonitor] RegisterPowerSettingNotification failed.");
+            }
+
+            return rst;
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -81,7 +90,14 @@ namespace DDPM.PowerMon
         private static extern bool UnregisterPowerSettingNotification(IntPtr Handle);
         private static bool _UnregisterPowerSettingNotification(IntPtr Handle)
         {
-            return UnregisterPowerSettingNotification(Handle);
+            bool rst = UnregisterPowerSettingNotification(Handle);
+
+            if (!rst)
+            {
+                Debug.WriteLine("[PowerMonitor] UnregisterPowerSettingNotification failed.");
+            }
+
+            return rst;
         }
 
         #region For System Suspend/Resume Notify
@@ -94,7 +110,14 @@ namespace DDPM.PowerMon
         private static extern IntPtr RegisterSuspendResumeNotification(IntPtr hRecipient, uint Flags);
         private static IntPtr _RegisterSuspendResumeNotification(IntPtr hRecipient, uint Flags)
         {
-            return RegisterSuspendResumeNotification(hRecipient, Flags);
+            IntPtr rst = RegisterSuspendResumeNotification(hRecipient, Flags);
+
+            if (rst == IntPtr.Zero)
+            {
+                Debug.WriteLine("[PowerMonitor] RegisterSuspendResumeNotification failed.");
+            }
+
+            return rst;
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -102,7 +125,14 @@ namespace DDPM.PowerMon
         private static extern bool UnregisterSuspendResumeNotification(IntPtr Handle);
         private static bool _UnregisterSuspendResumeNotification(IntPtr Handle)
         {
-            return UnregisterSuspendResumeNotification(Handle);
+            bool rst = UnregisterSuspendResumeNotification(Handle);
+
+            if (!rst)
+            {
+                Debug.WriteLine("[PowerMonitor] UnregisterSuspendResumeNotification failed.");
+            }
+
+            return rst;
         }
 
         IntPtr m_hSuspendResumeNotify = IntPtr.Zero;
@@ -115,7 +145,14 @@ namespace DDPM.PowerMon
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, ModifierKeys fsModifiers, int vk);
         private static bool _RegisterHotKey(IntPtr hWnd, int id, ModifierKeys fsModifiers, int vk)
         {
-            return RegisterHotKey(hWnd, id, fsModifiers, vk);
+            bool rst = RegisterHotKey(hWnd, id, fsModifiers, vk);
+
+            if (!rst)
+            {
+                Debug.WriteLine("[PowerMonitor] RegisterHotKey failed.");
+            }
+
+            return rst;
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -123,7 +160,14 @@ namespace DDPM.PowerMon
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
         private static bool _UnregisterHotKey(IntPtr hWnd, int id)
         {
-            return UnregisterHotKey(hWnd, id);
+            bool rst = UnregisterHotKey(hWnd, id);
+
+            if (!rst)
+            {
+                Debug.WriteLine("[PowerMonitor] UnregisterHotKey failed.");
+            }
+
+            return rst;
         }
 
 
@@ -132,7 +176,14 @@ namespace DDPM.PowerMon
         private static extern ushort GlobalAddAtom(string lpString);
         private static ushort _GlobalAddAtom(string lpString)
         {
-            return GlobalAddAtom(lpString);
+            ushort rst = GlobalAddAtom(lpString);
+
+            if (rst == 0)
+            {
+                Debug.WriteLine("[PowerMonitor] GlobalAddAtom failed.");
+            }
+
+            return rst;
         }
         #endregion
 
