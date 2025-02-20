@@ -2647,7 +2647,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ChangeHeadset(deviceHelper);
             ChangeDock(deviceHelper);
             FormatFWVersion(deviceHelper);
-            return await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
+            return await Task.FromResult(deviceHelper);//Bruce 02/19 Modify the return value
         }
 
         private void FormatFWVersion(DeviceHelper deviceHelper)
@@ -2707,23 +2707,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("ChangeDock start");
             List<DeviceInfo> GetDeviceInfos = deviceHelper.deviceInfo.FindAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
-            if (GetDeviceInfos != null && GetDeviceInfos.Count >= 1)
+            if (GetDeviceInfos.Count > 1)
             {
-                writelog("ChangeDock go");
-                foreach (var deviceInfo in GetDeviceInfos)
+                //Bruce 02/19 If multiple docks are docked consecutively, all docks will remove
+                writelog("ChangeDock Connecting multiple docks so remove all dock");
+                deviceHelper.deviceInfo.RemoveAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
+            }
+            else
+            {
+                if (GetDeviceInfos != null && GetDeviceInfos.Count >= 1)
                 {
-                    string version = GetFirmwareVersionForDock(deviceInfo.ID.ToString()).Result;
-                    string serviceTag = GetDockServiceTagForDock(deviceInfo.ID.ToString()).Result;
-                    writelog($"GetFirmwareVersionForDock : {version}");
-                    writelog($"GetDockServiceTagForDock : {serviceTag}");
-                    if (!string.IsNullOrEmpty(version))
+                    writelog("ChangeDock go");
+                    foreach (var deviceInfo in GetDeviceInfos)
                     {
-                        deviceInfo.DockPackageFwVersion = version;
-                        deviceInfo.FirmwareVersion = version;
-                    }
-                    if (!string.IsNullOrEmpty(serviceTag))
-                    {
-                        deviceInfo.DockServiceTag = serviceTag;
+                        string version = GetFirmwareVersionForDock(deviceInfo.ID.ToString()).Result;
+                        string serviceTag = GetDockServiceTagForDock(deviceInfo.ID.ToString()).Result;
+                        writelog($"GetFirmwareVersionForDock : {version}");
+                        writelog($"GetDockServiceTagForDock : {serviceTag}");
+                        if (!string.IsNullOrEmpty(version))
+                        {
+                            deviceInfo.DockPackageFwVersion = version;
+                            deviceInfo.FirmwareVersion = version;
+                        }
+                        if (!string.IsNullOrEmpty(serviceTag))
+                        {
+                            deviceInfo.DockServiceTag = serviceTag;
+                        }
                     }
                 }
             }
@@ -12131,7 +12140,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 return;
             }
-            List<DeviceInfo> _peripheralslist = _PeripheralsPlugin.GetDevices().Result.deviceInfo;
+            List<DeviceInfo> _peripheralslist = _PeripheralsPlugin.GetDevices(true).Result.deviceInfo;
 
             // 2024-08-07 Elie, fix got exception while don't check this is null or not.
             if ((_peripheralslist == null) || (_peripheralslist.Count == 0))
