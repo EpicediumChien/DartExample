@@ -143,7 +143,7 @@ namespace DDPM.CLI.Plugins.Peripherals.Test
             List<SWUpdateInfo> SWUpdateInfo = new List<SWUpdateInfo>() { new SWUpdateInfo() { SoftwareName = "TestSoftwareName", SoftwareVersion = "1.0", TheLatestVersion = "1.0", NeedUpdated = false, } };
             DDPMSettings data = null;
             devMgr.Setup(m => m.GetDevices(It.IsAny<bool>())).Returns(Task.FromResult(deviceHelper));
-            devMgr.Setup(m => m.SW_GetSWUpdateInfo(It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>())).Returns(Task.FromResult(swUpdateInfoPackage));
+            devMgr.Setup(m => m.SW_GetSWUpdateInfo(It.IsAny<bool>(), It.IsAny<bool>())).Returns(Task.FromResult(swUpdateInfoPackage));
             devMgr.Setup(m => m.SW_DownloadAndInstall(It.IsAny<List<SWUpdateInfo>>(), It.IsAny<bool>(), It.IsAny<string>())).Returns(Task.FromResult(SWUpdateInfo));
             devMgr.Setup(m => m.GetServerURL()).Returns(Task.FromResult(path));
             devMgr.Setup(m => m.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(data));

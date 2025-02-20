@@ -256,7 +256,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         if (b == true)
                         {
                             Log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall go");
-                            List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(SWUpdateInfoPackage.SWUpdateInfo, true).Result;
+                            List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(SWUpdateInfoPackage.SWUpdateInfo, true,"").Result;
                             Log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall finish");
                             //SetSelected(1);
                         }
@@ -474,7 +474,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 return;
             }
             Log?.Info($"CheckUpdate start");
-            SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false, false, false, null, false, false, true, true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false).Result);
+            SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false, true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, true).Result);
             RefreshUI();
             Log?.Info($"CheckUpdate done");
         }

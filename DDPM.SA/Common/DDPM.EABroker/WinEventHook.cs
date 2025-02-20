@@ -462,9 +462,16 @@ namespace nsWinEventHook
                                             WinEventDelegate lpfnWinEventProc, uint idProcess,
                                             uint idThread, uint dwFlags)
         {
-            return SetWinEventHook(eventMin, eventMax, hmodWinEventProc,
+            IntPtr rst = SetWinEventHook(eventMin, eventMax, hmodWinEventProc,
                                             lpfnWinEventProc, idProcess,
                                             idThread, dwFlags);
+            if (rst == IntPtr.Zero)
+            {
+#if DEBUG
+                Console.WriteLine("[WinEventHook] SetWinEventHook failed");
+#endif
+            }
+            return rst;
         }
 
         //UnhookWinEvent()
@@ -474,7 +481,14 @@ namespace nsWinEventHook
 
         private static bool _UnhookWinEvent(IntPtr hWinEventHook)
         {
-            return UnhookWinEvent(hWinEventHook);
+            bool rst = UnhookWinEvent(hWinEventHook);
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[WinEventHook] UnhookWinEvent failed");
+#endif
+            }
+            return rst;
         }
 
         //GetWindowThreadProcessId()
@@ -484,7 +498,15 @@ namespace nsWinEventHook
 
         public static uint _GetWindowThreadProcessId(IntPtr hWnd, out uint processId)
         {
-            return GetWindowThreadProcessId(hWnd, out processId);
+            uint rst = GetWindowThreadProcessId(hWnd, out processId);
+            if (rst == 0)
+            {
+#if DEBUG
+                Console.WriteLine("[WinEventHook] GetWindowThreadProcessId failed");
+#endif
+            }
+
+            return rst;
         }
 
         public const short SWP_NOMOVE = 0X2;
@@ -498,7 +520,15 @@ namespace nsWinEventHook
 
         public static IntPtr _SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags)
         {
-            return SetWindowPos(hWnd, hWndInsertAfter, x, Y, cx, cy, wFlags);
+            IntPtr rst = SetWindowPos(hWnd, hWndInsertAfter, x, Y, cx, cy, wFlags);
+            if (rst == IntPtr.Zero)
+            {
+#if DEBUG
+                Console.WriteLine("[WinEventHook] SetWindowPos failed");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -507,7 +537,15 @@ namespace nsWinEventHook
 
         public static int _MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint)
         {
-            return MoveWindow(hWnd, x, y, nWidth, nHeight, bRepaint);
+            int rst = MoveWindow(hWnd, x, y, nWidth, nHeight, bRepaint);
+
+            if (rst == 0)
+            {
+#if DEBUG
+                Console.WriteLine("[WinEventHook] MoveWindow failed");
+#endif
+            }
+            return rst;
         }
 
         //[DllImport("dwmapi")]
@@ -592,7 +630,15 @@ namespace nsWinEventHook
 
         private static bool _GetCursorInfo(out CURSORINFO pci)
         {
-            return GetCursorInfo(out pci);
+            bool rst = GetCursorInfo(out pci);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[WinEventHook] GetCursorInfo failed");
+#endif
+            }
+            return rst;
         }
 
         //GetCursorPos()
@@ -603,7 +649,15 @@ namespace nsWinEventHook
 
         public static bool _GetCursorPos(out POINT lpPoint)
         {
-            return GetCursorPos(out lpPoint);
+            bool rst = GetCursorPos(out lpPoint);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[WinEventHook] GetCursorPos failed");
+#endif
+            }
+            return rst;
         }
 
         #endregion Win32 - GetCursorType
