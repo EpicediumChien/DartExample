@@ -97,7 +97,7 @@ namespace DDPM.SA.Plugins.CMAManager
                     }
 
                     listResponse.Add(item.ToString());
-                    //response = item.ToString();
+                    responseString = item.ToString();   // add @ 20250220 stephen
                 }
             }
             catch (Exception e)
@@ -124,8 +124,12 @@ namespace DDPM.SA.Plugins.CMAManager
                 Console.WriteLine("CreateDirectory Exception: " + e.Message);
             }
 
+            // add @ 20250220 stephen : fix string tio an object
+            listResponse = new List<string>();
+            listResponse.Add(json);
+
             string info = string.Empty;
-            bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(json).ToString(), (FILE_PATH + guid + ".txt"), out info);
+            bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listResponse).ToString(), (FILE_PATH + guid + ".txt"), out info);
 
         }
         /*

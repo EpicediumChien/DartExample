@@ -1093,6 +1093,36 @@ namespace DDPM.SA.Plugins.CMAManager
 
         public event EventHandler<CMAEventArgs> CMARequestEvent;
 
+        // add @ 20250220 stephen : add fwupdate result return code
+        private int responseFwResultCode(int code)
+        {
+
+            int resultCode = -1;
+
+            switch (code)
+            {
+                case (int)FWUErrorCode.NoError:
+                    resultCode = Params.Response.STATUS_FW_UPDATE_SUCCESS;
+                    break;
+
+                case (int)FWUErrorCode.DeviceDisconnected:
+                    resultCode = Params.Response.STATUS_FW_UPDATE_DEVICE_NOT_CONNECTED;
+                    break;
+
+                case (int)FWUErrorCode.Unknow:
+                    resultCode = Params.Response.UNKNOWN_ERROR;
+                    break;
+
+                default:
+                    resultCode = Params.Response.STATUS_FW_UPDATE_ERROR;
+                    break;
+
+            }
+
+            return resultCode;
+        }
+
+
         // add @ 20241129 stephen
         public Task UpdateFwStatus(List<FWUpdateInfo> datas)
         {
@@ -1130,7 +1160,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                     string response = string.Empty;
 
-                    response = "{\"sid\":\"N/A\",\"gid\":\"N/A\",\"response\":[{\"tid\":1,\"result\":" + Params.Response.STATUS_FW_UPDATE_ERROR + ",\"msg\":\"Exception Error\",\"data\":";
+                    response = "{\"sid\":\"N/A\",\"gid\":\"" + data.Guid + "\",\"response\":[{\"tid\":1,\"result\":" + responseFwResultCode((int)data.FWUErrorCode) + ",\"msg\":\"E\",\"data\":";
                     response = response + "[{";
                     response = response + "\"seqnum\":" + 2 + ",";
                     response = response + "\"index\":\"" + data.DeviceIndex + "\",";
