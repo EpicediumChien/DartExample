@@ -18,6 +18,10 @@
 		<Optimize>False</Optimize>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<AssemblyTitle>Dell Display and Peripheral Manager</AssemblyTitle>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<Content Include="MyDell_Blue.ico" />
 	</ItemGroup>
