@@ -3,6 +3,7 @@ using DDPM.UI.Common;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace DDPM.UI.Module.DisplayProperties
 {
@@ -21,6 +22,9 @@ namespace DDPM.UI.Module.DisplayProperties
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
             }
+            // Set the input method to English for the entire UserControl
+            InputMethod.SetPreferredImeState(this, InputMethodState.Off);
+
         }
         ~DisplayPropertiesRightView()
         {

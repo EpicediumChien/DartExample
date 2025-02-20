@@ -26,7 +26,14 @@ namespace DDPM.QAM
 
         private static bool _ShowWindow(IntPtr hWnd, int nCmdShow)
         {
-            return ShowWindow(hWnd, nCmdShow);
+            bool rst = ShowWindow(hWnd, nCmdShow);
+
+            if (!rst)
+            {
+                Debug.WriteLine("[QAMPage] Windows is hidden.");
+            }
+
+            return rst;
         }
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -42,7 +49,14 @@ namespace DDPM.QAM
 
         private static bool _SetForegroundWindow(IntPtr hWnd)
         {
-            return SetForegroundWindow(hWnd);
+            bool rst = SetForegroundWindow(hWnd);
+
+            if (!rst)
+            {
+                Debug.WriteLine("[QAMPage] SetForegroundWindow failed.");
+            }
+
+            return rst;
         }
         /// <summary>
         /// NotificationFWupdate 呼叫DDPM UI事件
@@ -313,7 +327,14 @@ namespace DDPM.QAM
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         public static bool _SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags)
         {
-            return SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
+            bool rst = SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
+
+            if (!rst)
+            {
+                Debug.WriteLine("[QAMPage] SetWindowPos failed.");
+            }
+
+            return rst;
         }
         private static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
         private const UInt32 SWP_NOSIZE = 0x0001;

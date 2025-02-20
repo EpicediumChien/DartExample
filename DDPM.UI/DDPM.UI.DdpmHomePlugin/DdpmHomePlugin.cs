@@ -239,7 +239,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         if (!_HasRegisted)
                         {
                             //Robert_Lin, 2024-12-16 add log for each key points to trace status.
-                            
+
 
                             if (_viewModel != null)
                             {
@@ -291,7 +291,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 //Elapsed= 2 msec
                                 _log.Info("Calling to ReadDDPMSettings()");
                                 DdpmCommonHelper.ReadDDPMSettings();
-                                _log.Info("Return to ReadDDPMSettings()");                                
+                                _log.Info("Return to ReadDDPMSettings()");
                             }
                             if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null && _viewModel != null)
                             {
@@ -525,7 +525,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                     MonitorInfo newPlugIn = null;
                     // If is a plugin event
-                    if(_monitorInfos.Count >= _monitorCache.Count)
+                    if (_monitorInfos.Count >= _monitorCache.Count)
                     {
                         foreach (MonitorInfo monitor in _monitorInfos)
                         {
@@ -538,7 +538,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     }
                     // Always save cache for monitor when event launched
                     _monitorCache = _monitorInfos;
-                    if (newPlugIn != null) CheckIfNeedImportSetting_Display(new List<MonitorInfo>() { newPlugIn });
+                    if (newPlugIn != null)
+                        CheckIfNeedImportSetting_Display(new List<MonitorInfo>() { newPlugIn });
                 }
                 else
                 {
@@ -1131,8 +1132,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (_gearBtn != null)
                 _gearBtn.Visibility = Visibility.Collapsed;
 
-            if(_IsAnyUpdate) _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
-            else _console.ShowPluginById(UI.Common.Constants.SettingsPluginId);
+            if (_IsAnyUpdate)
+                _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
+            else
+                _console.ShowPluginById(UI.Common.Constants.SettingsPluginId);
         }
 
         //Robert_Lin 2024-8-2 added for DDMPW-579 story
@@ -1315,7 +1318,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 ret = true;
 
             //Robert_Lin, 2024-12-9 store the count for later check
-            if ((fwUpdateInfoPackage==null) || (fwUpdateInfoPackage.FWUpdateInfo == null))
+            if ((fwUpdateInfoPackage == null) || (fwUpdateInfoPackage.FWUpdateInfo == null))
                 _updateAvailableCount_FW = 0;
             else
                 _updateAvailableCount_FW = fwUpdateInfoPackage.FWUpdateInfo.Count;
@@ -1688,7 +1691,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         device.ColorCode != 0)
                     {
                         _modelNumber = _modelNumber + "/" + device.ColorCode.ToString();
-                        _log.Info($"[Walkthrough] CheckAndQueueDevice Check color code = {device.ColorCode.ToString()}");                        
+                        _log.Info($"[Walkthrough] CheckAndQueueDevice Check color code = {device.ColorCode.ToString()}");
                     }
                     _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Device)");
                     await CheckAndQueueDevice(device.ModelNumber, device.LogicalDeviceType.ToString(), device.ID);
@@ -1745,7 +1748,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (e.Tag != null &&
                 e.Tag is string)
             {
-                screenDeviceName = e.Tag.ToString();                
+                screenDeviceName = e.Tag.ToString();
             }
             //Else the screen will be get from mouse cursor position
             if (String.IsNullOrEmpty(screenDeviceName))

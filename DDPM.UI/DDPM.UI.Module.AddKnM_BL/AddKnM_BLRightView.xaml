@@ -52,13 +52,14 @@
         <UXControls:UXScrollViewer>
             <Border Background="Transparent">
                 <StackPanel Orientation="Vertical" x:Name="topStackPanel">
-                    <UXControls:UXTextBlock Name="txtCaption" FontFamily="Roboto" FontSize="20" FontWeight="Normal" Focusable="True"
+                    <UXControls:UXTextBlock Name="txtCaption" FontFamily="Roboto" FontSize="20" FontWeight="Normal"
+                                            Focusable="True" KeyboardNavigation.TabIndex="31"
                                     Margin="18,14,0,0" Foreground="{DynamicResource AddDeviceTxtCaption_TxtColor}"
                                     VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding [AddDevice.KnM.0], Source={x:Static lang:LangHelper.Instance}}"/>
                     <UXControls:UXTextBlock Name="txtCaption2" Margin="18,17,0,0" FontFamily="Roboto"
                                     HorizontalAlignment="Left" Foreground="{DynamicResource AddDeviceTxtCaption_TxtColor}" FontSize="14" FontWeight="Normal" 
                                             TextWrapping="WrapWithOverflow" Width="{Binding Path=ActualWidth, ElementName=stepsStackPanel}"
-                                            Focusable="True"
+                                            Focusable="True" KeyboardNavigation.TabIndex="32"
                                             Text="{Binding [AddDevice.KnM.1], Source={x:Static lang:LangHelper.Instance}}"/>
                     
                     <StackPanel Orientation="Horizontal" Margin="18,25,18, 10" x:Name="stepsStackPanel">
@@ -68,7 +69,8 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                                     <UXControls:UXTextBlock Text="1." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                                    <UXControls:UXTextBlock Name="txtStep1" Style="{StaticResource TextStyle1}" Focusable="True"
+                                    <UXControls:UXTextBlock Name="txtStep1" Style="{StaticResource TextStyle1}"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="33"
                                                             Text="{Binding [AddDevice.KnM.2], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                             </StackPanel>
@@ -79,7 +81,8 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                                     <UXControls:UXTextBlock Text="2." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                                    <UXControls:UXTextBlock Name="txtStep2" Style="{StaticResource TextStyle1}"  Focusable="True"
+                                    <UXControls:UXTextBlock Name="txtStep2" Style="{StaticResource TextStyle1}" 
+                                                            Focusable="True" KeyboardNavigation.TabIndex="34"
                                                             Text="{Binding [AddDevice.KnM.3], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                             </StackPanel>
@@ -90,12 +93,13 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                                     <UXControls:UXTextBlock Text="3." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                                    <UXControls:UXTextBlock Name="txtStep3" Style="{StaticResource TextStyle1}" Focusable="True"
+                                    <UXControls:UXTextBlock Name="txtStep3" Style="{StaticResource TextStyle1}"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="35"
                                                             Text="{Binding [AddDevice.KnM.4], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="38,32,0,0" MouseLeftButtonDown="OpenWindowsSettings" Cursor="Hand" PreviewKeyDown="windowsSettings_PreviewKeyDown">
                                     <UXControls:UXTextBlock Name="txtStep3_1" Margin="0,10" Style="{StaticResource TextStyle2}" Text="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}"
-                                                            Focusable="True"/>
+                                                            Focusable="True" KeyboardNavigation.TabIndex="36"/>
                                     <Image Margin="3,1,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/WindowsSettings.png" Stretch="Uniform"
                                    HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="16" Height="16" />
                                 </StackPanel>

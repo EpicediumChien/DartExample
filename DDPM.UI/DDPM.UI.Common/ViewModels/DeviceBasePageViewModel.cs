@@ -209,6 +209,8 @@ namespace DDPM.UI.Common.ViewModels
         /// <param name="clickedItem">The VbarItem which is clicked</param>
         private void OnVbarItemClicked(VbarItem1? clickedItem)
         {
+            LogInfo($"@OnVbarItemClicked(), VbarItem1.Text={(clickedItem==null ? "(null)":clickedItem.Text)}");
+ 
             //If we are in Landing mode
             if (IsLandingMode)
             {
@@ -233,6 +235,8 @@ namespace DDPM.UI.Common.ViewModels
             GroupSelectedIndex = clickedItem.Index;
             //clickedItem.IsSelected = true;
             //_vbarItems[2].Visibility = Visibility.Collapsed;
+
+            LogInfo("@OnVbarItemClicked(), Exit");
         }
 
 #else
@@ -982,7 +986,7 @@ namespace DDPM.UI.Common.ViewModels
             IConsole console = DdpmCommonHelper.MyConsole;
             if (console != null)
             {
-                _log = console.CreateLog("BasePageViewModel");
+                _log = console.CreateLog("BasePageVM");
             }
         }
         public void LogInfo(string msg)

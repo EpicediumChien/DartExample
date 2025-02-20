@@ -1,9 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace VcpCore.Plugins
 {
-    public class ResultLockPool
+    public class ResultLockPool : IEnumerable<KeyValuePair<Guid, object>>
     {
         private readonly object _ResultLockPoollock = new object();
         private Dictionary<Guid, object> _ResultPool;
@@ -11,6 +12,22 @@ namespace VcpCore.Plugins
         public ResultLockPool()
         {
             _ResultPool ??= new Dictionary<Guid, object>();
+        }
+
+        private IEnumerable<KeyValuePair<Guid, object>> Events()
+        {
+            foreach (var item in _ResultPool)
+                yield return item;
+        }
+
+        public IEnumerator<KeyValuePair<Guid, object>> GetEnumerator()
+        {
+            return Events().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         public void Add(Guid guid, object obj)
@@ -25,10 +42,7 @@ namespace VcpCore.Plugins
 
         public bool TryGetValue(Guid guid, out object output)
         {
-            lock (_ResultLockPoollock)
-            {
-                return (_ResultPool.TryGetValue(guid, out output));
-            }
+            lock (_ResultLockPoollock) { return (_ResultPool.TryGetValue(guid, out output)); }
         }
 
         public bool TakeAway(Guid guid, out object output)

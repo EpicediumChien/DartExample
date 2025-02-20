@@ -118,6 +118,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 //OnPropertyChanged("TextToCopy");
             }
         }
+
+        private void Window_Deactivated(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
     public class UI_ThirdPartyLicenses
     {
