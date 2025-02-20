@@ -18,9 +18,10 @@
     <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Edit_Normal" Color="#FF7AA809" />
     <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Aws_Normal" Color="White" />
 
+    <!-- Robert_Lin 2025-2-20 Per EBG report issue, change OuterBorderStyle CornerRadius to 3 from 6. -->
     <Style x:Key="OuterBorderStyle" TargetType="Border">
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="CornerRadius" Value="3" />
         <Setter Property="BorderBrush" Value="{DynamicResource SplitCtrl_OuterBorder_BdColor_Icon_Normal}" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsWorkMode}" Value="True">
