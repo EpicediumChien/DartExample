@@ -994,21 +994,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case "Custom 1":
                     ret = LangHelper.Instance["Custom_1"];
                     break;
-                case "Custom 1 / User 1":
-                    ret = LangHelper.Instance["Custom_1"] + " / " + LangHelper.Instance["User_1"];
-                    break;
+                //case "Custom 1 / User 1":
+                //    ret = LangHelper.Instance["Custom_1"] + " / " + LangHelper.Instance["User_1"];
+                //    break;
                 case "Custom 2":
                     ret = LangHelper.Instance["Custom_2"];
                     break;
-                case "Custom 2 / User 2":
-                    ret = LangHelper.Instance["Custom_2"] + " / " + LangHelper.Instance["User_2"];
-                    break;
+                //case "Custom 2 / User 2":
+                //    ret = LangHelper.Instance["Custom_2"] + " / " + LangHelper.Instance["User_2"];
+                //    break;
                 case "Custom 3":
                     ret = LangHelper.Instance["Custom_3"];
                     break;
-                case "Custom 3 / User 3":
-                    ret = LangHelper.Instance["Custom_3"] + " / " + LangHelper.Instance["User_3"];
-                    break;
+                //case "Custom 3 / User 3":
+                //    ret = LangHelper.Instance["Custom_3"] + " / " + LangHelper.Instance["User_3"];
+                //    break;
                 case "User 1":
                     ret = LangHelper.Instance["User_1"];
                     break;
