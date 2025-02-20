@@ -75,14 +75,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 if (vm.FWUpdateInfoPackage.FWUpdateInfo.Count > 0)
                 {
                     _log?.Info("CallFWU DownloadAndInstall go");
-                    List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo, true).Result;
+                    List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo, true,"").Result;
                     _log?.Info("CallFWU DownloadAndInstall finish");
 
                 }
                 if (vm.SWUpdateInfoPackage.SWUpdateInfo.Count > 0)
                 {
                     _log?.Info("CallFWU SW_DownloadAndInstall go");
-                    List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(vm.SWUpdateInfoPackage.SWUpdateInfo, true).Result;
+                    List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(vm.SWUpdateInfoPackage.SWUpdateInfo, true, "").Result;
                     _log?.Info("CallFWU SW_DownloadAndInstall finish");
                 }
                 else
