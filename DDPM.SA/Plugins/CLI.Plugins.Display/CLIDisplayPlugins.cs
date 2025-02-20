@@ -335,6 +335,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     break;
 
+                /*
                 // ADD @ Stephen for fwupdate
                 case "FIRMWAREUPDATE":
                     {
@@ -345,7 +346,7 @@ namespace DDPM.CLI.Plugins.Display
                             return result;
                     }
                     break;
-
+                */
                 case "ACTIVEINPUTSOURCE":
                     {
                         var ret = InputSource(devMgr, commandLineInput).Result;
@@ -14731,7 +14732,7 @@ namespace DDPM.CLI.Plugins.Display
 
         }
         #endregion Malik
-
+        /*
         #region FW Update
         public event EventHandler<(List<FWUpdateInfo>, string)> FWResultReceived;
         private (int code, string json) FWUpdate(CommandLineInput commandLineInput)
@@ -15089,7 +15090,7 @@ namespace DDPM.CLI.Plugins.Display
         }
 
         #endregion FW Update
-
+        
         // add @ stephen for fwupdate
         private (int code, string result) FWUpdateX(CommandLineInput commandLineInput, IDeviceManagerSA devMgr)
         {
@@ -15170,15 +15171,6 @@ namespace DDPM.CLI.Plugins.Display
 
             CLI_RESPONSE S_FWUpdate_RESPONSE = new CLI_RESPONSE();
 
-            //if (devMgr == null)
-            //{
-            //    writelog("Brightness: Null IDeviceManagerSA");
-            //    return (int)CLI_ExitCode.null_device_manager;
-            //}
-
-            /*    if (_AllInfoMonitors == null)
-                    _AllInfoMonitors = await devMgr.GetMonitors();*/
-
             string output = string.Empty;
 
             Console.WriteLine($"FWUpdate(IDeviceManagerSA devMgr...)");
@@ -15229,6 +15221,7 @@ namespace DDPM.CLI.Plugins.Display
                 return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_FWUpdate_RESPONSE, Formatting.Indented));
             }
         }
+        */
 
         private (int code, string result) ExportSettingsx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
