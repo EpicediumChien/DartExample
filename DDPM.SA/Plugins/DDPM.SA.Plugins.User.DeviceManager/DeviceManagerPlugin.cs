@@ -2813,13 +2813,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("ChangeDock start");
             List<DeviceInfo> GetDeviceInfos = deviceHelper.deviceInfo.FindAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
-            if (GetDeviceInfos.Count > 1)
+            /*if (GetDeviceInfos.Count > 1)
             {
                 //Bruce 02/19 If multiple docks are docked consecutively, all docks will remove
                 writelog("ChangeDock Connecting multiple docks so remove all dock");
                 deviceHelper.deviceInfo.RemoveAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
             }
-            else
+            else*/
             {
                 if (GetDeviceInfos != null && GetDeviceInfos.Count >= 1)
                 {
