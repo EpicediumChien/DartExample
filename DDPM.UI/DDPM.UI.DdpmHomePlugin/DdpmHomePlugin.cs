@@ -170,7 +170,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //Robert_Lin, 2024-12-21 Register a event handler to handle when mainwindow
             // move to new position
             _console.RegisterForEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, Handle_MainWindow_MoveToNewPosition);
-
         }
 
         private void PluginManager_PluginsStarted(object? sender, PluginsStartedEventArgs pluginsStartedEventArgs)
@@ -204,6 +203,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _ = Task.Run(GetCurrentDeviceManagerPluginPluginCondition, CancellationToken);
 
                 //CheckIfNeedNavigateToWebcamPageV2();
+
+                if(UserId == string.Empty || UserId == null)
+                    UserId = _deviceManager.GetUserID().Result;
             }
             catch (Exception ex)
             {
@@ -1617,83 +1619,100 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// <returns>Task</returns>
         private async Task CheckAndQueueDevice(String modelNumber, String modelType, object info)
         {
-            _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} Start for ModelNumber {modelNumber}, ModelType {modelType}");
+            _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} Start ... in");
+            _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} Start for ModelNumber {modelNumber}, ModelType {modelType}, UserID {UserId}");
             object regValue;
             //UserId = GetActiveUserID();
             string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
             string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{modelNumber}";
             string regKeyForDDPM = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
-
-            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
-
+         
             try
             {
                 if (null == _deviceManager)
+                {
+                    _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} _deviceManager null");
                     return;
-
-                regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
-
-                if (!Convert.ToBoolean(regValue))
-                {
-                    // 0114 Wayn Remove to walkthrough end then record the registry
-                    //await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM, true);
-                    if (!WalkThroughQueue.Exists(info => info.ModelName == "DDPM") && !WalkThroughEndList.Exists(info => info.ModelName == "DDPM"))
-                    {
-                        WalkThroughQueue.Add(new WalkThroughInfo("DDPM", "DDPM", info));
-                    }
                 }
 
-                // read reg
-                if (modelNumber == "U3224KB" || modelNumber == "U3224KBA") // correct DPeM typo
+                if (modelNumber == "DDPM" && modelType == "DDPM")
                 {
-                    regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{"U3224KB"}";
-                    regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.   
-                    if (!CheckRegReturnValue(regValue)) // If false, need to check "U3224KBA" again
-                    {
-                        regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{"U3224KBA"}";
-                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
-                    }
-                }
-                else if (modelNumber == "P2424HEB") // correct DPeM typo
-                {
-                    regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{"CXXXXXX"}";
-                    regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.                   
-                    if (!CheckRegReturnValue(regValue)) // If false, need to check "P2424HEB" again
-                    {
-                        regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{"P2424HEB"}";
-                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
-                    }
-                }
-                else
-                    regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                    // Check DDPM walkthrough
+                    regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
 
-                // mean null or "" or is false, add to the queue and set it to true
-                if (!CheckRegReturnValue(regValue))
-                {
-                    // 0114 Wayn Remove to walkthrough end then record the registry
-                    // register model for walk through done
-                    //await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
-
-                    // If the device is not supported, directly update the registry to true and return
-                    if (!devicePages.ContainsKey(modelNumber))
+                    if (!Convert.ToBoolean(regValue))
                     {
-                        await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
-                        _log.Info($"[Walkthrough] Device {modelNumber} not found in devicePages, skipping.");
-                        return;
+                        // 0114 Wayn Remove to walkthrough end then record the registry
+                        //await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM, true);
+                        if (!WalkThroughQueue.Exists(info => info.ModelName == "DDPM") && !WalkThroughEndList.Exists(info => info.ModelName == "DDPM"))
+                        {
+                            WalkThroughQueue.Add(new WalkThroughInfo("DDPM", "DDPM", info));
+                            _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} WalkThroughQueue Add DDPM ");
+                        }
                     }
-
-                    // Add the device to the queue and update the registry
-                    if (!WalkThroughQueue.Exists(info => info.ModelName == modelNumber) && !WalkThroughEndList.Exists(info => info.ModelName == modelNumber))
-                    {
-                        WalkThroughQueue.Add(new WalkThroughInfo(modelNumber, modelType, info));
-                    }
-
-                    //await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);                    
-                    _log.Info($"[Walkthrough] Device {modelNumber} added to the queue and registry value updated to true.");
+                    else
+                        _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} WalkThroughQueue DDPM walhthrough skip.");
                 }
                 else
                 {
-                    _log.Info($"[Walkthrough] Device {modelNumber} reg is true, skipping.");
+                    // read reg
+                    if (modelNumber == "U3224KB" || modelNumber == "U3224KBA") // correct DPeM typo
+                    {
+                        regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.U3224KB";
+                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.   
+                        if (!CheckRegReturnValue(regValue)) // If false, need to check "U3224KBA" again
+                        {
+                            _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} U3224KB ReadRegistryData false");
+                            regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.U3224KBA";
+                            regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                        }
+                        else
+                            _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} U3224KB ReadRegistryData true");
+                    }
+                    else if (modelNumber == "P2424HEB") // correct DPeM typo
+                    {
+                        regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.CXXXXXX";
+                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.                   
+                        if (!CheckRegReturnValue(regValue)) // If false, need to check "P2424HEB" again
+                        {
+                            _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} CXXXXXX ReadRegistryData false");
+                            regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.P2424HEB";
+                            regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                        }
+                        else
+                            _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} CXXXXXX ReadRegistryData true");
+                    }
+                    else
+                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+
+                    _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} regPath : {regPath}");
+                    _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} regPath : {regKey}");
+                    // mean null or "" or is false, add to the queue and set it to true
+                    if (!CheckRegReturnValue(regValue))
+                    {
+                        _log.Info($"[Walkthrough] CheckRegReturnValue false");
+                        var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
+                        // If the device is not supported, directly update the registry to true and return
+                        if (!devicePages.ContainsKey(modelNumber))
+                        {
+                            await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
+                            _log.Info($"[Walkthrough] Device {modelNumber} not found in devicePages, skipping.");
+                            return;
+                        }
+
+                        // Add the device to the queue and update the registry
+                        if (!WalkThroughQueue.Exists(info => info.ModelName == modelNumber) && !WalkThroughEndList.Exists(info => info.ModelName == modelNumber))
+                        {
+                            WalkThroughQueue.Add(new WalkThroughInfo(modelNumber, modelType, info));
+                            _log.Info($"[Walkthrough] Device {modelNumber} Add in WalkThroughQueue.");
+                        }
+
+                        _log.Info($"[Walkthrough] Device {modelNumber} added to the queue and registry value updated to true.");
+                    }
+                    else
+                    {
+                        _log.Info($"[Walkthrough] CheckRegReturnValue true, Device {modelNumber} reg is true, skipping.");
+                    }
                 }
                 await DeviceSort(new WalkThroughInfo(modelNumber, modelType, info));
             }
@@ -1701,6 +1720,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 _log.Error($"[Walkthrough] Error processing device {modelNumber}: {ex.Message}");
             }
+            _log.Error($"[Walkthrough] CheckAndQueueDevice ... end");
         }
 
         public bool CheckRegReturnValue(object regValue)
@@ -1723,7 +1743,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 List<MonitorInfo> monitorInfos = _deviceManager.GetMonitors().Result;
                 var deviceHelper = _deviceManager.GetDevices().Result;
-                UserId = GetActiveUserID();
+                _log.Info($"[Walkthrough] CollectAndCompareDevicesAsync, monitor count:{monitorInfos.Count.ToString()}, device count : {deviceHelper.deviceInfo.Count.ToString()}");
+                Trace.WriteLine($"[Walkthrough] CollectAndCompareDevicesAsync, monitor count:{monitorInfos.Count.ToString()}, device count : {deviceHelper.deviceInfo.Count.ToString()}");
+                //UserId = GetActiveUserID();
                 // WalkThroughInfo
                 foreach (var monitor in monitorInfos)
                 {
@@ -1756,6 +1778,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 _log.Error($"[Walkthrough] {nameof(CollectAndCompareDevicesAsync)} Error collecting devices: {ex.Message}");
             }
+            _log.Error($"[Walkthrough] CollectAndCompareDevicesAsync ... end");
         }
         #endregion WalkThrough
 
