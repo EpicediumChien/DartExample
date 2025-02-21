@@ -204,8 +204,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 //CheckIfNeedNavigateToWebcamPageV2();
 
-                if(UserId == string.Empty || UserId == null)
-                    UserId = _deviceManager.GetUserID().Result;
+                if (UserId == string.Empty || UserId == null)
+                    UserId = WTSFunction.DirectGetUserID(_log);
             }
             catch (Exception ex)
             {

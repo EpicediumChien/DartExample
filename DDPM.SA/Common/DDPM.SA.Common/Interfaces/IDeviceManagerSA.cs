@@ -1833,9 +1833,5 @@ namespace DDPM.SA.Common
         #endregion Set
 
         #endregion IAirAudioCommodity
-
-        #region WalkThrough
-        Task <string> GetUserID();
-        #endregion
     }
 }
