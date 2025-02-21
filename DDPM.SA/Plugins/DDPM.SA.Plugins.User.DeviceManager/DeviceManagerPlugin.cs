@@ -2181,6 +2181,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ReviewAllMonitorToAvoidDuplicatedInfo();
                 InitMonitorSettings();
                 _DisplayManagerPlugin.InitDisplayData(_AllInfoMonitors);
+                foreach (MonitorInfo monitor in _AllInfoMonitors)
+                {
+                    _DisplayManagerPlugin.GetUSBUpstreamList(monitor);
+                    _DisplayManagerPlugin.GetAllUSBUpstream(monitor);
+                }
                 UpdateHotkeyInfo();
 
                 Task.Run(() => //support last selected monitor info from settings

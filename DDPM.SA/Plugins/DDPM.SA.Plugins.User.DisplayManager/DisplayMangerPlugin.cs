@@ -900,6 +900,119 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult("");
         }
 
+        public Task<bool> GetAllUSBUpstream(MonitorInfo monitorInfo)
+        {
+            string usbUpstream = string.Empty;
+            int input_num = 0;
+            ObjGetVCP objGetVCP = new ObjGetVCP();
+            List<InputSource_USB> input_USBList = new List<InputSource_USB>();
+            if (monitorInfo.CapabilityDic.ContainsKey("E7"))
+            {
+                if (_displayDataManger != null)
+                {
+                    _displayDataManger.GetMonitorUSB(monitorInfo, out input_USBList);
+                    if (input_USBList != null && input_USBList.Count > 0)
+                    {
+                        return Task.FromResult(true);
+                    }
+                }
+                usbUpstreamList = GetUSBUpstreamList(monitorInfo).Result;
+                if (usbUpstreamList != null && usbUpstreamList.Count > 0)
+                {
+                    objGetVCP = GetVCPCapability(monitorInfo, 0xE7).Result;
+                    if (objGetVCP.result)
+                    {
+                        if (_getVCPCapabilities == string.Empty)
+                        {
+                            _getVCPCapabilities = GetVCPCapabilities(monitorInfo).Result;
+                        }
+                        if (!string.IsNullOrEmpty(_getVCPCapabilities))
+                        {
+                            JObject VCPjson = JObject.Parse(_getVCPCapabilities);
+
+                            JObject capsDataMap = (JObject)VCPjson["CapsDataMap"];
+                            JArray input = (JArray)capsDataMap["Input Select"];
+
+                            string getUpstream = Convert.ToString((uint)objGetVCP.value, 2);
+                            string newstrUpstream = getUpstream;
+                            if (getUpstream.Length < 16)
+                            {
+                                for (int i = 0; i < (16 - getUpstream.Length); i++)
+                                {
+                                    newstrUpstream = "0" + newstrUpstream;
+                                }
+                            }
+
+                            Trace.WriteLine(newstrUpstream);
+                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] newstrUpstream : " + newstrUpstream);
+
+                            if (newstrUpstream.Length == 16)
+                            {
+                                foreach (var tmp in input)
+                                {
+                                    string subUpstream = string.Empty;
+                                    if (monitorInfo.CapabilityDic.ContainsKey("EE"))
+                                    {
+                                        subUpstream = newstrUpstream.Substring(input_num * 2, 2);
+                                    }
+                                    else
+                                    {
+                                        subUpstream = newstrUpstream.Substring(14 - (input_num * 2), 2);
+                                    }
+                                    if (!string.IsNullOrEmpty(subUpstream))
+                                    {
+                                        if (USBUpstream != null && USBUpstream.Count != 0)
+                                        {
+                                            foreach (var tmp1 in USBUpstream)
+                                            {
+                                                if (subUpstream == tmp1.Value)
+                                                {
+                                                    InputSource_USB inputSource_USB = new InputSource_USB();
+                                                    inputSource_USB.inputSource = tmp.ToString();
+                                                    Trace.WriteLine(inputSource_USB.inputSource);
+                                                    inputSource_USB.USB = tmp1.Key;
+                                                    Trace.WriteLine(inputSource_USB.USB);
+                                                    input_USBList.Add(inputSource_USB);
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] USBUpstream is null or Count = 0");
+                                        }
+                                    }
+                                    input_num ++;
+                                }
+                                if (_displayDataManger != null)
+                                {
+                                    _displayDataManger.SetMonitorUSB(monitorInfo, input_USBList);
+                                    return Task.FromResult(true);
+                                }
+                            }
+                            else
+                            {
+                                _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] newstrUpstream length is not 16");
+                            }
+                        }
+                        else
+                        {
+                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] _getVCPCapabilities is null or empty.");
+                        }
+                    }
+                    else
+                    {
+                        _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] GetVCPCapability 0xE7 fail.");
+                    }
+                }
+                else
+                {
+                    _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] usbUpstreamList is null or count = 0.");
+                }
+            }
+            return Task.FromResult(false);
+        }
+
         public Task<bool> SetUSBUpstream(MonitorInfo monitorInfo, string inputsource, string upstream)
         {
             //inputSourcelist[input].USBUpstream = upstream;
