@@ -1126,7 +1126,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     var res = ColorpfofileMutil(result.value.ToString());
                     return Task.FromResult(res);
                 }
-                    //return Task.FromResult(result.value.ToString());
+                //return Task.FromResult(result.value.ToString());
             }
             return Task.FromResult("");
         }
@@ -6528,7 +6528,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _UpdateProgress.Dispatcher.InvokeShutdown();
                 };
                 _UpdateProgress.Dispatcher.Invoke(() => _UpdateProgress.Show());
-                
+
                 ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
                 MiniMizeDDPMUI().Wait();
                 tcs.SetResult(true);
@@ -12243,8 +12243,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 return;
             }
-            List<DeviceInfo> _peripheralslist = _PeripheralsPlugin.GetDevices(true).Result.deviceInfo;
-
+            List<DeviceInfo> _peripheralslist = new List<DeviceInfo>();
+            try
+            {
+                _peripheralslist = _PeripheralsPlugin.GetDevices(true).Result.deviceInfo;
+            }
+            catch (Exception ex)
+            {
+                writelog($"CheckDocks GetDevices Exception : {ex.Message}");
+                _peripheralslist = null;
+                return;
+            }
             // 2024-08-07 Elie, fix got exception while don't check this is null or not.
             if ((_peripheralslist == null) || (_peripheralslist.Count == 0))
                 return;
