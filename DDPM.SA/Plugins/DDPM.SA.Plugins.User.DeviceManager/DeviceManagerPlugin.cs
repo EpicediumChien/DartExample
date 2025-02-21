@@ -264,6 +264,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool isDownloadingICC = false;//Added 02/13 by Bruce
         private bool isNeedPreDownloadingICC = false;//Added 02/13 by Bruce
 
+        private static string uSerid = string.Empty;
         #endregion
 
         #region Constructor
@@ -726,6 +727,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread.Start();
 
             _disDevHelper = new DisplayDeviceHelper(Log);
+
+            uSerid = WTSFunction.DirectGetUserID(Log);
+            writelog("DeviceManagerPlugin uSerid ...");
         }
 
         private void OnCurrentSessionInactived(object sender, EventArgs e)
@@ -20142,6 +20146,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<bool> GetDTPProxyPluginReady()
         {
             return _DTPProxyPlugin.GetDTPProxyPluginReady().Result;
+        }
+
+        public Task<string> GetUserID()
+        {
+            return Task.FromResult(uSerid);
         }
     }
 }
