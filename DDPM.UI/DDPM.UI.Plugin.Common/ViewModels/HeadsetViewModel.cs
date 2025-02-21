@@ -2255,14 +2255,14 @@ namespace DDPM.UI.Plugin.ViewModels
             DetectPageShow(model);
         }
 
-        public async Task Invoke_PleaseWaitAsync(string model, HeadsetViewModel vm)
+        public void Invoke_PleaseWaitAsync(string model, HeadsetViewModel vm)
         {
             vm.ShowPleaseWait();
             try
             {
                 using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
                 {
-                    await Task.Run(() => DoWork_PleaseWait(model, vm), cts.Token);
+                    Task.Run(() => DoWork_PleaseWait(model, vm), cts.Token);
                 }
             }
             catch (OperationCanceledException)

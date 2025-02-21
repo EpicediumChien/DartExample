@@ -134,13 +134,13 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             }
         }
 
-        private async void LaunchView_LoadedStatus(object sender, RoutedEventArgs e)
+        private void LaunchView_LoadedStatus(object sender, RoutedEventArgs e)
         {
             if (_vm == null) return;
 
             try
             {
-                await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
+                _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
                 if (!_vm.SupportedAnswerCalls)
                 {
                     BuildModuleGroups(_vm.SupportedAnswerCalls);
