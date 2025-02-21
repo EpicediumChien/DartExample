@@ -244,7 +244,7 @@ namespace VcpCore.Common
                         text2 = new string(text2_charArray);
                         text2 = Regex.Replace(text2, "DELL", string.Empty, RegexOptions.IgnoreCase);
                         text2 = Regex.Replace(text2, "ALIENWARE", string.Empty, RegexOptions.IgnoreCase);
-                        return text2.Trim().ToUpper();
+                        return text2.Trim().ToUpper(CultureInfo.InvariantCulture);
                     }
                     else
                         return string.Empty;

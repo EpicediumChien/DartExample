@@ -35,6 +35,8 @@ namespace DDPM.SA.Plugin.PlatinumSDK
         private static Logs _logs;
         private static bool IsSucessInitializeAsync = false;
 
+        private readonly object _lockobject = new object();
+
         private static readonly AgentPluginInfo _agentPluginInfo = new AgentPluginInfo()
         {
             PluginGuid = Guid.Parse(IDs.PlatinumSDK_Plugin),
@@ -189,18 +191,21 @@ namespace DDPM.SA.Plugin.PlatinumSDK
                 return;
             if (e.ChangedPlugins.Any() == false)
                 return;
-            
+
             //---------------------------------------------------------
             try
             {
                 InitializePlatinumClientSdk();
                 _logs.DebugMsg_1("PlatinumSDK plugin report started");
 
-                if (_platinumClientSdk != null && (!IsSucessInitializeAsync))
+                lock (_lockobject)
                 {
-                    _platinumClientSdk.InitializeAsync(new ClientAppId(new Guid("b397b9b3-04cb-4cdf-8a79-852d63cf4801"))).Wait();
-                    IsSucessInitializeAsync = true;
-                    _logs.DebugMsg_1($"PlatinumSDK plugin InitializeAsync correct ...");
+                    if (_platinumClientSdk != null && (!IsSucessInitializeAsync))
+                    {
+                        _platinumClientSdk.InitializeAsync(new ClientAppId(new Guid("b397b9b3-04cb-4cdf-8a79-852d63cf4801"))).Wait();
+                        IsSucessInitializeAsync = true;
+                        _logs.DebugMsg_1($"PlatinumSDK plugin InitializeAsync correct ...");
+                    }
                 }
             }
             catch (Exception ex)

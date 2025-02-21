@@ -56,6 +56,7 @@ namespace DDPM.CLI.Plugins.Peripherals
         private Func<bool, Guid, Task> taskB;
         private Func<int, Guid, String, Task> taskC;
         private List<MonitorInfo> _AllInfoMonitors;
+        private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
 
         #endregion Private Members
 
@@ -3643,6 +3644,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             bool isShowInfo = true;
             string installPath = "";
             bool somethingError = false;
+            bool noupdtae = false;
             CLI_SWU_RESPONSE cLI_SWU_RESPONSE = null;
             try
             {
@@ -3682,8 +3684,16 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     {
                                         writelog("FWUpdate_Line 3912");
                                         SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, true).Result;
+                                        if (swUpdateInfoPackage.SWUpdateInfo.Count == 0)
+                                            noupdtae = true;
+                                        else
+                                        {
+                                            cLI_SWU_RESPONSE.SWname = string.Join(",", swUpdateInfoPackage.SWUpdateInfo.Select(_ => _.SoftwareName));
+                                            cLI_SWU_RESPONSE.SWVersion = string.Join(",", swUpdateInfoPackage.SWUpdateInfo.Select(_ => $"[{_.SoftwareVersion}]"));
+                                            cLI_SWU_RESPONSE.SWUpdateRESPONSE.AddRange(swUpdateInfoPackage.SWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.SoftwareName} to Version:{_.TheLatestVersion}"));
+                                            //cLI_SWU_RESPONSE.Result = "PASS";
+                                        }
                                         Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
-                                        ret = true;
                                         _devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, false, installPath);
                                         ret = true;
                                     }
@@ -3692,8 +3702,16 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     {
                                         writelog("FWUpdate_Line 3922");
                                         SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(false, true).Result;
+                                        if (swUpdateInfoPackage.SWUpdateInfo.Count == 0)
+                                            noupdtae = true;
+                                        else
+                                        {
+                                            cLI_SWU_RESPONSE.SWname = string.Join(",", swUpdateInfoPackage.SWUpdateInfo.Select(_ => _.SoftwareName));
+                                            cLI_SWU_RESPONSE.SWVersion = string.Join(",", swUpdateInfoPackage.SWUpdateInfo.Select(_ => $"[{_.SoftwareVersion}]"));
+                                            cLI_SWU_RESPONSE.SWUpdateRESPONSE.AddRange(swUpdateInfoPackage.SWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.SoftwareName} to Version:{_.TheLatestVersion}"));
+                                            //cLI_SWU_RESPONSE.Result = "PASS";
+                                        }
                                         Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
-                                        ret = true;
                                         _devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, false, installPath);
                                         ret = true;
                                     }
@@ -3701,9 +3719,18 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     {
                                         writelog("FWUpdate_Line 3931");
                                         SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, false).Result;
+                                        if (swUpdateInfoPackage.SWUpdateInfo.Count == 0)
+                                            noupdtae = true;
+                                        else
+                                        {
+                                            cLI_SWU_RESPONSE.SWname = string.Join(",", swUpdateInfoPackage.SWUpdateInfo.Select(_ => _.SoftwareName));
+                                            cLI_SWU_RESPONSE.SWVersion = string.Join(",", swUpdateInfoPackage.SWUpdateInfo.Select(_ => $"[{_.SoftwareVersion}]"));
+                                            cLI_SWU_RESPONSE.SWUpdateRESPONSE.AddRange(swUpdateInfoPackage.SWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.SoftwareName} to Version:{_.TheLatestVersion}"));
+                                            //cLI_SWU_RESPONSE.Result = "PASS";
+                                        }
                                         Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
                                         ret = true;
-                                    }
+                                    }                                   
                                     else
                                     {
                                         writelog("FWUpdate_Line 3938");
@@ -3715,13 +3742,20 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     writelog("FWUpdate_Line 3944");
                                     somethingError = true;
                                 }
-                            }
+                            }                            
                             else
                             {
                                 writelog("FWUpdate_Line 3950");
                                 somethingError = true;
                             }
-
+                            if (noupdtae)
+                            {                               
+                                _GlobalSettingParam = _devMgr.GetGlobalSettingParam().Result;
+                                cLI_SWU_RESPONSE.SWname = "DDPM";
+                                cLI_SWU_RESPONSE.SWVersion = $"[{_GlobalSettingParam.GlobalSetting_About.SWVersion}]";
+                                cLI_SWU_RESPONSE.Message = "No update availible";
+                                cLI_SWU_RESPONSE.Result = "PASS";
+                            }
                         }
                         //else if (commandLineInput.Options.Count == 0)
                         //{
@@ -3886,21 +3920,27 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             break;
                         }
-                        if (commandLineInput.Options.Count > 0)
-                        {
-
-
-
-                        }
-                        else if (commandLineInput.Options.Count == 0)
+                        if (commandLineInput.Options.Count == 0)
                         {
                             SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, false).Result;
                             Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
-                            cLI_SWU_RESPONSE.SWname = string.Join(",", swUpdateInfoPackage.SWUpdateInfo.Select(_ => _.SoftwareName));
-                            cLI_SWU_RESPONSE.SWVersion = string.Join(",", swUpdateInfoPackage.SWUpdateInfo.Select(_ => $"[{_.SoftwareVersion}]"));
-                            cLI_SWU_RESPONSE.SWUpdateRESPONSE.AddRange(swUpdateInfoPackage.SWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.SoftwareName} to Version:{_.TheLatestVersion}"));
-                            cLI_SWU_RESPONSE.Result = "PASS";
-                            ret = true;
+                            if (swUpdateInfoPackage.SWUpdateInfo.Count == 0) 
+                            {
+                                _GlobalSettingParam = _devMgr.GetGlobalSettingParam().Result;
+                                cLI_SWU_RESPONSE.SWname = "DDPM";
+                                cLI_SWU_RESPONSE.SWVersion = $"[{_GlobalSettingParam.GlobalSetting_About.SWVersion}]";
+                                cLI_SWU_RESPONSE.Message = "No update availible";
+                                //cLI_SWU_RESPONSE.Result = "PASS";
+                                ret = true;
+                            }
+                            else
+                            {
+                                cLI_SWU_RESPONSE.SWname = string.Join(",", swUpdateInfoPackage.SWUpdateInfo.Select(_ => _.SoftwareName));
+                                cLI_SWU_RESPONSE.SWVersion = string.Join(",", swUpdateInfoPackage.SWUpdateInfo.Select(_ => $"[{_.SoftwareVersion}]"));
+                                cLI_SWU_RESPONSE.SWUpdateRESPONSE.AddRange(swUpdateInfoPackage.SWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.SoftwareName} to Version:{_.TheLatestVersion}"));
+                                //cLI_SWU_RESPONSE.Result = "PASS";
+                                ret = true;
+                            }                           
                             //_devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, installPath);
                         }
                         else

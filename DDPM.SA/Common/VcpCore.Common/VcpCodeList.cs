@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace VcpCore.Common
 {
@@ -296,10 +297,9 @@ namespace VcpCore.Common
             { "DisplayHDR", 54 },
             { "HDR10", 55 },
             { "HLG", 56 },
-            { "Display P3", 161 }, // Jim  20250111 add back , due to accidental deletion on 20250106 
+            { "Display P3", 161 }, // Jim  20250111 add back , due to accidental deletion on 20250106
             { "Custom Color HDR", 57 }, // Jim add 2025 for [S3225QC] HDR list
             { "HDR Peak 1000", 58 } // Jim add 2025 for [S3225QC] HDR list
-      
         };
 
         public static readonly Dictionary<string, byte> VCP14 = new Dictionary<string, byte>(StringComparer.OrdinalIgnoreCase)
@@ -395,8 +395,7 @@ namespace VcpCore.Common
             //{ 46, "Custom 3" },
             { 47, "SPORTS Game" },
             { 48, "Custom Color HDR" }, // Jim add 2025 for [S3225QC] HDR list
-            { 49, "HDR Peak 1000" } // Jim add 2025 for [S3225QC] HDR list        
-
+            { 49, "HDR Peak 1000" } // Jim add 2025 for [S3225QC] HDR list
         };
 
         public static readonly Dictionary<string, int> VCPE2_HardCode = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
@@ -541,7 +540,6 @@ namespace VcpCore.Common
             {"Presets Disabled", 127},
             { "Custom Color HDR", 48 }, // Jim add 2025 for [S3225QC] HDR list
             { "HDR Peak 1000", 49 } // Jim add 2025 for [S3225QC] HDR list
-          
         };
 
         public struct VcpValue
@@ -559,11 +557,11 @@ namespace VcpCore.Common
         {
             VcpValue retValue = new VcpValue();
 
-            string lowpresetName = presetName.ToLower();
+            string lowpresetName = presetName.ToLower(CultureInfo.InvariantCulture);
 
             foreach (KeyValuePair<string, byte> item2 in VCPDC)
             {
-                if (item2.Key.ToLower().Equals(lowpresetName))
+                if (item2.Key.ToLower(CultureInfo.InvariantCulture).Equals(lowpresetName))
                 {
                     retValue.Vcp = 0xDC;
                     retValue.Value = (byte)item2.Value;
@@ -573,7 +571,7 @@ namespace VcpCore.Common
 
             foreach (KeyValuePair<string, byte> item3 in VCPF0)
             {
-                if (item3.Key.ToLower().Equals(lowpresetName))
+                if (item3.Key.ToLower(CultureInfo.InvariantCulture).Equals(lowpresetName))
                 {
                     retValue.Vcp = 0xF0;
                     retValue.Value = (byte)item3.Value;
@@ -583,7 +581,7 @@ namespace VcpCore.Common
 
             foreach (KeyValuePair<string, byte> item4 in VCP14)
             {
-                if (item4.Key.ToLower().Equals(lowpresetName))
+                if (item4.Key.ToLower(CultureInfo.InvariantCulture).Equals(lowpresetName))
                 {
                     retValue.Vcp = 0x14;
                     retValue.Value = (byte)item4.Value;

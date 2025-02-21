@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -86,7 +87,7 @@ namespace VcpCore.Plugins
                             {
                                 if (!string.IsNullOrWhiteSpace(MonitorInfo.CapabilityString))
                                 {
-                                    _CacheTable.Add(MonitorInfo.edid, new Dictionary<object, object>() { { "CapibilityString".ToLower(), MonitorInfo.CapabilityString }, { key, value } });
+                                    _CacheTable.Add(MonitorInfo.edid, new Dictionary<object, object>() { { "CapibilityString".ToLower(CultureInfo.InvariantCulture), MonitorInfo.CapabilityString }, { key, value } });
                                     result = AddValue(_CacheTable.Keys.ToList());
                                     _logs.DebugMsg("[VcpCorePlugin] Class_VcpLockCache SetToCacheTable " + (result ? "Pass" : "Fail"));
                                 }
@@ -101,7 +102,7 @@ namespace VcpCore.Plugins
                         {
                             if (!string.IsNullOrWhiteSpace(MonitorInfo.CapabilityString))
                             {
-                                _CacheTable.Add(MonitorInfo.edid, new Dictionary<object, object>() { { "CapibilityString".ToLower(), MonitorInfo.CapabilityString }, { key, value } });
+                                _CacheTable.Add(MonitorInfo.edid, new Dictionary<object, object>() { { "CapibilityString".ToLower(CultureInfo.InvariantCulture), MonitorInfo.CapabilityString }, { key, value } });
                                 result = AddValue(_CacheTable.Keys.ToList());
                                 _logs.DebugMsg("[VcpCorePlugin] Class_VcpLockCache SetToCacheTable " + (result ? "Pass" : "Fail"));
                             }
@@ -170,7 +171,7 @@ namespace VcpCore.Plugins
                                 }
                             }
                             if ((!IsExist) && (!string.IsNullOrWhiteSpace(MonitorInfo.CapabilityString)))
-                                _CacheTable.Add(MonitorInfo.edid, new Dictionary<object, object>() { { "CapibilityString".ToLower(), MonitorInfo.CapabilityString } });
+                                _CacheTable.Add(MonitorInfo.edid, new Dictionary<object, object>() { { "CapibilityString".ToLower(CultureInfo.InvariantCulture), MonitorInfo.CapabilityString } });
                         }
                     }
 
@@ -185,7 +186,7 @@ namespace VcpCore.Plugins
                             if (token.IsCancellationRequested)
                                 return;
 
-                            if ((Key is string) && (Key.ToString().Equals("CapibilityString".ToLower())))
+                            if ((Key is string) && (Key.ToString().Equals("CapibilityString".ToLower(CultureInfo.InvariantCulture))))
                                 continue;
                             else
                                 item.Value.Remove(Key);

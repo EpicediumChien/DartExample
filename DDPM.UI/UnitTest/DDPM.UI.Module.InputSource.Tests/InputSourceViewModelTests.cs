@@ -144,7 +144,7 @@ namespace DDPM.UI.Module.InputSource.Tests
             var deviceManagerSA = deviceManagerMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             var monitorInfo = new MonitorInfo();
-            deviceManagerMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+            deviceManagerMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(true));
             var inputSourceModule = new InputSourceModule();
             inputSourceModule.SelectedHomeDevice.MonitorInfo = monitorInfo;
             inputSourceModule.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>();

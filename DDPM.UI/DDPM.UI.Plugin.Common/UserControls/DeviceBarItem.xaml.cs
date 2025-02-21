@@ -27,6 +27,7 @@ namespace DDPM.UI.Common
             vm.Icon = icon;
             vm.Text = text;
             vm.Visibility = isHidden ? Visibility.Collapsed : Visibility.Visible;
+            this.IsEnabled = !isHidden;
             this.DataContext = vm;
 
             FocusFillBrush = (LinearGradientBrush)FindResource("Brush_GradientButtonCyan");

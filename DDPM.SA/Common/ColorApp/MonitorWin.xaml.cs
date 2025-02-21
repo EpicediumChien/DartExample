@@ -3,6 +3,7 @@ using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -366,9 +367,9 @@ namespace DDPM.ColorApp
                     int index = -1;
                     if (forgroundProcess != null && forgroundProcess.MainModule != null) {
                     index = _apps.FindIndex(x =>
-                                     forgroundProcess.MainModule.FileName.ToLower().Trim().IndexOf(x.AppPath.ToLower().Trim()) >= 0 ||
+                                     forgroundProcess.MainModule.FileName.ToLower(CultureInfo.InvariantCulture).Trim().IndexOf(x.AppPath.ToLower(CultureInfo.InvariantCulture).Trim()) >= 0 ||
                                     //forgroundProcess.MainModule.FileName.ToLower().Trim().IndexOf(x.AppName.ToLower().Trim()) >= 0 ||
-                                    forgroundProcess.MainModule.ModuleName.ToLower().Trim().Replace(".exe", "") == x.AppName.ToLower().Trim().Replace(".exe", "")
+                                    forgroundProcess.MainModule.ModuleName.ToLower(CultureInfo.InvariantCulture).Trim().Replace(".exe", "") == x.AppName.ToLower(CultureInfo.InvariantCulture).Trim().Replace(".exe", "")
                                     );
                     }
 
@@ -376,7 +377,7 @@ namespace DDPM.ColorApp
                     {
                         //check with filepath (UWP like app would be this condition)
                         string folder = strFilePath;
-                        if (strFilePath.Trim().ToLower().EndsWith(".exe"))
+                        if (strFilePath.Trim().ToLower(CultureInfo.InvariantCulture).EndsWith(".exe"))
                         {
                             folder = System.IO.Path.GetDirectoryName(strFilePath);
                         }

@@ -420,7 +420,7 @@ namespace DDPM.SA.Common
         Task<string> GetAirAudioDeviceNameAsync(string Guid);
         Task<DeviceInterfaceType> GetAirAudioDeviceInterfaceTypeAsync(string Guid);
 
-        Task<bool> GetAirAudioIsWearDetectionAsync(string Guid);
+        //Task<bool> GetAirAudioIsWearDetectionAsync(string Guid);
         Task<bool> GetAirAudioMuteStatusAsync(string Guid);
         Task<bool> GetAirAudioBoomMicAsync(string Guid);
         Task<bool> GetAirAudioIsBoomMicSupportedAsync(string Guid);

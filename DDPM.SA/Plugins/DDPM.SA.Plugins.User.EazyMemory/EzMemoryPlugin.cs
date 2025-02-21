@@ -27,6 +27,7 @@ using System.Threading;
 using static VcpCore.Common.User32;
 using DDPM.EABroker;
 using DDPM.SA.Common.Display;
+using System.Globalization;
 
 namespace DDPM.SA.Plugins.User.EzMemory
 {
@@ -718,9 +719,9 @@ namespace DDPM.SA.Plugins.User.EzMemory
                 //
                 if (value != null && value.Length > 0)
                 {
-                    value = value.ToLower();
-                    string text = value.Split('\\')[^1].ToLower();
-                    if (!text.ToLower().Contains("exe"))
+                    value = value.ToLower(CultureInfo.InvariantCulture);
+                    string text = value.Split('\\')[^1].ToLower(CultureInfo.InvariantCulture);
+                    if (!text.ToLower(CultureInfo.InvariantCulture).Contains("exe"))
                     {
                         continue;
                     }
@@ -778,7 +779,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
                 Bitmap bitmap = null;
                 try
                 {
-                    string filename = name.ToLower();
+                    string filename = name.ToLower(CultureInfo.InvariantCulture);
                     filename = CheckFileNameValid(filename);
                     string text2 = item.Properties.GetProperty("System.AppUserModel.PackageInstallPath")?.ValueAsObject?.ToString();
                     bool installed_uwp = false;
