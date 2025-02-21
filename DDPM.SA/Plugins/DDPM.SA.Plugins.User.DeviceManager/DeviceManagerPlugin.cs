@@ -12252,7 +12252,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             List<DeviceInfo> _peripheralslist = new List<DeviceInfo>();
             try
             {
-                _peripheralslist = _PeripheralsPlugin.GetDevices(true).Result.deviceInfo;
+                _peripheralslist = _PeripheralsPlugin.GetDevices().Result.deviceInfo;
             }
             catch (Exception ex)
             {
