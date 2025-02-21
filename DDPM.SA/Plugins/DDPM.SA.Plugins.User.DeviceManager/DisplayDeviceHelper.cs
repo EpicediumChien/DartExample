@@ -1,4 +1,5 @@
-﻿using DDPM.SA.Common;
+﻿using DDPM.QAM;
+using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Resources.Helper;
@@ -114,12 +115,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     WriteLog($"[CheckAndTriggerToastWhileMonitorPlugged] monitor list count: {mos.Count}");
                     foreach (MonitorInfo monitorInfo in mos)
                     {
+                        bool isSameModelFlag = false;
                         string model = monitorInfo.modelName;//"U2724DE";
                         string serviceTag = monitorInfo.edid.ServiceTag;
                         string desc = LangHelper.Instance["ImpExp_Message.0"]; //string table: ImpExp_Message.0
                         //
                         //Need jason to implement import/export check here
                         string exportpath = path + "\\" + model + ".json";
+                        string displayProfilePath = $"{localAppDataPath}\\Dell Display and Peripheral Manager\\Display\\{model}.json";
+                        if(devManagerSA != null)
+                            isSameModelFlag = devManagerSA.ReadSameModelAutoApplySameModelFlag(displayProfilePath, model).Result;
+                        else
+                            WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Error devManagerSA not initialized.");
                         WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] export path : " + exportpath);
                         //
                         if (File.Exists(exportpath))
@@ -131,7 +138,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (dDPMImpExpSettings.MonitorSettings != null
                                     && dDPMImpExpSettings.MonitorSettings.ServiceTag != serviceTag)
                                 {
-                                    if (dDPMImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
+                                    if (isSameModelFlag)
                                     {
                                         DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
                                         if ((int)settingsManagerDev.DisplayImportSettings(exportpath, true, serviceTag, out ImpExpSettings).Result > 0)
