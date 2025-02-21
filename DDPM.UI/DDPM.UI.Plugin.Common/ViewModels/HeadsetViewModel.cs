@@ -1225,6 +1225,12 @@ namespace DDPM.UI.Plugin.ViewModels
             switch (property)
             {
                 case "IsReadyChanged":
+                    if (!DeviceInfoDTP.waitHeadsetReady)
+                    {
+                        DeviceInfoDTP.waitHeadsetReady = true;
+                        //FirmwareVersion2 = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
+                        //FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
+                    }
                     _log.Info($"[HeadsetViewModel] HandleNotification DTH Event IsReadyChanged {Model.ToString() + " : " + di.IsReady.ToString()}");
                     break;
                 case "IsDirtyChanged":
