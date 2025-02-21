@@ -259,16 +259,16 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
                 InvokeGotoTwoViewModeAnimation();
 
-                if (newItem.Id == 0)
-                {
-                    if (_vm.VbarSelectedIndex != -1)
-                        InvokeEnlargeAnimation();
-                    _vm.ActiveModule?.OnActivated();
-                }
-                else
-                {
-                    InvokeShrinkAnimation();
-                }
+                //if (newItem.Id == 0)
+                //{
+                //    if (_vm.VbarSelectedIndex != -1)
+                //        InvokeEnlargeAnimation();
+                //    _vm.ActiveModule?.OnActivated();
+                //}
+                //else
+                //{
+                //    InvokeShrinkAnimation();
+                //}
             }
 
             _vm.VbarSelectedIndex = newItem.Id;
