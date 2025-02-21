@@ -12,6 +12,7 @@ using Dell.Client.Framework.Common;
 using DdmLibrary.Utility;
 using DPeMPublic.Common;
 using Microsoft.VisualBasic.Logging;
+using System.Security.Policy;
 
 namespace DDPM.QAM
 {
@@ -22,8 +23,8 @@ namespace DDPM.QAM
         public bool[] Settings_IsEnable { get; set; } = { true, true, true, true };
         public bool[] Settings_IsSelected { get; set; } = { false, false, false, false };
         public Visibility[] Settings_IsVisibility { get; set; } = { Visibility.Visible, Visibility.Visible, Visibility.Visible, Visibility.Visible };
-        
-        private string selectedProfileName = string.Empty;
+
+        public string selectedProfileName = string.Empty;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged(string propertyName)
@@ -71,8 +72,8 @@ namespace DDPM.QAM
                         //}
 
                         webcamSettings = WebcamSettings.ImportWebcamSettings(CurrentDeviceInfo.ModelNumber, CurrentDeviceInfo, devMgr, log);
-                        
-                        if (webcamSettings != null) 
+
+                        if (webcamSettings != null)
                         {
                             selectedProfileName = webcamSettings.SelectedProfileName?.ToString() ?? string.Empty;
 
@@ -187,7 +188,7 @@ namespace DDPM.QAM
         {
             if (90 == fov)
                 return 2;
-            else if(78 == fov)
+            else if (78 == fov)
                 return 1;
             else
                 return 0;
@@ -326,7 +327,7 @@ namespace DDPM.QAM
             {
                 LogMsg($"Catch exception in QAMPageViewModel_UIUpdateNotify: {ex.Message}");
             }
-            
+
         }
 
         public void SetNoneProfile()
@@ -400,7 +401,7 @@ namespace DDPM.QAM
                         return true;
                     }
                 }
-                    
+
                 LogMsg($"Could not found {name} in current UI_ProfileList, set profile to none");
                 SetNoneProfile(); //Derek 2025/01/18
 
@@ -427,7 +428,7 @@ namespace DDPM.QAM
 
         public void SetProfile(UI_Profile selProfile)
         {
-            LogMsg($"QAM user select profile: {selProfile.Profile_Name}");
+            LogMsg($"QAM user want to change profile to: {selProfile.Profile_Name}, {selProfile.Profile_Name_Key}, current is {selectedProfileName}");
 
             try
             {
@@ -641,7 +642,7 @@ namespace DDPM.QAM
             {
                 LogMsg($"QAM SetProfile Catch exception: {e.Message}");
             }
-            
+
         }
 
         private void SaveSelectProfile()
@@ -705,10 +706,10 @@ namespace DDPM.QAM
             catch (Exception e)
             {
                 LogMsg($"IsAutoFramingVisable get exception {e.Message}");
-                
+
                 return false;
             }
-            
+
         }
 
         #endregion
@@ -730,7 +731,7 @@ namespace DDPM.QAM
                 if (!isStatusChangeByDDPM)
                 {
                     bool result = DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), _FieldOfView).Result;
-                    
+
                     LogMsg($"QAM SetFieldOfView value to {_FieldOfView}, result is {result}");
                 }
                 else
@@ -881,7 +882,7 @@ namespace DDPM.QAM
         {
             try
             {
-                if (null != webcamSettings.NONE && selectedProfileName == "NONE" && 
+                if (null != webcamSettings.NONE && selectedProfileName == "NONE" &&
                     (65 == fov || 78 == fov || 90 == fov))
                 {
                     webcamSettings.NONE.FieldOfView = fov;

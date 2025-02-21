@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using DdmLibrary.Utility;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -26,6 +27,14 @@ namespace DDPM.QAM
                 border.DataContext is UI_Profile selectedProfile && 
                 DataContext is QAMPageViewModel vm)
             {
+                //Derek 2025/02/20
+                if (string.Equals(selectedProfile.Profile_Name_Key, vm.selectedProfileName, StringComparison.OrdinalIgnoreCase))
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.WriteLog($"return due to: {selectedProfile.Profile_Name_Key} = {vm.selectedProfileName}");
+
+                    return;
+                }
+
                 vm.isStatusChangeByDDPM = false;
                 vm.SetProfile(selectedProfile);
                 vm.SendSelectProfileToDDPM();
