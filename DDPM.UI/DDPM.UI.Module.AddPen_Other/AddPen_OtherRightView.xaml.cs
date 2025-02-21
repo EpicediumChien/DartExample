@@ -44,13 +44,15 @@ namespace DDPM.UI.Module.AddPen_Other
             }
         }
 
-        bool? IsBLE = null;
+        bool IsBLE = true;
+        bool IsConnected = true;
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
         {
             if (e.type == DeviceChangedType.Peripherals_SettingsChange && e.changedProperty == "ActivePenInformationChanged")
             {
                 var di = e.device_peripherals;
                 IsBLE = di.IsBLE;
+                IsConnected = di.IsConnected;
             }
         }
 
@@ -90,38 +92,32 @@ namespace DDPM.UI.Module.AddPen_Other
 
         private void Pairing(object sender, System.Windows.Input.StylusDownEventArgs e)
         {
-            Thread.Sleep(500);
+            Thread.Sleep(300);
 
-            if (IsBLE != null)
+            if (!IsBLE)
             {
-                if (IsBLE.HasValue && !IsBLE.Value)
+                MessageModalDialog messageModalDialog;
+                Window mainWindow = System.Windows.Application.Current.MainWindow;
+                if (IsConnected)
                 {
-                    MessageModalDialog messageModalDialog;
-                    Window mainWindow = System.Windows.Application.Current.MainWindow;
-                    messageModalDialog = new(Strings.PairYourPen, Strings.PairYourPenMessage, Strings.No, Strings.Yes);
-                    if (mainWindow != null)
-                    {
-                        messageModalDialog.Owner = mainWindow;
-                        messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
-                        messageModalDialog.Top = mainWindow.Top + 300;
-                    }
-                    if (messageModalDialog.ShowDialog()!.Value)
-                    {
-                        _vm.StartPairingPen();
-                    }
-                    IsBLE = null;
+                    messageModalDialog = new(Strings.Error, Strings.PenAlreadyPaired, Strings.Cancel);
                 }
                 else
                 {
-                    DdpmCommonHelper.WriteUILog($"IsBLE.HasValu : {IsBLE.HasValue}, !IsBLE.Value : {!IsBLE.Value}");
+                    messageModalDialog = new(Strings.PairYourPen, Strings.PairYourPenMessage, Strings.No, Strings.Yes);
                 }
+                if (mainWindow != null)
+                {
+                    messageModalDialog.Owner = mainWindow;
+                    messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 420) / 2;
+                    messageModalDialog.Top = mainWindow.Top + 300;
+                }
+                if (messageModalDialog.ShowDialog()!.Value)
+                {
+                    _vm.StartPairingPen();
+                }
+                //IsBLE = true;
             }
-            else
-            {
-                DdpmCommonHelper.WriteUILog("Pairing, IsBLE == null");
-            }
-
-
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
