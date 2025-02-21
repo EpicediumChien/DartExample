@@ -963,7 +963,7 @@ namespace DDPM.SA.Common
 
         public RegistryMonitor_Copilot(RegistryKey registryKey, string subKey)
         {
-            _regKey = registryKey.OpenSubKey(subKey, writable: false) ?? throw new ArgumentException("Invalid registry key");
+            _regKey = registryKey.OpenSubKey(subKey, writable: false) ?? registryKey.CreateSubKey(subKey);
             _registryKey = subKey;
         }
 

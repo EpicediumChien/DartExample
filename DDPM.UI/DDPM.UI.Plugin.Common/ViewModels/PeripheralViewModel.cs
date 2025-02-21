@@ -283,7 +283,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
             FirmwareVersion = CurrentDeviceInfo.FirmwareVersion;
             var fv = CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
-            FirmwareVersion2 = $"Firmware Version {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
+            FirmwareVersion2 = $"{Strings.FirmwareVersion} {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
             //ConnectionType = CurrentDeviceInfo.PhysicalDeviceType.ToString() == "PhysicalDongle" ? "Dongle" : "Bluetooth";
             switch (CurrentDeviceInfo.PhysicalDeviceType)
             {
