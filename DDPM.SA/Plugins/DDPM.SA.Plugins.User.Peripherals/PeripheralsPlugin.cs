@@ -31,6 +31,7 @@ using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.ServiceProcess;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -1388,12 +1389,33 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         #endregion
 
         #region Private Methods
-
+        private bool IsServiceRunning()
+        {
+            _logs.DebugMsg_1($"[PeripheralsPlugin] {nameof(IsServiceRunning)} start");
+            bool ret = false;
+            string serviceName = "DPMService";
+            try
+            {
+                using (ServiceController service = new ServiceController(serviceName))
+                {
+                    if (service.Status == ServiceControllerStatus.Running)
+                    {
+                        ret = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1($"[PeripheralsPlugin] {nameof(IsServiceRunning)} Error: {ex.Message}");
+            }
+            _logs.DebugMsg_1($"[PeripheralsPlugin] {nameof(IsServiceRunning)} done. ret : {ret}");
+            return ret;
+        }
         private void ScanDevices()
         {
             lock (_lock)
             {
-                if (_isClientConnected && _iClient != null && _iDeviceManager != null)
+                if (IsServiceRunning() && _isClientConnected && _iClient != null && _iDeviceManager != null)
                 {
                     _deviceHelper = new DeviceHelper
                     {
