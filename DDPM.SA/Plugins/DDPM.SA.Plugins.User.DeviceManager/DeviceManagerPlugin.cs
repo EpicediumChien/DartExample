@@ -10421,6 +10421,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", false).Result;
         }
 
+        public Task InvokeGlobalSettingChangeUINotify(UpdateUINotify e)
+        {
+            GlobalSettingChangeEvent?.Invoke(this, e);
+            return Task.CompletedTask;
+        }
+
         public Task<bool> Set_GlobalSetting_DisplayLowBatteryLevel(bool isDisplay)
         {
             bool ret = false;

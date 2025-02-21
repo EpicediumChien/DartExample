@@ -1539,6 +1539,8 @@ namespace DDPM.SA.Common
         //event EventHandler GlobalSettingChangeEvent;
         event EventHandler<UpdateUINotify> GlobalSettingChangeEvent;
 
+        Task InvokeGlobalSettingChangeUINotify(UpdateUINotify e);
+
         Task<GlobalSettingParam> GetGlobalSettingParam();
 
         Task<bool> Set_GlobalSetting_DisplayLowBatteryLevel(bool isDisplay);
