@@ -138,12 +138,12 @@ namespace DDPM.UI.Plugin.MousePlugin
                         }
                     }
                 }
-                //Unloaded += LaunchView_Unloaded;
-                //if (DdpmCommonHelper.DeviceManagerSA != null)
-                //{
-                //    //DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
-                //    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
-                //}
+                Unloaded += LaunchView_Unloaded;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
+                    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+                }
             }
             catch (Exception ex)
             {
@@ -165,26 +165,27 @@ namespace DDPM.UI.Plugin.MousePlugin
         {
             try
             {
-
-                //if (_vm != null && e.type == DeviceChangedType.Peripherals_SettingsChange && e.changedProperty == "CopilotEnableChanged")
-                //{
-                //    _vm.IsCopilotEnabled = e.device_peripherals.Message != "false";
-                //    if (!_vm.IsCopilotEnabled)
-                //        _vm.RemoveCopilotAction();
-                //    Dispatcher.Invoke(new Action(() =>
-                //    {
-                //        _vm.RefreshButtonImageFile(_vm.SelectedButton, false, true);
-
-                //        if (_vm.VbarSelectedIndex == 1)
-                //        {
-                //            _vm.ActiveModule!.OnActivated();
-                //        }
-                //        else
-                //        {
-                //            OnVbarItemClicked(_vm.VbarItems[1]);
-                //        }
-                //    }));
-                //}
+                if (_vm != null && e.type == DeviceChangedType.Peripherals_SettingsChange)
+                {
+                    switch (e.changedProperty)
+                    {
+                        case "CopilotEnableChanged":
+                            if (e.device_peripherals != null)
+                            {
+                                _vm.IsCopilotEnabled = e.device_peripherals.Message != "false";
+                                if (!_vm.IsCopilotEnabled)
+                                    _vm.RemoveCopilotAction();
+                                Dispatcher.Invoke(new Action(() =>
+                                {
+                                    if (_vm.VbarSelectedIndex == 1)
+                                        _vm.ActiveModule!.OnActivated();
+                                }));
+                            }
+                            break;
+                        default:
+                            return;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -194,11 +195,11 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private void LaunchView_Unloaded(object sender, RoutedEventArgs e)
         {
-            //if (DdpmCommonHelper.DeviceManagerSA != null)
-            //{
-            //    //DdpmCommonHelper.DeviceManagerSA.StopCopilotRegistryMonitor();
-            //    DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
-            //}
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.StopCopilotRegistryMonitor();
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+            }
         }
 
         private void MSUXSystemParametersChanged(object? sender, PropertyChangedEventArgs e)

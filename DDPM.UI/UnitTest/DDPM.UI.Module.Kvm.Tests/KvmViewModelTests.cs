@@ -548,7 +548,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             kvmViewModel.KvmModule = kvmmodule;
             kvmViewModel.KvmModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
 
-            deviceManagerMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+            deviceManagerMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(true));
             try
             {
                 kvmViewModel.CurrentInputChange();

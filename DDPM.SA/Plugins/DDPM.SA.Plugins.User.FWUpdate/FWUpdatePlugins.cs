@@ -578,6 +578,18 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _logs.DebugMsg_1($"_fWUpdateInfoPackage.FWUpdateInfo.Count : {_fWUpdateInfoPackage.FWUpdateInfo.Count}");
                 if (_fWUpdateInfoPackage.FWUpdateInfo.Count > 0)
                 {
+                    if (deviceInfos != null)
+                    {
+                        //Bruce 02/19 If multiple docks are docked consecutively, all docks will remove
+                        int isDockCanFWUCount = _fWUpdateInfoPackage.FWUpdateInfo.FindAll(x => x.DeviceType.Equals(DeviceType.LogicalDock) || x.DeviceType.Equals(DeviceType.PhysicalWiredDock)).Count;
+                        int isDockConnectCount = deviceInfos.FindAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock)).Count;
+                        _logs.DebugMsg_1($"isDockCanFWUCount : {isDockCanFWUCount}");
+                        _logs.DebugMsg_1($"isDockConnectCount : {isDockConnectCount}");
+                        if (isDockCanFWUCount >= 1 && isDockConnectCount <= 0)
+                        {
+                            _fWUpdateInfoPackage.FWUpdateInfo.RemoveAll(x => x.DeviceType.Equals(DeviceType.LogicalDock) || x.DeviceType.Equals(DeviceType.PhysicalWiredDock));
+                        }
+                    }
                     _logs.DebugMsg_1(nameof(CheckUpdate) + " done.");
                 }
                 else
@@ -989,6 +1001,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 method.Dispose();
                 _IsDownloadAndInsytall = false;
+
+                // add @ 20250220 stephen : send fwupdate result event to cma
+                DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, fwUpdateInfos, System.Threading.CancellationToken.None);
+
                 return Task.FromResult(fwUpdateInfos);
             }
             catch (Exception ex)

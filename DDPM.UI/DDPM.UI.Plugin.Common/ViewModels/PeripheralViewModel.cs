@@ -283,7 +283,10 @@ namespace DDPM.UI.Plugin.ViewModels
 
             FirmwareVersion = CurrentDeviceInfo.FirmwareVersion;
             var fv = CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
-            FirmwareVersion2 = $"Firmware Version {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
+            //--Bruce 0221 The firmware version has been processed in SA, so there is no need to process the string again.
+            FirmwareVersion2 = $"{Strings.FirmwareVersion} {fv}";
+            //FirmwareVersion2 = $"{Strings.FirmwareVersion} {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
+            //--Bruce 0221
             //ConnectionType = CurrentDeviceInfo.PhysicalDeviceType.ToString() == "PhysicalDongle" ? "Dongle" : "Bluetooth";
             switch (CurrentDeviceInfo.PhysicalDeviceType)
             {

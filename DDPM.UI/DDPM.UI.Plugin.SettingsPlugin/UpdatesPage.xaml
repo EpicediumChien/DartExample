@@ -22,8 +22,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid 
-          Opacity="{Binding UpdatesPageUI_Opacity}">
+    <Grid Opacity="{Binding UpdatesPageUI_Opacity}">
         <UXControls:UXScrollViewer>
             <Border Style="{StaticResource GroupBorderStyle}" CornerRadius="13">
                 <Grid>

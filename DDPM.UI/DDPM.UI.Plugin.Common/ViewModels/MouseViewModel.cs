@@ -223,6 +223,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 SelectedButton = btn;
                 InitializeButton();
+                RefreshButtonInfo();
             }
             catch (Exception ex)
             {

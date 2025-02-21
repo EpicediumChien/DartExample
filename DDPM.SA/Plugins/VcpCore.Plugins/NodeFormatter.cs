@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace VcpCore.Plugins
 {
@@ -418,7 +419,7 @@ namespace VcpCore.Plugins
                 case "37": return "HDR10";
                 case "38": return "HLG";
                 case "39": return "Custom Color HDR"; // Jim add 2025 for [S3225QC] HDR list
-                case "3a": return "HDR Peak 1000"; // Jim add 2025 for [S3225QC] HDR list               
+                case "3a": return "HDR Peak 1000"; // Jim add 2025 for [S3225QC] HDR list
                 case "a1": return "Display P3";
                 case "c1": return "Custom 1 / User 1";
                 case "c2": return "Custom 2 / User 2";
@@ -504,12 +505,12 @@ namespace VcpCore.Plugins
 
         public string FormatNode(INode node)
         {
-            var parentKey = node.Parent?.ToString()?.ToLower();
+            var parentKey = node.Parent?.ToString()?.ToLower(CultureInfo.InvariantCulture);
             string result = null;
 
             //if (parentKey != null && lookupTables.ContainsKey(parentKey))
             if (!string.IsNullOrEmpty(parentKey) && lookupTables.ContainsKey(parentKey))
-                result = lookupTables[parentKey](node.Value.ToLower());
+                result = lookupTables[parentKey](node.Value.ToLower(CultureInfo.InvariantCulture));
 
             return result;
         }

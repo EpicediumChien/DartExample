@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace DDPM.ColorApp
 {
@@ -106,7 +108,14 @@ namespace DDPM.ColorApp
 
             public static IntPtr _GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId)
             {
-                return GetWindowThreadProcessId(hWnd, out nProcessId);
+                IntPtr rst = GetWindowThreadProcessId(hWnd, out nProcessId);
+                if (rst == IntPtr.Zero)
+                {
+#if DEBUG
+                    Console.WriteLine("[WindowFocusWatcher] GetWindowThreadProcessId failed");
+#endif
+                }
+                return rst;
             }
 
             [DllImport("user32.dll", SetLastError = true)]
@@ -117,7 +126,14 @@ namespace DDPM.ColorApp
             public static IntPtr _SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc,
                 WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags)
             {
-                return SetWinEventHook(eventMin, eventMax, hmodWinEventProc, lpfnWinEventProc, idProcess, idThread, dwFlags);
+                IntPtr rst = SetWinEventHook(eventMin, eventMax, hmodWinEventProc, lpfnWinEventProc, idProcess, idThread, dwFlags);
+                if (rst == IntPtr.Zero)
+                {
+#if DEBUG
+                    Console.WriteLine("[WindowFocusWatcher] SetWinEventHook failed");
+#endif
+                }
+                return rst;
             }
 
             [DllImport("user32.dll", SetLastError = true)]
@@ -126,7 +142,14 @@ namespace DDPM.ColorApp
 
             public static bool _UnhookWinEvent(IntPtr hWinEventHook)
             {
-                return UnhookWinEvent(hWinEventHook);
+                bool rst = UnhookWinEvent(hWinEventHook);
+                if (!rst)
+                {
+#if DEBUG
+                    Console.WriteLine("[WindowFocusWatcher] UnhookWinEvent failed");
+#endif
+                }
+                return rst;
             }
 
             #endregion Methods

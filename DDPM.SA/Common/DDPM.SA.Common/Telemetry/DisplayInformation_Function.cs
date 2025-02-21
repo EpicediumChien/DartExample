@@ -1,4 +1,5 @@
-﻿using VcpCore.Common;
+﻿using System.Globalization;
+using VcpCore.Common;
 
 namespace DDPM.SA.Common
 {
@@ -11,7 +12,7 @@ namespace DDPM.SA.Common
             var count = 0;
             foreach (var screen in screenList)
             {
-                if ((monitorInfo.DisplayName.ToLower()).Equals(screen.DeviceName.ToLower()))
+                if ((monitorInfo.DisplayName.ToLower(CultureInfo.InvariantCulture)).Equals(screen.DeviceName.ToLower(CultureInfo.InvariantCulture)))
                     count++;
             }
 

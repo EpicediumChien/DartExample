@@ -302,7 +302,7 @@ namespace DDPM.UI.Common
                                     if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
                                     {
                                         keyAction.AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
-                                        if (keyAction.AssignedAction.ID == 14) //AssignKeystroke
+                                        if (Actions.AdvancedActions.Contains(keyAction.AssignedAction.ID)) //AssignKeystroke, OpenFile, OpenWebpage, OpenFolder
                                         {
                                             keyAction.AssignedAction.Parameter = actionDetail.DisplayData;
                                         }

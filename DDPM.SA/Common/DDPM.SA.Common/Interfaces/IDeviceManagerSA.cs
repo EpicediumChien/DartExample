@@ -7,8 +7,6 @@ using DPeMPublic.Common.Enums;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Security.Policy;
-using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 
@@ -181,17 +179,17 @@ namespace DDPM.SA.Common
 
         event EventHandler<MonitorinfoUpdateEventArgs> MonitorinfoUpdated;
 
-        Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default);
+        Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low);
 
-        Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid guid = default);
+        Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low);
 
-        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, Guid guid = default, int opt = 0);
+        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, Guid guid = default, int opt = 0, Priority priority = Priority.Low);
 
-        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, Guid guid = default, int opt = 0);
+        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, Guid guid = default, int opt = 0, Priority priority = Priority.Low);
 
-        Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val, Guid guid = default);
+        Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val, Guid guid = default, Priority priority = Priority.Low);
 
-        Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val, Guid guid = default);
+        Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val, Guid guid = default, Priority priority = Priority.Low);
 
         //
         //The idle state of DisplayService is used to block the handling of system display change event
@@ -1541,6 +1539,8 @@ namespace DDPM.SA.Common
         //event EventHandler GlobalSettingChangeEvent;
         event EventHandler<UpdateUINotify> GlobalSettingChangeEvent;
 
+        Task InvokeGlobalSettingChangeUINotify(UpdateUINotify e);
+
         Task<GlobalSettingParam> GetGlobalSettingParam();
 
         Task<bool> Set_GlobalSetting_DisplayLowBatteryLevel(bool isDisplay);
@@ -1688,7 +1688,7 @@ namespace DDPM.SA.Common
 
         Task<DeviceInterfaceType> GetAirAudioDeviceInterfaceTypeAsync(string Guid);
 
-        Task<bool> GetAirAudioIsWearDetectionAsync(string Guid);
+        //Task<bool> GetAirAudioIsWearDetectionAsync(string Guid);
 
         Task<bool> GetAirAudioMuteStatusAsync(string Guid);
 

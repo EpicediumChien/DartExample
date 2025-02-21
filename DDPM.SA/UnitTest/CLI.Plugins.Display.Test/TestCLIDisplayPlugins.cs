@@ -197,7 +197,7 @@ namespace DDPM.CLI.Plugins.Display.Test
             List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
             _allInfoMonitors.Add(monitorInfo1);
             devMgr2.Setup(m => m.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
-            devMgr2.Setup(m => m.GetCapabilitiesString(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(monitorInfo1.CapabilityString));
+            devMgr2.Setup(m => m.GetCapabilitiesString(It.IsAny<MonitorInfo>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(monitorInfo1.CapabilityString));
             if (devMgr2 != null)
             {
                 var GetCapabilitiesString_Result2 = (Task<int>)privatetecLIDisplayPlugins.Invoke("GetCapabilitiesString", devMgr2.Object, index);   //devMgr2 != null
@@ -225,7 +225,7 @@ namespace DDPM.CLI.Plugins.Display.Test
             List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
             _allInfoMonitors.Add(monitorInfo1);
             devMgr2.Setup(m => m.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
-            devMgr2.Setup(m => m.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(monitorInfo1.CapabilityString));
+            devMgr2.Setup(m => m.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(monitorInfo1.CapabilityString));
             if (devMgr2 != null)
             {
                 var GetVCPCapabilities_Result2 = (Task<int>)privatetecLIDisplayPlugins.Invoke("GetVCPCapabilities", devMgr2.Object, index);  //devMgr2 != null
@@ -2231,7 +2231,7 @@ namespace DDPM.CLI.Plugins.Display.Test
             List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
             _allInfoMonitors.Add(monitorInfo1);
             devMgr2.Setup(m => m.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
-            devMgr2.Setup(m => m.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(Task.FromResult(true));
+            devMgr2.Setup(m => m.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(true));
             if (devMgr2 != null)
             {
                 var SetCurrentInput_Result2 = (Task<int>)privatetecLIDisplayPlugins.Invoke("SetCurrentInput", devMgr2.Object, index, input); //devMgr2 != null
@@ -2409,15 +2409,15 @@ namespace DDPM.CLI.Plugins.Display.Test
             devMgr.Setup(m => m.GetMonitorProfile(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(MonitorProfile));
             devMgr.Setup(m => m.WriteColorPresetByColorProfile(It.IsAny<MonitorInfo>(), It.IsAny<string>())).Returns(Task.FromResult(WriteColorPresetByColorProfile));
             devMgr.Setup(m => m.GetColorManagementStatus(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(GetColorManagementStatus));
-            devMgr.Setup(m => m.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>())).Returns(Task.FromResult(SetVCPCapability));
-            devMgr.Setup(m => m.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>())).Returns(Task.FromResult(objGetVCP));
+            devMgr.Setup(m => m.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(SetVCPCapability));
+            devMgr.Setup(m => m.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<Priority>())).Returns(Task.FromResult(objGetVCP));
             devMgr.Setup(m => m.GetPipPbpCapabilitiesWords(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(ushorts));
             devMgr.Setup(m => m.GetPxpMode(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(objGetPxpMode)); //off", 0x00, "PIP/PBP off, full screen"
             devMgr.Setup(m => m.ReadPowerNapSettings()).Returns(Task.FromResult(powerNapSettings));
             devMgr.Setup(m => m.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(ddpmSettings));
             devMgr.Setup(m => m.SetAppConfigData(It.IsAny<DDPMSettings>())).Returns(Task.FromResult(SetAppConfigDataDDPMSettings));
             devMgr.Setup(m => m.AutoSetColorPresetForMonitorConfig(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>())).Returns(Task.FromResult(AutoSetColorPresetForMonitorConfig));
-            devMgr.Setup(m => m.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>())).Returns(Task.FromResult(GetVCPCapabilities));
+            devMgr.Setup(m => m.GetVCPCapabilities(It.IsAny<MonitorInfo>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(GetVCPCapabilities));
             //Robert_Lin, 2025-1-7 comment-out due to GetEAFunctionEnabled() is deleted.
             //devMgr.Setup(m => m.GetEAFunctionEnabled()).Returns(Task.FromResult(objGetGetEAFunctionEnabled));
             devMgr.Setup(m => m.GetOnUSBKVM(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(objGetOnUSBKVM));

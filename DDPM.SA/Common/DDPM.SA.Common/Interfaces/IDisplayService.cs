@@ -30,17 +30,17 @@ namespace DDPM.SA.Common
 
         Task<Dictionary<EDID, Dictionary<object, object>>> GetVCPCacheTable();
 
-        Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default);
+        Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low);
 
-        Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid guid = default);
+        Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low);
 
-        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, Guid guid = default, int opt = 0);
+        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, Guid guid = default, int opt = 0, Priority priority = Priority.Low);
 
-        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, Guid guid = default, int opt = 0);
+        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, Guid guid = default, int opt = 0, Priority priority = Priority.Low);
 
-        Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val, Guid guid = default);
+        Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val, Guid guid = default, Priority priority = Priority.Low);
 
-        Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val, Guid guid = default);
+        Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val, Guid guid = default, Priority priority = Priority.Low);
 
         event EventHandler<VCPchangedEventArgs> VCPchanged;
 
