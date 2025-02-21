@@ -1001,6 +1001,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 method.Dispose();
                 _IsDownloadAndInsytall = false;
+
+                // add @ 20250220 stephen : send fwupdate result event to cma
+                DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, fwUpdateInfos, System.Threading.CancellationToken.None);
+
                 return Task.FromResult(fwUpdateInfos);
             }
             catch (Exception ex)

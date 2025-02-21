@@ -1093,6 +1093,36 @@ namespace DDPM.SA.Plugins.CMAManager
 
         public event EventHandler<CMAEventArgs> CMARequestEvent;
 
+        // add @ 20250220 stephen : add fwupdate result return code
+        private int responseFwResultCode(int code)
+        {
+
+            int resultCode = -1;
+
+            switch (code)
+            {
+                case (int)FWUErrorCode.NoError:
+                    resultCode = Params.Response.STATUS_FW_UPDATE_SUCCESS;
+                    break;
+
+                case (int)FWUErrorCode.DeviceDisconnected:
+                    resultCode = Params.Response.STATUS_FW_UPDATE_DEVICE_NOT_CONNECTED;
+                    break;
+
+                case (int)FWUErrorCode.Unknow:
+                    resultCode = Params.Response.UNKNOWN_ERROR;
+                    break;
+
+                default:
+                    resultCode = Params.Response.STATUS_FW_UPDATE_ERROR;
+                    break;
+
+            }
+
+            return resultCode;
+        }
+
+
         // add @ 20241129 stephen
         public Task UpdateFwStatus(List<FWUpdateInfo> datas)
         {
@@ -1113,7 +1143,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 args.eventType = Params.EventType.FW.ToString();
                 args.notification = "{\"sid\": \"" + "sid" + "\",\"gid\": \"" + data.Guid + "\",\"response\": [" + data.FWUErrorCode + "<" + (int)data.FWUErrorCode + ">" + "(" + data.DeviceName + ", " + data.Model + ")" + "]}";
 
-                // modified start @ 20250213 stephen : error handle while guid is empty 
+                /*// modified start @ 20250213 stephen : error handle while guid is empty 
                 try
                 {
                     // add @ 20250121 stephen
@@ -1130,7 +1160,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                     string response = string.Empty;
 
-                    response = "{\"sid\":\"N/A\",\"gid\":\"N/A\",\"response\":[{\"tid\":1,\"result\":" + Params.Response.STATUS_FW_UPDATE_ERROR + ",\"msg\":\"Exception Error\",\"data\":";
+                    response = "{\"sid\":\"N/A\",\"gid\":\"" + data.Guid + "\",\"response\":[{\"tid\":1,\"result\":" + responseFwResultCode((int)data.FWUErrorCode) + ",\"msg\":\"E\",\"data\":";
                     response = response + "[{";
                     response = response + "\"seqnum\":" + 2 + ",";
                     response = response + "\"index\":\"" + data.DeviceIndex + "\",";
@@ -1145,7 +1175,26 @@ namespace DDPM.SA.Plugins.CMAManager
 
                     args.notification = response;
 
-                }
+                }*/
+
+                WriteLog("[CMA] UpdateFwStatus() Response");
+
+                string response = string.Empty;
+
+                response = "{\"sid\":\"N/A\",\"gid\":\"" + data.Guid + "\",\"response\":[{\"tid\":1,\"result\":" + responseFwResultCode((int)data.FWUErrorCode) + ",\"msg\":\"E\",\"data\":";
+                response = response + "[{";
+                response = response + "\"seqnum\":" + 2 + ",";
+                response = response + "\"index\":\"" + data.DeviceIndex + "\",";
+                response = response + "\"model\":\"" + data.Model + "\",";
+                response = response + "\"servicetag\":\"" + data.ServiceTag + "\",";
+                response = response + "\"marketingname\":\"" + "N/A" + "\",";
+                response = response + "\"serialnumber\":\"" + "N/A" + "\",";
+                response = response + "\"fwversion\":\"" + data.TheLatestVersion + "\",";
+                response = response + "\"fwupdateresponse\":\"" + string.Empty + "\"";
+                response = response + "}]";
+                response = response + "}]}";
+
+                args.notification = response;
 
                 WriteLog("UpdateFwStatus() CmdResponse args.notification final = " + args.notification);
                 // modified end @ 20250213
