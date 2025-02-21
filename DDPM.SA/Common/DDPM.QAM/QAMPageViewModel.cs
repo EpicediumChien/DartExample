@@ -279,7 +279,6 @@ namespace DDPM.QAM
 
                                 //add by leo 2025/01/14
                                 //SetNoneProfile();
-
                             }
 
                             break;
@@ -292,9 +291,8 @@ namespace DDPM.QAM
                                 isStatusChangeByDDPM = true;
                                 AutoFramingStatus = result;
 
-                                //add by leo 2025/01/14
-                                //SetNoneProfile();
-
+                                //Derek 2025/02/21 align QAM UI with DDPM when auto frame changed by DDPM
+                                ChangeUIWhenAutoFramingStatusChange(AutoFramingStatus);
                             }
                             break;
                     }
@@ -367,15 +365,21 @@ namespace DDPM.QAM
         {
             FullView = null;
         }
+
+        private int selIndex = 0;
         public void Settings_Selected(int index)
         {
             for (int j = 0; j < Settings_IsSelected.Length; j++)
             {
                 Settings_IsSelected[j] = false;
             }
+
             Settings_IsSelected[index] = true;
+            selIndex = index;
+
             OnPropertyChanged(nameof(Settings_IsSelected));
         }
+
         #region Presets
         public ObservableCollection<UI_Profile> UI_ProfileList { get; set; }
         //public Dictionary<string, WebcamProfile> Profiles = new Dictionary<string, WebcamProfile>();
@@ -745,6 +749,17 @@ namespace DDPM.QAM
         }
         #endregion
         #region Zoom
+        private bool is_ZoomEnableStatus = true;
+        public bool ZoomEnableStatus
+        {
+            get => is_ZoomEnableStatus;
+            set
+            {
+                is_ZoomEnableStatus = value;
+                OnPropertyChanged(nameof(ZoomEnableStatus));
+            }
+        }
+
         public string FullView_Height { get; set; } = "0";
         private int _ZoomValue { get; set; }
         public bool IsSliderDragging = false;
@@ -826,6 +841,40 @@ namespace DDPM.QAM
             OnPropertyChanged(nameof(UI_ProfileList));
 
             //DdpmCommonHelper.DeviceManagerSA!.WriteLog($"RefreshUI  --> ZoomValue = {ZoomValue}, FieldOfView = {FieldOfView}, _AutoFramingStatus = {_AutoFramingStatus}");
+        }
+
+        private void ChangeUIWhenAutoFramingStatusChange(bool statusIsOn)
+        {
+            //MessageBox.Show("ChangeUIWhenAutoFramingStatusChange");
+
+            if (selIndex < 2)
+            {
+                LogMsg($"ChangeUIWhenAutoFramingStatusChange return due to page FOV or ZOOM not selected");
+
+                return;
+            }
+
+            //disable/enable FOV and zoom slider bar status
+            ZoomEnableStatus = !statusIsOn;
+
+            try
+            {
+                if (statusIsOn)
+                {
+                    //1. UI FOV change to largest
+                    FOV_Selected(CurrentDeviceInfo!.FOVValues.Length - 1);
+                }
+                else
+                {
+                    FieldOfView = DdpmCommonHelper.DeviceManagerSA!.GetFieldOfView(CurrentDeviceInfo!.ID.ToString()).Result;
+                    if (FieldOfView != -1)
+                        FOV_Selected(ChangeFOVToSelectIndex(FieldOfView));
+                }
+            }
+            catch (Exception e)
+            {
+                LogMsg($"ChangeUIWhenAutoFramingStatusChange catch exception: {e.Message}");
+            }
         }
 
         public bool SaveNoneProfileFOV(int fov)
