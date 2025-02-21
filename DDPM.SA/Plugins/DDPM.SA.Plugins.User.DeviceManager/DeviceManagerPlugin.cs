@@ -1126,7 +1126,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     var res = ColorpfofileMutil(result.value.ToString());
                     return Task.FromResult(res);
                 }
-                    //return Task.FromResult(result.value.ToString());
+                //return Task.FromResult(result.value.ToString());
             }
             return Task.FromResult("");
         }
@@ -6528,7 +6528,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _UpdateProgress.Dispatcher.InvokeShutdown();
                 };
                 _UpdateProgress.Dispatcher.Invoke(() => _UpdateProgress.Show());
-                
+
                 ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
                 MiniMizeDDPMUI().Wait();
                 tcs.SetResult(true);
@@ -15142,7 +15142,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 DateTime prepareExec = DateTime.Now;
                 writelog($"[ExecHotkeyJob Time] prepare Kvm_SwitchInputSource timespan: {string.Format("{0:f3}", prepareExec.Subtract(beforeExec).TotalSeconds)} Seconds; [{beforeExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}:{prepareExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}] [TargetMonitor:[ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}];");
-                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
+                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput, priority: Priority.High).Result;
                 DateTime afterExec = DateTime.Now;
                 writelog($"[ExecHotkeyJob Time] exec Kvm_SwitchInputSource timespan: {string.Format("{0:f3}", afterExec.Subtract(prepareExec).TotalSeconds)} Seconds; [{prepareExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}:{afterExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}] [TargetMonitor:[ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}];");
                 writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}]" + (setNextInput ? "success" : "fail"));
@@ -15511,7 +15511,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     DateTime prepareExec = DateTime.Now;
                     writelog($"[ExecHotkeyJob Time] prepare Switch_InputSource timespan: {string.Format("{0:f3}", prepareExec.Subtract(beforeExec).TotalSeconds)} Seconds; [{beforeExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}:{prepareExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}] [TargetMonitor:[ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}];");
-                    bool setInput = SetVCPCapability(monitorInfo, "Input Select", switchTo.Name).Result;
+                    bool setInput = SetVCPCapability(monitorInfo, "Input Select", switchTo.Name, priority: Priority.High).Result;
                     DateTime afterExec = DateTime.Now;
                     writelog($"[ExecHotkeyJob Time] exec Switch_InputSource timespan: {string.Format("{0:f3}", afterExec.Subtract(prepareExec).TotalSeconds)} Seconds; [{prepareExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}:{afterExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}] [TargetMonitor:[ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}];");
                     writelog($"Switch_InputSource[{log_keys}]:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{switchTo.Name}]" + (setInput ? "success" : "fail"));
@@ -15551,7 +15551,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 Debug.WriteLine($"Favorite_InputSource changeInput[{monitorInfo.edid.ServiceTag}]=> {changeInput}");
                 DateTime prepareExec = DateTime.Now;
                 writelog($"[ExecHotkeyJob Time] prepare Favorite_InputSource timespan: {string.Format("{0:f3}", prepareExec.Subtract(beforeExec).TotalSeconds)} Seconds; [{beforeExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}:{prepareExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}] [TargetMonitor:[ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}];");
-                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", changeInput).Result;
+                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", changeInput, priority: Priority.High).Result;
                 DateTime afterExec = DateTime.Now;
                 writelog($"[ExecHotkeyJob Time] exec Favorite_InputSource timespan: {string.Format("{0:f3}", afterExec.Subtract(prepareExec).TotalSeconds)} Seconds; [{prepareExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}:{afterExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}] [TargetMonitor:[ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}];");
                 Debug.WriteLine($"Favorite_InputSource => {setNextInput}");
@@ -15590,7 +15590,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}],next inputsource: {nextInput}");
                 DateTime prepareExec = DateTime.Now;
                 writelog($"[ExecHotkeyJob Time] prepare Toggle_InputSource timespan: {string.Format("{0:f3}", prepareExec.Subtract(beforeExec).TotalSeconds)} Seconds; [{beforeExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}:{prepareExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}] [TargetMonitor:[ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}];");
-                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
+                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput, priority: Priority.High).Result;
                 DateTime afterExec = DateTime.Now;
                 writelog($"[ExecHotkeyJob Time] exec Toggle_InputSource timespan: {string.Format("{0:f3}", afterExec.Subtract(prepareExec).TotalSeconds)} Seconds; [{prepareExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}:{afterExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}] [TargetMonitor:[ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}];");
                 writelog($"Toggle_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}]" + (setNextInput ? "success" : "fail"));
