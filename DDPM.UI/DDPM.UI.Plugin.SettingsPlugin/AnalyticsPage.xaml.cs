@@ -99,6 +99,12 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             }
         }
 
+        public void OnUpdateConsentCheckbox(bool isConsentChecked)
+        {
+            this._isConsentChecked = isConsentChecked;
+            NotifyPropertyChanged("isConsentChecked");
+        }
+
         public AnalyticsViewModel()
         {
         }
@@ -151,6 +157,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
                 DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify += DeviceManagerSA_UIUpdateNotifyEvent;
+                DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent += GlobalSettingChangeEvent;
             }
             catch (Exception ex)
             {
@@ -165,14 +172,30 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
                 DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify -= DeviceManagerSA_UIUpdateNotifyEvent;
+                DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent -= GlobalSettingChangeEvent;
             }
+        }
+
+        private void GlobalSettingChangeEvent(object? sender, UpdateUINotify e)
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                AnalyticsViewModel localVm = (AnalyticsViewModel)this.DataContext;
+                if (this.DataContext is AnalyticsViewModel && localVm != null && 
+                    e != null && e.UI_Field_Name.Equals("TelemetryConsent_option", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    Global.SettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                    DdpmCommonHelper.WriteUILog($"[AnalyticsPage] Got [GlobalSettingChangeEvent] event to sync [isTelemetryConsentOn] be {Global.SettingParam.isTelemetryConsentOn}!");
+                    localVm.OnUpdateConsentCheckbox(Global.SettingParam.isTelemetryConsentOn); //Update UI
+                }
+            }));
         }
 
         private void DeviceManagerSA_UIUpdateNotifyEvent(object? sender, SA.Common.UpdateUINotify e)
         {
             if (e == null || string.IsNullOrEmpty(e.UI_Field_Name))
             {
-                Trace.WriteLine("Got [DeviceManagerSA_UIUpdateNotifyEvent] event but its argument is empty!");
+                DdpmCommonHelper.WriteUILog("[AnalyticsPage] Got [DeviceManagerSA_UIUpdateNotifyEvent] event but its argument is empty!");
                 return;
             }
             //Catch event if belong to telemetry consent
@@ -187,7 +210,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     if (vm != null)
                     {
                         vm.isConsentChecked = param.isTelemetryConsentOn;
-                        Trace.WriteLine($"Apply TelemetryConsent(check) : {param.isTelemetryConsentOn}");
+                        DdpmCommonHelper.WriteUILog($"[AnalyticsPage] Apply TelemetryConsent(check) : {param.isTelemetryConsentOn}");
                     }
                 }));
             }
@@ -206,7 +229,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         vm.isTabStoppable = !(bool)isLocked;
                         vm.ShowLockMask = (bool)isLocked;
                         data.LockSettings.Lock_Settings_TelemetryConsent = (bool)isLocked;
-                        Trace.WriteLine($"Apply TelemetryConsent(Lock) : {isLocked}");
+                        DdpmCommonHelper.WriteUILog($"[AnalyticsPage] Apply TelemetryConsent(Lock) : {isLocked}");
                     }
                 }));
             }
