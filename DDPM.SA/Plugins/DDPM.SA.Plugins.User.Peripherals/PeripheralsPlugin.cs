@@ -1391,6 +1391,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         #region Private Methods
         private bool IsServiceRunning()
         {
+            //Bruce 0221 Add check service status 
             _logs.DebugMsg_1($"[PeripheralsPlugin] {nameof(IsServiceRunning)} start");
             bool ret = false;
             string serviceName = "DPMService";
