@@ -2177,7 +2177,7 @@ namespace DDPM.UI.Plugin.ViewModels
         //    bw.RunWorkerAsync();
         //}
 
-        private async Task DoWork_PleaseWait(string model, HeadsetViewModel vm)
+        private void DoWork_PleaseWait(string model, HeadsetViewModel vm)
         {
             _log.Info($"[HeadsetViewModel] DoWork_PleaseWait .......");
             if (isAirAudio == false)
