@@ -185,6 +185,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     e != null && e.UI_Field_Name.Equals("TelemetryConsent_option", StringComparison.InvariantCultureIgnoreCase))
                 {
                     Global.SettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                    DdpmCommonHelper.WriteUILog($"[AnalyticsPage] Got [GlobalSettingChangeEvent] event to sync [isTelemetryConsentOn] be {Global.SettingParam.isTelemetryConsentOn}!");
                     localVm.OnUpdateConsentCheckbox(Global.SettingParam.isTelemetryConsentOn); //Update UI
                 }
             }));
