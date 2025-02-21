@@ -13290,6 +13290,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
                         _FWUpdatePlugin.CallPopup += CallPopup;
                         _FWUpdatePlugin.CallOSD += CallOSD;
+                        GetSkipCA();
+                        SetSkipSHA();
                         if (_checkUpdateScheduleTimer == null)
                         {
                             _checkUpdateScheduleTimer = new System.Timers.Timer();
@@ -13307,6 +13309,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
                         _FWUpdatePlugin.CallPopup += CallPopup;
                         _FWUpdatePlugin.CallOSD += CallOSD;
+                        GetSkipCA();
+                        SetSkipSHA();
                         if (_checkUpdateScheduleTimer == null)
                         {
                             _checkUpdateScheduleTimer = new System.Timers.Timer();

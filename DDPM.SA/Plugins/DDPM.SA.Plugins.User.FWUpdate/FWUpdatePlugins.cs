@@ -2430,7 +2430,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     case DeviceType.LogicalDock:
                     case DeviceType.PhysicalWiredDock:
-                        arguments += $" /f";
+                        if (_IsSkipSHA)
+                        {
+                            _logs.DebugMsg_1($"BuildArgs _IsSkipSHA is true so add /f");
+                            arguments += $" /f";
+                        }
                         if (!string.IsNullOrEmpty(logPath))
                         {
                             arguments += $" /debuglog /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\" /dp";
