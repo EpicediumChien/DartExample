@@ -49,8 +49,8 @@ namespace DDPM.UI.Plugin.ViewModels
             _showPluginManager = showPluginManager;
             DeviceInfoDTP = new DeviceInfoDTP();
             _current_headset = string.Empty;
-            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Headset_DTPNotify;
-            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+            //DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Headset_DTPNotify;
+            //DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             DebouncerFfunctionInit();
             _log!.Info($"[HeadsetViewModel] HeadsetViewModel Start...");
         }
@@ -1177,6 +1177,8 @@ namespace DDPM.UI.Plugin.ViewModels
             if (!base.SetCurrentDevice(instanceIDs))
                 return false;
             DeviceInfoDTP = new DeviceInfoDTP();
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Headset_DTPNotify;
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             if (CurrentDeviceInfo?.ModelNumber == "SB725")
             {
                 isAirAudio = true;
