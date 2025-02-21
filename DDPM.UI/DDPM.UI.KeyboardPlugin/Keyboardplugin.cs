@@ -102,7 +102,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         private void GetPeripheralsAsync()
         {
             _log.Debug($"GetPeripherals is invoked");
-            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
+            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(); //(true);
             _deviceHelper = task.Result;
 
             //Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA!.GetKeyboardDeviceItemsEx();
