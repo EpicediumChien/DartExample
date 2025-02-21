@@ -2178,8 +2178,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _DisplayManagerPlugin.InitDisplayData(_AllInfoMonitors);
                 foreach (MonitorInfo monitor in _AllInfoMonitors)
                 {
-                    _DisplayManagerPlugin.GetUSBUpstreamList(monitor);
-                    _DisplayManagerPlugin.GetAllUSBUpstream(monitor);
+                    _DisplayManagerPlugin.GetUSBUpstreamList(monitor).Wait();
+                    _DisplayManagerPlugin.GetAllUSBUpstream(monitor).Wait();
                 }
                 UpdateHotkeyInfo();
 
