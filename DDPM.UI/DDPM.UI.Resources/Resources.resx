@@ -2836,7 +2836,7 @@
     <value>Fail</value>
   </data>
   <data name="ImportFailMsg" xml:space="preserve">
-    <value>Unable to import different model</value>
+    <value>The imported monitor setting is only applicable for {0}.</value>
   </data>
   <data name="Update_Webcam_Alert" xml:space="preserve">
     <value>This update will enable presence sensing controls through Windows Settings in systems: Win 11 22H2 or higher, and with OS build\r\n22621 or higher</value>

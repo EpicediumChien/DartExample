@@ -296,7 +296,7 @@ namespace DDPM.UI.Module.DisplayOthers
                     else if (DisplayOthersModule.SelectedHomeDevice.MonitorInfo.modelName != model)
                     {
                         OnMessageDlgInvoke("close_loading");
-                        OnMessageDlgInvoke("result_fail");
+                        OnMessageDlgInvoke($"result_fail_{model}");
                         return;
                     }
                     //else if (DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.ServiceTag == serviceTag)
