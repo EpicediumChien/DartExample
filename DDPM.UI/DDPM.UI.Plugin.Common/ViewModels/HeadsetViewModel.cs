@@ -29,6 +29,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private Debouncer _debouncerHeadsetQuickPause;
         private Debouncer _debouncerHeadsetSidetoneCheck;
         public event EventHandler<EventArgs> HeadsetSettingChanged;
+        public event EventHandler<EventArgs> HeadsetGroupChanged;
         #endregion Variables
 
         public new event PropertyChangedEventHandler? PropertyChanged;
@@ -2250,9 +2251,13 @@ namespace DDPM.UI.Plugin.ViewModels
             if (IsDTPReady)
                 UpdateDTPValue();
             else
-                UpdateDTHValue();
+                UpdateDTHValue();            
             // Call DetectPageShow
             DetectPageShow(model);
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                HeadsetGroupChanged?.Invoke(this, EventArgs.Empty);
+            });
         }
 
         public void Invoke_PleaseWaitAsync(string model, HeadsetViewModel vm)

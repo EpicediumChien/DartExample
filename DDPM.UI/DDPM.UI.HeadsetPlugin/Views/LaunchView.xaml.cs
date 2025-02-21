@@ -116,7 +116,18 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
                     Loaded += LaunchView_LoadedStatus;
                     Unloaded += LaunchView_UnLoadedStatus;
+                    _vm!.HeadsetGroupChanged += HeadsetGroupChanged;
                 }
+            }
+        }
+
+        private void HeadsetGroupChanged(object? sender, EventArgs e)
+        {
+            if (!_vm.SupportedAnswerCalls)
+            {
+                BuildModuleGroups(_vm.SupportedAnswerCalls);
+                vbarList.ItemsSource = null;
+                vbarList.ItemsSource = _vm!.VbarItems;
             }
         }
 
@@ -124,6 +135,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         {
             if (_vm == null) return;
             _vm.UloadHeadset_DTPNotify();
+            _vm!.HeadsetGroupChanged -= HeadsetGroupChanged;
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {               
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
@@ -141,12 +153,12 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             try
             {
                 _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
-                if (!_vm.SupportedAnswerCalls)
-                {
-                    BuildModuleGroups(_vm.SupportedAnswerCalls);
-                    vbarList.ItemsSource = null;
-                    vbarList.ItemsSource = _vm!.VbarItems;
-                }
+                //if (!_vm.SupportedAnswerCalls)
+                //{
+                //    BuildModuleGroups(_vm.SupportedAnswerCalls);
+                //    vbarList.ItemsSource = null;
+                //    vbarList.ItemsSource = _vm!.VbarItems;
+                //}
                 DdpmCommonHelper.WriteUILog($"[Headset] LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
                 if (!_vm.IsRestoreEnable)
                 {
