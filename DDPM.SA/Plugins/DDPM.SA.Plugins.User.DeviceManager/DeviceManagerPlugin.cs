@@ -10421,6 +10421,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", false).Result;
         }
 
+        public Task InvokeGlobalSettingChangeUINotify(UpdateUINotify e)
+        {
+            GlobalSettingChangeEvent?.Invoke(this, e);
+            return Task.CompletedTask;
+        }
+
         public Task<bool> Set_GlobalSetting_DisplayLowBatteryLevel(bool isDisplay)
         {
             bool ret = false;
@@ -12243,8 +12249,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 return;
             }
-            List<DeviceInfo> _peripheralslist = _PeripheralsPlugin.GetDevices(true).Result.deviceInfo;
-
+            List<DeviceInfo> _peripheralslist = new List<DeviceInfo>();
+            try
+            {
+                _peripheralslist = _PeripheralsPlugin.GetDevices(true).Result.deviceInfo;
+            }
+            catch (Exception ex)
+            {
+                writelog($"CheckDocks GetDevices Exception : {ex.Message}");
+                _peripheralslist = null;
+                return;
+            }
             // 2024-08-07 Elie, fix got exception while don't check this is null or not.
             if ((_peripheralslist == null) || (_peripheralslist.Count == 0))
                 return;
