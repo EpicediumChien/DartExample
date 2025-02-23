@@ -1,4 +1,5 @@
-﻿using DDPM.UI.Plugin.ViewModels;
+﻿using DDPM.UI.Common;
+using DDPM.UI.Plugin.ViewModels;
 using System.Windows.Controls;
 
 namespace DDPM.UI.Module.AddWebcam
@@ -24,7 +25,14 @@ namespace DDPM.UI.Module.AddWebcam
 
         private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            txtStep1.Width = this.ActualWidth - 80;
+            try
+            {
+                txtStep1.Width = this.ActualWidth - 80;
+            }
+            catch (System.Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[AddWebcamRightView] exception: {ex}");
+            }
         }
     }
 }
