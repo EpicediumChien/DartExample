@@ -286,6 +286,15 @@ namespace DDPM.UI.Module.DisplayOthers
                     e = "result_success_model_em";
                 }
             }
+            else if (e.Contains("result_fail"))
+            {
+                if (e.Split('_').Count() == 3)
+                {
+                    //retrieve model name
+                    model = e.Split('_')[2];
+                    e = "result_fail";
+                }
+            }
             switch(e)
             {
                 case "close_loading":
@@ -307,7 +316,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 case "result_fail":
                     Dispatcher.Invoke(new Action(() =>
                     {
-                        DisplayMsgBox(LangHelper.Instance["ImportFail"], LangHelper.Instance["ImportFailMsg"]);
+                        DisplayMsgBox(LangHelper.Instance["ImportFail"], string.Format(LangHelper.Instance["ImportFailMsg"], model));
                     }));
                     break;
                 case "result_success":
