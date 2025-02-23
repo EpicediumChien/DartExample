@@ -66,7 +66,7 @@ namespace DDPM.UI.Module.HeadsetAudioForSB725Settings
         {
             //await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
             _vm._log!.Info("[HeadsetAudioSettingsRightView] Before Invoke_PleaseWaitAsync");
-            await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
+            _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
             _vm._log!.Info("[HeadsetAudioSettingsRightView] After Invoke_PleaseWaitAsync");
             if (_vm.DeviceInfoDTP!.IsPresetsSupported)
             {

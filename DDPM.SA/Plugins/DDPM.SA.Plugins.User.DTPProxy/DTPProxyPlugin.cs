@@ -8305,7 +8305,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Task<bool> result = UnregisterEventsForHeadsetAsync(e.DeviceId);
 
-            SendDTPEventToUI(CreateEventMsg("Headset", "Headset_Disconnected", e.DeviceId));
+            SendDTPEventToUI(CreateHeadsetEventMsg("Headset", "Headset_Disconnected", e.DeviceId));
 
             writelog($"Catch event _Headset_Disconnected, unregister events result is {result.Result}, current devCount is {headsetList.Count} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
@@ -8433,7 +8433,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Task<bool> result = RegisterEventsForHeadsetAsync(e.DeviceId);
 
-            SendDTPEventToUI(CreateEventMsg("Headset", "Headset_Connected", e.DeviceId));
+            SendDTPEventToUI(CreateHeadsetEventMsg("Headset", "Headset_Connected", e.DeviceId));
 
             writelog($"Catch event _Headset_Connected, register events result is {result.Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
@@ -9903,7 +9903,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Task<bool> result = RegisterEventsForSpeakerAsync(e.DeviceId);
 
-            SendDTPEventToUI(CreateEventMsg("Speaker", "Speaker_Connected", e.DeviceId));
+            SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_Connected", e.DeviceId));
 
             writelog($"Catch event Speaker_Connected, register events result is {result.Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
@@ -9912,7 +9912,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             Task<bool> result = UnregisterEventsForSpeakerAsync(e.DeviceId);
 
-            SendDTPEventToUI(CreateEventMsg("Speaker", "Speaker_Disconnected", e.DeviceId));
+            SendSpeakerEventToUI(CreateSpeakerEventMsg("Speaker", "Speaker_Disconnected", e.DeviceId));
 
             writelog($"Catch event Speaker_Disconnected, unregister events result is {result.Result}, current devCount is {speakerList.Count} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
