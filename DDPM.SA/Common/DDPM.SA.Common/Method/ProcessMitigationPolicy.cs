@@ -29,7 +29,16 @@ namespace DDPM.SA.Common.Method
             ref PROCESS_MITIGATION_REDIRECTION_TRUST_POLICY lpBuffer,
             uint dwSize)
         {
-            return SetProcessMitigationPolicy(MitigationPolicy, ref lpBuffer, dwSize);
+            bool rst = SetProcessMitigationPolicy(MitigationPolicy, ref lpBuffer, dwSize);
+
+            if (!rst) 
+            {
+#if DEBUG
+                Console.WriteLine("[ProcessMitigationPolicy] SetProcessMitigationPolicy Failed");
+#endif
+            }
+
+            return rst;
         }
 
         // Constant for the ProcessRedirectionTrustPolicy Mitigation Policy
