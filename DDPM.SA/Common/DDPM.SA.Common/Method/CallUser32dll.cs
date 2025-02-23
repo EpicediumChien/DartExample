@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +24,16 @@ namespace DDPM.SA.Common.Method
 
         public static bool _ShowWindow(IntPtr hWnd, int nCmdShow)
         {
-            return ShowWindow(hWnd, nCmdShow);
+            bool rst = ShowWindow(hWnd, nCmdShow);
+
+            if(!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[CallUser32dll] ShowWindow: Window was hidden before.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -32,7 +42,16 @@ namespace DDPM.SA.Common.Method
 
         public static IntPtr _FindWindow(string lpClassName, string lpWindowName)
         {
-            return FindWindow(lpClassName, lpWindowName);
+            IntPtr rst = FindWindow(lpClassName, lpWindowName);
+
+            if (rst == IntPtr.Zero)
+            {
+#if DEBUG
+                Console.WriteLine("[CallUser32dll] FindWindow failed.");
+#endif
+            }
+
+            return rst;
         }
 
         // << 250102 added by Hess to change MousePrimaryButton
@@ -45,7 +64,16 @@ namespace DDPM.SA.Common.Method
         private static extern int GetSystemMetrics(int nIndex);
         private static int _GetSystemMetrics(int nIndex)
         {
-            return GetSystemMetrics(nIndex);
+            int rst = GetSystemMetrics(nIndex);
+
+            if (rst == 0)
+            {
+#if DEBUG
+                Console.WriteLine("[CallUser32dll] GetSystemMetrics failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -53,7 +81,16 @@ namespace DDPM.SA.Common.Method
         private static extern bool SystemParametersInfo(uint uiAction, uint uiParam, bool pvParam, uint fWinIni);
         private static bool _SystemParametersInfo(uint uiAction, uint uiParam, bool pvParam, uint fWinIni)
         {
-            return SystemParametersInfo(uiAction, uiParam, pvParam, fWinIni);
+            bool rst = SystemParametersInfo(uiAction, uiParam, pvParam, fWinIni);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[CallUser32dll] SystemParametersInfo failed.");
+#endif
+            }
+
+            return rst;
         }
 
         //DDPM.UI reference this function

@@ -6,6 +6,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Diagnostics;
+using static System.Net.WebRequestMethods;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -22,7 +23,16 @@ namespace DDPM.SA.Common.Settings
 
         private static uint _GetFinalPathNameByHandle(IntPtr hFile, StringBuilder lpszFilePath, uint cchFilePath, uint dwFlags)
         {
-            return GetFinalPathNameByHandle(hFile, lpszFilePath, cchFilePath, dwFlags);
+            uint rst = GetFinalPathNameByHandle(hFile, lpszFilePath, cchFilePath, dwFlags);
+
+            if (rst == 0)
+            {
+#if DEBUG
+                Console.WriteLine("[SymlinkHelper] GetFinalPathNameByHandle Failed");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -32,7 +42,16 @@ namespace DDPM.SA.Common.Settings
 
         private static bool _CloseHandle(IntPtr hObject)
         {
-            return CloseHandle(hObject);
+            bool rst = CloseHandle(hObject);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[SymlinkHelper] CloseHandle Failed");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -55,7 +74,16 @@ namespace DDPM.SA.Common.Settings
             uint flagsAndAttributes,
             IntPtr templateFile)
         {
-            return CreateFile(filename, access, share, securityAttributes, creationDisposition, flagsAndAttributes, templateFile);
+            IntPtr rst = CreateFile(filename, access, share, securityAttributes, creationDisposition, flagsAndAttributes, templateFile);
+
+            if (rst == IntPtr.Zero)
+            {
+#if DEBUG
+                Console.WriteLine("[SymlinkHelper] CreateFile Failed");
+#endif
+            }
+
+            return rst;
         }
 
         public static string GetTargetPath(string path)

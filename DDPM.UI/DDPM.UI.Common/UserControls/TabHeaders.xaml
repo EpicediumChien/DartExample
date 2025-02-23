@@ -34,7 +34,7 @@
 
             <!-- Header[0] -->
             <Border Grid.Column="0" CornerRadius="4,0,0,4" MouseLeftButtonDown="header0_MouselLeftButtonDown">
-                <!-- Elsa 20250124 For PIMS [PIMS-334913] change "Binding Text1" to  Binding [Fullscreen], add Source={x:Static lang:LangHelper.Instance} change Mode=TwoWay=OneWay-->
+                <!-- Elsa 20250124 For PIMS [PIMS-334913] change "Binding Text1" to  Binding [Fullscreen], add Source={x:Static lang:LangHelper.Instance}, change Mode=TwoWay to OneWay-->
                 <TextBlock Text="{Binding [Fullscreen], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlock_HeaderTextStyle}">
@@ -61,7 +61,8 @@
 
             <!-- Header[1] -->
             <Border Grid.Column="1" CornerRadius="0,0,0,0" MouseLeftButtonDown="header1_MouseLeftButtonDown">
-                <TextBlock Text="{Binding Text2, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}">
+                <!-- Elsa 20250221 For PIMS [PIMS-334913] change "Binding Text2" to  Binding [PipPbp.0], add Source={x:Static lang:LangHelper.Instance}, change Mode=TwoWay to OneWay-->
+                <TextBlock Text="{Binding [PipPbp.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlock_HeaderTextStyle}">
                             <Style.Triggers>
@@ -87,7 +88,8 @@
 
             <!-- Header[2] -->
             <Border Grid.Column="2" CornerRadius="0,4,4,0" MouseLeftButtonDown="header2_MouseLeftButtonDown">
-                <TextBlock Text="{Binding Text3, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}">
+                <!-- Elsa 20250221 For PIMS [PIMS-334913] change "Binding Text3" to  Binding [PipPbp.1], add Source={x:Static lang:LangHelper.Instance}, change Mode=TwoWay to OneWay-->
+                <TextBlock Text="{Binding [PipPbp.1], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlock_HeaderTextStyle}">
                             <Style.Triggers>
