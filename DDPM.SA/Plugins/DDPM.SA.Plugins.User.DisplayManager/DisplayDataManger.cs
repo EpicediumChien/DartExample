@@ -193,12 +193,117 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     displayData.Model = monitorInfo.modelName;
                     displayData.ServiceTag = monitorInfo.edid.ServiceTag;
                     displayData.DisplayUSB = inputSourceUSBs;
+                    _displayData.Add(displayData);
                     return true;
                 }
             }
             else
             {
                 WriteLog("[SetMonitorUSB]monitorInfo is null.");
+            }
+            return false;
+        }
+
+        public bool GetMonitorInputSourceList(MonitorInfo monitorInfo, out List<InputCode> inputSourceList)
+        {
+            if (monitorInfo != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                     x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1)
+                {
+                    if (_displayData[mi].InputSourceList != null && _displayData[mi].InputSourceList.Count > 0)
+                    {
+                        inputSourceList = _displayData[mi].InputSourceList;
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                WriteLog("[GetMonitorInputSourceList]monitorInfo is null.");
+            }
+            inputSourceList = new List<InputCode>();
+            return false;
+        }
+
+        public bool SetMonitorInputSourceList(MonitorInfo monitorInfo, List<InputCode> inputSourceList)
+        {
+            if (monitorInfo != null && inputSourceList != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                     x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1)
+                {
+                    _displayData[mi].InputSourceList = inputSourceList;
+                    return true;
+                }
+                else
+                {
+                    WriteLog("[SetMonitorUSB]_displayData is not find monitor");
+                    DisplayData displayData = new DisplayData();
+                    displayData.Model = monitorInfo.modelName;
+                    displayData.ServiceTag = monitorInfo.edid.ServiceTag;
+                    displayData.InputSourceList = inputSourceList;
+                    _displayData.Add(displayData);
+                    return true;
+                }
+            }
+            else
+            {
+                WriteLog("[SetMonitorInputSourceList]monitorInfo is null.");
+            }
+            return false;
+        }
+
+        public bool GetMonitorUSBList(MonitorInfo monitorInfo, out List<USBPorts> usbList)
+        {
+            if (monitorInfo != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                     x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1)
+                {
+                    if (_displayData[mi].USBList != null && _displayData[mi].USBList.Count > 0)
+                    {
+                        usbList = _displayData[mi].USBList;
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                WriteLog("[GetMonitorUSBList]monitorInfo is null.");
+            }
+            usbList = new List<USBPorts>();
+            return false;
+        }
+
+        public bool SetMonitorUSBList(MonitorInfo monitorInfo, List<USBPorts> usbList)
+        {
+            if (monitorInfo != null && usbList != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                     x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1)
+                {
+                    _displayData[mi].USBList = usbList;
+                    return true;
+                }
+                else
+                {
+                    WriteLog("[SetMonitorUSB]_displayData is not find monitor");
+                    DisplayData displayData = new DisplayData();
+                    displayData.Model = monitorInfo.modelName;
+                    displayData.ServiceTag = monitorInfo.edid.ServiceTag;
+                    displayData.USBList = usbList;
+                    _displayData.Add(displayData);
+                    return true;
+                }
+            }
+            else
+            {
+                WriteLog("[SetMonitorUSBList]monitorInfo is null.");
             }
             return false;
         }
