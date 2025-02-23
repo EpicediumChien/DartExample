@@ -45,7 +45,8 @@
                     Minimum="{Binding ZoomMin}"
                     Value="{Binding Path=ZoomValue, Mode=TwoWay}"
                     Thumb.DragStarted="ZoomSlider_DragStarted"
-                    Thumb.DragCompleted="ZoomSlider_DragCompleted" >
+                    Thumb.DragCompleted="ZoomSlider_DragCompleted" 
+                    IsEnabled="{Binding ZoomEnableStatus}">
                 <Slider.Template>
                     <ControlTemplate TargetType="Slider">
                         <Grid>
