@@ -393,6 +393,25 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         //}
 
         bool noPresenceFunction = false;
+
+        bool is_WindwosHelloSupport = false;// DdpmCommonHelper.DeviceManagerSA!.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+
+        //api回傳camera是否支援ESI
+        bool is_EsiSupport = false;// DdpmCommonHelper.DeviceManagerSA!.GetIsESISupported(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+
+        //檢查是否為dell7 camera做程式分支處理
+        bool is_camera_dell7 = false;// check_camera_dell7();
+
+        //檢查windows是否符合windows hello標準 win10需要大於20H2 win11需要大於22H2
+        bool is_WindowsVer_OK = false;// check_windowsVer_OK();
+
+        //檢查是否為dell電腦
+        bool is_DellPc = false;// check_DellPc();
+
+        bool is_SUT_internal_presence_sensor = false;// check_SUT_internal_presence_sensor();
+
+        bool AllSupportedResolutions = true;
+
         public void check_PresenceFunction()
         {
 
@@ -422,21 +441,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
             DdpmCommonHelper.WriteUILog($"GetIsAllSupportedResolutionsFound After {AllSupportedResolutions}");
             //api回傳camera硬體是否支援windows hello
-            bool is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
 
-            //api回傳camera是否支援ESI
-            bool is_EsiSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsESISupported(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-
-            //檢查是否為dell7 camera做程式分支處理
-            bool is_camera_dell7 = check_camera_dell7();
-
-            //檢查windows是否符合windows hello標準 win10需要大於20H2 win11需要大於22H2
-            bool is_WindowsVer_OK = check_windowsVer_OK();
-
-            //檢查是否為dell電腦
-            bool is_DellPc = check_DellPc();
-
-            bool is_SUT_internal_presence_sensor = check_SUT_internal_presence_sensor();
 
             //現在規格已經不需要判斷韌體奇偶數直接從 is_EsiSupport 判斷就好
 
@@ -452,7 +457,29 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //    is_DellPc = cond.is_DellPc;
             //    AllSupportedResolutions = cond.AllSupportedResolutions;
             //}
+            //SUT 指電腦本身 DUT 外接Cam
+            //
+            is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
 
+            //Windows.Devices.Sensors.HumanPresenceSensor.GetDefaultAsync()
+
+            //api回傳camera是否支援ESI
+            is_EsiSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsESISupported(_vm.CurrentDeviceInfo!.ID.ToString()).Result;//True UPD False MPS
+
+            //檢查是否為dell7 camera做程式分支處理
+            is_camera_dell7 = check_camera_dell7(model);
+
+            //檢查windows是否符合windows hello標準 win10需要大於20H2 win11需要大於22H2
+            is_WindowsVer_OK = check_IsMPS_OK();
+
+            //檢查是否為dell電腦
+            is_DellPc = check_DellPc();
+
+            is_SUT_internal_presence_sensor = check_SUT_internal_presence_sensor();
+            var fv = _vm.CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
+            string FirmwareVersion2 = fv.Contains('.') == true ? fv : $"{fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
+            bool NotNeedtoUpdate = new Version(FirmwareVersion2).CompareTo(new Version("0.0.9.1")) > 0 ? true : false;
+            //is_EsiSupport = is_EsiSupport && NotNeedtoUpdate;
             print_debug("is_EsiSupport:" + is_EsiSupport);
             print_debug("is_WindwosHelloSupport:" + is_WindwosHelloSupport);
             print_debug("is_camera_dell7:" + is_camera_dell7);
@@ -460,270 +487,147 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             print_debug("is_DellPc:" + is_DellPc);
             print_debug("is_SUT_internal_presence_sensor:" + is_SUT_internal_presence_sensor);
             print_debug("AllSupportedResolutions:" + AllSupportedResolutions);
-
+            print_debug("NotNeedtoUpdate:" + NotNeedtoUpdate);
             print_debug("check_PresenceFunction() s0 model-" + model);
+            CheckTestCase();
+            //CheckTestCase2();
 
-            if (is_camera_dell7)
-            {
-                print_debug("check_PresenceFunction() s1");
-
-                //7系列 外接式
-                if (is_EsiSupport)
-                {
-                    print_debug("check_PresenceFunction() s2");
-
-                    if (is_WindwosHelloSupport && is_WindowsVer_OK)
-                    {
-                        print_debug("check_PresenceFunction() s3");
-
-
-                        //最完整的顯示
-                        _vm.UPD_Visibility = Visibility.Visible;
-                        _vm.brdHello_show = Visibility.Visible;
-                        _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-                        _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
-
-                        if (AllSupportedResolutions)//如果是USB 3.0
-                        {
-                            if (!is_DellPc)
-                            {
-                                //韌體升級
-                                print_debug("check_PresenceFunction() s4");
-                                _vm.UPD_Visibility = Visibility.Collapsed;
-                                _vm.brdHello_show = Visibility.Collapsed;
-                                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-                                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
-
-                                //2025/01/02 Leo fixed
-                                //noPresenceFunction = true;  // Jim modify 20250203 PIMS-343711 due to the comment from Dell PO
-
-                            }
-                            else if (is_DellPc && is_SUT_internal_presence_sensor) // Jim modify 20250206 PIMS-344423
-                            {
-                                print_debug("check_PresenceFunction() s4-1");
-
-                                //顯示韌體升級
-                                _vm.UPD_Visibility = Visibility.Collapsed;
-                                _vm.brdHello_show = Visibility.Collapsed;
-                                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-                                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
-                            }
-                        }
-
-                        //dell 7 韌體升級畫面需要在 usb 3.0下,如果在2.0模式整個分頁關閉
-                        if (!AllSupportedResolutions)
-                        {
-                            print_debug("check_PresenceFunction() s5");
-                            noPresenceFunction = true;
-                        }
-                    }
-                    else
-                    {
-                        print_debug("check_PresenceFunction() s6");
-
-                        //韌體升級2024/12/18
-                        _vm.UPD_Visibility = Visibility.Collapsed;
-                        _vm.brdHello_show = Visibility.Collapsed;
-                        _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-                        _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
-
-                        if (!is_DellPc)
-                        {
-
-                            print_debug("check_PresenceFunction() s7");
-
-                            // PresenceFunction  整個分頁不用顯示
-                            noPresenceFunction = true;
-                        }
-                    }
-
-                }
-                else
-                {
-                    print_debug("check_PresenceFunction() s8");
-
-                    //隱藏PRESENCE DETECTION SECTION
-                    _vm.UPD_Visibility = Visibility.Collapsed;
-
-                    if (is_WindwosHelloSupport && is_WindowsVer_OK)
-                    {
-
-                        //2024/12/18 windows setting
-                        print_debug("check_PresenceFunction() s9");
-
-                        _vm.brdHello_show = Visibility.Collapsed;
-                        _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
-
-                        if (AllSupportedResolutions)//如果是USB 3.0
-                        {
-                            print_debug("check_PresenceFunction() s10");
-
-                            //顯示windos setting設定畫面
-                            _vm.MPS_Setting_Visibility = Visibility.Visible;
-
-                            /*
-                            if (!is_DellPc)
-                            {
-                                print_debug("check_PresenceFunction() s11");
-
-                                //顯示韌體升級
-                                _vm.brdHello_show = Visibility.Collapsed;
-                                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-                                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
-                            }
-                            */
-
-                            /*
-                            if (!is_DellPc && is_SUT_internal_presence_sensor) // Jim modify 20250125 PIMS-343711
-                            {
-                                print_debug("check_PresenceFunction() s11-0");
-
-                                //顯示韌體升級
-                                _vm.brdHello_show = Visibility.Collapsed;
-                                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-                                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
-                            }
-                            else if (!is_DellPc && !is_SUT_internal_presence_sensor) // Jim modify 20250125 PIMS-343711
-                            {
-                                print_debug("check_PresenceFunction() s11-2");
-
-                                // PresenceFunction  整個分頁不用顯示
-                                noPresenceFunction = true;
-                            }
-                            */
-
-                            if (!is_DellPc) // Jim modify 20250203 PIMS-343711 due to the comment from Dell PO
-                            {
-                                print_debug("check_PresenceFunction() s11");
-
-                                //顯示windows setting設定畫面
-                                _vm.brdHello_show = Visibility.Collapsed;
-                                _vm.MPS_Setting_Visibility = Visibility.Visible;
-                                _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
-                            }
-                            else if (is_DellPc && is_SUT_internal_presence_sensor) // Jim modify 20250124 PIMS-319078
-                            {
-                                print_debug("check_PresenceFunction() s11-1");
-
-                                //顯示韌體升級
-                                _vm.brdHello_show = Visibility.Collapsed;
-                                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-                                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
-                            }
-                        }
-                        else
-                        {
-                            print_debug("check_PresenceFunction() s12");
-                            // PresenceFunction  整個分頁不用顯示
-                            noPresenceFunction = true;
-                        }
-                    }
-                    else
-                    {
-
-                        print_debug("check_PresenceFunction() s13");
-                        _vm.brdHello_show_control = Visibility.Collapsed;//隱藏攝影機控制區windows helllo設定
-                        _vm.brdHello_show = Visibility.Collapsed;  //隱藏人物偵測區windows hello設定連結
-
-                        //提示要升級FW
-                        //需要確認在usb 3.0模式下
-                        // 6.c note MPS features will work only when Acadia is connected via USB 3.0. 
-                        if (AllSupportedResolutions)
-                        {
-                            print_debug("check_PresenceFunction() s14");
-                            _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
-
-                            if (!is_DellPc)
-                            {
-                                print_debug("check_PresenceFunction() s15");
-                                // PresenceFunction  整個分頁不用顯示
-                                noPresenceFunction = true;
-
-                                _vm.brdHello_show = Visibility.Collapsed;  //隱藏人物偵測區windows hello設定連結
-                                _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
-                                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-                                _vm.UPD_Visibility = Visibility.Collapsed;
-                            }
-                        }
-                        else
-                        {
-                            print_debug("check_PresenceFunction() s16");
-                            // PresenceFunction  整個分頁不用顯示
-                            noPresenceFunction = true;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                //不需要做 is_EsiSupport判斷,一律為 UPD
-                print_debug("check_PresenceFunction() s17");
-                if (is_WindwosHelloSupport && is_WindowsVer_OK)
-                {
-
-
-                    print_debug("s18");
-
-                    //最正常的頁面,顯示windows hello和人像偵測器設定
-                    _vm.UPD_Visibility = Visibility.Visible;
-                    _vm.brdHello_show = Visibility.Visible;
-                    _vm.brdHello_show_control = Visibility.Visible;
-
-                    if (!is_DellPc)
-                    {
-                        print_debug("s19");
-
-                        // PresenceFunction  整個分頁不用顯示
-                        noPresenceFunction = true;
-
-                        _vm.UPD_Visibility = Visibility.Collapsed;
-                        _vm.brdHello_show = Visibility.Collapsed;
-                        _vm.brdHello_show_control = Visibility.Collapsed;
-                        _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-                        _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
-                    }
-
-                    ////---------------------------------------------
-
-
-
-                }
-                else
-                {
-
-                    print_debug("s20");
-
-                    _vm.UPD_Visibility = Visibility.Collapsed;
-                    _vm.brdHello_show_control = Visibility.Collapsed;//隱藏攝影機控制區windows helllo設定
-                    _vm.brdHello_show = Visibility.Collapsed;  //隱藏人物偵測區windows hello設定連結
-
-                    //甚麼都不要顯示
-                    // PresenceFunction  整個分頁不用顯示
-                    noPresenceFunction = true;
-
-                    if (!is_DellPc)
-                    {
-                        print_debug("s21");
-
-                        // PresenceFunction  整個分頁不用顯示
-                        noPresenceFunction = true;
-
-                        _vm.UPD_Visibility = Visibility.Collapsed;
-                        _vm.brdHello_show = Visibility.Collapsed;
-                        _vm.brdHello_show_control = Visibility.Collapsed;
-                        _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-                        _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
-                    }
-                }
-
-                //都不需要顯示韌體升級提示
-            }
-
+           
             print_debug("check_PresenceFunction() s22-20250102 14:43 update ver step");
 
             print_debug("check_PresenceFunction() end");
         }
+        private void CheckTestCase()
+        {
+            noPresenceFunction = false;
+            if (is_camera_dell7 && !AllSupportedResolutions)
+            {
+                print_debug("is_camera_dell7 && !AllSupportedResolutions");
+                noPresenceFunction = true;
+                return;
+            }
+            if (!is_camera_dell7 || !AllSupportedResolutions)
+            {
+                print_debug("!is_camera_dell7 && !AllSupportedResolutions");
+                noPresenceFunction = true;
+                return;
+            }
+            _vm.UPD_Visibility = Visibility.Collapsed; //HPD
+            _vm.MPS_Setting_Visibility = Visibility.Collapsed;//內建電腦MPS
+            _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;//FW Update
+            CheckSupportWindowsHello(is_WindwosHelloSupport ? Visibility.Visible : Visibility.Collapsed);
 
+            //1A
+            if (is_DellPc && is_EsiSupport && !is_WindowsVer_OK && is_SUT_internal_presence_sensor)
+            {
+                print_debug("TestCase 1A");
+                _vm.UPD_Visibility = Visibility.Visible;
+                CheckSupportWindowsHello(Visibility.Visible); //隱藏人物偵測區windows hello設定連結
+                return;
+            }
+            //1B
+            if (!is_DellPc && is_EsiSupport && !is_WindowsVer_OK && !is_SUT_internal_presence_sensor)
+            {
+                print_debug("TestCase 1B");
+                noPresenceFunction = true;
+                return;
+            }
+
+            //2A
+            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK && is_SUT_internal_presence_sensor)
+            {
+                print_debug("TestCase 2A");
+                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                return;
+            }
+            //5A
+            if (is_DellPc && !is_EsiSupport && is_WindowsVer_OK && is_SUT_internal_presence_sensor)
+            {
+                print_debug("TestCase 5A");
+                _vm.MPS_Setting_Visibility = Visibility.Visible;
+                return;
+            }
+            //3A
+            if (is_DellPc && !is_EsiSupport && !is_WindowsVer_OK && is_SUT_internal_presence_sensor)
+            {
+                print_debug("TestCase 3A");
+                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                return;
+            }
+            //4A?
+            if (is_DellPc && !is_EsiSupport && !is_WindowsVer_OK && is_SUT_internal_presence_sensor)
+            {
+                print_debug("TestCase 4A");
+                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                return;
+            }
+
+            //2B
+            if (!is_DellPc && is_EsiSupport && is_WindowsVer_OK && is_SUT_internal_presence_sensor)
+            {
+                print_debug("TestCase 2B");
+                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                return;
+            }
+
+            //5B
+            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK && is_SUT_internal_presence_sensor)
+            {
+                print_debug("TestCase 5B");
+                _vm.MPS_Setting_Visibility = Visibility.Visible;
+                return;
+            }
+            //6A
+            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK && !is_SUT_internal_presence_sensor)
+            {
+                print_debug("TestCase 6A");
+                _vm.UPD_Visibility = Visibility.Visible;
+                CheckSupportWindowsHello(Visibility.Visible); //隱藏人物偵測區windows hello設定連結
+                return;
+            }
+
+            //3B
+            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK && !is_SUT_internal_presence_sensor)
+            {
+                print_debug("TestCase 3B");
+                noPresenceFunction = true;
+                return;
+            }
+            //4B
+            if (!is_DellPc && !is_EsiSupport && !is_WindowsVer_OK && !is_SUT_internal_presence_sensor)
+            {
+                print_debug("TestCase 4B");
+                noPresenceFunction = true;
+                return;
+            }
+            //6B
+            if (is_DellPc && !is_EsiSupport && !is_WindowsVer_OK && !is_SUT_internal_presence_sensor)
+            {
+                print_debug("TestCase 6B");
+                noPresenceFunction = true;
+                return;
+            }
+            ////6C1
+            //if (!is_DellPc && is_EsiSupport && !is_SUT_internal_presence_sensor)
+            //{
+            //    print_debug("TestCase 6C1");
+            //    noPresenceFunction = true;
+            //    return;
+            //}
+            ////6C2
+            //if (is_camera_dell7 && !is_DellPc && !is_EsiSupport && !is_SUT_internal_presence_sensor)
+            //{
+            //    print_debug("TestCase 6C2");
+            //    noPresenceFunction = true;
+            //    return;
+            //}
+            print_debug("TestCase Default");
+            noPresenceFunction = true;
+        }
+        void CheckSupportWindowsHello(Visibility visibility)
+        {
+            _vm.brdHello_show_control = _vm.brdHello_show = !is_WindwosHelloSupport ? Visibility.Collapsed : visibility;
+        }
         public bool checkWinApiSupportMPS()
         {
             if (File.Exists(@"C:\ui_cond\mps_support.txt"))
@@ -782,9 +686,41 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             if (model == null)
                 DdpmCommonHelper.WriteUILog("check_SUT_internal_presence_sensor() model == null");
-
             return false;
+            //bool Result = false;
+            //try
+            //{
+            //    Assembly printDll = Assembly.LoadFile(@"C:\Users\wistronits\source\repos\DDPM\bin\Debug\net8.0-windows10.0.19041.0\CallHumanPresenceSensor.dll");
+            //    Type typeTest = printDll.GetType("CallHumanPresenceSensor.CallHumanPresenceSensor");
+            //    MethodInfo miGetMethod = typeTest.GetMethod("IsEngagementSupported");
+            //    var printTestClass = Activator.CreateInstance(typeTest);
+            //    Result = (bool)miGetMethod.Invoke(printTestClass, null);
+            //}
+            //catch (Exception ex)
+            //{
+            //    print_debug("Exception ex" + ex.Message);
+            //    return Result;
+            //}
+            //return Result;
 
+        }
+
+        public bool check_IsMPS_OK()
+        {
+            //作業系統必須是Windows10 20H2 以上
+            //或是Windows11 22H2以上
+            if (WinVersion.GetVersion(out var info))
+            {
+                //win11以上
+                if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2))
+                    return true;
+
+                //win10以上
+                if (info.BuildNum < (uint)(BuildNumber.Windows_11_21H2) && info.BuildNum >= (uint)(BuildNumber.Windows_10_20H2))
+                    return false;
+
+            }
+            return false;
         }
 
         public bool check_windowsVer_OK()
@@ -805,29 +741,20 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             return false;
         }
 
-        public bool check_camera_dell7()
+        public bool check_camera_dell7(string model)
         {
             //hard code 指定特定型號是否為internal
 
-            string model = _vm.CurrentDeviceInfo!.ModelNumber;
-
-            if (model == null)
-            {
-                string log = $"[DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs] check_camera_internal() model is null";
-                DdpmCommonHelper.WriteUILog(log);
-                return false;
-            }
-
             switch (model)
             {
-                //螢幕嵌入camera都為internal
+                ////螢幕嵌入camera都為internal
                 case "U3223QZ":
                 case "U3224KB":
                 case "U3224KBA":
                 case "P2424HEB":
                 case "P2724DEB":
                 case "P3424WEB":
-                    return false;
+                    return true;
 
                 //usb 外接
                 case "WB7022":
@@ -838,7 +765,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
         }
 
-        bool AllSupportedResolutions = true;
         public void CheckUSBtype()
         {
             print_debug("CheckUSBtype() v1 start");
@@ -902,9 +828,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
 
                         //攝影機控制區域內windows hello隱藏
-                        _vm.brdHello_show = Visibility.Collapsed;
-                        //PRESENCE DETECTION區域內windows hello隱藏
-                        _vm.brdHello_show_control = Visibility.Collapsed;
+                        CheckSupportWindowsHello(Visibility.Collapsed);
 
                         //連接usb 3.0提示訊息 Camera.14
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
@@ -939,7 +863,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         }
 
                         //camera控制權
-                        _vm.bdrPrioritize_show = Visibility.Collapsed;
+                        SetPrioritizeShow(Visibility.Collapsed);
 
                     }
                     else
@@ -964,12 +888,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
 
                         //攝影機控制區域內windows hello隱藏
-                        if (_vm.UPD_Visibility == Visibility.Collapsed) // Jim 20250116 modify for PIMS-319086
-                            _vm.brdHello_show = Visibility.Collapsed;   // Jim 20250116 modify for PIMS-319086
-                        else
-                            _vm.brdHello_show = Visibility.Visible;
-                        //PRESENCE DETECTION區域內windows hello隱藏
-                        _vm.brdHello_show_control = Visibility.Visible;
+                        //if (_vm.UPD_Visibility == Visibility.Collapsed) // Jim 20250116 modify for PIMS-319086
+                        //    CheckSupportWindowsHello(Visibility.Collapsed);   // Jim 20250116 modify for PIMS-319086
+                        //else
+                        //    CheckSupportWindowsHello(Visibility.Visible);
 
                         //連接usb 3.0提示訊息 Camera.14
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
@@ -991,7 +913,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes2_width = 133;*/
 
                         //camera控制權
-                        _vm.bdrPrioritize_show = Visibility.Visible;
+                        SetPrioritizeShow(Visibility.Visible);
 
                     }
                     break;
@@ -1004,16 +926,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //身分偵測整個功能區域隱藏保留
 
 
-                        //攝影機控制區域內windows hello隱藏
-                        //_vm.brdHello_show = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
-                        //_vm.brdHello_show = Visibility.Visible;   // Jim 20250115 modify for PIMS-297931
-                        //_vm.brdHello_show = Visibility.Collapsed;   // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
-                        _vm.brdHello_show = Visibility.Visible; // Jim 20250117 modify for PIMS-297931 by dell PO decdie comment
-                        //PRESENCE DETECTION區域內windows hello隱藏
-                        //_vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
-                        //_vm.brdHello_show_control = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
-                        //_vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
-                        _vm.brdHello_show_control = Visibility.Visible; // Jim 20250117 modify for PIMS-297931 by dell PO decdie comment
+                        CheckSupportWindowsHello(Visibility.Visible);
 
                         //連接usb 3.0提示訊息 Camera.14
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
@@ -1050,7 +963,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //camera控制權
                         //_vm.bdrPrioritize_show = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
-                        _vm.bdrPrioritize_show = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
+                        SetPrioritizeShow(Visibility.Visible); // Jim 20250115 modify for PIMS-297931
                     }
                     else
                     {
@@ -1060,9 +973,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
 
                         //攝影機控制區域內windows hello隱藏
-                        _vm.brdHello_show = Visibility.Visible;
-                        //PRESENCE DETECTION區域內windows hello隱藏
-                        _vm.brdHello_show_control = Visibility.Visible;
+                        CheckSupportWindowsHello(Visibility.Visible);
 
 
                         //連接usb 3.0提示訊息 Camera.14
@@ -1083,7 +994,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //camera控制權
                         //_vm.bdrPrioritize_show = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by lio comment
-                        _vm.bdrPrioritize_show = Visibility.Visible; // Jim 20250116 modify for PIMS-297931 by lio comment
+                        SetPrioritizeShow(Visibility.Visible); // Jim 20250116 modify for PIMS-297931 by lio comment
                     }
                     break;
                 case "U3223QZ":
@@ -1094,15 +1005,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //身分偵測整個功能區域隱藏保留
 
                         //攝影機控制區域內windows hello隱藏
-                        //_vm.brdHello_show = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
-                        //_vm.brdHello_show = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
-                        //_vm.brdHello_show = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
-                        _vm.brdHello_show = Visibility.Visible; // Jim 20250117 modify for PIMS-297931 by dell PO decdie comment
-                        //PRESENCE DETECTION區域內windows hello隱藏
-                        //_vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
-                        //_vm.brdHello_show_control = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
-                        //_vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
-                        _vm.brdHello_show_control = Visibility.Visible; // Jim 20250117 modify for PIMS-297931 by dell PO decdie comment
+                        CheckSupportWindowsHello(Visibility.Visible); // Jim 20250117 modify for PIMS-297931 by dell PO decdie comment
 
                         //連接usb 3.0提示訊息 Camera.15
                         //Connect your monitor via USB 3.0 and select 'High Data Speed' under USB-C Prioritization to enable 4K UHD resolution.
@@ -1135,7 +1038,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //camera控制權
                         //_vm.bdrPrioritize_show = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
-                        _vm.bdrPrioritize_show = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
+                        SetPrioritizeShow(Visibility.Visible); // Jim 20250115 modify for PIMS-297931
 
                     }
                     else
@@ -1145,9 +1048,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //身分偵測整個功能區域隱藏保留
 
                         //攝影機控制區域內windows hello隱藏
-                        _vm.brdHello_show = Visibility.Visible;
-                        //PRESENCE DETECTION區域內windows hello隱藏
-                        _vm.brdHello_show_control = Visibility.Visible;
+                        CheckSupportWindowsHello(Visibility.Visible);
 
 
                         //連接usb 3.0提示訊息 Camera.15
@@ -1167,7 +1068,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //camera控制權
                         //_vm.bdrPrioritize_show = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by lio comment
-                        _vm.bdrPrioritize_show = Visibility.Visible; // Jim 20250116 modify for PIMS-297931 by lio comment
+                        SetPrioritizeShow(Visibility.Visible); // Jim 20250116 modify for PIMS-297931 by lio comment
                     }
                     break;
 
@@ -1207,7 +1108,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         }
 
                         //camera控制權
-                        _vm.bdrPrioritize_show = Visibility.Collapsed;
+                        SetPrioritizeShow(Visibility.Collapsed);
                     }
                     else
                     {
@@ -1228,7 +1129,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes2_width = 133;*/
 
                         //camera控制權
-                        _vm.bdrPrioritize_show = Visibility.Visible;
+                        SetPrioritizeShow(Visibility.Visible);
                     }
                     break;
             }
@@ -1252,6 +1153,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             print_debug("CheckUSBtype() end");
         }
 
+        private void SetPrioritizeShow(Visibility visibility)
+        {
+            _vm.bdrPrioritize_show = !is_WindwosHelloSupport ? Visibility.Collapsed : visibility;
+        }
+
+        private void LaunchView_Loaded(object sender, RoutedEventArgs e)
+        {
+            //if (!_vm!.IsDTPReady)
+            //    DdpmCommonHelper.MyConsole!.ShowHomePage();
+        }
 
         //bool WebcamGrid_old_ststus = false;
         private void status_change()
