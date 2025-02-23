@@ -13268,59 +13268,100 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         //FW Update by Bruce
+        //private void GetCurrentFWUpdatePluginCondition()
+        //{
+        //    _ = Task.Run(async () =>
+        //    {
+        //        var pluginCondition = await (_FWUpdatePlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+        //        //PluginCondition _FWUpdatePluginCondition;
+        //        lock (_FwUpdateLock)
+        //        {
+        //            if (pluginCondition is PluginErrorCondition)
+        //            {
+        //                writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in an error condition");
+        //                //_FWUpdatePluginCondition = pluginCondition;
+        //            }
+        //            else if (pluginCondition is PluginRunningCondition)
+        //            {
+        //                writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a running condition");
+        //                _FWUpdatePlugin.CallSaveUODFWDeviceInfos += show_fwUODUpdateInfo;
+        //                _FWUpdatePlugin.CallCheckUODFWInfos += show_CheckUODUpdateInfo;
+        //                CheckUODFWUInfoPackage();
+        //                _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
+        //                _FWUpdatePlugin.CallPopup += CallPopup;
+        //                _FWUpdatePlugin.CallOSD += CallOSD;
+        //                GetSkipCA();
+        //                SetSkipSHA();
+        //                if (_checkUpdateScheduleTimer == null)
+        //                {
+        //                    _checkUpdateScheduleTimer = new System.Timers.Timer();
+        //                    _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
+        //                    _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+        //                    _checkUpdateScheduleTimer.Start();
+        //                }
+        //            }
+        //            else if (pluginCondition is PluginStartedCondition)
+        //            {
+        //                writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a started condition");
+        //                _FWUpdatePlugin.CallSaveUODFWDeviceInfos += show_fwUODUpdateInfo;
+        //                _FWUpdatePlugin.CallCheckUODFWInfos += show_CheckUODUpdateInfo;
+        //                CheckUODFWUInfoPackage();
+        //                _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
+        //                _FWUpdatePlugin.CallPopup += CallPopup;
+        //                _FWUpdatePlugin.CallOSD += CallOSD;
+        //                GetSkipCA();
+        //                SetSkipSHA();
+        //                if (_checkUpdateScheduleTimer == null)
+        //                {
+        //                    _checkUpdateScheduleTimer = new System.Timers.Timer();
+        //                    _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
+        //                    _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+        //                    _checkUpdateScheduleTimer.Start();
+        //                }
+        //            }
+        //        }
+        //    });
+        //}
         private void GetCurrentFWUpdatePluginCondition()
         {
             _ = Task.Run(async () =>
             {
                 var pluginCondition = await (_FWUpdatePlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
-                //PluginCondition _FWUpdatePluginCondition;
                 lock (_FwUpdateLock)
                 {
                     if (pluginCondition is PluginErrorCondition)
                     {
                         writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in an error condition");
-                        //_FWUpdatePluginCondition = pluginCondition;
                     }
-                    else if (pluginCondition is PluginRunningCondition)
+                    else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
                     {
-                        writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a running condition");
-                        _FWUpdatePlugin.CallSaveUODFWDeviceInfos += show_fwUODUpdateInfo;
-                        _FWUpdatePlugin.CallCheckUODFWInfos += show_CheckUODUpdateInfo;
-                        CheckUODFWUInfoPackage();
-                        _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
-                        _FWUpdatePlugin.CallPopup += CallPopup;
-                        _FWUpdatePlugin.CallOSD += CallOSD;
-                        GetSkipCA();
-                        SetSkipSHA();
-                        if (_checkUpdateScheduleTimer == null)
-                        {
-                            _checkUpdateScheduleTimer = new System.Timers.Timer();
-                            _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
-                            _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
-                            _checkUpdateScheduleTimer.Start();
-                        }
-                    }
-                    else if (pluginCondition is PluginStartedCondition)
-                    {
-                        writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a started condition");
-                        _FWUpdatePlugin.CallSaveUODFWDeviceInfos += show_fwUODUpdateInfo;
-                        _FWUpdatePlugin.CallCheckUODFWInfos += show_CheckUODUpdateInfo;
-                        CheckUODFWUInfoPackage();
-                        _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
-                        _FWUpdatePlugin.CallPopup += CallPopup;
-                        _FWUpdatePlugin.CallOSD += CallOSD;
-                        GetSkipCA();
-                        SetSkipSHA();
-                        if (_checkUpdateScheduleTimer == null)
-                        {
-                            _checkUpdateScheduleTimer = new System.Timers.Timer();
-                            _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
-                            _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
-                            _checkUpdateScheduleTimer.Start();
-                        }
+                        var condition = pluginCondition is PluginRunningCondition ? "running" : "started";
+                        writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a {condition} condition");
+                        InitializeFWUpdatePluginWhenRuningStarted();
                     }
                 }
             });
+        }
+
+        private void InitializeFWUpdatePluginWhenRuningStarted()
+        {
+            _FWUpdatePlugin.CallSaveUODFWDeviceInfos += show_fwUODUpdateInfo;
+            _FWUpdatePlugin.CallCheckUODFWInfos += show_CheckUODUpdateInfo;
+            CheckUODFWUInfoPackage();
+            _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
+            _FWUpdatePlugin.CallPopup += CallPopup;
+            _FWUpdatePlugin.CallOSD += CallOSD;
+            GetSkipCA();
+            SetSkipSHA();
+            if (_checkUpdateScheduleTimer == null)
+            {
+                _checkUpdateScheduleTimer = new System.Timers.Timer
+                {
+                    Interval = TimeSpan.FromSeconds(10).TotalMilliseconds
+                };
+                _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+                _checkUpdateScheduleTimer.Start();
+            }
         }
 
         private void GetCurrentNKVMPluginCondition()
