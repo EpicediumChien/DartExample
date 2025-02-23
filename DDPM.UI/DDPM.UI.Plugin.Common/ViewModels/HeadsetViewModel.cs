@@ -29,6 +29,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private Debouncer _debouncerHeadsetQuickPause;
         private Debouncer _debouncerHeadsetSidetoneCheck;
         public event EventHandler<EventArgs> HeadsetSettingChanged;
+        public event EventHandler<EventArgs> HeadsetGroupChanged;
         #endregion Variables
 
         public new event PropertyChangedEventHandler? PropertyChanged;
@@ -49,8 +50,8 @@ namespace DDPM.UI.Plugin.ViewModels
             _showPluginManager = showPluginManager;
             DeviceInfoDTP = new DeviceInfoDTP();
             _current_headset = string.Empty;
-            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Headset_DTPNotify;
-            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+            //DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Headset_DTPNotify;
+            //DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             DebouncerFfunctionInit();
             _log!.Info($"[HeadsetViewModel] HeadsetViewModel Start...");
         }
@@ -249,8 +250,8 @@ namespace DDPM.UI.Plugin.ViewModels
                             //IsDTPReady = true;
                             FirmwareVersion2 = string.Join(".", FirmwareVersion2.ToCharArray());
                             FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
-                            _log.Info($"[HeadsetViewModel] Headset_DTPNotify ... Headset_WearDetectionSensitivityChanged ... {FirmwareVersion2} ...");
-                            _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_WearDetectionSensitivityChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
+                            _log.Info($"[HeadsetViewModel] Headset_DTPNotify ... Headset_FirmwareVersionChanged ... {FirmwareVersion2} ...");
+                            _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_FirmwareVersionChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
                             //}
                             break;
                         case "Headset_IsReadyChanged":
@@ -1177,6 +1178,8 @@ namespace DDPM.UI.Plugin.ViewModels
             if (!base.SetCurrentDevice(instanceIDs))
                 return false;
             DeviceInfoDTP = new DeviceInfoDTP();
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Headset_DTPNotify;
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             if (CurrentDeviceInfo?.ModelNumber == "SB725")
             {
                 isAirAudio = true;
@@ -1314,13 +1317,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     if (IsDTPReady)
                     {
                         _deviceManager.SetSidetoneAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.Sidetone).Wait();
-                        //_debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
                     }
                     else
                         _deviceManager.SetSidetone(true, CurrentDeviceInfo!.ID).Wait();
-                    //OnPropertyChanged(nameof(Sidetone_String));
-                    //OnPropertyChanged(nameof(SidetoneStatus));
-                    //OnPropertyChanged(nameof(SidetoneSliderStatus));
                     CheckSidetoneUI(true);
                     _log.Info($"[HeadsetViewModel] HandleNotification DTH Event AncModeChanged {Model.ToString() + " : " + di.AncMode.ToString()}");
                     break;
@@ -1331,12 +1330,6 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged(nameof(TransparencylevelSliderValue));
                     _log.Info($"[HeadsetViewModel] HandleNotification DTH Event AncGainChanged {Model.ToString() + " : " + di.AncGain.ToString()}");
                     break;
-
-                //case "WearDetectionChanged":
-                //    DeviceInfoDTP.WearDetection = di.WearDetection;//_deviceManager.GetWearDetectionAsync(CurrentDeviceID.ToString()).Result;
-                //    CheckWearDetectionUI(true);
-                //    break;
-
                 default:
                     break;
             }
@@ -1405,8 +1398,6 @@ namespace DDPM.UI.Plugin.ViewModels
                     else
                         _log.Info($"[HeadsetViewModel] SetFactoryResetAsyncValueForHeadset only Update UI");
                     UpdateDTPValue();
-                    //_showPluginManager = HeadsetPlugin.PluginIoc.GetService<IShowPluginManager>();
-                    //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.HeadsetPluginId, CurrentDeviceInfo!.ID.ToString());
                 }
                 else
                 {
@@ -2187,7 +2178,7 @@ namespace DDPM.UI.Plugin.ViewModels
         //    bw.RunWorkerAsync();
         //}
 
-        private async Task DoWork_PleaseWait(string model, HeadsetViewModel vm)
+        private void DoWork_PleaseWait(string model, HeadsetViewModel vm)
         {
             _log.Info($"[HeadsetViewModel] DoWork_PleaseWait .......");
             if (isAirAudio == false)
@@ -2260,19 +2251,23 @@ namespace DDPM.UI.Plugin.ViewModels
             if (IsDTPReady)
                 UpdateDTPValue();
             else
-                UpdateDTHValue();
+                UpdateDTHValue();            
             // Call DetectPageShow
             DetectPageShow(model);
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                HeadsetGroupChanged?.Invoke(this, EventArgs.Empty);
+            });
         }
 
-        public async Task Invoke_PleaseWaitAsync(string model, HeadsetViewModel vm)
+        public void Invoke_PleaseWaitAsync(string model, HeadsetViewModel vm)
         {
             vm.ShowPleaseWait();
             try
             {
                 using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
                 {
-                    await Task.Run(() => DoWork_PleaseWait(model, vm), cts.Token);
+                    Task.Run(() => DoWork_PleaseWait(model, vm), cts.Token);
                 }
             }
             catch (OperationCanceledException)
