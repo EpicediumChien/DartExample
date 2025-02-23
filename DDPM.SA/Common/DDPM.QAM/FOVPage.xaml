@@ -18,7 +18,7 @@
     <Border Background="{DynamicResource Default_SA_QAM_Menu_BackGround}"
             Height="216"
             CornerRadius="0,0,10,10">
-        <StackPanel>
+        <StackPanel IsEnabled="{Binding ZoomEnableStatus}">
             <Border x:Name="btnFOV0"
                     Width="256"
                     Height="36"
