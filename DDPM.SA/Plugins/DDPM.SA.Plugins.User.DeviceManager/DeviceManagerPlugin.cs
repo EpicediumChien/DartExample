@@ -2180,6 +2180,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     _DisplayManagerPlugin.GetUSBUpstreamList(monitor).Wait();
                     _DisplayManagerPlugin.GetAllUSBUpstream(monitor).Wait();
+                    _DisplayManagerPlugin.GetVCPCapability(monitor, 0xE9).Wait();
                 }
                 UpdateHotkeyInfo();
 
@@ -2705,11 +2706,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(usbUpstream);
         }
 
-        public Task<string> GetCurrentInput(MonitorInfo monitorInfo)
+        public Task<string> GetCurrentInput(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
         {
             if (_DisplayManagerPlugin != null)
             {
-                return _DisplayManagerPlugin.GetCurrentInput(monitorInfo);
+                return _DisplayManagerPlugin.GetCurrentInput(monitorInfo, guid, priority);
             }
             else
             {

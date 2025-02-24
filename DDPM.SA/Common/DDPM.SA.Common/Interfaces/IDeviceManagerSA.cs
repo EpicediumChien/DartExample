@@ -219,7 +219,7 @@ namespace DDPM.SA.Common
 
         Task<bool> USBSwitch(MonitorInfo monitorInfo, string inputsource1, string upstream1, string inputsource2, string upstream2);
 
-        Task<string> GetCurrentInput(MonitorInfo monitorInfo);
+        Task<string> GetCurrentInput(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low);
 
         #endregion public for InputSource
 
