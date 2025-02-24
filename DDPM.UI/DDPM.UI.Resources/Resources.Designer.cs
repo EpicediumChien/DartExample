@@ -5641,7 +5641,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Easy file-sharing between PCs (Mac &amp; Windows) Securely.
+        ///   Looks up a localized string similar to Easy, secure file-sharing between PCs (Mac &amp; Windows).
         /// </summary>
         internal static string Kvm_30 {
             get {
