@@ -2818,32 +2818,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("ChangeDock start");
             List<DeviceInfo> GetDeviceInfos = deviceHelper.deviceInfo.FindAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
-            /*if (GetDeviceInfos.Count > 1)
+            if (GetDeviceInfos != null && GetDeviceInfos.Count >= 1)
             {
-                //Bruce 02/19 If multiple docks are docked consecutively, all docks will remove
-                writelog("ChangeDock Connecting multiple docks so remove all dock");
-                deviceHelper.deviceInfo.RemoveAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
-            }
-            else*/
-            {
-                if (GetDeviceInfos != null && GetDeviceInfos.Count >= 1)
+                writelog("ChangeDock go");
+                foreach (var deviceInfo in GetDeviceInfos)
                 {
-                    writelog("ChangeDock go");
-                    foreach (var deviceInfo in GetDeviceInfos)
+                    string version = GetFirmwareVersionForDock(deviceInfo.ID.ToString()).Result;
+                    string serviceTag = GetDockServiceTagForDock(deviceInfo.ID.ToString()).Result;
+                    writelog($"GetFirmwareVersionForDock : {version}");
+                    writelog($"GetDockServiceTagForDock : {serviceTag}");
+                    if (!string.IsNullOrEmpty(version))
                     {
-                        string version = GetFirmwareVersionForDock(deviceInfo.ID.ToString()).Result;
-                        string serviceTag = GetDockServiceTagForDock(deviceInfo.ID.ToString()).Result;
-                        writelog($"GetFirmwareVersionForDock : {version}");
-                        writelog($"GetDockServiceTagForDock : {serviceTag}");
-                        if (!string.IsNullOrEmpty(version))
-                        {
-                            deviceInfo.DockPackageFwVersion = version;
-                            deviceInfo.FirmwareVersion = version;
-                        }
-                        if (!string.IsNullOrEmpty(serviceTag))
-                        {
-                            deviceInfo.DockServiceTag = serviceTag;
-                        }
+                        deviceInfo.DockPackageFwVersion = version;
+                        deviceInfo.FirmwareVersion = version;
+                    }
+                    if (!string.IsNullOrEmpty(serviceTag))
+                    {
+                        deviceInfo.DockServiceTag = serviceTag;
                     }
                 }
             }
@@ -12126,6 +12117,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (changedProperty != "DisplayChanged" && type == DeviceChangedType.Peripherals_PlugIn)
                 CheckDeviceFirstTimesToConnect(mo, di);
 
+            if (type == DeviceChangedType.Display_UnPlug)//Bruce 0224 add. If the dock has multiple connections, send a Display event to force the UI to return to home.
+            {
+                type = DeviceChangedType.NotifyOnly;
+                changedProperty = "DisplayChanged";
+            }
+
             _EventArgs.type = type;
             _EventArgs.device_display = mo;
             _EventArgs.device_peripherals = di;
@@ -12147,18 +12144,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     //CheckUpdate();
                     CheckUODFWUInfoPackage(true);
-                    CheckDocks();
                 });
                 thread.Start();
             }
             else if (changedProperty.ToLower().Contains("remove"))
             {
-                //0909 Bruce move to add and remove
-                var thread = new Thread(() =>
-                {
-                    CheckDocks();
-                });
-                thread.Start();
             }
             else if ((string.Compare(changedProperty, "DisplayChanged", true) == 0))
             {
@@ -12244,92 +12234,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             catch (Exception ex)
             {
                 writelog($"CheckDeviceFirstTimesToConnect Exception : {ex.Message}");
-            }
-        }
-
-        //0613 Bruce 用於看是否連接超過2個dock
-        private void CheckDocks()
-        {
-            if (_PeripheralsPlugin == null)
-            {
-                return;
-            }
-            List<DeviceInfo> _peripheralslist = new List<DeviceInfo>();
-            try
-            {
-                _peripheralslist = _PeripheralsPlugin.GetDevices().Result.deviceInfo;
-            }
-            catch (Exception ex)
-            {
-                writelog($"CheckDocks GetDevices Exception : {ex.Message}");
-                _peripheralslist = null;
-                return;
-            }
-            // 2024-08-07 Elie, fix got exception while don't check this is null or not.
-            if ((_peripheralslist == null) || (_peripheralslist.Count == 0))
-                return;
-            // >>
-            int dockCount = 0;
-            foreach (DeviceInfo deviceInfo in _peripheralslist)
-            {
-                //0617 Bruce 在其他電腦有發現List有item，但是item會是null，故新增判斷
-                if (deviceInfo != null)
-                {
-                    if (deviceInfo.Type == DeviceType.LogicalDock &&
-                        _peripheralslist.FindAll(o => o.ID.Equals(deviceInfo.ID)).Count == 1)
-                    {
-                        dockCount++;
-                    }
-                    if (dockCount >= 2)
-                    {
-                        break;
-                    }
-                }
-            }
-            if (dockCount >= 2)
-            {
-                //0704 Bruce 使用另一種Popup顯示
-                //PopupBaseManage popupBaseManage = new PopupBaseManage();
-                //popupBaseManage.FWU_Show("Warning", "Multiple docks are detected. Keep only one dock connected to prevent damage to your dock(s).", "", "", null, true, 5);
-                PopupContentPackage popupContentPackage = new PopupContentPackage()
-                {
-                    Title = "Warning",
-                    Info = "Multiple docks are detected. Keep only one dock connected to prevent damage to your docks.",
-                    IsInfo = true,
-                    IsOnlyUpdate = false,
-                    StayOpen = true,
-                    Timeout = 5,
-                };
-                CallPopup(this, popupContentPackage);
-                // 顯示Toast通知
-                //0614 Bruce 先使用ToastContentBuilder做通知，之後修改回客戶的模板
-                //ToastContentBuilder toastContentBuilder = new ToastContentBuilder();
-                //toastContentBuilder.AddArgument("DDPM");
-                //toastContentBuilder.AddText("Warning");
-                //toastContentBuilder.AddText("Multiple docks are detected. Keep only one dock connected to prevent damage to your dock(s).");
-                //toastContentBuilder.SetToastScenario(ToastScenario.IncomingCall);
-
-                //toastContentBuilder.Show(); // 顯示Toast通知
-                //0617 Bruce 使用Dell的Popup視窗顯示，目前已可以使用並停留，但是Popup視窗的標頭沒有顯示，還需要詢問
-                /*var windowClosedEvent = new ManualResetEvent(false);
-                var thread = new Thread(() =>
-                {
-                    PopupMode popupMode = PopupMode.Normal;
-                    IPopupMgr popupManager = new PopupMgr();
-                    PopupBase popupBase = new PopupBase(true, false, "Warning", "Multiple docks are detected. Keep only one dock connected to prevent damage to your dock(s).");
-                    IUXPopup popup = popupManager.AddPopup(popupMode, "", popupBase, true, true);
-                    popup.Tag = "DDPM";
-                    popup.IsOpen = true;
-                    popup.Closed += (s, e) =>
-                    {
-                        windowClosedEvent.Set(); //視窗關閉時通知主執行緒
-                        Dispatcher.ExitAllFrames(); //結束WPF的消息循環
-                    };
-                    Dispatcher.Run(); // 確保WPF消息循環運行
-                });
-                thread.SetApartmentState(ApartmentState.STA);
-                thread.Start();
-                thread.Join(); // 確保執行緒已結束*/
             }
         }
 
@@ -12602,12 +12506,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _PeripheralsPlugin.Notify += show_peripheralsNotify;
                 _PeripheralsPlugin.UpdateNotify += show_peripheralsUpdateNotify;
-                //0617 Bruce 如使用Dell的Popup視窗顯示，需卡執行緒，故另外使用一條執行緒給Popup顯示用
-                var thread = new Thread(() =>
-                {
-                    CheckDocks();
-                });
-                thread.Start();
             }
             //>>
 
