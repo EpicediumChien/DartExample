@@ -316,14 +316,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 }
                                 // >>
 
-                                if (!_globalSettings.isSetTelemetryOverInstaller && !DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage)
+                                if (!_globalSettings.isSetTelemetryOverInstaller)
                                 {
                                     _log.Info("Invoking ShowConsent()");
-                                    _viewModel.ShowConsent();
-                                    DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage = true;
-                                    _log.Info("Calling to WriteDDPMSettings()");
-                                    DdpmCommonHelper.WriteDDPMSettings(DdpmCommonHelper.Settings_Cache);
-                                    _log.Info("Return from WriteDDPMSettings()");
+                                    //_viewModel.ShowConsent();
+                                    await CheckAndQueueDevice("CONSENT_PAGE", "CONSENT_PAGE", null);
+                                    //DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage = true;
+                                    //_log.Info("Calling to WriteDDPMSettings()");
+                                    //DdpmCommonHelper.WriteDDPMSettings(DdpmCommonHelper.Settings_Cache);
+                                    //_log.Info("Return from WriteDDPMSettings()");
                                 }
                             }
 
@@ -338,6 +339,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //    return;
                             //}
 
+                            // Add DDPM walk through before walk through page constructed
+                            _log.Info($"Calling to CheckAndQueueDevice(DDPM,DDPM,null)");
+                            await CheckAndQueueDevice("DDPM", "DDPM", null);//DDPM WalkThrough no need into setting page.
+                            _log.Info($"Returned from CheckAndQueueDevice()");
                             //Elapsed= 78, 61 msec
                             //Wayn 2024-09-04 For WalkThrough
                             _log.Info("Calling to CollectAndCompareDevicesAsync()");
@@ -387,9 +392,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                         }
                         //Elapsed= 13, 14 msec
-                        _log.Info($"Calling to CheckAndQueueDevice(DDPM,DDPM,null)");
-                        await CheckAndQueueDevice("DDPM", "DDPM", null);//DDPM WalkThrough no need into setting page.
-                        _log.Info($"Returned from CheckAndQueueDevice()");
                         if (WalkThroughQueue.Count != 0 && ShowPluginById == false)
                         {
                             _log.Info($"[Walkthrough] WalkThroughQueue.Count != 0, ShowPluginById Start DDPM");
@@ -1625,6 +1627,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //UserId = GetActiveUserID();
             string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
             string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{modelNumber}";
+            string regKeyForConsentPage = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.CONSENT_PAGE";
             string regKeyForDDPM = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
          
             try
@@ -1635,7 +1638,23 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     return;
                 }
 
-                if (modelNumber == "DDPM" && modelType == "DDPM")
+                if(modelNumber == "CONSENT_PAGE" && modelType == "CONSENT_PAGE")
+                {
+                    // Check ConsentPage reg
+                    regPath = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
+                    regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForConsentPage);
+
+                    if (!Convert.ToBoolean(regValue))
+                    {
+                        if (!WalkThroughQueue.Exists(info => info.ModelName == modelNumber) && !WalkThroughEndList.Exists(info => info.ModelName == modelType))
+                        {
+                            WalkThroughQueue.Add(new WalkThroughInfo(modelNumber, modelType, info));
+                            _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} WalkThroughQueue Add ConsentPage.");
+                        }
+                    }
+                    else
+                        _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} WalkThroughQueue ConsentPage Walk Through skipped.");
+                } else if (modelNumber == "DDPM" && modelType == "DDPM")
                 {
                     // Check DDPM walkthrough
                     regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
