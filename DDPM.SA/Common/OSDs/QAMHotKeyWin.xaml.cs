@@ -126,7 +126,16 @@ namespace DDPM.OSDs
 
         private static bool _ShowWindow(IntPtr hWnd, int nCmdShow)
         {
-            return ShowWindow(hWnd, nCmdShow);
+            bool rst = ShowWindow(hWnd, nCmdShow);
+
+            if (!rst) 
+            {
+#if DEBUG
+                Console.WriteLine("[QAMHotKeyWin] Windos was hidden before.");
+#endif
+            }
+
+            return rst;
         }
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
