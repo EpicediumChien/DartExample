@@ -84,7 +84,16 @@ namespace DDPM.SA.Common.Method
 
         private static bool _GetSystemPowerStatus(out SYSTEM_POWER_STATUS status)
         {
-            return GetSystemPowerStatus(out status);
+            bool rst = GetSystemPowerStatus(out status);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[BatteryInfo] GetSystemPowerStatus failed.");
+#endif
+            }
+
+            return rst;
         }
 
         public bool GetBatteryInfo(out SYSTEM_POWER_STATUS powerStatus)
