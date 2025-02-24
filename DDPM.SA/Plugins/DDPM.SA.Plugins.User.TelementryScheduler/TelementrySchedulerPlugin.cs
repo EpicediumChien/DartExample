@@ -181,7 +181,7 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
 
         public Task GetGlobalsetting_IsTelemetryConsentOn(bool value)
         {
-            _logs.DebugMsg("[TelementryScheduler] received GetGlobalsetting_IsTelemetryConsentOn ...");
+            _logs.DebugMsg($"[TelementryScheduler] received GetGlobalsetting_IsTelemetryConsentOn : {value.ToString()}");
 
             IsTelemetryConsentOn = value;
 
