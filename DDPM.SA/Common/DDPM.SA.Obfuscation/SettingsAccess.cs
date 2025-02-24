@@ -127,7 +127,7 @@ namespace DDPM.SA.Obfuscation
                                     {
                                         // get value from DisplayName
                                         string displayName = subkey.GetValue("DisplayName") as string;
-                                        if (displayName != null && displayName.Trim().Equals(_softwareName))
+                                        if (!string.IsNullOrEmpty(displayName) && displayName.Trim().Equals(_softwareName))
                                         {
                                             string ver = subkey.GetValue("DisplayVersion") as string;
                                             string addr = subkey.GetValue("InstallLocation") as string;
