@@ -388,7 +388,11 @@ namespace DDPM.UI.Common.ViewModels
                 return String.Empty;
             }
 
-            double totalSeconds = (double)autoLaunchtime.Value;
+            double totalSeconds = 0;
+            if (autoLaunchtime > 1000000)
+                totalSeconds = (double)autoLaunchtime.Value / 10000000; // Corrected conversion for DPeM
+            else
+                totalSeconds = (double)autoLaunchtime.Value; 
 
             TimeSpan time = TimeSpan.FromSeconds(totalSeconds);
 

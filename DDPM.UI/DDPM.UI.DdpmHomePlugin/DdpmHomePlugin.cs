@@ -1682,6 +1682,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         else
                             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} CXXXXXX ReadRegistryData true");
                     }
+                    else if (modelNumber == "MS700/7")
+                    {
+                        regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.MS700";
+                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);                  
+                    }
                     else
                         regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
 
