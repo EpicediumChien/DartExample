@@ -50,6 +50,8 @@ namespace DDPM.SA.Plugin.PlatinumSDK
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
         private IPlatinumClientSdk _platinumClientSdk;
 
+        private static bool IsTelemetryConsentOn = false;
+
         #endregion Private Members
 
         #region Constructor
@@ -58,7 +60,7 @@ namespace DDPM.SA.Plugin.PlatinumSDK
         {
             _agent = agent;
             _logs ??= new Logs(Log, PluginLogId);
-            InitializePlatinumClientSdk();
+            FindPlatinumClientSdkService();
             _logs.DebugMsg_1($"PlatinumSDKPlugin constructor ...(Admin:{_IsAdministrator})");
         }
 
@@ -66,47 +68,115 @@ namespace DDPM.SA.Plugin.PlatinumSDK
 
         #region IPlatinumSDKService implementation
 
-        public Task<bool> UpdateEventValue(string Event, string EventValue)
+        public Task<bool> UpdateEventValue(string EventTag, string EventValue, DataClassificationId _dcid = DataClassificationId.Restricted)
         {
             try
             {
-                if (_platinumClientSdk != null)
+                if (IsTelemetryConsentOn)
                 {
-                    TransmissionId transmissionId;
-
-                    if (string.IsNullOrWhiteSpace(EventValue))
-                        transmissionId = _platinumClientSdk.LogEventAsync(Event, DataClassificationId.Restricted).Result;
-                    else
-                        transmissionId = _platinumClientSdk.LogEventAsync(Event, EventValue, DataClassificationId.Restricted).Result;
-
-                    _logs.DebugMsg_1($"Logged event with transmission ID {transmissionId}");
-                    TransmissionStatus status = _platinumClientSdk.GetTransmissionStatusAsync(transmissionId).Result;
-                    switch (status.State)
+                    if (_platinumClientSdk != null)
                     {
-                        case TransmissionState.Queued:
-                            return Task.FromResult(true);
+                        TransmissionId transmissionId;
 
-                        case TransmissionState.Successful:
-                            return Task.FromResult(true);
+                        if (string.IsNullOrWhiteSpace(EventValue))
+                            transmissionId = _platinumClientSdk.LogEventAsync(EventTag, _dcid).Result;
+                        else
+                            transmissionId = _platinumClientSdk.LogEventAsync(EventTag, EventValue, _dcid).Result;
 
-                        case TransmissionState.FailedAndEnqueued:
-                            return Task.FromResult(false);
+                        _logs.DebugMsg_1($"UpdateEventValue Logged event with transmission ID {transmissionId}");
 
-                        case TransmissionState.FailedAndIgnored:
-                            return Task.FromResult(false);
+                        TransmissionStatus status = _platinumClientSdk.GetTransmissionStatusAsync(transmissionId).Result;
 
-                        default:
-                            return Task.FromResult(false);
+                        switch (status.State)
+                        {
+                            case TransmissionState.Queued:
+                                return Task.FromResult(true);
+
+                            case TransmissionState.Successful:
+                                return Task.FromResult(true);
+
+                            case TransmissionState.FailedAndEnqueued:
+                                return Task.FromResult(false);
+
+                            case TransmissionState.FailedAndIgnored:
+                                return Task.FromResult(false);
+
+                            default:
+                                return Task.FromResult(false);
+                        }
                     }
+                    else
+                        return Task.FromResult(false);
                 }
-                else
-                    return Task.FromResult(false);
+
+                _logs.DebugMsg_1("IsTelemetryConsentOn is False");
+                return Task.FromResult(false);
             }
             catch (Exception ex)
             {
                 _logs.DebugMsg_1($"UpdateEventValue ex {ex.Message}");
                 return Task.FromResult(false);
             }
+        }
+
+        public Task<bool> UpdateEventValueforPeripheral(string EventTag, IEnumerable<KeyValuePair<string, string>> EventValue, DataClassificationId _dcid = DataClassificationId.Restricted)
+        {
+            try
+            {
+                if (IsTelemetryConsentOn)
+                {
+                    if (_platinumClientSdk != null)
+                    {
+                        TransmissionId transmissionId;
+
+                        if (EventValue != null && EventValue.Count() > 0)
+                            transmissionId = _platinumClientSdk.LogEventAsync(EventTag, _dcid).Result;
+                        else
+                            transmissionId = _platinumClientSdk.LogEventAsync(EventTag, EventValue, _dcid).Result;
+
+                        _logs.DebugMsg_1($"UpdateEventValueforPeripheral Logged event with transmission ID {transmissionId}");
+
+                        TransmissionStatus status = _platinumClientSdk.GetTransmissionStatusAsync(transmissionId).Result;
+
+                        switch (status.State)
+                        {
+                            case TransmissionState.Queued:
+                                return Task.FromResult(true);
+
+                            case TransmissionState.Successful:
+                                return Task.FromResult(true);
+
+                            case TransmissionState.FailedAndEnqueued:
+                                return Task.FromResult(false);
+
+                            case TransmissionState.FailedAndIgnored:
+                                return Task.FromResult(false);
+
+                            default:
+                                return Task.FromResult(false);
+                        }
+                    }
+                    else
+                        return Task.FromResult(false);
+                }
+
+                _logs.DebugMsg_1("IsTelemetryConsentOn is False");
+                return Task.FromResult(false);
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1($"UpdateEventValueforPeripheral ex {ex.Message}");
+                return Task.FromResult(false);
+            }
+        }
+
+        public Task SetGlobalsetting_IsTelemetryConsentOn(bool value)
+        {
+            _logs.DebugMsg_1($"[PlatinumSDKPlugin] received Globalsetting_IsTelemetryConsentOn : ${value.ToString()}");
+
+            IsTelemetryConsentOn = value;
+
+            return Task.FromResult(Task.CompletedTask);
         }
 
         #endregion IPlatinumSDKService implementation
@@ -122,7 +192,7 @@ namespace DDPM.SA.Plugin.PlatinumSDK
             {
                 _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
                 base.OnPluginStarting();
-                InitializePlatinumClientSdk();
+                FindPlatinumClientSdkService();
             }
             catch (Exception ex)
             {
@@ -135,7 +205,7 @@ namespace DDPM.SA.Plugin.PlatinumSDK
 
         #region Private methods
 
-        private void InitializePlatinumClientSdk()
+        private void FindPlatinumClientSdkService()
         {
             try
             {
@@ -146,8 +216,37 @@ namespace DDPM.SA.Plugin.PlatinumSDK
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg_1("PlatinumSDK InitializePlatinumClientSdk ex: " + ex.Message);
+                _logs.DebugMsg_1("PlatinumSDK FindPlatinumClientSdkService ex: " + ex.Message);
             }
+        }
+
+        private void TryInitializePlatinumClientSdk()
+        {
+            //---------------------------------------------------------
+            try
+            {
+                FindPlatinumClientSdkService();
+
+                if (_platinumClientSdk != null)
+                    _logs.DebugMsg_1("IPlatinumClientSdk is not null");
+                else
+                    _logs.DebugMsg_1("IPlatinumClientSdk is null");
+
+                lock (_lockobject)
+                {
+                    if (_platinumClientSdk != null && (!IsSucessInitializeAsync))
+                    {
+                        _platinumClientSdk.InitializeAsync(new ClientAppId(new Guid("b397b9b3-04cb-4cdf-8a79-852d63cf4801"))).Wait();
+                        IsSucessInitializeAsync = true;
+                        _logs.DebugMsg_1($"PlatinumSDK plugin InitializeAsync correct ...");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1($"PlatinumSDK plugin OnPluginStarted ex: {ex.Message}");
+            }
+            //---------------------------------------------------------
         }
 
         #endregion Private methods
@@ -192,27 +291,7 @@ namespace DDPM.SA.Plugin.PlatinumSDK
             if (e.ChangedPlugins.Any() == false)
                 return;
 
-            //---------------------------------------------------------
-            try
-            {
-                InitializePlatinumClientSdk();
-                _logs.DebugMsg_1("PlatinumSDK plugin report started");
-
-                lock (_lockobject)
-                {
-                    if (_platinumClientSdk != null && (!IsSucessInitializeAsync))
-                    {
-                        _platinumClientSdk.InitializeAsync(new ClientAppId(new Guid("b397b9b3-04cb-4cdf-8a79-852d63cf4801"))).Wait();
-                        IsSucessInitializeAsync = true;
-                        _logs.DebugMsg_1($"PlatinumSDK plugin InitializeAsync correct ...");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logs.DebugMsg_1($"PlatinumSDK plugin OnPluginStarted ex: {ex.Message}");
-            }
-            //---------------------------------------------------------
+            TryInitializePlatinumClientSdk();
         }
 
         #endregion Event Handler

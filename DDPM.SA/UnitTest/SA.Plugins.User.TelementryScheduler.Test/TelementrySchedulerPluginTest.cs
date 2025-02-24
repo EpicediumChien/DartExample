@@ -2,13 +2,10 @@ using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Plugins.User.DisplayManager;
-using DDPM.SA.Plugins.User.TelementryScheduler;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UnitTestShared.Tests;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.ObjectModel;
+using Dell.TechHub.Common;
 using Moq;
-using System;
-using System.Windows.Controls;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
@@ -23,13 +20,13 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler.Test
         private Mock<IAgent> VcpCoreAgent { get; } = new();
         private Mock<IAgent> TelementrySchedulerAgent { get; } = new();
 
-        MonitorInfo monitorInfo = new MonitorInfo();
+        private MonitorInfo monitorInfo = new MonitorInfo();
         private Mock<IVcpCoreService> VcpCoreService { get; } = new();
         private Mock<IDisplayProperties> DisplayPropertiesService { get; } = new();
         private Mock<IDeviceManagerSA> DeviceManagerSAService { get; } = new();
         private IDeviceManagerSA? _deviceManagerPlugin;
 
-        MonitorInfo monitorInfo1 = new MonitorInfo()
+        private MonitorInfo monitorInfo1 = new MonitorInfo()
         {
             AliasDeviceName = "Dell U2724DE(HDMI)",
             IsDellMonitor = true,
@@ -59,11 +56,11 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler.Test
                 ServiceTag = "CN073K0",
                 SerialNumber = "808597589",
                 Edid = "00FFFFFFFFFFFF0010ACDC425538323016210103803C2278EA62A5AD5046AB240E5054A54B00714F8180A940D1C081C0A9C001010101565E00A0A0A029503020350055502100001A000000FF00434E3037334B300A2020202020000000FC0044454C4C20553237323444450A000000FD0030781EB23C000A20202020202001ED"
-
             },
         };
 
         private DDPMAppSettings Ddpm_app_ = new DDPMAppSettings();
+
         private DDPMUserSettings Ddpm_user_ = new DDPMUserSettings()
         {
             Version = 1.0,
@@ -83,6 +80,7 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler.Test
             EzSettings = new EzSettings(),
             EACustomList = new SplitJson[] { new SplitJson() },
         };
+
         private DDPMITConfig Ddpm_it_ = new DDPMITConfig()
         {
             Lock_Settings_TelemetryConsent = false,
@@ -130,6 +128,7 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler.Test
         private VcpCorePlugin vcpCorePlugin;
         private TelementrySchedulerPlugin telementrySchedulerPlugin;
         private PrivateObject privatetelementrySchedulerPlugin;
+
         [OneTimeSetUp]
         public void Setup()
         {
@@ -191,7 +190,7 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler.Test
             bool IsTelemetryConsentOn2 = false;
 
             Mock<IPlatinumSDKService> mockPlatinumSDKService = new Mock<IPlatinumSDKService>();
-            mockPlatinumSDKService.Setup(x => x.UpdateEventValue(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            mockPlatinumSDKService.Setup(x => x.UpdateEventValue(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DataClassificationId>())).Returns(Task.FromResult(true));
             var mockPlatinumSDKServiceObject = mockPlatinumSDKService.Object;
             privatetelementrySchedulerPlugin.SetFieldOrProperty("_PlatinumSDKPlugin", mockPlatinumSDKServiceObject);  //_PlatinumSDKPlugin not null
             privatetelementrySchedulerPlugin.SetFieldOrProperty("IsTelemetryConsentOn", IsTelemetryConsentOn1);
@@ -229,7 +228,6 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler.Test
                 var ReceiveTelemetryInfo_Result5 = telementrySchedulerPlugin.ReceiveTelemetryInfo(EventTag, EventValue, Frequency1).Result;  // Frequency1 3  RealTime;_PlatinumSDKPlugin not null, IsTelemetryConsentOn2 false, return true
                 Assert.That(ReceiveTelemetryInfoExpected, Is.EqualTo(ReceiveTelemetryInfo_Result5));
             }
-
         }
 
         [Test]
@@ -257,7 +255,7 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler.Test
             bool IsTelemetryConsentOn2 = false;
 
             Mock<IPlatinumSDKService> mockPlatinumSDKService = new Mock<IPlatinumSDKService>();
-            mockPlatinumSDKService.Setup(x => x.UpdateEventValue(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            mockPlatinumSDKService.Setup(x => x.UpdateEventValue(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DataClassificationId>())).Returns(Task.FromResult(true));
             var mockPlatinumSDKServiceObject = mockPlatinumSDKService.Object;
             privatetelementrySchedulerPlugin.SetFieldOrProperty("_PlatinumSDKPlugin", mockPlatinumSDKServiceObject);  //_PlatinumSDKPlugin not null
             privatetelementrySchedulerPlugin.SetFieldOrProperty("IsTelemetryConsentOn", IsTelemetryConsentOn1);
@@ -277,7 +275,6 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler.Test
                 var ReceiveTelemetryInfo_Result2 = telementrySchedulerPlugin.ReceiveTelemetryInfo(EventTag, Frequency1).Result;  // Frequency1 3  RealTime;_PlatinumSDKPlugin not null, IsTelemetryConsentOn2 false, return true
                 Assert.That(ReceiveTelemetryInfoExpected, Is.EqualTo(ReceiveTelemetryInfo_Result2));
             }
-
         }
 
         [Test]
@@ -323,7 +320,6 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler.Test
             var settings_Dataconfig = new DDPMSettings(Ddpm_app_, Ddpm_user_, Ddpm_it_);
 
             Mock<ISettingsManagerDev> mockSettingsManagerDev = new Mock<ISettingsManagerDev>();
-
 
             mockSettingsManagerDev.Setup(x => x.SetAppConfigData(It.IsAny<DDPMSettings>())).Returns(Task.FromResult(true));
             var mockSettingsManagerDevObject = mockSettingsManagerDev.Object;
@@ -383,7 +379,6 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler.Test
             var settings_Dataconfig = new DDPMSettings(Ddpm_app_, Ddpm_user_, Ddpm_it_);
 
             Mock<ISettingsManagerDev> mockSettingsManagerDev = new Mock<ISettingsManagerDev>();
-
 
             mockSettingsManagerDev.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(settings_Dataconfig));
             var mockSettingsManagerDevObject = mockSettingsManagerDev.Object;
