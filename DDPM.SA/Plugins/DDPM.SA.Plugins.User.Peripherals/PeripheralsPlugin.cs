@@ -66,6 +66,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         public const string PluginLogId = "Peripherals";
 
         private DeviceHelper _deviceHelper;
+        //Bruce 0224 add, Because removing the dock list will not find the ID, add a new list with dock
         private DeviceHelper _deviceHelper_ForDock;
         private UpdateHelper _updateHelper;
         //Bruce, FWU need it
