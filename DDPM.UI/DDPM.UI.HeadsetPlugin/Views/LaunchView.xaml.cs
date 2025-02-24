@@ -123,12 +123,10 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
         private void HeadsetGroupChanged(object? sender, EventArgs e)
         {
-            if (!_vm.SupportedAnswerCalls)
-            {
                 BuildModuleGroups(_vm.SupportedAnswerCalls);
                 vbarList.ItemsSource = null;
                 vbarList.ItemsSource = _vm!.VbarItems;
-            }
+                DdpmCommonHelper.WriteUILog($"[Headset] LaunchView HeadsetGroupChanged SupportedAnswerCalls false");
         }
 
         private async void LaunchView_UnLoadedStatus(object sender, RoutedEventArgs e)
@@ -153,12 +151,6 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             try
             {
                 _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
-                //if (!_vm.SupportedAnswerCalls)
-                //{
-                //    BuildModuleGroups(_vm.SupportedAnswerCalls);
-                //    vbarList.ItemsSource = null;
-                //    vbarList.ItemsSource = _vm!.VbarItems;
-                //}
                 DdpmCommonHelper.WriteUILog($"[Headset] LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
                 if (!_vm.IsRestoreEnable)
                 {
