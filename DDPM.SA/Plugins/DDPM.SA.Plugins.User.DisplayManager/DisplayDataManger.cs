@@ -16,7 +16,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 {
     public class DisplayDataManger
     {
-        public List<DisplayData> _displayData { get; set; } = new List<DisplayData>();
+        private List<DisplayData> _displayData { get; set; } = new List<DisplayData>();
 
         public enum log_type
         {
@@ -305,6 +305,49 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 WriteLog("[SetMonitorUSBList]monitorInfo is null.");
             }
+            return false;
+        }
+
+        public bool GetMonitorE9(MonitorInfo monitorInfo, out uint vcpcode)
+        {
+            if (monitorInfo != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                            x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1 && _displayData[mi].VCP_E9 != 1)
+                {
+                    vcpcode = _displayData[mi].VCP_E9;
+                    return true;
+                }
+            }
+            else
+            {
+                WriteLog("[GetMonitorE9]monitorInfo is null.");
+            }
+            vcpcode = 1;
+            return false;
+        }
+
+        public bool SetMonitorE9(MonitorInfo monitorInfo, uint vcpcode)
+        {
+            if (monitorInfo != null)
+            {
+                if (vcpcode != 1 && vcpcode != 2)
+                {
+                    int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                            x.ServiceTag == monitorInfo.edid.ServiceTag);
+                    if (mi != -1)
+                    {
+                        _displayData[mi].VCP_E9 = vcpcode;
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                WriteLog("[SetMonitorE9]monitorInfo is null.");
+            }
+
             return false;
         }
     }
