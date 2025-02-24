@@ -142,7 +142,16 @@ namespace DDPM.OSDs
         private static extern bool SetForegroundWindow(IntPtr hWnd);
         private static bool _SetForegroundWindow(IntPtr hWnd)
         {
-            return SetForegroundWindow(hWnd);
+            bool rst = SetForegroundWindow(hWnd);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[QAMHotKeyWin] SetForegroundWindow failed.");
+#endif
+            }
+
+            return rst;
         }
 
         private bool ShowDDPM()
