@@ -122,7 +122,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
                                                      x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (mi != -1)
+                if (mi != -1 && _displayData[mi].DisplayUSB != null && _displayData[mi].DisplayUSB.Count > 0)
                 {
                     _USBs = _displayData[mi].DisplayUSB;
                     return true;
