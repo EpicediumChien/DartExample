@@ -26,6 +26,7 @@ using DDPM.SA.Common.Settings;
 using DDPM.SA.Common.Telemetry;
 using DDPM.SA.Common.UI;
 using DDPM.SA.Common.UpdateProgressPage;
+using DDPM.SA.Obfuscation;
 using DDPM.SA.Resources.Helper;
 using DDPM.ShowOSD;
 using Dell.Client.Framework.Common;
@@ -8303,6 +8304,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_SWUpdatePlugin != null)
             {
                 ResetTimer();
+                try
+                {
+                    if (string.IsNullOrEmpty(_GlobalSettingParam.GlobalSetting_About.SWVersion))
+                    {
+                        writelog("[SW_GetSWUpdateInfo] ver empty, query again");
+                        _GlobalSettingParam.GlobalSetting_About.SWVersion = SettingsAccess.QueryAppAccessInfo().ver;
+                        writelog($"[SW_GetSWUpdateInfo] ver: {_GlobalSettingParam.GlobalSetting_About.SWVersion}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    writelog($"[SW_GetSWUpdateInfo], Error : {ex.Message}");
+                }
                 return Task.FromResult(_SWUpdatePlugin.GetSWUpdateInfo(isShowNotify, _GlobalSettingParam.GlobalSetting_About.SWVersion, reScan).Result);
             }
             return Task.FromResult(new SWUpdateInfoPackage());
@@ -8405,6 +8419,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool ret = false;
             try
             {
+                if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_About != null &&
+                    string.IsNullOrEmpty(_GlobalSettingParam.GlobalSetting_About.SWVersion))
+                {
+                    writelog("[SW_CheckSWUpdate], ver is empty.");
+                    _GlobalSettingParam.GlobalSetting_About.SWVersion = SettingsAccess.QueryAppAccessInfo().ver;
+                    writelog($"[SW_CheckSWUpdate], ver : {_GlobalSettingParam.GlobalSetting_About.SWVersion}");
+                }
+                //---
                 if (_SWUpdatePlugin != null && _GlobalSettingParam != null &&
                     _GlobalSettingParam.GlobalSetting_About != null &&
                     !string.IsNullOrEmpty(_GlobalSettingParam.GlobalSetting_About.SWVersion))
