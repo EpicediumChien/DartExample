@@ -28,6 +28,9 @@ using static VcpCore.Common.User32;
 using DDPM.EABroker;
 using DDPM.SA.Common.Display;
 using System.Globalization;
+using DDPM.RemoteManagement.Common.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Security.Principal;
 
 namespace DDPM.SA.Plugins.User.EzMemory
 {
@@ -49,7 +52,18 @@ namespace DDPM.SA.Plugins.User.EzMemory
         private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
         private bool EzMemoryEnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam)
         {
-            return EnumWindows(lpEnumFunc, lParam);
+            bool rst = EnumWindows(lpEnumFunc, lParam);
+
+            if (!rst) 
+            {
+                _logs.Info($"[EzMemoryPlugin] EzMemoryEnumWindows failed.");
+
+#if DEBUG
+                Console.WriteLine("[EzMemoryPlugin] EzMemoryEnumWindows failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -57,7 +71,18 @@ namespace DDPM.SA.Plugins.User.EzMemory
         private static extern int GetWindowTextLength(IntPtr hWnd);
         private int EzMemoryGetWindowTextLength(IntPtr hWnd)
         {
-            return GetWindowTextLength(hWnd);
+            int rst = GetWindowTextLength(hWnd);
+
+            if (rst == 0)
+            {
+                _logs.Info($"[EzMemoryPlugin] GetWindowTextLength: the window has no text.");
+
+#if DEBUG
+                Console.WriteLine("[EzMemoryPlugin] GetWindowTextLength: the window has no text.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -65,7 +90,18 @@ namespace DDPM.SA.Plugins.User.EzMemory
         private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
         private int EzMemoryGetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount)
         {
-            return GetWindowText(hWnd, lpString, nMaxCount);
+            int rst = GetWindowText(hWnd, lpString, nMaxCount);
+
+            if (rst == 0)
+            {
+                _logs.Info($"[EzMemoryPlugin] EzMemoryGetWindowText failed.");
+
+#if DEBUG
+                Console.WriteLine("[EzMemoryPlugin] EzMemoryGetWindowText failed.");
+#endif
+            }
+
+            return rst;
         }
 
         /*[DllImport("user32.dll", SetLastError = true)]
@@ -82,7 +118,18 @@ namespace DDPM.SA.Plugins.User.EzMemory
         private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
         private int EzMemoryGetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount)
         {
-            return GetClassName(hWnd, lpClassName, nMaxCount);
+            int rst = GetClassName(hWnd, lpClassName, nMaxCount);
+
+            if (rst == 0)
+            {
+                _logs.Info($"[EzMemoryPlugin] EzMemoryGetClassName failed.");
+
+#if DEBUG
+                Console.WriteLine("[EzMemoryPlugin] EzMemoryGetClassName failed.");
+#endif
+            }
+
+            return rst;
         }
         
         /*[DllImport("user32.dll", SetLastError = true)]
@@ -120,7 +167,18 @@ namespace DDPM.SA.Plugins.User.EzMemory
         private static extern IntPtr MonitorFromWindow(IntPtr hwhWndnd, uint dwFlags);
         private IntPtr EzMemoryMonitorFromWindow(IntPtr hWnd, uint dwFlags)
         {
-            return MonitorFromWindow(hWnd, dwFlags);
+            IntPtr rst = MonitorFromWindow(hWnd, dwFlags);
+
+            if (rst == IntPtr.Zero)
+            {
+                _logs.Info($"[EzMemoryPlugin] EzMemoryMonitorFromWindow failed.");
+
+#if DEBUG
+                Console.WriteLine("[EzMemoryPlugin] EzMemoryMonitorFromWindow failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("shcore.dll", SetLastError = true)]
@@ -128,7 +186,18 @@ namespace DDPM.SA.Plugins.User.EzMemory
         private static extern int GetDpiForMonitor(IntPtr hmonitor, MONITOR_DPI_TYPE dpiType, out uint dpiX, out uint dpiY);
         private IntPtr EzMemoryGetDpiForMonitor(IntPtr hmonitor, MONITOR_DPI_TYPE dpiType, out uint dpiX, out uint dpiY)
         {
-            return GetDpiForMonitor(hmonitor, dpiType, out dpiX, out dpiY);
+            IntPtr rst = GetDpiForMonitor(hmonitor, dpiType, out dpiX, out dpiY);
+
+            if (rst == IntPtr.Zero)
+            {
+                _logs.Info($"[EzMemoryPlugin] GetDpiForMonitor failed.");
+
+#if DEBUG
+                Console.WriteLine("[EzMemoryPlugin] GetDpiForMonitor failed.");
+#endif
+            }
+
+            return rst;
         }
 
         private const uint MONITOR_DEFAULTTONEAREST = 0x00000002;
