@@ -131,7 +131,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private List<string> _SupportedColorPreset = new List<string>();
-        private List<string> _supportedColorPreset = new List<string>();
         private readonly object _CheckAutoLock = new object();
 
         // Jim move to here 20240621
@@ -912,7 +911,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             //Log.Info($"ReadColorPreset requested ...");
             writelog("ColorPresetPlugin received ReadColorPreset requested ...");
-
+            List<string> multiColorPreset = new List<string>();
             // 20240619 jim add check
             if (_SupportedColorPreset != null)
             {
@@ -941,17 +940,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue                      
                         foreach (string info in _SupportedColorPreset)
                         {
-                            _supportedColorPreset.Add(ColorpfofileMutil(info));
+                            multiColorPreset.Add(ColorprofileMulti(info));
                         }
                     }
                 }
             }
 
-            return Task.FromResult(_supportedColorPreset);
+            return Task.FromResult(multiColorPreset);
         }
 
         //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
-        private string ColorpfofileMutil(string info)
+        private string ColorprofileMulti(string info)
         {
             string ret = string.Empty;
             switch (info)
@@ -1124,7 +1123,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (result.result)
                 {
                     //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
-                    var res = ColorpfofileMutil(result.value.ToString());
+                    var res = ColorprofileMulti(result.value.ToString());
                     return Task.FromResult(res);
                 }
                 //return Task.FromResult(result.value.ToString());
@@ -1909,8 +1908,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             var temp = _ColorPresetPlugin.Sync_ColorPresetName(monitorInfo, ColorPreset_Name).Result;
-
-            return Task.FromResult(temp);
+            //20250225 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
+            var multiColorPresetName = ColorprofileMulti(temp.ToString());
+            return Task.FromResult(multiColorPresetName);
+            //return Task.FromResult(temp);
         }
 
         public Task<bool> SyncNightlightStatus()
