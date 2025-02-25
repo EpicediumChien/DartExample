@@ -30,6 +30,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private Debouncer _debouncerHeadsetSidetoneCheck;
         public event EventHandler<EventArgs> HeadsetSettingChanged;
         public event EventHandler<EventArgs> HeadsetGroupChanged;
+        public bool _waitHeadsetReady;
         #endregion Variables
 
         public new event PropertyChangedEventHandler? PropertyChanged;
@@ -146,8 +147,7 @@ namespace DDPM.UI.Plugin.ViewModels
                             _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_Connected {Model.ToString() + " : " + event_param[eventtype].ToString()}");
                             break;
                         case "Headset_Disconnected":
-                            DeviceInfoDTP.waitHeadsetFW = false;
-                            DeviceInfoDTP.waitHeadsetReady = false;
+                            _waitHeadsetReady = false;
                             _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_Disconnected {Model.ToString() + " : " + event_param[eventtype].ToString()}");
                             break;
                         case "Headset_PairedHostNameChanged":
@@ -245,17 +245,15 @@ namespace DDPM.UI.Plugin.ViewModels
                             break;
                         case "Headset_FirmwareVersionChanged":
                             FirmwareVersion2 = event_param[eventtype];
-                            DeviceInfoDTP.waitHeadsetFW = true;
                             FirmwareVersion2 = string.Join(".", FirmwareVersion2.ToCharArray());
                             FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
                             _log.Info($"[HeadsetViewModel] Headset_DTPNotify ... Headset_FirmwareVersionChanged ... {FirmwareVersion2} ...");
                             _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_FirmwareVersionChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
                             break;
                         case "Headset_IsReadyChanged":
-                            if (!DeviceInfoDTP.waitHeadsetReady)
+                            if (!_waitHeadsetReady)
                             {
-                                DeviceInfoDTP.waitHeadsetFW = true;
-                                DeviceInfoDTP.waitHeadsetReady = true;
+                                _waitHeadsetReady = true;
                                 //FirmwareVersion2 = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
                                 //FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
                             }
@@ -1157,9 +1155,10 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public override bool SetCurrentDevice(string instanceIDs)
         {
-            _log.Info($"[HeadsetViewModel] SetCurrentDevice ...");
+            _log.Info($"[HeadsetViewModel] SetCurrentDevice ... instanceIDs : {instanceIDs}");
             if (!base.SetCurrentDevice(instanceIDs))
                 return false;
+            _waitHeadsetReady = false; // Before enter, make sure to reset the flag
             DeviceInfoDTP = new DeviceInfoDTP();
             DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Headset_DTPNotify;
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
@@ -1167,6 +1166,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 isAirAudio = true;
                 isAirAudioChange = SetDefualAirAudioChange();
+                _log.Info($"[HeadsetViewModel] SetCurrentDevice ... SB725");
             }
             else
             {
@@ -1211,9 +1211,9 @@ namespace DDPM.UI.Plugin.ViewModels
             switch (property)
             {
                 case "IsReadyChanged":
-                    if (!DeviceInfoDTP.waitHeadsetReady)
+                    if (!_waitHeadsetReady)
                     {
-                        DeviceInfoDTP.waitHeadsetReady = true;
+                        _waitHeadsetReady = true;
                         //FirmwareVersion2 = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
                         //FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
                     }
@@ -2188,12 +2188,16 @@ namespace DDPM.UI.Plugin.ViewModels
                 IsDTPReady = false;
                 _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetDTPProxyPluginReady, false ...");
             }
+            if(!_waitHeadsetReady) //If false, re-get once time
+                _waitHeadsetReady = _deviceManager.GetIsReadyAsync(CurrentDeviceID.ToString()).Result;
             //Thread.Sleep(500);
-            if ((FirmwareVersion2 == null || FirmwareVersion2 == "0.0.0.0"))
+            //if ((FirmwareVersion2 == null || FirmwareVersion2 == "0.0.0.0") || !_waitHeadsetReady)
+            if (!_waitHeadsetReady)
             {
                 int tick = 0;
-                while (!DeviceInfoDTP.waitHeadsetReady)
+                while (!_deviceManager.GetIsReadyAsync(CurrentDeviceID.ToString()).Result)
                 {
+                    _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetIsReadyAsync, false ... {tick.ToString()}");
                     if (tick >= 20) // 20 sec force exit
                     {
                         _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... Can not get HeadsetReady ...... {tick.ToString()} sec, fail ...");
@@ -2202,7 +2206,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     Thread.Sleep(1000); // IL provide info, DPeM 18 need 3sec, DPeM 20 need 18~25 sec,
                     tick++;
                 }
-                if (DeviceInfoDTP.waitHeadsetReady)
+                if (_waitHeadsetReady)
                 {
 
                     if (isAirAudio == false)
@@ -2216,8 +2220,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     if (FirmwareVersion2 != null && FirmwareVersion2 != "0.0.0.0")
                     {
                         FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
-                        DeviceInfoDTP.waitHeadsetFW = true;
-                        DeviceInfoDTP.waitHeadsetReady = true;
+                        _waitHeadsetReady = true;
                         _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... Get waitHeadsetReady event True, {FirmwareVersion2} ...... ");
                     }
                     else
@@ -2230,8 +2233,7 @@ namespace DDPM.UI.Plugin.ViewModels
             else
             {
                 _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetHeadsetFirmwareVersionAsync ...... DTP success ...");
-                DeviceInfoDTP.waitHeadsetFW = true;
-                DeviceInfoDTP.waitHeadsetReady = true;
+                _waitHeadsetReady = true;
                 if (!FirmwareVersion2.Contains(Strings.FirmwareVersion))
                     FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
                 _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... Firmware Version from DTP ... {FirmwareVersion2} ...");
@@ -2239,7 +2241,7 @@ namespace DDPM.UI.Plugin.ViewModels
             if (IsDTPReady)
                 UpdateDTPValue();
             else
-                UpdateDTHValue();            
+                UpdateDTHValue();
             // Call DetectPageShow
             DetectPageShow(model);
             //System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -2375,10 +2377,10 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 _isOutgoingAudioStatus = DeviceInfoDTP!.MicNoiseCancellation;
-                if (isAirAudio)
-                {
-                    return true;
-                }
+                //if (isAirAudio)
+                //{
+                //    return true;
+                //}
                 return _isOutgoingAudioStatus;
             }
             set
@@ -4146,32 +4148,6 @@ namespace DDPM.UI.Plugin.ViewModels
 
     public class DeviceInfoDTP : DeviceInfo
     {
-        public bool _waitHeadsetFW = false;
-        public bool waitHeadsetFW
-        {
-            get
-            {
-                return _waitHeadsetFW;
-            }
-            set
-            {
-                _waitHeadsetFW = value;
-            }
-        }
-
-        public bool _waitHeadsetReady = false;
-        public bool waitHeadsetReady
-        {
-            get
-            {
-                return _waitHeadsetReady;
-            }
-            set
-            {
-                _waitHeadsetReady = value;
-            }
-        }
-
         private bool _isAnswerCallSupported;
         private bool _isAnswerCall;
 

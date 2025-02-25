@@ -102,7 +102,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         {
             try
             {
-                if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Headset"))
+                if (e.device_peripherals != null && (e.device_peripherals.LogicalDeviceType.Contains("Headset")|| e.device_peripherals.LogicalDeviceType.Contains("AirAudio")))
                 {
                     if (e.type == DeviceChangedType.Peripherals_UnPlug)
                     {
