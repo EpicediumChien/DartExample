@@ -367,7 +367,16 @@ namespace DDPM.SA.Plugins.User.Hotkey
 
         public static IntPtr _SetWindowsHookEx(int idHook, keyboardHookProc callback, IntPtr hInstance, uint threadId)
         {
-            return SetWindowsHookEx(idHook, callback, hInstance, threadId);
+            IntPtr rst = SetWindowsHookEx(idHook, callback, hInstance, threadId);
+
+            if (rst == IntPtr.Zero)
+            {
+#if DEBUG
+                Console.WriteLine("[HotkeyPlugin] SetWindowsHookEx failed.");
+#endif
+            }
+
+            return rst;
         }
 
         /// <summary>
@@ -381,7 +390,16 @@ namespace DDPM.SA.Plugins.User.Hotkey
 
         public static bool _UnhookWindowsHookEx(IntPtr hInstance)
         {
-            return UnhookWindowsHookEx(hInstance);
+            bool rst = UnhookWindowsHookEx(hInstance);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[HotkeyPlugin] UnhookWindowsHookEx failed.");
+#endif
+            }
+
+            return rst;
         }
 
         /// <summary>
