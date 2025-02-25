@@ -96,10 +96,15 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 _currentDeviceinfo = DInfo.ID;
                 DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDevice DeviceInfo ...");
             }
-            else
+            else if (info is MonitorInfo)
             {
                 MInfo = (MonitorInfo)info;
                 DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDevice MonitorInfo ...");
+            }
+            else
+            {
+                _currentDeviceinfo = info;
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDevice DDPM info ...");
             }
 
             _currentPageIndex = 0;
