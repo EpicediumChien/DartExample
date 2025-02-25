@@ -16057,8 +16057,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </returns>
         private Dictionary<string, InputInfo> InputSourceListDeserialize(string strinputlist)
         {
+            //Dictionary<string, InputInfo> inputlist = new Dictionary<string, InputInfo>();
+            //inputlist = JsonConvert.DeserializeObject<Dictionary<string, InputInfo>>(strinputlist);
+            //return inputlist;
             Dictionary<string, InputInfo> inputlist = new Dictionary<string, InputInfo>();
-            inputlist = JsonConvert.DeserializeObject<Dictionary<string, InputInfo>>(strinputlist);
+            try
+            {
+                inputlist = JsonConvert.DeserializeObject<Dictionary<string, InputInfo>>(strinputlist);
+            }
+            catch (JsonException ex)
+            {
+                // Log the exception or handle it as needed
+                writelog($"JSON deserialization error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as needed
+                writelog($"Unexpected error: {ex.Message}");
+            }
             return inputlist;
         }
 
