@@ -129,7 +129,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 var pageData = _devicePages[_currentDeviceModel][_currentPageIndex];
                 MainText = pageData.MainText!;
                 DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] UpdatePageContent : {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelType.ToString()} ...");
-                if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelType == "LogicalPen")
+                if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelType.Contains("Pen"))
                 {
                     SubText = pageData.SubText!.Replace("X %", DInfo.BatteryLevel.ToString()).Replace("X%", DInfo.BatteryLevel.ToString());
                     DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] UpdatePageContent DInfo.BatteryLevel : {DInfo.BatteryLevel.ToString()} ...");
