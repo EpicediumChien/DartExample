@@ -5173,7 +5173,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This not your primary monitor. Do you want to continue and set this as your Primary Monitor for Sync?.
+        ///   Looks up a localized string similar to The same monitor is detected, do you want to import settings for {0}?.
         /// </summary>
         internal static string ImpExp_WarningMsg_0 {
             get {
