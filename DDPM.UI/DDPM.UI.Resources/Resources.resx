@@ -943,7 +943,7 @@
     <value>Connect Mouse and Keyboard</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>For Mouse and Keyboard, connect to rear of monitor (USB-A).\n Note: You can also connect other USB Peripherals such as\n Webcam.</value>
+    <value>Connect mouse and keyboard to the rear of the monitor (USB-A). Note: You can also connect other accessories, such as a webcam, with USB.</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>USB-A</value>
@@ -964,7 +964,7 @@
     <value>Connecting to your devices</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>Please connect a video cable and USB cable between each PC to\n the monitor. You can connect up to 4 PCs (computers, gaming\n consoles, etc). \r\n\r\nPlease select the cable type and assign a name to each source.</value>
+    <value>Connect a video cable and USB cable between each PC to the monitor. You can connect up to 4 PCs (computers, gaming consoles, etc.). Select the cable type and assign a name to each source.</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>Switch between PCs</value>
@@ -1036,7 +1036,7 @@
     <value>Setup through network</value>
   </data>
   <data name="Kvm.30" xml:space="preserve">
-    <value>Easy file-sharing between PCs (Mac &amp; Windows) Securely</value>
+    <value>Easy, secure file-sharing between PCs (Mac &amp; Windows)</value>
   </data>
   <data name="Kvm.31" xml:space="preserve">
     <value>Open Network KVM</value>
@@ -2836,7 +2836,7 @@
     <value>Fail</value>
   </data>
   <data name="ImportFailMsg" xml:space="preserve">
-    <value>Unable to import different model</value>
+    <value>The imported monitor setting is only applicable for {0}.</value>
   </data>
   <data name="Update_Webcam_Alert" xml:space="preserve">
     <value>This update will enable presence sensing controls through Windows Settings in systems: Win 11 22H2 or higher, and with OS build\r\n22621 or higher</value>

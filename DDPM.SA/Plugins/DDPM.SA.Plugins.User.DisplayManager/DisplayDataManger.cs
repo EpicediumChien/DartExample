@@ -16,7 +16,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 {
     public class DisplayDataManger
     {
-        public List<DisplayData> _displayData { get; set; } = new List<DisplayData>();
+        private List<DisplayData> _displayData { get; set; } = new List<DisplayData>();
 
         public enum log_type
         {
@@ -122,7 +122,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
                                                      x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (mi != -1)
+                if (mi != -1 && _displayData[mi].DisplayUSB != null && _displayData[mi].DisplayUSB.Count > 0)
                 {
                     _USBs = _displayData[mi].DisplayUSB;
                     return true;
@@ -193,6 +193,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     displayData.Model = monitorInfo.modelName;
                     displayData.ServiceTag = monitorInfo.edid.ServiceTag;
                     displayData.DisplayUSB = inputSourceUSBs;
+                    _displayData.Add(displayData);
                     return true;
                 }
             }
@@ -200,6 +201,153 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 WriteLog("[SetMonitorUSB]monitorInfo is null.");
             }
+            return false;
+        }
+
+        public bool GetMonitorInputSourceList(MonitorInfo monitorInfo, out List<InputCode> inputSourceList)
+        {
+            if (monitorInfo != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                     x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1)
+                {
+                    if (_displayData[mi].InputSourceList != null && _displayData[mi].InputSourceList.Count > 0)
+                    {
+                        inputSourceList = _displayData[mi].InputSourceList;
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                WriteLog("[GetMonitorInputSourceList]monitorInfo is null.");
+            }
+            inputSourceList = new List<InputCode>();
+            return false;
+        }
+
+        public bool SetMonitorInputSourceList(MonitorInfo monitorInfo, List<InputCode> inputSourceList)
+        {
+            if (monitorInfo != null && inputSourceList != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                     x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1)
+                {
+                    _displayData[mi].InputSourceList = inputSourceList;
+                    return true;
+                }
+                else
+                {
+                    WriteLog("[SetMonitorUSB]_displayData is not find monitor");
+                    DisplayData displayData = new DisplayData();
+                    displayData.Model = monitorInfo.modelName;
+                    displayData.ServiceTag = monitorInfo.edid.ServiceTag;
+                    displayData.InputSourceList = inputSourceList;
+                    _displayData.Add(displayData);
+                    return true;
+                }
+            }
+            else
+            {
+                WriteLog("[SetMonitorInputSourceList]monitorInfo is null.");
+            }
+            return false;
+        }
+
+        public bool GetMonitorUSBList(MonitorInfo monitorInfo, out List<USBPorts> usbList)
+        {
+            if (monitorInfo != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                     x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1)
+                {
+                    if (_displayData[mi].USBList != null && _displayData[mi].USBList.Count > 0)
+                    {
+                        usbList = _displayData[mi].USBList;
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                WriteLog("[GetMonitorUSBList]monitorInfo is null.");
+            }
+            usbList = new List<USBPorts>();
+            return false;
+        }
+
+        public bool SetMonitorUSBList(MonitorInfo monitorInfo, List<USBPorts> usbList)
+        {
+            if (monitorInfo != null && usbList != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                     x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1)
+                {
+                    _displayData[mi].USBList = usbList;
+                    return true;
+                }
+                else
+                {
+                    WriteLog("[SetMonitorUSB]_displayData is not find monitor");
+                    DisplayData displayData = new DisplayData();
+                    displayData.Model = monitorInfo.modelName;
+                    displayData.ServiceTag = monitorInfo.edid.ServiceTag;
+                    displayData.USBList = usbList;
+                    _displayData.Add(displayData);
+                    return true;
+                }
+            }
+            else
+            {
+                WriteLog("[SetMonitorUSBList]monitorInfo is null.");
+            }
+            return false;
+        }
+
+        public bool GetMonitorE9(MonitorInfo monitorInfo, out uint vcpcode)
+        {
+            if (monitorInfo != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                            x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1 && _displayData[mi].VCP_E9 != 1)
+                {
+                    vcpcode = _displayData[mi].VCP_E9;
+                    return true;
+                }
+            }
+            else
+            {
+                WriteLog("[GetMonitorE9]monitorInfo is null.");
+            }
+            vcpcode = 1;
+            return false;
+        }
+
+        public bool SetMonitorE9(MonitorInfo monitorInfo, uint vcpcode)
+        {
+            if (monitorInfo != null)
+            {
+                if (vcpcode != 1 && vcpcode != 2)
+                {
+                    int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                            x.ServiceTag == monitorInfo.edid.ServiceTag);
+                    if (mi != -1)
+                    {
+                        _displayData[mi].VCP_E9 = vcpcode;
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                WriteLog("[SetMonitorE9]monitorInfo is null.");
+            }
+
             return false;
         }
     }

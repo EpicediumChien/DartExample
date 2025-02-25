@@ -2176,6 +2176,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ReviewAllMonitorToAvoidDuplicatedInfo();
                 InitMonitorSettings();
                 _DisplayManagerPlugin.InitDisplayData(_AllInfoMonitors);
+                foreach (MonitorInfo monitor in _AllInfoMonitors)
+                {
+                    _DisplayManagerPlugin.GetUSBUpstreamList(monitor).Wait();
+                    _DisplayManagerPlugin.GetAllUSBUpstream(monitor).Wait();
+                    _DisplayManagerPlugin.GetVCPCapability(monitor, 0xE9).Wait();
+                }
                 UpdateHotkeyInfo();
 
                 Task.Run(() => //support last selected monitor info from settings
@@ -2700,11 +2706,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(usbUpstream);
         }
 
-        public Task<string> GetCurrentInput(MonitorInfo monitorInfo)
+        public Task<string> GetCurrentInput(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
         {
             if (_DisplayManagerPlugin != null)
             {
-                return _DisplayManagerPlugin.GetCurrentInput(monitorInfo);
+                return _DisplayManagerPlugin.GetCurrentInput(monitorInfo, guid, priority);
             }
             else
             {
@@ -2813,32 +2819,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("ChangeDock start");
             List<DeviceInfo> GetDeviceInfos = deviceHelper.deviceInfo.FindAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
-            if (GetDeviceInfos.Count > 1)
+            if (GetDeviceInfos != null && GetDeviceInfos.Count >= 1)
             {
-                //Bruce 02/19 If multiple docks are docked consecutively, all docks will remove
-                writelog("ChangeDock Connecting multiple docks so remove all dock");
-                deviceHelper.deviceInfo.RemoveAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
-            }
-            else
-            {
-                if (GetDeviceInfos != null && GetDeviceInfos.Count >= 1)
+                writelog("ChangeDock go");
+                foreach (var deviceInfo in GetDeviceInfos)
                 {
-                    writelog("ChangeDock go");
-                    foreach (var deviceInfo in GetDeviceInfos)
+                    string version = GetFirmwareVersionForDock(deviceInfo.ID.ToString()).Result;
+                    string serviceTag = GetDockServiceTagForDock(deviceInfo.ID.ToString()).Result;
+                    writelog($"GetFirmwareVersionForDock : {version}");
+                    writelog($"GetDockServiceTagForDock : {serviceTag}");
+                    if (!string.IsNullOrEmpty(version))
                     {
-                        string version = GetFirmwareVersionForDock(deviceInfo.ID.ToString()).Result;
-                        string serviceTag = GetDockServiceTagForDock(deviceInfo.ID.ToString()).Result;
-                        writelog($"GetFirmwareVersionForDock : {version}");
-                        writelog($"GetDockServiceTagForDock : {serviceTag}");
-                        if (!string.IsNullOrEmpty(version))
-                        {
-                            deviceInfo.DockPackageFwVersion = version;
-                            deviceInfo.FirmwareVersion = version;
-                        }
-                        if (!string.IsNullOrEmpty(serviceTag))
-                        {
-                            deviceInfo.DockServiceTag = serviceTag;
-                        }
+                        deviceInfo.DockPackageFwVersion = version;
+                        deviceInfo.FirmwareVersion = version;
+                    }
+                    if (!string.IsNullOrEmpty(serviceTag))
+                    {
+                        deviceInfo.DockServiceTag = serviceTag;
                     }
                 }
             }
@@ -10421,6 +10418,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", false).Result;
         }
 
+        public Task InvokeGlobalSettingChangeUINotify(UpdateUINotify e)
+        {
+            GlobalSettingChangeEvent?.Invoke(this, e);
+            return Task.CompletedTask;
+        }
+
         public Task<bool> Set_GlobalSetting_DisplayLowBatteryLevel(bool isDisplay)
         {
             bool ret = false;
@@ -12115,6 +12118,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (changedProperty != "DisplayChanged" && type == DeviceChangedType.Peripherals_PlugIn)
                 CheckDeviceFirstTimesToConnect(mo, di);
 
+            if (type == DeviceChangedType.Display_UnPlug)//Bruce 0224 add. If the dock has multiple connections, send a Display event to force the UI to return to home.
+            {
+                type = DeviceChangedType.NotifyOnly;
+                changedProperty = "DisplayChanged";
+            }
+
             _EventArgs.type = type;
             _EventArgs.device_display = mo;
             _EventArgs.device_peripherals = di;
@@ -12136,18 +12145,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     //CheckUpdate();
                     CheckUODFWUInfoPackage(true);
-                    CheckDocks();
                 });
                 thread.Start();
             }
             else if (changedProperty.ToLower().Contains("remove"))
             {
-                //0909 Bruce move to add and remove
-                var thread = new Thread(() =>
-                {
-                    CheckDocks();
-                });
-                thread.Start();
             }
             else if ((string.Compare(changedProperty, "DisplayChanged", true) == 0))
             {
@@ -12233,92 +12235,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             catch (Exception ex)
             {
                 writelog($"CheckDeviceFirstTimesToConnect Exception : {ex.Message}");
-            }
-        }
-
-        //0613 Bruce 用於看是否連接超過2個dock
-        private void CheckDocks()
-        {
-            if (_PeripheralsPlugin == null)
-            {
-                return;
-            }
-            List<DeviceInfo> _peripheralslist = new List<DeviceInfo>();
-            try
-            {
-                _peripheralslist = _PeripheralsPlugin.GetDevices(true).Result.deviceInfo;
-            }
-            catch (Exception ex)
-            {
-                writelog($"CheckDocks GetDevices Exception : {ex.Message}");
-                _peripheralslist = null;
-                return;
-            }
-            // 2024-08-07 Elie, fix got exception while don't check this is null or not.
-            if ((_peripheralslist == null) || (_peripheralslist.Count == 0))
-                return;
-            // >>
-            int dockCount = 0;
-            foreach (DeviceInfo deviceInfo in _peripheralslist)
-            {
-                //0617 Bruce 在其他電腦有發現List有item，但是item會是null，故新增判斷
-                if (deviceInfo != null)
-                {
-                    if (deviceInfo.Type == DeviceType.LogicalDock &&
-                        _peripheralslist.FindAll(o => o.ID.Equals(deviceInfo.ID)).Count == 1)
-                    {
-                        dockCount++;
-                    }
-                    if (dockCount >= 2)
-                    {
-                        break;
-                    }
-                }
-            }
-            if (dockCount >= 2)
-            {
-                //0704 Bruce 使用另一種Popup顯示
-                //PopupBaseManage popupBaseManage = new PopupBaseManage();
-                //popupBaseManage.FWU_Show("Warning", "Multiple docks are detected. Keep only one dock connected to prevent damage to your dock(s).", "", "", null, true, 5);
-                PopupContentPackage popupContentPackage = new PopupContentPackage()
-                {
-                    Title = "Warning",
-                    Info = "Multiple docks are detected. Keep only one dock connected to prevent damage to your docks.",
-                    IsInfo = true,
-                    IsOnlyUpdate = false,
-                    StayOpen = true,
-                    Timeout = 5,
-                };
-                CallPopup(this, popupContentPackage);
-                // 顯示Toast通知
-                //0614 Bruce 先使用ToastContentBuilder做通知，之後修改回客戶的模板
-                //ToastContentBuilder toastContentBuilder = new ToastContentBuilder();
-                //toastContentBuilder.AddArgument("DDPM");
-                //toastContentBuilder.AddText("Warning");
-                //toastContentBuilder.AddText("Multiple docks are detected. Keep only one dock connected to prevent damage to your dock(s).");
-                //toastContentBuilder.SetToastScenario(ToastScenario.IncomingCall);
-
-                //toastContentBuilder.Show(); // 顯示Toast通知
-                //0617 Bruce 使用Dell的Popup視窗顯示，目前已可以使用並停留，但是Popup視窗的標頭沒有顯示，還需要詢問
-                /*var windowClosedEvent = new ManualResetEvent(false);
-                var thread = new Thread(() =>
-                {
-                    PopupMode popupMode = PopupMode.Normal;
-                    IPopupMgr popupManager = new PopupMgr();
-                    PopupBase popupBase = new PopupBase(true, false, "Warning", "Multiple docks are detected. Keep only one dock connected to prevent damage to your dock(s).");
-                    IUXPopup popup = popupManager.AddPopup(popupMode, "", popupBase, true, true);
-                    popup.Tag = "DDPM";
-                    popup.IsOpen = true;
-                    popup.Closed += (s, e) =>
-                    {
-                        windowClosedEvent.Set(); //視窗關閉時通知主執行緒
-                        Dispatcher.ExitAllFrames(); //結束WPF的消息循環
-                    };
-                    Dispatcher.Run(); // 確保WPF消息循環運行
-                });
-                thread.SetApartmentState(ApartmentState.STA);
-                thread.Start();
-                thread.Join(); // 確保執行緒已結束*/
             }
         }
 
@@ -12591,12 +12507,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _PeripheralsPlugin.Notify += show_peripheralsNotify;
                 _PeripheralsPlugin.UpdateNotify += show_peripheralsUpdateNotify;
-                //0617 Bruce 如使用Dell的Popup視窗顯示，需卡執行緒，故另外使用一條執行緒給Popup顯示用
-                var thread = new Thread(() =>
-                {
-                    CheckDocks();
-                });
-                thread.Start();
             }
             //>>
 
@@ -13262,55 +13172,100 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         //FW Update by Bruce
+        //private void GetCurrentFWUpdatePluginCondition()
+        //{
+        //    _ = Task.Run(async () =>
+        //    {
+        //        var pluginCondition = await (_FWUpdatePlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+        //        //PluginCondition _FWUpdatePluginCondition;
+        //        lock (_FwUpdateLock)
+        //        {
+        //            if (pluginCondition is PluginErrorCondition)
+        //            {
+        //                writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in an error condition");
+        //                //_FWUpdatePluginCondition = pluginCondition;
+        //            }
+        //            else if (pluginCondition is PluginRunningCondition)
+        //            {
+        //                writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a running condition");
+        //                _FWUpdatePlugin.CallSaveUODFWDeviceInfos += show_fwUODUpdateInfo;
+        //                _FWUpdatePlugin.CallCheckUODFWInfos += show_CheckUODUpdateInfo;
+        //                CheckUODFWUInfoPackage();
+        //                _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
+        //                _FWUpdatePlugin.CallPopup += CallPopup;
+        //                _FWUpdatePlugin.CallOSD += CallOSD;
+        //                GetSkipCA();
+        //                SetSkipSHA();
+        //                if (_checkUpdateScheduleTimer == null)
+        //                {
+        //                    _checkUpdateScheduleTimer = new System.Timers.Timer();
+        //                    _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
+        //                    _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+        //                    _checkUpdateScheduleTimer.Start();
+        //                }
+        //            }
+        //            else if (pluginCondition is PluginStartedCondition)
+        //            {
+        //                writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a started condition");
+        //                _FWUpdatePlugin.CallSaveUODFWDeviceInfos += show_fwUODUpdateInfo;
+        //                _FWUpdatePlugin.CallCheckUODFWInfos += show_CheckUODUpdateInfo;
+        //                CheckUODFWUInfoPackage();
+        //                _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
+        //                _FWUpdatePlugin.CallPopup += CallPopup;
+        //                _FWUpdatePlugin.CallOSD += CallOSD;
+        //                GetSkipCA();
+        //                SetSkipSHA();
+        //                if (_checkUpdateScheduleTimer == null)
+        //                {
+        //                    _checkUpdateScheduleTimer = new System.Timers.Timer();
+        //                    _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
+        //                    _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+        //                    _checkUpdateScheduleTimer.Start();
+        //                }
+        //            }
+        //        }
+        //    });
+        //}
         private void GetCurrentFWUpdatePluginCondition()
         {
             _ = Task.Run(async () =>
             {
                 var pluginCondition = await (_FWUpdatePlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
-                //PluginCondition _FWUpdatePluginCondition;
                 lock (_FwUpdateLock)
                 {
                     if (pluginCondition is PluginErrorCondition)
                     {
                         writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in an error condition");
-                        //_FWUpdatePluginCondition = pluginCondition;
                     }
-                    else if (pluginCondition is PluginRunningCondition)
+                    else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
                     {
-                        writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a running condition");
-                        _FWUpdatePlugin.CallSaveUODFWDeviceInfos += show_fwUODUpdateInfo;
-                        _FWUpdatePlugin.CallCheckUODFWInfos += show_CheckUODUpdateInfo;
-                        CheckUODFWUInfoPackage();
-                        _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
-                        _FWUpdatePlugin.CallPopup += CallPopup;
-                        _FWUpdatePlugin.CallOSD += CallOSD;
-                        if (_checkUpdateScheduleTimer == null)
-                        {
-                            _checkUpdateScheduleTimer = new System.Timers.Timer();
-                            _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
-                            _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
-                            _checkUpdateScheduleTimer.Start();
-                        }
-                    }
-                    else if (pluginCondition is PluginStartedCondition)
-                    {
-                        writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a started condition");
-                        _FWUpdatePlugin.CallSaveUODFWDeviceInfos += show_fwUODUpdateInfo;
-                        _FWUpdatePlugin.CallCheckUODFWInfos += show_CheckUODUpdateInfo;
-                        CheckUODFWUInfoPackage();
-                        _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
-                        _FWUpdatePlugin.CallPopup += CallPopup;
-                        _FWUpdatePlugin.CallOSD += CallOSD;
-                        if (_checkUpdateScheduleTimer == null)
-                        {
-                            _checkUpdateScheduleTimer = new System.Timers.Timer();
-                            _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
-                            _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
-                            _checkUpdateScheduleTimer.Start();
-                        }
+                        var condition = pluginCondition is PluginRunningCondition ? "running" : "started";
+                        writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a {condition} condition");
+                        InitializeFWUpdatePluginWhenRuningStarted();
                     }
                 }
             });
+        }
+
+        private void InitializeFWUpdatePluginWhenRuningStarted()
+        {
+            _FWUpdatePlugin.CallSaveUODFWDeviceInfos += show_fwUODUpdateInfo;
+            _FWUpdatePlugin.CallCheckUODFWInfos += show_CheckUODUpdateInfo;
+            CheckUODFWUInfoPackage();
+            _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
+            _FWUpdatePlugin.CallPopup += CallPopup;
+            _FWUpdatePlugin.CallOSD += CallOSD;
+            GetSkipCA();
+            SetSkipSHA();
+            if (_checkUpdateScheduleTimer == null)
+            {
+                _checkUpdateScheduleTimer = new System.Timers.Timer
+                {
+                    Interval = TimeSpan.FromSeconds(10).TotalMilliseconds
+                };
+                _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+                _checkUpdateScheduleTimer.Start();
+            }
         }
 
         private void GetCurrentNKVMPluginCondition()
@@ -15151,7 +15106,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 DateTime prepareExec = DateTime.Now;
                 writelog($"[ExecHotkeyJob Time] prepare Kvm_SwitchInputSource timespan: {string.Format("{0:f3}", prepareExec.Subtract(beforeExec).TotalSeconds)} Seconds; [{beforeExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}:{prepareExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}] [TargetMonitor:[ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}];");
-                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
+                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput, priority: Priority.High).Result;
                 DateTime afterExec = DateTime.Now;
                 writelog($"[ExecHotkeyJob Time] exec Kvm_SwitchInputSource timespan: {string.Format("{0:f3}", afterExec.Subtract(prepareExec).TotalSeconds)} Seconds; [{prepareExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}:{afterExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}] [TargetMonitor:[ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}];");
                 writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}]" + (setNextInput ? "success" : "fail"));
@@ -15520,7 +15475,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     DateTime prepareExec = DateTime.Now;
                     writelog($"[ExecHotkeyJob Time] prepare Switch_InputSource timespan: {string.Format("{0:f3}", prepareExec.Subtract(beforeExec).TotalSeconds)} Seconds; [{beforeExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}:{prepareExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}] [TargetMonitor:[ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}];");
-                    bool setInput = SetVCPCapability(monitorInfo, "Input Select", switchTo.Name).Result;
+                    bool setInput = SetVCPCapability(monitorInfo, "Input Select", switchTo.Name, priority: Priority.High).Result;
                     DateTime afterExec = DateTime.Now;
                     writelog($"[ExecHotkeyJob Time] exec Switch_InputSource timespan: {string.Format("{0:f3}", afterExec.Subtract(prepareExec).TotalSeconds)} Seconds; [{prepareExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}:{afterExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}] [TargetMonitor:[ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}];");
                     writelog($"Switch_InputSource[{log_keys}]:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{switchTo.Name}]" + (setInput ? "success" : "fail"));
@@ -15560,7 +15515,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 Debug.WriteLine($"Favorite_InputSource changeInput[{monitorInfo.edid.ServiceTag}]=> {changeInput}");
                 DateTime prepareExec = DateTime.Now;
                 writelog($"[ExecHotkeyJob Time] prepare Favorite_InputSource timespan: {string.Format("{0:f3}", prepareExec.Subtract(beforeExec).TotalSeconds)} Seconds; [{beforeExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}:{prepareExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}] [TargetMonitor:[ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}];");
-                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", changeInput).Result;
+                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", changeInput, priority: Priority.High).Result;
                 DateTime afterExec = DateTime.Now;
                 writelog($"[ExecHotkeyJob Time] exec Favorite_InputSource timespan: {string.Format("{0:f3}", afterExec.Subtract(prepareExec).TotalSeconds)} Seconds; [{prepareExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}:{afterExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}] [TargetMonitor:[ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}];");
                 Debug.WriteLine($"Favorite_InputSource => {setNextInput}");
@@ -15599,7 +15554,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}],next inputsource: {nextInput}");
                 DateTime prepareExec = DateTime.Now;
                 writelog($"[ExecHotkeyJob Time] prepare Toggle_InputSource timespan: {string.Format("{0:f3}", prepareExec.Subtract(beforeExec).TotalSeconds)} Seconds; [{beforeExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}:{prepareExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}] [TargetMonitor:[ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}];");
-                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
+                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput, priority: Priority.High).Result;
                 DateTime afterExec = DateTime.Now;
                 writelog($"[ExecHotkeyJob Time] exec Toggle_InputSource timespan: {string.Format("{0:f3}", afterExec.Subtract(prepareExec).TotalSeconds)} Seconds; [{prepareExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}:{afterExec.ToString("yyyy-MM-dd hh:mm:ss.fff")}] [TargetMonitor:[ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}];");
                 writelog($"Toggle_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}]" + (setNextInput ? "success" : "fail"));

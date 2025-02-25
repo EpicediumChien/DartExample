@@ -484,7 +484,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Firmware update unsuccessful..
+        ///   Looks up a localized string similar to Firmware update unsuccessful.
         /// </summary>
         internal static string Firmware_update_unsuccessful {
             get {
@@ -1132,7 +1132,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please do not power down system until updates are complete..
+        ///   Looks up a localized string similar to Do not power down system until updates are complete.
         /// </summary>
         internal static string UpdateProgressMsg {
             get {

@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
+using static Dell.Client.Framework.Common.Platform;
 
 namespace DDPM.SA.Common.Security
 {
@@ -23,7 +24,16 @@ namespace DDPM.SA.Common.Security
 
         private static bool _GetNamedPipeClientProcessId(IntPtr Pipe, out UInt32 ClientProcessId)
         {
-            return GetNamedPipeClientProcessId(Pipe, out ClientProcessId);
+            bool rst = GetNamedPipeClientProcessId(Pipe, out ClientProcessId);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[NPipeSecurity] GetNamedPipeClientProcessId Failed");
+#endif
+            }
+
+            return rst;
         }
 
         /// <summary>

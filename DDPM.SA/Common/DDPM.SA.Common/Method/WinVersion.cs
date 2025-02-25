@@ -63,7 +63,16 @@ namespace DDPM.SA.Common.Method
         private static extern int RtlGetVersion(out OSVERSIONINFOEXW osv);
         private static int _RtlGetVersion(out OSVERSIONINFOEXW osv)
         {
-            return RtlGetVersion(out osv);
+            int rst = RtlGetVersion(out osv);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[WinVersion] RtlGetVersion Failed");
+#endif
+            }
+
+            return rst;
         }
 
         public static bool GetVersion(out VersionInfo info)

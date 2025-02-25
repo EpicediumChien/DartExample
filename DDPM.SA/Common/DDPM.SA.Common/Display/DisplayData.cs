@@ -11,13 +11,25 @@ namespace DDPM.SA.Common.Display
     {
         public string Model = string.Empty;
         public string ServiceTag = string.Empty;
+        public List<InputCode> InputSourceList = new List<InputCode>();
+        public List<USBPorts> USBList = new List<USBPorts>();
         public List<InputSource_USB> DisplayUSB = new List<InputSource_USB>();
-        public uint VCP_E9 = 0;
+        public uint VCP_E9 = 1;
 
     }
     public class InputSource_USB
     {
         public string inputSource = string.Empty;
         public string USB = string.Empty;
+    }
+    public class USBPorts
+    {
+        public string USBName = string.Empty;
+        public string USBPort = string.Empty;
+    }
+    public class InputCode
+    {
+        public string InputSource = string.Empty;
+        public uint Code = 0;
     }
 }

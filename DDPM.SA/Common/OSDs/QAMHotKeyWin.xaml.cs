@@ -126,14 +126,32 @@ namespace DDPM.OSDs
 
         private static bool _ShowWindow(IntPtr hWnd, int nCmdShow)
         {
-            return ShowWindow(hWnd, nCmdShow);
+            bool rst = ShowWindow(hWnd, nCmdShow);
+
+            if (!rst) 
+            {
+#if DEBUG
+                Console.WriteLine("[QAMHotKeyWin] Windos was hidden before.");
+#endif
+            }
+
+            return rst;
         }
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
         private static bool _SetForegroundWindow(IntPtr hWnd)
         {
-            return SetForegroundWindow(hWnd);
+            bool rst = SetForegroundWindow(hWnd);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[QAMHotKeyWin] SetForegroundWindow failed.");
+#endif
+            }
+
+            return rst;
         }
 
         private bool ShowDDPM()

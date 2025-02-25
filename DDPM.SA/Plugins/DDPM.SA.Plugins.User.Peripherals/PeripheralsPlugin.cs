@@ -21,6 +21,7 @@ using Dell.Client.Framework.Interfaces;
 using Dell.TechHub.Sdk.Common.Utilities.Extensions;
 using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Shell.Interop;
 using Newtonsoft.Json.Linq;
@@ -65,9 +66,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         public const string PluginLogId = "Peripherals";
 
         private DeviceHelper _deviceHelper;
+        //Bruce 0224 add, Because removing the dock list will not find the ID, add a new list with dock
+        private DeviceHelper _deviceHelper_ForDock;
         private UpdateHelper _updateHelper;
         //Bruce, FWU need it
         private int _IODongleCount_Gen3Ago;
+        private int _DockCount;
         private RFDeviceHelper _rfDeviceHelper;
         private ClientInfo _clientInfo;
         private static Logs _logs;
@@ -1418,7 +1422,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 if (IsServiceRunning() && _isClientConnected && _iClient != null && _iDeviceManager != null)
                 {
+                    _DockCount = 0;
                     _deviceHelper = new DeviceHelper
+                    {
+                        deviceInfo = new List<DeviceInfo>()
+                    };
+                    _deviceHelper_ForDock = new DeviceHelper
                     {
                         deviceInfo = new List<DeviceInfo>()
                     };
@@ -1799,6 +1808,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                             if (item is ILogicalDeviceDock _logicalDeviceDock)
                             {
+                                _DockCount++;
                                 info.DockInfo = _logicalDeviceDock.GetDockInfo();
                                 try
                                 {
@@ -1808,6 +1818,15 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     //    info.FirmwareVersion = iDevice.FirmwareVersion.ToString();
                                     //}
                                     info.DockPackageFwVersion = info.FirmwareVersion;
+                                    if (!string.IsNullOrEmpty(info.DockPackageFwVersion))
+                                    {
+                                        _logs.DebugMsg_1($"[PeripheralsPlugin] info.DockPackageFwVersion befor = {info.DockPackageFwVersion}");
+                                        _logs.DebugMsg_1($"[PeripheralsPlugin] info.FirmwareVersion befor = {info.FirmwareVersion}");
+                                        info.DockPackageFwVersion = info.DockPackageFwVersion.PadLeft(8, '0');
+                                        info.FirmwareVersion = info.FirmwareVersion.PadLeft(8, '0');
+                                        _logs.DebugMsg_1($"[PeripheralsPlugin] info.DockPackageFwVersion after = {info.DockPackageFwVersion}");
+                                        _logs.DebugMsg_1($"[PeripheralsPlugin] info.FirmwareVersion after = {info.FirmwareVersion}");
+                                    }
                                     byte[] dokc_bytes = _logicalDeviceDock.GetMonitorCount();
                                     _logs.DebugMsg_1($"[PeripheralsPlugin] GetMonitorCount byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
                                     if (dokc_bytes != null)
@@ -1996,6 +2015,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         //_iDeviceManager_DeviceAddedEvent(device);
                     }
                     //Console.WriteLine(_deviceHelper.ToString());
+                    CheckDocks();
                     writelog(_deviceHelper.ToString());
                 }
             }
@@ -2663,18 +2683,38 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                     List<DeviceInfo> deviceInfoList = _deviceHelper.deviceInfo.Where(x => x.ID == deviceGuid).ToList();
 
-                    deviceInfoList.ForEach(device =>
+                    if (deviceInfoList.Count >= 1)
                     {
-                        device.IsConnected = false;
-
-                        DeviceChangedEventArgs _EventArgs = new()
+                        deviceInfoList.ForEach(device =>
                         {
-                            type = DeviceChangedType.Peripherals_UnPlug,
-                            device_peripherals = device,
-                            changedProperty = "LogicalDeviceRemoved"
-                        };
-                        OnNotify(_EventArgs);
-                    });
+                            device.IsConnected = false;
+
+                            DeviceChangedEventArgs _EventArgs = new()
+                            {
+                                type = DeviceChangedType.Peripherals_UnPlug,
+                                device_peripherals = device,
+                                changedProperty = "LogicalDeviceRemoved"
+                            };
+                            OnNotify(_EventArgs);
+                        });
+                    }
+                    else
+                    {
+                        //Bruce 0224 add, Because removing the dock list will not find the ID, add a new list with dock
+                        deviceInfoList = _deviceHelper_ForDock.deviceInfo.Where(x => x.ID == deviceGuid).ToList();
+                        deviceInfoList.ForEach(device =>
+                        {
+                            device.IsConnected = false;
+
+                            DeviceChangedEventArgs _EventArgs = new()
+                            {
+                                type = DeviceChangedType.Peripherals_UnPlug,
+                                device_peripherals = device,
+                                changedProperty = "LogicalDeviceRemoved"
+                            };
+                            OnNotify(_EventArgs);
+                        });
+                    }
 
                     //_deviceHelper.deviceInfo.Where(x => x.ID == deviceGuid).ToList().ForEach(device =>
                     //{
@@ -4077,6 +4117,38 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             EventHandler<OSDEventArgs> handler = Peripheral_OSD_Notify;
             Task.Run(() => handler?.Invoke(this, args));
             writelog($"Invoke Peripheral_OSD_Notify: {args.DeviceName}:{args.osd_type}:{args.osd_device}:{args.Message}");
+        }
+        private void CheckDocks()
+        {
+            if (_DockCount >= 2)
+            {
+                if (_deviceHelper == null || _deviceHelper.deviceInfo == null || _deviceHelper_ForDock == null || _deviceHelper_ForDock.deviceInfo == null)
+                    return;
+
+                ToastContentBuilder toastContentBuilder = new ToastContentBuilder();
+                toastContentBuilder.AddArgument(LangHelper.Instance["Warning"]);
+                toastContentBuilder.AddText(LangHelper.Instance["Warning"]);
+                toastContentBuilder.AddText(LangHelper.Instance["Multiple_docks_are_detected"]);
+                toastContentBuilder.Show(); // 顯示Toast通知
+                _deviceHelper_ForDock.deviceInfo = _deviceHelper.deviceInfo.FindAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
+                for (int i = 0; i < _deviceHelper_ForDock.deviceInfo.Count; i++)
+                {
+                    DeviceInfo device = _deviceHelper_ForDock.deviceInfo[i];
+                    device.IsConnected = false;
+
+                    DeviceChangedEventArgs _EventArgs = new()
+                    {
+                        type = DeviceChangedType.Display_UnPlug,
+                        device_peripherals = device,
+                        changedProperty = "LogicalDeviceRemoved"
+                    };
+                    OnNotify(_EventArgs);
+                    break;
+                }
+                //Bruce 02/24 If multiple docks are docked consecutively, all docks will remove
+                writelog("ChangeDock Connecting multiple docks so remove all dock");
+                _deviceHelper.deviceInfo.RemoveAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
+            }
         }
     }
 }

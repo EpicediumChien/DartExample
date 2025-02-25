@@ -11,6 +11,10 @@ using System.Diagnostics;
 using System.Security;
 using System.Collections.Generic;
 using DDPM.SA.Common.Method;
+using Microsoft.VisualBasic.Logging;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using Newtonsoft.Json.Linq;
+using System.Management;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -35,7 +39,14 @@ namespace DDPM.SA.Common.Settings
         private static extern bool WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned);
         private static bool _WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned)
         {
-            return WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
+            bool rst = WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[WTSFunction] WTSQuerySessionInformation failed.");
+#endif
+            }
+            return rst;
         }
 
         [DllImport("Wtsapi32.dll", SetLastError = true)]
@@ -51,7 +62,14 @@ namespace DDPM.SA.Common.Settings
         private static extern bool WTSQueryUserToken(uint sessionId, out IntPtr Token);
         private static bool _WTSQueryUserToken(uint sessionId, out IntPtr Token)
         {
-            return WTSQueryUserToken(sessionId, out Token);
+            bool rst = WTSQueryUserToken(sessionId, out Token);
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[WTSFunction] WTSQuerySessionInformation failed.");
+#endif
+            }
+            return rst;
         }
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -60,7 +78,14 @@ namespace DDPM.SA.Common.Settings
         private static extern bool CloseHandle(IntPtr hObject);
         public static bool _CloseHandle(IntPtr hObject)
         {
-            return CloseHandle(hObject);
+            bool rst = CloseHandle(hObject);
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[WTSFunction] CloseHandle failed.");
+#endif
+            }
+            return rst;
         }
 
         [DllImport("advapi32.dll", SetLastError = true)]
@@ -70,7 +95,14 @@ namespace DDPM.SA.Common.Settings
         private static bool _DuplicateTokenEx(IntPtr hExistingToken, uint dwDesiredAccess, ref SECURITY_ATTRIBUTES lpTokenAttributes,
                                         int ImpersonationLevel, int TokenType, out IntPtr phNewToken)
         {
-            return DuplicateTokenEx(hExistingToken, dwDesiredAccess, ref lpTokenAttributes, ImpersonationLevel, TokenType, out phNewToken);
+            bool rst = DuplicateTokenEx(hExistingToken, dwDesiredAccess, ref lpTokenAttributes, ImpersonationLevel, TokenType, out phNewToken);
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[WTSFunction] DuplicateTokenEx failed.");
+#endif
+            }
+            return rst;
         }
 
         [DllImport("advapi32", SetLastError = true), SuppressUnmanagedCodeSecurityAttribute]
@@ -78,7 +110,14 @@ namespace DDPM.SA.Common.Settings
         private static extern bool OpenProcessToken(IntPtr ProcessHandle, int DesiredAccess, ref IntPtr TokenHandle);
         public static bool _OpenProcessToken(IntPtr ProcessHandle, int DesiredAccess, ref IntPtr TokenHandle)
         {
-            return OpenProcessToken(ProcessHandle, DesiredAccess, ref TokenHandle);
+            bool rst = OpenProcessToken(ProcessHandle, DesiredAccess, ref TokenHandle);
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[WTSFunction] OpenProcessToken failed.");
+#endif
+            }
+            return rst;
         }
 
         [DllImport("kernel32.dll")]
@@ -86,7 +125,14 @@ namespace DDPM.SA.Common.Settings
         private static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, uint dwProcessId);
         private static IntPtr _OpenProcess(uint dwDesiredAccess, bool bInheritHandle, uint dwProcessId)
         {
-            return OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId);
+            IntPtr rst = OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId);
+            if (rst == IntPtr.Zero)
+            {
+#if DEBUG
+                Console.WriteLine("[WTSFunction] OpenProcess failed.");
+#endif
+            }
+            return rst;
         }
 
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
@@ -94,7 +140,14 @@ namespace DDPM.SA.Common.Settings
         private static extern bool CreateProcessAsUser(IntPtr hToken, string lpApplicationName, string lpCommandLine, ref SECURITY_ATTRIBUTES lpProcessAttributes, ref SECURITY_ATTRIBUTES lpThreadAttributes, bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref STARTUPINFO lpStartupInfo, out PInvoke.PROCESS_INFORMATION lpProcessInformation);
         private static bool _CreateProcessAsUser(IntPtr hToken, string lpApplicationName, string lpCommandLine, ref SECURITY_ATTRIBUTES lpProcessAttributes, ref SECURITY_ATTRIBUTES lpThreadAttributes, bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref STARTUPINFO lpStartupInfo, out PInvoke.PROCESS_INFORMATION lpProcessInformation)
         {
-            return CreateProcessAsUser(hToken, lpApplicationName, lpCommandLine, ref lpProcessAttributes, ref lpThreadAttributes, bInheritHandles, dwCreationFlags, lpEnvironment, lpCurrentDirectory, ref lpStartupInfo, out lpProcessInformation);
+            bool rst = CreateProcessAsUser(hToken, lpApplicationName, lpCommandLine, ref lpProcessAttributes, ref lpThreadAttributes, bInheritHandles, dwCreationFlags, lpEnvironment, lpCurrentDirectory, ref lpStartupInfo, out lpProcessInformation);
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[WTSFunction] CreateProcessAsUser failed.");
+#endif
+            }
+            return rst;
         }
         [StructLayout(LayoutKind.Sequential)]
         private struct STARTUPINFO
