@@ -3,6 +3,7 @@ using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
+using Dell.Client.Framework.Common;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -39,8 +40,9 @@ namespace DDPM.UI.Module.InputSource
         private InputSourceList _selectInput = new InputSourceList();
         private List<InputSourceList> _inputsList = new List<InputSourceList>();
         private string? _inputImage;
+        private BackgroundWorker? bw;
 
-        public BackgroundWorker? bw { get; set; }
+        public readonly ILog _log;
         public Guid? guid { get; set; }
         public IModuleOwner? ModuleOwner { get; set; }
         public InputSourceModule InputSourceModule { get; set; }
@@ -141,7 +143,7 @@ namespace DDPM.UI.Module.InputSource
                 NameHColumn = "1";
                 InputTitle = Strings.InputTitle1;
 
-                if (Cancelled_RefreshData(e, bw)) 
+                if (Cancelled_RefreshData(e, bwk)) 
                 {
                     return;
                 }
@@ -156,7 +158,7 @@ namespace DDPM.UI.Module.InputSource
                     isUSB = true;
                 }
 
-                if (Cancelled_RefreshData(e, bw))
+                if (Cancelled_RefreshData(e, bwk))
                 {
                     return;
                 }
@@ -166,7 +168,7 @@ namespace DDPM.UI.Module.InputSource
                 {
                     inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(InputSourceModule.SelectedHomeDevice.MonitorInfo).Result;
                     usbUpstream = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstreamList(InputSourceModule.SelectedHomeDevice.MonitorInfo).Result;
-                    if (Cancelled_RefreshData(e, bw))
+                    if (Cancelled_RefreshData(e, bwk))
                     {
                         return;
                     }
@@ -174,6 +176,7 @@ namespace DDPM.UI.Module.InputSource
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"InputSource caused crash = {ex.Message}");
+                    _log.Info($"InputSource caused crash = {ex.Message}");
                     inputList = null;
                     usbUpstream.Clear();
                 }
@@ -189,18 +192,19 @@ namespace DDPM.UI.Module.InputSource
                             inputName = item.Value.InputName,
                             //inputSourceModule = InputSourceModule,
                         });
-                        if (Cancelled_RefreshData(e, bw))
+                        if (Cancelled_RefreshData(e, bwk))
                         {
                             return;
                         }
                     }
                     InputsList = _inputsList;
                     string currentInput = DdpmCommonHelper.DeviceManagerSA.GetCurrentInput(InputSourceModule.SelectedHomeDevice.MonitorInfo, (Guid)guid, Priority.Middle).Result;
-                    if (Cancelled_RefreshData(e, bw))
+                    if (Cancelled_RefreshData(e, bwk))
                     {
                         return;
                     }
                     Debug.WriteLine($"[InputSourceViewModel]currentInput : " + currentInput);
+                    _log.Info($"[InputSourceViewModel]currentInput : " + currentInput);
                     InputSourceModule.SelectedHomeDevice.MonitorInfo.inputSource = currentInput;
                     _selectInput = _inputsList.Find(x => (x.inputSource == currentInput)); //_inputsList.Find(x => (x.inputSource == InputSourceModule.SelectedHomeDevice.MonitorInfo.inputSource));
                 }
@@ -214,7 +218,7 @@ namespace DDPM.UI.Module.InputSource
                 //ListViewGridView();
                 //VcpCore.Common.InputInfo inputListInfo = new VcpCore.Common.InputInfo();
                 //inputList.Add("123", inputListInfo);
-                if (Cancelled_RefreshData(e, bw))
+                if (Cancelled_RefreshData(e, bwk))
                 {
                     return;
                 }
@@ -225,7 +229,7 @@ namespace DDPM.UI.Module.InputSource
                     foreach (var item in usbUpstream)
                     {
                         USBUpstream_ItemsCollection.Add(item.ToString());
-                        if (Cancelled_RefreshData(e, bw))
+                        if (Cancelled_RefreshData(e, bwk))
                         {
                             return;
                         }
@@ -290,7 +294,7 @@ namespace DDPM.UI.Module.InputSource
                                 NoGrey = true
                             });
                         }
-                        if (Cancelled_RefreshData(e, bw))
+                        if (Cancelled_RefreshData(e, bwk))
                         {
                             return;
                         }
@@ -306,14 +310,14 @@ namespace DDPM.UI.Module.InputSource
                                     break;
                                 }
                                 k++;
-                                if (Cancelled_RefreshData(e, bw))
+                                if (Cancelled_RefreshData(e, bwk))
                                 {
                                     return;
                                 }
                             }
                         }
                         j++;
-                        if (Cancelled_RefreshData(e, bw))
+                        if (Cancelled_RefreshData(e, bwk))
                         {
                             return;
                         }
@@ -351,15 +355,26 @@ namespace DDPM.UI.Module.InputSource
             if (bw.CancellationPending)
             {
                 Debug.WriteLine("[InputSource] Cancelled_RefreshData.");
+                _log.Info("[InputSource] Cancelled_RefreshData.");
                 e.Cancel= true;
-                DdpmCommonHelper.DeviceManagerSA.CancelVcpTask((Guid)guid).Wait();
                 return true;
             }
             return false;
         }
 
+        public void CallCancel()
+        {
+            if (bw.IsBusy)
+            {
+                _log.Info("[InputSource] CallCancel.");
+                bw.CancelAsync();
+                DdpmCommonHelper.DeviceManagerSA.CancelVcpTask((Guid)guid);
+            }
+        }
+
         public InputSourceViewModel()
         {
+            _log = DdpmCommonHelper.MyConsole.CreateLog("InputSourceView");
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 //OSD/VCP control back event

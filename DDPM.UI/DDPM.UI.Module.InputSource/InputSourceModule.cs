@@ -93,10 +93,7 @@ namespace DDPM.UI.Module.InputSource
         public void OnDeactivated()
         {
             Trace.WriteLine("InputSourceModule.OnDeactivated");
-            if (vm.bw.IsBusy)
-            {
-                vm.bw.CancelAsync();
-            }
+            vm.CallCancel();
         }
 
         #endregion Event Handlers
