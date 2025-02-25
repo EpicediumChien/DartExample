@@ -259,6 +259,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
                 InvokeGotoTwoViewModeAnimation();
 
+                // << 20250225 updated by Hess for PIMS-340217
                 //if (newItem.Id == 0)
                 //{
                 //    if (_vm.VbarSelectedIndex != -1)
@@ -269,6 +270,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 //{
                 //    InvokeShrinkAnimation();
                 //}
+                // >>
             }
 
             _vm.VbarSelectedIndex = newItem.Id;
@@ -327,37 +329,37 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             }));
         }
 
-        private void InvokeShrinkAnimation()
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                Storyboard sb = (Storyboard)this.FindResource("StoryShrink");
-                if (sb != null)
-                {
-                    sb.Completed += (o, s) =>
-                    {
-                    };
+        //private void InvokeShrinkAnimation()
+        //{
+        //    Dispatcher.Invoke(new Action(() =>
+        //    {
+        //        Storyboard sb = (Storyboard)this.FindResource("StoryShrink");
+        //        if (sb != null)
+        //        {
+        //            sb.Completed += (o, s) =>
+        //            {
+        //            };
 
-                    sb.Begin();
-                }
-            }));
-        }
+        //            sb.Begin();
+        //        }
+        //    }));
+        //}
 
-        private void InvokeEnlargeAnimation()
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                Storyboard sb = (Storyboard)this.FindResource("StoryEnlarge");
-                if (sb != null)
-                {
-                    sb.Completed += (o, s) =>
-                    {
-                    };
+        //private void InvokeEnlargeAnimation()
+        //{
+        //    Dispatcher.Invoke(new Action(() =>
+        //    {
+        //        Storyboard sb = (Storyboard)this.FindResource("StoryEnlarge");
+        //        if (sb != null)
+        //        {
+        //            sb.Completed += (o, s) =>
+        //            {
+        //            };
 
-                    sb.Begin();
-                }
-            }));
-        }
+        //            sb.Begin();
+        //        }
+        //    }));
+        //}
 
         #endregion Mode Change
 
@@ -421,8 +423,11 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 btnRestore.Visibility = Visibility.Collapsed;
             }
 
-            if (_vm.VbarSelectedIndex > 0)
-            { InvokeEnlargeAnimation(); }
+            // << 20250225 updated by Hess for PIMS-340217
+            //if (_vm.VbarSelectedIndex > 0)
+            //{ InvokeEnlargeAnimation(); }
+            // >>
+
             _vm.VbarSelectedIndex = -1;
             _vm.SetLadningMode(true);
             _vm.SelectVBar();
