@@ -31,6 +31,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if(rst == IntPtr.Zero)
             {
+                _logs.DebugMsg_1("[DisplayChange] UnregisterDeviceNotification failed.");
+
 #if DEBUG
                 Console.WriteLine("[DisplayChange] RegisterDeviceNotification failed.");
 #endif
@@ -49,6 +51,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (!rst)
             {
+                _logs.DebugMsg_1("[DisplayChange] UnregisterDeviceNotification failed.");
 #if DEBUG
                 Console.WriteLine("[DisplayChange] UnregisterDeviceNotification failed.");
 #endif
