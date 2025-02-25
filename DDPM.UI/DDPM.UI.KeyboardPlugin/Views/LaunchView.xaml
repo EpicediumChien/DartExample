@@ -154,10 +154,10 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Viewbox Grid.Column="0" Name="largeImage" Margin="0" MaxWidth="900" MinWidth="715">
+                    <Viewbox Grid.Column="0" Name="largeImage" Margin="0" MaxWidth="900">
                         <Grid>
                             <Grid>
-                                <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="900" MinWidth="715"/>
+                                <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="900"/>
                             </Grid>
                             <Grid Name="SectionA" Margin="75,146,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
                                 <StackPanel Orientation="Horizontal">
