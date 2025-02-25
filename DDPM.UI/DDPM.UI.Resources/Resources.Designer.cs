@@ -5641,7 +5641,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Easy file-sharing between PCs (Mac &amp; Windows) Securely.
+        ///   Looks up a localized string similar to Easy, secure file-sharing between PCs (Mac &amp; Windows).
         /// </summary>
         internal static string Kvm_30 {
             get {
@@ -5668,7 +5668,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For Mouse and Keyboard, connect to rear of monitor (USB-A).\n Note: You can also connect other USB Peripherals such as\n Webcam..
+        ///   Looks up a localized string similar to Connect mouse and keyboard to the rear of the monitor (USB-A). Note: You can also connect other accessories, such as a webcam, with USB..
         /// </summary>
         internal static string Kvm_4 {
             get {
@@ -5695,7 +5695,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please connect a video cable and USB cable between each PC to\n the monitor. You can connect up to 4 PCs (computers, gaming\n consoles, etc). \r\n\r\nPlease select the cable type and assign a name to each source..
+        ///   Looks up a localized string similar to Connect a video cable and USB cable between each PC to the monitor. You can connect up to 4 PCs (computers, gaming consoles, etc.). Select the cable type and assign a name to each source..
         /// </summary>
         internal static string Kvm_7 {
             get {

@@ -121,7 +121,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
         private void Window_Deactivated(object sender, EventArgs e)
         {
-            this.Close();
+            try
+            {
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                _log?.Error("Window Deactivated already", ex);
+            }
         }
     }
     public class UI_ThirdPartyLicenses

@@ -16,6 +16,13 @@ namespace DDPM.UI.WalkThroughData
             var devicePages = new Dictionary<string, List<WalkThroughPageData>>
             {
                 //APP////////////////////////////////////////////////////////////////////////////////////////////////OK
+                // Consent Page
+                {
+                    "CONSENT_PAGE", new List<WalkThroughPageData>()
+                    { 
+                        new WalkThroughPageData()
+                    }
+                },
                 // DDPM
                 { "DDPM", new List<WalkThroughPageData>
                     {

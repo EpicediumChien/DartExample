@@ -63,7 +63,16 @@ namespace DDPM.SA.Common.Display
 
         private static bool _SystemParametersInfo(uint uAction, uint uParam, ref bool lpvParam, int fWinIni)
         {
-            return SystemParametersInfo(uAction, uParam, ref lpvParam, fWinIni);
+            bool rst = SystemParametersInfo(uAction, uParam, ref lpvParam, fWinIni);
+
+            if(!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[JobQueue] SystemParametersInfo failed.");
+#endif
+            }
+
+            return rst;
         }
 
         public const uint SPI_GETSCREENSAVEACTIVE = 0x10;   //check if screen saver is actived
