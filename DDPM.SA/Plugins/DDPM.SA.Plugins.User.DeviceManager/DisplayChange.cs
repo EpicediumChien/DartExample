@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using Dell.Client.Framework.Common;
+﻿using Dell.Client.Framework.Common;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;

@@ -28,9 +28,6 @@ using static VcpCore.Common.User32;
 using DDPM.EABroker;
 using DDPM.SA.Common.Display;
 using System.Globalization;
-using DDPM.RemoteManagement.Common.Interfaces;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Security.Principal;
 
 namespace DDPM.SA.Plugins.User.EzMemory
 {
