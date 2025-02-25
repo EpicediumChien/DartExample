@@ -109,7 +109,7 @@ namespace DDPM.SA.Obfuscation
         public static string AppAccessVer { get; } = AppInfo.ver;
         public static string AppAccessAddr { get; } = AppInfo.location;
 
-        private static (string ver, string location) QueryAppAccessInfo()
+        public static (string ver, string location) QueryAppAccessInfo()
         {
             using (RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
             {
