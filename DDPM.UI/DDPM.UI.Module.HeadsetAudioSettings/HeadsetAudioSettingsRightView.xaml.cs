@@ -40,16 +40,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
 
             InitializeAsync();
             _vm!.HeadsetSettingChanged += HeadsetSettingChanged;
-            Unloaded += HeadsetAudioSettingsRightView_UnLoadedStatus;
-        }
-
-        private async void HeadsetAudioSettingsRightView_UnLoadedStatus(object sender, RoutedEventArgs e)
-        {
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                _vm!.HeadsetSettingChanged -= HeadsetSettingChanged;
-                _vm._log!.Info("[HeadsetAudioSettingsRightView] -= HeadsetSettingChanged ");
-            }
         }
 
         private void HeadsetSettingChanged(object? sender, EventArgs e)
@@ -162,7 +152,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
                 SystemParameters.StaticPropertyChanged -= SystemParameters_StaticPropertyChanged;
                 _vm!.HeadsetSettingChanged -= HeadsetSettingChanged;
-                _vm._log!.Info("[HeadsetAudioSettingsRightView] ~HeadsetAudioSettingsRightView()\r\n ~~~~~~~~~~");
+                _vm._log!.Info("[HeadsetAudioSettingsRightView] ~HeadsetAudioSettingsRightView() ~~~~~~~~~~");
             }
         }
 
