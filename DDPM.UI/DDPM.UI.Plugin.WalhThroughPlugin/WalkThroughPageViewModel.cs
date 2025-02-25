@@ -122,14 +122,17 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         /// </summary>
         private void UpdatePageContent()
         {
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] UpdatePageContent in ...");
             _devicePages = DDPM.UI.WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
             if (_devicePages.ContainsKey(_currentDeviceModel) && _currentPageIndex < _devicePages[_currentDeviceModel].Count)
             {
                 var pageData = _devicePages[_currentDeviceModel][_currentPageIndex];
                 MainText = pageData.MainText!;
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] UpdatePageContent : {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelType.ToString()} ...");
                 if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelType == "LogicalPen")
                 {
                     SubText = pageData.SubText!.Replace("X %", DInfo.BatteryLevel.ToString()).Replace("X%", DInfo.BatteryLevel.ToString());
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] UpdatePageContent DInfo.BatteryLevel : {DInfo.BatteryLevel.ToString()} ...");
                 }
                 else
                 {
