@@ -295,12 +295,19 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             relay_registered = true;
 
             //fine tune ver/addr query method, Dean 2025-2-24
-            _settingsAccessInfoVer = _SysSettingsPlugin.QueryAccessInfoVer().Result;
+            string ver = SettingsAccess.QueryAppAccessInfo().ver;
+            //upgrade may has timing issue, so get it again
+            if (!ver.Equals(_settingsAccessInfoVer, StringComparison.InvariantCultureIgnoreCase))
+            {
+                WriteLog("[DoRelayRegister] info ver not equal, get it over user");
+                _settingsAccessInfoVer = ver;
+            }
             if (string.IsNullOrEmpty(_settingsAccessInfoVer))
             {
                 WriteLog("[DoRelayRegister] info ver null, get it over user");
-                _settingsAccessInfoVer = SettingsAccess.AppAccessVer;
-            }
+                _settingsAccessInfoVer = SettingsAccess.QueryAppAccessInfo().ver;
+            }            
+
             //_settingsAccessInfoAddr = _SysSettingsPlugin.QueryAccessInfoAddr().Result;
             //if (string.IsNullOrEmpty(_settingsAccessInfoAddr))
             //{

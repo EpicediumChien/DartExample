@@ -8306,12 +8306,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ResetTimer();
                 try
                 {
-                    if (string.IsNullOrEmpty(_GlobalSettingParam.GlobalSetting_About.SWVersion))
-                    {
-                        writelog("[SW_GetSWUpdateInfo] ver empty, query again");
-                        _GlobalSettingParam.GlobalSetting_About.SWVersion = SettingsAccess.QueryAppAccessInfo().ver;
-                        writelog($"[SW_GetSWUpdateInfo] ver: {_GlobalSettingParam.GlobalSetting_About.SWVersion}");
-                    }
+                    string ver = SettingsAccess.QueryAppAccessInfo().ver;
+                    if(!string.IsNullOrEmpty(ver))
+                        _GlobalSettingParam.GlobalSetting_About.SWVersion = ver;
+                    writelog($"[SW_GetSWUpdateInfo] ver: {_GlobalSettingParam.GlobalSetting_About.SWVersion}");
+
                 }
                 catch (Exception ex)
                 {
@@ -8419,11 +8418,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool ret = false;
             try
             {
-                if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_About != null &&
-                    string.IsNullOrEmpty(_GlobalSettingParam.GlobalSetting_About.SWVersion))
-                {
-                    writelog("[SW_CheckSWUpdate], ver is empty.");
-                    _GlobalSettingParam.GlobalSetting_About.SWVersion = SettingsAccess.QueryAppAccessInfo().ver;
+                string ver = SettingsAccess.QueryAppAccessInfo().ver;
+                if (!string.IsNullOrEmpty(ver) && _GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_About != null)
+                {                   
+                    _GlobalSettingParam.GlobalSetting_About.SWVersion = ver;
                     writelog($"[SW_CheckSWUpdate], ver : {_GlobalSettingParam.GlobalSetting_About.SWVersion}");
                 }
                 //---
