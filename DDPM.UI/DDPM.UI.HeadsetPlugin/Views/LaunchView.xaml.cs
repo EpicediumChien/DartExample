@@ -116,13 +116,15 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
                     Loaded += LaunchView_LoadedStatus;
                     Unloaded += LaunchView_UnLoadedStatus;
-                    _vm!.HeadsetGroupChanged += HeadsetGroupChanged;
+                    if(!_vm.isAirAudio)
+                        _vm!.HeadsetGroupChanged += HeadsetGroupChanged;
                 }
             }
         }
 
         private void HeadsetGroupChanged(object? sender, EventArgs e)
         {
+            
                 BuildModuleGroups(_vm.SupportedAnswerCalls);
                 vbarList.ItemsSource = null;
                 vbarList.ItemsSource = _vm!.VbarItems;
