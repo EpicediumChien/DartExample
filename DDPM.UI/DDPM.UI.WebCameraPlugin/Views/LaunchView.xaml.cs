@@ -270,6 +270,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             DdpmCommonHelper.WriteUILog($"Webcam UI LaunchView End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
 
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+        }
         private void OnWebcamCloseEvent(object sender, EventManagerArgs e)
         {
             DdpmCommonHelper.WriteUILog($"[WebcamPlugin][OnWebcamCloseEvent] event MainWindow_Force_Camera_Unlock received");
@@ -355,6 +359,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             ArrowLeft.Source = null;
             ArrowLeft.Source = (BitmapImage)System.Windows.Application.Current.Resources["Arrow_Left"];
+            //if (oSThemeEnum == OSThemeEnum.Dark)
+            //{
+            //    PlayImg.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Play.png");
+            //}
+            //else
+            //{
+            //    PlayImg.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/LightMode/Port.png");
+            //}
         }
 
         //private void DeviceManagerSA_DeviceChanged(object? sender, DeviceChangedEventArgs e)
@@ -2975,6 +2987,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             }
             largeImage.Margin = new Thickness(40, mT, mR, mB);
+            PanArrowContent.Margin = new Thickness(40, mT, mR, mB);
         }
 
         private void ChangeDevNameWidth()
