@@ -1,5 +1,6 @@
 ﻿using DDPM.SA.Common;
 using DDPM.UI.Common;
+using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
@@ -29,13 +30,6 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
             ViewModel.ControlIcon(true, false);
 
-            // Consent Page wording
-            txtYes.Content = LangHelper.Instance["ConsentYes"];
-            txtNo.Content = LangHelper.Instance["ConsentNo"];
-            txtCaption.Text = LangHelper.Instance["Consent.1"];
-            txtCaption2.Text = LangHelper.Instance["AppName"];
-            txt1.Text = LangHelper.Instance["Consent.2"];
-            txt2.Text = LangHelper.Instance["Analytics.2"];
             Application.Current.MainWindow.MouseLeftButtonUp -= MouseDragEvent;
             Application.Current.MainWindow.MouseLeftButtonUp += MouseDragEvent;
         }
@@ -48,26 +42,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void SkipBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
-            {
-                ViewModel.UpdateLastlogicalDeviceType();
-                ViewModel.WriteWalkThroughReg(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName);
-                DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0]);
-                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDeviceFromQueue RemoveAt {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName}");
-                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
-                if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
-                {
-                    ViewModel.InitializeDeviceFromQueue();
-                }
-                else
-                {
-                    ViewModel.EndWalkThrough();
-                }
-            }
-            else
-            {
-                ViewModel.EndWalkThrough();
-            }
+            skip_WalkThroughUnit();
         }
 
         private void NextBtn_Click(object sender, RoutedEventArgs e)
@@ -160,13 +135,49 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void Close()
         {
-            ViewModel.ConsentPageVisibility = Visibility.Collapsed;
+            ViewModel.WriteWalkThroughReg("CONSENT_PAGE");
+            DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(new WalkThroughInfo("CONSENT_PAGE", "CONSENT_PAGE", null)); // Add DDPM to the end of the queue
+            DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAll(item => item.ModelName == "CONSENT_PAGE"); // Remove all DDPM from the queue
+            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
+            {
+                ViewModel.SwitchToDDPMPage();
+            }
+            else
+            {
+                ViewModel.IsConsentPageVisible = false;
+                ViewModel.IsPeripheralVisible = true;
+                skip_WalkThroughUnit();
+            }
         }
 
         private void MouseDragEvent(object sender, RoutedEventArgs e)
         {
             if (msgBox != null) { 
                 msgBox.RefreshWalkThroughBoxPosition();
+            }
+        }
+
+        private void skip_WalkThroughUnit()
+        {
+            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
+            {
+                ViewModel.UpdateLastlogicalDeviceType();
+                ViewModel.WriteWalkThroughReg(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName);
+                DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0]);
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDeviceFromQueue RemoveAt {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName}");
+                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
+                if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
+                {
+                    ViewModel.InitializeDeviceFromQueue();
+                }
+                else
+                {
+                    ViewModel.EndWalkThrough();
+                }
+            }
+            else
+            {
+                ViewModel.EndWalkThrough();
             }
         }
     }

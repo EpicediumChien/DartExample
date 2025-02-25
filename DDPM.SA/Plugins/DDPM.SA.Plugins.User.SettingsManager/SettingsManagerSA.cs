@@ -293,9 +293,22 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             _SysSettingsPlugin.ITSettingsActionEvent += _SysSettingsPlugin_ActionEvent;
             relay_registered = true;
 
-            //_settingsAccessInfo = _SysSettingsPlugin.QueryAccessInfo().Result;
+            //fine tune ver/addr query method, Dean 2025-2-24
             _settingsAccessInfoVer = _SysSettingsPlugin.QueryAccessInfoVer().Result;
+            if (string.IsNullOrEmpty(_settingsAccessInfoVer))
+            {
+                WriteLog("[DoRelayRegister] info ver null, get it over user");
+                _settingsAccessInfoVer = SettingsAccess.AppAccessVer;
+            }
             _settingsAccessInfoAddr = _SysSettingsPlugin.QueryAccessInfoAddr().Result;
+            if (string.IsNullOrEmpty(_settingsAccessInfoAddr))
+            {
+                WriteLog("[DoRelayRegister] addr null, get it over user");
+                _settingsAccessInfoAddr = SettingsAccess.AppAccessAddr;
+            }            
+            WriteLog($"[DoRelayRegister] ver:{_settingsAccessInfoVer}");
+            //end update
+
             InitDDPMUserConfigFile();
             InitColorPresetConfigFile();
             InitHotkeyConfigFile();

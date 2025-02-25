@@ -15,7 +15,16 @@ namespace VcpCore.Common
 
         public static bool _GetVCPFeatureAndVCPFeatureReply(IntPtr hMonitor, byte code, IntPtr i, out uint currentValue, out uint maxValue)
         {
-            return GetVCPFeatureAndVCPFeatureReply(hMonitor, code, i, out currentValue, out maxValue);
+            bool rst = GetVCPFeatureAndVCPFeatureReply(hMonitor, code, i, out currentValue, out maxValue);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[dxva2] GetVCPFeatureAndVCPFeatureReply failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("dxva2.dll", SetLastError = true)]
@@ -24,7 +33,16 @@ namespace VcpCore.Common
 
         public static bool _GetPhysicalMonitorsFromHMONITOR(IntPtr hMonitor, uint dwPhysicalMonitorArraySize, [Out] PHYSICAL_MONITOR[] pPhysicalMonitorArray)
         {
-            return GetPhysicalMonitorsFromHMONITOR(hMonitor, dwPhysicalMonitorArraySize, pPhysicalMonitorArray);
+            bool rst = GetPhysicalMonitorsFromHMONITOR(hMonitor, dwPhysicalMonitorArraySize, pPhysicalMonitorArray);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[dxva2] GetPhysicalMonitorsFromHMONITOR failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("dxva2.dll", SetLastError = true)]
@@ -33,7 +51,16 @@ namespace VcpCore.Common
 
         public static bool _GetNumberOfPhysicalMonitorsFromHMONITOR(IntPtr hMonitor, ref uint pdwNumberOfPhysicalMonitors)
         {
-            return GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref pdwNumberOfPhysicalMonitors);
+            bool rst = GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref pdwNumberOfPhysicalMonitors);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[dxva2] GetNumberOfPhysicalMonitorsFromHMONITOR failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("dxva2.dll", SetLastError = true)]
@@ -42,7 +69,16 @@ namespace VcpCore.Common
 
         public static bool _GetCapabilitiesStringLength(IntPtr hMonitor, out uint length)
         {
-            return GetCapabilitiesStringLength(hMonitor, out length);
+            bool rst = GetCapabilitiesStringLength(hMonitor, out length);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[dxva2] GetCapabilitiesStringLength failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("dxva2.dll", SetLastError = true)]
@@ -51,7 +87,16 @@ namespace VcpCore.Common
 
         public static bool _CapabilitiesRequestAndCapabilitiesReply(IntPtr hMonitor, StringBuilder output, uint length)
         {
-            return CapabilitiesRequestAndCapabilitiesReply(hMonitor, output, length);
+            bool rst = CapabilitiesRequestAndCapabilitiesReply(hMonitor, output, length);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[dxva2] CapabilitiesRequestAndCapabilitiesReply failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("dxva2.dll", SetLastError = true)]
@@ -60,7 +105,16 @@ namespace VcpCore.Common
 
         public static bool _SetVCPFeature(IntPtr hMonitor, byte code, uint val)
         {
-            return SetVCPFeature(hMonitor, code, val);
+            bool rst = SetVCPFeature(hMonitor, code, val);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[dxva2] SetVCPFeature failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
