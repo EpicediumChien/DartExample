@@ -259,6 +259,20 @@ namespace CLI.Subagent
                         /// Need to replace defer, forceWithNotice, forceWithNoNotice with empty strings for subsequent CLI use.
                         else if (commandLineInput.Options.Count > 0)
                         {
+                            if (IsTelemetryConsent(commandLineInput))
+                            {
+                                if (commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITHNOTICE")))
+                                {
+                                    _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput);
+                                    return;
+                                }
+
+                                if (!commandLineInput.Options.Any(_ => _.Option_Value.Contains("FORCEWITHNONOTICE")))
+                                {
+                                    commandLineInput.Options[0].Option_Value += ",FORCEWITHNONOTICE";
+                                }
+                            }
+
                             foreach (var option in commandLineInput.Options)
                             {
                                 if (option.Option_Value.Contains("DEFER"))
@@ -384,7 +398,7 @@ namespace CLI.Subagent
 
         private bool IsNotSupportDeferCommand(CommandLineInput commandLineInput)
         {
-            var notSupportTargetFeatures = new List<string> { "SILENTFWUPDATE", "UPDATESOURCELOCATION", "TELEMETRYCONSENT", "IMPORTSETTINGS" };
+            var notSupportTargetFeatures = new List<string> { "SILENTFWUPDATE", "UPDATESOURCELOCATION", "IMPORTSETTINGS" };
 
             if (commandLineInput.Options.Count > 0 && 
                 commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITH")) &&
@@ -400,6 +414,11 @@ namespace CLI.Subagent
         private bool IsSWUpdate(CommandLineInput commandLineInput)
         {
             return commandLineInput.TargetType.Equals("APP") && commandLineInput.TargetFeature.Equals("UPDATE");
+        }
+
+        private bool IsTelemetryConsent(CommandLineInput commandLineInput)
+        {
+            return commandLineInput.TargetType.Equals("APP") && commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT");
         }
 
         private bool CLIFWUpdateCheckDevice(string[] args, CommandLineInput commandLineInput)
