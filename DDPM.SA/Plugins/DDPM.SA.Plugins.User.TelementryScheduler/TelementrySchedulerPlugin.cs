@@ -181,9 +181,14 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
 
         public Task GetGlobalsetting_IsTelemetryConsentOn(bool value)
         {
-            _logs.DebugMsg("[TelementryScheduler] received GetGlobalsetting_IsTelemetryConsentOn ...");
+            _logs.DebugMsg($"[TelementryScheduler] received GetGlobalsetting_IsTelemetryConsentOn : {value.ToString()}");
 
             IsTelemetryConsentOn = value;
+
+            if (_PlatinumSDKPlugin != null)
+                _PlatinumSDKPlugin.SetGlobalsetting_IsTelemetryConsentOn(value);
+            else
+                _logs.DebugMsg("[TelementryScheduler] PlatinumSDK Plugin is not Ready ....");
 
             return Task.FromResult(Task.CompletedTask);
         }
