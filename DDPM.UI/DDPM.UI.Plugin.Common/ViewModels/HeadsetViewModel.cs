@@ -2239,7 +2239,7 @@ namespace DDPM.UI.Plugin.ViewModels
             if (IsDTPReady)
                 UpdateDTPValue();
             else
-                UpdateDTHValue();            
+                UpdateDTHValue();
             // Call DetectPageShow
             DetectPageShow(model);
             //System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -2375,10 +2375,10 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 _isOutgoingAudioStatus = DeviceInfoDTP!.MicNoiseCancellation;
-                if (isAirAudio)
-                {
-                    return true;
-                }
+                //if (isAirAudio)
+                //{
+                //    return true;
+                //}
                 return _isOutgoingAudioStatus;
             }
             set
