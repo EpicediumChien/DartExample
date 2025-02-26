@@ -61,7 +61,7 @@ namespace DDPM.SA.Plugin.PlatinumSDK
             _agent = agent;
             _logs ??= new Logs(Log, PluginLogId);
             FindPlatinumClientSdkService();
-            _logs.DebugMsg_1($"PlatinumSDKPlugin constructor ...(Admin:{_IsAdministrator})");
+            _logs.DebugMsg_1($"[PlatinumSDKPlugin] PlatinumSDKPlugin constructor ...(Admin:{_IsAdministrator})");
         }
 
         #endregion Constructor
@@ -83,7 +83,7 @@ namespace DDPM.SA.Plugin.PlatinumSDK
                         else
                             transmissionId = _platinumClientSdk.LogEventAsync(EventTag, EventValue, _dcid).Result;
 
-                        _logs.DebugMsg_1($"UpdateEventValue Logged event with transmission ID {transmissionId}");
+                        _logs.DebugMsg_1($"[PlatinumSDKPlugin] UpdateEventValue Logged event with transmission ID {transmissionId}");
 
                         TransmissionStatus status = _platinumClientSdk.GetTransmissionStatusAsync(transmissionId).Result;
 
@@ -109,12 +109,12 @@ namespace DDPM.SA.Plugin.PlatinumSDK
                         return Task.FromResult(false);
                 }
 
-                _logs.DebugMsg_1("IsTelemetryConsentOn is False");
+                _logs.DebugMsg_1("[PlatinumSDKPlugin] IsTelemetryConsentOn is False");
                 return Task.FromResult(false);
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg_1($"UpdateEventValue ex {ex.Message}");
+                _logs.DebugMsg_1($"[PlatinumSDKPlugin] UpdateEventValue ex {ex.Message}");
                 return Task.FromResult(false);
             }
         }
@@ -123,6 +123,17 @@ namespace DDPM.SA.Plugin.PlatinumSDK
         {
             try
             {
+                //----------- [To IndiLogic] -----------//
+
+                _logs.DebugMsg_1(@"[PlatinumSDKPlugin][To IndiLogic] Hi IndiLogic, You have successfully reach the Telemetry's Update function => UpdateEventValueforPeripheral() ");
+                _logs.DebugMsg_1($"[PlatinumSDKPlugin][To IndiLogic] UpdateEventValueforPeripheral() EventTag => {EventTag}");
+                _logs.DebugMsg_1(@"[PlatinumSDKPlugin][To IndiLogic] UpdateEventValueforPeripheral() EventValue :");
+
+                foreach (var item in EventValue)
+                    _logs.DebugMsg_1($"[PlatinumSDKPlugin][To IndiLogic] UpdateEventValueforPeripheral() EventValue => {item.Key} : {item.Value}");
+
+                //----------- [To IndiLogic] -----------//
+
                 if (IsTelemetryConsentOn)
                 {
                     if (_platinumClientSdk != null)
@@ -134,7 +145,7 @@ namespace DDPM.SA.Plugin.PlatinumSDK
                         else
                             transmissionId = _platinumClientSdk.LogEventAsync(EventTag, EventValue, _dcid).Result;
 
-                        _logs.DebugMsg_1($"UpdateEventValueforPeripheral Logged event with transmission ID {transmissionId}");
+                        _logs.DebugMsg_1($"[PlatinumSDKPlugin] UpdateEventValueforPeripheral Logged event with transmission ID {transmissionId}");
 
                         TransmissionStatus status = _platinumClientSdk.GetTransmissionStatusAsync(transmissionId).Result;
 
@@ -160,12 +171,12 @@ namespace DDPM.SA.Plugin.PlatinumSDK
                         return Task.FromResult(false);
                 }
 
-                _logs.DebugMsg_1("IsTelemetryConsentOn is False");
+                _logs.DebugMsg_1("[PlatinumSDKPlugin] IsTelemetryConsentOn is False");
                 return Task.FromResult(false);
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg_1($"UpdateEventValueforPeripheral ex {ex.Message}");
+                _logs.DebugMsg_1($"[PlatinumSDKPlugin] UpdateEventValueforPeripheral ex {ex.Message}");
                 return Task.FromResult(false);
             }
         }
@@ -196,7 +207,7 @@ namespace DDPM.SA.Plugin.PlatinumSDK
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg_1($"PlatinumSDK plugin OnPluginStarting ex: {ex.Message}");
+                _logs.DebugMsg_1($"[PlatinumSDKPlugin] OnPluginStarting ex: {ex.Message}");
             }
             //---------------------------------------------------------
         }
@@ -216,7 +227,7 @@ namespace DDPM.SA.Plugin.PlatinumSDK
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg_1("PlatinumSDK FindPlatinumClientSdkService ex: " + ex.Message);
+                _logs.DebugMsg_1("[PlatinumSDKPlugin] FindPlatinumClientSdkService ex: " + ex.Message);
             }
         }
 
@@ -225,26 +236,26 @@ namespace DDPM.SA.Plugin.PlatinumSDK
             //---------------------------------------------------------
             try
             {
-                FindPlatinumClientSdkService();
-
-                if (_platinumClientSdk != null)
-                    _logs.DebugMsg_1("IPlatinumClientSdk is not null");
-                else
-                    _logs.DebugMsg_1("IPlatinumClientSdk is null");
-
                 lock (_lockobject)
                 {
+                    FindPlatinumClientSdkService();
+
+                    if (_platinumClientSdk != null)
+                        _logs.DebugMsg_1("[PlatinumSDKPlugin] IPlatinumClientSdk is not null");
+                    else
+                        _logs.DebugMsg_1("[PlatinumSDKPlugin] IPlatinumClientSdk is null");
+
                     if (_platinumClientSdk != null && (!IsSucessInitializeAsync))
                     {
                         _platinumClientSdk.InitializeAsync(new ClientAppId(new Guid("b397b9b3-04cb-4cdf-8a79-852d63cf4801"))).Wait();
                         IsSucessInitializeAsync = true;
-                        _logs.DebugMsg_1($"PlatinumSDK plugin InitializeAsync correct ...");
+                        _logs.DebugMsg_1($"[PlatinumSDKPlugin] InitializeAsync correct ...");
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg_1($"PlatinumSDK plugin OnPluginStarted ex: {ex.Message}");
+                _logs.DebugMsg_1($"[PlatinumSDKPlugin] OnPluginStarted ex: {ex.Message}");
             }
             //---------------------------------------------------------
         }

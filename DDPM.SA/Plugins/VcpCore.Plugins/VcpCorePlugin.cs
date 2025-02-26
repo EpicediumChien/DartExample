@@ -294,6 +294,92 @@ namespace VcpCore.Plugins
             }
         }
 
+        public async Task<List<MultiCommandArch>> MultiCommandsRun(List<MultiCommandArch> _multiCommands)
+        {
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received MultiCommandRun requested ...");
+
+            try
+            {
+                Task<MultiCommandArch>[] tasksList = new Task<MultiCommandArch>[_multiCommands.Count];
+
+                for (int i = 0; i < _multiCommands.Count; i++)
+                {
+                    var command = _multiCommands[i];
+                    tasksList[i] = CommandRun(command);
+                }
+
+                await Task.WhenAll(tasksList);
+
+                for (int i = 0; i < _multiCommands.Count; i++)
+                    _multiCommands[i].Result = (await tasksList[i]).Result;
+
+                return _multiCommands;
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg($"[VcpCorePlugin] VcpCorePlugin MultiCommandRun exception : {ex.Message} ...");
+                return _multiCommands;
+            }
+
+            async Task<MultiCommandArch> CommandRun(MultiCommandArch command)
+            {
+                if (command.Action.Equals(MultiCommandAction.GetMonitors))
+                {
+                    var r = await GetMonitors().ConfigureAwait(false);
+                    command.Result = r;
+                    return command;
+                }
+                else if (command.Action.Equals(MultiCommandAction.GetCapabilitiesString))
+                {
+                    var r = await GetCapabilitiesString(command.MonitorInfo, command.Guid, command.Priority).ConfigureAwait(false);
+                    command.Result = r;
+                    return command;
+                }
+                else if (command.Action.Equals(MultiCommandAction.GetVCPCapabilities))
+                {
+                    var r = await GetCapabilitiesString(command.MonitorInfo, command.Guid, command.Priority).ConfigureAwait(false);
+                    command.Result = r;
+                    return command;
+                }
+                else if (command.Action.Equals(MultiCommandAction.GetVCPCapability))
+                {
+                    ObjGetVCP r = new ObjGetVCP();
+                    if (command.Function is string)
+                        r = await GetVCPCapability(command.MonitorInfo, command.Function.ToString(), command.Guid, command.Opt, command.Priority).ConfigureAwait(false);
+                    else
+                        r = await GetVCPCapability(command.MonitorInfo, (byte)command.Function, command.Guid, command.Opt, command.Priority).ConfigureAwait(false);
+
+                    command.Result = r;
+                    return command;
+                }
+                else if (command.Action.Equals(MultiCommandAction.SetVCPCapability))
+                {
+                    bool r = false;
+
+                    if ((command.Function is string) && (command.Value is string))
+                        r = await SetVCPCapability(command.MonitorInfo, command.Function.ToString(), command.Value.ToString(), command.Guid, command.Priority).ConfigureAwait(false);
+                    else
+                        r = await SetVCPCapability(command.MonitorInfo, (byte)command.Function, (uint)command.Value, command.Guid, command.Priority).ConfigureAwait(false);
+
+                    command.Result = r;
+                    return command;
+                }
+                else if (command.Action.Equals(MultiCommandAction.GetVCPCacheTable))
+                {
+                    var r = await GetVCPCacheTable().ConfigureAwait(false);
+                    command.Result = r;
+                    return command;
+                }
+                else if (command.Action.Equals(MultiCommandAction.CancelVcpTask))
+                {
+                    await CancelVcpTask(command.Guid).ConfigureAwait(false);
+                    return command;
+                }
+                else
+                    return command;
+            }
+        }
+
         public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid uguid = default, Priority priority = Priority.Low)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetCapabilitiesString requested ...");

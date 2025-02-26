@@ -179,6 +179,8 @@ namespace DDPM.SA.Common
 
         event EventHandler<MonitorinfoUpdateEventArgs> MonitorinfoUpdated;
 
+        Task<List<MultiCommandArch>> MultiCommandsRun(List<MultiCommandArch> _multiCommands);
+
         Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low);
 
         Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low);
@@ -808,6 +810,7 @@ namespace DDPM.SA.Common
         //Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
 
         Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify, bool reScan);
+
         Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false, DeviceType deviceType = DeviceType.Unknown);
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
@@ -1598,6 +1601,7 @@ namespace DDPM.SA.Common
         Task WriteLog(string logMsg); //Derek 1210
 
         Task<string> GetWebcamDeviceID(); //Derek 1225
+
         Task<int> GetWebcamDeviceCountAsync(); //Derek 2025/02/19
 
         Task SetQAMOSDVisable(bool visable); //Derek 2025/01/02
