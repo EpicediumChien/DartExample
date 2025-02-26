@@ -925,6 +925,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to s.
+        /// </summary>
+        internal static string Seconds {
+            get {
+                return ResourceManager.GetString("Seconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Service not running. Try again.
         /// </summary>
         internal static string Service_not_running_Try_again {
