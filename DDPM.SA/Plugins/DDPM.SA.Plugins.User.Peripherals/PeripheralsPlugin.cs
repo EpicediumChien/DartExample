@@ -2023,11 +2023,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void PenDevice_ActivePenInformationChanged(IPhysicalPenDevice arg1, string arg2, string arg3, string arg4, bool arg5, bool arg6, bool arg7, int arg8)
         {
-            writelog($"ActivePenInformationChanged: Guid:{arg1.Id} PenID:{arg1.PenId} arg2:{arg2} arg3:{arg3} arg4:{arg4} arg5:{arg5} arg6:{arg6} arg7:{arg7} arg8:{arg8}");
+            writelog($"ActivePenInformationChanged: Guid:{arg1.Id} PenID:{arg1.PenId} arg2:{arg2} arg3:{arg3} arg4:{arg4} IsSupported:{arg5} IsConnected:{arg6} arg7:{arg7} arg8:{arg8}");
             var deviceInfo = new DeviceInfo
             {
                 IsBLE = !string.IsNullOrEmpty(arg4),
-                IsConnected = arg6
+                IsConnected = arg6,
+                IsReady = arg5
             };
             DeviceChangedEventArgs _EventArgs = new()
             {

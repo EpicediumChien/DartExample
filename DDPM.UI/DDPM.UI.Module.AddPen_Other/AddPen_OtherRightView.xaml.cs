@@ -2,6 +2,7 @@
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using DDPM.UI.Resources.Helper;
 using System.Net;
 using System.Reflection.Metadata;
 using System.Windows;
@@ -38,14 +39,11 @@ namespace DDPM.UI.Module.AddPen_Other
 
             breakPoints = DdpmCommonHelper.GetBreakPoints();
             Unloaded += AddPen_OtherRightView_Unloaded;
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
-            }
         }
 
         bool IsBLE = true;
         bool IsConnected = true;
+        bool IsSupported = true;
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
         {
             if (e.type == DeviceChangedType.Peripherals_SettingsChange && e.changedProperty == "ActivePenInformationChanged")
@@ -53,6 +51,7 @@ namespace DDPM.UI.Module.AddPen_Other
                 var di = e.device_peripherals;
                 IsBLE = di.IsBLE;
                 IsConnected = di.IsConnected;
+                IsSupported = di.IsReady;
             }
         }
 
@@ -100,7 +99,11 @@ namespace DDPM.UI.Module.AddPen_Other
                 Window mainWindow = System.Windows.Application.Current.MainWindow;
                 if (IsConnected)
                 {
-                    messageModalDialog = new(Strings.Error, Strings.PenAlreadyPaired, Strings.Cancel);
+                    messageModalDialog = new(LangHelper.Instance["Error"], LangHelper.Instance["PairedInfo.8"], LangHelper.Instance["Common.2"]);
+                }
+                else if (!IsSupported)
+                {
+                    messageModalDialog = new(LangHelper.Instance["Error"], LangHelper.Instance["Incompatible"], LangHelper.Instance["Common.2"]);
                 }
                 else
                 {
@@ -122,6 +125,10 @@ namespace DDPM.UI.Module.AddPen_Other
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+            }
             AdjustBorderHeight();
         }
 

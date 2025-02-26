@@ -1,7 +1,11 @@
-﻿using DDPM.UI.Common;
+﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
+using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using DDPM.UI.Resources.Helper;
 using System.Diagnostics;
 using System.Net;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace DDPM.UI.Module.AddPen_BL
@@ -15,9 +19,6 @@ namespace DDPM.UI.Module.AddPen_BL
 
         //private readonly string Caption = "Connecting your Pen";
         private readonly string Step1 = UI.Resources.Helper.LangHelper.Instance["AddDevice.Pen.1"];
-        //private readonly string Step2 = "Press and hold the top button for 3 seconds. Wait for the device to be discovered by Windows.";
-        //private readonly string Step3 = "Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered.";
-        //private readonly string Step3_1 = "Windows Settings";
 
         // 10/15 Derek for RWD  -- not tested yet due to no device
         private readonly int breakPoints = 1050;
@@ -35,6 +36,26 @@ namespace DDPM.UI.Module.AddPen_BL
             //txtStep3_1.Text = Step3_1;
 
             breakPoints = DdpmCommonHelper.GetBreakPoints();
+            Unloaded += AddPen_BLRightView_Unloaded;
+        }
+
+        private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
+        {
+            if (e.type == DeviceChangedType.Peripherals_SettingsChange && e.changedProperty == "ActivePenInformationChanged")
+            {
+                var di = e.device_peripherals;
+                IsBLE = di.IsBLE;
+                IsConnected = di.IsConnected;
+                 IsSupported = di.IsReady;
+           }
+        }
+
+        private void AddPen_BLRightView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+            }
         }
 
         private void OpenWindowsSettings(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -87,12 +108,48 @@ namespace DDPM.UI.Module.AddPen_BL
 
         private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+            }
             AdjustBorderHeight();
         }
 
         private void AdjustBorderHeight()
         {
             stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.ActualHeight;
+        }
+
+        bool IsBLE = false;
+        bool IsConnected = true;
+        bool IsSupported = true;
+        private void Pairing(object sender, System.Windows.Input.StylusDownEventArgs e)
+        {
+            Thread.Sleep(300);
+
+            if (IsBLE)
+            {
+                MessageModalDialog messageModalDialog;
+                if (IsConnected)
+                {
+                    messageModalDialog = new(LangHelper.Instance["Error"], LangHelper.Instance["PairedInfo.8"], LangHelper.Instance["Common.2"]);
+                }
+                else if(!IsSupported)
+                {
+                    messageModalDialog = new(LangHelper.Instance["Error"], LangHelper.Instance["Incompatible"], LangHelper.Instance["Common.2"]);
+                }
+                else
+                { return; }
+
+                Window mainWindow = System.Windows.Application.Current.MainWindow;
+                if (mainWindow != null)
+                {
+                    messageModalDialog.Owner = mainWindow;
+                    messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 420) / 2;
+                    messageModalDialog.Top = mainWindow.Top + 300;
+                }
+                messageModalDialog.ShowDialog();
+            }
         }
     }
 }
