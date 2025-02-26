@@ -89,16 +89,22 @@ namespace DDPM.UI.Common
 
         private static void OnBatteryChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-
-            try
+            if (e!=(null))
             {
-                DdpmCommonHelper.WriteUILog($"[BatteryIndicator] [OnConnectionTypeChanged] e:{JsonConvert.SerializeObject(e)}");
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"[BatteryIndicator] [OnConnectionTypeChanged] Exception ex:{ex.Message}");
+                try
+                {
+                    DdpmCommonHelper.WriteUILog($"[BatteryIndicator] [OnConnectionTypeChanged] e:{JsonConvert.SerializeObject(e)}");
+                }
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog($"[BatteryIndicator] [OnConnectionTypeChanged] Exception ex:{ex.Message}");
+                }
             }
             var control = (BatteryIndicator)d;
+            if (control == null) 
+            {
+                return;
+            }
             control.UpdateBatteryLevelIndicator();
         }
 

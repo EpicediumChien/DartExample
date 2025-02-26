@@ -5173,7 +5173,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 This not your primary monitor. Do you want to continue and set this as your Primary Monitor for Sync? 的當地語系化字串。
+        ///   Looks up a localized string similar to The same monitor is detected, do you want to import settings for {0}?.
         /// </summary>
         internal static string ImpExp_WarningMsg_0 {
             get {

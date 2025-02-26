@@ -386,6 +386,26 @@
         </Canvas>
     </ControlTemplate>
     <!-- endregion -->
+    <!-- Icon BackArrow 
+    - Landing Page Back Arrow, Click will return to previous page 
+    - Default size is 24x24, the container must define the display size
+    - Usage Examples: 
+    <ContentControl Template="{StaticResource icon_BackArrow}" Width="24" Height="24" Foreground="White"/>
+    <ContentControl Template="{StaticResource icon_BackArrow}" Width="36" Height="46" Foreground="{DynamicResource TextBlock_ForegroundColor}"/>
+    
+    -->
+    <ControlTemplate x:Key="icon_BackArrow"
+                     TargetType="ContentControl">
+        <Viewbox Stretch="Fill">
+            <Grid Width="24" Height="24">
+                <Path Stroke="{TemplateBinding Foreground}" Data="M12 19 L5 12 L12 5" Fill="Transparent"
+                      StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"/>
+                <Path Stroke="{TemplateBinding Foreground}" Data="M19 12 H5"
+                      StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+            </Grid>
+        </Viewbox>
+        
+    </ControlTemplate>
 
     <!-- endregion -->
 
@@ -2319,5 +2339,19 @@
     </Style>
 
     <!-- #endregion StatelessButton -->
-
+    
+    <!-- #region BackArrowButton -->
+    <!-- The button in top left of LandingPage, click it will return back to previous page -->
+    <Style x:Key="BackArrowButton" TargetType="Button" BasedOn="{StaticResource StatelessButton}">
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24"/>
+        <Setter Property="Content">
+            <Setter.Value>
+                <Grid Background="{StaticResource FakeTransparent}" >
+                    <ContentControl Template="{StaticResource icon_BackArrow}" Foreground="{DynamicResource TextBlock_ForegroundColor}"/>
+                </Grid>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- #endregion BackArrowButton -->
 </ResourceDictionary>

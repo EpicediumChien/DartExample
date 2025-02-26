@@ -111,6 +111,7 @@ namespace DDPM.UI.Module.PipPbp
         public void OnDeactivated()
         {
             Trace.WriteLine("PipPbpModule.OnDeactivated");
+            vm.OnDeactivated();
         }
 
         #endregion Event Handlers
