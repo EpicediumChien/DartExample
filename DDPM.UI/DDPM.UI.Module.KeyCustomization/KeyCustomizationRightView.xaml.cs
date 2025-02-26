@@ -1,6 +1,7 @@
 ﻿using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Globalization;
 using System.Windows;
@@ -32,7 +33,7 @@ namespace DDPM.UI.Module.KeyCustomization
             txtWindowsActions.Text = Strings.WindowsActionsCaption;
             txtMultimediaActions.Text = Strings.MultimediaActionsCaption;
             txtSearchResult.Text = Strings.SearchResultsCaption;
-            txtSearchText.Watermark = Strings.SearchActions;
+            txtSearchText.Watermark = LangHelper.Instance["SearchActions"];
         }
 
         public void Initialize()

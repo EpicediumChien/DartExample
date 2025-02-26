@@ -2,6 +2,7 @@
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows;
 using System.Windows.Controls;
@@ -44,7 +45,7 @@ namespace DDPM.UI.Module.ButtonSettings
             txtMultimediaActions.Text = Strings.MultimediaActionsCaption;
             txtOfficeActions.Text = Strings.AdvancedActionsCaption;
             txtSearchResult.Text = Strings.SearchResultsCaption;
-            txtSearchText.Watermark = Strings.SearchActions;
+            txtSearchText.Watermark = LangHelper.Instance["SearchActions"];
         }
 
         public void Initialize()
