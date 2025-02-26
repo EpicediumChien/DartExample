@@ -44,6 +44,7 @@ namespace DDPM.UI.Module.ButtonSettings
             txtMultimediaActions.Text = Strings.MultimediaActionsCaption;
             txtOfficeActions.Text = Strings.AdvancedActionsCaption;
             txtSearchResult.Text = Strings.SearchResultsCaption;
+            txtSearchText.Watermark = Strings.SearchActions;
         }
 
         public void Initialize()

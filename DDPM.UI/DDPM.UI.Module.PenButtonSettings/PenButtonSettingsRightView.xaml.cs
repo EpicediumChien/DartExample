@@ -44,6 +44,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 txtWindowsActions.Text = Strings.WindowsActionsCaption;
                 txtMultimediaActions.Text = Strings.MultimediaActionsCaption;
                 txtSearchResult.Text = Strings.SearchResultsCaption;
+                txtSearchText.Watermark = Strings.SearchActions;
                 ParentBorder.SizeChanged += ParentBorder_SizeChanged;
             }
             catch (Exception ex)

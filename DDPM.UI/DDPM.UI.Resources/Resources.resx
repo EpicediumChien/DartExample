@@ -3552,4 +3552,7 @@
   <data name="Bootloader.3" xml:space="preserve">
     <value>to update your firmware in order to restore functionality.</value>
   </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>Search actions</value>
+  </data>
 </root>
