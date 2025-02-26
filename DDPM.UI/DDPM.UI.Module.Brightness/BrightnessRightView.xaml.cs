@@ -1023,5 +1023,47 @@ namespace DDPM.UI.Module.Brightness
                     comboBox.SelectedValue = Strings.ALSRangeLevelHigh; //"High";
             }
         }
+
+        private void brightnewwManulExpander_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Expander expander = sender as Expander;
+                if (expander != null)
+                {
+                    e.Handled = true;
+                    //Robert_Lin 2025-2-26 Narrator. If Expander is already expanded, then do nothing
+                    if (expander.IsExpanded)
+                    {
+                        //expander.IsExpanded = !expander.IsExpanded;
+                    }
+                    else
+                    {
+                        expander.IsExpanded = !expander.IsExpanded;
+                    }
+                }
+            }
+        }
+
+        private void brightnessScheduledExpander_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Expander expander = sender as Expander;
+                if (expander != null)
+                {
+                    e.Handled = true;
+                    //Robert_Lin 2025-2-26 Narrator. If Expander is already expanded, then do nothing
+                    if (expander.IsExpanded)
+                    {
+                        //expander.IsExpanded = !expander.IsExpanded;
+                    }
+                    else
+                    {
+                        expander.IsExpanded = !expander.IsExpanded;
+                    }
+                }
+            }
+        }
     }
 }
