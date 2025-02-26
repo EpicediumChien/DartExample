@@ -8308,7 +8308,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 try
                 {
                     string ver = SettingsAccess.QueryAppAccessInfo().ver;
-                    if(!string.IsNullOrEmpty(ver))
+                    if (!string.IsNullOrEmpty(ver))
                         _GlobalSettingParam.GlobalSetting_About.SWVersion = ver;
                     writelog($"[SW_GetSWUpdateInfo] ver: {_GlobalSettingParam.GlobalSetting_About.SWVersion}");
 
@@ -8421,7 +8421,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 string ver = SettingsAccess.QueryAppAccessInfo().ver;
                 if (!string.IsNullOrEmpty(ver) && _GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_About != null)
-                {                   
+                {
                     _GlobalSettingParam.GlobalSetting_About.SWVersion = ver;
                     writelog($"[SW_CheckSWUpdate], ver : {_GlobalSettingParam.GlobalSetting_About.SWVersion}");
                 }
@@ -16057,8 +16057,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </returns>
         private Dictionary<string, InputInfo> InputSourceListDeserialize(string strinputlist)
         {
+            //Dictionary<string, InputInfo> inputlist = new Dictionary<string, InputInfo>();
+            //inputlist = JsonConvert.DeserializeObject<Dictionary<string, InputInfo>>(strinputlist);
+            //return inputlist;
             Dictionary<string, InputInfo> inputlist = new Dictionary<string, InputInfo>();
-            inputlist = JsonConvert.DeserializeObject<Dictionary<string, InputInfo>>(strinputlist);
+            try
+            {
+                inputlist = JsonConvert.DeserializeObject<Dictionary<string, InputInfo>>(strinputlist);
+            }
+            catch (JsonException ex)
+            {
+                // Log the exception or handle it as needed
+                writelog($"JSON deserialization error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as needed
+                writelog($"Unexpected error: {ex.Message}");
+            }
             return inputlist;
         }
 
@@ -16399,13 +16415,31 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region Settings
 
+        //private List<VCPCode> GetAllVCPcode(MonitorInfo monitorInfo)
+        //{
+        //    List<VCPCode> vcps = new List<VCPCode>();
+        //    foreach (string key in monitorInfo.CapabilityDic.Keys)
+        //    {
+        //        VCPCode vcp = new VCPCode(Int32.Parse(key, System.Globalization.NumberStyles.HexNumber), null);
+        //        vcps.Add(vcp);
+        //    }
+        //    return vcps;
+        //}
         private List<VCPCode> GetAllVCPcode(MonitorInfo monitorInfo)
         {
             List<VCPCode> vcps = new List<VCPCode>();
             foreach (string key in monitorInfo.CapabilityDic.Keys)
             {
-                VCPCode vcp = new VCPCode(Int32.Parse(key, System.Globalization.NumberStyles.HexNumber), null);
-                vcps.Add(vcp);
+                if (Int32.TryParse(key, System.Globalization.NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int vcpCode))
+                {
+                    VCPCode vcp = new VCPCode(vcpCode, null);
+                    vcps.Add(vcp);
+                }
+                else
+                {
+                    // Log the error or handle it as needed
+                    writelog($"Failed to parse VCP code: {key}");
+                }
             }
             return vcps;
         }
