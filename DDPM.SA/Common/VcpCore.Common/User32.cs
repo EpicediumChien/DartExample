@@ -19,7 +19,16 @@ namespace VcpCore.Common
 
         public static bool _GetMonitorInfo(HandleRef hmonitor, [In, Out] MonitorInfoEx info)
         {
-            return GetMonitorInfo(hmonitor, info);
+            bool rst = GetMonitorInfo(hmonitor, info);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] GetMonitorInfo failed.");
+#endif
+            }
+
+            return rst;        
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -28,7 +37,16 @@ namespace VcpCore.Common
 
         public static bool _EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip, MonitorEnumDelegate lpfnEnum, IntPtr dwData)
         {
-            return EnumDisplayMonitors(hdc, lprcClip, lpfnEnum, dwData);
+            bool rst = EnumDisplayMonitors(hdc, lprcClip, lpfnEnum, dwData);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] EnumDisplayMonitors failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
@@ -38,7 +56,16 @@ namespace VcpCore.Common
 
         public static bool _EnumDisplaySettings(string lpszDeviceName, int iModeNum, ref DEVMODE lpDevMode)
         {
-            return EnumDisplaySettings(lpszDeviceName, iModeNum, ref lpDevMode);
+            bool rst = EnumDisplaySettings(lpszDeviceName, iModeNum, ref lpDevMode);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] EnumDisplaySettings failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -47,7 +74,16 @@ namespace VcpCore.Common
 
         public static bool _EnumDisplayDevices(string lpDevice, uint iDevNum, ref DISPLAY_DEVICE lpDisplayDevice, uint dwFlags)
         {
-            return EnumDisplayDevices(lpDevice, iDevNum, ref lpDisplayDevice, dwFlags);
+            bool rst = EnumDisplayDevices(lpDevice, iDevNum, ref lpDisplayDevice, dwFlags);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] EnumDisplayDevices failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [Flags]
@@ -261,7 +297,16 @@ namespace VcpCore.Common
 
         public static int _GetDisplayConfigBufferSizes(QDC flags, out int numPathArrayElements, out int numModeInfoArrayElements)
         {
-            return GetDisplayConfigBufferSizes(flags, out numPathArrayElements, out numModeInfoArrayElements);
+            int rst = GetDisplayConfigBufferSizes(flags, out numPathArrayElements, out numModeInfoArrayElements);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] GetDisplayConfigBufferSizes failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32", SetLastError = true)]
@@ -270,7 +315,16 @@ namespace VcpCore.Common
 
         public static int _QueryDisplayConfig(QDC flags, ref int numPathArrayElements, [In, Out] DISPLAYCONFIG_PATH_INFO[] pathArray, ref int numModeInfoArrayElements, [In, Out] DISPLAYCONFIG_MODE_INFO[] modeInfoArray, DISPLAYCONFIG_TOPOLOGY_ID currentTopologyId)
         {
-            return QueryDisplayConfig(flags, ref numPathArrayElements, pathArray, ref numModeInfoArrayElements, modeInfoArray, currentTopologyId);
+            int rst = QueryDisplayConfig(flags, ref numPathArrayElements, pathArray, ref numModeInfoArrayElements, modeInfoArray, currentTopologyId);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] QueryDisplayConfig failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32", SetLastError = true)]
@@ -279,7 +333,16 @@ namespace VcpCore.Common
 
         public static int _DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_DEVICE_NAME requestPacket)
         {
-            return DisplayConfigGetDeviceInfo(ref requestPacket);
+            int rst = DisplayConfigGetDeviceInfo(ref requestPacket);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] DisplayConfigGetDeviceInfo(DISPLAYCONFIG_TARGET_DEVICE_NAME) failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32", SetLastError = true)]
@@ -288,7 +351,16 @@ namespace VcpCore.Common
 
         public static int _DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO requestPacket)
         {
-            return DisplayConfigGetDeviceInfo(ref requestPacket);
+            int rst = DisplayConfigGetDeviceInfo(ref requestPacket);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] DisplayConfigGetDeviceInfo(DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO) failed.");
+#endif
+            }
+
+            return rst; 
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -297,7 +369,16 @@ namespace VcpCore.Common
 
         public static int _DisplayConfigSetDeviceInfo(ref DISPLAYCONFIG_SET_ADVANCED_COLOR_STATE requestPacket)
         {
-            return DisplayConfigSetDeviceInfo(ref requestPacket);
+            int rst = DisplayConfigSetDeviceInfo(ref requestPacket);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] DisplayConfigSetDeviceInfo failed.");
+#endif
+            }
+
+            return rst;
         }
 
         #endregion DisplayConfig APIs
@@ -632,7 +713,16 @@ namespace VcpCore.Common
 
         public static int _FormatMessage(int flag, ref IntPtr source, int msgid, int langid, ref string buff, int size, ref IntPtr args)
         {
-            return FormatMessage(flag, ref source, msgid, langid, ref buff, size, ref args);
+            int rst = FormatMessage(flag, ref source, msgid, langid, ref buff, size, ref args);
+
+            if (rst == 0)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] FormatMessage failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
@@ -669,7 +759,16 @@ namespace VcpCore.Common
 
         public static int _ChangeDisplaySettingsEx(string lpszDeviceName, ref DEVMODE lpDevMode, IntPtr hwnd, ChangeDisplaySettingsFlags dwflags, IntPtr lParam)
         {
-            return ChangeDisplaySettingsEx(lpszDeviceName, ref lpDevMode, hwnd, dwflags, lParam);
+            int rst = ChangeDisplaySettingsEx(lpszDeviceName, ref lpDevMode, hwnd, dwflags, lParam);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] ChangeDisplaySettingsEx failed.");
+#endif
+            }
+
+            return rst;
         }
 
         /// <summary>
@@ -687,7 +786,16 @@ namespace VcpCore.Common
 
         public static long _SetDisplayConfig(uint numPathArrayElements, IntPtr pathArray, uint numModeArrayElements, IntPtr modeArray, uint flags)
         {
-            return SetDisplayConfig(numPathArrayElements, pathArray, numModeArrayElements, modeArray, flags);
+            long rst = SetDisplayConfig(numPathArrayElements, pathArray, numModeArrayElements, modeArray, flags);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] SetDisplayConfig failed.");
+#endif
+            }
+
+            return rst;
         }
 
         public const int ENUM_REGISTRY_SETTINGS = -2;
@@ -765,7 +873,16 @@ namespace VcpCore.Common
 
         public static int _DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_PREFERRED_MODE deviceMode)
         {
-            return DisplayConfigGetDeviceInfo(ref deviceMode);
+            int rst = DisplayConfigGetDeviceInfo(ref deviceMode);
+
+            if (rst != 0)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] DisplayConfigGetDeviceInfo failed.");
+#endif
+            }
+
+            return rst;
         }
 
         /*[Flags]

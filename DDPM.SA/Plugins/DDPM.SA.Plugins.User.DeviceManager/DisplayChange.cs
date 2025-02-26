@@ -26,7 +26,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private static IntPtr _RegisterDeviceNotification(IntPtr hRecipient, IntPtr NotificationFilter, uint Flags)
         {
-            return RegisterDeviceNotification(hRecipient, NotificationFilter, Flags);
+            IntPtr rst = RegisterDeviceNotification(hRecipient, NotificationFilter, Flags);
+
+            if(rst == IntPtr.Zero)
+            {
+                _logs.DebugMsg_1("[DisplayChange] UnregisterDeviceNotification failed.");
+
+#if DEBUG
+                Console.WriteLine("[DisplayChange] RegisterDeviceNotification failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -35,7 +46,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private static bool _UnregisterDeviceNotification(IntPtr Handle)
         {
-            return UnregisterDeviceNotification(Handle);
+            bool rst = UnregisterDeviceNotification(Handle);
+
+            if (!rst)
+            {
+                _logs.DebugMsg_1("[DisplayChange] UnregisterDeviceNotification failed.");
+#if DEBUG
+                Console.WriteLine("[DisplayChange] UnregisterDeviceNotification failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [StructLayout(LayoutKind.Sequential)]
