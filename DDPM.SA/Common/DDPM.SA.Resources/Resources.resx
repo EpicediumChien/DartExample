@@ -546,4 +546,7 @@
   <data name="ICC_notification_SmartHDR" xml:space="preserve">
     <value>The default ICC profile is not suitable for Smart HDR. We are not able to change color preset in the</value>
   </data>
+  <data name="Multiple_docks_are_detected2" xml:space="preserve">
+    <value>Multiple docks are detected. Keep only one dock connected to prevent damage to your dock(s).</value>
+  </data>
 </root>
