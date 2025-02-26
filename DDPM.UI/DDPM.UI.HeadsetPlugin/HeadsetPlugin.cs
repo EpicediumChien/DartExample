@@ -102,7 +102,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         {
             try
             {
-                if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Headset"))
+                if (e.device_peripherals != null && (e.device_peripherals.LogicalDeviceType.Contains("Headset")|| e.device_peripherals.LogicalDeviceType.Contains("AirAudio")))
                 {
                     if (e.type == DeviceChangedType.Peripherals_UnPlug)
                     {
@@ -168,22 +168,22 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
         private void GetPeripheralsAsync()
         {
-            _log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... 0 in");
+            _log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... in");
             if (!SpinWait.SpinUntil(() =>
             _deviceManagerPluginCondition is IFrameworkPluginConditionNotification, TimeSpan.FromMinutes(2)))
             {
                 Console.WriteLine("Could not establish communication with DDPM!!");
                 return;
             }
-            _log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... 1 in");
+            //_log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... 1 in");
             _log.Debug($"GetPeripherals is invoked");
             //_deviceHelper = await peripheralsPlugin.GetDevices();
             Task<DeviceHelper> task = _deviceManagerPlugin.GetDevices();
-            _log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... 2 in");
+            //_log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... 2 in");
             _deviceHelper = task.Result;
-            _log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... 3 in");
+            //_log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... 3 in");
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
-            _log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... 4 out");
+            _log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... out");
         }
 
         /// <summary>

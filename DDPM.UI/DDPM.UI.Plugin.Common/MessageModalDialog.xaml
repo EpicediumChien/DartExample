@@ -55,14 +55,14 @@
                         Name="txtButton1" MinHeight="40" MinWidth="107"
                         Margin="0,8,6,0"                      
                         ButtonType="Secondary"
-                        Click="No_MouseLeftButtonDown"
+                        Click="Yes_MouseLeftButtonDown"
                         Content="N/A" FontFamily="Roboto" FontSize="14" FontWeight="Medium"
                         CornerRadius="2"/>
                     <UXControls:UXButton
                         Name="txtButton2" MinHeight="40" MinWidth="107"
                         Margin="0,8,0,0"
                         ButtonType="Primary"
-                        Click="Yes_MouseLeftButtonDown"
+                        Click="No_MouseLeftButtonDown"
                         Content="N/A" FontFamily="Roboto" FontSize="14" FontWeight="Medium"
                         CornerRadius="2" />
                 </StackPanel>

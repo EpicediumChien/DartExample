@@ -20,8 +20,8 @@
     <Grid>
         <Border
             Background="{DynamicResource DefaultTheme_BdBdColor}"
-            BorderBrush="{DynamicResource DefaultTheme_BdBdColor}"
-            BorderThickness="2"
+            BorderBrush="#777777"
+            BorderThickness="1"
             CornerRadius="10">
             <Grid>
                 <Grid.RowDefinitions>

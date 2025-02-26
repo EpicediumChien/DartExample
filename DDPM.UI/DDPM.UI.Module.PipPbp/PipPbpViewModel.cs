@@ -43,6 +43,14 @@ namespace DDPM.UI.Module.PipPbp
     }
     public class PipPbpViewModel : ObservableObject
     {
+        #region Private members
+        //Robert_Lin 2025-2-25, for Loading performance improvement.
+        //BackgroundWorker of RefreshData, set it as a class member to support cancellation
+        private BackgroundWorker? _bwRefreshData = null;
+        private bool _shouldRestartRefreshData = false;
+
+        #endregion Private members
+
         public HomeDevice SelectedHomeDevice;
 
         public IDeviceManagerSA DeviceManagerSA;
@@ -101,22 +109,52 @@ namespace DDPM.UI.Module.PipPbp
                 SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
             }
 
-            BackgroundWorker bw = new BackgroundWorker
+            //Robert_Lin 2025-2-25, for Loading performance improvement.
+            //BackgroundWorker created and addsign to a class member to support cancellation.
+            if (_bwRefreshData == null)
             {
-                WorkerReportsProgress = false,
-                WorkerSupportsCancellation = false
-            };
-            bw.DoWork += DoWork_RefreshData;
-            bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
+                LogInfo("@PipPbpViewModel.RefreshData() - Create BackgroundWorker");
+                _bwRefreshData = new BackgroundWorker
+                {
+                    WorkerReportsProgress = false,
+                    WorkerSupportsCancellation = true
+                };
+                _bwRefreshData.DoWork += DoWork_RefreshData;
+                _bwRefreshData.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
+            }
 
-            LogInfo("RefresData start...");
-            IsBusy = true;
-            //_mainInputSource = null;
-            bw.RunWorkerAsync();
+            if (_bwRefreshData.IsBusy)
+            {
+                LogInfo("@PipPbpViewModel.RefreshData() - Cancel runnuning BackgroundWorker");
+                _shouldRestartRefreshData = true;
+                _bwRefreshData.CancelAsync();
+            }
+            else
+            {
+                LogInfo("@PipPbpViewModel.RefreshData() - No running BackgroundWorker to cancel.");
+
+                IsBusy = true;
+                _shouldRestartRefreshData = false;
+                _bwRefreshData.RunWorkerAsync();
+            }
+
+            //OLD:
+            //BackgroundWorker bw = new BackgroundWorker
+            //{
+            //    WorkerReportsProgress = false,
+            //    WorkerSupportsCancellation = false
+            //};
+            //bw.DoWork += DoWork_RefreshData;
+            //bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
+
+            //IsBusy = true;
+            //_bwRefreshData.RunWorkerAsync();
         }
 
         private void DoWork_RefreshData(object? sender, DoWorkEventArgs e)
         {
+            LogInfo("PipPbpViewModel.DwWork_RefresData() start...");
+
             try //2024-06-19 Elie, add try catch to get exception.
             {
                 HomeDevice selHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
@@ -128,6 +166,8 @@ namespace DDPM.UI.Module.PipPbp
 
                 MonitorInfo mi = selHomeDevice.MonitorInfo;
                 LogInfo($"Monitor.AliasDeviceName={mi.AliasDeviceName}");
+
+                Stopwatch sw = Stopwatch.StartNew();
 
                 //Get the Pxp Capabilities
                 //
@@ -150,10 +190,26 @@ namespace DDPM.UI.Module.PipPbp
                 {
                     LogInfo("Get PIP/PBP Capability from MonitorInfo.CapabilityString failed.");
                 }
+                sw.Stop();
+                LogInfo($"  * GetPipPbpCapabilities elapsed {sw.ElapsedMilliseconds} msec.");
+
+                //Robert_Lin 2025-2-25, for Loading performance improvement.
+                if (_bwRefreshData != null)
+                {
+                    if (_bwRefreshData.CancellationPending)
+                    {
+                        LogInfo("DwWor_RefresData(), Step=[GetCapabilities], cancellation is detected.");
+                        e.Cancel = true;
+                        return;
+                    }
+                }
 
                 //Get current monitor's Pxp mode
                 LogInfo("@ Query CurrentPxpMode...");
+                sw.Restart();
                 ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(mi).Result;
+                sw.Stop();
+                LogInfo($"  * QueryPxpMode elapsed {sw.ElapsedMilliseconds} msec.");
                 if (ret.result)
                 {
                     //UInt64 u64 = (UInt64)ret.result;
@@ -165,6 +221,37 @@ namespace DDPM.UI.Module.PipPbp
                     Log?.Info("  => CurrentPxpMode error");
                 }
 
+                //Robert_Lin 2025-2-25, for Loading performance improvement.
+                if (_bwRefreshData != null)
+                {
+                    if (_bwRefreshData.CancellationPending)
+                    {
+                        LogInfo("DwWor_RefresData(), Step=[GetPxpMode], cancellation is detected.");
+                        e.Cancel = true;
+                        return;
+                    }
+                }
+
+                //Robert_Lin 2025-2-25, for Loading performance improvement.
+                //Move to here from ReadKvmSettings()
+                sw.Restart();
+                _isUsbKvmOn = DeviceManagerSA.GetOnUSBKVM(SelectedHomeDevice.MonitorInfo).Result;
+                _isNetworkKvmOn = DeviceManagerSA.GetOnNKVM(SelectedHomeDevice.MonitorInfo).Result;
+                OnPropertyChanged("IsUsbSwitchButtonVisible");
+                OnPropertyChanged("IsUsbSwitchButtonEnabled");
+                sw.Stop();
+                LogInfo($"  * ReadKvmSettings elapsed {sw.ElapsedMilliseconds} msec.");
+
+                if (_bwRefreshData != null)
+                {
+                    if (_bwRefreshData.CancellationPending)
+                    {
+                        LogInfo("DwWor_RefresData(), Step=[ReadKvmSettings], cancellation is detected.");
+                        e.Cancel = true;
+                        return;
+                    }
+                }
+
                 //Build  VideoSwapItems
                 //Robert_Lin, 2024-10-31, To fix PIMS, the comboBox display itemtext is not always InputSource name.
                 //For example: If user input a custom name in InputSource Module for HDMI as "To Sony TV"
@@ -172,7 +259,11 @@ namespace DDPM.UI.Module.PipPbp
                 //If user never input custom name, then is should display InputSource name, that is "HDMI"
                 //
                 //NEW Code:
+                sw.Restart();
                 Worker_RefreshInputSourceList(sender, e);
+                sw.Stop();
+                LogInfo($"  * RefreshInputSourceList elapsed {sw.ElapsedMilliseconds} msec.");
+
 
                 /*
                 LogInfo("@ Build VideoSwapItems...");
@@ -337,6 +428,12 @@ namespace DDPM.UI.Module.PipPbp
             if (e.Cancelled)
             {
                 Log?.Info("** RefreshData is cancelled.");
+                if (_shouldRestartRefreshData)
+                {
+                    Log?.Info("** Restart RefreshData...");
+                    _shouldRestartRefreshData = false;
+                    RefreshData();
+                }
                 return;
             }
             if (e.Error != null)
@@ -368,7 +465,7 @@ namespace DDPM.UI.Module.PipPbp
             }
         }
 
-        public void Invoke_RefreshInputSourceList()
+        public void Invoke_RefreshInputSourceList_Unused()
         {
             BackgroundWorker bw = new BackgroundWorker
             {
@@ -400,6 +497,8 @@ namespace DDPM.UI.Module.PipPbp
             }
 
             LogInfo("@ Refresh InputSourceList...");
+
+
             Stopwatch sw = Stopwatch.StartNew();
             sw.Start();
             Dictionary<string, InputInfo> inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(SelectedHomeDevice.MonitorInfo).Result;
@@ -407,6 +506,17 @@ namespace DDPM.UI.Module.PipPbp
             //Where the inputList example:
             // Key    InputInfo:InputName, USBUpstream, Code
             // HDMI   "To Sony TV", "USB1", 0xxy
+
+            //Robert_Lin 2025-2-25, for Loading performance improvement.
+            if (_bwRefreshData != null)
+            {
+                if (_bwRefreshData.CancellationPending)
+                {
+                    LogInfo("Worker_RefreshInputSourceList(), Step=[GetInputSourceList], cancellation is detected.");
+                    e.Cancel = true;
+                    return;
+                }
+            }
 
             //In below code section, we will build a List<VideoSwapComboBoxInputSourceItem> as the ItemSource of ComboBoxes
             //
@@ -432,6 +542,17 @@ namespace DDPM.UI.Module.PipPbp
             //Assign to ViewModel.VideoSwapItems
             //VideoSwapItems = videoSwapList;
             //OnPropertyChanged("VideoSwapItems");
+
+            //Robert_Lin 2025-2-25, for Loading performance improvement.
+            if (_bwRefreshData != null)
+            {
+                if (_bwRefreshData.CancellationPending)
+                {
+                    LogInfo("Worker_RefreshInputSourceList(), Step=[BuildInputSourceList], cancellation is detected.");
+                    e.Cancel = true;
+                    return;
+                }
+            }
 
             //Get current Main InputSource from MonitorInfo
             //
@@ -461,6 +582,17 @@ namespace DDPM.UI.Module.PipPbp
                 LogInfo($"  Set MainInputSource={_mainInputSource.DisplayName}");
             }
 
+            //Robert_Lin 2025-2-25, for Loading performance improvement.
+            if (_bwRefreshData != null)
+            {
+                if (_bwRefreshData.CancellationPending)
+                {
+                    LogInfo("Worker_RefreshInputSourceList(), Step=[FindMainInput], cancellation is detected.");
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
             //Get Sub inputs
             Log?.Info("@ Query SubInputSources...");
 
@@ -468,6 +600,16 @@ namespace DDPM.UI.Module.PipPbp
             //List<UInt16> subInputs = DdpmCommonHelper.DeviceManagerSA.GetSubInputList(mi).Result;
             List<InputSourceObj> subInputs = DdpmCommonHelper.DeviceManagerSA.GetSubInputs(SelectedHomeDevice.MonitorInfo).Result;
 
+            //Robert_Lin 2025-2-25, for Loading performance improvement.
+            if (_bwRefreshData != null)
+            {
+                if (_bwRefreshData.CancellationPending)
+                {
+                    LogInfo("Worker_RefreshInputSourceList(), Step=[QuerySubInputs], cancellation is detected.");
+                    e.Cancel = true;
+                    return;
+                }
+            }
             if (subInputs != null)
             {
                 Log?.Info($"  * SubInputSources.Count={subInputs.Count}");
@@ -1668,12 +1810,14 @@ namespace DDPM.UI.Module.PipPbp
         private bool _isUsbKvmOn = false;
         private bool _isNetworkKvmOn = false;
 
+        //Robert_Lin 2025-2-25, for Loading performance improvement.
+        //Move these code into DoWork_RefreshData()
         private void ReadKvmSettings()
         {
-            _isUsbKvmOn = DeviceManagerSA.GetOnUSBKVM(SelectedHomeDevice.MonitorInfo).Result;
-            _isNetworkKvmOn = DeviceManagerSA.GetOnNKVM(SelectedHomeDevice.MonitorInfo).Result;
-            OnPropertyChanged("IsUsbSwitchButtonVisible");
-            OnPropertyChanged("IsUsbSwitchButtonEnabled");
+            //_isUsbKvmOn = DeviceManagerSA.GetOnUSBKVM(SelectedHomeDevice.MonitorInfo).Result;
+            //_isNetworkKvmOn = DeviceManagerSA.GetOnNKVM(SelectedHomeDevice.MonitorInfo).Result;
+            //OnPropertyChanged("IsUsbSwitchButtonVisible");
+            //OnPropertyChanged("IsUsbSwitchButtonEnabled");
         }
 
         public bool ExecuteUsbSwitch()
@@ -1688,9 +1832,33 @@ namespace DDPM.UI.Module.PipPbp
 
         #endregion USB Switch
 
+        #region Module Activate/Deactivated
         public void OnActivated()
         {
-            ReadKvmSettings();
+            //Robert_Lin 2025-2-25, for Loading performance improvement.
+            //The code has been move into DoWork_RefreshData() and should has been executed
+            //ReadKvmSettings();
         }
+
+        public void OnDeactivated()
+        {
+            //Robert_Lin 2025-2-25, for Loading performance improvement.
+            if (_bwRefreshData != null)
+            {
+                if (_bwRefreshData.IsBusy)
+                {
+                    LogInfo("OnDeactivated(), Set Cancellation request.");
+                    _bwRefreshData.CancelAsync();
+                    return;
+                }
+                else
+                {
+                    LogInfo("OnDeactivated(), RefreshData() is not running.");
+                }
+            }
+
+        }
+        #endregion Module Activate/Deactivated
+
     }
 }

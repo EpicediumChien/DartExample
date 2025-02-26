@@ -44,7 +44,7 @@ namespace DDPM.UI.Plugin.ViewModels
             _log!.Info($"[SoundBarViewModel] SoundBarViewModel Start...");
             SpeakerInfoValueDTP = new SpeakerInfoValue();
             _current_soundBar = string.Empty;
-            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Speaker_DTPNotify;
+            //DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Speaker_DTPNotify;
             _debouncerSpeaker = new Debouncer(1000, ExecuteDebouncedAction);
         }
 
@@ -599,7 +599,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 return false;
 
             CurrentDeviceID = new Guid(instanceIDs);
-
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Speaker_DTPNotify;
             if (DeviceInfos[CurrentDeviceID].ModelNumber.Contains("SB725"))
             {
                 IsDTPReady = true;

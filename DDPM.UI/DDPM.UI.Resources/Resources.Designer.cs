@@ -5173,7 +5173,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 This not your primary monitor. Do you want to continue and set this as your Primary Monitor for Sync? 的當地語系化字串。
+        ///   Looks up a localized string similar to The same monitor is detected, do you want to import settings for {0}?.
         /// </summary>
         internal static string ImpExp_WarningMsg_0 {
             get {
@@ -5209,7 +5209,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Unable to import different model 的當地語系化字串。
+        ///   查詢類似 The imported monitor setting is only applicable for {0}. 的當地語系化字串。
         /// </summary>
         internal static string ImportFailMsg {
             get {
@@ -5641,7 +5641,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Easy file-sharing between PCs (Mac &amp; Windows) Securely 的當地語系化字串。
+        ///   查詢類似 Easy, secure file-sharing between PCs (Mac &amp; Windows) 的當地語系化字串。
         /// </summary>
         internal static string Kvm_30 {
             get {
@@ -5668,7 +5668,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 For Mouse and Keyboard, connect to rear of monitor (USB-A).\n Note: You can also connect other USB Peripherals such as\n Webcam. 的當地語系化字串。
+        ///   查詢類似 Connect mouse and keyboard to the rear of the monitor (USB-A). Note: You can also connect other accessories, such as a webcam, with USB. 的當地語系化字串。
         /// </summary>
         internal static string Kvm_4 {
             get {
@@ -5695,7 +5695,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Please connect a video cable and USB cable between each PC to\n the monitor. You can connect up to 4 PCs (computers, gaming\n consoles, etc). \r\n\r\nPlease select the cable type and assign a name to each source. 的當地語系化字串。
+        ///   查詢類似 Connect a video cable and USB cable between each PC to the monitor. You can connect up to 4 PCs (computers, gaming consoles, etc.). Select the cable type and assign a name to each source. 的當地語系化字串。
         /// </summary>
         internal static string Kvm_7 {
             get {
@@ -7572,6 +7572,15 @@ namespace DDPM.UI.Resources {
         internal static string Search {
             get {
                 return ResourceManager.GetString("Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Search actions 的當地語系化字串。
+        /// </summary>
+        internal static string SearchActions {
+            get {
+                return ResourceManager.GetString("SearchActions", resourceCulture);
             }
         }
         

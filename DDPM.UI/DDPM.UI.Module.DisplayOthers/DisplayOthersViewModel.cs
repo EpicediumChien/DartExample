@@ -296,8 +296,17 @@ namespace DDPM.UI.Module.DisplayOthers
                     else if (DisplayOthersModule.SelectedHomeDevice.MonitorInfo.modelName != model)
                     {
                         OnMessageDlgInvoke("close_loading");
-                        OnMessageDlgInvoke("result_fail");
+                        OnMessageDlgInvoke($"result_fail_{model}");
                         return;
+                    }
+                    else
+                    {
+                        if (!CallPrompt(model))
+                        {
+                            e.Cancel = true;
+                            OnMessageDlgInvoke("close_loading");
+                            return;
+                        }
                     }
                     //else if (DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.ServiceTag == serviceTag)
                     //{
@@ -419,6 +428,18 @@ namespace DDPM.UI.Module.DisplayOthers
             {
                 handler.Invoke(this, type);
             }
+        }
+
+        public event Func<string, bool> ImportPrompt;
+        private bool CallPrompt(string model)
+        {
+            if (ImportPrompt != null)
+            {
+                return ImportPrompt.Invoke(model);
+            }
+
+            // avoid blocking import
+            return true;
         }
 
         public void OnPropertyChanged_Lock()

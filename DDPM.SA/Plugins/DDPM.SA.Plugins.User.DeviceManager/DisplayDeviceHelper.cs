@@ -1,4 +1,5 @@
-﻿using DDPM.SA.Common;
+﻿using DDPM.QAM;
+using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Resources.Helper;
@@ -114,12 +115,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     WriteLog($"[CheckAndTriggerToastWhileMonitorPlugged] monitor list count: {mos.Count}");
                     foreach (MonitorInfo monitorInfo in mos)
                     {
+                        bool isSameModelFlag = false;
                         string model = monitorInfo.modelName;//"U2724DE";
                         string serviceTag = monitorInfo.edid.ServiceTag;
                         string desc = LangHelper.Instance["ImpExp_Message.0"]; //string table: ImpExp_Message.0
                         //
                         //Need jason to implement import/export check here
                         string exportpath = path + "\\" + model + ".json";
+                        string displayProfilePath = $"{localAppDataPath}\\Dell Display and Peripheral Manager\\Display\\{model}.json";
+                        if(devManagerSA != null)
+                            isSameModelFlag = devManagerSA.ReadSameModelAutoApplySameModelFlag(displayProfilePath, model).Result;
+                        else
+                            WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Error devManagerSA not initialized.");
                         WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] export path : " + exportpath);
                         //
                         if (File.Exists(exportpath))
@@ -131,7 +138,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (dDPMImpExpSettings.MonitorSettings != null
                                     && dDPMImpExpSettings.MonitorSettings.ServiceTag != serviceTag)
                                 {
-                                    if (dDPMImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
+                                    if (isSameModelFlag)
                                     {
                                         DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
                                         if ((int)settingsManagerDev.DisplayImportSettings(exportpath, true, serviceTag, out ImpExpSettings).Result > 0)
@@ -293,14 +300,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction]monitor[{{currentMoInfo.AliasDeviceName}};{{currentMoInfo.edid.ServiceTag}}], un-supported job: {job}");
                 return;
             }
-            ObjGetVCP obVCPValue = devManagerSA.GetVCPCapability(currentMoInfo, code, opt: 0).Result;
+            ObjGetVCP obVCPValue = devManagerSA.GetVCPCapability(currentMoInfo, code, opt: 0, priority: Priority.High).Result;
             Debug.WriteLine($"PerformHotKeyBrightnessContrastLuminanceAction,monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] ,current: code={code},value={obVCPValue.value}");
             WriteLog($"PerformHotKeyBrightnessContrastLuminanceAction,monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] ,current: code={code},value={obVCPValue.value}");
             uint targetValue = (uint)obVCPValue.value;
             uint maxLuminace = 100;
             if (job == HotkeyType.LuminanceIncrease || job == HotkeyType.LuminanceReduce)
             {
-                ObjGetVCP obMaxValue = devManagerSA.GetVCPCapability(currentMoInfo, code, opt: 1).Result;
+                ObjGetVCP obMaxValue = devManagerSA.GetVCPCapability(currentMoInfo, code, opt: 1, priority: Priority.High).Result;
                 if (obMaxValue.result)
                     maxLuminace = (uint)obMaxValue.value;
                 Debug.WriteLine($"PerformHotKeyBrightnessContrastLuminanceAction,monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] ,max Luminace value={maxLuminace}");
@@ -347,7 +354,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             }
             WriteLog($"PerformHotKeyBrightnessContrastLuminanceAction,monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] ,before SetVCPCapability:code={code}; targetValue={targetValue}");
-            bool ret = devManagerSA.SetVCPCapability(currentMoInfo, code, targetValue).Result;
+            bool ret = devManagerSA.SetVCPCapability(currentMoInfo, code, targetValue, priority: Priority.High).Result;
             WriteLog($"PerformHotKeyBrightnessContrastLuminanceAction;{job}:[{currentMoInfo.edid.ModelName}:{currentMoInfo.edid.SerialNumber}] from [{(uint)obVCPValue.value}] to [{targetValue}]" + (ret ? "success" : "fail"));
 
             if (doSync)
@@ -369,7 +376,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             targetValue = ((uint)obVCPValue.value) <= 5 ? 0 : ((uint)obVCPValue.value - 5);
                         else
                             continue;
-                        ret = devManagerSA.SetVCPCapability(mi, code, targetValue).Result;
+                        ret = devManagerSA.SetVCPCapability(mi, code, targetValue, priority: Priority.High).Result;
                         WriteLog($"{job}:[{mi.edid.ModelName}:{mi.edid.SerialNumber}] from [{(uint)obVCPValue.value}] to [{targetValue}]" + (ret ? "success" : "fail"));
                     }
                 }

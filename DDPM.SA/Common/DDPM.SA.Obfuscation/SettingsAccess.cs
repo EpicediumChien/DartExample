@@ -51,57 +51,6 @@ namespace DDPM.SA.Obfuscation
             return Convert.ToBase64String(output);
         }
 
-        /*public static bool VerifyAccessString(byte[] key, string message, string HMAC)
-        {
-            using (var HMACSha512 = new HMACSHA512(key))
-            {
-                byte[] messageBytes = Encoding.UTF8.GetBytes(message);
-                byte[] hashMessage = HMACSha512.ComputeHash(messageBytes);
-                string computedHmac = Convert.ToBase64String(hashMessage);
-                return HMAC == computedHmac;
-            }
-        }*/
-
-        //HashAlgorithmName.SHA512 as default
-        /*public static string ComputeAccessInfo2(byte[] key, string message)//, HashAlgorithmName hashAlgorithm)
-        {
-            try
-            {
-                //   key = DeriveKey();
-                HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
-                byte[] messageBytes = Encoding.UTF8.GetBytes(message);
-
-                switch (hashAlgorithm.Name)
-                {
-                    case "SHA512":
-                        {
-                            using (var hmacsha512 = new HMACSHA512(key))
-                            {
-                                byte[] hashBytes = hmacsha512.ComputeHash(messageBytes);
-                                Console.WriteLine(BitConverter.ToString(hashBytes).Replace("-", "").ToLower());
-
-                                return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
-                            }
-                        }
-                    case "SHA256":
-                        {
-                            using (var hmacsha256 = new HMACSHA256(key))
-                            {
-                                byte[] hashBytes = hmacsha256.ComputeHash(messageBytes);
-                                return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
-                            }
-                        }
-                    default:
-                        throw new Exception("Underlying HMAC mechanism must leverage HMACSHA256 or higher");
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Unable to generate HMAC: {e.Message}");
-                return "";
-            }
-        }*/
-
         private static byte[] DeriveKey(string password, byte[] salt, int iterations, int keyLength)
         {
             using (var hmac = new HMACSHA512(Encoding.UTF8.GetBytes(password)))
@@ -138,11 +87,7 @@ namespace DDPM.SA.Obfuscation
 
                     Array.Copy(buffer, 0, derivedKey, (i - 1) * buffer.Length, buffer.Length);
                 }
-                /* foreach (byte b in derivedKey)
-                 {
-                     Console.WriteLine(b + " ");
-                 }*/
-                // Console.WriteLine($"Derived Key: {Encoding.UTF8.GetString(derivedKey)} ");
+
                 return derivedKey.Take(keyLength / 2).ToArray();
             }
         }
@@ -156,35 +101,21 @@ namespace DDPM.SA.Obfuscation
             }
         }
 
-        private static (string id, string ver, string location) AppInfo { get; } = QueryAppAccessInfo();
-        //public static string AppAccessInfo { get; } = AppInfo.id;
+        private const string _registryKey = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\";
+        private const string _softwareName = "Dell Display and Peripheral Manager";
+        private const string _registryKeyUninst = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
+
+        private static (string ver, string location) AppInfo { get; } = QueryAppAccessInfo();
         public static string AppAccessVer { get; } = AppInfo.ver;
         public static string AppAccessAddr { get; } = AppInfo.location;
 
-        // ***Important***
-        //This function require system/admin privilege
-        //And return the setting file's private key for signature generate
-        private static (string id, string ver, string location) QueryAppAccessInfo()
+        public static (string ver, string location) QueryAppAccessInfo()
         {
-            //info = string.Empty;
-            if (!IsUserElevated())
-            {
-                //info = "Caller doesn't has elevated privilege";
-                return (string.Empty, string.Empty, string.Empty);
-            }
-
-            string softwareName = "Dell Display and Peripheral Manager";
-
-            // target registry path
-            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
-
-            // open and sequential read to compare.
-            //using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
-            using (RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32)) // DDPM-Setup-2.0.0.40.exe is x86-32bit
+            using (RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
             {
                 if (key != null)
                 {
-                    using (RegistryKey uninstallKey = key.OpenSubKey(registryKey))
+                    using (RegistryKey uninstallKey = key.OpenSubKey(_registryKeyUninst))
                     {
                         foreach (string subkeyName in uninstallKey.GetSubKeyNames())
                         {
@@ -196,24 +127,11 @@ namespace DDPM.SA.Obfuscation
                                     {
                                         // get value from DisplayName
                                         string displayName = subkey.GetValue("DisplayName") as string;
-                                        if (displayName != null && displayName.Trim().Equals(softwareName))
+                                        if (!string.IsNullOrEmpty(displayName) && displayName.Trim().Equals(_softwareName))
                                         {
-                                            // get value from uninstall string
-                                            //string data = subkey.GetValue("UninstallString") as string;
-                                            //if(data != null && data.Length >= 36) //format like "{fgsetyu5-5da6-5ges-9sed-s6h8deqa6358}"
-                                            {
-                                                //string output = data.ToUpper().Replace("MSIEXEC.EXE", "").Replace("{", "").Replace("}", "").Replace("-", "").Replace("/X", "").Trim();
-                                                string output = subkeyName.ToUpper().Replace("{", "").Replace("}", "").Replace("-", "").Trim();
-                                                if (output != null && output.Length == 32)
-                                                {
-                                                    string ver = subkey.GetValue("DisplayVersion") as string;
-                                                    string addr = subkey.GetValue("InstallLocation") as string;
-                                                    //info key original method: GenerateAccessString(Encoding.UTF8.GetBytes(output), softwareName)
-                                                    string infoKey = Convert.ToBase64String(DeriveKey(output, Encoding.UTF8.GetBytes(softwareName), iterations, keyLength));
-
-                                                    return (infoKey, ver, addr); //this id is used as DDPM settings private key
-                                                }
-                                            }
+                                            string ver = subkey.GetValue("DisplayVersion") as string;
+                                            string addr = subkey.GetValue("InstallLocation") as string;
+                                            return (ver, addr);
                                         }
                                     }
                                 }
@@ -224,31 +142,28 @@ namespace DDPM.SA.Obfuscation
                             }
                         }
                     }
-
-
                 }
             }
-            return (string.Empty, string.Empty, string.Empty);
+            return (string.Empty, string.Empty);
         }
-        public static bool QueryRegistryUpdateLock(out bool isUpdateLock, out string info)
-        {
-            //info = string.Empty;
-            if (!IsUserElevated())
-            {
-                //info = "Caller doesn't has elevated privilege";
-                isUpdateLock = false;
-                info = "QueryRegistryUpdateLock IsUserElevated";
-                return (false);
-            }
 
+        public static bool QueryRegistryUpdateLock(out bool isUpdateLock, out string info)
+        {     
+            //Query no need admin
+            //if (!IsUserElevated())
+            //{
+            //    //info = "Caller doesn't has elevated privilege";
+            //    isUpdateLock = false;
+            //    info = "QueryRegistryUpdateLock IsUserElevated";
+            //    return (false);
+            //}
 
             // target registry path
-            string registryKey = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\";
-
+            //string registryKey = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\";
             try
             {
                 // open and sequential read to compare.
-                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(_registryKey))
                 //using (RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32)) // DDPM-Setup-2.0.0.40.exe is x86-32bit
                 {
                     if (key != null)

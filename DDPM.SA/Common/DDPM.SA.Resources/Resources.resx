@@ -142,7 +142,7 @@
     <value>Dock UOD FW update info</value>
   </data>
   <data name="Firmware_update_unsuccessful" xml:space="preserve">
-    <value>Firmware update unsuccessful.</value>
+    <value>Firmware update unsuccessful</value>
   </data>
   <data name="Multiple_docks_are_detected" xml:space="preserve">
     <value>Multiple docks are detected. Keep only one dock connected to prevent damage to your docks.</value>
@@ -538,7 +538,7 @@
     <value>Utilizes intelligent scene analysis and facial tracking to zoom and pan the view when you move</value>
   </data>
   <data name="UpdateProgressMsg" xml:space="preserve">
-    <value>Please do not power down system until updates are complete.</value>
+    <value>Do not power down system until updates are complete</value>
   </data>
   <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
     <value>The default ICC profile is for Smart HDR. We are not able to change color preset in the</value>

@@ -853,6 +853,7 @@ namespace DDPM.SA.Common.CLI
                             {
                                 param.isTelemetryConsentOn = true;
                                 data_user.LockSettings.Lock_Settings_TelemetryConsent = true;
+                                _DeviceManagerPlugin?.InvokeGlobalSettingChangeUINotify( new UpdateUINotify() { UI_Field_Name = "TelemetryConsent_option" });
                             }
                             if (data_IT != null)
                                 data_IT.Lock_Settings_TelemetryConsent = true;
@@ -868,6 +869,7 @@ namespace DDPM.SA.Common.CLI
                             {
                                 param.isTelemetryConsentOn = false;
                                 data_user.LockSettings.Lock_Settings_TelemetryConsent = true;
+                                _DeviceManagerPlugin?.InvokeGlobalSettingChangeUINotify(new UpdateUINotify() { UI_Field_Name = "TelemetryConsent_option" });
                             }
                             if (data_IT != null)
                                 data_IT.Lock_Settings_TelemetryConsent = true;

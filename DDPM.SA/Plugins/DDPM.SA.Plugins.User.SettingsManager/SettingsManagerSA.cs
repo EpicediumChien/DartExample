@@ -114,7 +114,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         //private static List<PowerNapSetting> _present_powerNap_settings = new List<PowerNapSetting>();
         //private static string _settingsAccessInfo = string.Empty;
         private static string _settingsAccessInfoVer = string.Empty;
-        private static string _settingsAccessInfoAddr = string.Empty;
+        //no consumer, marked as no use, Dean 2025-2-25
+        //private static string _settingsAccessInfoAddr = string.Empty;
 
         private string _GlobalSetting_path { get; set; } = string.Empty;
         private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
@@ -293,9 +294,29 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             _SysSettingsPlugin.ITSettingsActionEvent += _SysSettingsPlugin_ActionEvent;
             relay_registered = true;
 
-            //_settingsAccessInfo = _SysSettingsPlugin.QueryAccessInfo().Result;
-            _settingsAccessInfoVer = _SysSettingsPlugin.QueryAccessInfoVer().Result;
-            _settingsAccessInfoAddr = _SysSettingsPlugin.QueryAccessInfoAddr().Result;
+            //fine tune ver/addr query method, Dean 2025-2-24
+            string ver = SettingsAccess.QueryAppAccessInfo().ver;
+            //upgrade may has timing issue, so get it again
+            if (!ver.Equals(_settingsAccessInfoVer, StringComparison.InvariantCultureIgnoreCase))
+            {
+                WriteLog("[DoRelayRegister] info ver not equal, get it over user");
+                _settingsAccessInfoVer = ver;
+            }
+            if (string.IsNullOrEmpty(_settingsAccessInfoVer))
+            {
+                WriteLog("[DoRelayRegister] info ver null, get it over user");
+                _settingsAccessInfoVer = SettingsAccess.QueryAppAccessInfo().ver;
+            }            
+
+            //_settingsAccessInfoAddr = _SysSettingsPlugin.QueryAccessInfoAddr().Result;
+            //if (string.IsNullOrEmpty(_settingsAccessInfoAddr))
+            //{
+            //    WriteLog("[DoRelayRegister] addr null, get it over user");
+            //    _settingsAccessInfoAddr = SettingsAccess.AppAccessAddr;
+            //}            
+            WriteLog($"[DoRelayRegister] ver:{_settingsAccessInfoVer}");
+            //end update
+
             InitDDPMUserConfigFile();
             InitColorPresetConfigFile();
             InitHotkeyConfigFile();
@@ -2106,6 +2127,15 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     try
                     {
                         _GlobalSettingParam = RunGlobalSettinDeserializeObject(strReadJson);
+
+                        //Fix new install timing issue with application version query
+                        if(string.IsNullOrEmpty(_settingsAccessInfoVer))
+                        {
+                            WriteLog($"[ReadGlobalSettings] ver is empty, query again");
+                            _settingsAccessInfoVer = SettingsAccess.QueryAppAccessInfo().ver;
+                            WriteLog($"[ReadGlobalSettings] ver result: {_settingsAccessInfoVer}");
+                        }
+
                         _GlobalSettingParam.GlobalSetting_About.SWVersion = _settingsAccessInfoVer;
                     }
                     catch (Exception)// ex)

@@ -3,6 +3,7 @@ using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
+using Dell.Client.Framework.Common;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -39,7 +40,10 @@ namespace DDPM.UI.Module.InputSource
         private InputSourceList _selectInput = new InputSourceList();
         private List<InputSourceList> _inputsList = new List<InputSourceList>();
         private string? _inputImage;
+        private BackgroundWorker? bw;
 
+        public readonly ILog _log;
+        public Guid? guid { get; set; }
         public IModuleOwner? ModuleOwner { get; set; }
         public InputSourceModule InputSourceModule { get; set; }
 
@@ -103,11 +107,12 @@ namespace DDPM.UI.Module.InputSource
 
         public void Invoke_RefreshData()
         {
-            BackgroundWorker bw = new BackgroundWorker()
+            bw = new BackgroundWorker()
             {
-                WorkerReportsProgress = false,
-                WorkerSupportsCancellation = false
+                WorkerReportsProgress = true,
+                WorkerSupportsCancellation = true
             };
+            guid = Guid.NewGuid();
             bw.DoWork += DoWork_RefreshData;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
             bw.RunWorkerAsync(); //myArg is the optional argument
@@ -138,6 +143,11 @@ namespace DDPM.UI.Module.InputSource
                 NameHColumn = "1";
                 InputTitle = Strings.InputTitle1;
 
+                if (Cancelled_RefreshData(e, bwk)) 
+                {
+                    return;
+                }
+
                 if (InputSourceModule.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E7"))
                 {
                     InputTitle = Strings.InputTitle0;
@@ -147,21 +157,26 @@ namespace DDPM.UI.Module.InputSource
                     NameHColumn = "0";
                     isUSB = true;
                 }
-                OnPropertyChanged("NameHWidth");
-                OnPropertyChanged("USBHWidth");
-                OnPropertyChanged("InputTitle");
-                OnPropertyChanged("NameHColumn");
-                OnPropertyChanged("IsUSBH");
+
+                if (Cancelled_RefreshData(e, bwk))
+                {
+                    return;
+                }
 
                 inputList = new Dictionary<string, InputInfo>();
                 try
                 {
                     inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(InputSourceModule.SelectedHomeDevice.MonitorInfo).Result;
                     usbUpstream = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstreamList(InputSourceModule.SelectedHomeDevice.MonitorInfo).Result;
+                    if (Cancelled_RefreshData(e, bwk))
+                    {
+                        return;
+                    }
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"InputSource caused crash = {ex.Message}");
+                    _log.Info($"InputSource caused crash = {ex.Message}");
                     inputList = null;
                     usbUpstream.Clear();
                 }
@@ -177,10 +192,19 @@ namespace DDPM.UI.Module.InputSource
                             inputName = item.Value.InputName,
                             //inputSourceModule = InputSourceModule,
                         });
+                        if (Cancelled_RefreshData(e, bwk))
+                        {
+                            return;
+                        }
                     }
                     InputsList = _inputsList;
-                    string currentInput = DdpmCommonHelper.DeviceManagerSA.GetCurrentInput(InputSourceModule.SelectedHomeDevice.MonitorInfo).Result;
+                    string currentInput = DdpmCommonHelper.DeviceManagerSA.GetCurrentInput(InputSourceModule.SelectedHomeDevice.MonitorInfo, (Guid)guid, Priority.Middle).Result;
+                    if (Cancelled_RefreshData(e, bwk))
+                    {
+                        return;
+                    }
                     Debug.WriteLine($"[InputSourceViewModel]currentInput : " + currentInput);
+                    _log.Info($"[InputSourceViewModel]currentInput : " + currentInput);
                     InputSourceModule.SelectedHomeDevice.MonitorInfo.inputSource = currentInput;
                     _selectInput = _inputsList.Find(x => (x.inputSource == currentInput)); //_inputsList.Find(x => (x.inputSource == InputSourceModule.SelectedHomeDevice.MonitorInfo.inputSource));
                 }
@@ -194,7 +218,10 @@ namespace DDPM.UI.Module.InputSource
                 //ListViewGridView();
                 //VcpCore.Common.InputInfo inputListInfo = new VcpCore.Common.InputInfo();
                 //inputList.Add("123", inputListInfo);
-
+                if (Cancelled_RefreshData(e, bwk))
+                {
+                    return;
+                }
                 items = new ObservableCollection<Item>();
                 ObservableCollection<string> USBUpstream_ItemsCollection = new ObservableCollection<string>();
                 if (inputList.Count != 0)
@@ -202,6 +229,10 @@ namespace DDPM.UI.Module.InputSource
                     foreach (var item in usbUpstream)
                     {
                         USBUpstream_ItemsCollection.Add(item.ToString());
+                        if (Cancelled_RefreshData(e, bwk))
+                        {
+                            return;
+                        }
                     }
                     int j = 0;
                     foreach (var input in inputList)
@@ -209,29 +240,6 @@ namespace DDPM.UI.Module.InputSource
                         string strtUpstream = String.Empty;
                         InputSourceImage = InputTypeCommon.GetInputImage(input.Key);
                         input.Value.USBUpstream = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstream(InputSourceModule.SelectedHomeDevice.MonitorInfo, input.Key).Result;
-                        //if (input.Key.StartsWith("VGA"))
-                        //{
-                        //    InputSourceImage = "M3 0C1.34315 0 0 1.34315 0 3V17C0 18.6569 1.34314 20 3 20H46.3333C47.9902 20 49.3333 18.6569 49.3333 17V3C49.3333 1.34315 47.9902 0 46.3333 0H3ZM7.97651 2.66667C6.65025 2.66667 5.69131 3.934 6.05181 5.21032L9.06472 15.877C9.30806 16.7385 10.0942 17.3333 10.9894 17.3333H38.3437C39.2389 17.3333 40.0251 16.7385 40.2684 15.877L43.2815 5.21034C43.642 3.93402 42.6831 2.66667 41.3568 2.66667H7.97651ZM48 10C48 11.1046 47.1046 12 46 12C44.8954 12 44 11.1046 44 10C44 8.89543 44.8954 8 46 8C47.1046 8 48 8.89543 48 10ZM3.33333 12C4.4379 12 5.33333 11.1046 5.33333 10C5.33333 8.89543 4.4379 8 3.33333 8C2.22876 8 1.33333 8.89543 1.33333 10C1.33333 11.1046 2.22876 12 3.33333 12Z";
-                        //}
-                        //else if (input.Key.StartsWith("DVI"))
-                        //{
-                        //    InputSourceImage = "M2 0C0.895431 0 0 0.895431 0 2V18C0 19.1046 0.895431 20 2 20H42C43.1046 20 44 19.1046 44 18V2C44 0.895431 43.1046 0 42 0H2ZM36 4H8V16H36V4ZM5 10C5 11.1046 4.10457 12 3 12C1.89543 12 1 11.1046 1 10C1 8.89543 1.89543 8 3 8C4.10457 8 5 8.89543 5 10ZM41 12C42.1046 12 43 11.1046 43 10C43 8.89543 42.1046 8 41 8C39.8954 8 39 8.89543 39 10C39 11.1046 39.8954 12 41 12Z";
-                        //}
-                        //else if (input.Key.StartsWith("HDMI"))
-                        //{
-                        //    //InputSourceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/HDMI.png");
-                        //    InputSourceImage = "M2.5 0.197266C1.39543 0.197266 0.5 1.0927 0.5 2.19727V6.58877C0.5 7.27835 0.855239 7.91929 1.44 8.28477L12.0136 14.8933C12.3315 15.0919 12.6988 15.1973 13.0736 15.1973H39.9264C40.3012 15.1973 40.6685 15.0919 40.9864 14.8933L51.56 8.28477C52.1448 7.91929 52.5 7.27835 52.5 6.58877V2.19727C52.5 1.0927 51.6046 0.197266 50.5 0.197266H2.5ZM14 7.19727C13.7239 7.19727 13.5 7.42112 13.5 7.69727C13.5 7.97341 13.7239 8.19727 14 8.19727H40C40.2761 8.19727 40.5 7.97341 40.5 7.69727C40.5 7.42112 40.2761 7.19727 40 7.19727H14Z";
-                        //}
-                        //else if (input.Key.StartsWith("USB-C") || input.Key.StartsWith("Thunderbolt"))
-                        //{
-                        //    //InputSourceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USB-C.png");
-                        //    InputSourceImage = "M6 0.394531C2.96243 0.394531 0.5 2.85697 0.5 5.89453C0.5 8.9321 2.96243 11.3945 6 11.3945H25C28.0376 11.3945 30.5 8.9321 30.5 5.89453C30.5 2.85697 28.0376 0.394531 25 0.394531H6ZM7 5.39453C6.72386 5.39453 6.5 5.61839 6.5 5.89453C6.5 6.17067 6.72386 6.39453 7 6.39453H24C24.2761 6.39453 24.5 6.17067 24.5 5.89453C24.5 5.61839 24.2761 5.39453 24 5.39453H7Z";
-                        //}
-                        //else if (input.Key.StartsWith("DisplayPort"))
-                        //{
-                        //    //InputSourceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/DP.png");
-                        //    InputSourceImage = "M2.5 0.183594C1.39543 0.183594 0.5 1.07902 0.5 2.18359V9.55121C0.5 10.2537 0.868598 10.9048 1.47101 11.2662L7.52498 14.8986C7.83581 15.0851 8.19148 15.1836 8.55397 15.1836H50.5C51.6046 15.1836 52.5 14.2882 52.5 13.1836V7.68359V2.18359C52.5 1.07902 51.6046 0.183594 50.5 0.183594H2.5ZM14 7.18359C13.7239 7.18359 13.5 7.40745 13.5 7.68359C13.5 7.95974 13.7239 8.18359 14 8.18359H40C40.2761 8.18359 40.5 7.95974 40.5 7.68359C40.5 7.40745 40.2761 7.18359 40 7.18359H14Z";
-                        //}
                         if (isUSB)
                         {
                             if (j == 0)
@@ -286,6 +294,10 @@ namespace DDPM.UI.Module.InputSource
                                 NoGrey = true
                             });
                         }
+                        if (Cancelled_RefreshData(e, bwk))
+                        {
+                            return;
+                        }
                         if (!String.IsNullOrEmpty(input.Value.USBUpstream))
                         {
                             int k = 0;
@@ -298,11 +310,24 @@ namespace DDPM.UI.Module.InputSource
                                     break;
                                 }
                                 k++;
+                                if (Cancelled_RefreshData(e, bwk))
+                                {
+                                    return;
+                                }
                             }
                         }
                         j++;
+                        if (Cancelled_RefreshData(e, bwk))
+                        {
+                            return;
+                        }
                     }
                 }
+                OnPropertyChanged("NameHWidth");
+                OnPropertyChanged("USBHWidth");
+                OnPropertyChanged("InputTitle");
+                OnPropertyChanged("NameHColumn");
+                OnPropertyChanged("IsUSBH");
                 OnPropertyChanged("Items_Selected");
                 OnPropertyChanged("items"); //0607 Jason
 
@@ -325,8 +350,31 @@ namespace DDPM.UI.Module.InputSource
             IsBusy = false;
         }
 
+        private bool Cancelled_RefreshData(DoWorkEventArgs e, BackgroundWorker bw)
+        {
+            if (bw.CancellationPending)
+            {
+                Debug.WriteLine("[InputSource] Cancelled_RefreshData.");
+                _log.Info("[InputSource] Cancelled_RefreshData.");
+                e.Cancel= true;
+                return true;
+            }
+            return false;
+        }
+
+        public void CallCancel()
+        {
+            if (bw.IsBusy)
+            {
+                _log.Info("[InputSource] CallCancel.");
+                bw.CancelAsync();
+                DdpmCommonHelper.DeviceManagerSA.CancelVcpTask((Guid)guid);
+            }
+        }
+
         public InputSourceViewModel()
         {
+            _log = DdpmCommonHelper.MyConsole.CreateLog("InputSourceView");
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 //OSD/VCP control back event
@@ -427,6 +475,7 @@ namespace DDPM.UI.Module.InputSource
                     {
                         string strtUpstream = String.Empty;
                         InputSourceImage = InputTypeCommon.GetInputImage(input.Key);
+                        input.Value.USBUpstream = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstream(InputSourceModule.SelectedHomeDevice.MonitorInfo, input.Key).Result;
                         if (j == 0)
                         {
                             items.Add(new Item()
