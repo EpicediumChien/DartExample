@@ -1808,7 +1808,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _supportedAnswerCalls = false;
                     DeviceInfoDTP.IsAnswerCallSupported = false;
                     DeviceInfoDTP.AnswerCall = false;
-                    if (Model == "WH3024" && Model == "WL3024" && Model == "WH5024")
+                    if (Model == "WH3024" || Model == "WL3024" || Model == "WH5024")
                     {
                         System.Windows.Application.Current.Dispatcher.Invoke(() =>
                         {
