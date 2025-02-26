@@ -1168,7 +1168,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Updating firmware. Do not remove or power off the device. Leave the device undisturbed.
+        ///   Looks up a localized string similar to Updating firmware. Do not remove or power off the device. Leave the device undisturbed..
         /// </summary>
         internal static string Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed {
             get {

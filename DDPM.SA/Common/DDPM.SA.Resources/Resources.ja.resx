@@ -204,9 +204,6 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>アプリケーションを開くことができませんでした</value>
   </data>
-  <data name="will_be_updated_to" xml:space="preserve">
-    <value>が次にアップデートされます: </value>
-  </data>
   <data name="can_be_updated_to" xml:space="preserve">
     <value>を次にアップデートできます:</value>
   </data>
@@ -286,7 +283,7 @@
     <value>ソフトウェアをアップデートしています。このパソコンの電源を切らないでください。</value>
   </data>
   <data name="Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed" xml:space="preserve">
-    <value>ファームウェアをアップデートしています。デバイスを取り外したり、電源を切ったりせず、そのままにしておいてください</value>
+    <value>ファームウェアをアップデートしています。デバイスを取り外したり、電源を切ったりせず、そのままにしておいてください。</value>
   </data>
   <data name="Unable_to_detect_target_device" xml:space="preserve">
     <value>ターゲット デバイスを検出できません</value>
@@ -435,7 +432,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>Caps Lockオン</value>
   </data>
-  <data name="Caps Lock Off" xml:space="preserve">
+  <data name="Caps_Lock_Off" xml:space="preserve">
     <value>Caps Lockオフ</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -477,9 +474,6 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>退席中ロック</value>
   </data>
-  <data name="Caps_Lock_Off" xml:space="preserve">
-    <value>Caps Lockオフ</value>
-  </data>
   <data name="App_Name" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
   </data>
@@ -500,6 +494,12 @@
   </data>
   <data name="Unable_to_synchronize_the_corresponding_ICC_profile" xml:space="preserve">
     <value>対応するICCプロファイルを同期できません</value>
+  </data>
+  <data name="will_be_updated_to" xml:space="preserve">
+    <value>が次にアップデートされます: </value>
+  </data>
+  <data name="Caps Lock Off" xml:space="preserve">
+    <value>Caps Lockオフ</value>
   </data>
   <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
     <value>このカスタム レイアウトに関連付けられたEasy Memoryプロファイルがあります。\nこのカスタム レイアウトを保存すると、関連付けられているすべてのプロファイルのレイアウトがアップデートされます。\nレイアウトを保存しますか？</value>
