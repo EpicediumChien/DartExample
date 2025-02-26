@@ -45,14 +45,16 @@
                                             Grid.Column="1"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center">
-                                        <Path Data="M9 1.125C13.3313 1.125 16.875 4.66875 16.875 9C16.875 13.3312 13.3313 16.875 9 16.875C4.66875 16.875 1.125 13.3312 1.125 9C1.125 4.66875 4.66875 1.125 9 1.125ZM9 0C4.05 0 0 4.05 0 9C0 13.95 4.05 18 9 18C13.95 18 18 13.95 18 9C18 4.05 13.95 0 9 0Z" Fill="white" />
-                                        <Path Data="M9.5625 7.3125L8.4375 7.3125L8.4375 14.2875L9.5625 14.2875L9.5625 7.3125Z" Fill="white" />
-                                        <Path Data="M9 5.40039C9.46599 5.40039 9.84375 5.02263 9.84375 4.55664C9.84375 4.09065 9.46599 3.71289 9 3.71289C8.53401 3.71289 8.15625 4.09065 8.15625 4.55664C8.15625 5.02263 8.53401 5.40039 9 5.40039Z" Fill="white" />
+                                                            <!-- Robert_Lin 2025-2-26 found it use static color (White), change it to DynamicResource -->
+                                        <Path Data="M9 1.125C13.3313 1.125 16.875 4.66875 16.875 9C16.875 13.3312 13.3313 16.875 9 16.875C4.66875 16.875 1.125 13.3312 1.125 9C1.125 4.66875 4.66875 1.125 9 1.125ZM9 0C4.05 0 0 4.05 0 9C0 13.95 4.05 18 9 18C13.95 18 18 13.95 18 9C18 4.05 13.95 0 9 0Z" Fill="{DynamicResource InfoIconColor}" />
+                                        <Path Data="M9.5625 7.3125L8.4375 7.3125L8.4375 14.2875L9.5625 14.2875L9.5625 7.3125Z" Fill="{DynamicResource InfoIconColor}" />
+                                        <Path Data="M9 5.40039C9.46599 5.40039 9.84375 5.02263 9.84375 4.55664C9.84375 4.09065 9.46599 3.71289 9 3.71289C8.53401 3.71289 8.15625 4.09065 8.15625 4.55664C8.15625 5.02263 8.53401 5.40039 9 5.40039Z" Fill="{DynamicResource InfoIconColor}" />
                                     </Grid>
                                 </Grid>
                                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
                                     <TextBlock
                         FontFamily="Roboto"
+                                        Focusable="True" KeyboardNavigation.TabIndex="102"
                         FontSize="13">
                         <Run Text="{Binding [ColorMsg.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                         <Hyperlink Click="Hyperlink_Click">
@@ -84,7 +86,16 @@
                         <!--
                         <Expander x:Name="Expander_Manual" Style="{StaticResource GroupExpanderStyle}" Expanded="expanderHasExpanded">
                         -->
-                        <Expander x:Name="Expander_Manual" Style="{StaticResource RightExpanderStyle}" Expanded="expanderHasExpanded" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}"  >
+                        <!-- Robert_Lin 2025-2-26 For Narrator
+                        If Expander KeyboardNavigation.TabNavigation="Cycle", then the [Tab] navigation will be cycled inside the expander.
+                        For example, if the focus is on the last control of the expander, press [Tab] will move the focus to the first control of the expander.
+                        Suggest to change "Cycle" to "Continue".
+                        
+                        -->
+                        <Expander x:Name="Expander_Manual" Style="{StaticResource RightExpanderStyle}" Expanded="expanderHasExpanded" 
+                                  KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" 
+                                  KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" 
+                                  PreviewKeyDown="colorManualExpander_PreviewKeyDown"  >
                             <Expander.Header>
                                 <!-- Group Header: Manual-->
                                 <Grid Height="60">
@@ -96,6 +107,7 @@
 
                                     <UXControls:UXTextBlock Margin="30,0,0,0" Text="{Binding [Manual], Source={x:Static lang:LangHelper.Instance}}" FontSize="20"
                                                             TextBlockType="Caption"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="110"
                                                             Background="{DynamicResource Transparent}"
                                                             VerticalAlignment="Center" HorizontalAlignment="Left" />
 
@@ -134,6 +146,8 @@
 
                                             <UXControls:UXTextBlock Text="{Binding [Color.6], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" FontSize="16"
                                                                     TextBlockType="Display1"
+                                                                    Name="labelColorManualProfile" Focusable="True"
+                                                                    KeyboardNavigation.TabIndex="115"
                                                                     Background="{DynamicResource Transparent}"
                                                                     VerticalAlignment="Center" HorizontalAlignment="Left" />
 
@@ -147,11 +161,19 @@
                                             ItemsSource="{Binding ColorPresets_ItemsCollection}"
                                             SelectionChanged="cbManualPreset_SelectionChanged" />
                                             -->
+                                            
+                                            <!-- Robert_Lin 2025-2-26 for Narrator Try to modify KeyboardNavigation.* properties
+                                            OLD:
+                                            KeyboardNavigation.TabNavigation="{Binding TabNavigation}"
+                                            -->
                                             <ComboBox x:Name="cbManualPreset" Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
                                                     Width="184"
+                                                      KeyboardNavigation.TabIndex="116"
+                                                      AutomationProperties.LabeledBy="{Binding ElementName=labelColorManualProfile}"
                                                     SelectionChanged="cbManualPreset_SelectionChanged"
                                                     ItemsSource="{Binding ColorPresets_ItemsCollection}"
-                                                    SelectedIndex="{Binding ColorPresetSelectedIndex}" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
+                                                    SelectedIndex="{Binding ColorPresetSelectedIndex}"
+                                                      IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
                                         </Grid>
                                     </Border>
                                     <Border Opacity="0.6"  Visibility="{Binding LockMaskVisible}"/>
@@ -167,7 +189,10 @@
                         Opacity="{Binding ColorOpacity}"
                         Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0">
 
-                        <Expander  x:Name="Expander_Auto" Style="{StaticResource RightExpanderStyle}" Expanded="expanderHasExpanded" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" >
+                        <Expander  x:Name="Expander_Auto" Style="{StaticResource RightExpanderStyle}" Expanded="expanderHasExpanded"
+                                   KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" 
+                                   KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" 
+                                   KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" PreviewKeyDown="colorAutoExpander_PreviewKeyDown" >
                             <Expander.Header>
                                 <!-- Group Header: Auto-->
                                 <Grid Height="60">
@@ -179,6 +204,7 @@
 
                                     <UXControls:UXTextBlock  Margin="30,0,0,0" Text="{Binding [Auto], Source={x:Static lang:LangHelper.Instance}}" FontSize="20"
                                                             TextBlockType="Caption"
+                                                             Focusable="True" KeyboardNavigation.TabIndex="130"
                                                             VerticalAlignment="Center" HorizontalAlignment="Left" />
                                     <Image Grid.Column="1" Visibility="{Binding LockMaskVisible}" 
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
@@ -208,6 +234,7 @@
 
                                             <UXControls:UXTextBlock Text="{Binding [Color.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="16"
                                                                     TextBlockType="Display1"
+                                                                    Focusable="True" KeyboardNavigation.TabIndex="135"
                                                                     VerticalAlignment="Center" HorizontalAlignment="Left" />
 
                                             <!-- RightPartBorder.App -->
@@ -216,6 +243,7 @@
                                                     <ListBox Background="{DynamicResource DefaultTheme_ListBoxBkColor}"
                                                              Margin="8" Grid.Row="1"
                                                              x:Name="lb_AppList"
+                                                             KeyboardNavigation.TabIndex="136"
                                                              ItemsSource="{Binding AppsList, UpdateSourceTrigger=PropertyChanged}"
                                                              HorizontalContentAlignment="Stretch"
                                                              ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -265,6 +293,7 @@
 
                                                                     <TextBlock Grid.Column="1" x:Name="appName"
                                                                                Text="{Binding AppName , UpdateSourceTrigger=PropertyChanged}"
+                                                                               Focusable="True"
                                                                                VerticalAlignment="Center" HorizontalAlignment="Left"
                                                                                Foreground="{DynamicResource DefaultTheme_TxtColor}" />
 
@@ -303,6 +332,7 @@
                                                     </ListBox>
 
                                                     <UXControls:UXButton Name="btn_AddApp" Grid.Row="2" Content="{Binding [Color.0], Source={x:Static lang:LangHelper.Instance}}"
+                                                                         KeyboardNavigation.TabIndex="137"
                                                                          ButtonType="Secondary" ButtonSemanticColorType="Neutral" HorizontalAlignment="Center"
                                                                          Style="{StaticResource UXButton_WhiteFrame}" Padding="24,8" Click="btn_AddApp_Click" 
                                                                          KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" 
@@ -345,11 +375,17 @@
                                     <ColumnDefinition Width="auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Text="{Binding [Color.8], Source={x:Static lang:LangHelper.Instance}}"  FontSize="14" FontFamily="Noto Sans" VerticalAlignment="Center" Grid.Column="0" Margin="16,0,0,0" HorizontalAlignment="Left" />
+                                <TextBlock Text="{Binding [Color.8], Source={x:Static lang:LangHelper.Instance}}"  FontSize="14" FontFamily="Noto Sans" VerticalAlignment="Center" 
+                                           Focusable="True" KeyboardNavigation.TabIndex="150"
+                                           Grid.Column="0" Margin="16,0,0,0" HorizontalAlignment="Left" />
                                 <TextBlock Text="(" Grid.Column="1"  FontFamily="Noto Sans" FontSize="14" VerticalAlignment="Center"  HorizontalAlignment="Center" />
-                                <TextBlock Text="{Binding NightlightStatus}" Grid.Column="2" VerticalAlignment="Center" FontFamily="Noto Sans" FontSize="14" HorizontalAlignment="Center" />
+                                <TextBlock Text="{Binding NightlightStatus}" Grid.Column="2" VerticalAlignment="Center" FontFamily="Noto Sans" FontSize="14" HorizontalAlignment="Center" 
+                                           Focusable="True" KeyboardNavigation.TabIndex="152"/>
                                 <TextBlock Text=")" Grid.Column="3" FontFamily="Noto Sans" FontSize="14" VerticalAlignment="Center"  HorizontalAlignment="Center" />
 
+                                <!-- Robert_Lin, change the to Drawing (ContentControl) from a static Image
+                                OLD:
+                                
                                 <Image Grid.Column="4" Stretch="None" Margin="10,0,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
                                     <Image.ToolTip>
                                         <ToolTip Placement="Center" VerticalOffset="45">
@@ -365,10 +401,24 @@
                                             </Border>
                                         </ToolTip>
                                     </Image.ToolTip>
-                                </Image>
+                                
+                                -->
+                                <Border Grid.Column="4" Margin="10,0,0,0"
+                                    ToolTipService.Placement="Center" ToolTipService.VerticalOffset="40" Background="{StaticResource FakeTransparent}">
+                                    <ContentControl Template="{StaticResource icon_Info}" Width="16" Height="16"/>
+                                    <Border.ToolTip>
+                                        <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <TextBlock Text="{Binding [Color.9], Source={x:Static lang:LangHelper.Instance}}"
+                                                           Style="{StaticResource Tooltip_TextBlockStyle}" />
+                                            </Border>
+                                        </ToolTip>
+                                    </Border.ToolTip>
+                                </Border>
                             </Grid>
                             <UXControls:UXLink Name="nightlight_config" Grid.Column="1" Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="nightlight_config_Click"
                                                IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary"
+                                               KeyboardNavigation.TabIndex="156"
                                                LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z"
                                                HorizontalAlignment="Right" VerticalAlignment="Center" Height="40">
                                 <UXControls:UXLink.Resources>
@@ -391,7 +441,7 @@
                         -->
                         <Expander x:Name="Expander_Advanced_Settings"  Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}" 
                                   KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}"
-                                  KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" >
+                                  KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" PreviewKeyDown="advancedSettingsExpander_PreviewKeyDown" >
                             <Expander.Header>
                                 <!-- Group Header:  Advanced Settings-->
                                 <!-- Robert_Lin 2025-1-14 PIMS-333569] L10N: i18N: DDPM 2.0: GUI: TP1: es-ES, es-XL, it-IT, pt-PT, pt-BR, ua-UK: Clipping found in stringID: AdvancedSettings
@@ -417,6 +467,7 @@
                                     <UXControls:UXTextBlock  Margin="0,0,8,0" 
                                                              Text="{Binding [AdvancedSettings], Source={x:Static lang:LangHelper.Instance}}" FontSize="15" 
                                                             TextBlockType="Caption" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
+                                                             Focusable="True" KeyboardNavigation.TabIndex="160"
                                                             VerticalAlignment="Center" HorizontalAlignment="Left" />
                                     
                                     <!-- Robert_Lin 2025-1-14 Change the Icon from Image to ContentControl, which use Path to draw the LockIcon to meet Light mode requirements.
@@ -497,8 +548,14 @@
 
                                             <Grid Grid.Column="1" Grid.Row="0"  Margin="0,0,0,0">
                                                 <StackPanel Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="left">
-                                                    <TextBlock Text="{Binding [Color.11], Source={x:Static lang:LangHelper.Instance}}"  FontSize="14" FontFamily="Noto Sans" VerticalAlignment="Center" Grid.Column="0" Margin="16,0,0,0" HorizontalAlignment="Left" />
+                                                    <TextBlock Text="{Binding [Color.11], Source={x:Static lang:LangHelper.Instance}}"  FontSize="14" FontFamily="Noto Sans" 
+                                                               Focusable="True" KeyboardNavigation.TabIndex="165"
+                                                               Name="labelColorManagement"
+                                                               VerticalAlignment="Center" Grid.Column="0" Margin="16,0,0,0" HorizontalAlignment="Left" />
 
+                                                    <!-- Robert_Lin 2025-1-14 Change the Icon from Image to ContentControl, which use Path to draw the LockIcon to meet Light mode requirements.
+                                                    OLD:
+                                                    
                                                     <Image Grid.Column="1" Stretch="None" Margin="10,0,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
                                                         <Image.ToolTip>
                                                             <ToolTip Placement="Center" VerticalOffset="45" HorizontalOffset="50">
@@ -515,6 +572,19 @@
                                                             </ToolTip>
                                                         </Image.ToolTip>
                                                     </Image>
+                                                     -->
+                                                    <Border Grid.Column="1" Margin="10,0,0,0"
+                                                            ToolTipService.Placement="Center" ToolTipService.VerticalOffset="40" Background="{StaticResource FakeTransparent}">
+                                                        <ContentControl Template="{StaticResource icon_Info}" Width="16" Height="16"/>
+                                                        <Border.ToolTip>
+                                                            <ToolTip Placement="Top" VerticalOffset="45" HorizontalOffset="50">
+                                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                    <TextBlock Text="{Binding [Color.12], Source={x:Static lang:LangHelper.Instance}}"
+                                                                               Style="{StaticResource Tooltip_TextBlockStyle}" />
+                                                                </Border>
+                                                            </ToolTip>
+                                                        </Border.ToolTip>
+                                                    </Border>
                                                 </StackPanel>
                                             </Grid>
 
@@ -526,7 +596,8 @@
                                                     HorizontalAlignment="Right"
                                                     VerticalAlignment="Center"
                                                     VerticalContentAlignment="Center"
-                                                    AutomationProperties.Name="ToggleSwitchLeft"
+                                                    KeyboardNavigation.TabIndex="168"
+                                                    AutomationProperties.LabeledBy="{Binding ElementName=labelColorManagement}"
                                                     Click="Color_Management_Switch_Click"
                                                     ContentPlacement="Left"
                                                     ContentTextVisibility="True" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
@@ -537,6 +608,7 @@
                                                                            Content="{Binding [Color.3], Source={x:Static lang:LangHelper.Instance}}"  FontSize="14"
                                                                            Click="rb_ICCprofile_based_Colorpreset_click" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" 
                                                                            IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" 
+                                                                           KeyboardNavigation.TabIndex="171" 
                                                                            KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
                                             </Grid>
 
@@ -571,14 +643,16 @@
                                                                                FontSize="14" Click="rb_Colorpreset_based_ICCprofile_click" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" 
                                                                                IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" 
                                                                                VerticalAlignment="Top" 
+                                                                                KeyboardNavigation.TabIndex="172" 
                                                                                KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" >
                                                         <UXControls:UXTextBlock TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="14">
                                                             <Run Text="{Binding [Color.4], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
                                                                  Foreground="{Binding ElementName=rb_Colorpreset_based_ICCprofile, Path=Foreground}"/>
                                                             <UXControls:UXHyperlink ColorScheme="Primary" IconPosition="None" Margin="0,0,0,-4"
                                                                                     HyperlinkText="{Binding [Color.5], Source={x:Static lang:LangHelper.Instance}}"
+                                                                                    KeyboardNavigation.TabIndex="173" Focusable="True"
                                                                                     IsEnabled="{Binding ElementName=rb_Colorpreset_based_ICCprofile, Path=IsEnabled}"
-                                                                                    Command="{Binding ICC_profile_hyperlink_ClickCommand}"
+                                                                                    Command="{Binding ICC_profile_hyperlink_ClickCommand}" PreviewKeyDown="iccProfileHyperlink_PreviewKeyDown"
                                                                                     />
                                                          </UXControls:UXTextBlock>
                                                     </UXControls:UXRadioButton>

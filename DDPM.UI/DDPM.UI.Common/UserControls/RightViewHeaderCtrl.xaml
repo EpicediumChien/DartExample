@@ -25,7 +25,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Text1, Mode=TwoWay}" Focusable="True">
+                        <TextBlock Grid.Column="0" Text="{Binding Text1, Mode=TwoWay}" Focusable="True" KeyboardNavigation.TabIndex="71">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
                                     <Style.Triggers>
@@ -75,7 +75,7 @@
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
                         <!--Chewlin 20250116 Fix pip/pbp Clipping issue ADD TextTrimming="CharacterEllipsis" Padding="10,0,10,0"-->
-                        <TextBlock Grid.Column="0" Text="{Binding Text2, Mode=TwoWay}" TextTrimming="CharacterEllipsis" Padding="10,0,10,0" Focusable="True">
+                        <TextBlock Grid.Column="0" Text="{Binding Text2, Mode=TwoWay}" TextTrimming="CharacterEllipsis" Padding="10,0,10,0" Focusable="True" KeyboardNavigation.TabIndex="72">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
                                     <Style.Triggers>
@@ -124,7 +124,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Text3, Mode=TwoWay}" Focusable="True">
+                        <TextBlock Grid.Column="0" Text="{Binding Text3, Mode=TwoWay}" Focusable="True"  KeyboardNavigation.TabIndex="73">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
                                     <Style.Triggers>
