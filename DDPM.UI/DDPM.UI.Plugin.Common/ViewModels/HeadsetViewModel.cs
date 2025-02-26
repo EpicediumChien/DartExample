@@ -1808,10 +1808,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     _supportedAnswerCalls = false;
                     DeviceInfoDTP.IsAnswerCallSupported = false;
                     DeviceInfoDTP.AnswerCall = false;
-                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                    if (Model == "WH3024" && Model == "WL3024" && Model == "WH5024")
                     {
-                        HeadsetGroupChanged?.Invoke(this, EventArgs.Empty);
-                    });
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            HeadsetGroupChanged?.Invoke(this, EventArgs.Empty);
+                        });
+                    }
                     _log.Info($"[HeadsetViewModel] DTP DeviceInfoDTP.AnswerCall ............. NO");
                 }
                 //------------------------------------------------------------------------------------
@@ -2043,6 +2046,48 @@ namespace DDPM.UI.Plugin.ViewModels
                     DeviceInfoDTP.WearDetectionFromDTP = false;
                     DeviceInfoDTP.WearDetection = 0;
                     _log.Info($"[HeadsetViewModel] DTH GetIsWearDetectionSupportedAsync ............. NO");
+                }
+                //-----------------------------------------------------------------------------------------
+                if (CurrentDeviceInfo.FirmwareVersion != "" && CurrentDeviceInfo.FirmwareVersion != string.Empty)
+                {
+                    string resultFW = CurrentDeviceInfo.FirmwareVersion.Replace(".", "");
+                    int fwv = int.Parse(resultFW);
+                    if (Model == "WH3024" || Model == "WL3024" || Model == "WH5024")
+                    {
+                        int fwvThreshold = 0;
+
+                        switch (Model)
+                        {
+                            case "WH3024":
+                                fwvThreshold = 278;
+                                break;
+                            case "WH5024":
+                                fwvThreshold = 227;
+                                break;
+                            case "WL3024":
+                                fwvThreshold = 1104;
+                                break;
+                        }
+
+                        if (fwv > fwvThreshold)
+                        {
+                            _supportedAnswerCalls = true;
+                            DeviceInfoDTP.IsAnswerCallSupported = true;
+                            DeviceInfoDTP.AnswerCall = true;
+                            _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.AnswerCall .............= {DeviceInfoDTP.AnswerCall.ToString()}");
+                        }
+                        else
+                        {
+                            _supportedAnswerCalls = false;
+                            DeviceInfoDTP.IsAnswerCallSupported = false;
+                            DeviceInfoDTP.AnswerCall = false;
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                HeadsetGroupChanged?.Invoke(this, EventArgs.Empty);
+                            });
+                            _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.AnswerCall ............. NO");
+                        }
+                    }
                 }
 
                 DeviceInfoDTP.SidetoneLevel = CurrentDeviceInfo!.SidetoneLevel;
