@@ -55,7 +55,7 @@ namespace DDPM.SA.Common.Display
         }
         #endregion ctor and create new instance
 
-        public string ToString()
+        public override string ToString()
         {
             return $"{CellCount}{SplitKey}[{Double_To_String(Settings)}],{CustomId}[{CustomName}]";
         }
