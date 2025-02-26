@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>No se ha podido abrir la aplicación</value>
   </data>
-  <data name="will_be_updated_to" xml:space="preserve">
+    <data name="will_be_updated_to" xml:space="preserve">
     <value>se actualizará a </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -286,7 +286,7 @@
     <value>El software se está actualizando. No apague este PC.</value>
   </data>
   <data name="Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed" xml:space="preserve">
-    <value>El firmware se está actualizando. No retire ni apague el dispositivo. Deje el dispositivo sin interrupciones</value>
+    <value>El firmware se está actualizando. No retire ni apague el dispositivo. Deje el dispositivo sin interrupciones.</value>
   </data>
   <data name="Unable_to_detect_target_device" xml:space="preserve">
     <value>No se puede detectar el dispositivo de destino</value>
@@ -435,7 +435,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>Bloq Mayús activado</value>
   </data>
-  <data name="Caps Lock Off" xml:space="preserve">
+    <data name="Caps Lock Off" xml:space="preserve">
     <value>Bloq Mayús desactivado</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -477,7 +477,7 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Bloquear al alejarse</value>
   </data>
-  <data name="Caps_Lock_Off" xml:space="preserve">
+    <data name="Caps_Lock_Off" xml:space="preserve">
     <value>Bloq Mayús desactivado</value>
   </data>
   <data name="App_Name" xml:space="preserve">
@@ -538,6 +538,9 @@
     <value>Utiliza análisis inteligente de la escena y seguimiento facial para ampliar/reducir y desplazar la vista cuando se mueve</value>
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Seconds" xml:space="preserve">
     <value />
   </data>
 </root>

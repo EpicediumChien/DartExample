@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Не удалось открыть приложение</value>
   </data>
-  <data name="will_be_updated_to" xml:space="preserve">
+    <data name="will_be_updated_to" xml:space="preserve">
     <value>будет обновлено до </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -286,7 +286,7 @@
     <value>Обновление программного обеспечения. Не выключайте этот ПК.</value>
   </data>
   <data name="Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed" xml:space="preserve">
-    <value>Обновление микропрограммы. Не извлекайте и не выключайте устройство. Не перемещайте устройство</value>
+    <value>Обновление микропрограммы. Не извлекайте и не выключайте устройство. Не перемещайте устройство.</value>
   </data>
   <data name="Unable_to_detect_target_device" xml:space="preserve">
     <value>Не удается обнаружить целевое устройство</value>
@@ -435,7 +435,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>Caps Lock включен</value>
   </data>
-  <data name="Caps Lock Off" xml:space="preserve">
+    <data name="Caps Lock Off" xml:space="preserve">
     <value>Caps Lock выключен</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -477,7 +477,7 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Блокировка при выходе из поля обзора</value>
   </data>
-  <data name="Caps_Lock_Off" xml:space="preserve">
+    <data name="Caps_Lock_Off" xml:space="preserve">
     <value>Caps Lock выключен</value>
   </data>
   <data name="App_Name" xml:space="preserve">
@@ -538,6 +538,9 @@
     <value>Интеллектуальный анализ сцены и определение лиц для масштабирования и панорамирования изображения при движении</value>
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Seconds" xml:space="preserve">
     <value />
   </data>
 </root>

@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>無法開啟應用程式</value>
   </data>
-  <data name="will_be_updated_to" xml:space="preserve">
+    <data name="will_be_updated_to" xml:space="preserve">
     <value>將更新為 </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -286,7 +286,7 @@
     <value>正在更新軟體。請勿關閉此 PC 電源。</value>
   </data>
   <data name="Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed" xml:space="preserve">
-    <value>正在更新韌體。請勿移除裝置或關閉裝置電源。讓裝置不受干擾</value>
+    <value>正在更新韌體。請勿移除裝置或關閉裝置電源。讓裝置不受干擾。</value>
   </data>
   <data name="Unable_to_detect_target_device" xml:space="preserve">
     <value>無法偵測到目標裝置</value>
@@ -435,7 +435,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>Caps Lock 開啟</value>
   </data>
-  <data name="Caps Lock Off" xml:space="preserve">
+    <data name="Caps Lock Off" xml:space="preserve">
     <value>Caps Lock 關閉</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -477,7 +477,7 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>遠離時鎖定</value>
   </data>
-  <data name="Caps_Lock_Off" xml:space="preserve">
+    <data name="Caps_Lock_Off" xml:space="preserve">
     <value>Caps Lock 關閉</value>
   </data>
   <data name="App_Name" xml:space="preserve">
@@ -538,6 +538,9 @@
     <value>利用智慧型場景分析和臉部追蹤功能，在您移動時縮放並平移檢視</value>
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Seconds" xml:space="preserve">
     <value />
   </data>
 </root>

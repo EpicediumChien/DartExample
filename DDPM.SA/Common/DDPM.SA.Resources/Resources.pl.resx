@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Nie można otworzyć aplikacji</value>
   </data>
-  <data name="will_be_updated_to" xml:space="preserve">
+    <data name="will_be_updated_to" xml:space="preserve">
     <value>zostanie zaktualizowane do </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -286,7 +286,7 @@
     <value>Aktualizowanie oprogramowania. Nie wyłączaj tego komputera.</value>
   </data>
   <data name="Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed" xml:space="preserve">
-    <value>Aktualizowanie oprogramowania wewnętrznego Nie odłączaj ani nie wyłączaj urządzenia. Pozostaw urządzenie w spokoju</value>
+    <value>Aktualizowanie oprogramowania wewnętrznego Nie odłączaj ani nie wyłączaj urządzenia. Pozostaw urządzenie w spokoju.</value>
   </data>
   <data name="Unable_to_detect_target_device" xml:space="preserve">
     <value>Nie można wykryć urządzenia docelowego</value>
@@ -435,7 +435,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>Caps Lock włączony</value>
   </data>
-  <data name="Caps Lock Off" xml:space="preserve">
+    <data name="Caps Lock Off" xml:space="preserve">
     <value>Caps Lock wyłączony</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -477,7 +477,7 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Blokuj przy odejściu</value>
   </data>
-  <data name="Caps_Lock_Off" xml:space="preserve">
+    <data name="Caps_Lock_Off" xml:space="preserve">
     <value>Caps Lock wyłączony</value>
   </data>
   <data name="App_Name" xml:space="preserve">
@@ -538,6 +538,9 @@
     <value>Wykorzystuje inteligentną analizę scen i śledzenie twarzy w celu powiększania i przesuwania widoku, gdy jesteś w ruchu</value>
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Seconds" xml:space="preserve">
     <value />
   </data>
 </root>

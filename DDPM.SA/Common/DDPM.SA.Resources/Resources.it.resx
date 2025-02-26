@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Impossibile aprire l'applicazione</value>
   </data>
-  <data name="will_be_updated_to" xml:space="preserve">
+    <data name="will_be_updated_to" xml:space="preserve">
     <value>sarà aggiornato a </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -286,7 +286,7 @@
     <value>Aggiornamento del software. Non spegnere il PC.</value>
   </data>
   <data name="Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed" xml:space="preserve">
-    <value>Aggiornamento del firmware. Non rimuovere o spegnere il dispositivo. Lasciare il dispositivo indisturbato</value>
+    <value>Aggiornamento del firmware. Non rimuovere o spegnere il dispositivo. Lasciare il dispositivo indisturbato.</value>
   </data>
   <data name="Unable_to_detect_target_device" xml:space="preserve">
     <value>Impossibile rilevare il dispositivo di destinazione</value>
@@ -435,7 +435,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>BLOC MAIUSC attivato</value>
   </data>
-  <data name="Caps Lock Off" xml:space="preserve">
+    <data name="Caps Lock Off" xml:space="preserve">
     <value>BLOC MAIUSC disattivato</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -477,7 +477,7 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Blocco in assenza</value>
   </data>
-  <data name="Caps_Lock_Off" xml:space="preserve">
+    <data name="Caps_Lock_Off" xml:space="preserve">
     <value>BLOC MAIUSC disattivato</value>
   </data>
   <data name="App_Name" xml:space="preserve">
@@ -538,6 +538,9 @@
     <value>Utilizza l'analisi intelligente della scena e il tracciamento del volto per eseguire lo zoom avanti e indietro della vista quando ci si sposta</value>
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Seconds" xml:space="preserve">
     <value />
   </data>
 </root>
