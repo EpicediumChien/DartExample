@@ -3759,7 +3759,7 @@ namespace DDPM.CLI.Plugins.Display
         private async Task<(int code, string result)> GetMonitors(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, List<string> model, string value = "")
         {
             CLI_Get_MONITORS_RESPONSE G_Monitos_RESPONSE = new CLI_Get_MONITORS_RESPONSE();
-            G_Monitos_RESPONSE.Message = "No devices found";
+            //G_Monitos_RESPONSE.Message = "No devices found";
 
             //if (devMgr == null)
             //{
