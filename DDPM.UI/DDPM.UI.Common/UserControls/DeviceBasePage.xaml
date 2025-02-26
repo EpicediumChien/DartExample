@@ -202,7 +202,7 @@
                             6. Fix the FontSize of ModelName after checked Figma.
                             7. Fix ModelName forground color.
                             -->
-                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="60,8,0,0">
+                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="60,28,0,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition MaxHeight="90" />
                                 <RowDefinition Height="6" />
@@ -216,21 +216,13 @@
                             <!-- #region leftArrow -->
                             <!-- Robert_Lin 2025-2-10 New leftArrow design with Steless Button which better to support Narrator -->
                             <Button Grid.Row="0" Grid.Column="0" Width="24" Height="24"
+                                    Style="{StaticResource BackArrowButton}"
                                     VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand"
-                                    KeyboardNavigation.TabIndex="1" Style="{StaticResource StatelessButton}"
+                                    KeyboardNavigation.TabIndex="1" 
                                     AutomationProperties.Name="{Binding [Back], Source={x:Static lang:LangHelper.Instance}}" 
                                     Click="leftArrow_Click"
-                                    >
-                                <!-- Robert_Lin, 2024-6-10 changed, draw with Polylines -->
-                                <Grid >
-                                    <Polyline Points="12,5 5,12 12,19"
-                                                  Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
-                                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
-                                    <Polyline Points="5,12 19,12"
-                                                  Stroke="{DynamicResource TextBlock_ForegroundColor}" StrokeThickness="2"
-                                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
-                                </Grid>
-                            </Button>
+                                    />
+
                             <!-- #endregion leftArrow -->
                             
                             <!-- #region MarketName -->
@@ -243,6 +235,7 @@
                                                         Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum orci erat, varius nec euismod sed, lacinia vitae purus"
                                 -->
                                 <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Name="marketName"
+                                                        d:Text="Monitor Market Name" d:MaxWidth="200"
                                                         Text="{Binding SelectedHomeDevice.LandingMarketName}"
                                                         HorizontalAlignment="Left" VerticalAlignment="Center"
                                                         TextBlockType="Header2" TextWrapping="Wrap"
@@ -264,6 +257,7 @@
                                     DisplayName="{ModelName}", but when there are multiple same models, DisplayName="{ModelName} ({InstanceNo})"
                                     -->
                                     <UXControls:UXTextBlock Text="{Binding SelectedHomeDevice.DisplayName}"
+                                                            d:Text="U2723QE"  d:MaxWidth="200" d:Visibility="Collapsed"
                                                             TextTrimming="CharacterEllipsis" x:Name="tbDisplayName"
                                                             HorizontalAlignment="Left"  VerticalAlignment="Center"
                                                             Focusable="True" KeyboardNavigation.TabIndex="3"
@@ -275,7 +269,7 @@
                                 
                                 <!-- #region ComboBox of Models for multiple monitors -->
                                 <!-- Derek_Du 2024-10-26 remove MinWidth="140"  for RWD -->
-                                <ComboBox Style="{DynamicResource DdpmComboBoxStyle}" Height="40"
+                                <ComboBox Style="{DynamicResource DdpmComboBoxStyle}" Height="40" d:Visibility="Visible"
                                           Visibility="{Binding HomeDevicesComboBoxVisibility}"
                                           HorizontalAlignment="Left" VerticalAlignment="Center"
                                           KeyboardNavigation.TabIndex="3" 

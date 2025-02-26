@@ -89,22 +89,32 @@ namespace DDPM.UI.Common
 
         private static void OnBatteryChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            if (e != null)
+            {
+                try
+                {
+                    //DdpmCommonHelper.WriteUILog($"[BatteryIndicator] [OnBatteryChanged] e:{JsonConvert.SerializeObject(e)}");
+                    var oldValue = e.OldValue != null ? e.OldValue.ToString() : "null";
+                    var newValue = e.NewValue != null ? e.NewValue.ToString() : "null";
+                    DdpmCommonHelper.WriteUILog($"[BatteryIndicator] [OnBatteryChanged] Property: {e.Property.Name}, OldValue: {oldValue}, NewValue: {newValue}");
 
-            try
-            {
-                DdpmCommonHelper.WriteUILog($"[BatteryIndicator] [OnConnectionTypeChanged] e:{JsonConvert.SerializeObject(e)}");
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"[BatteryIndicator] [OnConnectionTypeChanged] Exception ex:{ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog($"[BatteryIndicator] [OnBatteryChanged] Exception ex:{ex.Message}");
+                }
             }
             var control = (BatteryIndicator)d;
+            if (control == null)
+            {
+                return;
+            }
             control.UpdateBatteryLevelIndicator();
         }
 
         private void UpdateBatteryLevelIndicator()
         {
-            DdpmCommonHelper.WriteUILog($"[BatteryIndicator] [OnConnectionTypeChanged] BatteryStatus:{BatteryStatus}");
+            //DdpmCommonHelper.WriteUILog($"[BatteryIndicator] [UpdateBatteryLevelIndicator] BatteryStatus:{BatteryStatus}");
             var charging = BatteryStatus == "Charging" ? "1" : "0";
             var level = "";
             if (BatteryLevel >= 70)

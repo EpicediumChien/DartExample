@@ -77,6 +77,7 @@ namespace DDPM.UI.Module.DisplayOthers
             if (vm != null)
             {
                 vm.ImportExportResult -= ImportExportNotify;
+                vm.ImportPrompt -= ImportConfirmationPrompt;
             }
         }
 
@@ -197,6 +198,8 @@ namespace DDPM.UI.Module.DisplayOthers
             if (vm != null && vm.ImportExportResult == null)
             {
                 vm.ImportExportResult += ImportExportNotify;
+                vm.ImportPrompt -= ImportConfirmationPrompt;
+                vm.ImportPrompt += ImportConfirmationPrompt;
             }
             
             if (vm.ImportSettings())
@@ -365,6 +368,17 @@ namespace DDPM.UI.Module.DisplayOthers
                 default:
                     break;
             }
+        }
+
+        private bool ImportConfirmationPrompt(string model)
+        {
+            bool result = true;
+            Dispatcher.Invoke(new Action(() =>
+            {
+                result = DisplayMsgBox(Strings.ImpExp_Warning, string.Format(Strings.ImpExp_WarningMsg0, string.IsNullOrEmpty(model) ? "Display" : model), 
+                    Strings.Yes, Strings.No) ?? false;
+            }));
+            return result;
         }
 
         private void ReturnToHomepage(object sender, EventArgs e)

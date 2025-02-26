@@ -2137,7 +2137,7 @@
     <value>Application settings applied to %1 successfully. The Easy Memory setting will be cleaned. Please setup Easy Memory again. Dell Display and Peripheral Manager will restart.</value>
   </data>
   <data name="ImpExp_WarningMsg.0" xml:space="preserve">
-    <value>This not your primary monitor. Do you want to continue and set this as your Primary Monitor for Sync?</value>
+    <value>The same monitor is detected, do you want to import settings for {0}?</value>
   </data>
   <data name="ImpExp_WarningMsg.1" xml:space="preserve">
     <value>e associated with the current layout. Do you want to overwrite it?</value>
@@ -3551,5 +3551,8 @@
   </data>
   <data name="Bootloader.3" xml:space="preserve">
     <value>to update your firmware in order to restore functionality.</value>
+  </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>Search actions</value>
   </data>
 </root>

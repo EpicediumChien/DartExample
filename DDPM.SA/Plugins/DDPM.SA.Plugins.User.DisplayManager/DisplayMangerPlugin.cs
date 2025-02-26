@@ -705,7 +705,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                                         usbUpstreamList.Add(_usbUpstreamList[0]);
                                                         USBPorts uSBPorts = new USBPorts();
                                                         uSBPorts.USBName = _usbUpstreamList[0].ToString();
-                                                        uSBPorts.USBPort = ss[i];
+                                                        uSBPorts.USBPort = "11";
                                                         _USBPorts.Add(uSBPorts);
                                                     }
                                                     else if (ss[i].Equals("02") && _usbUpstreamList.Count > 1)
@@ -713,7 +713,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                                         usbUpstreamList.Add(_usbUpstreamList[1]);
                                                         USBPorts uSBPorts = new USBPorts();
                                                         uSBPorts.USBName = _usbUpstreamList[1].ToString();
-                                                        uSBPorts.USBPort = ss[i];
+                                                        uSBPorts.USBPort = "10";
                                                         _USBPorts.Add(uSBPorts);
                                                     }
                                                     else if (ss[i].Equals("01") && _usbUpstreamList.Count > 2)
@@ -721,7 +721,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                                         usbUpstreamList.Add(_usbUpstreamList[2]);
                                                         USBPorts uSBPorts = new USBPorts();
                                                         uSBPorts.USBName = _usbUpstreamList[2].ToString();
-                                                        uSBPorts.USBPort = ss[i];
+                                                        uSBPorts.USBPort = "01";
                                                         _USBPorts.Add(uSBPorts);
                                                     }
                                                     else if (ss[i].Equals("00") && _usbUpstreamList.Count > 3)
@@ -729,7 +729,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                                         usbUpstreamList.Add(_usbUpstreamList[3]);
                                                         USBPorts uSBPorts = new USBPorts();
                                                         uSBPorts.USBName = _usbUpstreamList[3].ToString();
-                                                        uSBPorts.USBPort = ss[i];
+                                                        uSBPorts.USBPort = "00";
                                                         _USBPorts.Add(uSBPorts);
                                                     }
                                                 }
@@ -904,22 +904,24 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 }
                                 if (!string.IsNullOrEmpty(subUpstream))
                                 {
-                                    if (USBUpstream != null && USBUpstream.Count != 0)
+                                    List<USBPorts> ports = new List<USBPorts>();
+                                    _displayDataManger.GetMonitorUSBList(monitorInfo, out ports);
+                                    if (ports != null && ports.Count != 0)
                                     {
-                                        foreach (var tmp in USBUpstream)
+                                        foreach (var tmp in ports)
                                         {
-                                            if (subUpstream == tmp.Value)
+                                            if (subUpstream == tmp.USBPort)
                                             {
                                                 inputSource_USB.inputSource = inputsource;
-                                                inputSource_USB.USB = tmp.Key;
+                                                inputSource_USB.USB = tmp.USBName;
                                                 _displayDataManger.SetMonitorUSB(monitorInfo, inputSource_USB);
-                                                return Task.FromResult(tmp.Key);
+                                                return Task.FromResult(tmp.USBName);
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] USBUpstream is null or Count = 0");
+                                        _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] ports is null or Count = 0");
                                     }
                                 }
                             }
@@ -1005,18 +1007,21 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     {
                                         subUpstream = newstrUpstream.Substring(14 - (input_num * 2), 2);
                                     }
+                                    Trace.WriteLine(subUpstream);
                                     if (!string.IsNullOrEmpty(subUpstream))
                                     {
-                                        if (USBUpstream != null && USBUpstream.Count != 0)
+                                        List<USBPorts> ports = new List<USBPorts>();
+                                        _displayDataManger.GetMonitorUSBList(monitorInfo, out ports);
+                                        if (ports != null && ports.Count != 0)
                                         {
-                                            foreach (var tmp1 in USBUpstream)
+                                            foreach (var tmp1 in ports)
                                             {
-                                                if (subUpstream == tmp1.Value)
+                                                if (subUpstream == tmp1.USBPort)
                                                 {
                                                     InputSource_USB inputSource_USB = new InputSource_USB();
                                                     inputSource_USB.inputSource = tmp.ToString();
                                                     Trace.WriteLine(inputSource_USB.inputSource);
-                                                    inputSource_USB.USB = tmp1.Key;
+                                                    inputSource_USB.USB = tmp1.USBName;
                                                     Trace.WriteLine(inputSource_USB.USB);
                                                     input_USBList.Add(inputSource_USB);
                                                     break;
@@ -1025,7 +1030,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         }
                                         else
                                         {
-                                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] USBUpstream is null or Count = 0");
+                                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] ports is null or Count = 0");
                                         }
                                     }
                                     input_num++;
@@ -1101,18 +1106,21 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     newstrUpstream = "0" + newstrUpstream;
                                 }
                             }
-                            if (USBUpstream != null && USBUpstream.Count != 0)
+                            List<USBPorts> uSBPorts = new List<USBPorts>();
+                            _displayDataManger.GetMonitorUSBList(monitorInfo, out uSBPorts);
+                            if (uSBPorts != null && uSBPorts.Count != 0)
                             {
                                 string strsetUpstream = string.Empty;
+                                int index = uSBPorts.FindIndex(x => x.USBName == upstream);
                                 if (monitorInfo.CapabilityDic.ContainsKey("EE"))
                                 {
                                     _logs.DebugMsg("[DisplayMangerPlugin][SetUSBUpstream] 0xEE.");
-                                    strsetUpstream = newstrUpstream.Substring(0, input_num * 2) + USBUpstream[upstream] + newstrUpstream.Substring((input_num + 1) * 2, newstrUpstream.Length - ((input_num + 1) * 2));
+                                    strsetUpstream = newstrUpstream.Substring(0, input_num * 2) + uSBPorts[index].USBPort + newstrUpstream.Substring((input_num + 1) * 2, newstrUpstream.Length - ((input_num + 1) * 2));
                                 }
                                 else
                                 {
                                     Trace.WriteLine("input_num:" + input_num.ToString());
-                                    strsetUpstream = newstrUpstream.Substring(0, newstrUpstream.Length - ((input_num + 1) * 2)) + USBUpstream[upstream] + newstrUpstream.Substring(newstrUpstream.Length - (input_num * 2));
+                                    strsetUpstream = newstrUpstream.Substring(0, newstrUpstream.Length - ((input_num + 1) * 2)) + uSBPorts[index].USBPort + newstrUpstream.Substring(newstrUpstream.Length - (input_num * 2));
                                 }
                                 if (!string.IsNullOrEmpty(strsetUpstream))
                                 {
@@ -1130,7 +1138,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             }
                             else
                             {
-                                _logs.DebugMsg("[DisplayMangerPlugin][SetUSBUpstream] USBUpstream is null or Count = 0");
+                                _logs.DebugMsg("[DisplayMangerPlugin][SetUSBUpstream] uSBPorts is null or Count = 0");
                             }
                         }
                     }
@@ -5031,16 +5039,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 }
                                 if (!string.IsNullOrEmpty(subUpstream))
                                 {
-                                    if (USBUpstream != null && USBUpstream.Count != 0)
+                                    List<USBPorts> ports = new List<USBPorts>();
+                                    _displayDataManger.GetMonitorUSBList(vcpchangedEventArgs.monitor, out ports);
+                                    if (ports != null && ports.Count != 0)
                                     {
-                                        foreach (var tmp1 in USBUpstream)
+                                        foreach (var tmp1 in ports)
                                         {
-                                            if (subUpstream == tmp1.Value)
+                                            if (subUpstream == tmp1.USBPort)
                                             {
                                                 InputSource_USB inputSource_USB = new InputSource_USB();
                                                 inputSource_USB.inputSource = tmp.ToString();
                                                 Trace.WriteLine(inputSource_USB.inputSource);
-                                                inputSource_USB.USB = tmp1.Key;
+                                                inputSource_USB.USB = tmp1.USBName;
                                                 Trace.WriteLine(inputSource_USB.USB);
                                                 input_USBList.Add(inputSource_USB);
                                                 break;
@@ -5049,7 +5059,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     }
                                     else
                                     {
-                                        _logs.DebugMsg("[DisplayMangerPlugin][SetMonitorAllUSB] USBUpstream is null or Count = 0");
+                                        _logs.DebugMsg("[DisplayMangerPlugin][SetMonitorAllUSB] ports is null or Count = 0");
                                     }
                                 }
                                 input_num++;

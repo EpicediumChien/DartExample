@@ -28,6 +28,8 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         private Dictionary<string, List<WalkThroughPageData>> _devicePages = DDPM.UI.WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
         public object _currentDeviceinfo = string.Empty;
         public string last_logicalDeviceType = string.Empty;
+        public MonitorInfo MInfo;
+        public DeviceInfo DInfo;
         public WalkThroughPageViewModel()
         {
             Debug.WriteLine($"Queue Count: {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count}");
@@ -51,6 +53,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         public void InitializeDeviceFromQueue()
         {
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDeviceFromQueue in ...");
             // Check WalkThroughQueue
             while (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
             {
@@ -84,8 +87,26 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         public void InitializeDevice(string deviceModel, object info)
         {
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDevice in ...");
             _currentDeviceModel = deviceModel;
-            _currentDeviceinfo = info;
+
+            if (info is DeviceInfo)
+            {
+                DInfo = (DeviceInfo)info;
+                _currentDeviceinfo = DInfo.ID;
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDevice DeviceInfo ...");
+            }
+            else if (info is MonitorInfo)
+            {
+                MInfo = (MonitorInfo)info;
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDevice MonitorInfo ...");
+            }
+            else
+            {
+                _currentDeviceinfo = info;
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDevice DDPM info ...");
+            }
+
             _currentPageIndex = 0;
 
             if (_devicePages.ContainsKey(deviceModel))
@@ -106,12 +127,22 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         /// </summary>
         private void UpdatePageContent()
         {
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] UpdatePageContent in ...");
             _devicePages = DDPM.UI.WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
             if (_devicePages.ContainsKey(_currentDeviceModel) && _currentPageIndex < _devicePages[_currentDeviceModel].Count)
             {
                 var pageData = _devicePages[_currentDeviceModel][_currentPageIndex];
                 MainText = pageData.MainText!;
-                SubText = pageData.SubText!;
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] UpdatePageContent : {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelType.ToString()} ...");
+                if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelType.Contains("Pen"))
+                {
+                    SubText = pageData.SubText!.Replace("X %", DInfo.BatteryLevel.ToString() + "%").Replace("X%", DInfo.BatteryLevel.ToString() + "%");
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] UpdatePageContent DInfo.BatteryLevel : {DInfo.BatteryLevel.ToString()} ...");
+                }
+                else
+                {
+                    SubText = pageData.SubText!;
+                }
                 DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(pageData.MainImageSource!, "DDPM.UI.WalkThroughData");
             }
         }
@@ -164,6 +195,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         public void EndWalkThrough()
         {
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] EndWalkThrough in ...");
             if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
                 DdpmHomePlugin.DdpmHomePlugin.ShowPluginById = false;
 
@@ -209,6 +241,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                     break;
             }
             ControlIcon(true);
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] EndWalkThrough End ...");
         }
 
         public bool WriteWalkThroughReg(string Model)
@@ -220,6 +253,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 regPath = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
                 return DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true).Result;
             }
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] WriteWalkThroughReg UserId : {DdpmHomePlugin.DdpmHomePlugin.UserId}, Model: {Model} ...");
             return DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true).Result;
         }
 

@@ -93,6 +93,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
         #endregion Events
 
         private static keyboardHookProc? callbackDelegate;
+        private static readonly object hookLock = new object();
 
         #region Public Methods
 
@@ -101,22 +102,25 @@ namespace DDPM.SA.Plugins.User.Hotkey
         /// </summary>
         public bool hook()
         {
-            if (callbackDelegate != null)
+            lock (hookLock)
             {
-                Debug.WriteLine("Can't hook more than once");
-                return true;
+                if (callbackDelegate != null)
+                {
+                    Debug.WriteLine("Can't hook more than once");
+                    return true;
+                }
+
+                //IntPtr hInstance = _LoadLibrary("User32");
+                IntPtr hInstance = Marshal.GetHINSTANCE(System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0]);
+
+                callbackDelegate = new keyboardHookProc(hookProc);
+                hhook = _SetWindowsHookEx(WH_KEYBOARD_LL, callbackDelegate, hInstance, 0);
+                string errorMessage = new Win32Exception(Marshal.GetLastWin32Error()).Message;
+                Debug.WriteLine($"HotkeyPlugin-hook(): {errorMessage}");
+                return hhook == IntPtr.Zero ? false : true;
+                /*if (hhook != IntPtr.Zero) throw new Win32Exception();
+                Debug.WriteLine("Hook(); Success--------");*/
             }
-
-            //IntPtr hInstance = _LoadLibrary("User32");
-            IntPtr hInstance = Marshal.GetHINSTANCE(System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0]);
-
-            callbackDelegate = new keyboardHookProc(hookProc);
-            hhook = _SetWindowsHookEx(WH_KEYBOARD_LL, callbackDelegate, hInstance, 0);
-            string errorMessage = new Win32Exception(Marshal.GetLastWin32Error()).Message;
-            Debug.WriteLine($"HotkeyPlugin-hook(): {errorMessage}");
-            return hhook == IntPtr.Zero ? false : true;
-            /*if (hhook != IntPtr.Zero) throw new Win32Exception();
-            Debug.WriteLine("Hook(); Success--------");*/
         }
 
         /// <summary>
@@ -124,15 +128,18 @@ namespace DDPM.SA.Plugins.User.Hotkey
         /// </summary>
         public bool unhook()
         {
-            //UnhookWindowsHookEx(hhook);
-            if (callbackDelegate == null) return true;
-            bool ok = _UnhookWindowsHookEx(hhook);
-            if (ok)
+            lock (hookLock)
             {
-                callbackDelegate = null;
-                return true;
+                //UnhookWindowsHookEx(hhook);
+                if (callbackDelegate == null) return true;
+                bool ok = _UnhookWindowsHookEx(hhook);
+                if (ok)
+                {
+                    callbackDelegate = null;
+                    return true;
+                }
+                return ok;
             }
-            return ok;
         }
 
         /// <summary>
@@ -367,7 +374,16 @@ namespace DDPM.SA.Plugins.User.Hotkey
 
         public static IntPtr _SetWindowsHookEx(int idHook, keyboardHookProc callback, IntPtr hInstance, uint threadId)
         {
-            return SetWindowsHookEx(idHook, callback, hInstance, threadId);
+            IntPtr rst = SetWindowsHookEx(idHook, callback, hInstance, threadId);
+
+            if (rst == IntPtr.Zero)
+            {
+#if DEBUG
+                Console.WriteLine("[HotkeyPlugin] SetWindowsHookEx failed.");
+#endif
+            }
+
+            return rst;
         }
 
         /// <summary>
@@ -381,7 +397,16 @@ namespace DDPM.SA.Plugins.User.Hotkey
 
         public static bool _UnhookWindowsHookEx(IntPtr hInstance)
         {
-            return UnhookWindowsHookEx(hInstance);
+            bool rst = UnhookWindowsHookEx(hInstance);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[HotkeyPlugin] UnhookWindowsHookEx failed.");
+#endif
+            }
+
+            return rst;
         }
 
         /// <summary>
