@@ -709,6 +709,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Multiple docks are detected. Keep only one dock connected to prevent damage to your dock(s)..
+        /// </summary>
+        internal static string Multiple_docks_are_detected2 {
+            get {
+                return ResourceManager.GetString("Multiple_docks_are_detected2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Multiscreen Match.
         /// </summary>
         internal static string Multiscreen_Match {

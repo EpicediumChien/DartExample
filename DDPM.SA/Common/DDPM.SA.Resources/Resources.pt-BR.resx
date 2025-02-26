@@ -537,6 +537,9 @@
   <data name="WebCameraSettings.2" xml:space="preserve">
     <value>Utiliza a análise de cena inteligente e o rastreamento facial para aplicar o zoom ou a exibição panorâmica enquanto você se move</value>
   </data>
+  <data name="Multiple_docks_are_detected2" xml:space="preserve">
+    <value />
+  </data>
   <data name="Seconds" xml:space="preserve">
     <value />
   </data>

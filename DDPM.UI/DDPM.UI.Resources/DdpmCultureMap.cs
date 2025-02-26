@@ -157,6 +157,8 @@ namespace DDPM.UI.Resources
             {
                 switch (cultureIn.Name)
                 {
+
+                    case "zh-Hans-CN":
                     case "zh-CN":
                         return CultureInfo.CreateSpecificCulture("zh-CN");
                     case "zh-TW":
