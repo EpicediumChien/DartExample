@@ -2086,7 +2086,7 @@
 
     <SolidColorBrush x:Key="UnpairModalDialogTxtColor" Color="#F5F6F7"/>
 
-    <SolidColorBrush x:Key="UnpairModalDialogBorder1" Color="#E00C1827" />
+    <SolidColorBrush x:Key="UnpairModalDialogBorder1" Color="#FF0C1827" />
 
     <SolidColorBrush x:Key="BorderContinueBackground" Color="#0E1C2F"/>
     <SolidColorBrush x:Key="BorderContinueBorderBrush" Color="#F5F6F7"/>
