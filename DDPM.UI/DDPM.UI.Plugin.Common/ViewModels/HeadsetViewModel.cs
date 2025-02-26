@@ -2048,7 +2048,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _log.Info($"[HeadsetViewModel] DTH GetIsWearDetectionSupportedAsync ............. NO");
                 }
                 //-----------------------------------------------------------------------------------------
-                if (CurrentDeviceInfo.FirmwareVersion != "")
+                if (CurrentDeviceInfo.FirmwareVersion != "" && CurrentDeviceInfo.FirmwareVersion != string.Empty)
                 {
                     string resultFW = CurrentDeviceInfo.FirmwareVersion.Replace(".", "");
                     int fwv = int.Parse(resultFW);
