@@ -477,9 +477,6 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>부재 시 잠금</value>
   </data>
-  <data name="Caps_Lock_Off" xml:space="preserve">
-    <value>Caps Lock 꺼짐</value>
-  </data>
   <data name="App_Name" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
   </data>
@@ -536,5 +533,8 @@
   </data>
   <data name="WebCameraSettings.2" xml:space="preserve">
     <value>지능형 장면 분석 및 얼굴 추적 기능을 활용하여 확대/축소하며, 움직일 때 뷰를 좌우로 이동합니다.</value>
+  </data>
+  <data name="Multiple_docks_are_detected2" xml:space="preserve">
+    <value />
   </data>
 </root>
