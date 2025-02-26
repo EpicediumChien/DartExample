@@ -1,540 +1,540 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
+    <!--
+      Microsoft ResX Schema
 
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
+      Version 2.0
+
+      The primary goals of this format is to allow a simple XML format
+      that is mostly human readable. The generation and parsing of the
+      various data types are done through the TypeConverter classes
+      associated with the data types.
+
+      Example:
+
+      ... ado.net/XML headers & schema ...
+      <resheader name="resmimetype">text/microsoft-resx</resheader>
+      <resheader name="version">2.0</resheader>
+      <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+      <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+      <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+      <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+      <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+          <value>[base64 mime encoded serialized .NET Framework object]</value>
+      </data>
+      <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+          <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+          <comment>This is a comment</comment>
+      </data>
+
+      There are any number of "resheader" rows that contain simple
+      name/value pairs.
+
+      Each data row contains a name, and value. The row also contains a
+      type or mimetype. Type corresponds to a .NET class that support
+      text/value conversion through the TypeConverter architecture.
+      Classes that don't support this are serialized and stored with the
+      mimetype set.
+
+      The mimetype is used for serialized objects, and tells the
+      ResXResourceReader how to depersist the object. This is currently not
+      extensible. For a given mimetype the value must be set accordingly:
+
+      Note - application/x-microsoft.net.object.binary.base64 is the format
+      that the ResXResourceWriter will generate, however the reader can
+      read any of the formats listed below.
+
+      mimetype: application/x-microsoft.net.object.binary.base64
+      value   : The object must be serialized with
+              : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+              : and then encoded with base64 encoding.
+
+      mimetype: application/x-microsoft.net.object.soap.base64
+      value   : The object must be serialized with
+              : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+              : and then encoded with base64 encoding.
+
+      mimetype: application/x-microsoft.net.object.bytearray.base64
+      value   : The object must be serialized into a byte array
+              : using a System.ComponentModel.TypeConverter
+              : and then encoded with base64 encoding.
+      -->
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+        <xsd:element name="root" msdata:IsDataSet="true">
             <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="metadata">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string" />
+                            <xsd:attribute name="type" type="xsd:string" />
+                            <xsd:attribute name="mimetype" type="xsd:string" />
+                            <xsd:attribute ref="xml:space" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="assembly">
+                        <xsd:complexType>
+                            <xsd:attribute name="alias" type="xsd:string" />
+                            <xsd:attribute name="name" type="xsd:string" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+                            <xsd:attribute ref="xml:space" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" />
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
             </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="no_updates_available" xml:space="preserve">
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="no_updates_available" xml:space="preserve">
     <value>nessun aggiornamento disponibile.</value>
   </data>
-  <data name="Updates_info" xml:space="preserve">
+    <data name="Updates_info" xml:space="preserve">
     <value>Informazioni sugli aggiornamenti</value>
   </data>
-  <data name="Software_update_unsuccessful" xml:space="preserve">
+    <data name="Software_update_unsuccessful" xml:space="preserve">
     <value>Aggiornamento software non riuscito.</value>
   </data>
-  <data name="CA_check_fail" xml:space="preserve">
+    <data name="CA_check_fail" xml:space="preserve">
     <value>Verifica CA non riuscita</value>
   </data>
-  <data name="Network_fail" xml:space="preserve">
+    <data name="Network_fail" xml:space="preserve">
     <value>Errore di rete</value>
   </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
+    <data name="Update_failed_due_to_network_error" xml:space="preserve">
     <value>Aggiornamento non riuscito a causa di un errore di rete. Riprovare.</value>
   </data>
-  <data name="Dock_FW_is_loaded" xml:space="preserve">
+    <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>Il firmware del dock è caricato. Scollegare il dock per completare l'applicazione del firmware e ricollegarlo dopo 1 min.</value>
   </data>
-  <data name="Dock_UOD_FW_update_info" xml:space="preserve">
+    <data name="Dock_UOD_FW_update_info" xml:space="preserve">
     <value>Informazioni sull'aggiornamento del firmware UOD del dock</value>
   </data>
-  <data name="Firmware_update_unsuccessful" xml:space="preserve">
+    <data name="Firmware_update_unsuccessful" xml:space="preserve">
     <value>Aggiornamento del firmware non riuscito.</value>
   </data>
-  <data name="Multiple_docks_are_detected" xml:space="preserve">
+    <data name="Multiple_docks_are_detected" xml:space="preserve">
     <value>Sono stati rilevati più dock. Tenere collegato un solo dock per evitare di danneggiarli.</value>
   </data>
-  <data name="Dock_FW_info" xml:space="preserve">
+    <data name="Dock_FW_info" xml:space="preserve">
     <value>Informazioni sul firmware del dock</value>
   </data>
-  <data name="Dock_FW_is_being_loaded" xml:space="preserve">
+    <data name="Dock_FW_is_being_loaded" xml:space="preserve">
     <value>Il firmware del dock è in fase di caricamento. Non scollegare il dock.</value>
   </data>
-  <data name="Dock_FW_is_loaded_successful" xml:space="preserve">
+    <data name="Dock_FW_is_loaded_successful" xml:space="preserve">
     <value>Il firmware del dock è stato caricato correttamente. Scollegare il dock per completare l'applicazione del firmware e ricollegarlo dopo 1 min.</value>
   </data>
-  <data name="Dock_FW_loaded_failed" xml:space="preserve">
+    <data name="Dock_FW_loaded_failed" xml:space="preserve">
     <value>Caricamento del firmware del dock non riuscito.</value>
   </data>
-  <data name="Warning" xml:space="preserve">
+    <data name="Warning" xml:space="preserve">
     <value>Avviso</value>
   </data>
-  <data name="Auto_Brightness_is_currently_enabled" xml:space="preserve">
+    <data name="Auto_Brightness_is_currently_enabled" xml:space="preserve">
     <value>La luminosità automatica è attualmente abilitata. Sovrascrivere?</value>
   </data>
-  <data name="Error" xml:space="preserve">
+    <data name="Error" xml:space="preserve">
     <value>Errore</value>
   </data>
-  <data name="SW_info" xml:space="preserve">
+    <data name="SW_info" xml:space="preserve">
     <value>Informazioni SW</value>
   </data>
-  <data name="UOD_update_completed" xml:space="preserve">
+    <data name="UOD_update_completed" xml:space="preserve">
     <value>Aggiornamento UOD completato.</value>
   </data>
-  <data name="UOD_update_fail" xml:space="preserve">
+    <data name="UOD_update_fail" xml:space="preserve">
     <value>Aggiornamento UOD non riuscito.</value>
   </data>
-  <data name="FW_info" xml:space="preserve">
+    <data name="FW_info" xml:space="preserve">
     <value>Informazioni FW</value>
   </data>
-  <data name="update_download_cancel" xml:space="preserve">
+    <data name="update_download_cancel" xml:space="preserve">
     <value>download aggiornamento annullato, perché la batteria del PC è troppo scarica.</value>
   </data>
-  <data name="FW_is_being_Installing" xml:space="preserve">
+    <data name="FW_is_being_Installing" xml:space="preserve">
     <value>Installazione del FW in corso. Non scollegare il dispositivo.</value>
   </data>
-  <data name="Update" xml:space="preserve">
+    <data name="Update" xml:space="preserve">
     <value>Aggiorna</value>
   </data>
-  <data name="Delay" xml:space="preserve">
+    <data name="Delay" xml:space="preserve">
     <value>Ritardo</value>
   </data>
-  <data name="Yes" xml:space="preserve">
+    <data name="Yes" xml:space="preserve">
     <value>Sì</value>
   </data>
-  <data name="No" xml:space="preserve">
+    <data name="No" xml:space="preserve">
     <value>No</value>
   </data>
-  <data name="Invalid_ID" xml:space="preserve">
+    <data name="Invalid_ID" xml:space="preserve">
     <value>ID non valido. Fornire un ID azione valido.</value>
   </data>
-  <data name="Failed_to_open_application" xml:space="preserve">
+    <data name="Failed_to_open_application" xml:space="preserve">
     <value>Impossibile aprire l'applicazione</value>
   </data>
-  <data name="can_be_updated_to" xml:space="preserve">
-    <value>può essere aggiornato a</value>
-  </data>
-  <data name="UpdateAvailable" xml:space="preserve">
-    <value>Aggiornamento disponibile</value>
-  </data>
-  <data name="UpdateWillBeApplied" xml:space="preserve">
-    <value>L'aggiornamento verrà applicato</value>
-  </data>
-  <data name="UpdateAvailable_Info" xml:space="preserve">
-    <value>Il dispositivo e/o l'applicazione verranno aggiornati. Il dispositivo e/o l'applicazione potrebbero essere disponibili in modo intermittente. Non scollegare il dispositivo durante l'aggiornamento.</value>
-  </data>
-  <data name="UpdateWillBeApplied_Info" xml:space="preserve">
-    <value>Il dispositivo e/o l'applicazione verranno aggiornati. Il dispositivo e/o l'applicazione potrebbero essere disponibili in modo intermittente. Non scollegare il dispositivo durante l'aggiornamento.</value>
-  </data>
-  <data name="UpdateNow" xml:space="preserve">
-    <value>Aggiorna ora</value>
-  </data>
-  <data name="Defer" xml:space="preserve">
-    <value>Rinvia</value>
-  </data>
-  <data name="Ok" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="Service_not_running_Try_again" xml:space="preserve">
-    <value>Servizio non in esecuzione. Riprovare</value>
-  </data>
-  <data name="Timeout_error" xml:space="preserve">
-    <value>Errore di timeout</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>Cliccare due volte con il pulsante sinistro del mouse per avviare l'aggiornamento del firmware</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Premere il tasto "U" sulla tastiera per avviare l'aggiornamento del firmware</value>
-  </data>
-  <data name="A0_Device_connected" xml:space="preserve">
-    <value>Dispositivo connesso</value>
-  </data>
-  <data name="A1_Firmware_update_started" xml:space="preserve">
-    <value>Aggiornamento del firmware avviato</value>
-  </data>
-  <data name="A2_Firmware_update_successful" xml:space="preserve">
-    <value>Aggiornamento del firmware eseguito correttamente</value>
-  </data>
-  <data name="E4_USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
-    <value>Il firmware del ricevitore senza fili USB non supporta l'aggiornamento del firmware del dispositivo</value>
-  </data>
-  <data name="update_failed_with_unknown_error" xml:space="preserve">
-    <value>aggiornamento non riuscito con errore sconosciuto</value>
-  </data>
-  <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>Aggiornamento del firmware interrotto dall'utente</value>
-  </data>
-  <data name="Installing" xml:space="preserve">
-    <value>Installazione</value>
-  </data>
-  <data name="Timeout" xml:space="preserve">
-    <value>Timeout</value>
-  </data>
-  <data name="Downloading_and_installing" xml:space="preserve">
-    <value>Download e installazione</value>
-  </data>
-  <data name="DDPM_will_reopen_soon_after_update" xml:space="preserve">
-    <value>Il DDPM verrà riaperto subito dopo l'aggiornamento</value>
-  </data>
-  <data name="Processing" xml:space="preserve">
-    <value>Elaborazione</value>
-  </data>
-  <data name="Software_Update" xml:space="preserve">
-    <value>Aggiornamento software</value>
-  </data>
-  <data name="Firmware_Update" xml:space="preserve">
-    <value>Aggiornamento firmware</value>
-  </data>
-  <data name="Updating_Software_Do_not_power_off_this_PC" xml:space="preserve">
-    <value>Aggiornamento del software. Non spegnere il PC.</value>
-  </data>
-  <data name="Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed" xml:space="preserve">
-    <value>Aggiornamento del firmware. Non rimuovere o spegnere il dispositivo. Lasciare il dispositivo indisturbato.</value>
-  </data>
-  <data name="Unable_to_detect_target_device" xml:space="preserve">
-    <value>Impossibile rilevare il dispositivo di destinazione</value>
-  </data>
-  <data name="AI_Auto_Framing" xml:space="preserve">
-    <value>Framing automatico AI</value>
-  </data>
-  <data name="ON" xml:space="preserve">
-    <value>ATTIVATO</value>
-  </data>
-  <data name="OFF" xml:space="preserve">
-    <value>SPENTO</value>
-  </data>
-  <data name="Presets" xml:space="preserve">
-    <value>Preselezioni</value>
-  </data>
-  <data name="Auto_framing" xml:space="preserve">
-    <value>Framing automatico</value>
-  </data>
-  <data name="Field_of_View" xml:space="preserve">
-    <value>Campo visivo</value>
-  </data>
-  <data name="Zoom" xml:space="preserve">
-    <value>Ingrandisci</value>
-  </data>
-  <data name="Default" xml:space="preserve">
-    <value>Predefinito</value>
-  </data>
-  <data name="Smooth" xml:space="preserve">
-    <value>Uniforme</value>
-  </data>
-  <data name="Vibrant" xml:space="preserve">
-    <value>Vibrante</value>
-  </data>
-  <data name="Warm" xml:space="preserve">
-    <value>Caldo</value>
-  </data>
-  <data name="Standard_0" xml:space="preserve">
-    <value>Standard</value>
-  </data>
-  <data name="Native_0" xml:space="preserve">
-    <value>Nativo</value>
-  </data>
-  <data name="Multimedia_0" xml:space="preserve">
-    <value>Multimedia</value>
-  </data>
-  <data name="Movie_0" xml:space="preserve">
-    <value>Film</value>
-  </data>
-  <data name="Nature_0" xml:space="preserve">
-    <value>Natura</value>
-  </data>
-  <data name="Game_0" xml:space="preserve">
-    <value>Gioco</value>
-  </data>
-  <data name="Game_1" xml:space="preserve">
-    <value>Gioco1</value>
-  </data>
-  <data name="Sport_0" xml:space="preserve">
-    <value>Sport</value>
-  </data>
-  <data name="Text_0" xml:space="preserve">
-    <value>Testo</value>
-  </data>
-  <data name="Warm_0" xml:space="preserve">
-    <value>Caldo</value>
-  </data>
-  <data name="Cool_0" xml:space="preserve">
-    <value>Freddo</value>
-  </data>
-  <data name="Custom_Color" xml:space="preserve">
-    <value>Colore personalizzato</value>
-  </data>
-  <data name="ComfortView_0" xml:space="preserve">
-    <value>ComfortView</value>
-  </data>
-  <data name="Game_2" xml:space="preserve">
-    <value>Gioco2</value>
-  </data>
-  <data name="Game_3" xml:space="preserve">
-    <value>Gioco3</value>
-  </data>
-  <data name="Desktop_0" xml:space="preserve">
-    <value>Desktop</value>
-  </data>
-  <data name="Reference_0" xml:space="preserve">
-    <value>Riferimento</value>
-  </data>
-  <data name="Metro_0" xml:space="preserve">
-    <value>Metro</value>
-  </data>
-  <data name="Paper_0" xml:space="preserve">
-    <value>Carta</value>
-  </data>
-  <data name="Standard_HDR" xml:space="preserve">
-    <value>HDR standard</value>
-  </data>
-  <data name="Movie_HDR" xml:space="preserve">
-    <value>HDR film</value>
-  </data>
-  <data name="Game_HDR" xml:space="preserve">
-    <value>HDR gioco</value>
-  </data>
-  <data name="Vivid_HDR" xml:space="preserve">
-    <value>HDR vivido</value>
-  </data>
-  <data name="Custom_1" xml:space="preserve">
-    <value>Personalizzato 1</value>
-  </data>
-  <data name="Custom_2" xml:space="preserve">
-    <value>Personalizzato 2</value>
-  </data>
-  <data name="Custom_3" xml:space="preserve">
-    <value>Personalizzato 3</value>
-  </data>
-  <data name="User_1" xml:space="preserve">
-    <value>Utente 1</value>
-  </data>
-  <data name="User_2" xml:space="preserve">
-    <value>Utente 2</value>
-  </data>
-  <data name="User_3" xml:space="preserve">
-    <value>Utente 3</value>
-  </data>
-  <data name="SPORTS_Game" xml:space="preserve">
-    <value>SPORT Game</value>
-  </data>
-  <data name="Custom_layout" xml:space="preserve">
-    <value>Personalizza layout</value>
-  </data>
-  <data name="Cancel_0" xml:space="preserve">
-    <value>Annulla</value>
-  </data>
-  <data name="Save_0" xml:space="preserve">
-    <value>Salva</value>
-  </data>
-  <data name="Arrange_Windows" xml:space="preserve">
-    <value>Disponi finestre</value>
-  </data>
-  <data name="EA_MSG_0" xml:space="preserve">
-    <value>Modificare la disposizione corrente delle finestre, modificare il nome (se desiderato) e cliccare su "Salva" per memorizzare la disposizione.</value>
-  </data>
-  <data name="Battery_Low" xml:space="preserve">
-    <value>Batteria scarica</value>
-  </data>
-  <data name="Caps_Lock_On" xml:space="preserve">
-    <value>BLOC MAIUSC attivato</value>
-  </data>
-  <data name="Caps_Lock_Off" xml:space="preserve">
-    <value>BLOC MAIUSC disattivato</value>
-  </data>
-  <data name="Easy_Memory" xml:space="preserve">
-    <value>Easy Memory</value>
-  </data>
-  <data name="Go_to_Widget_Settings" xml:space="preserve">
-    <value>Vai a Impostazioni widget</value>
-  </data>
-  <data name="is_muted" xml:space="preserve">
-    <value>è disattivato</value>
-  </data>
-  <data name="is_Unmuted" xml:space="preserve">
-    <value>è riattivato</value>
-  </data>
-  <data name="Num_Lock_Off" xml:space="preserve">
-    <value>Bloc Num disattivato</value>
-  </data>
-  <data name="Num_Lock_On" xml:space="preserve">
-    <value>Bloc Num attivato</value>
-  </data>
-  <data name="Presence_detection_sensor_is_covered" xml:space="preserve">
-    <value>Il sensore di rilevamento della presenza è ostruito</value>
-  </data>
-  <data name="QAM_OSD_Msg" xml:space="preserve">
-    <value>Per accedere nuovamente al widget Impostazioni rapide, tenere premuto [Alt + Z] sulla tastiera.</value>
-  </data>
-  <data name="Scroll_Lock_Off" xml:space="preserve">
-    <value>Blocco scorrimento disattivato</value>
-  </data>
-  <data name="Scroll_Lock_On" xml:space="preserve">
-    <value>Blocco scorrimento attivato</value>
-  </data>
-  <data name="Export_MSG_0" xml:space="preserve">
-    <value>Viene rilevato lo stesso monitor, importare le impostazioni per</value>
-  </data>
-  <data name="Version" xml:space="preserve">
-    <value>Versione</value>
-  </data>
-  <data name="Walk_Away_Lock" xml:space="preserve">
-    <value>Blocco in assenza</value>
-  </data>
-  <data name="App_Name" xml:space="preserve">
-    <value>Dell Display and Peripheral Manager</value>
-  </data>
-  <data name="ImpExp_Message.0" xml:space="preserve">
-    <value>Viene rilevato lo stesso monitor, importare le impostazioni per %1?</value>
-  </data>
-  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
-    <value>Aggiornamento firmware interrotto. Assicurarsi che al sistema sia collegato un solo dispositivo dello stesso modello.</value>
-  </data>
-  <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
-    <value>Il firmware del ricevitore senza fili USB non supporta l'aggiornamento del firmware del dispositivo</value>
-  </data>
-  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
-    <value>Aggiornamento firmware in corso. Impossibile interrompere il processo.</value>
-  </data>
-  <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
-    <value>Dell Display and Peripheral Manager</value>
-  </data>
-  <data name="Unable_to_synchronize_the_corresponding_ICC_profile" xml:space="preserve">
-    <value>Impossibile sincronizzare il profilo ICC corrispondente per</value>
-  </data>
-  <data name="will_be_updated_to" xml:space="preserve">
+    <data name="will_be_updated_to" xml:space="preserve">
     <value>sarà aggiornato a </value>
   </data>
-  <data name="Caps Lock Off" xml:space="preserve">
+    <data name="can_be_updated_to" xml:space="preserve">
+    <value>può essere aggiornato a</value>
+  </data>
+    <data name="UpdateAvailable" xml:space="preserve">
+    <value>Aggiornamento disponibile</value>
+  </data>
+    <data name="UpdateWillBeApplied" xml:space="preserve">
+    <value>L'aggiornamento verrà applicato</value>
+  </data>
+    <data name="UpdateAvailable_Info" xml:space="preserve">
+    <value>Il dispositivo e/o l'applicazione verranno aggiornati. Il dispositivo e/o l'applicazione potrebbero essere disponibili in modo intermittente. Non scollegare il dispositivo durante l'aggiornamento.</value>
+  </data>
+    <data name="UpdateWillBeApplied_Info" xml:space="preserve">
+    <value>Il dispositivo e/o l'applicazione verranno aggiornati. Il dispositivo e/o l'applicazione potrebbero essere disponibili in modo intermittente. Non scollegare il dispositivo durante l'aggiornamento.</value>
+  </data>
+    <data name="UpdateNow" xml:space="preserve">
+    <value>Aggiorna ora</value>
+  </data>
+    <data name="Defer" xml:space="preserve">
+    <value>Rinvia</value>
+  </data>
+    <data name="Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+    <data name="Service_not_running_Try_again" xml:space="preserve">
+    <value>Servizio non in esecuzione. Riprovare</value>
+  </data>
+    <data name="Timeout_error" xml:space="preserve">
+    <value>Errore di timeout</value>
+  </data>
+    <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>Cliccare due volte con il pulsante sinistro del mouse per avviare l'aggiornamento del firmware</value>
+  </data>
+    <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>Premere il tasto "U" sulla tastiera per avviare l'aggiornamento del firmware</value>
+  </data>
+    <data name="A0_Device_connected" xml:space="preserve">
+    <value>Dispositivo connesso</value>
+  </data>
+    <data name="A1_Firmware_update_started" xml:space="preserve">
+    <value>Aggiornamento del firmware avviato</value>
+  </data>
+    <data name="A2_Firmware_update_successful" xml:space="preserve">
+    <value>Aggiornamento del firmware eseguito correttamente</value>
+  </data>
+    <data name="E4_USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
+    <value>Il firmware del ricevitore senza fili USB non supporta l'aggiornamento del firmware del dispositivo</value>
+  </data>
+    <data name="update_failed_with_unknown_error" xml:space="preserve">
+    <value>aggiornamento non riuscito con errore sconosciuto</value>
+  </data>
+    <data name="User_aborted_firmware_update" xml:space="preserve">
+    <value>Aggiornamento del firmware interrotto dall'utente</value>
+  </data>
+    <data name="Installing" xml:space="preserve">
+    <value>Installazione</value>
+  </data>
+    <data name="Timeout" xml:space="preserve">
+    <value>Timeout</value>
+  </data>
+    <data name="Downloading_and_installing" xml:space="preserve">
+    <value>Download e installazione</value>
+  </data>
+    <data name="DDPM_will_reopen_soon_after_update" xml:space="preserve">
+    <value>Il DDPM verrà riaperto subito dopo l'aggiornamento</value>
+  </data>
+    <data name="Processing" xml:space="preserve">
+    <value>Elaborazione</value>
+  </data>
+    <data name="Software_Update" xml:space="preserve">
+    <value>Aggiornamento software</value>
+  </data>
+    <data name="Firmware_Update" xml:space="preserve">
+    <value>Aggiornamento firmware</value>
+  </data>
+    <data name="Updating_Software_Do_not_power_off_this_PC" xml:space="preserve">
+    <value>Aggiornamento del software. Non spegnere il PC.</value>
+  </data>
+    <data name="Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed" xml:space="preserve">
+    <value>Aggiornamento del firmware. Non rimuovere o spegnere il dispositivo. Lasciare il dispositivo indisturbato.</value>
+  </data>
+    <data name="Unable_to_detect_target_device" xml:space="preserve">
+    <value>Impossibile rilevare il dispositivo di destinazione</value>
+  </data>
+    <data name="AI_Auto_Framing" xml:space="preserve">
+    <value>Framing automatico AI</value>
+  </data>
+    <data name="ON" xml:space="preserve">
+    <value>ATTIVATO</value>
+  </data>
+    <data name="OFF" xml:space="preserve">
+    <value>SPENTO</value>
+  </data>
+    <data name="Presets" xml:space="preserve">
+    <value>Preselezioni</value>
+  </data>
+    <data name="Auto_framing" xml:space="preserve">
+    <value>Framing automatico</value>
+  </data>
+    <data name="Field_of_View" xml:space="preserve">
+    <value>Campo visivo</value>
+  </data>
+    <data name="Zoom" xml:space="preserve">
+    <value>Ingrandisci</value>
+  </data>
+    <data name="Default" xml:space="preserve">
+    <value>Predefinito</value>
+  </data>
+    <data name="Smooth" xml:space="preserve">
+    <value>Uniforme</value>
+  </data>
+    <data name="Vibrant" xml:space="preserve">
+    <value>Vibrante</value>
+  </data>
+    <data name="Warm" xml:space="preserve">
+    <value>Caldo</value>
+  </data>
+    <data name="Standard_0" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+    <data name="Native_0" xml:space="preserve">
+    <value>Nativo</value>
+  </data>
+    <data name="Multimedia_0" xml:space="preserve">
+    <value>Multimedia</value>
+  </data>
+    <data name="Movie_0" xml:space="preserve">
+    <value>Film</value>
+  </data>
+    <data name="Nature_0" xml:space="preserve">
+    <value>Natura</value>
+  </data>
+    <data name="Game_0" xml:space="preserve">
+    <value>Gioco</value>
+  </data>
+    <data name="Game_1" xml:space="preserve">
+    <value>Gioco1</value>
+  </data>
+    <data name="Sport_0" xml:space="preserve">
+    <value>Sport</value>
+  </data>
+    <data name="Text_0" xml:space="preserve">
+    <value>Testo</value>
+  </data>
+    <data name="Warm_0" xml:space="preserve">
+    <value>Caldo</value>
+  </data>
+    <data name="Cool_0" xml:space="preserve">
+    <value>Freddo</value>
+  </data>
+    <data name="Custom_Color" xml:space="preserve">
+    <value>Colore personalizzato</value>
+  </data>
+    <data name="ComfortView_0" xml:space="preserve">
+    <value>ComfortView</value>
+  </data>
+    <data name="Game_2" xml:space="preserve">
+    <value>Gioco2</value>
+  </data>
+    <data name="Game_3" xml:space="preserve">
+    <value>Gioco3</value>
+  </data>
+    <data name="Desktop_0" xml:space="preserve">
+    <value>Desktop</value>
+  </data>
+    <data name="Reference_0" xml:space="preserve">
+    <value>Riferimento</value>
+  </data>
+    <data name="Metro_0" xml:space="preserve">
+    <value>Metro</value>
+  </data>
+    <data name="Paper_0" xml:space="preserve">
+    <value>Carta</value>
+  </data>
+    <data name="Standard_HDR" xml:space="preserve">
+    <value>HDR standard</value>
+  </data>
+    <data name="Movie_HDR" xml:space="preserve">
+    <value>HDR film</value>
+  </data>
+    <data name="Game_HDR" xml:space="preserve">
+    <value>HDR gioco</value>
+  </data>
+    <data name="Vivid_HDR" xml:space="preserve">
+    <value>HDR vivido</value>
+  </data>
+    <data name="Custom_1" xml:space="preserve">
+    <value>Personalizzato 1</value>
+  </data>
+    <data name="Custom_2" xml:space="preserve">
+    <value>Personalizzato 2</value>
+  </data>
+    <data name="Custom_3" xml:space="preserve">
+    <value>Personalizzato 3</value>
+  </data>
+    <data name="User_1" xml:space="preserve">
+    <value>Utente 1</value>
+  </data>
+    <data name="User_2" xml:space="preserve">
+    <value>Utente 2</value>
+  </data>
+    <data name="User_3" xml:space="preserve">
+    <value>Utente 3</value>
+  </data>
+    <data name="SPORTS_Game" xml:space="preserve">
+    <value>SPORT Game</value>
+  </data>
+    <data name="Custom_layout" xml:space="preserve">
+    <value>Personalizza layout</value>
+  </data>
+    <data name="Cancel_0" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
+    <data name="Save_0" xml:space="preserve">
+    <value>Salva</value>
+  </data>
+    <data name="Arrange_Windows" xml:space="preserve">
+    <value>Disponi finestre</value>
+  </data>
+    <data name="EA_MSG_0" xml:space="preserve">
+    <value>Modificare la disposizione corrente delle finestre, modificare il nome (se desiderato) e cliccare su "Salva" per memorizzare la disposizione.</value>
+  </data>
+    <data name="Battery_Low" xml:space="preserve">
+    <value>Batteria scarica</value>
+  </data>
+    <data name="Caps_Lock_On" xml:space="preserve">
+    <value>BLOC MAIUSC attivato</value>
+  </data>
+    <data name="Caps Lock Off" xml:space="preserve">
     <value>BLOC MAIUSC disattivato</value>
   </data>
-  <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
+    <data name="Easy_Memory" xml:space="preserve">
+    <value>Easy Memory</value>
+  </data>
+    <data name="Go_to_Widget_Settings" xml:space="preserve">
+    <value>Vai a Impostazioni widget</value>
+  </data>
+    <data name="is_muted" xml:space="preserve">
+    <value>è disattivato</value>
+  </data>
+    <data name="is_Unmuted" xml:space="preserve">
+    <value>è riattivato</value>
+  </data>
+    <data name="Num_Lock_Off" xml:space="preserve">
+    <value>Bloc Num disattivato</value>
+  </data>
+    <data name="Num_Lock_On" xml:space="preserve">
+    <value>Bloc Num attivato</value>
+  </data>
+    <data name="Presence_detection_sensor_is_covered" xml:space="preserve">
+    <value>Il sensore di rilevamento della presenza è ostruito</value>
+  </data>
+    <data name="QAM_OSD_Msg" xml:space="preserve">
+    <value>Per accedere nuovamente al widget Impostazioni rapide, tenere premuto [Alt + Z] sulla tastiera.</value>
+  </data>
+    <data name="Scroll_Lock_Off" xml:space="preserve">
+    <value>Blocco scorrimento disattivato</value>
+  </data>
+    <data name="Scroll_Lock_On" xml:space="preserve">
+    <value>Blocco scorrimento attivato</value>
+  </data>
+    <data name="Export_MSG_0" xml:space="preserve">
+    <value>Viene rilevato lo stesso monitor, importare le impostazioni per</value>
+  </data>
+    <data name="Version" xml:space="preserve">
+    <value>Versione</value>
+  </data>
+    <data name="Walk_Away_Lock" xml:space="preserve">
+    <value>Blocco in assenza</value>
+  </data>
+    <data name="Caps_Lock_Off" xml:space="preserve">
+    <value>BLOC MAIUSC disattivato</value>
+  </data>
+    <data name="App_Name" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+    <data name="ImpExp_Message.0" xml:space="preserve">
+    <value>Viene rilevato lo stesso monitor, importare le impostazioni per %1?</value>
+  </data>
+    <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
+    <value>Aggiornamento firmware interrotto. Assicurarsi che al sistema sia collegato un solo dispositivo dello stesso modello.</value>
+  </data>
+    <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
+    <value>Il firmware del ricevitore senza fili USB non supporta l&apos;aggiornamento del firmware del dispositivo</value>
+  </data>
+    <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
+    <value>Aggiornamento firmware in corso. Impossibile interrompere il processo.</value>
+  </data>
+    <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+    <data name="Unable_to_synchronize_the_corresponding_ICC_profile" xml:space="preserve">
+    <value>Impossibile sincronizzare il profilo ICC corrispondente per</value>
+  </data>
+    <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
     <value>Esistono profili Easy Memory associati a questo layout personalizzato.\nSalvando questo layout personalizzato, il layout verrà aggiornato per tutti i profili associati.\nSalvare il layout?</value>
   </data>
-  <data name="CollabMultipleCalls" xml:space="preserve">
+    <data name="CollabMultipleCalls" xml:space="preserve">
     <value>I controlli di collaborazione non sono disponibili durante conference call multiple</value>
   </data>
-  <data name="Custom_Color_HDR" xml:space="preserve">
+    <data name="Custom_Color_HDR" xml:space="preserve">
     <value>Personalizza HDR a colori</value>
   </data>
-  <data name="Display_P3" xml:space="preserve">
+    <data name="Display_P3" xml:space="preserve">
     <value>Display P3</value>
   </data>
-  <data name="FPS_Game" xml:space="preserve">
+    <data name="FPS_Game" xml:space="preserve">
     <value>Gioco FPS</value>
   </data>
-  <data name="HDR_Peak_1000" xml:space="preserve">
+    <data name="HDR_Peak_1000" xml:space="preserve">
     <value>HDR Peak 1000</value>
   </data>
-  <data name="Multiscreen_Match" xml:space="preserve">
+    <data name="Multiscreen_Match" xml:space="preserve">
     <value>Associazione multischermo</value>
   </data>
-  <data name="Off_0" xml:space="preserve">
+    <data name="Off_0" xml:space="preserve">
     <value>Spento</value>
   </data>
-  <data name="Presets_Disabled" xml:space="preserve">
+    <data name="Presets_Disabled" xml:space="preserve">
     <value>Impostazioni predefinite disabilitate</value>
   </data>
-  <data name="RTS_Game" xml:space="preserve">
+    <data name="RTS_Game" xml:space="preserve">
     <value>Gioco RTS</value>
   </data>
-  <data name="RPG_Game" xml:space="preserve">
+    <data name="RPG_Game" xml:space="preserve">
     <value>Gioco RPG</value>
   </data>
-  <data name="WebCameraSettings.2" xml:space="preserve">
+    <data name="WebCameraSettings.2" xml:space="preserve">
     <value>Utilizza l'analisi intelligente della scena e il tracciamento del volto per eseguire lo zoom avanti e indietro della vista quando ci si sposta</value>
   </data>
 </root>
