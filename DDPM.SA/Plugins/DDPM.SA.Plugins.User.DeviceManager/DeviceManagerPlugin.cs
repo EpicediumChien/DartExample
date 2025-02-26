@@ -57,9 +57,11 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
+using static DdmLibrary.Utility.KVM;
 using static DDPM.SA.Common.Telementry_GeneralFunction;
 using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
 using IDs = DDPM.SA.Common.IDs;
@@ -16128,7 +16130,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 else
                                 {
                                     DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
+                                    monitorSettings.ServiceTag = serviceTag;
+                                    monitorSettings.Model = model;
                                     monitorSettings.Input.strInputSourceList = strDDMinputlist;
+                                    ddpmMonitorSettings.Add(monitorSettings);
                                 }
 
                                 bool b = _SettingsPlugin.WriteMonitorSettings(model, ddpmMonitorSettings).Result;
@@ -16897,6 +16902,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _ColorPresetPlugin.Migration(DDMmonitorsettings.ColorPreset, DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, _SettingsPlugin);
             }
+            //KVM
+            DDMtoDDPM_KVM(DDMmonitorsettings);
             //EA
             DDMtoDDPM_EzArrange(DDMmonitorsettings, DDMusersettings);
             //EM
@@ -16905,6 +16912,81 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool bSchedule = MigrateScheduleMonitorSettings(DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, DDMmonitorsettings.BriConSchedule).Result;
             //Hotkey
             DDMtoDDPM_Hotkey(DDMusersettings, DDMmonitorsettings);
+            //PowerNap
+            DDMtoDDPM_PowerNap(DDMmonitorsettings);
+        }
+
+        private void DDMtoDDPM_KVM(DDMMonitorSettings ddmMonitorSettings)
+        {
+            try 
+            {
+                if (ddmMonitorSettings != null)
+                {
+                    string model = ddmMonitorSettings.Model;
+                    string serviceTag = ddmMonitorSettings.ServiceTag;
+                    bool isUSBOn = false;
+                    bool isNetOn = false;
+                    if (ddmMonitorSettings.KVM.USB.WizardRuned && ddmMonitorSettings.KVM.Network.WizardRuned)
+                    {
+                        if (ddmMonitorSettings.KVM.LastUsed == (int)KVMType.USB)
+                        {
+                            isUSBOn = true;
+                        }
+                        else
+                        {
+                            isNetOn = true;
+                        }
+                    }
+                    else if (ddmMonitorSettings.KVM.USB.WizardRuned && !ddmMonitorSettings.KVM.Network.WizardRuned)
+                    {
+                        isUSBOn = true;
+                    }
+                    else if (!ddmMonitorSettings.KVM.USB.WizardRuned && ddmMonitorSettings.KVM.Network.WizardRuned)
+                    {
+                        isNetOn = true;
+                    }
+                    if (_SettingsPlugin != null)
+                    {
+                        List<DDPMMonitorSettings> ddpmMonitorSettings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+                        if (ddpmMonitorSettings != null)
+                        {
+                            int index = ddpmMonitorSettings.FindIndex(x => x.ServiceTag == serviceTag);
+                            if (index != -1)
+                            {
+                                ddpmMonitorSettings[index].KVM.isOnUSBKVM = isUSBOn;
+                                ddpmMonitorSettings[index].KVM.isOnNKVM = isNetOn;
+                            }
+                            else
+                            {
+                                DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
+                                monitorSettings.Model = model;
+                                monitorSettings.ServiceTag = serviceTag;
+                                monitorSettings.KVM.isOnUSBKVM = isUSBOn;
+                                monitorSettings.KVM.isOnNKVM = isNetOn;
+                                ddpmMonitorSettings.Add(monitorSettings);
+                            }
+
+                            bool b = _SettingsPlugin.WriteMonitorSettings(model, ddpmMonitorSettings).Result;
+                        }
+                        else
+                        {
+                            writelog("[DDMtoDDPM_PowerNap]ddpmMonitorSettings is null!");
+                        }
+                    }
+                    else
+                    {
+                        writelog("[DDMtoDDPM_PowerNap]_SettingsPlugin is null!");
+                    }
+                }
+                else
+                {
+                    writelog("[DDMtoDDPM_PowerNap]ddmMonitorSettings is null!");
+                }
+            }
+            catch
+            {
+                ;
+            }
         }
 
         private void DDMtoDDPM_Hotkey(DDMUserSettings ddmUserSettings, DDMMonitorSettings ddmMonitorSettings)
@@ -17254,6 +17336,80 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     eaSettings.RecentList = recentList.ToArray();
                     WriteEAMonitorSettings(moinfo, eaSettings);
                 }
+            }
+        }
+
+        private void DDMtoDDPM_PowerNap(DDMMonitorSettings ddmMonitorSettings)
+        {
+            try
+            {
+                if (ddmMonitorSettings != null)
+                {
+                    string model = ddmMonitorSettings.Model;
+                    string serviceTag = ddmMonitorSettings.ServiceTag;
+                    PowerNapSetting powerNapSetting = new PowerNapSetting();
+                    powerNapSetting.ModelName = model;
+                    powerNapSetting.ServiceTag = serviceTag;
+                    int powernap = ddmMonitorSettings.Others.PowerNap;
+                    if (powernap == 3 || powernap == 5)
+                    {
+                        powerNapSetting.Status = true;
+                    }
+                    else
+                    {
+                        powerNapSetting.Status = false;
+                    }
+                    if (powernap == 2 || powernap == 3)
+                    {
+                        powerNapSetting.RunType = PowerNapType.ReduceBrightness;
+                    }
+                    else if (powernap == 4 || powernap == 5)
+                    {
+                        powerNapSetting.RunType = PowerNapType.SleepIfRunning;
+                    }
+                    else
+                    {
+                        powerNapSetting.RunType = PowerNapType.Off;
+                    }
+                    if (_SettingsPlugin != null)
+                    {
+                        List<DDPMMonitorSettings> ddpmMonitorSettings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+                        if (ddpmMonitorSettings != null)
+                        {
+                            int index = ddpmMonitorSettings.FindIndex(x => x.ServiceTag == serviceTag);
+                            if (index != -1)
+                            {
+                                ddpmMonitorSettings[index].PowerNap = powerNapSetting;
+                            }
+                            else
+                            {
+                                DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
+                                monitorSettings.Model = model;
+                                monitorSettings.ServiceTag = serviceTag;
+                                monitorSettings.PowerNap = powerNapSetting;
+                                ddpmMonitorSettings.Add(monitorSettings);
+                            }
+
+                            bool b = _SettingsPlugin.WriteMonitorSettings(model, ddpmMonitorSettings).Result;
+                        }
+                        else
+                        {
+                            writelog("[DDMtoDDPM_PowerNap]ddpmMonitorSettings is null!");
+                        }
+                    }
+                    else
+                    {
+                        writelog("[DDMtoDDPM_PowerNap]_SettingsPlugin is null!");
+                    }
+                }
+                else
+                {
+                    writelog("[DDMtoDDPM_PowerNap]ddmMonitorSettings is null!");
+                }
+            }
+            catch 
+            {
+                ;
             }
         }
 
