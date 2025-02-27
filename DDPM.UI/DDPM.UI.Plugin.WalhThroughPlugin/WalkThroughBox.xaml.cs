@@ -92,6 +92,34 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                     OnPropertyChanged(nameof(ProgressValue));
                 }
             }
+
+            public bool _isFirstPage = true;
+
+            public bool IsFirstPage
+            {
+                get => _isFirstPage;
+                set
+                {
+                    _isFirstPage = value;
+                    if(_isFirstPage)
+                        _isLastPage = false;
+                    NotifyPropertyChanged(nameof(IsFirstPage));
+                }
+            }
+
+            public bool _isLastPage = false;
+
+            public bool IsLastPage
+            {
+                get => _isLastPage;
+                set
+                {
+                    _isLastPage = value;
+                    if (_isLastPage)
+                        _isFirstPage = false;
+                    NotifyPropertyChanged(nameof(IsLastPage));
+                }
+            }
         }
 
         private int _currentPage = 1;
@@ -124,6 +152,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         }
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
+            _viewModel.IsFirstPage = false;
             if (_currentPage < _totalPages)
             {
                 _currentPage++;
@@ -133,7 +162,10 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 if (_currentPage != _totalPages)
                     UpdatePosition("Left");
                 else
+                {
+                    _viewModel.IsLastPage = true;
                     UpdatePosition("Top_Right");
+                }
             }
             else
             {
@@ -143,13 +175,18 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
+            _viewModel.IsLastPage = false;
+            ViewModel.UpdateButtonVisibility();
             if (_currentPage > 1)
             {
                 _currentPage--;
                 UpdateText(_currentPage);
                 UpdateProgressBar(false);
                 if (_currentPage == 1)
+                {
+                    _viewModel.IsFirstPage = true;
                     UpdatePosition("Top_Right");
+                }
                 else
                     UpdatePosition("Left");
             }
