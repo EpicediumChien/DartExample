@@ -939,7 +939,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         bool SmartHDR_ON = GetHDRStatus(m).Result;
 
                         _SupportedColorPreset = _ColorPresetPlugin.ReadColorPreset(m, VCP_capbility, SmartHDR_ON).Result;
-                        //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue                      
+                        //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
                         foreach (string info in _SupportedColorPreset)
                         {
                             multiColorPreset.Add(ColorprofileMulti(info));
@@ -960,36 +960,47 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case "Standard":
                     ret = LangHelper.Instance["Standard_0"];
                     break;
+
                 case "Standard HDR":
                     ret = LangHelper.Instance["Standard_HDR"];
                     break;
+
                 case "Native":
                     ret = LangHelper.Instance["Native_0"];
                     break;
+
                 case "Movie":
                     ret = LangHelper.Instance["Movie_0"];
                     break;
+
                 case "Game":
                     ret = LangHelper.Instance["Game_0"];
                     break;
+
                 case "Game1":
                     ret = LangHelper.Instance["Game_1"];
                     break;
+
                 case "Game2":
                     ret = LangHelper.Instance["Game_2"];
                     break;
+
                 case "Game3":
                     ret = LangHelper.Instance["Game_3"];
                     break;
+
                 case "Warm":
                     ret = LangHelper.Instance["Warm"];
                     break;
+
                 case "Cool":
                     ret = LangHelper.Instance["Cool_0"];
                     break;
+
                 case "Custom Color":
                     ret = LangHelper.Instance["Custom_Color"];
                     break;
+
                 case "Custom 1":
                     ret = LangHelper.Instance["Custom_1"];
                     break;
@@ -1011,49 +1022,61 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case "User 1":
                     ret = LangHelper.Instance["User_1"];
                     break;
+
                 case "User 2":
                     ret = LangHelper.Instance["User_2"];
                     break;
+
                 case "User 3":
                     ret = LangHelper.Instance["User_3"];
                     break;
+
                 case "SPORTS Game":
                     ret = LangHelper.Instance["SPORTS_Game"];
                     break;
+
                 case "Movie HDR":
                     ret = LangHelper.Instance["Movie_HDR"];
                     break;
+
                 case "Game HDR":
                     ret = LangHelper.Instance["Game_HDR"];
                     break;
+
                 case "Metro":
                     ret = LangHelper.Instance["Metro_0"];
                     break;
+
                 case "FPS Game":
                     ret = LangHelper.Instance["FPS_Game"];
                     break;
+
                 case "RTS Game":
                     ret = LangHelper.Instance["RTS_Game"];
                     break;
+
                 case "RPG Game":
                     ret = LangHelper.Instance["RPG_Game"];
                     break;
+
                 case "ComfortView":
                     ret = LangHelper.Instance["ComfortView_0"];
                     break;
+
                 case "Paper":
                     ret = LangHelper.Instance["Paper_0"];
                     break;
+
                 case "Display P3":
                     ret = LangHelper.Instance["Display_P3"];
                     break;
+
                 default:
                     ret = info;
                     break;
             }
             return ret;
         }
-
 
         public Task<string> GetMonitorProfile(MonitorInfo m)
         {
@@ -2231,6 +2254,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received Re_GetMonitors requested ...");
             Task.Run(() => _SystemEvents_DisplaySettingsChanged(null)).Wait();
             return Task.FromResult(_AllInfoMonitors.ToList());
+        }
+
+        public Task<List<MultiCommandArch>> MultiCommandsRun(List<MultiCommandArch> _multiCommands)
+        {
+            writelog("DeviceMangerPlugin received MultiCommandsRun requested ...");
+            writelog($"DeviceMangerPlugin MultiCommands count is {_multiCommands.Count}");
+
+            var r = new List<MultiCommandArch>();
+
+            if (_DisplayManagerPlugin != null)
+                r = _DisplayManagerPlugin.MultiCommandsRun(_multiCommands).Result;
+
+            return Task.FromResult(r);
         }
 
         public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
@@ -6518,6 +6554,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
+
         private Task CallUpdateProgressUI()
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
@@ -6609,6 +6646,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
+
         /// <summary>
         /// 定期檢查更新排程
         /// </summary>
@@ -8313,7 +8351,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (!string.IsNullOrEmpty(ver))
                         _GlobalSettingParam.GlobalSetting_About.SWVersion = ver;
                     writelog($"[SW_GetSWUpdateInfo] ver: {_GlobalSettingParam.GlobalSetting_About.SWVersion}");
-
                 }
                 catch (Exception ex)
                 {
@@ -8415,6 +8452,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("[InterruptScreen_Metadata], done.");
             return Task.FromResult(result);
         }
+
         private Task<bool> SW_CheckSWUpdate()
         {
             writelog("[SW_CheckSWUpdate], start.");
@@ -18184,20 +18222,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case OSDType_Device.Keyboard:
                     _OSD_Controler.KeybordBatteryLow_CloseWindow(null, null);
                     break;
+
                 case OSDType_Device.Mouse:
                     _OSD_Controler.MouseBatteryLow_CloseWindow(null, null);
                     break;
+
                 case OSDType_Device.Headset:
                     _OSD_Controler.HeadsetBatteryLow_CloseWindow(null, null);
                     break;
+
                 case OSDType_Device.Pen:
                     _OSD_Controler.StylusBatteryLow_CloseWindow(null, null);
                     break;
+
                 default:
                     break;
             }
-
         }
+
         private bool IsValidJson(string jsonString)
         {
             try
@@ -18771,9 +18813,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case "Mute.Status":
                     ShowOSD(e.DeviceName, e.osd_type, e.Message, e.Status);
                     break;
+
                 case "CloseBatteryLowOSD":
                     CloseOSD(e.osd_device, e.Guid);
                     break;
+
                 default:
                     break;
             }

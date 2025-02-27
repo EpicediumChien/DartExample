@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text;
+using static DDPM.UI.Common.User32;
 using static VcpCore.Common.User32;
 
 namespace DDPM.UI.Common
@@ -16,7 +17,16 @@ namespace DDPM.UI.Common
         private static extern bool GetMonitorInfo(HandleRef hmonitor, [In, Out] MonitorInfoEx info);
         public static bool _GetMonitorInfo(HandleRef hmonitor, [In, Out] MonitorInfoEx info)
         {
-            return GetMonitorInfo(hmonitor, info);
+            bool rst = GetMonitorInfo(hmonitor, info);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] GetMonitorInfo failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32", SetLastError = true)]
@@ -24,7 +34,16 @@ namespace DDPM.UI.Common
         private static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lpRect, MonitorEnumProc callback, int dwData);
         public static bool _EnumDisplayMonitors(IntPtr hdc, IntPtr lpRect, MonitorEnumProc callback, int dwData)
         {
-            return EnumDisplayMonitors(hdc, lpRect, callback, dwData);
+            bool rst = EnumDisplayMonitors(hdc, lpRect, callback, dwData);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] EnumDisplayMonitors failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
@@ -33,7 +52,16 @@ namespace DDPM.UI.Common
         private static extern bool EnumDisplaySettings(string lpszDeviceName, int iModeNum, ref DEVMODE lpDevMode);
         public static bool _EnumDisplaySettings(string lpszDeviceName, int iModeNum, ref DEVMODE lpDevMode)
         {
-            return EnumDisplaySettings(lpszDeviceName, iModeNum, ref lpDevMode);
+            bool rst = EnumDisplaySettings(lpszDeviceName, iModeNum, ref lpDevMode);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] EnumDisplaySettings failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -41,7 +69,16 @@ namespace DDPM.UI.Common
         private static extern bool EnumDisplayDevices(string lpDevice, uint iDevNum, ref DISPLAY_DEVICE lpDisplayDevice, uint dwFlags);
         public static bool _EnumDisplayDevices(string lpDevice, uint iDevNum, ref DISPLAY_DEVICE lpDisplayDevice, uint dwFlags)
         {
-            return EnumDisplayDevices(lpDevice, iDevNum, ref lpDisplayDevice, dwFlags);
+            bool rst = EnumDisplayDevices(lpDevice, iDevNum, ref lpDisplayDevice, dwFlags);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[User32] EnumDisplayDevices failed.");
+#endif
+            }
+
+            return rst;
         }
 
         [Flags]
@@ -261,7 +298,16 @@ namespace DDPM.UI.Common
 
         private static int _GetPrivateProfileInt(string section, string key, int def, string filePath)
         {
-            return GetPrivateProfileInt(section, key, def, filePath);
+            int rst = GetPrivateProfileInt(section, key, def, filePath);
+
+            if (rst == def)
+            {
+#if DEBUG
+                Console.WriteLine($"[User32] GetPrivateProfileInt(): the key \"{key}\" is not found, return def: {def}");
+#endif
+            }
+
+            return rst;
         }
 
         //Uage:

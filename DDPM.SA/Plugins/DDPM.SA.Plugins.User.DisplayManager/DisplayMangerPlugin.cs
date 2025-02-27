@@ -393,6 +393,19 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
+        public Task<List<MultiCommandArch>> MultiCommandsRun(List<MultiCommandArch> _multiCommands)
+        {
+            _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received MultiCommandsRun requested ...");
+            _logs.DebugMsg($"[DisplayMangerPlugin] MultiCommands count is {_multiCommands.Count}");
+
+            var r = new List<MultiCommandArch>();
+
+            if (_VcpCorePlugin != null)
+                r = _VcpCorePlugin.MultiCommandsRun(_multiCommands).Result;
+
+            return Task.FromResult(r);
+        }
+
         public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetCapabilitiesString requested ...");
@@ -1020,7 +1033,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                             _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] ports is null or Count = 0");
                                         }
                                     }
-                                    input_num ++;
+                                    input_num++;
                                 }
                                 if (_displayDataManger != null)
                                 {
@@ -1114,7 +1127,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     uint code = Convert.ToUInt16(strsetUpstream, 2);
                                     Trace.WriteLine("strsetUpstream:" + code.ToString());
                                     bool b = SetVCPCapability(monitorInfo, 0xE7, code).Result;
-                                    if (b) 
+                                    if (b)
                                     {
                                         inputSource_USB.inputSource = inputsource;
                                         inputSource_USB.USB = upstream;
@@ -1143,7 +1156,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<string> GetCurrentInput(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
         {
-            ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, "input select", guid, priority : priority).Result;
+            ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, "input select", guid, priority: priority).Result;
             if (objGetVCP != null && objGetVCP.result)
             {
                 Trace.WriteLine("CurrentInput:" + objGetVCP.value.ToString());
@@ -5269,6 +5282,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         #endregion
 
         #region DisplayData
+
         public Task InitDisplayData(List<MonitorInfo> monitorInfos)
         {
             if (monitorInfos != null)
@@ -5277,6 +5291,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.CompletedTask;
         }
+
         #endregion
     }
 }

@@ -709,6 +709,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Multiple docks are detected. Keep only one dock connected to prevent damage to your dock(s)..
+        /// </summary>
+        internal static string Multiple_docks_are_detected2 {
+            get {
+                return ResourceManager.GetString("Multiple_docks_are_detected2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Multiscreen Match.
         /// </summary>
         internal static string Multiscreen_Match {
@@ -921,6 +930,15 @@ namespace DDPM.SA.Resources {
         internal static string Scroll_Lock_On {
             get {
                 return ResourceManager.GetString("Scroll_Lock_On", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to s.
+        /// </summary>
+        internal static string Seconds {
+            get {
+                return ResourceManager.GetString("Seconds", resourceCulture);
             }
         }
         
@@ -1168,7 +1186,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Updating firmware. Do not remove or power off the device. Leave the device undisturbed.
+        ///   Looks up a localized string similar to Updating firmware. Do not remove or power off the device. Leave the device undisturbed..
         /// </summary>
         internal static string Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed {
             get {

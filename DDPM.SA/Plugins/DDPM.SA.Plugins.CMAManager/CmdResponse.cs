@@ -195,7 +195,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 }
             }
 
-            public string ToString()
+            public override string ToString()
             {
                 string resultResponse = string.Empty;
 
@@ -363,7 +363,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 return resultCode;
             }
 
-            public string ToString()
+            public override string ToString()
             {
                 string response = string.Empty;
 
@@ -595,7 +595,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
             }
 
-            public string ToString()
+            public override string ToString()
             {
                 Console.WriteLine("result = " + result);
                 Console.WriteLine("message = " + message);

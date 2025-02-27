@@ -2515,7 +2515,7 @@
     <value>Fornece acesso rápido aos controlos de conferência. Ligar e desligar as \nteclas irá mostrá-las ou ocultá-las no teclado durante uma chamada\nno Microsoft Teams ou no Zoom.</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
-    <value>Ativar o efeito de piscar quando há uma nova mensagem de chat na chamada em\nconferência</value>
+    <value>Ativar o efeito de piscar quando há uma nova mensagem de chat na chamada em conferência</value>
   </data>
   <data name="Collab.4" xml:space="preserve">
     <value>Ativar ícones no teclado tocando duas vezes em vez de tocar\numa vez</value>

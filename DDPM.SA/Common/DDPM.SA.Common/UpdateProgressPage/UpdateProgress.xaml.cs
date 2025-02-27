@@ -265,7 +265,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
             }
             else if (e.ProcessName.Equals("Timeout") && !isInstalling)
             {
-                ProgressStr_2 = $"{LangHelper.Instance["Unable_to_detect_target_device"]}… {(int)e.ProcessProgress}s";
+                ProgressStr_2 = $"{LangHelper.Instance["Unable_to_detect_target_device"]}… {(int)e.ProcessProgress}{LangHelper.Instance["Seconds"]}";
                 ProgressStr_2_Color = "#E6AC28";
             }
             //_Logs?.DebugMsg_1($"[UpdateProgress] {nameof(_FWUpdatePlugin_ProgressUpdate)} {e.DeviceName} {e.TheLatestVersion} {e.ProcessName} {e.ProcessProgress} {DateTime.Now}");

@@ -4128,7 +4128,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 ToastContentBuilder toastContentBuilder = new ToastContentBuilder();
                 toastContentBuilder.AddArgument(LangHelper.Instance["Warning"]);
                 toastContentBuilder.AddText(LangHelper.Instance["Warning"]);
-                toastContentBuilder.AddText(LangHelper.Instance["Multiple_docks_are_detected"]);
+                toastContentBuilder.AddText(LangHelper.Instance["Multiple_docks_are_detected2"]);
                 toastContentBuilder.Show(); // 顯示Toast通知
                 _deviceHelper_ForDock.deviceInfo = _deviceHelper.deviceInfo.FindAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
                 for (int i = 0; i < _deviceHelper_ForDock.deviceInfo.Count; i++)

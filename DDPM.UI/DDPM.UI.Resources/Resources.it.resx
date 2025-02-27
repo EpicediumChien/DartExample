@@ -2512,7 +2512,7 @@
     <value>Fornisce accesso rapido ai controlli della conferenza. Attivando/disattivando i\ntasti vengono visualizzati o nascosti sulla tastiera durante\nuna chiamata in Microsoft Teams o Zoom.</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
-    <value>Attivare l&apos;effetto di lampeggio quando è presente un nuovo messaggio di chat durante la conference\ncall</value>
+    <value>Attivare l&apos;effetto di lampeggio quando è presente un nuovo messaggio di chat durante la conference call</value>
   </data>
   <data name="Collab.4" xml:space="preserve">
     <value>Attivare le icone sulla tastiera toccando due volte invece di\nuna sola volta</value>

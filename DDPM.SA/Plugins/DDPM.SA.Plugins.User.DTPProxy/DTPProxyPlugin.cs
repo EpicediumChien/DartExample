@@ -15666,17 +15666,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         private async Task<int> GetAirAudioDevsCountAsync()
         {
-            var airaudios = await GetAirAudioDeviceItemsExAsync();
-            if (airaudios != null)
+            try
             {
-                Trace.WriteLine("RegisterEventsForAllAirAudioAsync ********** " + airaudios.ToString() + " ********** ");
-                return airaudios.Count;
+                var airaudios = await GetAirAudioDeviceItemsExAsync();
+                if ((airaudios is string) && !string.IsNullOrEmpty(airaudios))
+                {
+
+                    string[] parsedArray = airaudios.Split(new[] { ", " }, StringSplitOptions.None);
+
+                    writelog("RegisterEventsForAllAirAudioAsync ********** " + airaudios.ToString() + " ********** ");
+                    return parsedArray.Length;
+                }
+                else
+                    return 0;
             }
-            else
+            catch (Exception ex)
+            {
+                writelog($"GetAirAudioDevsCountAsync - Exception: {ex.Message}");
                 return 0;
+            }
+
         }
 
-        public async Task<JArray> GetAirAudioDeviceItemsExAsync()
+        public async Task<string> GetAirAudioDeviceItemsExAsync()
         {
             try
             {
@@ -15689,17 +15701,24 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     {
                         var value = GetPropertyValue(_airaudioInterfaceType, commodity, "DeviceItems");
                         writelog($"[DTPProxyPlugin] [AirAudio] GetDeviceItemsExAsync succeeded");
-                        return value == null ? new JArray() : (JArray)value;
+
+                        if (value != null)
+                        {
+                            return string.Join(", ", value);
+
+                        }
+                        else
+                            return string.Empty;
                     }
                 }
 
                 writelog($"[DTPProxyPlugin] [AirAudio] GetDeviceItemsExAsync failed: Could not retrieve commodity interface");
-                return null;
+                return string.Empty;
             }
             catch (Exception ex)
             {
                 writelog($"[DTPProxyPlugin] [AirAudio] GetDeviceItemsExAsync failed - Exception: {ex.Message}");
-                return null;
+                return string.Empty;
             }
         }
         #endregion AirAudio Event
