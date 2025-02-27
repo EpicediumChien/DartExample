@@ -46,8 +46,8 @@ namespace DDPM.UI.Module.AddPen_BL
                 var di = e.device_peripherals;
                 IsBLE = di.IsBLE;
                 IsConnected = di.IsConnected;
-                 IsSupported = di.IsReady;
-           }
+                IsSupported = di.IsReady;
+            }
         }
 
         private void AddPen_BLRightView_Unloaded(object sender, RoutedEventArgs e)
@@ -130,18 +130,20 @@ namespace DDPM.UI.Module.AddPen_BL
             if (IsBLE)
             {
                 MessageModalDialog messageModalDialog;
+                string msg;
                 if (IsConnected)
                 {
-                    messageModalDialog = new(LangHelper.Instance["Error"], LangHelper.Instance["PairedInfo.8"], LangHelper.Instance["Common.2"]);
+                    msg = LangHelper.Instance["PairedInfo.8"];
                 }
-                else if(!IsSupported)
+                else if (!IsSupported)
                 {
-                    messageModalDialog = new(LangHelper.Instance["Error"], LangHelper.Instance["Incompatible"], LangHelper.Instance["Common.2"]);
+                    msg = LangHelper.Instance["Incompatible"];
                 }
                 else
                 { return; }
 
                 Window mainWindow = System.Windows.Application.Current.MainWindow;
+                messageModalDialog = new(LangHelper.Instance["Error"], msg, LangHelper.Instance["Common.2"]);
                 if (mainWindow != null)
                 {
                     messageModalDialog.Owner = mainWindow;
