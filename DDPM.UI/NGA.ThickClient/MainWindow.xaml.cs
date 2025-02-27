@@ -74,7 +74,16 @@ namespace NGA.ThickClient
         private static extern bool SetProcessShutdownParameters(uint dwLevel, uint dwFlags);
         private static bool _SetProcessShutdownParameters(uint dwLevel, uint dwFlags)
         {
-            return SetProcessShutdownParameters(dwLevel, dwFlags);
+            bool rst = SetProcessShutdownParameters(dwLevel, dwFlags);
+
+            if(!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[NGA.ThickClient MainWindow] SetProcessShutdownParameters failed.");
+#endif
+            }
+
+            return rst;
         }
 
         /// <summary>
@@ -592,7 +601,16 @@ namespace NGA.ThickClient
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         private static bool _SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags)
         {
-            return SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
+            bool rst = SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[NGA.ThickClient MainWindow] SetWindowPos failed.");
+#endif
+            }
+
+            return rst;
         }
         #endregion Win32
 

@@ -2125,7 +2125,18 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private static extern bool GetDiskFreeSpaceEx(string lpDirectoryName, out ulong lpFreeBytesAvailable, out ulong lpTotalNumberOfBytes, out ulong lpTotalNumberOfFreeBytes);
         private static bool _GetDiskFreeSpaceEx(string lpDirectoryName, out ulong lpFreeBytesAvailable, out ulong lpTotalNumberOfBytes, out ulong lpTotalNumberOfFreeBytes)
         {
-            return GetDiskFreeSpaceEx(lpDirectoryName, out lpFreeBytesAvailable, out lpTotalNumberOfBytes, out lpTotalNumberOfFreeBytes);
+            bool rst = GetDiskFreeSpaceEx(lpDirectoryName, out lpFreeBytesAvailable, out lpTotalNumberOfBytes, out lpTotalNumberOfFreeBytes);
+
+            if (!rst)
+            {
+                DdpmCommonHelper.WriteUILog("[LaunchView] GetDiskFreeSpaceEx failed.");
+
+#if DEBUG
+                Console.WriteLine("[LaunchView] GetDiskFreeSpaceEx failed.");
+#endif
+            }
+
+            return rst;
         }
 
         public static bool HasEnoughSpace(string path, ulong requiredBytes)

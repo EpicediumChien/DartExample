@@ -51,7 +51,16 @@ namespace NGA.Common
             internal static extern IntPtr FindWindow(string? lpClassName, string lpWindowName);
             public static IntPtr _FindWindow(string? lpClassName, string lpWindowName)
             {
-                return FindWindow(lpClassName, lpWindowName);
+                IntPtr rst = FindWindow(lpClassName, lpWindowName);
+
+                if (rst == IntPtr.Zero) 
+                {
+#if DEBUG
+                    Console.WriteLine("[WinApi] FindWindow failed.");
+#endif
+                }
+
+                return rst;
             }
             /// <summary>
             /// Copies the text of the specified window's title bar (if it has one) into a buffer.
@@ -69,7 +78,16 @@ namespace NGA.Common
             internal static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int maxCount);
             public static int _GetWindowText(IntPtr hWnd, StringBuilder lpString, int maxCount)
             {
-                return GetWindowText(hWnd, lpString, maxCount);
+                int rst = GetWindowText(hWnd, lpString, maxCount);
+
+                if (rst == 0)
+                {
+#if DEBUG
+                    Console.WriteLine("[WinApi] GetWindowText failed.");
+#endif
+                }
+
+                return rst;
             }
             /// <summary>
             /// Retrieves the length, in characters, of the specified window's title bar text
@@ -85,7 +103,16 @@ namespace NGA.Common
             internal static extern int GetWindowTextLength(IntPtr hWnd);
             public static int _GetWindowTextLength(IntPtr hWnd)
             {
-                return GetWindowTextLength(hWnd);
+                int rst = GetWindowTextLength(hWnd);
+
+                if (rst == 0)
+                {
+#if DEBUG
+                    Console.WriteLine("[WinApi] WindowText may be empty or GetWindowTextLength() may be failed.");
+#endif
+                }
+
+                return rst;
             }
             /// <summary>
             /// Enumerates all top-level windows on the screen by passing the handle to each window,
@@ -99,7 +126,16 @@ namespace NGA.Common
             internal static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
             public static bool _EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam)
             {
-                return EnumWindows(lpEnumFunc, lParam);
+                bool rst = EnumWindows(lpEnumFunc, lParam);
+
+                if (!rst)
+                {
+#if DEBUG
+                    Console.WriteLine("[WinApi] EnumWindows failed.");
+#endif
+                }
+
+                return rst;
             }
             /// <summary>
             /// Delegate function that filters windows based on some criteria.
