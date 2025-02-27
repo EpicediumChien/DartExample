@@ -18,12 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
-   
-    
   </ItemGroup>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="xcopy &quot;$(ProjectDir)$(OutDir)*.*&quot; &quot;$(SolutionDir)..\DDPM.UI\CommonDll\&quot; /Y /S /Q" />
-	</Target>
 
 
 </Project>
