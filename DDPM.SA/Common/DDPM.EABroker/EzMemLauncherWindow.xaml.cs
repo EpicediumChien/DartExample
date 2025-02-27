@@ -86,7 +86,14 @@ namespace DDPM.EABroker
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
         private static bool EzMemoryShowWindow(IntPtr hWnd, int nCmdShow)
         {
-            return ShowWindow(hWnd, nCmdShow);
+            bool rst = ShowWindow(hWnd, nCmdShow);
+
+            if (!rst)
+            {
+                Debug.WriteLine("[EzMemLauncherWindow] Windows was hidden before.");
+            }
+
+            return rst;
         }
         private const int SW_SHOWNORMAL = 1;
         private const int SW_SHOWMAXIMIZED = 3;

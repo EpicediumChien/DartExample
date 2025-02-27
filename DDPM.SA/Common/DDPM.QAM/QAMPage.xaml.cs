@@ -30,7 +30,7 @@ namespace DDPM.QAM
 
             if (!rst)
             {
-                Debug.WriteLine("[QAMPage] Windows is hidden.");
+                Debug.WriteLine("[QAMPage] Windows was hidden before.");
             }
 
             return rst;
