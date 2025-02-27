@@ -16953,7 +16953,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //PowerNap
             DDMtoDDPM_PowerNap(DDMmonitorsettings);
             //Consent Page
-            DDMtoDDPM_ConsentPage(DDMusersettings);
+            //DDMtoDDPM_ConsentPage(DDMusersettings);
         }
 
         private void DDMtoDDPM_KVM(DDMMonitorSettings ddmMonitorSettings)
