@@ -12,10 +12,12 @@ using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
 using Microsoft.Win32;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -256,7 +258,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         if (b == true)
                         {
                             Log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall go");
-                            List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(SWUpdateInfoPackage.SWUpdateInfo, true,"").Result;
+                            List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(SWUpdateInfoPackage.SWUpdateInfo, true, "").Result;
                             Log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall finish");
                             //SetSelected(1);
                         }
@@ -738,8 +740,122 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             OnPropertyChanged("Progress_IsAnimated");
             OnPropertyChanged("ProgressStr");
         }
+        /// <summary>
+        /// When the device battery status changes, the Alert in the list is also updated
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="deviceChangedEventArgs"></param>
+        /// Fix PIMS-337514 [DDPM Win 2.0][R19] Status of devices change but message in Update page not change immediately
+        public void DeviceChanged(object? sender, DeviceChangedEventArgs deviceChangedEventArgs)
+        {
+            if (deviceChangedEventArgs.changedProperty == "BatteryStatusChanged" &&
+                deviceChangedEventArgs.type == DeviceChangedType.Peripherals_SettingsChange)
+            {
+                Log?.Info($"DeviceChanged deviceChangedEventArgs.deviceID : {deviceChangedEventArgs.deviceID}");
+                foreach (UIUpdateInfo uiUpdateInfo in Critical_UpdateList_UI)
+                {
+                    if (uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
+                    {
+                        ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
+                        uiUpdateInfo.Refresh();
+                        OnPropertyChanged("Critical_UpdateList_UI");
+                        return;
+                    }
+                }
+                foreach (UIUpdateInfo uiUpdateInfo in Recommended_UpdateList_UI)
+                {
+                    if (uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
+                    {
+                        ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
+                        uiUpdateInfo.Refresh();
+                        OnPropertyChanged("Recommended_UpdateList_UI");
+                        return;
+                    }
+                }
+                foreach (UIUpdateInfo uiUpdateInfo in Optional_UpdateList_UI)
+                {
+                    if (uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
+                    {
+                        ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
+                        uiUpdateInfo.Refresh();
+                        OnPropertyChanged("Optional_UpdateList_UI");
+                        return;
+                    }
+                }
+            }
+        }
+        private void ChangeStatus(UIUpdateInfo uiUpdateInfo, DeviceChangedEventArgs deviceChangedEventArgs)
+        {
+            
+            if (uiUpdateInfo != null)
+            {
+                uiUpdateInfo.UXAlertItemVisibility = Visibility.Collapsed;
+                uiUpdateInfo.UXAlertItemMessage = "";
+                uiUpdateInfo.UXAlertItemVisibility_2 = Visibility.Collapsed;
+                uiUpdateInfo.UXAlertItemMessage_2 = "";
+                bool? deviceBatteryLow = false;
+                Log?.Info($"DeviceChanged ChangeStatus ModelNumber: {deviceChangedEventArgs.device_peripherals.ModelNumber}");
+                Log?.Info($"DeviceChanged IsBatteryLevelSupported : {deviceChangedEventArgs.device_peripherals.IsBatteryLevelSupported}");
+                if (deviceChangedEventArgs.device_peripherals.IsBatteryLevelSupported)
+                {
+                    Log?.Info($"DeviceChanged BatteryStatus : {deviceChangedEventArgs.device_peripherals.BatteryStatus}");
+                    Log?.Info($"DeviceChanged BatteryLevel : {deviceChangedEventArgs.device_peripherals.BatteryLevel}");
+                    if (deviceChangedEventArgs.device_peripherals.BatteryLevel <= 20 && deviceChangedEventArgs.device_peripherals.BatteryLevel >= 0)
+                    {
+                        deviceBatteryLow = true;
+                    }
+                    else if (deviceChangedEventArgs.device_peripherals.BatteryLevel < 0)
+                    {
+                        deviceBatteryLow = null;
+                    }
+                }
+                switch (deviceChangedEventArgs.device_peripherals.Type)
+                {
+                    case DeviceType.LogicalMouse:
+
+                        if (deviceBatteryLow == true)
+                        {
+                            uiUpdateInfo.UXAlertItemVisibility = Visibility.Visible;
+                            uiUpdateInfo.UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
+                        }
+                        else if (deviceBatteryLow == null)
+                        {
+                            uiUpdateInfo.UXAlertItemVisibility = Visibility.Visible;
+                            uiUpdateInfo.UXAlertItemMessage = LangHelper.Instance["Update_Mouse_Alert"];
+                        }
+                        break;
+
+                    case DeviceType.LogicalKeyboard:
+                        if (deviceBatteryLow == true)
+                        {
+                            uiUpdateInfo.UXAlertItemVisibility = Visibility.Visible;
+                            uiUpdateInfo.UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
+                        }
+                        else if (deviceBatteryLow == null)
+                        {
+                            uiUpdateInfo.UXAlertItemVisibility = Visibility.Visible;
+                            uiUpdateInfo.UXAlertItemMessage = LangHelper.Instance["Update_Mouse_Alert"];
+                        }
+                        break;
+                    case DeviceType.PhysicalPen:
+                    case DeviceType.LogicalPen:
+                        if (deviceBatteryLow == true)
+                        {
+                            uiUpdateInfo.UXAlertItemVisibility = Visibility.Visible;
+                            uiUpdateInfo.UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
+                        }
+                        break;
+                    default:
+                        uiUpdateInfo.UXAlertItemVisibility = Visibility.Collapsed;
+                        uiUpdateInfo.UXAlertItemMessage = "";
+                        uiUpdateInfo.UXAlertItemVisibility_2 = Visibility.Collapsed;
+                        uiUpdateInfo.UXAlertItemMessage_2 = "";
+                        break;
+                }
+            }
+        }
     }
-    public class UIUpdateInfo
+    public class UIUpdateInfo : INotifyPropertyChanged
     {
         public bool IsCheckUpdate { get; set; }
         public bool IsEnableCheckBox { get; set; }
@@ -750,7 +866,12 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public string UXAlertItemMessage { get; set; }
         public Visibility UXAlertItemVisibility_2 { get; set; }
         public string UXAlertItemMessage_2 { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         public UIUpdateInfo(FWUpdateInfo fwUpdateInfo, List<DeviceInfo> deviceInfos, int IODongle)
         {
             //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷
@@ -920,6 +1041,16 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             UXAlertItemVisibility = Visibility.Collapsed;
             UXAlertItemVisibility_2 = Visibility.Collapsed;
             UpdateInfo = $"{LangHelper.Instance["Software_update"]} {swUpdateInfo.TheLatestVersion} - {swUpdateInfo.SoftwareName}";
+        }
+        public void Refresh()
+        {
+            OnPropertyChanged(nameof(IsCheckUpdate));
+            OnPropertyChanged(nameof(IsEnableCheckBox));
+            OnPropertyChanged(nameof(UpdateInfo));
+            OnPropertyChanged(nameof(UXAlertItemVisibility));
+            OnPropertyChanged(nameof(UXAlertItemMessage));
+            OnPropertyChanged(nameof(UXAlertItemVisibility_2));
+            OnPropertyChanged(nameof(UXAlertItemMessage_2));
         }
     }
 }

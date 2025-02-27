@@ -29,12 +29,21 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             InitializeComponent();
             if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
                 breakPoints = width;
+            SettingsPageViewModel vm = (SettingsPageViewModel?)SettingsPlugin.PluginIoc?.GetService<ISettingsPageViewModel>();
+            if (DdpmCommonHelper.DeviceManagerSA != null && vm != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += vm.DeviceChanged;
+            }
             _log?.Info("UpdatesPage initialize done");
         }
 
         ~UpdatesPage()
         {
-
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= vm.DeviceChanged;
+            }
         }
         private void CheckUpdate_Click(object sender, RoutedEventArgs e)
         {
@@ -75,7 +84,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 if (vm.FWUpdateInfoPackage.FWUpdateInfo.Count > 0)
                 {
                     _log?.Info("CallFWU DownloadAndInstall go");
-                    List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo, true,"").Result;
+                    List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo, true, "").Result;
                     _log?.Info("CallFWU DownloadAndInstall finish");
 
                 }
