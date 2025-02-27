@@ -377,10 +377,36 @@ namespace DDPM.UI.Common
 
         public static void updateMergedDictionaries(ResourceManager resourceManager)
         {
-            OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
-            WriteUILog($"[updateMergedDictionaries] Detected OS theme: {oSTheme.ToString()} number: {oSTheme}.");
-            if (PreviousOsTheme == oSTheme)
+            try
+            {
+                var uxSystemParameters = UXSystemParameters.Instance;
+                if (uxSystemParameters == null)
+                {
+                    WriteUILog("[updateMergedDictionaries] UXSystemParameters.Instance is null.");
+                    return;
+                }
+
+                OSThemeEnum oSTheme = uxSystemParameters.OSTheme;
+                WriteUILog($"[updateMergedDictionaries] Detected OS theme: {oSTheme.ToString()} number: {oSTheme}.");
+
+                if (PreviousOsTheme == oSTheme)
+                {
+                    WriteUILog($"[updateMergedDictionaries] PreviousOsTheme == oSTheme, then skip.");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteUILog($"[updateMergedDictionaries] An error occurred: {ex.Message}");
                 return;
+            }
+
+
+
+            //OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
+            //WriteUILog($"[updateMergedDictionaries] Detected OS theme: {oSTheme.ToString()} number: {oSTheme}.");
+            //if (PreviousOsTheme == oSTheme)
+            //    return;
             string darkModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml";
             ResourceDictionary? darkResourceDictionary = Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(darkModeStyle));
             Application.Current.Resources.MergedDictionaries.Remove(darkResourceDictionary);
