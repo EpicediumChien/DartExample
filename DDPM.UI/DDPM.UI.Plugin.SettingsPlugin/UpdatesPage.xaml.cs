@@ -39,9 +39,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
         ~UpdatesPage()
         {
-            if (DdpmCommonHelper.DeviceManagerSA != null)
+            SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
+            if (DdpmCommonHelper.DeviceManagerSA != null && vm != null)
             {
-                SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= vm.DeviceChanged;
             }
         }
