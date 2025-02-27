@@ -96,6 +96,10 @@ namespace DDPM.UI.Module.Color
 
         public bool Is_ColorPreset_ManualFirst = true;
 
+        //Robert_Lin 2025-2-26 Narrator. The default value of KeyboardNavigation.TabNavigation is "Conntinue".
+        //Howerever, I add a constant string below to restore back to original value.
+        public const string DefaultTabNavigation = "Continue"; //"Cycle";
+
         public bool ColorEnable
         {
             get
@@ -172,7 +176,7 @@ namespace DDPM.UI.Module.Color
             }
         }
 
-        private string _TabNavigation = "Cycle";
+        private string _TabNavigation = DefaultTabNavigation;// "Cycle";
 
         public string TabNavigation
         {
@@ -736,7 +740,7 @@ namespace DDPM.UI.Module.Color
             if (ShowLockMask)
                 TabNavigation = "None";
             else
-                TabNavigation = "Cycle";
+                TabNavigation = DefaultTabNavigation; // "Cycle";
 
             LockMaskVisible = isColorLocked ? Visibility.Visible : Visibility.Collapsed;
 
@@ -1888,7 +1892,9 @@ namespace DDPM.UI.Module.Color
                 return _ICC_profile_hyperlink_ClickCommand;
             }
         }
-        private void Handle_ICC_profile_hyperlink_ClickCommand()
+        //Robert_Lin 2025-2-26 to support Narrator, click hyperlink with [Enter] key
+        //It's handled by PreviewKeyDown in RightView, so change this method to public
+        public void Handle_ICC_profile_hyperlink_ClickCommand()
         {
             var psi = new System.Diagnostics.ProcessStartInfo();
 

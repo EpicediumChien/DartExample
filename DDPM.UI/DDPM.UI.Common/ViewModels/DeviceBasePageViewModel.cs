@@ -14,6 +14,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Common.ViewModels
@@ -164,6 +165,7 @@ namespace DDPM.UI.Common.ViewModels
 
 #if USE_VBARITEM1
         private List<VbarItem1> _vbarItems = new List<VbarItem1>();
+        private int _vbarItemTabIndexBase = 50;
 
         public List<VbarItem1> VbarItems
         {
@@ -187,6 +189,7 @@ namespace DDPM.UI.Common.ViewModels
                     IconImage = mg.GroupIcon,
                     IconCanvas = mg.GroupIconCanvas
                 };
+                KeyboardNavigation.SetTabIndex(vbarItem, _vbarItemTabIndexBase + idx); 
                 //Use IconTemplate (But it not workable)
                 //VbarItem1 vbarItem = new VbarItem1()
                 //{
@@ -197,6 +200,7 @@ namespace DDPM.UI.Common.ViewModels
                 //};
                 vbarItem.ClickCommand = new RelayCommand<VbarItem1>(OnVbarItemClicked);
                 _vbarItems.Add(vbarItem);
+                //idx++;  //Robert_Lin 2025-2-27 fix, remove dupliacte idx++
             }
             OnPropertyChanged("VbarItems");
         }

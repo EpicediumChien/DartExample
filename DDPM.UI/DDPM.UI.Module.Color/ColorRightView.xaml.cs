@@ -11,6 +11,7 @@ using Dell.Client.Framework.UX.WPF.Controls;
 using System.Reflection;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace DDPM.UI.Module.Color
 {
@@ -23,6 +24,7 @@ namespace DDPM.UI.Module.Color
         //private List<string> _Support_DeviceName  = new List<string> { "U4021QW", "U2723QE", "U3223QE", "U3223QZ", "U3423WE", "U3824DW", "U4924DW", "U3224KB", "U2724D", "U2724DE", "U3425WE", "U4025QW" , "UP2720Q" , "UP3221Q" };
 
         //private static Log _log;
+
 
         public ColorRightView()
         {
@@ -94,7 +96,7 @@ namespace DDPM.UI.Module.Color
                     if (vm.ShowLockMask)
                         vm.TabNavigation = "None";
                     else
-                        vm.TabNavigation = "Cycle";
+                        vm.TabNavigation = ColorViewModel.DefaultTabNavigation;// "Cycle";
 
                     vm.LockMaskVisible = isColorLocked ? Visibility.Visible : Visibility.Collapsed;
                 }
@@ -682,6 +684,88 @@ namespace DDPM.UI.Module.Color
                !string.IsNullOrEmpty(vm.last_selected_value))
             {
                 comboBox.SelectedValue = vm.last_selected_value;
+            }
+        }
+
+        private void colorManualExpander_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Expander expander = sender as Expander;
+                if (expander != null)
+                {
+                    e.Handled = true;
+                    //Robert_Lin 2025-2-26 Narrator. If Expander is already expanded, then do nothing
+                    if (expander.IsExpanded)
+                    {
+                        //expander.IsExpanded = !expander.IsExpanded;
+                    }
+                    else
+                    {
+                        expander.IsExpanded = !expander.IsExpanded;
+                    }
+                }
+            }
+        }
+
+        private void colorAutoExpander_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Expander expander = sender as Expander;
+                if (expander != null)
+                {
+                    e.Handled = true;
+                    //Robert_Lin 2025-2-26 Narrator. If Expander is already expanded, then do nothing
+                    if (expander.IsExpanded)
+                    {
+                        //expander.IsExpanded = !expander.IsExpanded;
+                    }
+                    else
+                    {
+                        expander.IsExpanded = !expander.IsExpanded;
+                    }
+                }
+            }
+        }
+
+        private void advancedSettingsExpander_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Expander expander = sender as Expander;
+                if (expander != null)
+                {
+                    e.Handled = true;
+                    //Robert_Lin 2025-2-26 Narrator. If Expander is already expanded, then do nothing
+                    if (expander.IsExpanded)
+                    {
+                        //expander.IsExpanded = !expander.IsExpanded;
+                    }
+                    else
+                    {
+                        expander.IsExpanded = !expander.IsExpanded;
+                    }
+                }
+            }
+        }
+
+        private void iccProfileHyperlink_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+            {
+                System.Windows.Documents.Hyperlink hyperlink = sender as System.Windows.Documents.Hyperlink;
+                if (hyperlink != null)
+                {
+                    e.Handled = true;
+                    //Robert_Lin 2025-2-26 Narrator. If Hyperlink is already expanded, then do nothing
+                    if (hyperlink.IsEnabled)
+                    {
+                        ColorViewModel vm = (ColorViewModel)DataContext;
+                        if (vm != null)
+                            vm.Handle_ICC_profile_hyperlink_ClickCommand();
+                    }
+                }
             }
         }
     }
