@@ -194,9 +194,10 @@ namespace DDPM.UI.Module.DisplayOthers
         {
             _powerNapEnabled = false;
             List<SA.Common.Display.PowerNapSetting> settings = DdpmCommonHelper.DeviceManagerSA.ReadPowerNapSettings().Result;
+            string crtMn = DisplayOthersModule.SelectedHomeDevice.MonitorInfo.modelName;
             string crtSn = DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.ServiceTag;
-            settings.RemoveAll(x => x.SerialNumber == null);
-            PowerNapSetting crtSetting = settings.FirstOrDefault(x => x.ServiceTag == crtSn);
+            //settings.RemoveAll(x => x.SerialNumber == null);
+            PowerNapSetting crtSetting = settings.FirstOrDefault(x => x.ServiceTag == crtSn && x.ModelName == crtMn);
             if (crtSetting != null)
             {
                 _powerNapEnabled = crtSetting.Status;

@@ -15748,7 +15748,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     List<JobInfo> allJobs = new List<JobInfo>();
                     foreach (PowerNapSetting setting in read)
                     {
-                        MonitorInfo monitorInfo = _AllInfoMonitors.Find(x => x.edid.SerialNumber.Equals(setting.SerialNumber));
+                        MonitorInfo monitorInfo = _AllInfoMonitors.Find(x => x.modelName.Equals(setting.ModelName) && x.edid.ServiceTag.Equals(setting.ServiceTag));
                         if (monitorInfo != null &&
                             setting.Status)
                         {
@@ -15757,15 +15757,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 case PowerNapType.ReduceBrightness:
                                     allJobs.Add(new JobInfo(1000, monitorInfo, new object[] { true }, PowerNapReduceBrightness));
                                     //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { true }, PowerNapReduceBrightness));
-                                    Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} ReduceBrightness - Enqueue:true");
-                                    writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] ReduceBrightness - Enqueue:true");
+                                    Debug.WriteLine($"{setting.ModelName}:{setting.ServiceTag} ReduceBrightness - Enqueue:true");
+                                    writelog($"powerNap [{setting.ModelName}:{setting.ServiceTag}] ReduceBrightness - Enqueue:true");
                                     break;
 
                                 case PowerNapType.SleepIfRunning:
                                     allJobs.Add(new JobInfo(1000, monitorInfo, new object[] { true }, PowerNapSuspendMonitor));
                                     //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { true }, PowerNapSuspendMonitor));
-                                    Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} SleepIfRunning - Enqueue:true");
-                                    writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] SleepIfRunning - Enqueue:true");
+                                    Debug.WriteLine($"{setting.ModelName}:{setting.ServiceTag} SleepIfRunning - Enqueue:true");
+                                    writelog($"powerNap [{setting.ModelName}:{setting.ServiceTag}] SleepIfRunning - Enqueue:true");
                                     break;
 
                                 case PowerNapType.Off:
@@ -15790,7 +15790,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     List<JobInfo> allJobs = new List<JobInfo>();
                     foreach (PowerNapSetting setting in read)
                     {
-                        MonitorInfo monitorInfo = _AllInfoMonitors.Find(x => x.edid.SerialNumber.Equals(setting.SerialNumber));
+                        MonitorInfo monitorInfo = _AllInfoMonitors.Find(x => x.edid.ServiceTag.Equals(setting.ServiceTag) && x.modelName.Equals(setting.ModelName));
                         if (monitorInfo != null && setting.Status)
                         {
                             switch (setting.RunType)
@@ -15798,15 +15798,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 case PowerNapType.ReduceBrightness:
                                     allJobs.Add(new JobInfo(1000, monitorInfo, new object[] { false }, PowerNapReduceBrightness));
                                     //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { false }, PowerNapReduceBrightness));
-                                    Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} ReduceBrightness - Enqueue:false");
-                                    writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] ReduceBrightness - Enqueue:false");
+                                    Debug.WriteLine($"{setting.ModelName}:{setting.ServiceTag} ReduceBrightness - Enqueue:false");
+                                    writelog($"powerNap [{setting.ModelName}:{setting.ServiceTag}] ReduceBrightness - Enqueue:false");
                                     break;
 
                                 case PowerNapType.SleepIfRunning:
                                     allJobs.Add(new JobInfo(1000, monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
                                     //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
-                                    Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} SleepIfRunning - Enqueue:false");
-                                    writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] SleepIfRunning - Enqueue:false");
+                                    Debug.WriteLine($"{setting.ModelName}:{setting.ServiceTag} SleepIfRunning - Enqueue:false");
+                                    writelog($"powerNap [{setting.ModelName}:{setting.ServiceTag}] SleepIfRunning - Enqueue:false");
                                     break;
 
                                 case PowerNapType.Off:
