@@ -106,7 +106,7 @@
                                             <Border ToolTipService.Placement="Left" Background="{StaticResource FakeTransparent}" Cursor="Hand">
                                                 <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Border.ToolTip>
-                                                    <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                    <ToolTip Placement="Bottom" VerticalOffset="15" HorizontalOffset="220">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <TextBlock Text="{Binding [WebCameraSettings.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
                                                         </Border>

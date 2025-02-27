@@ -309,8 +309,8 @@ namespace NetworkKVM.Plugins
                     _logs.DebugMsg($"[UpdateMonitorInfo] clear and add {monitorInfos.Count} monitor(s)");
                     _AllInfoMonitors.Clear();
                     _AllInfoMonitors.AddRange(monitorInfos);
-                    if (unplug.Count > 0 || plugin.Count > 0)
-                    {
+                    //if (unplug.Count > 0 || plugin.Count > 0)
+                    //{
                         if (pipeServer != null)
                         {
                             if (pipeServer.IsConnected)
@@ -336,7 +336,7 @@ namespace NetworkKVM.Plugins
                             isMonintorChange = true;
                             _ = Task.Run(async () => await NamedPipeServer(token));
                         }
-                    }
+                    //}
                 }
             }
             return Task.CompletedTask;

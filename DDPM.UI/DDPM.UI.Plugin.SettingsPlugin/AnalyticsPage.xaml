@@ -20,8 +20,8 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <UXControls:UXTextBlock Text="{Binding [Analytics.0], Source={x:Static lang:LangHelper.Instance}}"
-                                        Foreground="{DynamicResource DefaultTheme_TxtColor}" Focusable="True"
-                                        Margin="20" FontSize="24" Grid.Row="0" />
+                                        Foreground="{DynamicResource DefaultTheme_TxtColor}" Focusable="True" TextBlockType="Header1"
+                                        FontSize="20" Grid.Row="0" Margin="20,20,8,8"/>
                 <Border Style="{StaticResource PartBorderStyle}" BorderThickness="0" CornerRadius="13" Grid.Row="1" Margin="20,0,20,0" >
                     <Grid>
                         <Grid.RowDefinitions>
@@ -34,7 +34,7 @@
                                                Margin="20,14,0,0"
                                                Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                                Background="{DynamicResource DefaultTheme_RbBkColor}"
-                                               FontSize="18"
+                                               FontSize="16"
                                                HorizontalAlignment="Left"
                                                IsTabStop="{Binding isTabStoppable}"
                                                IsChecked="{Binding isConsentChecked}" />
