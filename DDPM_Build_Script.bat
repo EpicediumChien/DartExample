@@ -2,63 +2,62 @@
 ::-----------
 ::Base param
 ::-----------
-IF "%1"=="" goto _HELPER
 IF "%1"=="?" goto _HELPER
 IF "%1"=="help" goto _HELPER
 IF "%1"=="Help" goto _HELPER
 IF "%1"=="HELP" goto _HELPER
-:: build_type : default is Release, set %2 param to Debug for RD debug build
+:: build_type : default is Release, set %1 param to Debug for RD debug build
 set build_type=Release
 :: build_arch : do not change this param if no specific reason
 set build_arch="Any CPU"
-:: %1 : Specific folder to place your source code with DDPM.SA/DDPM.UI/DdpmSwUpdater solution folders
-set RootDir=%1
-:: 1. No %2 means normal release build and copy all necessary data to Installer\BIN
-:: 2. %2 = "clear", clear all bin/obj under root dir %1
-:: 3. %2 = "skipcert", ignore the step "Generate cert file" of fully release flow
-:: 4. %2 = "Debug", Debug build for RD verify and runtime debug (without DTP.Decoupling, only DDPM.SA/DDPM.UI/DdpmSwUpdater)
-:: 5. %2 = "Debug_UI", Debug build for RD verify and runtime debug with UI only
-:: 6. %2 = "Debug_SA", Debug build for RD verify and runtime debug with SA only
-set option_cmd=%2
-IF "%2"=="Debug" (
+set "RootDir=%cd%"
+echo The current folder path is: [%RootDir%]
+::-----
+:: 1. %1 = "clear", clear all bin/obj under root dir %1
+:: 2. %1 = "Debug", Debug build for RD verify and runtime debug (without DTP.Decoupling, only DDPM.SA/DDPM.UI/DdpmSwUpdater)
+:: 3. %1 = "Debug_UI", Debug build for RD verify and runtime debug with UI only
+:: 4. %1 = "Debug_SA", Debug build for RD verify and runtime debug with SA only
+:: 5. %1 is empty, means Release build
+set option_cmd=%1
+IF "%1"=="Debug" (
 	set build_type=Debug
 	echo "*** Build with Debug(1) ***"
 )
-IF "%2"=="debug" (
+IF "%1"=="debug" (
 	set build_type=Debug
 	echo "*** Build with Debug(2) ***"
 )
-IF "%2"=="DEBUG" (
+IF "%1"=="DEBUG" (
 	set build_type=Debug
 	echo "*** Build with Debug(3) ***"
 )
 ::-----
-IF "%2"=="debug_ui" (
+IF "%1"=="debug_ui" (
 	set build_type=Debug
 	echo "*** Build with UI Debug(1) ***"
 )
-IF "%2"=="DEBUG_UI" (
+IF "%1"=="DEBUG_UI" (
 	set build_type=Debug
 	set option_cmd=debug_ui
 	echo "*** Build with UI Debug(2) ***"
 )
-IF "%2"=="Debug_UI" (
+IF "%1"=="Debug_UI" (
 	set build_type=Debug
 	set option_cmd=debug_ui
 	echo "*** Build with UI Debug(3) ***"
 )
 ::-----
-IF "%2"=="debug_sa" (
+IF "%1"=="debug_sa" (
 	set build_type=Debug
 	set option_cmd=debug_sa
 	echo "*** Build with SA Debug(1) ***"
 )
-IF "%2"=="DEBUG_SA" (
+IF "%1"=="DEBUG_SA" (
 	set build_type=Debug
 	set option_cmd=debug_sa
 	echo "*** Build with SA Debug(2) ***"
 )
-IF "%2"=="Debug_SA" (
+IF "%1"=="Debug_SA" (
 	set build_type=Debug
 	set option_cmd=debug_sa
 	echo "*** Build with SA Debug(3) ***"
@@ -84,31 +83,12 @@ set Dir_Ins_ui=.\Installer\Bin\UI
 set Dir_Ins_NKVM=.\Installer\Res
 set Dir_Ins_Dependency=.\Installer\Res\Depenencies
 ::-----------
-IF "%1"=="" (
-    echo *** Parameter is missing, please type in the root folder path as 1st argument ***
-	Exit /b 1
-) ELSE (
-    echo RootDir is [%1].
-)
 set target_folder=%RootDir%
 IF "%option_cmd%"=="debug_ui" (
 	set target_folder=%RootDir%\DDPM.UI
 )
 echo [target_folder] is [%target_folder%]
-Echo -------------------------------------------
-Echo [Copy NKVM thumbprint definition file]
-Echo -------------------------------------------
-cd /d %RootDir%
-IF "%build_type%"=="Release" (	
-	echo .
-	if not exist "..\Network-KVM\ThumbprintHash_NKVM.cs" goto copy_nkvm_cs_fail
-	echo ..
-    del /f ".\DDPM.SA\Common\DDPM.SA.Obfuscation\ThumbprintHash_NKVM.cs"
-	echo ...
-	xcopy "..\Network-KVM\ThumbprintHash_NKVM.cs" ".\DDPM.SA\Common\DDPM.SA.Obfuscation" /Y /S /Q
-	echo ....
-	if not exist "..\Network-KVM\ThumbprintHash_NKVM.cs" goto copy_nkvm_cs_fail
-)
+::---
 Echo -------------------------------------------
 Echo [Clear all temp folder (bin and obj)]
 Echo -------------------------------------------
@@ -119,38 +99,24 @@ for /d /r "%target_folder%" %%d in (bin,obj,_bin) do (
     )
 )
 ::-----------
-IF "%2"=="clear" (
+IF "%1"=="clear" (
     echo [Data cleared], exit directly by command code "clear"
 	cd /d "%RootDir%"
 	Exit /b 0
 )
+IF "%1"=="Clear" (
+    echo [Data cleared], exit directly by command code "clear"
+	cd /d "%RootDir%"
+	Exit /b 0
+)
+IF "%1"=="CLEAR" (
+    echo [Data cleared], exit directly by command code "clear"
+	cd /d "%RootDir%"
+	Exit /b 0
+)
+pasue
+Read-Host
 ::-----------
-IF "%build_type%"=="Debug" (
-	echo "*** Debug build, skip thumbprint retrieve! ***"
-	goto _skipcert
-)
-Echo -------------------------------------------
-Echo [Retrieve thumbprint via Dell sign]
-Echo -------------------------------------------
-cd /d "%RootDir%\Tool"
-RD /S /Q "cer"
-mkdir "cer"
-IF "%2"=="skipcert" (
-    echo *** Skip to create cert by comand code "skipcert" ***
-	goto _skipcert
-)
-
-"%RootDir%\Tool\DDPM.Security.Tool\DDPM.Security.Tool.exe" extraca "%RootDir%\Tool\CertCheckTool\TestCheckCA.exe" "%RootDir%\Tool\cer"
-echo errorlevel is %errorlevel%
-if not %errorlevel% == 0 goto Retrieve_cert_fail
-Echo -------------------------------------------
-Echo [Copy cert code DDPM_Info.cs to SA]
-Echo -------------------------------------------
-xcopy "%RootDir%\Tool\cer\*.cs" "%RootDir%\DDPM.SA\Common\DDPM.SA.Obfuscation" /Y /S /Q
-echo errorlevel is %errorlevel%
-if not %errorlevel% == 0 goto copy_cert_cs_fail
-	
-:_skipcert
 if "%option_cmd%"=="debug_ui" goto _ONLY_UI
 Echo -------------------------------------------
 Echo [Build DDM decryption lib]
@@ -195,8 +161,9 @@ dotnet.exe build -c %build_type% -v normal /p:Framework="net8.0" /p:platform=%bu
 echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto VCPSDK_Fail
 ::-----------------
-IF "%build_type%"=="Debug" (
-	echo "*** Debug build, skip [DTP] step ***"
+:: If DTP decoupling not exist, skip it.
+if not exist "%RootDir%\DTP.Decoupling" (
+	echo "*** There is no DTP.Decoupling folder exist, skip [DTP] step ***"
 	goto _skipDTP
 )
 Echo -------------------------------------------
@@ -314,10 +281,24 @@ echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto UI_Fail
 ::-----------------
 :_ONLY_SA
-IF "%build_type%"=="Debug" (
-	echo "*** Debug build, skip [Copy to Installer] step ***"
-	goto _skipCopyToInstaller
-)
+::IF "%build_type%"=="Debug" (
+::	echo "*** Debug build, skip [Copy to Installer] step ***"
+::	goto _skipCopyToInstaller
+::)
+Echo --------------------------------------------
+    @echo.
+    @echo   #####  #     #  #####   #####  #######  #####   #####  
+    @echo  #     # #     # #     # #     # #       #     # #     # 
+    @echo  #       #     # #       #       #       #       #       
+    @echo   #####  #     # #       #       #####    #####   #####  
+    @echo        # #     # #       #       #             #       # 
+    @echo  #     # #     # #     # #     # #       #     # #     # 
+    @echo   #####   #####   #####   #####  #######  #####   #####  
+    @echo.
+Echo --------------------------------------------
+echo Press any key to process file collection into [Installer\BIN]
+pause
+Read-Host
 Echo -----------------------------------------------------------
 Echo [Copy all necessary files to InstallShield project folder]
 Echo -----------------------------------------------------------
@@ -340,19 +321,19 @@ mkdir System
 Echo [Copy UI/SA files into Installer project]
 cd /d %RootDir%
 echo [copy SA - CLI]
-xcopy "%Dir_Subagent_cli%\*.*" "%Dir_Ins_cli%\" /Y /S /Q
+xcopy "%Dir_Subagent_cli%\*.*" "%Dir_Ins_cli%\" /Y /S /Q /C /I
 echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto Installer_CopyFail
 echo [copy SA - user subagent]
-xcopy "%Dir_Subagent_user%\*.*" "%Dir_Ins_user%\" /Y /S /Q
+xcopy "%Dir_Subagent_user%\*.*" "%Dir_Ins_user%\" /Y /S /Q /C /I
 echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto Installer_CopyFail
 echo [copy SA - sys subagent]
-xcopy "%Dir_Subagent_sys%\*.*" "%Dir_Ins_sys%\" /Y /S /Q
+xcopy "%Dir_Subagent_sys%\*.*" "%Dir_Ins_sys%\" /Y /S /Q /C /I
 echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto Installer_CopyFail
 echo [copy UI]
-xcopy "%Dir_UI_output%\*.*" "%Dir_Ins_ui%\" /Y /S /Q
+xcopy "%Dir_UI_output%\*.*" "%Dir_Ins_ui%\" /Y /S /Q /C /I
 echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto Installer_CopyFail
 ::--------
@@ -367,57 +348,30 @@ echo *** supported list copied
 ::--------
 cd /d "%RootDir%"
 echo [copy VCPSDK]
-xcopy ".\DDPM.SA\VCPSDK\VCPSDK\bin\%build_type%\net8.0-windows10.0.19041.0\*.*" ".\Installer\BIN\VCPSDK" /Y /S /Q
+xcopy ".\DDPM.SA\VCPSDK\VCPSDK\bin\%build_type%\net8.0-windows10.0.19041.0\*.*" ".\Installer\BIN\VCPSDK" /Y /S /Q /C /I
 echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto Installer_CopyFail
 echo *** VCPSDK copied
 ::--------
 cd /d "%RootDir%"
 echo [copy DdpmSwUpdater]
-xcopy ".\DdpmSwUpdater\bin\%build_type%\net8.0-windows10.0.19041.0\*.*" ".\Installer\BIN\MINI" /Y /S /Q
+xcopy ".\DdpmSwUpdater\bin\%build_type%\net8.0-windows10.0.19041.0\*.*" ".\Installer\BIN\MINI" /Y /S /Q /C /I
 echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto Installer_CopyFail
 echo *** DDPM SW updater copied
-::--------
+::-----------------
+:: If DTP decoupling not exist, skip copy.
+if not exist "%RootDir%\DTP.Decoupling" (
+	echo "*** There is no DTP.Decoupling folder exist, skip [DTP] copy step ***"
+	goto _skipDTP2
+)
 cd /d "%RootDir%"
 echo [copy DTP]
-xcopy ".\DTP.Decoupling\_BIN\*.*" ".\Installer\BIN\DTP" /Y /S /Q
+xcopy ".\DTP.Decoupling\_BIN\*.*" ".\Installer\BIN\DTP" /Y /S /Q /C /I
 echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto Installer_CopyFail
 echo *** DTP copied
-Echo --------------------------------------------
-cd /d "%RootDir%\Installer"
-echo [copy icon]
-xcopy "*.ico" ".\BIN\ICON" /Y
-if not %errorlevel% == 0 goto Installer_CopyFail
-echo *** ICON copied
-::---------
-cd /d "%RootDir%"
-echo [copy Network KVM]
-pwd
-xcopy "..\Network-KVM\ddmsetup.exe" ".\Installer\Res\Depenencies" /Y /S /Q
-echo errorlevel is %errorlevel%
-::if %errorlevel% == 0 goto _seek_success
-::echo *** Seek file from another Network KVM path ***
-::xcopy "..\..\Network-KVM\ddmsetup.exe" ".\Installer\Res\Depenencies" /Y /S /Q
-if not %errorlevel% == 0 (
-	echo *** CAN'T find Network KVM file [ddmsetup.exe] ***
-	goto Installer_CopyFail
-)
-:::_seek_success
-echo *** Network KVM copied
-::---------
-echo [copy cert]
-IF "%2"=="skipcert" (
-    echo *** Skip to copy cert by command code "skipcert" ***
-	goto _skipcert2
-)
-xcopy "%RootDir%\Tool\cer\*.cer" "%RootDir%\Installer\BIN\CER" /Y /S /Q
-echo errorlevel is %errorlevel%
-if not %errorlevel% == 0 goto copy_cert_file_fail
-echo *** CERT copied
-::---------
-:_skipcert2
+:_skipDTP2
 Echo -------------------------------------------
 echo [remove pdb files]
 Echo -------------------------------------------
@@ -602,26 +556,21 @@ Exit /b 0
 
 :_HELPER
 echo Batch usage:
-echo   First param : Specific folder to place your source code with DDPM.SA/DDPM.UI/DdpmSwUpdater solution folders
-echo   2nd param:
+echo   First param:
 echo     1. Empty means normal release build and copy all necessary data to Installer\BIN
-echo     2. "clear", clear all bin/obj under root dir %1
-echo     3. "skipcert", ignore the step "Generate cert file" of fully release flow
-echo     4. "Debug", Debug build for RD verify and runtime debug (without DTP.Decoupling, only DDPM.SA/DDPM.UI/DdpmSwUpdater)
+echo     2. "clear", clear all bin/obj under root dir
+echo     3. "Debug", Debug build for RD verify and runtime debug 
+echo        (DDPM.SA/DDPM.UI/DdpmSwUpdater, and if folder DTP.Decoupling exist then build it)
 echo -
 echo Example:
 echo   [Fully Release build with installer]
-echo     Command: DDPM_Build_Script.bat D:\DDPM
+echo     Command: DDPM_Build_Script.bat
 echo   [Just clear all bin and obj under project folder]
-echo     Command: DDPM_Build_Script.bat D:\DDPM clear
-echo   [Create Release BIN data with all necessary files but ignore cert]
-echo     Command: DDPM_Build_Script.bat D:\DDPM skipcert
+echo     Command: DDPM_Build_Script.bat clear
 echo   [Help RD to copy all related data to right position in Debug build]
-echo     Command: DDPM_Build_Script.bat D:\DDPM Debug
-echo   [Help RD to compile SA and UI solutions for runtime debug]
-echo     Command: DDPM_Build_Script.bat D:\DDPM Debug
+echo     Command: DDPM_Build_Script.bat Debug
 echo   [Help RD to compile UI solution only for runtime debug]
-echo     Command: DDPM_Build_Script.bat D:\DDPM Debug_UI
+echo     Command: DDPM_Build_Script.bat Debug_UI
 echo   [Help RD to compile SA solution only for runtime debug]
-echo     Command: DDPM_Build_Script.bat D:\DDPM Debug_SA
+echo     Command: DDPM_Build_Script.bat Debug_SA
 Exit /b 1
