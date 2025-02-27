@@ -2101,6 +2101,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 bCurrentWOACheckStatus = false;
             }
 
+            // Done recovery
+            bNeedToRecoverWALStatus = false;
             DdpmCommonHelper.WriteUILog("Recover previous WAL status done");
         }
 
