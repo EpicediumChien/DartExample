@@ -5173,7 +5173,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The same monitor is detected, do you want to import settings for {0}?.
+        ///   查詢類似 The same monitor is detected, do you want to import settings for {0}? 的當地語系化字串。
         /// </summary>
         internal static string ImpExp_WarningMsg_0 {
             get {
@@ -6109,7 +6109,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Click to Assign an action 的當地語系化字串。
+        ///   查詢類似 Click to assign an action 的當地語系化字串。
         /// </summary>
         internal static string Mouse_14 {
             get {
