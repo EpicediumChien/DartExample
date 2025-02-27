@@ -1,6 +1,7 @@
 ﻿using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows;
 using System.Windows.Controls;
@@ -44,6 +45,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 txtWindowsActions.Text = Strings.WindowsActionsCaption;
                 txtMultimediaActions.Text = Strings.MultimediaActionsCaption;
                 txtSearchResult.Text = Strings.SearchResultsCaption;
+                txtSearchText.Watermark = LangHelper.Instance["SearchActions"];
                 ParentBorder.SizeChanged += ParentBorder_SizeChanged;
             }
             catch (Exception ex)

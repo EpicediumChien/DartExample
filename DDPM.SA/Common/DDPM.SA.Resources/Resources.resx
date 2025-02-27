@@ -283,7 +283,7 @@
     <value>Updating Software. Do not power off this PC.</value>
   </data>
   <data name="Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed" xml:space="preserve">
-    <value>Updating firmware. Do not remove or power off the device. Leave the device undisturbed</value>
+    <value>Updating firmware. Do not remove or power off the device. Leave the device undisturbed.</value>
   </data>
   <data name="Unable_to_detect_target_device" xml:space="preserve">
     <value>Unable to detect target device</value>
@@ -545,5 +545,11 @@
   </data>
   <data name="ICC_notification_SmartHDR" xml:space="preserve">
     <value>The default ICC profile is not suitable for Smart HDR. We are not able to change color preset in the</value>
+  </data>
+  <data name="Multiple_docks_are_detected2" xml:space="preserve">
+    <value>Multiple docks are detected. Keep only one dock connected to prevent damage to your dock(s).</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>s</value>
   </data>
 </root>

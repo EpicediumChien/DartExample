@@ -1090,7 +1090,10 @@ namespace DDPM.SA.Plugin.CLIManager
                     }
                     WriteLog("@@ CLIManagerPlugin::checkToastResult deferResponse[did]2 =  " + deferResponse[key]);
                     deferResponse.Remove(key);
-                    break;
+
+                    // modified @ 20250225 stephen : fix bug while user press update now
+                    return false;    
+                    //break;
                 }
             }
             if (Max_Count >= MAX_DEFER_WAIT_TIME_SEC && item.commandfrom == DeferControlPanel.SRC_FROM_CLI && item.commanddata.ToLower().Contains("firmwareupdate"))

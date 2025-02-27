@@ -54,7 +54,7 @@ namespace DDPM.SA.Common.Defer
             commanddata = (string)jObject["commanddata"];
         }
 
-        public string ToString()
+        public override string ToString()
         {
             string result = string.Empty;
 

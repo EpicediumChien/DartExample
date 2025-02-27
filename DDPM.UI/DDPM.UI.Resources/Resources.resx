@@ -1411,7 +1411,7 @@
     <value>The available slots on this USB wireless receiver are full. To use, unpair a device from it by clicking on the "Unpair" button in the device settings page.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
-    <value>Click to Assign an action</value>
+    <value>Click to assign an action</value>
   </data>
   <data name="Mouse.15" xml:space="preserve">
     <value>Select an action from\nthe list on the right</value>
@@ -3551,5 +3551,8 @@
   </data>
   <data name="Bootloader.3" xml:space="preserve">
     <value>to update your firmware in order to restore functionality.</value>
+  </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>Search actions</value>
   </data>
 </root>

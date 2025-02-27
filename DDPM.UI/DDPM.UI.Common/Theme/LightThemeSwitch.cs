@@ -156,7 +156,7 @@ namespace DDPM.UI.Common
                 UpdateFreezable("txtAlert_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#364861"));
 
                 UpdateFreezable("WaitingModalDialogBorderBackground", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E0f4f7f9"));
-                UpdateFreezable("WaitingModalDialogBorderBorderBrush", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
+                UpdateFreezable("WaitingModalDialogBorderBorderBrush", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#D8E1EB"));
 
                 UpdateFreezable("bdrAlertBackground", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#616130"));
                 UpdateFreezable("WaitingModalDialogBorderBorderBrush", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF8040"));

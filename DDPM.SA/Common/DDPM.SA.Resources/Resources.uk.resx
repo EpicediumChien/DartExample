@@ -537,4 +537,10 @@
   <data name="WebCameraSettings.2" xml:space="preserve">
     <value>Використовує алгоритми інтелектуального аналізу сцени та відстеження обличчя для масштабування та панорамування зображення, коли ви рухаєтеся.</value>
   </data>
+  <data name="Multiple_docks_are_detected2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value />
+  </data>
 </root>

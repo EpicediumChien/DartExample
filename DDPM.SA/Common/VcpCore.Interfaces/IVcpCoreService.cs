@@ -21,6 +21,8 @@ namespace VcpCore.Interfaces
 
         Task<Dictionary<EDID, Dictionary<object, object>>> GetVCPCacheTable();
 
+        Task<List<MultiCommandArch>> MultiCommandsRun(List<MultiCommandArch> _multiCommands);
+
         Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low);
 
         Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low);

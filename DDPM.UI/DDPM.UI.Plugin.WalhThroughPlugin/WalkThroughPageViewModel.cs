@@ -136,7 +136,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] UpdatePageContent : {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelType.ToString()} ...");
                 if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelType.Contains("Pen"))
                 {
-                    SubText = pageData.SubText!.Replace("X %", DInfo.BatteryLevel.ToString()).Replace("X%", DInfo.BatteryLevel.ToString());
+                    SubText = pageData.SubText!.Replace("X %", DInfo.BatteryLevel.ToString() + "%").Replace("X%", DInfo.BatteryLevel.ToString() + "%");
                     DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] UpdatePageContent DInfo.BatteryLevel : {DInfo.BatteryLevel.ToString()} ...");
                 }
                 else
@@ -248,6 +248,10 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin.UserId}";
             string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{Model}";
+            if (Model == "MS700/7")
+            {
+                regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.MS700";
+            }
             if (Model == "CONSENT_PAGE")
             {
                 regPath = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
