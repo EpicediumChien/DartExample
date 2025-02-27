@@ -200,7 +200,7 @@ namespace DDPM.UI.Common.ViewModels
                 //};
                 vbarItem.ClickCommand = new RelayCommand<VbarItem1>(OnVbarItemClicked);
                 _vbarItems.Add(vbarItem);
-                idx++;
+                //idx++;  //Robert_Lin 2025-2-27 fix, remove dupliacte idx++
             }
             OnPropertyChanged("VbarItems");
         }
