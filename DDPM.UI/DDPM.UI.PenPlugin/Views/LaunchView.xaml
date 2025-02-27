@@ -243,7 +243,7 @@
                                 </Image>
                             </Grid>
                         </Button>
-                        <Button Style="{StaticResource SecondaryButtonStyle}" Click="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair">
+            <Button Style="{StaticResource SecondaryButtonStyle}" Click="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair" Width="auto" MinWidth="105" >
                             <Grid>
                                 <UXControls:UXTextBlock Name="txtUnpair" Foreground="{DynamicResource SecondaryButton_TextColor_Default}" VerticalAlignment="Center"
                                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}"/>
