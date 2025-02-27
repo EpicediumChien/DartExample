@@ -17392,16 +17392,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (powernap == 3 || powernap == 5)
                     {
                         powerNapSetting.Status = true;
+                        powernap = powernap - 1;
                     }
                     else
                     {
                         powerNapSetting.Status = false;
                     }
-                    if (powernap == 2 || powernap == 3)
+                    if (powernap == 2)
                     {
                         powerNapSetting.RunType = PowerNapType.ReduceBrightness;
                     }
-                    else if (powernap == 4 || powernap == 5)
+                    else if (powernap == 4)
                     {
                         powerNapSetting.RunType = PowerNapType.SleepIfRunning;
                     }
