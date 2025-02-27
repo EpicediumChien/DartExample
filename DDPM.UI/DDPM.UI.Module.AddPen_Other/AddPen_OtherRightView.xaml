@@ -37,43 +37,43 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
-        <UXControls:UXScrollViewer>
-            <Border StylusDown="Pairing">
-                <StackPanel Orientation="Vertical">
-                    <UXControls:UXTextBlock Name="txtOther" FontFamily="Roboto" FontSize="20" FontWeight="Normal"
+  <Grid>
+    <UXControls:UXScrollViewer>
+      <Border StylusDown="Pairing" Background="Transparent">
+        <StackPanel Orientation="Vertical">
+          <UXControls:UXTextBlock Name="txtOther" FontFamily="Roboto" FontSize="20" FontWeight="Normal"
                                             Focusable="True" KeyboardNavigation.TabIndex="31"
                               Margin="18,14,0,0" Foreground="{DynamicResource AddDeviceTxtCaption_TxtColor}" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                    <UXControls:UXTextBlock Name="txtCaption" FontFamily="Roboto" FontSize="14" FontWeight="Normal"
+          <UXControls:UXTextBlock Name="txtCaption" FontFamily="Roboto" FontSize="14" FontWeight="Normal"
                                             Focusable="True" KeyboardNavigation.TabIndex="32"
                                     Margin="18,14,0,0" Foreground="{DynamicResource AddDeviceTxtCaption_TxtColor}" VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding [AddDevice.Pen.0], Source={x:Static lang:LangHelper.Instance}}"/>
-                    <StackPanel Orientation="Horizontal" Margin="18,25,0,0" x:Name="stepsStackPanel">
-                        <Border Style="{StaticResource Border1}" x:Name="stepsBorder1" Margin="7,0,0,7">
-                            <StackPanel Orientation="Vertical">
-                                <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/Stylus.png" Stretch="Uniform"
+          <StackPanel Orientation="Horizontal" Margin="18,25,0,0" x:Name="stepsStackPanel">
+            <Border Style="{StaticResource Border1}" x:Name="stepsBorder1" Margin="7,0,0,7">
+              <StackPanel Orientation="Vertical">
+                <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/Stylus.png" Stretch="Uniform"
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
-                                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                                    <UXControls:UXTextBlock Text="1." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                                    <UXControls:UXTextBlock Name="txtStep1" Style="{StaticResource TextStyle1}" 
+                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                  <UXControls:UXTextBlock Text="1." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
+                  <UXControls:UXTextBlock Name="txtStep1" Style="{StaticResource TextStyle1}" 
                                                             Focusable="True" KeyboardNavigation.TabIndex="33"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                        <Border Style="{StaticResource Border1}" x:Name="stepsBorder2" Margin="7,0,0,7">
-                            <StackPanel Orientation="Vertical">
-                                <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/CheckOK.png" Stretch="Uniform"
+                </StackPanel>
+              </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Border1}" x:Name="stepsBorder2" Margin="7,0,0,7">
+              <StackPanel Orientation="Vertical">
+                <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/CheckOK.png" Stretch="Uniform"
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
-                                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                                    <UXControls:UXTextBlock Text="2." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                                    <UXControls:UXTextBlock Name="txtStep2" Style="{StaticResource TextStyle1}" 
+                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                  <UXControls:UXTextBlock Text="2." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
+                  <UXControls:UXTextBlock Name="txtStep2" Style="{StaticResource TextStyle1}" 
                                                             Text="{Binding [AddDevice.Pen.4], Source={x:Static lang:LangHelper.Instance}}"
                                                             Focusable="True" KeyboardNavigation.TabIndex="34"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
                 </StackPanel>
+              </StackPanel>
             </Border>
-        </UXControls:UXScrollViewer>
-    </Grid>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </UXControls:UXScrollViewer>
+  </Grid>
 </UserControl>
