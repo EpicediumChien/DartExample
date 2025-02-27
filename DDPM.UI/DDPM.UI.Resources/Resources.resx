@@ -3555,4 +3555,7 @@
   <data name="SearchActions" xml:space="preserve">
     <value>Search actions</value>
   </data>
+  <data name="Incompatible" xml:space="preserve">
+    <value>This device is not compatible with Dell Display and Peripheral Manager</value>
+  </data>
 </root>

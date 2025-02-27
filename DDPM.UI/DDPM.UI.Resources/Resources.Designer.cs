@@ -5218,6 +5218,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 This device is not compatible with Dell Display and Peripheral Manager 的當地語系化字串。
+        /// </summary>
+        internal static string Incompatible {
+            get {
+                return ResourceManager.GetString("Incompatible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Input Source 的當地語系化字串。
         /// </summary>
         internal static string InputSource {

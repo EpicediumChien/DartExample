@@ -38,6 +38,7 @@ namespace DDPM.UI.Common
         public void SetHeaders(RightViewHeader[] headers)
         {
             vm.SetHeaders(headers);
+            Canvas1.Visibility = headers.Length == 2 ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public IEnumerable ItemsSource
