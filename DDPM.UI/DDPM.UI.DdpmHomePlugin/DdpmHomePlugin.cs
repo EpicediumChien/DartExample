@@ -1520,7 +1520,18 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private bool WTSQuerySessionInformation_Public(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned)
         {
-            return WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
+            bool rst = WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
+
+            if (!rst) 
+            {
+                _log.Info($"[DdpmHomePlugin] WTSQuerySessionInformation failed.");
+
+#if DEBUG
+                Console.WriteLine("[DdpmHomePlugin] WTSQuerySessionInformation failed.");
+#endif
+            }
+
+            return rst;
         }
         /// <summary>
         /// From SA code
