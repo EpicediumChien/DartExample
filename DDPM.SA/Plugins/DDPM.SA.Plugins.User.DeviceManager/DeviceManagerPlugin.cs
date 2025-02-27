@@ -16952,6 +16952,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             DDMtoDDPM_Hotkey(DDMusersettings, DDMmonitorsettings);
             //PowerNap
             DDMtoDDPM_PowerNap(DDMmonitorsettings);
+            //Consent Page
+            DDMtoDDPM_ConsentPage(DDMusersettings);
         }
 
         private void DDMtoDDPM_KVM(DDMMonitorSettings ddmMonitorSettings)
@@ -17008,22 +17010,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                         else
                         {
-                            writelog("[DDMtoDDPM_PowerNap]ddpmMonitorSettings is null!");
+                            writelog("[DDMtoDDPM_KVM]ddpmMonitorSettings is null!");
                         }
                     }
                     else
                     {
-                        writelog("[DDMtoDDPM_PowerNap]_SettingsPlugin is null!");
+                        writelog("[DDMtoDDPM_KVM]_SettingsPlugin is null!");
                     }
                 }
                 else
                 {
-                    writelog("[DDMtoDDPM_PowerNap]ddmMonitorSettings is null!");
+                    writelog("[DDMtoDDPM_KVM]ddmMonitorSettings is null!");
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                ;
+                writelog($"DDMtoDDPM_KVM Exception {ex.Message.ToString()}");
             }
         }
 
@@ -17446,9 +17448,31 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog("[DDMtoDDPM_PowerNap]ddmMonitorSettings is null!");
                 }
             }
-            catch 
+            catch (Exception ex)
             {
-                ;
+                writelog($"DDMtoDDPM_PowerNap Exception {ex.Message.ToString()}");
+            }
+        }
+
+        private void DDMtoDDPM_ConsentPage(DDMUserSettings ddmUserSettings)
+        {
+            try
+            {
+                if (_SettingsPlugin != null && ddmUserSettings != null)
+                {
+                    DDPMSettings settings = _SettingsPlugin.ReloadAppConfigData().Result;
+                    settings.UserSettings.isDisplayConsentPage = true;
+                    settings.LockSettings.global_setting.isTelemetryConsentOn = ddmUserSettings.AllowTelemetry;
+                    bool b = _SettingsPlugin.SetAppConfigData(settings).Result;
+                }
+                else
+                {
+                    writelog("[DDMtoDDPM_ConsentPage]_SettingsPlugin or ddmMonitorSettings is null!");
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"DDMtoDDPM_ConsentPage Exception {ex.Message.ToString()}");
             }
         }
 
