@@ -378,6 +378,7 @@ namespace DDPM.UI.Common
         public static void updateMergedDictionaries(ResourceManager resourceManager)
         {
             OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
+            WriteUILog($"[updateMergedDictionaries] Detected OS theme: {oSTheme.ToString()} number: {oSTheme}.");
             if (PreviousOsTheme == oSTheme)
                 return;
             string darkModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml";
