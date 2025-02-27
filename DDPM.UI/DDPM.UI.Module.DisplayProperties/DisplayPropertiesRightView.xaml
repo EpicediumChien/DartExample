@@ -40,7 +40,7 @@
                                                             FontSize="16" MaxWidth="345" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             TextBlockSemanticColorType="Light" 
-                                                            Focusable="True" KeyboardNavigation.TabIndex="1" x:Name="labelResolution"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="101" x:Name="labelResolution"
                                                             TextBlockType="Caption"
                                                             VerticalAlignment="Center" />
                                     <Grid VerticalAlignment="Center" 
@@ -70,7 +70,7 @@
                                           DisplayMemberPath="DisplayText"
                                           Width="200"
                                           IsEnabled="{Binding RefreshRateUI_IsEnable}"
-                                          KeyboardNavigation.TabIndex="2"
+                                          KeyboardNavigation.TabIndex="104"
                                           AutomationProperties.LabeledBy="{Binding ElementName=labelResolution}"
                                           Opacity="{Binding RefreshRateUI_Opacity}" >
                                     <!-- Robert_Lin 2025-2-19 for Narrator. read the DisplayText instead of ItemsSource's class name -->
@@ -91,7 +91,7 @@
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Caption"
-                                                        Focusable="True" KeyboardNavigation.TabIndex="3" x:Name="labelOrientation"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="105" x:Name="labelOrientation"
                                                         VerticalAlignment="Center"
                                                         HorizontalAlignment="Left" />
                                 <ComboBox Style="{StaticResource DdpmComboBoxStyle}"
@@ -100,7 +100,7 @@
                                           ItemsSource="{Binding Orientation_ItemsCollection}"
                                           SelectedItem="{Binding SelectedOrientation, Mode=TwoWay}"
                                           DisplayMemberPath="DisplayText"
-                                          KeyboardNavigation.TabIndex="4"
+                                          KeyboardNavigation.TabIndex="106"
                                           AutomationProperties.LabeledBy="{Binding ElementName=labelOrientation}"
                                           Width="200" >
                                     <!-- Robert_Lin 2025-2-19 for Narrator. read the displayText instead of ItemsSource's class name -->
@@ -122,7 +122,7 @@
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Caption"
-                                                        Focusable="True" KeyboardNavigation.TabIndex="5" x:Name="labelHDR"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="107" x:Name="labelHDR"
                                                         VerticalAlignment="Center"
                                                         HorizontalAlignment="Left" />
                                 <UXControls:UXToggleSwitch IsChecked="{Binding Path= HDRStatus}"
@@ -130,7 +130,7 @@
                                                            Content="{Binding Path=HDRStatus_String}"
                                                            HorizontalAlignment="Right"
                                                            VerticalAlignment="Center"
-                                                           Focusable="True" KeyboardNavigation.TabIndex="6"
+                                                           Focusable="True" KeyboardNavigation.TabIndex="108"
                                                            AutomationProperties.LabeledBy="{Binding ElementName=labelHDR}"
                                                            Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                             </Grid>
@@ -147,7 +147,7 @@
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Caption"
-                                                        Focusable="True" KeyboardNavigation.TabIndex="7" x:Name="labelTextSize"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="109" x:Name="labelTextSize"
                                                         VerticalAlignment="Center"
                                                         TextWrapping="WrapWithOverflow" />
 
@@ -160,7 +160,7 @@
                                                    Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z"
                                                    HorizontalAlignment="Right"
                                                    VerticalAlignment="Center" 
-                                                   Focusable="True" KeyboardNavigation.TabIndex="8"
+                                                   Focusable="True" KeyboardNavigation.TabIndex="110"
                                                    Height="40">
                                     <UXControls:UXLink.Resources>
                                         <Style TargetType="Border">
@@ -170,7 +170,7 @@
                                 </UXControls:UXLink>
                             </Grid>
                             <!-- RightPartBorder -->
-                            <Border Style="{StaticResource RightPartBorderStyle}" 
+                            <Border Style="{StaticResource RightPartBorderStyle}"
                                     Margin="0,24,0,0"
                                     Visibility="{Binding Path=SupportedUSBCPrioeitization}">
                                 <UXControls:UXExpander ExpanderType="Secondary"
@@ -180,14 +180,15 @@
                                                        Background="{DynamicResource PartBorderColor}">
                                     <UXControls:UXExpander.Header>
                                         <UXControls:UXTextBlock  Text="{Binding [AdvancedSettings], Source={x:Static lang:LangHelper.Instance}}"
-                                                                 FontSize="16" Focusable="True" KeyboardNavigation.TabIndex="9"
+                                                                 FontSize="16" Focusable="True" KeyboardNavigation.TabIndex="115"
                                                                  Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                                     </UXControls:UXExpander.Header>
                                     <StackPanel>
                                         <UXControls:UXAlert Margin="0,20"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="118"
+                                                            AutomationProperties.Name="{Binding [Disconnect_all_USB_storage_devices_from_monitor], Source={x:Static lang:LangHelper.Instance}}"
                                                             Visibility="{Binding USBCrioritizationUI_NoLock}">
                                             <UXControls:UXAlertItem AlertItemType="Info" 
-                                                                    Focusable="True" KeyboardNavigation.TabIndex="10"
                                                                     Margin="8,8,8,8"
                                                                     Label=""
                                                                     Message="{Binding [Disconnect_all_USB_storage_devices_from_monitor], Source={x:Static lang:LangHelper.Instance}}" />
@@ -201,7 +202,7 @@
                                                                     Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                                     TextBlockSemanticColorType="Light"
                                                                     TextBlockType="Caption"
-                                                                    Focusable="True" KeyboardNavigation.TabIndex="11"
+                                                                    Focusable="True" KeyboardNavigation.TabIndex="121"
                                                                     VerticalAlignment="Center"
                                                                     HorizontalAlignment="Left" />
                                             <Grid VerticalAlignment="Center"
@@ -237,6 +238,7 @@
                                                                               IsChecked="{Binding Path=IsHighDataSpeed}"
                                                                               Content="{Binding [DisplayProperties.0], Source={x:Static lang:LangHelper.Instance}}"
                                                                               GroupName="USBCPrioritization"
+                                                                              KeyboardNavigation.TabIndex="125"
                                                                               IsTabStop="{Binding USBCrioritizationUI_IsTabStoppable}">
                                                         <UXControls:UXRadioButton.Resources>
                                                             <Style TargetType="Border">
@@ -267,6 +269,7 @@
                                                                               IsChecked="{Binding Path=IsHighResolution}"
                                                                               Content="{Binding [DisplayProperties.1], Source={x:Static lang:LangHelper.Instance}}"
                                                                               GroupName="USBCPrioritization"
+                                                                              KeyboardNavigation.TabIndex="128"
                                                                               IsTabStop="{Binding USBCrioritizationUI_IsTabStoppable}">
                                                         <UXControls:UXRadioButton.Resources>
                                                             <Style TargetType="Border">
