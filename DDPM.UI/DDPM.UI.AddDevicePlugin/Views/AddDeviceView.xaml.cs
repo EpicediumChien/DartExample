@@ -17,6 +17,7 @@ using DDPM.UI.Module.AddSpeaker;
 using DDPM.UI.Module.AddWebcam;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
@@ -36,23 +37,23 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         private readonly IConsole _console;
         private readonly AddDeviceViewModel? _vm;
 
-        private readonly string Caption = Strings.AddDevice;
+        private readonly string Caption = LangHelper.Instance["AddDevice"];
         private int selectedTab = -1;
-        private readonly string Display = Strings.AddDevice_Display;
-        private readonly string Webcam = Strings.AddDevice_Webcam;
-        private readonly string KnM = Strings.AddDevice_KnM;
-        private readonly string Pen = Strings.AddDevice_Pen;
-        private readonly string Headset = Strings.AddDevice_Headset;
-        private readonly string Speaker = Strings.AddDevice_Speaker;
-        private readonly string Dock = Strings.AddDevice_Dock;
-        private readonly string Bluetooth = Strings.AddDeviceTypeBluetooth;
-        private readonly string WirelessReceiver = Strings.AddDeviceTypeWireless;
-        private readonly string Wired = Strings.AddDeviceTypeWired;
-        private readonly string Other = Strings.AddDeviceTypeOther;
-        readonly string CancelButtonCaption = Strings.AddDeviceMsgCancelBtn;
-        readonly string WaitingCaption = Strings.AddDeviceMsgWaitingCap;
-        readonly string WaitingMessage = Strings.AddDeviceMsgWaitingMsg;
-        readonly string WaitingAlert = Strings.AddDeviceMsgWaitingAlert;
+        private readonly string Display = LangHelper.Instance["AddDevice.Display"];
+        private readonly string Webcam = LangHelper.Instance["AddDevice.Webcam"];
+        private readonly string KnM = LangHelper.Instance["AddDevice.KnM"];
+        private readonly string Pen = LangHelper.Instance["AddDevice.Pen"];
+        private readonly string Headset = LangHelper.Instance["AddDevice.Headset"];
+        private readonly string Speaker = LangHelper.Instance["AddDevice.Speaker"];
+        private readonly string Dock = LangHelper.Instance["AddDevice.Dock"];
+        private readonly string Bluetooth = LangHelper.Instance["AddDevice.Type.Bluetooth"];
+        private readonly string WirelessReceiver = LangHelper.Instance["AddDevice.Type.Wireless"];
+        private readonly string Wired = LangHelper.Instance["AddDevice.Type.Wired"];
+        private readonly string Other = LangHelper.Instance["AddDevice.Type.Other"];
+        readonly string CancelButtonCaption = LangHelper.Instance["AddDevice.Msg.CancelBtn"];
+        readonly string WaitingCaption = LangHelper.Instance["AddDevice.Msg.WaitingCap"];
+        readonly string WaitingMessage = LangHelper.Instance["AddDevice.Msg.WaitingMsg"];
+        readonly string WaitingAlert = LangHelper.Instance["AddDevice.Msg.WaitingAlert"];
 
         private WaitingModalDialog? waitingModalDialog;
 

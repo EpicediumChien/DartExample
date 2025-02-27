@@ -44,7 +44,7 @@ namespace DDPM.RemoteManagement.Common.Interfaces
             return result;
         }
 
-        public string ToString()
+        public override string ToString()
         {
             string result = String.Empty;
 
@@ -66,7 +66,7 @@ namespace DDPM.RemoteManagement.Common.Interfaces
 
 
 
-            public string ToString()
+            public override string ToString()
             {
                 string result = string.Empty;
 

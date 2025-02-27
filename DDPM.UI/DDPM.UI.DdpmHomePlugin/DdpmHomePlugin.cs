@@ -149,7 +149,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
             //Robert_Lin 2025-1-22 added to force the static contructor of DdpmCultureMap to be called.
             //PIMS-331191 With DDPM installed, observe language in DDPM UI not change for other langauges of Other countries
-            _log.Info($"CurrentCultureInfo=[{CultureInfo.CurrentCulture.Name}], MappedCultureInfo=[{DDPM.UI.Resources.DdpmCultureMap.MappedCultureInfo.Name}]");
+            _log.Info($"CurrentCultureInfo=[{CultureInfo.CurrentCulture.Name}],CurrentUICultureInfo=[{CultureInfo.CurrentUICulture.Name}], MappedCultureInfo=[{DDPM.UI.Resources.DdpmCultureMap.MappedCultureInfo.Name}]");
 
             //DdpmCommonHelper.MyConsole = console;
 
@@ -1629,7 +1629,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{modelNumber}";
             string regKeyForConsentPage = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.CONSENT_PAGE";
             string regKeyForDDPM = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
-         
+
             try
             {
                 if (null == _deviceManager)
@@ -1638,7 +1638,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     return;
                 }
 
-                if(modelNumber == "CONSENT_PAGE" && modelType == "CONSENT_PAGE")
+                if (modelNumber == "CONSENT_PAGE" && modelType == "CONSENT_PAGE")
                 {
                     // Check ConsentPage reg
                     regPath = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
@@ -1654,7 +1654,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     }
                     else
                         _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} WalkThroughQueue ConsentPage Walk Through skipped.");
-                } else if (modelNumber == "DDPM" && modelType == "DDPM")
+                }
+                else if (modelNumber == "DDPM" && modelType == "DDPM")
                 {
                     // Check DDPM walkthrough
                     regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
@@ -1704,7 +1705,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     else if (modelNumber == "MS700/7")
                     {
                         regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.MS700";
-                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);                  
+                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
                     }
                     else
                         regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);

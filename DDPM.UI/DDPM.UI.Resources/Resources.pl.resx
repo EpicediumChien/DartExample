@@ -2512,7 +2512,7 @@
     <value>Zapewnia szybki dostęp do elementów sterujących konferencji. Włączenie/wyłączenie\nklawiszy spowoduje ich wyświetlenie lub ukrycie na klawiaturze podczas połączenia\nMicrosoft Teams lub Zoom.</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
-    <value>Włącz efekt migania, gdy w rozmowie konferencyjnej pojawi się nowa wiadomość\nna czacie</value>
+    <value>Włącz efekt migania, gdy w rozmowie konferencyjnej pojawi się nowa wiadomość na czacie</value>
   </data>
   <data name="Collab.4" xml:space="preserve">
     <value>Aktywuj ikony na klawiaturze przez dwukrotne dotknięcie zamiast pojedynczego\ndotknięcia</value>

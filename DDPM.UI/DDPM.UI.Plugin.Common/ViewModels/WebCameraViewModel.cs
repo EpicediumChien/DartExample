@@ -991,11 +991,12 @@ namespace DDPM.UI.Plugin.ViewModels
                     DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Saturation);
                     Saturation = CurrentProfile.Saturation;
                 }
-                if (_zoom != CurrentProfile.Zoom)
-                {
-                    _zoom = CurrentProfile.Zoom;
-                    SetZoom();
-                }
+                // Update preset should not update "Zoom"
+                //if (_zoom != CurrentProfile.Zoom)
+                //{
+                //    _zoom = CurrentProfile.Zoom;
+                //    SetZoom();
+                //}
                 WebcamSettings.NONE = CurrentProfile;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
 

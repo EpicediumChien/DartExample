@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Falha ao abrir a aplicação</value>
   </data>
-  <data name="will_be_updated_to" xml:space="preserve">
+    <data name="will_be_updated_to" xml:space="preserve">
     <value>será atualizado para </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -286,7 +286,7 @@
     <value>A atualizar o software. Não desligue este PC.</value>
   </data>
   <data name="Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed" xml:space="preserve">
-    <value>A atualizar o firmware. Não remova nem desligue o dispositivo. Não mexa no dispositivo</value>
+    <value>A atualizar o firmware. Não remova nem desligue o dispositivo. Não mexa no dispositivo.</value>
   </data>
   <data name="Unable_to_detect_target_device" xml:space="preserve">
     <value>Não foi possível detetar o dispositivo-alvo</value>
@@ -435,7 +435,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>Caps Lock Ligado</value>
   </data>
-  <data name="Caps Lock Off" xml:space="preserve">
+    <data name="Caps Lock Off" xml:space="preserve">
     <value>Caps Lock Desligado</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -477,7 +477,7 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Bloqueio por Afastamento</value>
   </data>
-  <data name="Caps_Lock_Off" xml:space="preserve">
+    <data name="Caps_Lock_Off" xml:space="preserve">
     <value>Caps Lock Desligado</value>
   </data>
   <data name="App_Name" xml:space="preserve">
@@ -536,5 +536,11 @@
   </data>
   <data name="WebCameraSettings.2" xml:space="preserve">
     <value>Utiliza a análise de cena inteligente e o seguimento facial para ampliar e deslocar a vista quando se move</value>
+  </data>
+  <data name="Multiple_docks_are_detected2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value />
   </data>
 </root>

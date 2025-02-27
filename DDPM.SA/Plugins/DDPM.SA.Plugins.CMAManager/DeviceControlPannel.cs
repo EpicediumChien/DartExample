@@ -163,7 +163,7 @@ namespace DDPM.SA.Plugins.CMAManager
             public string servicetag { get; set; }
 
 
-            public string ToString()
+            public override string ToString()
             {
                 string result = string.Empty;
                 bool hasData = false;
