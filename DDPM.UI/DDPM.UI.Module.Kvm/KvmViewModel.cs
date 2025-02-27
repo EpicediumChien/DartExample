@@ -65,7 +65,16 @@ namespace DDPM.UI.Module.Kvm
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         public static bool _SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags)
         {
-            return SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
+            bool rst = SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
+
+            if (!rst)
+            {
+#if DEBUG
+                Console.WriteLine("[User32_SetWindowPos] SetWindowPos failed.");
+#endif
+            }
+
+            return rst;
         }
 
         public static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
