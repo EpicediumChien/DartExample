@@ -30,9 +30,13 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
                 breakPoints = width;
             SettingsPageViewModel vm = (SettingsPageViewModel?)SettingsPlugin.PluginIoc?.GetService<ISettingsPageViewModel>();
-            if (DdpmCommonHelper.DeviceManagerSA != null && vm != null)
+            if (vm != null)
             {
-                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += vm.DeviceChanged;
+                DataContext = vm;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += vm.DeviceChanged;
+                }
             }
             _log?.Info("UpdatesPage initialize done");
         }
