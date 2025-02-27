@@ -22,6 +22,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Input;
 using Constants = NGA.Common.Constants;
 
 namespace NGA.ThickClient
@@ -59,7 +60,16 @@ namespace NGA.ThickClient
         private static extern int GetPrivateProfileInt(string lpAppName, string lpKeyName, int nDefault, string lpFileName);
         private static int _GetPrivateProfileInt(string lpAppName, string lpKeyName, int nDefault, string lpFileName)
         {
-            return GetPrivateProfileInt(lpAppName, lpKeyName, nDefault, lpFileName);
+            int rst = GetPrivateProfileInt(lpAppName, lpKeyName, nDefault, lpFileName);
+
+            if (rst == nDefault)
+            {
+#if DEBUG
+                Console.WriteLine($"[App] GetPrivateProfileInt(): the key \"{lpKeyName}\" is not found, return def: {nDefault}");
+#endif
+            }
+
+            return rst;
         }
 
         //2024-5-8 Robert_Lin, to fix the issue that will cause exception in filelock.cs,

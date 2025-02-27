@@ -22,7 +22,16 @@ namespace NGA.ThickClientCore
         internal static extern IntPtr FindWindow(string? lpClassName, string lpWindowName);
         public static IntPtr _FindWindow(string? lpClassName, string lpWindowName)
         {
-            return FindWindow(lpClassName, lpWindowName);
+            IntPtr rst = FindWindow(lpClassName, lpWindowName);
+
+            if (rst == IntPtr.Zero) 
+            {
+#if DEBUG
+                Console.WriteLine("[NativeMethods] FindWindow failed.");
+#endif
+            }
+
+            return rst;
         }
     }
 }
