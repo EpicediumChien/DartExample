@@ -237,7 +237,7 @@
                                 </Image>
                             </Grid>
                         </Border>
-                        <Border Width="auto" Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair">
+            <Border Style="{StaticResource BorderUnpair}" Width="auto" MinWidth="105" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair">
                             <Grid>
                                 <Border Padding="10,0,10,0" BorderBrush="{DynamicResource Unpair_FgColor}" Background="Transparent" BorderThickness="1"  >
                                 <UXControls:UXTextBlock Name="txtUnpair" Foreground="{DynamicResource Unpair_FgColor}" VerticalAlignment="Center"

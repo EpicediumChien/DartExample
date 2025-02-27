@@ -11,121 +11,121 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              d:DesignHeight="72" d:DesignWidth="232"
              Height="73">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-            <local:VbarItemViewModel x:Key="vmDesign" Text="Lorem ipsum dolor sit amet consectetur. Fermentum cras" />
-            <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-        </ResourceDictionary>
-    </UserControl.Resources>
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+      <local:VbarItemViewModel x:Key="vmDesign" Text="Lorem ipsum dolor sit amet consectetur. Fermentum cras" />
+      <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    </ResourceDictionary>
+  </UserControl.Resources>
 
-    <Grid Height="64"  VerticalAlignment="Top" Margin="0,0,12,0" HorizontalAlignment="Right"
+  <Grid Height="64"  VerticalAlignment="Top" Margin="0,0,12,0" HorizontalAlignment="Right"
           MouseEnter="rootGrid_MouseEnter" MouseLeave="rootGrid_MouseLeave"
           MouseLeftButtonDown="rootGrid_MouseLeftButtonDown">
 
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="CommonStates">
-                <VisualState x:Name="Normal">
-                    <Storyboard>
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="LandingNormal" />
-                <VisualState x:Name="LandingHover" />
-                <VisualState x:Name="Hover">
-                    <Storyboard>
-                        <DoubleAnimation Storyboard.TargetName="bdRoot"
+    <VisualStateManager.VisualStateGroups>
+      <VisualStateGroup x:Name="CommonStates">
+        <VisualState x:Name="Normal">
+          <Storyboard>
+          </Storyboard>
+        </VisualState>
+        <VisualState x:Name="LandingNormal" />
+        <VisualState x:Name="LandingHover" />
+        <VisualState x:Name="Hover">
+          <Storyboard>
+            <DoubleAnimation Storyboard.TargetName="bdRoot"
                                          Storyboard.TargetProperty="Width"
                                          Duration="0:0:0.5" To="212"
                                          FillBehavior="HoldEnd" />
-                    </Storyboard>
-                </VisualState>
-            </VisualStateGroup>
-            <VisualStateGroup x:Name="ItemStates">
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
+          </Storyboard>
+        </VisualState>
+      </VisualStateGroup>
+      <VisualStateGroup x:Name="ItemStates">
+      </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
 
-        <Border Name="bdRoot" Width="212" BorderThickness="2" CornerRadius="13" ToolTipService.ShowOnDisabled="True"
+    <Border Name="bdRoot" Width="212" BorderThickness="2" CornerRadius="13" ToolTipService.ShowOnDisabled="True"
                 Focusable="True" GotFocus="bdRoot_GotFocus">
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Default}" />
-                    <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Default}" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsSelected}"  Value="True">
-                            <Setter Property="Background"  Value="{DynamicResource Brush_GradientButtonCyan}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource  Brush_GradientBorderCyan}" />
-                        </DataTrigger>
-                        <Trigger Property="IsEnabled"  Value="False">
-                            <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Disabled}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Disabled}" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-            <Border.ToolTip>
-                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Left" VerticalOffset="0" HorizontalOffset="0" Visibility="{Binding TooltipVisibility}">
-                    <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding [Camera.12], Source={x:Static lang:LangHelper.Instance}}" />
-                </ToolTip>
-            </Border.ToolTip>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="64" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+      <Border.Style>
+        <Style TargetType="Border">
+          <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Default}" />
+          <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Default}" />
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding IsSelected}"  Value="True">
+              <Setter Property="Background"  Value="{DynamicResource Brush_GradientButtonCyan}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource  Brush_GradientBorderCyan}" />
+            </DataTrigger>
+            <Trigger Property="IsEnabled"  Value="False">
+              <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Disabled}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Disabled}" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </Border.Style>
+      <Border.ToolTip>
+        <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Left" VerticalOffset="0" HorizontalOffset="0" Visibility="{Binding TooltipVisibility}">
+          <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding [Camera.12], Source={x:Static lang:LangHelper.Instance}}" />
+        </ToolTip>
+      </Border.ToolTip>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="64" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-                <Image Grid.Column="0" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"
+        <Image Grid.Column="0" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"
                Visibility="{Binding NoCanvasIcon, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibilityConverter}}"
                        Source="{Binding Icon}" >
-                </Image>
-                <ContentControl x:Name="IconCanvasContent" Grid.Column="0">
-                    <ContentControl.Style>
-                        <Style TargetType="ContentControl">
-                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsSelected}"  Value="True">
-                                    <Setter Property="Foreground"  Value="#FFFFFF" />
-                                </DataTrigger>
-                                <Trigger Property="IsEnabled"  Value="False">
-                                    <Setter Property="Foreground"  Value="{DynamicResource Vbar_FgBrush_Disabled}" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ContentControl.Style>
-                </ContentControl>
-                <!-- Robert_Lin PIMS-334922] L10N: i18N: DDPM 2.0: GUI: TP1: pt-BR: Clipping found in stringID: AudioSettings
+        </Image>
+        <ContentControl x:Name="IconCanvasContent" Grid.Column="0">
+          <ContentControl.Style>
+            <Style TargetType="ContentControl">
+              <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}" />
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected}"  Value="True">
+                  <Setter Property="Foreground"  Value="#FFFFFF" />
+                </DataTrigger>
+                <Trigger Property="IsEnabled"  Value="False">
+                  <Setter Property="Foreground"  Value="{DynamicResource Vbar_FgBrush_Disabled}" />
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </ContentControl.Style>
+        </ContentControl>
+        <!-- Robert_Lin PIMS-334922] L10N: i18N: DDPM 2.0: GUI: TP1: pt-BR: Clipping found in stringID: AudioSettings
                 VbarItem in Soundbar, the text is clipped. Need to support max 2 rows, . If exceeding 2 lines (edge case), shorten it with “...” ->
                 -->
-                <!--Chewlin 20250109 for PIMS 334922 fix VarItem Animation slow loading issue,remove TextWrapping="Wrap"-->
-                <UXControls:UXTextBlock Grid.Column="1" Text="{Binding Text}" FontSize="14"
+        <!--Chewlin 20250109 for PIMS 334922 fix VarItem Animation slow loading issue,remove TextWrapping="Wrap"-->
+        <UXControls:UXTextBlock Grid.Column="1" Text="{Binding Text}" FontSize="14" FontWeight="Bold"
                                         VerticalAlignment="Center" HorizontalAlignment="Left"
                                         MaxHeight="54" Margin="0,8,8,8"
                                         TextBlockType="Subtitle2" TextBlockSemanticColorType="Light">
-                    <UXControls:UXTextBlock.Style>
-                        <Style TargetType="UXControls:UXTextBlock">
-                            <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Default}" />
-                            <Style.Triggers>
-                                <!--Chewlin 20250109 for PIMS 334922 fix VarItem Animation slow loading issue,ADD 
+          <UXControls:UXTextBlock.Style>
+            <Style TargetType="UXControls:UXTextBlock">
+              <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Default}" />
+              <Style.Triggers>
+                <!--Chewlin 20250109 for PIMS 334922 fix VarItem Animation slow loading issue,ADD 
                                 <DataTrigger Binding="{Binding Width, ElementName=bdRoot}"  Value="212">
                                 <Setter Property="TextWrapping"  Value="WrapWithOverflow" />
                                 </DataTrigger>
                                 -->
-                                <DataTrigger Binding="{Binding Width, ElementName=bdRoot}"  Value="212">
-                                    <Setter Property="TextWrapping"  Value="WrapWithOverflow" />
-                                    <Setter Property="TextTrimming"  Value="CharacterEllipsis" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding IsSelected}"  Value="True">
-                                    <Setter Property="Foreground"  Value="#FFFFFF" />
-                                </DataTrigger>
-                                <Trigger Property="IsEnabled"  Value="False">
-                                    <Setter Property="Foreground"  Value="{DynamicResource Vbar_FgBrush_Disabled}" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </UXControls:UXTextBlock.Style>
-                </UXControls:UXTextBlock>
-            </Grid>
-        </Border>
-    </Grid>
+                <DataTrigger Binding="{Binding Width, ElementName=bdRoot}"  Value="212">
+                  <Setter Property="TextWrapping"  Value="WrapWithOverflow" />
+                  <Setter Property="TextTrimming"  Value="CharacterEllipsis" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSelected}"  Value="True">
+                  <Setter Property="Foreground"  Value="#FFFFFF" />
+                </DataTrigger>
+                <Trigger Property="IsEnabled"  Value="False">
+                  <Setter Property="Foreground"  Value="{DynamicResource Vbar_FgBrush_Disabled}" />
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </UXControls:UXTextBlock.Style>
+        </UXControls:UXTextBlock>
+      </Grid>
+    </Border>
+  </Grid>
 </UserControl>

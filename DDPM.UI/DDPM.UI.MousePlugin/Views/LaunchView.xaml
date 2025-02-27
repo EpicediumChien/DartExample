@@ -296,7 +296,7 @@
             <ContentControl Name="EOLDongle" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Height="40" Visibility="Collapsed" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
             <!-- <Image Name="EOLDongle" Source="/DDPM.UI.Resources;component/Resources/Images/EOLDongle.png" Stretch="Fill" Visibility="Collapsed"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="40" Height="40" /> -->
-            <Border Padding="10,0,10,0" Width="Auto" Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair"
+            <Border Padding="10,0,10,0" Width="Auto" MinWidth="105" Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair" 
                                 BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
               <UXControls:UXTextBlock Name="txtUnpair" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}"/>
             </Border>
