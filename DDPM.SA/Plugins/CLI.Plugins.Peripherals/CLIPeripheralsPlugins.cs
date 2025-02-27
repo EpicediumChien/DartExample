@@ -1588,7 +1588,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            if (val == 50 || val == 60)
+                            if (val == 50 || val == 60 || val == 1 || val ==2)
                             {
                                 if (val == 50)
                                     val = 1;
