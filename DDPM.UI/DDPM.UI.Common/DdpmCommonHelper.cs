@@ -394,47 +394,46 @@ namespace DDPM.UI.Common
                     WriteUILog($"[updateMergedDictionaries] PreviousOsTheme == oSTheme, then skip.");
                     return;
                 }
+
+
+                //OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
+                //WriteUILog($"[updateMergedDictionaries] Detected OS theme: {oSTheme.ToString()} number: {oSTheme}.");
+                //if (PreviousOsTheme == oSTheme)
+                //    return;
+                string darkModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml";
+                ResourceDictionary? darkResourceDictionary = Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(darkModeStyle));
+                Application.Current.Resources.MergedDictionaries.Remove(darkResourceDictionary);
+                darkResourceDictionary = new ResourceDictionary()
+                {
+                    Source = new Uri(darkModeStyle)
+                };
+                Application.Current.Resources.MergedDictionaries.Add(darkResourceDictionary);
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    switch (oSTheme)
+                    {
+                        case OSThemeEnum.Light:
+                            SwitchToLightMode();
+                            break;
+                        case OSThemeEnum.Dark:
+                        default:
+                            SwitchToDarkMode();
+                            break;
+                    };
+                    resourceManager.SwapDarkAndLightThemes();
+                    resourceManager.StageResources();
+                    resourceManager.CommitResources();
+                    Application.Current.MainWindow?.InvalidateVisual();
+                }, System.Windows.Threading.DispatcherPriority.Loaded);
+                // Debug.WriteLine($"updateMergedDictionarie to {oSTheme.ToString()}");
+                PreviousOsTheme = oSTheme;
             }
             catch (Exception ex)
             {
                 WriteUILog($"[updateMergedDictionaries] An error occurred: {ex.Message}");
                 return;
             }
-
-
-
-            //OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
-            //WriteUILog($"[updateMergedDictionaries] Detected OS theme: {oSTheme.ToString()} number: {oSTheme}.");
-            //if (PreviousOsTheme == oSTheme)
-            //    return;
-            string darkModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml";
-            ResourceDictionary? darkResourceDictionary = Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(darkModeStyle));
-            Application.Current.Resources.MergedDictionaries.Remove(darkResourceDictionary);
-            darkResourceDictionary = new ResourceDictionary()
-            {
-                Source = new Uri(darkModeStyle)
-            };
-            Application.Current.Resources.MergedDictionaries.Add(darkResourceDictionary);
-
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                switch (oSTheme)
-                {
-                    case OSThemeEnum.Light:
-                        SwitchToLightMode();
-                        break;
-                    case OSThemeEnum.Dark:
-                    default:
-                        SwitchToDarkMode();
-                        break;
-                };
-                resourceManager.SwapDarkAndLightThemes();
-                resourceManager.StageResources();
-                resourceManager.CommitResources();
-                Application.Current.MainWindow?.InvalidateVisual();
-            }, System.Windows.Threading.DispatcherPriority.Loaded);
-            // Debug.WriteLine($"updateMergedDictionarie to {oSTheme.ToString()}");
-            PreviousOsTheme = oSTheme;
         }
 
         public static bool isDarkMode()
