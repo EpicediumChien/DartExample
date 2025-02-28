@@ -14258,7 +14258,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool _altPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
             bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
             bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
-            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Mouse - MS5320W");
+
+            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Headset, "Dell Multi-Device Mouse - MS5320W");
             //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Mouse, "Dell Multi-Device Mouse - MS5320W");
             //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Headset, "Dell Multi-Device Mouse - MS5320W");
             //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Pen, "Dell Multi-Device Mouse - MS5320W");
@@ -17741,13 +17742,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 try
                                                 {
-                                                    if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Headset))
-                                                    {
-                                                        _latestBatterylowContent = Content;
-                                                        _lastestBatterylowDevice = OSDType_Device.Headset;
-                                                        _OSD_Controler.HeadsetBatteryLow_CloseWindow(null, null);
-                                                        _OSD_Controler.HeadsetBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                                    }
+                                                    _OSD_Controler.ShowMultipleOSD(Guid.NewGuid().ToString(), OSDType.BatteryLow, Content, "Battery Low ");
+                                                    /*  if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Headset))
+                                                      {
+                                                          _latestBatterylowContent = Content;
+                                                          _lastestBatterylowDevice = OSDType_Device.Headset;
+                                                          _OSD_Controler.HeadsetBatteryLow_CloseWindow(null, null);
+                                                          _OSD_Controler.HeadsetBatteryLow_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                      }*/
                                                 }
                                                 catch (Exception ex)
                                                 {

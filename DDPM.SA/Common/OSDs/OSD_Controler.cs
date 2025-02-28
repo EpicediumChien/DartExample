@@ -60,6 +60,23 @@ namespace DDPM.OSDs
             }
         }
 
+        // especially for show mutiple battery low OSD
+        private OSDMainWin OSDMainWin = null;
+        public void ShowMultipleOSD(string guid, OSDType oSDType, string title, string content)
+        {
+            if (OSDMainWin == null)
+                OSDMainWin = new OSDMainWin();
+            OSDMainWin.AddShowOSDWinInfo(new OSDWinInfo()
+            {
+                GUID = guid,
+                OSDType = (int)oSDType,
+                ShowStringTitle = title + guid,
+                ShowStringContent = content
+            });
+            Debug.WriteLine($"OSDMainWin!.OSDWins.Count========{OSDMainWin!.OSDWins.Count}");
+            OSDMainWin.ShowWindow();
+        }
+
         public void Mute_ShowWindow(string Content, double Top, double Left)
         {
             MuteWinx = new MuteWin(Content);
