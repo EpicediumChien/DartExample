@@ -18147,7 +18147,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                                     case OSDType.Error:
                                         {
-                                            if (State)
+                                            // if-else do same thing? 
+                                            if (State) 
                                             {
                                                 try
                                                 {
