@@ -235,6 +235,10 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                     _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.HeadsetPluginId, _currentDeviceinfo.ToString());
                     DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] EndWalkThrough: LogicalHeadset : " + _currentDeviceinfo.ToString());
                     break;
+                case "LogicalAirAudio":
+                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.AirAudioPluginId, _currentDeviceinfo.ToString());
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] EndWalkThrough: LogicalAirAudio : " + _currentDeviceinfo.ToString());
+                    break;
                 default:
                     _showPluginManager?.ShowHomePage();
                     DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] EndWalkThrough: default : default");
