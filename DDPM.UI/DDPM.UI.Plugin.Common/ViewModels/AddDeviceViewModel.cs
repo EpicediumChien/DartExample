@@ -456,7 +456,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 case "LOGICALHEADSET":
                     _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.HeadsetPluginId, NewDevice.ID.ToString());
                     break;
-
+                case "LOGICALAIRAUDIO":
+                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.AirAudioPluginId, NewDevice.ID.ToString());
+                    break;
                 case "LOGICALWIREDAUDIO":
                     _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SoundBarPluginId, NewDevice.ID.ToString());
                     break;
