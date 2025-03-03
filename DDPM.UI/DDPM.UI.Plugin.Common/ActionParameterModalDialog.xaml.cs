@@ -29,6 +29,7 @@ namespace DDPM.UI.Plugin.Common
 
         private readonly string guid;
         private readonly string pType;
+        private readonly AdvancedAction action;
 
         public string Parameter { get; private set; } = "";
 
@@ -37,10 +38,13 @@ namespace DDPM.UI.Plugin.Common
             InitializeComponent();
             this.Width = width;
             this.Height = height;
+            Activated += ActionParameterModalDialog_Activated;
+            Deactivated += ActionParameterModalDialog_Deactivated;
 
             txtCaption.Text = Caption;
             guid = Guid;
             pType = type;
+            action = deviceCat;
 
             switch (deviceCat)
             {
@@ -50,35 +54,34 @@ namespace DDPM.UI.Plugin.Common
                     txtKeystroke.Text = parameter;
                     btnClear.IsEnabled = parameter != "";
                     spKeystroke.Visibility = Visibility.Visible;
-                    if (DdpmCommonHelper.DeviceManagerSA == null)
-                    {
-                        DdpmCommonHelper.WriteUILog($"Assign KeyStroke Error: DeviceManagerSA is null!");
-                        return;
-                    }
-                    if (pType == "PEN")
-                    {
-                        DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManagerSA_DeviceChanged;
-                        Task<bool> task = DdpmCommonHelper.DeviceManagerSA.StartKeyCapturePen();
-                        _ = task.Result;
-                    }
-                    else if (pType == "KB")
-                    {
-                        if (!DdpmCommonHelper.DeviceManagerSA.StartKeyboardKeystrokeRecording(guid).Result)
-                        {
-                            DdpmCommonHelper.WriteUILog($"Assign KeyStroke Error: Can't StartKeyboardKeystrokeRecording!");
-                            return;
-                        }
-                        this.PreviewKeyDown += Keystroke_PreviewKeyDown;
-                    }
-                    else
-                    {
-                        if (!DdpmCommonHelper.DeviceManagerSA.StartMouseKeystrokeRecording(guid).Result)
-                        {
-                            DdpmCommonHelper.WriteUILog($"Assign KeyStroke Error: Can't StartMouseKeystrokeRecording!");
-                            return;
-                        }
-                        this.PreviewKeyDown += Keystroke_PreviewKeyDown;
-                    }
+                    //if (DdpmCommonHelper.DeviceManagerSA == null)
+                    //{
+                    //    DdpmCommonHelper.WriteUILog($"Assign KeyStroke Error: DeviceManagerSA is null!");
+                    //    return;
+                    //}
+                    //if (pType == "PEN")
+                    //{
+                    //    Task<bool> task = DdpmCommonHelper.DeviceManagerSA.StartKeyCapturePen();
+                    //    _ = task.Result;
+                    //}
+                    //else if (pType == "KB")
+                    //{
+                    //    if (!DdpmCommonHelper.DeviceManagerSA.StartKeyboardKeystrokeRecording(guid).Result)
+                    //    {
+                    //        DdpmCommonHelper.WriteUILog($"Assign KeyStroke Error: Can't StartKeyboardKeystrokeRecording!");
+                    //        return;
+                    //    }
+                    //    //this.PreviewKeyDown += Keystroke_PreviewKeyDown;
+                    //}
+                    //else
+                    //{
+                    //    if (!DdpmCommonHelper.DeviceManagerSA.StartMouseKeystrokeRecording(guid).Result)
+                    //    {
+                    //        DdpmCommonHelper.WriteUILog($"Assign KeyStroke Error: Can't StartMouseKeystrokeRecording!");
+                    //        return;
+                    //    }
+                    //    //this.PreviewKeyDown += Keystroke_PreviewKeyDown;
+                    //}
                     break;
 
                 case AdvancedAction.OpenFile:
@@ -122,21 +125,30 @@ namespace DDPM.UI.Plugin.Common
 
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
         {
-            if (e.type == DeviceChangedType.Peripherals_SettingsChange &&
-                e.changedProperty.Split("|")[0] == "PenKeyCaptureProgressDataChanged")
+            if (e.type == DeviceChangedType.Peripherals_SettingsChange)
             {
-                var txt = e.changedProperty.Substring(33);
-                if (txt.Length > 30)
+                if (e.changedProperty.Split("|")[0] == "PenKeyCaptureProgressDataChanged")
                 {
-                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
-                    _ = task1.Result;
-                    Task<string> task2 = DdpmCommonHelper.DeviceManagerSA!.KeyCaptureData();
-                    var keystroke = task2.Result;
+                    var txt = e.changedProperty.Substring(33);
+                    if (txt.Length > 30)
+                    {
+                        Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
+                        _ = task1.Result;
+                        Task<string> task2 = DdpmCommonHelper.DeviceManagerSA!.KeyCaptureData();
+                        var keystroke = task2.Result;
+                    }
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        txtKeystroke.Text = e.changedProperty.Substring(33);
+                    });
                 }
-                Application.Current.Dispatcher.Invoke(() =>
+                else if (e.changedProperty == "KeyStrokeDisplayDataChanged")
                 {
-                    txtKeystroke.Text = e.changedProperty.Substring(33);
-                });
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        txtKeystroke.Text = e.device_peripherals.Message;
+                    });
+                }
             }
         }
 
@@ -161,6 +173,7 @@ namespace DDPM.UI.Plugin.Common
                 }
             }
 
+            var ketStroke = DdpmCommonHelper.DeviceManagerSA!.GetKeyboardKeystrokeDisplayData(guid).Result;
             DialogResult = false;
             Close();
         }
@@ -189,7 +202,7 @@ namespace DDPM.UI.Plugin.Common
             if (txt == "")
                 return;
 
-            if (txtKeystroke.Text.Equals("ALT + Z", StringComparison.InvariantCultureIgnoreCase))
+            if (txt.Equals("ALT + Z", StringComparison.InvariantCultureIgnoreCase) || txt.Equals("Z + ALT", StringComparison.InvariantCultureIgnoreCase))
             {
                 MessageModalDialog messageModalDialog;
                 System.Windows.Window mainWindow = System.Windows.Application.Current.MainWindow;
@@ -339,7 +352,7 @@ namespace DDPM.UI.Plugin.Common
             var keystroke = task2.Result;
             DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManagerSA_DeviceChanged;
         }
-        private void RestartPenCapture()
+        private static void RestartPenCapture()
         {
             Task<bool> task = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
             _ = task.Result;
@@ -349,6 +362,10 @@ namespace DDPM.UI.Plugin.Common
 
         private void Window_Unloaded(object sender, RoutedEventArgs e)
         {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+            }
             StopCapture();
         }
         private void StopCapture()
@@ -363,6 +380,48 @@ namespace DDPM.UI.Plugin.Common
                         _ = DdpmCommonHelper.DeviceManagerSA!.StopKeyboardKeystrokeRecording(guid).Result;
                     else if (pType == "MOUSE")
                         _ = DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(guid).Result;
+                }
+            }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+            }
+        }
+
+        private void ActionParameterModalDialog_Deactivated(object? sender, EventArgs e)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null && action == AdvancedAction.AssignKeystroke)
+            {
+                StopCapture();
+            }
+        }
+
+        private void ActionParameterModalDialog_Activated(object? sender, EventArgs e)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null && action == AdvancedAction.AssignKeystroke)
+            {
+                if (pType == "PEN")
+                {
+                    Task<bool> task = DdpmCommonHelper.DeviceManagerSA.StartKeyCapturePen();
+                    _ = task.Result;
+                }
+                else if (pType == "KB")
+                {
+                    if (!DdpmCommonHelper.DeviceManagerSA.StartKeyboardKeystrokeRecording(guid).Result)
+                    {
+                        DdpmCommonHelper.WriteUILog($"Assign KeyStroke Error: Can't StartKeyboardKeystrokeRecording!");
+                    }
+                }
+                else
+                {
+                    if (!DdpmCommonHelper.DeviceManagerSA.StartMouseKeystrokeRecording(guid).Result)
+                    {
+                        DdpmCommonHelper.WriteUILog($"Assign KeyStroke Error: Can't StartMouseKeystrokeRecording!");
+                    }
                 }
             }
         }
