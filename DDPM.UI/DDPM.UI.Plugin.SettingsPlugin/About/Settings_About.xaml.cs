@@ -1,4 +1,5 @@
-﻿using Dell.Client.Framework.Common;
+﻿using DDPM.UI.Plugin.Common;
+using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -34,6 +35,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private void ThirdPartyLicenses_Click(object sender, RoutedEventArgs e)
         {
             ThirdPartyLicenses thirdPartyLicenses = new ThirdPartyLicenses();
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
+            if (mainWindow != null)
+            {
+                thirdPartyLicenses.Owner = mainWindow;
+            }
             thirdPartyLicenses.Show();
         }
 
