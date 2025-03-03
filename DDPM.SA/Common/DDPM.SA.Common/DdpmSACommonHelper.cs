@@ -42,7 +42,7 @@ namespace DDDPM.SA.Common
                 throw new ArgumentException($"Plugin '{NameOfPlugin}' does not exist in SA plugin list.");
             }
             SAPluginList[NameOfPlugin] = true;
-            if (SAPluginList.Values.Where(v => v).Count() == SAPluginList.Count)
+            if (SAPluginList.Values.Count(v => v) == SAPluginList.Count)
             {
                 if(isTimerOn)
                     WriteToEventLog($"{SALaunchTimer.Elapsed.TotalMilliseconds:F2} ms - {nameof(SAPluginReady)} started.", EventLogEntryType.Information
@@ -58,7 +58,7 @@ namespace DDDPM.SA.Common
                 throw new ArgumentException($"Plugin '{NameOfPlugin}' does not exist in SAUser plugin list.");
             }
             SAUserPluginList[NameOfPlugin] = true;
-            if (SAUserPluginList.Values.Where(v => v).Count() == SAUserPluginList.Count)
+            if (SAUserPluginList.Values.Count(v => v) == SAUserPluginList.Count)
             {
                 if (isTimerOn)
                     WriteToEventLog($"{SAUserLaunchTimer.Elapsed.TotalMilliseconds:F2} ms - {nameof(SAUserPluginReady)}.", EventLogEntryType.Information
