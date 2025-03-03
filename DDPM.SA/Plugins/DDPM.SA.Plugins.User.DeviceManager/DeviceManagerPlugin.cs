@@ -17742,7 +17742,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 try
                                                 {
-                                                    _OSD_Controler.ShowMultipleOSD(Guid.NewGuid().ToString(), OSDType.BatteryLow, Content, "Battery Low ");
+                                                    _OSD_Controler.ShowMultipleOSD(Guid.NewGuid().ToString(), OSDType_Device.Headset, Content, "Battery Low ");
+                                                    _OSD_Controler.ShowMultipleOSD(Guid.NewGuid().ToString(), OSDType_Device.Keyboard, Content, "Battery Low ");
+                                                    _OSD_Controler.ShowMultipleOSD(Guid.NewGuid().ToString(), OSDType_Device.Mouse, Content, "Battery Low ");
+                                                    _OSD_Controler.ShowMultipleOSD(Guid.NewGuid().ToString(), OSDType_Device.Pen, Content, "Battery Low ");
                                                     /*  if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Headset))
                                                       {
                                                           _latestBatterylowContent = Content;
