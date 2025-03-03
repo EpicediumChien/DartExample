@@ -232,7 +232,12 @@ namespace DDPM.SA.Plugins.User.CMAProxy
                 return;
             }
             _CMAManagerPlugin.CMARequestEvent += _CMAManagerPlugin_CMARequestEvent;
-            _DevManagerPlugin.DeviceChanged += _deviceManager_DeviceChanged;
+            // modified @ 20250303 stephen
+            //_DevManagerPlugin.DeviceChanged += _deviceManager_DeviceChanged;
+
+            // add @ 20250303 stephen
+            _DevManagerPlugin.Displaychanged += _deviceManager_Displaychanged;
+
 
             _DevManagerPlugin.DownloadAndInstall_Result_Notify += _FwUpdateStatus;  // add @ 20241129 stephen
 
@@ -277,6 +282,30 @@ namespace DDPM.SA.Plugins.User.CMAProxy
             _CMAManagerPlugin.UpdateFwStatus(e);
         }
 
+
+
+        // add start @ 20250303 stephen
+        private async void _deviceManager_Displaychanged(object? sender, DisplaychangedEventArgs e)
+        {
+            WriteLog("_deviceManager_Displaychanged() executed");
+
+            if (e != null)
+            {
+                List<MonitorInfo> mos = e.monitors;
+                WriteLog($"Monitor count is ${mos.Count}");
+                if (_CMAManagerPlugin != null)
+                {
+                    _CMAManagerPlugin.Update_DeviceChanged(new CMADeviceChanges() { type = "display", mos = mos, devices = null });
+                }
+                else
+                    WriteLog("_CMAManagerPlugin is null then can't pass call Update_DeviceChanged");
+            }
+            else
+            {
+                WriteLog("_CMAManagerPlugin _deviceManager_Displaychanged, e == null.");
+            }
+        }
+        // add end @ 20250303 stephen
         private async void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
             WriteLog("_deviceManager_DeviceChanged() executed");
@@ -336,7 +365,7 @@ namespace DDPM.SA.Plugins.User.CMAProxy
                 WriteLog($"Monitor count is ${mos.Count}");
                 if (_CMAManagerPlugin != null)
                 {
-                    _CMAManagerPlugin.Update_DeviceChanged(new CMADeviceChanges() { type = "display", mos = mos, devices = null});
+                    _CMAManagerPlugin.Update_DeviceChanged(new CMADeviceChanges() { type = "display", mos = mos, devices = null });
                 }
                 else
                     WriteLog("_CMAManagerPlugin is null then can't pass call Update_DeviceChanged");

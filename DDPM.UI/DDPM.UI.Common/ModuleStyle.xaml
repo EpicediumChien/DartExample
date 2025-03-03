@@ -581,7 +581,26 @@
     <!-- Robert_Lin, 2024-6-24, Alex MC Yen reports that the padding top/bottom is too large
     Change the Padding from "12,16" to "12,8" -->
     <Thickness x:Key="Tooltip_Padding">12,8</Thickness>
+    
+    <!-- To fix the weird whitespace ub tooltip/border
+    Reference: https://stackoverflow.com/questions/4161741/wpf-whats-with-this-weird-whitespace-in-tooltip-border
+    -->
+    <Style TargetType="ToolTip">
+        <!--<Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <ContentPresenter/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>-->
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    
 
+    <!-- 
+        <Setter Property="BorderBrush" Value="{DynamicResource Tooltip_BdColor}" />
+    -->
     <Style x:Key="Tooltip_OutterBorderStyle" TargetType="Border">
         <Setter Property="Background" Value="{DynamicResource Tooltip_BkColor}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Tooltip_BdColor}" />

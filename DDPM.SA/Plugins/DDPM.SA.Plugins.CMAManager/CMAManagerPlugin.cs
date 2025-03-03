@@ -230,6 +230,7 @@ namespace DDPM.SA.Plugins.CMAManager
             }
 
 
+
             CmaCommand.CmaTaskOption option = new CmaCommand.CmaTaskOption(task.options);
 
             if (option.index != null && option.index.Length > 0)
@@ -439,7 +440,8 @@ namespace DDPM.SA.Plugins.CMAManager
                     {
                         command = command + (" value=on");
                     }
-                    else {
+                    else
+                    {
                         command = command + (" value=off");
                     }
                     break;
@@ -834,7 +836,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 // check command result is success or not
                 foreach (JToken item in jarray)
                 {
-                    
+
                     try
                     {
                         JObject jobj = item as JObject;
@@ -920,7 +922,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
         public Task<RemoteManagementResult> Info(RemoteRequestArgs request)
         {
-            
+
             Guid uniqueAgentGuid = Guid.NewGuid();
 
             //Assign request ID per call
@@ -934,6 +936,12 @@ namespace DDPM.SA.Plugins.CMAManager
                 return Task.FromResult(result);
             }
 
+            if (string.IsNullOrEmpty(request.remote_request))
+            {
+                result.message = "Empty request";
+                result.output_result = "FAIL";
+                return Task.FromResult(result);
+            }
             WriteLog($"[CMA] initCommandTask request.cma_request = {request.remote_request}]");
 
             string remoteRequest = checkRemoteRequest(request.remote_request.ToLower());
@@ -1227,6 +1235,12 @@ namespace DDPM.SA.Plugins.CMAManager
             {
                 foreach (MonitorInfo info in data.mos)
                 {
+                    if (info == null)
+                    {
+                        WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo is null");
+                        continue;
+                    }
+
                     WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo =======================================================");
                     WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo ToString = " + info.ToString());
                     WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo AliasDeviceName = " + info.AliasDeviceName);
@@ -1234,19 +1248,31 @@ namespace DDPM.SA.Plugins.CMAManager
                     WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo CapabilityString = " + info.CapabilityString);
                     WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo DisplayName = " + info.DisplayName);
                     WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo DDCisON = " + info.DDCisON);
-                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid = " + info.edid);
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid = " + (info.edid != null ? info.edid.ToString() : "null"));
                     WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo FwVersion = " + info.FwVersion);
                     WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo inputSource = " + info.inputSource);
                     WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo inputCable = " + info.inputCable);
                     WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo modelName = " + info.modelName);
                     WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo series = " + info.series);
-                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.PID = " + info.edid.PID);
-                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.ModelNam = " + info.edid.ModelName);
-                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.SerialNumber = " + info.edid.SerialNumber);
-                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.ServiceTag = " + info.edid.ServiceTag);
-                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo =======================================================");
 
+                    if (info.edid != null)
+                    {
+                        WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.PID = " + info.edid.PID);
+                        WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.ModelName = " + info.edid.ModelName);
+                        WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.SerialNumber = " + info.edid.SerialNumber);
+                        WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid.ServiceTag = " + info.edid.ServiceTag);
+                    }
+                    else
+                    {
+                        WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo edid is null");
+                    }
+
+                    WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed MonitorInfo =======================================================");
                 }
+            }
+            else
+            {
+                WriteLog("[ICMAManagerSA] Update_DeviceChanged() data.mos is null");
             }
 
 
@@ -1422,8 +1448,8 @@ namespace DDPM.SA.Plugins.CMAManager
                 }
                 catch (Exception e)
                 {
-                    WriteLog($"[CMA] Exception: data = new DeferItem(item); item = {item}");
-                    counter = counter + 1; ;
+                    WriteLog($"[CMA] Exception: data = new DeferItem(item); item = {item}. [e:{e.ToString()}]");
+                    counter = counter + 1;
                     continue;
                 }
 
@@ -1535,7 +1561,19 @@ namespace DDPM.SA.Plugins.CMAManager
 
             isDoFwJobChecking = true;
 
-            List<string> listFwJobs = FwJobControlPanel.displayConnected(monitors);
+            List<string> listFwJobs = new List<string>();
+
+            try
+            {
+                listFwJobs = FwJobControlPanel.displayConnected(monitors);
+            }
+            catch (Exception ex)
+            {
+                //250303 Elie: Stephen, please make a correct response.
+                WriteLog($"[CMA] displayConnected got exception. {ex.ToString()}");
+                return;
+            }
+
 
             // add @ 20250204 stephen : fix list is null
             if (null == listFwJobs)
@@ -1553,7 +1591,19 @@ namespace DDPM.SA.Plugins.CMAManager
             foreach (string strFwJob in listFwJobs)
             {
                 WriteLog("[CMA] doFwJobChecking strFwJob = " + strFwJob);
-                deferItem = new DeferItem(strFwJob);
+
+                try
+                {
+                    deferItem = new DeferItem(strFwJob);
+                }
+                catch (Exception ex)
+                {
+                    //250303 Elie: Stephen, please make a correct response.
+                    WriteLog($"[CMA] DeferItem got exception. {ex.ToString()}");
+                    return;
+                }
+
+
                 // modified start @ 20250204 stephen : check defer in command
                 if (deferItem.commanddata.ToLower().Contains("defer"))
                 {
@@ -1570,30 +1620,48 @@ namespace DDPM.SA.Plugins.CMAManager
 
                     bool isDeferSelect = false;
 
-                    switch (deferItem.commandfrom)
+                    try
                     {
-                        case DeferControlPanel.SRC_FROM_CLI:
+                        switch (deferItem.commandfrom)
+                        {
+                            case DeferControlPanel.SRC_FROM_CLI:
+                                try
+                                {
+                                    if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, deferItem.guid.ToString(), deferItem.commanddata).Result)
+                                    {
+                                        WriteLog($"[CMA] _CliManagerPlugin.checkDefer::DeferControlPanel.SRC_FROM_CLI = true, do not run command");
+                                        isDeferSelect = true;
+                                        //return;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    WriteLog($"[CMA] Error in _CliManagerPlugin.checkDefer::DeferControlPanel.SRC_FROM_CLI: {ex.Message}", log_type.error);
+                                }
+                                break;
 
-                            if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, deferItem.guid.ToString(), deferItem.commanddata).Result)
-                            {
-                                WriteLog($"[CMA] _CliManagerPlugin.checkDefer::DeferControlPanel.SRC_FROM_CLI = true, do not run command");
-                                isDeferSelect = true;
-                                //return;
-                            }
+                            case DeferControlPanel.SRC_FROM_CMA:
+                                try
+                                {
+                                    if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, deferItem.guid.ToString(), deferItem.commanddata).Result)
+                                    {
+                                        WriteLog($"[CMA] _CliManagerPlugin.checkDefer::DeferControlPanel.SRC_FROM_CMA = true, do not run command");
 
-                            break;
-
-                        case DeferControlPanel.SRC_FROM_CMA:
-                            if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, deferItem.guid.ToString(), deferItem.commanddata).Result)
-                            {
-                                WriteLog($"[CMA] _CliManagerPlugin.checkDefer::DeferControlPanel.SRC_FROM_CMA = true, do not run command");
-
-                                // feedback event to show in defer status
-                                sendDeferNotify(deferItem.guid.ToString(), deferItem.commanddata);
-                                isDeferSelect = true;
-                            }
-                            break;
-
+                                        // feedback event to show in defer status
+                                        sendDeferNotify(deferItem.guid.ToString(), deferItem.commanddata);
+                                        isDeferSelect = true;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    WriteLog($"[CMA] Error in _CliManagerPlugin.checkDefer::DeferControlPanel.SRC_FROM_CMA: {ex.Message}", log_type.error);
+                                }
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteLog($"[CMA] Unexpected error in deferItem processing: {ex.Message}", log_type.error);
                     }
 
                     if (isDeferSelect)
@@ -1604,45 +1672,73 @@ namespace DDPM.SA.Plugins.CMAManager
                     // modoified end @ 20250213
                 }
 
-                switch (deferItem.commandfrom)
+                try
                 {
-                    case DeferControlPanel.SRC_FROM_CLI:
+                    switch (deferItem.commandfrom)
+                    {
+                        case DeferControlPanel.SRC_FROM_CLI:
+                            WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CLI");
+                            try
+                            {
+                                ICLICommandTable iCLICommandTable = new ICLICommandTable(Log);
+                                CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(deferItem.commanddata.Split(' '));
 
-                        WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CLI");
-                        ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
-                        CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(deferItem.commanddata.Split(' '));
+                                commandLineInput.isCliRunAdmin = true;
 
-                        commandLineInput.isCliRunAdmin = true;
+                                CLIEventResult result = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
 
-                        CLIEventResult result = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
+                                WriteLog($"[CMA] PerformCommandLineRelay result: {result}");
+                            }
+                            catch (Exception ex)
+                            {
+                                WriteLog($"[CMA] Error in PerformCommandLineRelay::DeferControlPanel.SRC_FROM_CLI: {ex.Message}", log_type.error);
+                                NotifyArgs args = new NotifyArgs
+                                {
+                                    eventType = Params.EventType.UNKNOWN_ERROR.ToString(),
+                                    notification = ex.ToString() + "; " + deferItem.commanddata
+                                };
+                                OnEventNotify(args);
+                            }
+                            break;
 
-                        break;
+                        case DeferControlPanel.SRC_FROM_CMA:
+                            WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CMA");
+                            try
+                            {
+                                initCommandTask(deferItem.guid.ToString(), deferItem.commanddata);
 
-                    case DeferControlPanel.SRC_FROM_CMA:
-                        WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CMA");
-                        try
-                        {
-                            initCommandTask(deferItem.guid.ToString(), deferItem.commanddata);
-
-                            TaskInfo taskInfo = taskInfoQueue.Peek();
-                            WriteLog($"[CMA] before runCommandTask, taskInfo.sid = {taskInfo.sid} ; taskInfo.gid = {taskInfo.gid} ; taskInfo.tid = {taskInfo.tid} ; taskInfo.eventtype = {taskInfo.eventtype} ; taskInfo.command = {taskInfo.command}");
-                            _ = Task.Run(async () => await runCommandTaskAsync(taskInfo.sid, taskInfo.gid));
-                        }
-                        catch (Exception e)
-                        {
-
-                            NotifyArgs args = new NotifyArgs();
-                            args.eventType = Params.EventType.UNKNOWN_ERROR.ToString();
-                            args.notification = e.ToString() + "; " + deferItem.commanddata;
-                            OnEventNotify(args);
-                        }
-                        break;
+                                TaskInfo taskInfo = taskInfoQueue.Peek();
+                                WriteLog($"[CMA] before runCommandTask, taskInfo.sid = {taskInfo.sid} ; taskInfo.gid = {taskInfo.gid} ; taskInfo.tid = {taskInfo.tid} ; taskInfo.eventtype = {taskInfo.eventtype} ; taskInfo.command = {taskInfo.command}");
+                                _ = Task.Run(async () => await runCommandTaskAsync(taskInfo.sid, taskInfo.gid));
+                            }
+                            catch (Exception ex)
+                            {
+                                WriteLog($"[CMA] Error in runCommandTaskAsync::DeferControlPanel.SRC_FROM_CMA: {ex.Message}", log_type.error);
+                                NotifyArgs args = new NotifyArgs
+                                {
+                                    eventType = Params.EventType.UNKNOWN_ERROR.ToString(),
+                                    notification = ex.ToString() + "; " + deferItem.commanddata
+                                };
+                                OnEventNotify(args);
+                            }
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    WriteLog($"[CMA] Unexpected error in deferItem processing: {ex.Message}", log_type.error);
+                    NotifyArgs args = new NotifyArgs
+                    {
+                        eventType = Params.EventType.UNKNOWN_ERROR.ToString(),
+                        notification = ex.ToString() + "; " + deferItem.commanddata
+                    };
+                    OnEventNotify(args);
                 }
                 // modified end @ 20250204 stephen
-            
+
 
             }
-        
+
             Thread.Sleep(30000);
             isDoFwJobChecking = false;
         }

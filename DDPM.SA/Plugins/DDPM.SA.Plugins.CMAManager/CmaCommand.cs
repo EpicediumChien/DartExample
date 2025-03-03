@@ -19,19 +19,44 @@ namespace DDPM.SA.Plugins.CMAManager
 
         public CmaCommand(string _gid, string json)
         {
+            //    gid = _gid;
+            //    JObject jObject = JObject.Parse(json);
+            //    sid = (string)jObject["sid"];
+            //    req = jObject["req"].ToArray();
+            if (string.IsNullOrEmpty(_gid))
+            {
+                throw new ArgumentNullException(nameof(_gid), "gid cannot be null or empty.");
+            }
+
+            if (string.IsNullOrEmpty(json))
+            {
+                throw new ArgumentNullException(nameof(json), "JSON string cannot be null or empty.");
+            }
 
             gid = _gid;
 
-            JObject jObject = JObject.Parse(json);
+            JObject jObject;
+            try
+            {
+                jObject = JObject.Parse(json);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException("Invalid JSON format.", nameof(json), ex);
+            }
 
-            sid = (string)jObject["sid"];
+            sid = (string)jObject["sid"] ?? throw new ArgumentNullException("sid", "sid cannot be null.");
+
+            if (jObject["req"] == null)
+            {
+                throw new ArgumentNullException("req", "req cannot be null.");
+            }
 
             req = jObject["req"].ToArray();
-
         }
 
-        public string gid { get; set; }
-        public string sid { get; set; }
+        public string gid { get; set; } = string.Empty;
+        public string sid { get; set; } = string.Empty;
         public Array req { get; set; }
 
         public class CmaTask
@@ -70,10 +95,10 @@ namespace DDPM.SA.Plugins.CMAManager
 
             }
 
-            public string sid { get; set; }
+            public string sid { get; set; } = string.Empty;
             public int tid { get; set; }
-            public string active { get; set; }
-            public string devicetype { get; set; }
+            public string active { get; set; } = string.Empty;
+            public string devicetype { get; set; } = string.Empty;
             public string command { get; set; } = string.Empty;
             public string value { get; set; } = string.Empty;
             public JObject options { get; set; }
@@ -82,36 +107,37 @@ namespace DDPM.SA.Plugins.CMAManager
 
         public class CmaTaskOption
         {
-
             public CmaTaskOption(JObject options)
             {
+                if (options == null)
+                {
+                    throw new ArgumentNullException(nameof(options), "Options cannot be null.");
+                }
 
-                //JObject jObject = JObject.Parse(options);
-
-                index = (string)options["index"];
-
-                servicetag = (string)options["servicetag"];
-
-                minversion = (string)options["minversion"];
-
-                model = (string)options["model"];
+                index = (string)options["index"] ?? string.Empty;
+                servicetag = (string)options["servicetag"] ?? string.Empty;
+                minversion = (string)options["minversion"] ?? string.Empty;
+                model = (string)options["model"] ?? string.Empty;
 
                 // add @ 20241110 stephen
                 try
                 {
-                    upgradetolatest = (bool)options["upgradetolatest"];
+                    upgradetolatest = options["upgradetolatest"] != null && (bool)options["upgradetolatest"];
                 }
-                catch 
-                { }
+                catch
+                {
+                    upgradetolatest = false;
+                }
 
                 // add @ 20241113 stephen
                 try
                 {
-                    uod = (bool)options["uod"];
+                    uod = options["uod"] != null && (bool)options["uod"];
                 }
                 catch
-                { }
-
+                {
+                    uod = false;
+                }
             }
 
             public string index { get; set; } = string.Empty;

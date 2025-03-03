@@ -9,11 +9,11 @@
 //------------------------------------------------------------------------------
 using System.Runtime.CompilerServices;
 [assembly: System.Runtime.InteropServices.ComVisible(false)]
-[assembly: System.Reflection.AssemblyInformationalVersion("2.0.1.7-61e493b4")]
+[assembly: System.Reflection.AssemblyInformationalVersion("2.0.1.8-61e493b4")]
 [assembly: System.Reflection.AssemblyCompany("Dell")]
 [assembly: System.Reflection.AssemblyCopyright("© 2022 Dell Inc. All Rights Reserved")]
-[assembly: System.Reflection.AssemblyFileVersion("2.0.1.7")]
-[assembly: System.Reflection.AssemblyVersion("2.0.1.7")]
+[assembly: System.Reflection.AssemblyFileVersion("2.0.1.8")]
+[assembly: System.Reflection.AssemblyVersion("2.0.1.8")]
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Color.Tests, PublicKey=" +
                               "002400000480000094000000060200000024000052534131000400000100010075065fba06e04c" +
                               "14fd43e9d02540323f7bbec78c29f854af3ead4643908af773efe044dee7ae6936bdc810ea9aa9" +
