@@ -18166,8 +18166,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                                     case OSDType.Error:
                                         {
-                                            if (State)
-                                            {
+                                            //if (State) 
+                                            //{
+                                            //    try
+                                            //    {
+                                            //        _OSD_Controler.Error_CloseWindow();
+                                            //        _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            //    }
+                                            //    catch (Exception ex)
+                                            //    {
+                                            //        writelog($"[_showosd] ERROR - OSDType.Error: {ex.Message}, State:{State}");
+                                            //    }
+                                            //}
+                                            //else
+                                            //{
                                                 try
                                                 {
                                                     _OSD_Controler.Error_CloseWindow();
@@ -18177,19 +18189,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 {
                                                     writelog($"[_showosd] ERROR - OSDType.Error: {ex.Message}, State:{State}");
                                                 }
-                                            }
-                                            else
-                                            {
-                                                try
-                                                {
-                                                    _OSD_Controler.Error_CloseWindow();
-                                                    _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    writelog($"[_showosd] ERROR - OSDType.Error: {ex.Message}, State:{State}");
-                                                }
-                                            }
+                                            //}
                                         }
                                         break;
 

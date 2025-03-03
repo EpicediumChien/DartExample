@@ -445,17 +445,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ObjGetVCP result = new ObjGetVCP();
 
             //Jason add 0xE9
-            if (code == 0xE9)
+            if (code == 0xE9 && 
+                _displayDataManger != null)
             {
-                if (_displayDataManger != null)
+                uint datacode = 1;
+                if (_displayDataManger.GetMonitorE9(monitorInfo, out datacode))
                 {
-                    uint datacode = 1;
-                    if (_displayDataManger.GetMonitorE9(monitorInfo, out datacode))
-                    {
-                        result.result = true;
-                        result.value = datacode;
-                        return Task.FromResult(result);
-                    }
+                    result.result = true;
+                    result.value = datacode;
+                    return Task.FromResult(result);
                 }
             }
 
@@ -463,12 +461,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 result = _VcpCorePlugin.GetVCPCapability(monitorInfo, code, guid, opt, priority).Result;
 
             //Jason add 0xE9
-            if (result.result && code == 0xE9)
+            if (result.result && 
+                code == 0xE9 && _displayDataManger != null)
             {
-                if (_displayDataManger != null)
-                {
-                    _displayDataManger.SetMonitorE9(monitorInfo, (uint)result.value);
-                }
+                _displayDataManger.SetMonitorE9(monitorInfo, (uint)result.value);
             }
 
             return Task.FromResult(result);
@@ -504,12 +500,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 r = _VcpCorePlugin.SetVCPCapability(monitorInfo, code, val, guid, priority).Result;
 
             //Jason add 0xE9
-            if (r && code == 0xE9)
+            if (r && 
+                code == 0xE9 && 
+                _displayDataManger != null)
             {
-                if (_displayDataManger != null)
-                {
-                    _displayDataManger.SetMonitorE9(monitorInfo, val);
-                }
+                _displayDataManger.SetMonitorE9(monitorInfo, val);
             }
 
             return Task.FromResult(r);
@@ -600,16 +595,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 if (_displayDataManger != null)
                 {
-                    if (_displayDataManger.GetMonitorUSBList(monitorInfo, out _USBPorts))
+                    if (_displayDataManger.GetMonitorUSBList(monitorInfo, out _USBPorts) && 
+                        _USBPorts != null && _USBPorts.Count > 0)
                     {
-                        if (_USBPorts != null && _USBPorts.Count > 0)
+                        foreach (USBPorts usbPort in _USBPorts)
                         {
-                            foreach (USBPorts usbPort in _USBPorts)
-                            {
-                                _usbUpstreamList.Add(usbPort.USBName);
-                            }
-                            return Task.FromResult(_usbUpstreamList);
+                            _usbUpstreamList.Add(usbPort.USBName);
                         }
+                        return Task.FromResult(_usbUpstreamList);
                     }
 
                     if (!string.IsNullOrEmpty(monitorInfo.CapabilityString))
@@ -2627,20 +2620,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //SetDisplayOrientation(_VCPchangedEventArgs);
 
             //0611 Dean
-            if (e.vcpcode.Equals("66"))
+            if (e.vcpcode.Equals("66") && 
+                uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result))
             {
-                if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result))
-                {
-                    //update target als config via target monitorinfo with e.value
-                    ALSConfig alsConfig = UpdateALSFeatureByValue(e.monitor, result);
+                //update target als config via target monitorinfo with e.value
+                ALSConfig alsConfig = UpdateALSFeatureByValue(e.monitor, result);
 
-                    Trace.WriteLine("[DisplayMangerPlugin] show_VCPchangedEventArgs 0x66 " + result.ToString() + "|| AllValue = " + alsConfig.AllValue.ToString());
-                    if (alsConfig != null)// && alsConfig.AllValue != result)
-                    {
-                        Task.Run(() => CheckisPrimaryMonitorSyncOnOff(e.monitor, alsConfig, e.vcpcode));//JIRA DDPMW-770
-                        int idx = AllALSConfig.FindIndex(x => x.Edid.Equals(e.monitor.edid));
-                        AllALSConfig[idx].isBusy = false;
-                    }
+                Trace.WriteLine("[DisplayMangerPlugin] show_VCPchangedEventArgs 0x66 " + result.ToString() + "|| AllValue = " + alsConfig.AllValue.ToString());
+                if (alsConfig != null)// && alsConfig.AllValue != result)
+                {
+                    Task.Run(() => CheckisPrimaryMonitorSyncOnOff(e.monitor, alsConfig, e.vcpcode));//JIRA DDPMW-770
+                    int idx = AllALSConfig.FindIndex(x => x.Edid.Equals(e.monitor.edid));
+                    AllALSConfig[idx].isBusy = false;
                 }
             }
 
@@ -2777,7 +2768,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             bool r = false;
                             if (findconfigtocheckmms != null)// || findconfigtocheckmms.isMMSEnable == false)//False need to set, if null or MMS true no action
                             {
-                                if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result))
+                                if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result3))
                                 {
                                     //No need sync, PIMS - 285803
                                     //if (e.vcpcode.Equals("10"))

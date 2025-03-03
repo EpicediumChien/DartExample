@@ -357,7 +357,22 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                            Visibility="{Binding synchronizeLock}" />
+                                            Visibility="{Binding synchronizeLock}">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
 
                                         <UXControls:UXToggleSwitch
                                             Name="SynchronizeSwitch"
@@ -549,7 +564,22 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                            Visibility="{Binding synchronizeLock}" />
+                                            Visibility="{Binding synchronizeLock}">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
 
                                         <UXControls:UXToggleSwitch
                                             Name="SynchronizeSwitch_Luminance"
@@ -603,7 +633,22 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                        Visibility="{Binding AutoALSLock}" />
+                                        Visibility="{Binding AutoALSLock}">
+                                        <Image.ToolTip>
+                                            <ToolTip>
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                    <Border.Resources>
+                                                        <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                    </Border.Resources>
+                                                    <StackPanel>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Border>
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
                                 </Grid>
                             </Expander.Header>
 
@@ -681,7 +726,22 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                            Visibility="{Binding AutoBrightnessLock}" />
+                                            Visibility="{Binding AutoBrightnessLock}">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
                                         <UXControls:UXToggleSwitch
                                             Name="AutoBrightnessSwitch"
                                             Grid.Column="3"
@@ -781,7 +841,22 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                            Visibility="{Binding AutoBrigRangeLevelLock}" />
+                                            Visibility="{Binding AutoBrigRangeLevelLock}">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
                                         <ComboBox
                                             x:Name="cbAutoBrightness"
                                             Grid.Column="3"
@@ -865,7 +940,22 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                            Visibility="{Binding AutoTemperatureLock}" />
+                                            Visibility="{Binding AutoTemperatureLock}">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
                                         <UXControls:UXToggleSwitch
                                             Name="AutoColorTempSwitch"
                                             Grid.Column="3"
@@ -968,7 +1058,22 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                            Visibility="{Binding PrimaryMonitorSyncLock}" />
+                                            Visibility="{Binding PrimaryMonitorSyncLock}">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
                                         <UXControls:UXToggleSwitch
                                             Name="PrimaryMonitorSyncSwitch"
                                             Grid.Column="3"
@@ -1850,7 +1955,22 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                            Visibility="{Binding synchronizeLock}" />
+                                            Visibility="{Binding synchronizeLock}">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
 
                                         <UXControls:UXToggleSwitch
                                             Name="ScheduledSynchronizeSwitch"
@@ -2514,7 +2634,22 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                            Visibility="{Binding synchronizeLock}" />
+                                            Visibility="{Binding synchronizeLock}">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
 
                                         <UXControls:UXToggleSwitch
                                             Name="ScheduledLuminanceSynchronizeSwitch"
