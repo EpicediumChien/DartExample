@@ -2768,7 +2768,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             bool r = false;
                             if (findconfigtocheckmms != null)// || findconfigtocheckmms.isMMSEnable == false)//False need to set, if null or MMS true no action
                             {
-                                if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result))
+                                if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result3))
                                 {
                                     //No need sync, PIMS - 285803
                                     //if (e.vcpcode.Equals("10"))
