@@ -173,7 +173,6 @@ namespace DDPM.UI.Plugin.Common
                 }
             }
 
-            var ketStroke = DdpmCommonHelper.DeviceManagerSA!.GetKeyboardKeystrokeDisplayData(guid).Result;
             DialogResult = false;
             Close();
         }
