@@ -2431,6 +2431,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _iDeviceManager = _iClient.DeviceManager;
                     _iDeviceManager.DeviceAddedEvent += _iDeviceManager_DeviceAddedEvent;
                     _iDeviceManager.DeviceRemovedEvent += _iDeviceManager_DeviceRemovedEvent;
+                    _iClient.RawInputManager.DisplayDataChanged += RawInputManager_DisplayDataChanged;
                     // First go through existing PhysicalDevices and add events
                     foreach (var iPhysicalDevice in _iDeviceManager.Devices)
                     {
@@ -2514,6 +2515,22 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             //Console.WriteLine(_clientInfo.ToString());
             //Debug.WriteLine(_clientInfo.ToString());
             writelog(_clientInfo.ToString());
+        }
+
+        private void RawInputManager_DisplayDataChanged(string obj)
+        {
+            writelog($"KeyStroke DisplayDataChanged: value:{obj}");
+            DeviceInfo di = new()
+            {
+                Message = obj
+            };
+            DeviceChangedEventArgs _EventArgs = new()
+            {
+                type = DeviceChangedType.Peripherals_SettingsChange,
+                device_peripherals = di,
+                changedProperty = "KeyStrokeDisplayDataChanged"
+            };
+            OnNotify(_EventArgs);
         }
 
         private void _iCTKMessageHelper_IsZoomCallbacksRegisteredChanged(bool obj)
@@ -2975,12 +2992,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     OnNotify(_EventArgs);
                     Debug.WriteLine($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
                     writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
-                    CheckLowBatteryOSD(deviceInfo);
 
                     // << 250217 added by Hess to meet PIMS-341711
                     if (deviceInfo.BatteryStatus == "Charging")
                         LowBatteryIDs.Remove(deviceInfo.ID.ToString());
                     // >>
+                    CheckLowBatteryOSD(deviceInfo);
                 }
                 else
                 {
