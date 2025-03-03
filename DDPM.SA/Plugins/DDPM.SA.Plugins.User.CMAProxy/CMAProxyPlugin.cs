@@ -287,19 +287,23 @@ namespace DDPM.SA.Plugins.User.CMAProxy
         // add start @ 20250303 stephen
         private async void _deviceManager_Displaychanged(object? sender, DisplaychangedEventArgs e)
         {
-
             WriteLog("_deviceManager_Displaychanged() executed");
 
-            List<MonitorInfo> mos = e.monitors;
-            WriteLog($"Monitor count is ${mos.Count}");
-            if (_CMAManagerPlugin != null)
+            if (e != null)
             {
-                _CMAManagerPlugin.Update_DeviceChanged(new CMADeviceChanges() { type = "display", mos = mos, devices = null });
+                List<MonitorInfo> mos = e.monitors;
+                WriteLog($"Monitor count is ${mos.Count}");
+                if (_CMAManagerPlugin != null)
+                {
+                    _CMAManagerPlugin.Update_DeviceChanged(new CMADeviceChanges() { type = "display", mos = mos, devices = null });
+                }
+                else
+                    WriteLog("_CMAManagerPlugin is null then can't pass call Update_DeviceChanged");
             }
             else
-                WriteLog("_CMAManagerPlugin is null then can't pass call Update_DeviceChanged");
-
-
+            {
+                WriteLog("_CMAManagerPlugin _deviceManager_Displaychanged, e == null.");
+            }
         }
         // add end @ 20250303 stephen
         private async void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
@@ -361,7 +365,7 @@ namespace DDPM.SA.Plugins.User.CMAProxy
                 WriteLog($"Monitor count is ${mos.Count}");
                 if (_CMAManagerPlugin != null)
                 {
-                    _CMAManagerPlugin.Update_DeviceChanged(new CMADeviceChanges() { type = "display", mos = mos, devices = null});
+                    _CMAManagerPlugin.Update_DeviceChanged(new CMADeviceChanges() { type = "display", mos = mos, devices = null });
                 }
                 else
                     WriteLog("_CMAManagerPlugin is null then can't pass call Update_DeviceChanged");
