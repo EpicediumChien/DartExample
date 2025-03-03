@@ -1,22 +1,11 @@
 ﻿using DDPM.SA.Common.Settings;
-using DDPM.SA.Common;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO.Compression;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Dell.Client.Framework.Common;
-using DDPM.SA.Common.Method;
-using System.Windows.Media.Animation;
-using Windows.Devices.Geolocation;
+using System;
+using System.IO;
 
-namespace DDPM.SA.Plugins.SettingsManager
+namespace DDPM.SA.Common
 {
-    public class DiagnosticReport
+    public static class DiagnosticReport
     {
         public static bool SaveLogFile(string saveFolderPath, ILog log)
         {
@@ -28,7 +17,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                 log.Info($"{nameof(SaveLogFile)} saveFolderPath is null : {string.IsNullOrEmpty(saveFolderPath)}");
                 if (!string.IsNullOrEmpty(saveFolderPath))
                 {
-                    Method method = new Method(log);
+                    DDPM.SA.Common.Method.Method method = new Method.Method(log);
                     // 確保資料夾存在
                     if (!Directory.Exists(saveFolderPath))
                     {
@@ -219,7 +208,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                         if (!method.CreateZipFile(saveFolderPath, zipFilePath))// 壓縮資料夾
                             fail_info += "[Compression]";
 
-                        if(DDPMFileSecurity.ValidateFilePath(saveFolderPath, out string info))
+                        if (DDPMFileSecurity.ValidateFilePath(saveFolderPath, out string info))
                             Directory.Delete(saveFolderPath, true);
                         else
                             log.Error($"[SaveLog] skip delete temp folder due to: {info}");
