@@ -11786,6 +11786,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() into Re-GetDevices ...");
                             //Call VCP to catch updated monitor info
                             _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.Re_GetMonitors(token).Result);
+
+                            if (_arg != null)
+                            {
+                                arg = (DebouncerArg)_arg;
+                                show_displays_changed(arg.sender, new DisplaychangedEventArgs() { count = _AllInfoMonitors.Count, monitors = _AllInfoMonitors });
+                            }
+
                             //NKVM monitor change
                             if (_NKVMPlugin != null)
                             {

@@ -2364,10 +2364,14 @@ namespace VcpCore.Plugins
                                         _logs.DebugMsg("[VcpCorePlugin] *** (mos.Count = 0) ...");
                                         _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier start ...");
 
+                                        var origan = monitors.Item1.ToList();
+
+                                        TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
+
                                         int count = 0;
                                         while (count < 10 && (!TokenNew.IsCancellationRequested))
                                         {
-                                            Thread.Sleep(1000);
+                                            Thread.Sleep(1500);
 
                                             TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
 
@@ -2377,6 +2381,21 @@ namespace VcpCore.Plugins
 
                                             if (mos.Count > 0)
                                             {
+                                                if ((origan.Count == mos.Count))
+                                                {
+                                                    var IsDiff = mos.ExceptBy(origan.Select(x => x.edid), x => x.edid).Any();
+
+                                                    if (!IsDiff)
+                                                    {
+                                                        _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier No Except ...");
+                                                        continue;
+                                                    }
+                                                }
+
+                                                origan = mos.ToList();
+
+                                                TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
+
                                                 if (_pauseEvent.WaitOne(0))
                                                 {
                                                     _logs.DebugMsg("[VcpCorePlugin] _pauseEvent.Reset() when mos=0 and Task run");
@@ -2422,7 +2441,7 @@ namespace VcpCore.Plugins
                                                 OnDisplaychanged(_displaychangedEventArgss);
                                                 //------------------------------------------------------------------------------------------------//
 
-                                                break;
+                                                //break;
                                             }
 
                                             count++;
@@ -2509,73 +2528,81 @@ namespace VcpCore.Plugins
 
                                             TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
 
-                                            Thread.Sleep(2000);
-
-                                            TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
-
-                                            List<MonitorInfo_complex> mos = _GetMonitors(TokenNew).Item1;
-
-                                            TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
-
-                                            if (mos.Count > 0)
+                                            int count = 0;
+                                            while (count < 10 && (!TokenNew.IsCancellationRequested))
                                             {
-                                                if ((origan.Count == mos.Count))
-                                                {
-                                                    var IsDiff = mos.ExceptBy(origan.Select(x => x.edid), x => x.edid).Any();
-
-                                                    if (!IsDiff)
-                                                    {
-                                                        _logs.DebugMsg("[VcpCorePlugin] *** Monitor DoingExtentDetect No Except ...");
-                                                        return;
-                                                    }
-                                                }
+                                                Thread.Sleep(1500);
 
                                                 TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
 
-                                                if (_pauseEvent.WaitOne(0))
-                                                {
-                                                    _logs.DebugMsg("[VcpCorePlugin] _pauseEvent.Reset() when mos>0 and Task run");
-                                                    _pauseEvent.Reset();
-                                                }
+                                                List<MonitorInfo_complex> mos = _GetMonitors(TokenNew).Item1;
 
-                                                if (_CacheTimer.Enabled)
-                                                    _CacheTimer.Stop();
-                                                if (_StatusTimer.Enabled)
-                                                    _StatusTimer.Stop();
+                                                TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
 
-                                                while (!_TaskQueue.IsEmpty())
+                                                if (mos.Count > 0)
                                                 {
+                                                    if ((origan.Count == mos.Count))
+                                                    {
+                                                        var IsDiff = mos.ExceptBy(origan.Select(x => x.edid), x => x.edid).Any();
+
+                                                        if (!IsDiff)
+                                                        {
+                                                            _logs.DebugMsg("[VcpCorePlugin] *** Monitor DoingExtentDetect No Except ...");
+                                                            continue;
+                                                        }
+                                                    }
+
+                                                    origan = mos.ToList();
+
                                                     TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
 
-                                                    if (_TaskQueueExecutor.IsBusy) _TaskQueueExecutor.CancelAsync();
-                                                    else
+                                                    if (_pauseEvent.WaitOne(0))
                                                     {
-                                                        _TaskQueue = new TaskLockQueue<ParameterType>();
-                                                        _TaskQueueResult = new ResultLockPool();
+                                                        _logs.DebugMsg("[VcpCorePlugin] _pauseEvent.Reset() when mos>0 and Task run");
+                                                        _pauseEvent.Reset();
                                                     }
-                                                    _CancelhashSet.Clear();
+
+                                                    if (_CacheTimer.Enabled)
+                                                        _CacheTimer.Stop();
+                                                    if (_StatusTimer.Enabled)
+                                                        _StatusTimer.Stop();
+
+                                                    while (!_TaskQueue.IsEmpty())
+                                                    {
+                                                        TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
+
+                                                        if (_TaskQueueExecutor.IsBusy) _TaskQueueExecutor.CancelAsync();
+                                                        else
+                                                        {
+                                                            _TaskQueue = new TaskLockQueue<ParameterType>();
+                                                            _TaskQueueResult = new ResultLockPool();
+                                                        }
+                                                        _CancelhashSet.Clear();
+                                                    }
+
+                                                    TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
+                                                    _AllInfoMonitors = new List<MonitorInfo_complex>(mos);
+                                                    _logs.DebugMsg("[VcpCorePlugin] *** Monitor DoingExtentDetect Monitors.count is " + mos.Count);
+
+                                                    TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
+                                                    Initialize2TypesMonitorInfo(true, TokenNew);
+                                                    _logs.DebugMsg("[VcpCorePlugin] *** Monitor DoingExtentDetect _AllInfoMonitors_Mix.Count is " + _AllInfoMonitors_Mix.Count);
+
+                                                    TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
+                                                    Initialize0x52toEmpty();
+
+                                                    TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
+                                                                                              //------------------------------------------------------------------------------------------------//
+                                                    DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs()
+                                                    {
+                                                        count = _AllInfoMonitors_Mix.Count,
+                                                        monitors = new List<MonitorInfo>(_AllInfoMonitors_Mix.Select(x => x.Item2).ToList()),
+                                                    };
+                                                    OnDisplaychanged(_displaychangedEventArgss);
+                                                    //------------------------------------------------------------------------------------------------//
                                                 }
 
-                                                TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
-                                                _AllInfoMonitors = new List<MonitorInfo_complex>(mos);
-                                                _logs.DebugMsg("[VcpCorePlugin] *** Monitor DoingExtentDetect Monitors.count is " + mos.Count);
-
-                                                TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
-                                                Initialize2TypesMonitorInfo(true, TokenNew);
-                                                _logs.DebugMsg("[VcpCorePlugin] *** Monitor DoingExtentDetect _AllInfoMonitors_Mix.Count is " + _AllInfoMonitors_Mix.Count);
-
-                                                TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
-                                                Initialize0x52toEmpty();
-
-                                                TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
-                                                                                          //------------------------------------------------------------------------------------------------//
-                                                DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs()
-                                                {
-                                                    count = _AllInfoMonitors_Mix.Count,
-                                                    monitors = new List<MonitorInfo>(_AllInfoMonitors_Mix.Select(x => x.Item2).ToList()),
-                                                };
-                                                OnDisplaychanged(_displaychangedEventArgss);
-                                                //------------------------------------------------------------------------------------------------//
+                                                count++;
                                             }
                                         }
                                         catch (TaskCanceledException)
