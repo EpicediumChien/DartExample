@@ -2992,12 +2992,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     OnNotify(_EventArgs);
                     Debug.WriteLine($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
                     writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
-                    CheckLowBatteryOSD(deviceInfo);
 
                     // << 250217 added by Hess to meet PIMS-341711
                     if (deviceInfo.BatteryStatus == "Charging")
                         LowBatteryIDs.Remove(deviceInfo.ID.ToString());
                     // >>
+                    CheckLowBatteryOSD(deviceInfo);
                 }
                 else
                 {
