@@ -724,7 +724,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             bool ret = false;
             try
             {
-                ret = DiagnosticReport.SaveLogFile(saveFolderPath, Log); //CommonFunctions.SaveLogFile(saveFolderPath, Log);
+                ret = DiagnosticReport.SaveLogFile(saveFolderPath, Log);
                 WriteLog($"[System setting plugin] DiagnosticReport.SaveLogFile finish");
             }
             catch (Exception e)
