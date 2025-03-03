@@ -16968,7 +16968,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //PowerNap
             DDMtoDDPM_PowerNap(DDMmonitorsettings);
             //Consent Page
-            //DDMtoDDPM_ConsentPage(DDMusersettings);
+            DDMtoDDPM_ConsentPage(DDMusersettings);
         }
 
         private void DDMtoDDPM_KVM(DDMMonitorSettings ddmMonitorSettings)
@@ -17479,6 +17479,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     settings.UserSettings.isDisplayConsentPage = true;
                     settings.LockSettings.global_setting.isTelemetryConsentOn = ddmUserSettings.AllowTelemetry;
                     bool b = _SettingsPlugin.SetAppConfigData(settings).Result;
+                    //write registry
+                    string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.CONSENT_PAGE";
+                    string regPath = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
+                    bool br = WriteRegistryData(RegistryHive.LocalMachine, regPath, regKey, true).Result;
                 }
                 else
                 {
