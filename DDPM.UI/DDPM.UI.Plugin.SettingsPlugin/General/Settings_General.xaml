@@ -34,7 +34,22 @@
                         <Grid Margin="15,0,0,0"
                               VerticalAlignment="Center"
                               Visibility="{Binding GeneralUI_LockTooltip}">
-                            <Path Data="M12.1 6.40012V4.00012C12.2 1.80012 10.5 0.100122 8.30005 0.00012207H8.10005C5.90005 0.00012207 4.10005 1.80012 4.10005 4.00012V6.40012H1.80005V16.0001H14.1V6.40012H12.1ZM5.30005 4.00012C5.20005 2.50012 6.40005 1.30012 7.80005 1.20012H8.20005C9.80005 1.20012 11 2.50012 11 4.00012V6.40012H5.30005V4.00012ZM13.1 14.9001H3.00005V7.50012H13.1V14.9001Z M7.60005 12.5001H8.60005V9.30012H6.80005V10.3001H7.60005V12.5001Z"/>
+                            <Path Data="M12.1 6.40012V4.00012C12.2 1.80012 10.5 0.100122 8.30005 0.00012207H8.10005C5.90005 0.00012207 4.10005 1.80012 4.10005 4.00012V6.40012H1.80005V16.0001H14.1V6.40012H12.1ZM5.30005 4.00012C5.20005 2.50012 6.40005 1.30012 7.80005 1.20012H8.20005C9.80005 1.20012 11 2.50012 11 4.00012V6.40012H5.30005V4.00012ZM13.1 14.9001H3.00005V7.50012H13.1V14.9001Z M7.60005 12.5001H8.60005V9.30012H6.80005V10.3001H7.60005V12.5001Z">
+                                <Path.ToolTip>
+                                    <ToolTip>
+                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                            <Border.Resources>
+                                                <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                            </Border.Resources>
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </ToolTip>
+                                </Path.ToolTip>
+                            </Path>
                         </Grid>
                     </StackPanel>
                     <Grid Margin="20,20,8,8" Opacity="{Binding GeneralPageLock_Opacity}">
