@@ -15,7 +15,7 @@ namespace DDPM.UI.Module.HeadsetAudioForSB725Settings
         private bool isSelectChanged = false;
         public bool IsModuleActive { get; set; } = false;
 
-        public HeadsetAudioForSB725SettingsModule(HeadsetViewModel vm)
+        public HeadsetAudioForSB725SettingsModule(AirAudioViewModel vm)
         {
             _rightView = new HeadsetAudioForSB725SettingsRightView(vm);
         }

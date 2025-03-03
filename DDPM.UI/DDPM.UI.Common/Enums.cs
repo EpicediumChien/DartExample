@@ -20,6 +20,7 @@ namespace DDPM.UI.Common
         Soundbar = 1600,
         Dock = 1700,
         WalkThrough = 1800,
+        AirAudio = 1900,
     }
 
     public enum PenButtonName
