@@ -204,6 +204,35 @@ namespace DDPM.SA.Common
                         if (!method.ExecuteWevtutilCommand(logFilePath))
                             fail_info += "[EventLog]";
 
+                        // Wayn 3/4 add Dell registry record file
+                        string dellRegFolderPath = Path.Combine(saveFolderPath, "Dell_Reg");
+                        if (!Directory.Exists(dellRegFolderPath))
+                        {
+                            Directory.CreateDirectory(dellRegFolderPath);
+                        }
+
+                        // 讀取 HKEY_LOCAL_MACHINE\SOFTWARE\Dell
+                        string fullRegistryPath = @"HKEY_LOCAL_MACHINE\SOFTWARE\Dell";
+                        var regValues = DDPMRegistryHelper.ReadAllRegistryValuesRecursively(fullRegistryPath);
+
+                        // 寫入 Dell_Reg\Reg_Record.txt
+                        string regTxtFile = Path.Combine(dellRegFolderPath, "Reg_Record.txt");
+                        using (var writer = new StreamWriter(regTxtFile, false))
+                        {
+                            if (regValues.Count == 0)
+                            {
+                                writer.WriteLine("No registry values found or path does not exist.");
+                            }
+                            else
+                            {
+                                foreach (var kvp in regValues)
+                                {
+                                    writer.WriteLine($"{kvp.Key} = {kvp.Value ?? "(null)"}");
+                                }
+                            }
+                        }
+                        // Dell registry record end
+
                         string zipFilePath = saveFolderPath + ".zip";
                         if (!method.CreateZipFile(saveFolderPath, zipFilePath))// 壓縮資料夾
                             fail_info += "[Compression]";
