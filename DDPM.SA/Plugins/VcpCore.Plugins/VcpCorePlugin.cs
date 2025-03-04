@@ -2388,6 +2388,7 @@ namespace VcpCore.Plugins
                                                     if (!IsDiff)
                                                     {
                                                         _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier No Except ...");
+                                                        count++;
                                                         continue;
                                                     }
                                                 }
@@ -2548,6 +2549,7 @@ namespace VcpCore.Plugins
                                                         if (!IsDiff)
                                                         {
                                                             _logs.DebugMsg("[VcpCorePlugin] *** Monitor DoingExtentDetect No Except ...");
+                                                            count++;
                                                             continue;
                                                         }
                                                     }
