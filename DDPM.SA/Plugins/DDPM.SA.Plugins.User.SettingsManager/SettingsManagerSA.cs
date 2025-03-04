@@ -83,7 +83,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private const string filename_colorpreset_peruser = "ColorSetting.json";
         private const string filename_hotkey_peruser = "HotkeySetting.json";
         private const string filename_powernap_peruser = "PowerNapSetting.json";
-        private const string filename_GlobalSetting_peruser = "GlobalSetting.json";
+        //private const string filename_GlobalSetting_peruser = "GlobalSetting.json";
         private const string filename_InterruptScreen_peruser = "InterruptScreen.json";
 
 
@@ -2197,6 +2197,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam, bool writeToSys = true)
         {
+            if(string.IsNullOrEmpty(_GlobalSetting_path))
+            {
+                string folder = GetActiveUserLocalAppDataPath();
+                WriteLog("WriteGlobalSettings: _GlobalSetting_path is empty, re-combine path");
+                string file_path = Path.Combine(folder, GlobalDefinitions.Folder_Product, GlobalDefinitions.Filename_GlobalSetting_peruser);
+                _GlobalSetting_path = file_path;
+            }
             bool result = WriteSettings_Common(globalSettingParam, "global", _GlobalSetting_path);
             if(!result)
             {
@@ -2806,7 +2813,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             string folder = GetActiveUserLocalAppDataPath();
             WriteLog($"InitGlobalSettingConfigFile: appdata path: {folder}");
-            string file_path = Path.Combine(folder, GlobalDefinitions.Folder_Product, filename_GlobalSetting_peruser);
+            string file_path = Path.Combine(folder, GlobalDefinitions.Folder_Product, GlobalDefinitions.Filename_GlobalSetting_peruser);
             _GlobalSetting_path = file_path;
             Trace.WriteLine($"_GlobalSetting_path={_GlobalSetting_path}");
 
