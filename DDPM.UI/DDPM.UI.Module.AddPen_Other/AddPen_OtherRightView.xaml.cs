@@ -107,7 +107,7 @@ namespace DDPM.UI.Module.AddPen_Other
                 }
                 else
                 {
-                    messageModalDialog = new(Strings.PairYourPen, Strings.PairYourPenMessage, Strings.Yes, Strings.No);
+                    messageModalDialog = new(Strings.PairYourPen, Strings.PairYourPenMessage, Strings.No, Strings.Yes);
                 }
                 if (mainWindow != null)
                 {
