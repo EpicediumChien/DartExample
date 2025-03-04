@@ -1068,7 +1068,7 @@ namespace DDPM.SA.Plugin.CLIManager
                 });
             }
 
-            bool result = checkToastResult(did, item);
+            bool result =  checkToastResult(did, item);
 
             return Task.FromResult(result);
         }
@@ -1087,6 +1087,8 @@ namespace DDPM.SA.Plugin.CLIManager
                 {
                     //if end user select defer within 5 min
                     WriteLog("@@ CLIManagerPlugin::checkToastResult deferResponse.ContainsKey " + key);
+                    Thread.Sleep(1000);
+
                     if (deferResponse[key])
                     {
                         WriteLog("@@ CLIManagerPlugin::checkToastResult deferResponse[did] =  " + deferResponse[key]);
