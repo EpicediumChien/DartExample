@@ -88,7 +88,8 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 string regPath = $@"SOFTWARE\Microsoft\Windows NT\CurrentVersion";
                 string regKey = $"CurrentBuild";
-                var regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey).Result;
+                //var regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey).Result;
+                var regValue = DdpmCommonHelper.ReadRegistryData(SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
                 if (int.TryParse((string)regValue, out int build))
                 {
                     CurrentVersion = build >= 22000 ? 11 : 10;

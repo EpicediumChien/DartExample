@@ -72,10 +72,11 @@ namespace DDPM.SA.Plugins.SettingsManager
         }
 
         //Basic
-        private static string path_programdata = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Dell");
-        private static string folder_product = "Dell Display and Peripheral Manager";
-        private static string filename_appsettings_IT = "DDPM.Configs.json";
-        private static string filename_appsettings_Info = "DDPM.Infos.json";
+        //private static string path_programdata = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Dell");
+        //move to global definition
+        //private static string folder_product = "Dell Display and Peripheral Manager";
+        //private static string filename_appsettings_IT = "DDPM.Configs.json";
+        //private static string filename_appsettings_Info = "DDPM.Infos.json";
 
         private DDPMITConfig _settings = new DDPMITConfig();
         private InfoObject _infos = new InfoObject();
@@ -197,7 +198,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             //    return Task.FromResult(_settings);
             //}
             string info = "Success";
-            if (force_reload)
+            if (!force_reload)
             {
                 WriteLog($"ReadITConfigData: Force reload");
                 if (_settings != null)
@@ -206,7 +207,11 @@ namespace DDPM.SA.Plugins.SettingsManager
                 WriteLog($"ReadITConfigData: null settings, load data from file");
             }
             string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settings_path, out info);
-            _settings = JsonConvert.DeserializeObject<DDPMITConfig>(serialized_string);
+            var tmp = JsonConvert.DeserializeObject<DDPMITConfig>(serialized_string);
+            if (tmp != null)
+                _settings = tmp;
+            else
+                WriteLog("ReadITConfigData: force reload but got null data, return original data");
             return Task.FromResult(_settings);
         }
 
@@ -381,15 +386,15 @@ namespace DDPM.SA.Plugins.SettingsManager
 
         private DDPMITConfig InitDDPMITConfigFile()
         {
-            string folder = Path.Combine(path_programdata, folder_product);
-            string filePath = Path.Combine(folder, filename_appsettings_IT);
+            string folder = Path.Combine(GlobalDefinitions.Folder_ProgramData, GlobalDefinitions.Folder_Product);
+            string filePath = Path.Combine(folder, GlobalDefinitions.Filename_appsettings_IT);
             return (DDPMITConfig)InitSysSettingsData("ITConfig", filePath);
         }
 
         private InfoObject InitInfoConfigFile()
         {
-            string folder = Path.Combine(path_programdata, folder_product);
-            string filePath = Path.Combine(folder, filename_appsettings_Info);
+            string folder = Path.Combine(GlobalDefinitions.Folder_ProgramData, GlobalDefinitions.Folder_Product);
+            string filePath = Path.Combine(folder, GlobalDefinitions.Filename_appsettings_Info);
             InitSysSettingsData("InfoConfig", filePath);
 
             foreach(string info in InfoHash.Info_Hash)
@@ -779,11 +784,5 @@ namespace DDPM.SA.Plugins.SettingsManager
             return Task.CompletedTask;
         }
         #endregion
-    }
-
-    public class InfoObject
-    {
-        //string: info value, bool: isActived
-        public List<string> Infos { get; set; } = new List<string>();
     }
 }
