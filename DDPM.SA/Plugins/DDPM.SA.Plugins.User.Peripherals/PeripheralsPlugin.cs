@@ -2983,6 +2983,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
                 if (deviceInfo != null)
                 {
+                    var oldStatus = deviceInfo.BatteryStatus;
                     deviceInfo.BatteryStatus = arg2.ToString();
 
                     DeviceChangedEventArgs _EventArgs = new();
@@ -2994,7 +2995,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
 
                     // << 250217 added by Hess to meet PIMS-341711
-                    if (deviceInfo.BatteryStatus == "Charging")
+                    if (deviceInfo.BatteryStatus == "Charging" || oldStatus == "Charging")
                         LowBatteryIDs.Remove(deviceInfo.ID.ToString());
                     // >>
                     CheckLowBatteryOSD(deviceInfo);
