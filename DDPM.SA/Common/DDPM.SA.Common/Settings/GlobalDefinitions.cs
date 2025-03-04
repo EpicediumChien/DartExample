@@ -80,6 +80,7 @@ namespace DDPM.SA.Common.Settings
         public const string Filename_appsettings_Info = "DDPM.Infos.json";
         //User settings param
         public const string Filename_GlobalSetting_peruser = "GlobalSetting.json";
+        public const string Filename_appsettings_peruser = "DDPM.Configs.json";
     }
 
     public class InfoObject

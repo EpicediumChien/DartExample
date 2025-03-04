@@ -360,15 +360,35 @@ namespace DDPM.UI.Common
         //Default data from cache, load from user subagent if force_reload = true
         public static DDPMSettings ReadDDPMSettings(bool reload_from_SA = false)
         {
-            if (reload_from_SA)
+            DDPMSettings tmp = null;
+            try
             {
-                if (DeviceManagerSA == null)
-                    return null;
-
-                DDPMSettings data = DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null)
+                if (reload_from_SA)
                 {
-                    Settings_Cache = data;
+                    tmp = DeviceManagerSA == null ? throw new Exception("NULL DevMgr") : DeviceManagerSA.ReloadAppConfigData().Result;
+                    if (tmp != null)
+                    {
+                        Settings_Cache = tmp;
+                    }
+                    else
+                        throw new Exception("Null Data from SA");
+                }
+                if(Settings_Cache == null)
+                    throw new Exception("Null Data from Cache");
+            }
+            catch (Exception ex)
+            {
+                WriteUILog($"[ReadDDPMSettings] An error occurred: {ex.Message}");
+
+                //20250304 Dean, read it from UI with file directly
+                string folder = WTSFunction.GetActiveUserLocalAppDataPath(Log);
+                string folder_appdatapath_ddpm = folder + "\\" + GlobalDefinitions.Folder_Product;
+                string file_appdatapath_userconfig = folder_appdatapath_ddpm + "\\" + GlobalDefinitions.Filename_appsettings_peruser;
+                string _settings_path = file_appdatapath_userconfig;
+                WriteUILog("[ReadDDPMSettings] Read from file directly over UI");
+                if(DDPMFileSecurity.ValidateFilePath(_settings_path))
+                {
+
                 }
             }
             return Settings_Cache;
@@ -1614,37 +1634,6 @@ namespace DDPM.UI.Common
 
             // Default scaling is 1.0 (100%)
             return 1.0;
-        }
-
-        public static object ReadRegistryData(RegistryHive hive, string keyPath, string keyName)
-        {
-            object obj = null;
-            try
-            {
-                if (DeviceManagerSA != null)
-                {
-                    return DeviceManagerSA.ReadRegistryData(hive, keyPath, keyName).Result;
-                }
-            }
-            catch (Exception ex)
-            {
-                WriteUILog($"[ReadRegistryData] over DeviceManager exception: ({ex.ToString()})");
-            }
-            WriteUILog($"[ReadRegistryData] read registry from UI directly");
-            try
-            {
-                obj = DDPMRegistryHelper.ReadRegistryKey(hive, keyPath, keyName);
-            }
-            catch (Exception ex)
-            {
-                WriteUILog($"[ReadRegistryData] over UI exception: ({ex.ToString()})");
-            }
-            if (obj == null)
-            {
-                WriteUILog($"[ReadRegistryData] keyName: {keyName} is null");
-                return null;
-            }
-            return obj;
         }
     }
 
