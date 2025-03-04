@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
@@ -1414,6 +1415,12 @@ namespace DDPM.SA.Plugins.CMAManager
         {
             WriteLog($"[CMA] checkDeferSchedule()");
 
+            // add @ 20250304 stephen : check null
+            if (null == list) {
+                WriteLog($"[CMA] checkDeferSchedule() list is null, do nopthing.");
+                return;
+            }
+                
             int i = 0;
             foreach (string str in list)
             {
@@ -1434,21 +1441,26 @@ namespace DDPM.SA.Plugins.CMAManager
                 deferlist.Add(str);
             }
 
+            // add @ 20250304 stephen : regural experssion for command string
+            string pattern = @"(\\[^bfrnt\\/‘\""])";
+            string strReplace = string.Empty;
+            DeferItem data;
 
 
             foreach (string item in deferlist)
             {
                 WriteLog($"[CMA] item[{counter}] in list = {item}");
 
-                DeferItem data;
+                //DeferItem data;
+                strReplace = Regex.Replace(item, pattern, "\\$1");
 
                 try
                 {
-                    data = new DeferItem(item);
+                    data = new DeferItem(strReplace);
                 }
                 catch (Exception e)
                 {
-                    WriteLog($"[CMA] Exception: data = new DeferItem(item); item = {item}. [e:{e.ToString()}]");
+                    WriteLog($"[CMA] Exception: data = new DeferItem(item); item = {strReplace}. [e:{e.ToString()}]");
                     counter = counter + 1;
                     continue;
                 }

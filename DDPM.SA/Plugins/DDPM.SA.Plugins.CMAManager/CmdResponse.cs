@@ -228,7 +228,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
             public string gid { get; set; }
             public string sid { get; set; }
-            public Array response { get; set; }
+            public Array response { get; set; } 
 
 
         }
@@ -418,8 +418,8 @@ namespace DDPM.SA.Plugins.CMAManager
                 return false;
             }
 
-            public int tid { get; set; }
-            public int result { get; set; } = 0;
+            public int tid { get; set; } = -1;
+            public int result { get; set; } = -1;
             public string msg { get; set; } = string.Empty;
             public Array data { get; set; }
         }
@@ -610,7 +610,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 response = response + "\"marketingname\":\"" + marketingname + "\",";
                 response = response + "\"serialnumber\":\"" + serialnumber + "\",";
                 response = response + "\"fwversion\":\"" + fwversion + "\",";
-                response = response + "\"fwupdateresponse\":\"" + fwupdateresponse + "\"";
+                response = response + "\"fwupdateresponse\":[\"" + fwupdateresponse + "\"]";
                 response = response + "}";
 
 
