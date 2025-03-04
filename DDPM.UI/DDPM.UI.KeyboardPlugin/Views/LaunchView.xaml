@@ -109,8 +109,9 @@
       <!--<Style x:Key="CalculatorStyle" TargetType="Image" BasedOn="{StaticResource CalculatorSize}">
             <Setter Property="Margin" Value="-117, 0, 0, 0" />
             </Style>-->
-      <Style x:Key="KeyToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+      <Style x:Key="KeyToolTipStyle" TargetType="ToolTip">
         <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Placement" Value="Top" />
         <Setter Property="VerticalOffset" Value="-2.5" />
         <Setter Property="HorizontalOffset">

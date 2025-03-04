@@ -23,8 +23,9 @@
         <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
                                  Duration="0:0:0.4" From="{Binding RightFrameWidthFrom}" To="{Binding RightFrameWidthTo}" FillBehavior="HoldEnd" />
       </Storyboard>
-      <Style x:Key="ButtonToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+      <Style x:Key="ButtonToolTipStyle" TargetType="ToolTip">
         <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Placement" Value="Right" />
         <Setter Property="HorizontalOffset" Value="0" />
         <Setter Property="VerticalOffset">
