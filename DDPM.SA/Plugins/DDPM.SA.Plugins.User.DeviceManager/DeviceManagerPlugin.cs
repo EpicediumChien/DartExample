@@ -16315,12 +16315,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             strpcsList = JsonConvert.SerializeObject(pcslist, Formatting.Indented);
             return strpcsList;
         }
-
         private Dictionary<string, PCsInfo> USBKVMPCsListDeserialize(string strpcslist)
         {
-            Dictionary<string, PCsInfo> pcslist = new Dictionary<string, PCsInfo>();
-            pcslist = JsonConvert.DeserializeObject<Dictionary<string, PCsInfo>>(strpcslist);
-            return pcslist;
+            try
+            {
+                Dictionary<string, PCsInfo> pcslist = JsonConvert.DeserializeObject<Dictionary<string, PCsInfo>>(strpcslist);
+                return pcslist;
+            }
+            catch (JsonException ex)
+            {
+                WriteLog($"[USBKVMPCsListDeserialize] JSON deserialization error: {ex.Message}");
+                return new Dictionary<string, PCsInfo>();
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"[USBKVMPCsListDeserialize] Unexpected error: {ex.Message}");
+                return new Dictionary<string, PCsInfo>();
+            }
         }
 
         #endregion
@@ -16978,7 +16989,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void DDMtoDDPM_KVM(DDMMonitorSettings ddmMonitorSettings)
         {
-            try 
+            try
             {
                 if (ddmMonitorSettings != null)
                 {
@@ -18185,15 +18196,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             //}
                                             //else
                                             //{
-                                                try
-                                                {
-                                                    _OSD_Controler.Error_CloseWindow();
-                                                    _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    writelog($"[_showosd] ERROR - OSDType.Error: {ex.Message}, State:{State}");
-                                                }
+                                            try
+                                            {
+                                                _OSD_Controler.Error_CloseWindow();
+                                                _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                writelog($"[_showosd] ERROR - OSDType.Error: {ex.Message}, State:{State}");
+                                            }
                                             //}
                                         }
                                         break;

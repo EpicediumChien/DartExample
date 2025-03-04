@@ -1653,7 +1653,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     // Check ConsentPage reg
                     regPath = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
-                    regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForConsentPage);
+                    //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForConsentPage);
+                    regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForConsentPage);
 
                     if (!Convert.ToBoolean(regValue))
                     {
@@ -1669,7 +1670,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 else if (modelNumber == "DDPM" && modelType == "DDPM")
                 {
                     // Check DDPM walkthrough
-                    regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
+                    //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
+                    regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
 
                     if (!Convert.ToBoolean(regValue))
                     {
@@ -1690,12 +1692,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     if (modelNumber == "U3224KB" || modelNumber == "U3224KBA") // correct DPeM typo
                     {
                         regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.U3224KB";
-                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.   
+                        //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.   
+                        regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
                         if (!CheckRegReturnValue(regValue)) // If false, need to check "U3224KBA" again
                         {
                             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} U3224KB ReadRegistryData false");
                             regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.U3224KBA";
-                            regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                            //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                            regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
                         }
                         else
                             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} U3224KB ReadRegistryData true");
@@ -1703,12 +1707,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     else if (modelNumber == "P2424HEB") // correct DPeM typo
                     {
                         regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.CXXXXXX";
-                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.                   
+                        //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.                   
+                        regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
                         if (!CheckRegReturnValue(regValue)) // If false, need to check "P2424HEB" again
                         {
                             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} CXXXXXX ReadRegistryData false");
                             regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.P2424HEB";
-                            regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                            //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                            regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
                         }
                         else
                             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} CXXXXXX ReadRegistryData true");
@@ -1716,10 +1722,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     else if (modelNumber == "MS700/7")
                     {
                         regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.MS700";
-                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                        //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                        regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
                     }
                     else
-                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                        //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                        regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
 
                     _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} regPath : {regPath}");
                     _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} regPath : {regKey}");
