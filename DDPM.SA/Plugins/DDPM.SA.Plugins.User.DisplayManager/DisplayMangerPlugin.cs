@@ -447,7 +447,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ObjGetVCP result = new ObjGetVCP();
 
             //Jason add 0xE9
-            if (code == 0xE9 && 
+            if (code == 0xE9 &&
                 _displayDataManger != null)
             {
                 uint datacode = 1;
@@ -463,7 +463,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 result = _VcpCorePlugin.GetVCPCapability(monitorInfo, code, guid, opt, priority).Result;
 
             //Jason add 0xE9
-            if (result.result && 
+            if (result.result &&
                 code == 0xE9 && _displayDataManger != null)
             {
                 _displayDataManger.SetMonitorE9(monitorInfo, (uint)result.value);
@@ -502,8 +502,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 r = _VcpCorePlugin.SetVCPCapability(monitorInfo, code, val, guid, priority).Result;
 
             //Jason add 0xE9
-            if (r && 
-                code == 0xE9 && 
+            if (r &&
+                code == 0xE9 &&
                 _displayDataManger != null)
             {
                 _displayDataManger.SetMonitorE9(monitorInfo, val);
@@ -597,7 +597,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 if (_displayDataManger != null)
                 {
-                    if (_displayDataManger.GetMonitorUSBList(monitorInfo, out _USBPorts) && 
+                    if (_displayDataManger.GetMonitorUSBList(monitorInfo, out _USBPorts) &&
                         _USBPorts != null && _USBPorts.Count > 0)
                     {
                         foreach (USBPorts usbPort in _USBPorts)
@@ -2691,7 +2691,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //SetDisplayOrientation(_VCPchangedEventArgs);
 
             //0611 Dean
-            if (e.vcpcode.Equals("66") && 
+            if (e.vcpcode.Equals("66") &&
                 uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result))
             {
                 //update target als config via target monitorinfo with e.value
@@ -3237,7 +3237,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     tempProperties.isCurrent = false;
                                     cleanCurrentFlae = true;
                                 }
-                                if (tempProperties == properties && !setCurrentFlae)
+                                if (tempProperties.Resolutions_Width == properties.Resolutions_Width &&
+                                    tempProperties.Resolutions_High == properties.Resolutions_High &&
+                                    tempProperties.Frequency == properties.Frequency &&
+                                    !setCurrentFlae)
                                 {
                                     tempProperties.isCurrent = true;
                                     setCurrentFlae = true;
