@@ -15,7 +15,8 @@ namespace DDPM.SA.Common.Display
         public List<USBPorts> USBList = new List<USBPorts>();
         public List<InputSource_USB> DisplayUSB = new List<InputSource_USB>();
         public uint VCP_E9 = 1;
-
+        public DisplayPropertiesInfo DisplayPropertiesInfo = new DisplayPropertiesInfo();
+        public GamingDisplayPropertiesInfo GamingDisplayPropertiesInfo = new GamingDisplayPropertiesInfo();
     }
     public class InputSource_USB
     {
