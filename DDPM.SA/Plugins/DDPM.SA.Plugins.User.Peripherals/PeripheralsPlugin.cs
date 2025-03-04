@@ -2983,6 +2983,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
                 if (deviceInfo != null)
                 {
+                    var oldStatus = deviceInfo.BatteryStatus;
                     deviceInfo.BatteryStatus = arg2.ToString();
 
                     DeviceChangedEventArgs _EventArgs = new();
@@ -2994,7 +2995,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
 
                     // << 250217 added by Hess to meet PIMS-341711
-                    if (deviceInfo.BatteryStatus == "Charging")
+                    if (deviceInfo.BatteryStatus == "Charging" || oldStatus == "Charging")
                         LowBatteryIDs.Remove(deviceInfo.ID.ToString());
                     // >>
                     CheckLowBatteryOSD(deviceInfo);
@@ -3079,7 +3080,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     return;
                 }
 
-                if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9 && deviceInfo.BatteryStatus != "Charging" && !LowBatteryIDs.ContainsKey(deviceInfo.ID.ToString()))
+                if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9 && !LowBatteryIDs.ContainsKey(deviceInfo.ID.ToString())) // && deviceInfo.BatteryStatus != "Charging")
                 {
                     OSDType_Device type = OSDType_Device.Unknown;
                     var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
@@ -4166,7 +4167,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 //    OnNotify(_EventArgs);
                 //    break;
                 //}
-                if (_deviceHelper_ForDock.deviceInfo.Count>0)
+                if (_deviceHelper_ForDock.deviceInfo.Count > 0)
                 {
                     DeviceInfo device = _deviceHelper_ForDock.deviceInfo[0];
                     device.IsConnected = false;

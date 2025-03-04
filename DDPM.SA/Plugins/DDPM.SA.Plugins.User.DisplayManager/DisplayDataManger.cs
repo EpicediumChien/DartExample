@@ -103,7 +103,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         return true;
                     }
                 }
-                else 
+                else
                 {
                     WriteLog("[GetMonitorUSB]_displayData is not find monitor");
                 }
@@ -175,7 +175,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return false;
         }
 
-        public bool SetMonitorUSB(MonitorInfo monitorInfo, List<InputSource_USB> inputSourceUSBs) 
+        public bool SetMonitorUSB(MonitorInfo monitorInfo, List<InputSource_USB> inputSourceUSBs)
         {
             if (monitorInfo != null && inputSourceUSBs != null)
             {
@@ -346,6 +346,114 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 WriteLog("[SetMonitorE9]monitorInfo is null.");
             }
 
+            return false;
+        }
+        public bool GetMonitorDisplayPropertiesInfo(MonitorInfo monitorInfo, out DisplayPropertiesInfo displayPropertiesInfo)
+        {
+            if (monitorInfo != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                     x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1)
+                {
+                    if (_displayData[mi].DisplayPropertiesInfo != null &&
+                        _displayData[mi].DisplayPropertiesInfo.SupportedProperties != null &&
+                        _displayData[mi].DisplayPropertiesInfo.SupportedProperties.Properties != null &&
+                        _displayData[mi].DisplayPropertiesInfo.SupportedProperties.Properties.Count > 0)
+                    {
+                        displayPropertiesInfo = _displayData[mi].DisplayPropertiesInfo;
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                WriteLog("[GetMonitorDisplayPropertiesInfo]monitorInfo is null.");
+            }
+            displayPropertiesInfo = new DisplayPropertiesInfo();
+            return false;
+        }
+
+        public bool SetMonitorDisplayPropertiesInfo(MonitorInfo monitorInfo, DisplayPropertiesInfo displayPropertiesInfo)
+        {
+            if (monitorInfo != null && displayPropertiesInfo != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                     x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1)
+                {
+                    _displayData[mi].DisplayPropertiesInfo = displayPropertiesInfo;
+                    return true;
+                }
+                else
+                {
+                    WriteLog("[SetMonitorDisplayPropertiesInfo]_displayData is not find monitor");
+                    DisplayData displayData = new DisplayData();
+                    displayData.Model = monitorInfo.modelName;
+                    displayData.ServiceTag = monitorInfo.edid.ServiceTag;
+                    displayData.DisplayPropertiesInfo = displayPropertiesInfo;
+                    _displayData.Add(displayData);
+                    return true;
+                }
+            }
+            else
+            {
+                WriteLog("[SetMonitorDisplayPropertiesInfo]monitorInfo is null.");
+            }
+            return false;
+        }
+        public bool GetMonitorGamingDisplayPropertiesInfo(MonitorInfo monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo)
+        {
+            if (monitorInfo != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                     x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1)
+                {
+                    if (_displayData[mi].GamingDisplayPropertiesInfo != null &&
+                        _displayData[mi].GamingDisplayPropertiesInfo.SupportedProperties != null &&
+                        _displayData[mi].GamingDisplayPropertiesInfo.SupportedProperties.Properties != null &&
+                        _displayData[mi].GamingDisplayPropertiesInfo.SupportedProperties.Properties.Count > 0)
+                    {
+                        gamingDisplayPropertiesInfo = _displayData[mi].GamingDisplayPropertiesInfo;
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                WriteLog("[GetMonitorDisplayPropertiesInfo]monitorInfo is null.");
+            }
+            gamingDisplayPropertiesInfo = new GamingDisplayPropertiesInfo();
+            return false;
+        }
+
+        public bool SetMonitorGamingDisplayPropertiesInfo(MonitorInfo monitorInfo, GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo)
+        {
+            if (monitorInfo != null && gamingDisplayPropertiesInfo != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                     x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1)
+                {
+                    _displayData[mi].GamingDisplayPropertiesInfo = gamingDisplayPropertiesInfo;
+                    return true;
+                }
+                else
+                {
+                    WriteLog("[SetMonitorGamingDisplayPropertiesInfo]_displayData is not find monitor");
+                    DisplayData displayData = new DisplayData();
+                    displayData.Model = monitorInfo.modelName;
+                    displayData.ServiceTag = monitorInfo.edid.ServiceTag;
+                    displayData.GamingDisplayPropertiesInfo = gamingDisplayPropertiesInfo;
+                    _displayData.Add(displayData);
+                    return true;
+                }
+            }
+            else
+            {
+                WriteLog("[SetMonitorGamingDisplayPropertiesInfo]monitorInfo is null.");
+            }
             return false;
         }
     }
