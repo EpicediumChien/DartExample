@@ -3310,7 +3310,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     }
                 }
                 _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.GetHDRStatus go");
-                return Task.FromResult(_DisplayPropertiesPlugin.GetHDRStatus(monitorInfos.edid).Result);
+                bool HDREnable = _DisplayPropertiesPlugin.GetHDRStatus(monitorInfos.edid).Result;
+                if (_displayDataManger != null)
+                {
+                    if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
+                    {
+                        ret_DisplayPropertiesInfo.isHDREnable = HDREnable;
+                    }
+                }
+                return Task.FromResult(HDREnable);
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOrientation done");
             return Task.FromResult(false);
@@ -4858,6 +4866,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGame_EnhancementMode)} Error : {ex.ToString()}");
             }
             GamingChangeEventByPass = false;
+            if (_displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                {
+                    gamingDisplayPropertiesInfo.Current_GameEnhancementMode = GameEnhancementMode;
+                }
+            }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGame_EnhancementMode)} done Result : {GameEnhancementMode}");
             return Task.FromResult(GameEnhancementMode);
         }
@@ -4889,6 +4904,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             catch (Exception ex)
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_ResponseTime)} Error : {ex.ToString()}");
+            }
+            if (_displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                {
+                    gamingDisplayPropertiesInfo.Current_ResponseTime = ResponseTime;
+                }
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_ResponseTime)} done Result : {ResponseTime}");
             GamingChangeEventByPass = false;
@@ -4922,6 +4944,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             catch (Exception ex)
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DarkStabilizer)} Error : {ex.ToString()}");
+            }
+            if (_displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                {
+                    gamingDisplayPropertiesInfo.Current_DarkStabilizer = DarkStabilizer;
+                }
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DarkStabilizer)} done Result : {DarkStabilizer}");
             GamingChangeEventByPass = false;
@@ -4973,6 +5002,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     }
                 }
             }
+            if (_displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                {
+                    gamingDisplayPropertiesInfo.Current_HDRType = HDRType;
+                }
+            }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_HDRType)} done");
             return Task.FromResult(HDRType);
         }
@@ -5003,6 +5039,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             catch (Exception ex)
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} Error : {ex.ToString()}");
+            }
+            if (_displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                {
+                    gamingDisplayPropertiesInfo.Current_DualResolutionType = DualResolutionType;
+                }
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} done Result : {DualResolutionType}");
             return Task.FromResult(DualResolutionType);
@@ -5036,6 +5079,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             catch (Exception ex)
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineType)} Error : {ex.ToString()}");
+            }
+            if (_displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                {
+                    gamingDisplayPropertiesInfo.Current_VisionEngineType = current_VisionEngineType;
+                }
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineType)} done Result : {current_VisionEngineType}");
             return Task.FromResult(current_VisionEngineType);
@@ -5084,6 +5134,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             catch (Exception ex)
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineEnableType)} Error : {ex.ToString()}");
+            }
+            if (_displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo tempGamingDisplayPropertiesInfo))
+                {
+                    gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = IsEnable_VisionEngineType;
+                }
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineEnableType)} done Result :  {IsEnable_VisionEngineType.Length}");
             return Task.FromResult(IsEnable_VisionEngineType);
