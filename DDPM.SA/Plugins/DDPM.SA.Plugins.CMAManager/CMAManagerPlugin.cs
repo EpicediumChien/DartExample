@@ -1473,7 +1473,23 @@ namespace DDPM.SA.Plugins.CMAManager
                     continue;
                 }
 
-                long newDeferId = ((long)Convert.ToDouble(data.deferid)) + DAY_IN_SECONDS;
+                // modified @ 20250304 stephen
+                //long newDeferId = ((long)Convert.ToDouble(data.deferid)) + DAY_IN_SECONDS;
+
+                double deferIdDouble;
+                long newDeferId;
+                if (double.TryParse(data.deferid.ToString(), out deferIdDouble))
+                {
+                    newDeferId = Convert.ToInt64(data.deferid) + DAY_IN_SECONDS;
+                    // Use newDeferId as needed
+                }
+                else
+                {
+                    // Handle the case where deferid is not a valid number
+                    newDeferId = 0L;
+                    WriteLog($"[CMA] Invalid deferid format. newDeferId = 0L;");
+                }
+                // modified end @ 20250304 stephen
 
                 if (currentDateTimeSecond < newDeferId)
                 {
