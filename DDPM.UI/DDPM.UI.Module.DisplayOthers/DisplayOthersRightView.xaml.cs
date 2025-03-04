@@ -378,7 +378,8 @@ namespace DDPM.UI.Module.DisplayOthers
                 result = DisplayMsgBox(Strings.ImpExp_Warning, string.Format(Strings.ImpExp_WarningMsg0, string.IsNullOrEmpty(model) ? "Display" : model), 
                     Strings.Yes, Strings.No) ?? false;
             }));
-            return result;
+            // Yes no exchange for import
+            return !result;
         }
 
         private void ReturnToHomepage(object sender, EventArgs e)
