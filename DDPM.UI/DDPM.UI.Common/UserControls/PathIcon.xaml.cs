@@ -54,13 +54,15 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty TooltipTextProperty =
             DependencyProperty.Register("TooltipText", typeof(string), typeof(PathIcon), new PropertyMetadata(String.Empty));
 
+        //Robert_Lin 2025-3-3 After upgraded to DUCA 4.3. This event never be invoked.
+        //Will move the event to UserControl level
         private void Path_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            e.Handled = true;
-            if (ClickCommand != null)
-            {
-                ClickCommand.Execute(this);
-            }
+            //e.Handled = true;
+            //if (ClickCommand != null)
+            //{
+            //    ClickCommand.Execute(this);
+            //}
         }
 
         #region Glow and Breathe effect
@@ -169,6 +171,15 @@ namespace DDPM.UI.Common.UserControls
         private void UserControl_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
 
+        }
+
+        private void UserControl_MouseLeftButtonDowm(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            if (ClickCommand != null)
+            {
+                ClickCommand.Execute(this);
+            }
         }
     }
 }

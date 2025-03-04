@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 
 namespace DDPM.SA.Common.Defer
@@ -13,16 +14,16 @@ namespace DDPM.SA.Common.Defer
 
     public class DeferItem
     {
-        public string deferid { get; set; }
+        public string deferid { get; set; } = string.Empty;
         public string guid { get; set; } = string.Empty;
         //public string createTime { get; set; }
-        public string createtime { get; set; }
+        public string createtime { get; set; } = string.Empty;
         public int count { get; set; } = -1;
         // -1: show defer 3rd, execute now
         //  0: show defer 2nd
         //  1: show defer 1st
-        public int commandfrom { get; set; }
-        public string commanddata { get; set; }
+        public int commandfrom { get; set; } = DeferControlPanel.SRC_FROM_CLI;
+        public string commanddata { get; set; } = string.Empty;
 
         public DeferItem()
         {
@@ -30,29 +31,53 @@ namespace DDPM.SA.Common.Defer
 
         public DeferItem(int _from, string _guid, string _commanddata)
         {
-            DateTimeOffset dateTime = DateTimeOffset.Now;
-            long id = dateTime.ToUnixTimeSeconds();
+            try
+            {
+                DateTimeOffset dateTime = DateTimeOffset.Now;
+                long id = dateTime.ToUnixTimeSeconds();
 
-            deferid = id.ToString();
-            guid = _guid;
-            createtime = dateTime.ToString();
-            count = 2;
-            commandfrom = _from;
-            commanddata = _commanddata;
+                deferid = id.ToString();
+                guid = _guid ?? throw new ArgumentNullException(nameof(_guid), "GUID cannot be null.");
+                createtime = dateTime.ToString();
+                count = 2;
+                commandfrom = _from;
+                commanddata = _commanddata ?? throw new ArgumentNullException(nameof(_commanddata), "Command data cannot be null.");
+            }
+            catch (Exception ex)
+            {
+                // Log the error or handle it as needed
+                throw; // Re-throw the exception after logging it
+            }
         }
 
         public DeferItem(string json)
         {
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                throw new ArgumentException("JSON string cannot be null or empty.", nameof(json));
+            }
 
-            JObject jObject = JObject.Parse(json);
+            try
+            {
+                JObject jObject = JObject.Parse(json);
 
-            deferid = (string)jObject["deferid"];
-            guid = (string)jObject["guid"];
-            createtime = (string)jObject["createtime"];
-            count = (int)jObject["count"];
-            commandfrom = (int)jObject["commandfrom"];
-            commanddata = (string)jObject["commanddata"];
+                deferid = (string)jObject["deferid"] ?? string.Empty;
+                guid = (string)jObject["guid"] ?? string.Empty;
+                createtime = (string)jObject["createtime"] ?? string.Empty;
+                count = jObject["count"] != null ? (int)jObject["count"] : -1;
+                commandfrom = jObject["commandfrom"] != null ? (int)jObject["commandfrom"] : 0;
+                commanddata = (string)jObject["commanddata"] ?? string.Empty;
+            }
+            catch (JsonReaderException ex)
+            {
+                throw new ArgumentException("Invalid JSON format.", nameof(json), ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while parsing the JSON string.", ex);
+            }
         }
+
 
         public override string ToString()
         {

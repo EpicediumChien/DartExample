@@ -210,13 +210,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
                                                      x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (mi != -1)
+                if (mi != -1 && 
+                    _displayData[mi].InputSourceList != null && 
+                    _displayData[mi].InputSourceList.Count > 0)
                 {
-                    if (_displayData[mi].InputSourceList != null && _displayData[mi].InputSourceList.Count > 0)
-                    {
-                        inputSourceList = _displayData[mi].InputSourceList;
-                        return true;
-                    }
+                    inputSourceList = _displayData[mi].InputSourceList;
+                    return true;
                 }
             }
             else
@@ -262,13 +261,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
                                                      x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (mi != -1)
+                if (mi != -1 && 
+                    _displayData[mi].USBList != null && 
+                    _displayData[mi].USBList.Count > 0)
                 {
-                    if (_displayData[mi].USBList != null && _displayData[mi].USBList.Count > 0)
-                    {
-                        usbList = _displayData[mi].USBList;
-                        return true;
-                    }
+                    usbList = _displayData[mi].USBList;
+                    return true;
                 }
             }
             else
