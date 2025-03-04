@@ -17,9 +17,9 @@
 
   <UserControl.Resources>
     <ResourceDictionary>
-      <!--<ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
-      </ResourceDictionary.MergedDictionaries>-->
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+      </ResourceDictionary.MergedDictionaries>
       <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
       <PluginCommon:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
       <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
@@ -113,8 +113,9 @@
             <Setter Property="Margin" Value="-117, 0, 0, 0" />
             </Style>-->
       <Style x:Key="KeyToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Placement" Value="Top" />
-        <Setter Property="VerticalOffset" Value="-5" />
+        <Setter Property="VerticalOffset" Value="-2.5" />
         <Setter Property="HorizontalOffset">
           <Setter.Value>
             <MultiBinding Converter="{StaticResource CenterToolTipConverter}">
@@ -164,49 +165,98 @@
                   <Image x:Name="F1" Source="{Binding F1ImageFile}" Stretch="Fill" Style="{StaticResource F1Style}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F1Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F1Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F2" Source="{Binding F2ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F2Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F2Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F3" Source="{Binding F3ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F3Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F3Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F4" Source="{Binding F4ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F4Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F4Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F5" Source="{Binding F5ImageFile}" Stretch="Fill" Style="{StaticResource F5Style}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F5Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F5Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F6" Source="{Binding F6ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F6Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F6Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F7" Source="{Binding F7ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F7Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F7Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -214,35 +264,70 @@
                                            Visibility="{Binding IsF8Visible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F8Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F8Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F9" Source="{Binding F9ImageFile}" Stretch="Fill" Style="{StaticResource F9Style}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F9Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F9Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F10" Source="{Binding F10ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F10Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F10Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F11" Source="{Binding F11ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F11Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F11Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F12" Source="{Binding F12ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F12Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F12Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -250,7 +335,14 @@
                                            Visibility="{Binding IsPrtScVisible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding PrtScTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding PrtScTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -258,7 +350,14 @@
                                            Visibility="{Binding IsScrollLockVisible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding ScrollLockTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding ScrollLockTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -266,7 +365,14 @@
                                            Visibility="{Binding IsPauseBreakVisible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding PauseBreakTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding PauseBreakTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -274,7 +380,14 @@
                                            Visibility="{Binding IsCalculatorVisible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding CalculatorTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding CalculatorTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -286,7 +399,14 @@
                                            Visibility="{Binding IsHomeVisible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding HomeTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding HomeTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -294,7 +414,14 @@
                                            Visibility="{Binding IsEndVisible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding EndTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding EndTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -302,7 +429,14 @@
                                            Visibility="{Binding IsPgUpVisible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding PgUpTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding PgUpTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -310,7 +444,14 @@
                                            Visibility="{Binding IsPgDownVisible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding PgDownTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding PgDownTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
