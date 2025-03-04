@@ -119,8 +119,6 @@ namespace DDPM.SA.Common.Settings
             }
 
             string subKeyPath = fullRegistryPath.Substring(firstBackSlashIndex + 1); // 去掉Hive部分
-            Trace.WriteLine(subKeyPath + " ++ " + fullRegistryPath);
-
             var result = new Dictionary<string, object>();
             using (RegistryKey baseKey = GetBaseKey(RegistryHive.LocalMachine))
             {
