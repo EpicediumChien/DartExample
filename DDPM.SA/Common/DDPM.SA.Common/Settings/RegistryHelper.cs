@@ -7,8 +7,6 @@ using Windows.Devices.Geolocation;
 using System.Runtime.InteropServices;
 using Dell.Client.Framework.Common;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using System.Diagnostics;
 
 namespace DDPM.SA.Common.Settings
 {
