@@ -2208,6 +2208,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _DisplayManagerPlugin.GetUSBUpstreamList(monitor).Wait();
                     _DisplayManagerPlugin.GetAllUSBUpstream(monitor).Wait();
                     _DisplayManagerPlugin.GetVCPCapability(monitor, 0xE9).Wait();
+                    _DisplayManagerPlugin.GetDisplayPropertiesInfo(monitor).Wait();
+                    if (monitor.CapabilityString.Contains("F4"))
+                    {
+                        _DisplayManagerPlugin.GetGamingProperties_SupportedList(monitor).Wait();
+                    }
                 }
                 UpdateHotkeyInfo();
 
