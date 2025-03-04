@@ -5107,7 +5107,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
                         {
                             gamingDisplayPropertiesInfo.Current_GameEnhancementMode = GameEnhancementMode;
-                            _displayDataManger.SetMonitorGamingDisplayPropertiesInfo(monitorInfo, gamingDisplayPropertiesInfo);
                         }
                     }
                 }
@@ -5139,7 +5138,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
                         {
                             gamingDisplayPropertiesInfo.Current_ResponseTime = ResponseTime;
-                            _displayDataManger.SetMonitorGamingDisplayPropertiesInfo(monitorInfo, gamingDisplayPropertiesInfo);
                         }
                     }
                 }
@@ -5171,7 +5169,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
                         {
                             gamingDisplayPropertiesInfo.Current_DarkStabilizer = DarkStabilizer;
-                            _displayDataManger.SetMonitorGamingDisplayPropertiesInfo(monitorInfo, gamingDisplayPropertiesInfo);
                         }
                     }
                 }
@@ -5203,7 +5200,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
                         {
                             gamingDisplayPropertiesInfo.Current_HDRType = HDRType;
-                            _displayDataManger.SetMonitorGamingDisplayPropertiesInfo(monitorInfo, gamingDisplayPropertiesInfo);
                         }
                     }
                 }
@@ -5236,7 +5232,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
                             {
                                 gamingDisplayPropertiesInfo.Current_DualResolutionType = DualResolutionType;
-                                _displayDataManger.SetMonitorGamingDisplayPropertiesInfo(monitorInfo, gamingDisplayPropertiesInfo);
                             }
                         }
                     }
@@ -5290,7 +5285,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
                                 {
                                     gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = VisionEngineEnableType;
-                                    _displayDataManger.SetMonitorGamingDisplayPropertiesInfo(monitorInfo, gamingDisplayPropertiesInfo);
                                 }
                             }
                         }
@@ -5314,6 +5308,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 uint param = (uint)VisionEngineType;
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SwitchGaming_VisionEngineType)} value : {param}");
                 ret = SetVCPCapability(monitorInfo, 0xEC, param).Result;
+                if (ret)
+                {
+                    if (_displayDataManger != null)
+                    {
+                        if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                        {
+                            gamingDisplayPropertiesInfo.Current_VisionEngineType = VisionEngineType;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
