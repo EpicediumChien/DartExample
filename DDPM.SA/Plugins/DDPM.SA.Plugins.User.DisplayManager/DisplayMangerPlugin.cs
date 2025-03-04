@@ -5278,6 +5278,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     if (int.TryParse(command, hexStyle, CultureInfo.CurrentCulture, out number))
                     {
                         ret = SetVCPCapability(monitorInfo, 0xEC, (uint)number).Result;
+                        if (ret)
+                        {
+                            if (_displayDataManger != null)
+                            {
+                                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                                {
+                                    gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = VisionEngineEnableType;
+                                }
+                            }
+                        }
                     }
                 }
             }
