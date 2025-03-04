@@ -682,56 +682,125 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         Trace.WriteLine("USBUpstream : " + str + "," + _usb.Value);
                                     }
 
+                                    //try
+                                    //{
+                                    //    if (capabilityString != "" && capabilityString.Length > 10)
+                                    //    {
+                                    //        string[] ss = capabilityString.Split("E7(");
+                                    //        ss = ss[1].Split(")");
+                                    //        ss = ss[0].Split(" ");
+                                    //        if (ss.Length <= _usbUpstreamList.Count)
+                                    //        {
+                                    //            for (int i = 0; i < ss.Length; i++)
+                                    //            {
+                                    //                if (ss[i].Equals("03") && USBUpstream.Count > 0)
+                                    //                {
+                                    //                    string usbkey = USBUpstream.FirstOrDefault(x => x.Value == "11").Key;
+                                    //                    usbUpstreamList.Add(usbkey);
+                                    //                    USBPorts uSBPorts = new USBPorts();
+                                    //                    uSBPorts.USBName = usbkey;
+                                    //                    uSBPorts.USBPort = "11";
+                                    //                    _USBPorts.Add(uSBPorts);
+                                    //                }
+                                    //                else if (ss[i].Equals("02") && USBUpstream.Count > 0)
+                                    //                {
+                                    //                    string usbkey = USBUpstream.FirstOrDefault(x => x.Value == "10").Key;
+                                    //                    usbUpstreamList.Add(usbkey);
+                                    //                    USBPorts uSBPorts = new USBPorts();
+                                    //                    uSBPorts.USBName = usbkey;
+                                    //                    uSBPorts.USBPort = "10";
+                                    //                    _USBPorts.Add(uSBPorts);
+                                    //                }
+                                    //                else if (ss[i].Equals("01") && USBUpstream.Count > 0)
+                                    //                {
+                                    //                    string usbkey = USBUpstream.FirstOrDefault(x => x.Value == "01").Key;
+                                    //                    usbUpstreamList.Add(usbkey);
+                                    //                    USBPorts uSBPorts = new USBPorts();
+                                    //                    uSBPorts.USBName = usbkey;
+                                    //                    uSBPorts.USBPort = "01";
+                                    //                    _USBPorts.Add(uSBPorts);
+                                    //                }
+                                    //                else if (ss[i].Equals("00") && USBUpstream.Count > 0)
+                                    //                {
+                                    //                    string usbkey = USBUpstream.FirstOrDefault(x => x.Value == "00").Key;
+                                    //                    usbUpstreamList.Add(usbkey);
+                                    //                    USBPorts uSBPorts = new USBPorts();
+                                    //                    uSBPorts.USBName = usbkey;
+                                    //                    uSBPorts.USBPort = "00";
+                                    //                    _USBPorts.Add(uSBPorts);
+                                    //                }
+                                    //            }
+                                    //            _displayDataManger.SetMonitorUSBList(monitorInfo, _USBPorts);
+                                    //        }
+                                    //    }
+                                    //}
+                                    //catch
+                                    //{
+                                    //    usbUpstreamList = _usbUpstreamList;
+                                    //    //usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
+                                    //}
+                                    // 250303 Elie: need Jason to double confirm.
                                     try
                                     {
-                                        if (capabilityString != "" && capabilityString.Length > 10)
+                                        if (!string.IsNullOrEmpty(capabilityString) && capabilityString.Length > 10)
                                         {
                                             string[] ss = capabilityString.Split("E7(");
-                                            ss = ss[1].Split(")");
-                                            ss = ss[0].Split(" ");
-                                            if (ss.Length < _usbUpstreamList.Count)
+                                            if (ss.Length > 1)
                                             {
-                                                for (int i = 0; i < ss.Length; i++)
+                                                ss = ss[1].Split(")");
+                                                if (ss.Length > 0)
                                                 {
-                                                    if (ss[i].Equals("03") && _usbUpstreamList.Count > 0)
+                                                    ss = ss[0].Split(" ");
+                                                    if (ss.Length <= _usbUpstreamList.Count)
                                                     {
-                                                        usbUpstreamList.Add(_usbUpstreamList[0]);
-                                                        USBPorts uSBPorts = new USBPorts();
-                                                        uSBPorts.USBName = _usbUpstreamList[0].ToString();
-                                                        uSBPorts.USBPort = "11";
-                                                        _USBPorts.Add(uSBPorts);
-                                                    }
-                                                    else if (ss[i].Equals("02") && _usbUpstreamList.Count > 1)
-                                                    {
-                                                        usbUpstreamList.Add(_usbUpstreamList[1]);
-                                                        USBPorts uSBPorts = new USBPorts();
-                                                        uSBPorts.USBName = _usbUpstreamList[1].ToString();
-                                                        uSBPorts.USBPort = "10";
-                                                        _USBPorts.Add(uSBPorts);
-                                                    }
-                                                    else if (ss[i].Equals("01") && _usbUpstreamList.Count > 2)
-                                                    {
-                                                        usbUpstreamList.Add(_usbUpstreamList[2]);
-                                                        USBPorts uSBPorts = new USBPorts();
-                                                        uSBPorts.USBName = _usbUpstreamList[2].ToString();
-                                                        uSBPorts.USBPort = "01";
-                                                        _USBPorts.Add(uSBPorts);
-                                                    }
-                                                    else if (ss[i].Equals("00") && _usbUpstreamList.Count > 3)
-                                                    {
-                                                        usbUpstreamList.Add(_usbUpstreamList[3]);
-                                                        USBPorts uSBPorts = new USBPorts();
-                                                        uSBPorts.USBName = _usbUpstreamList[3].ToString();
-                                                        uSBPorts.USBPort = "00";
-                                                        _USBPorts.Add(uSBPorts);
+                                                        foreach (var s in ss)
+                                                        {
+                                                            if (USBUpstream.Count > 0)
+                                                            {
+                                                                string usbkey = null;
+                                                                string usbPort = null;
+
+                                                                switch (s)
+                                                                {
+                                                                    case "03":
+                                                                        usbkey = USBUpstream.FirstOrDefault(x => x.Value == "11").Key;
+                                                                        usbPort = "11";
+                                                                        break;
+                                                                    case "02":
+                                                                        usbkey = USBUpstream.FirstOrDefault(x => x.Value == "10").Key;
+                                                                        usbPort = "10";
+                                                                        break;
+                                                                    case "01":
+                                                                        usbkey = USBUpstream.FirstOrDefault(x => x.Value == "01").Key;
+                                                                        usbPort = "01";
+                                                                        break;
+                                                                    case "00":
+                                                                        usbkey = USBUpstream.FirstOrDefault(x => x.Value == "00").Key;
+                                                                        usbPort = "00";
+                                                                        break;
+                                                                }
+
+                                                                if (!string.IsNullOrEmpty(usbkey))
+                                                                {
+                                                                    usbUpstreamList.Add(usbkey);
+                                                                    USBPorts uSBPorts = new USBPorts
+                                                                    {
+                                                                        USBName = usbkey,
+                                                                        USBPort = usbPort
+                                                                    };
+                                                                    _USBPorts.Add(uSBPorts);
+                                                                }
+                                                            }
+                                                        }
+                                                        _displayDataManger.SetMonitorUSBList(monitorInfo, _USBPorts);
                                                     }
                                                 }
-                                                _displayDataManger.SetMonitorUSBList(monitorInfo, _USBPorts);
                                             }
                                         }
                                     }
-                                    catch
+                                    catch (Exception ex)
                                     {
+                                        _logs.DebugMsg($"[Error] Exception occurred: {ex.Message}");
                                         usbUpstreamList = _usbUpstreamList;
                                         //usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
                                     }

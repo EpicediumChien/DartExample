@@ -106,6 +106,7 @@ namespace DDPM.UI.Module.Kvm
 
         public void OnDeactivated()
         {
+            vm.CallCancel();
         }
 
         #endregion Event Handlers
