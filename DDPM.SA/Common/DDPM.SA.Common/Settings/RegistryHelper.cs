@@ -111,15 +111,14 @@ namespace DDPM.SA.Common.Settings
         {
             ValidateInput(fullRegistryPath);
 
-            // 解析路徑
+            // 解析路徑是否正常
             int firstBackSlashIndex = fullRegistryPath.IndexOf('\\');
             if (firstBackSlashIndex <= 0)
             {
                 throw new ArgumentException($"Invalid registry path: {fullRegistryPath}");
             }
 
-            //string hiveName = fullRegistryPath.Substring(0, firstBackSlashIndex);
-            string subKeyPath = fullRegistryPath.Substring(firstBackSlashIndex + 1);
+            string subKeyPath = fullRegistryPath.Substring(firstBackSlashIndex + 1); // 去掉Hive部分
             Trace.WriteLine(subKeyPath + " ++ " + fullRegistryPath);
 
             var result = new Dictionary<string, object>();

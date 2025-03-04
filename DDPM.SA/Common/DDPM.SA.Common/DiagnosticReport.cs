@@ -198,6 +198,25 @@ namespace DDPM.SA.Common
                                 if (!method.CopyLogFolder(LogFolder, savePath))
                                     fail_info += "[DDPM.FwUpdate]";
                             }
+                            ///////////////////////////////////////////////////////////////
+                            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                            // 組合相對路徑
+                            string sourcePath = Path.Combine(baseDir, "Plugins", "NKVM");
+                            string fileName = "install.log";
+                            string sourceFile = Path.Combine(sourcePath, fileName);
+                            if (File.Exists(sourceFile))
+                            {
+                                string savePath = Path.Combine(saveFolderPath, "NKVM_Log");
+                                if (!Directory.Exists(savePath))
+                                {
+                                    Directory.CreateDirectory(savePath);
+                                }
+                                // 複製指定的 log 文件到選擇的資料夾
+                                if (!method.CopyLogFolder(LogFolder, savePath))
+                                    fail_info += "[DDPM.FwUpdate]";
+                                //string destFile = Path.Combine(savePath, fileName);
+                                //File.Copy(sourceFile, destFile, true);
+                            }
                         }
                         string logFileName = "EventLog.evtx";
                         string logFilePath = Path.Combine(saveFolderPath, logFileName);
