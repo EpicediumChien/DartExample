@@ -1921,7 +1921,7 @@
     <value>To pair your pen with Tile:\n1. Enable Bluetooth on your mobile device.\n2. Scan the QR Code to download Tile on to your mobile device.\n3. Press and hold the two side buttons on the pen for 3 seconds to pair it to Tile.</value>
   </data>
   <data name="WalkThroughPen_Sub.1" xml:space="preserve">
-    <value>Your pen is charged X%.\n\nTo charge your pen fully, make sure it is attached to your tablet screen. You will be notified once the pen is done charging.\n\nLow battery notifications will appear once the battery charge is below 10%.</value>
+    <value>Your pen is charged X%.\n\nTo charge your pen fully, make sure it is connected via cable. You will be notified once the pen is done charging.\n\nLow battery notifications will appear once the battery charge is below 10%.</value>
   </data>
   <data name="WalkThroughPen_Sub.2" xml:space="preserve">
     <value>In the app, you can customize the actions of  your pen’s buttons and set the tip and tilt sensitivity\r\n</value>

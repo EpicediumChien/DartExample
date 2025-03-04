@@ -368,7 +368,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             Log?.Info($"SaveDiagnosticReport_Dowork start");
             string filePath = e.Argument.ToString();
-            bool monitorAssetReports = DdpmCommonHelper.DeviceManagerSA.SaveLogFile(filePath).Result;
+            bool monitorAssetReports = DiagnosticReport.SaveLogFile(filePath, Log); //DdpmCommonHelper.DeviceManagerSA.SaveLogFile(filePath).Result;
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
                 if (!monitorAssetReports)
