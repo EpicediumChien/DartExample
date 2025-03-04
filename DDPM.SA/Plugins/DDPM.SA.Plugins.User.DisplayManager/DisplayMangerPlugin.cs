@@ -3299,7 +3299,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] GetHDRStatus supportedHDR :{supportedHDR}");
             if (supportedHDR)
             {
-                _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.GetHDRStatus go");
                 if (_displayDataManger != null)
                 {
                     if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
@@ -3307,6 +3306,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         return Task.FromResult(ret_DisplayPropertiesInfo.isHDREnable);
                     }
                 }
+                _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.GetHDRStatus go");
                 return Task.FromResult(_DisplayPropertiesPlugin.GetHDRStatus(monitorInfos.edid).Result);
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOrientation done");
