@@ -28,7 +28,7 @@
 			<ReplaceCommand>xcopy "$(ProjectDir)$(OutDir).Obfuscated\DDPM.SA.Obfuscation.*" "$(ProjectDir)$(OutDir)" /Y /S /Q</ReplaceCommand>
 		</PropertyGroup>
 		<PropertyGroup>
-			<SWUpdaterCommand>xcopy "$(ProjectDir)$(OutDir).Obfuscated\DDPM.SA.Obfuscation.*" "$(SolutionDir)..\DdpmSwUpdater\CommonDll\" /Y /S /Q</SWUpdaterCommand>
+			<SWUpdaterCommand>xcopy "$(ProjectDir)$(OutDir).Obfuscated\DDPM.SA.Obfuscation.*" "$(SolutionDir)..\DdpmSwUpdater\CommonDll\" /Y /S /Q /C /I</SWUpdaterCommand>
 		</PropertyGroup>
 		<PropertyGroup>
 			<RemoveTempCommand>rd /s /q "$(ProjectDir)$(OutDir).Obfuscated"</RemoveTempCommand>

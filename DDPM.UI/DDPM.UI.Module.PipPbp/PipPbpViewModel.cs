@@ -782,6 +782,8 @@ namespace DDPM.UI.Module.PipPbp
             DdpmCommonHelper.DeviceManagerSA.SetPipModeOff(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
 
             LogInfo($"  => SetPxpMode=Off, Result={blRes}");
+            LogInfo($"  => SetPxpMode=Off, go home");
+            DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
         }
 
         public void OnPipSmallClicked(SplitItem spItem)

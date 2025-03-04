@@ -175,10 +175,9 @@ namespace DDPM.UI.Module.Kvm
         private bool _isNoKVM = false;
         private bool _isUSBKVM = false;
         private bool _isNKVM = false;
-        //private static Log _log;
-
         //private Dictionary<string, PCsInfo> pcsList = new Dictionary<string, PCsInfo>();
         private ImageSource? _PCImage;
+        private BackgroundWorker? bw;
         #endregion
 
         #region Win32
@@ -202,6 +201,7 @@ namespace DDPM.UI.Module.Kvm
         //[DllImport("user32.dll", SetLastError = true)]
         //public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         public readonly ILog _log;
+        public Guid? guid { get; set; }
         public IModuleOwner? ModuleOwner { get; set; }
         public KvmModule KvmModule { get; set; }
         public UInt16 PxPCode { get; set; } = 0;
@@ -323,13 +323,6 @@ namespace DDPM.UI.Module.Kvm
             set
             {
                 SetProperty(ref _isNoKVM, value);
-                //if (value)
-                //{
-                //    isOnUSBKVM(false);
-                //    USBKVMisON = false;
-                //    //isUSBKVM = false;
-                //    //isNKVM = false;
-                //}
             }
         }
 
@@ -339,11 +332,6 @@ namespace DDPM.UI.Module.Kvm
             set
             {
                 SetProperty(ref _isUSBKVM, value);
-                //if (value)
-                //{
-                //    isNKVM = false;
-                //    isNoKVM = false;
-                //}
             }
         }
 
@@ -353,13 +341,6 @@ namespace DDPM.UI.Module.Kvm
             set
             {
                 SetProperty(ref _isNKVM, value);
-                //if (value)
-                //{
-                //    isOnUSBKVM(false);
-                //    USBKVMisON = false;
-                //    //isUSBKVM = false;
-                //    //isNoKVM = false;
-                //}
             }
         }
 
@@ -936,10 +917,10 @@ namespace DDPM.UI.Module.Kvm
             _log.Info("[KvmViewModel] Invoke_RefreshData start");
             DateTime entryUSBKVM = DateTime.Now;
             _log.Info($"[Invoke_RefreshData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
-            BackgroundWorker bw = new BackgroundWorker()
+            bw = new BackgroundWorker()
             {
-                WorkerReportsProgress = false,
-                WorkerSupportsCancellation = false
+                WorkerReportsProgress = true,
+                WorkerSupportsCancellation = true
             };
             if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
             {
@@ -1101,10 +1082,10 @@ namespace DDPM.UI.Module.Kvm
             _log.Info("[KvmViewModel] Invoke_USBKVM start");
             DateTime entryUSBKVM = DateTime.Now;
             _log.Info($"[Invoke_USBKVM Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
-            BackgroundWorker bw = new BackgroundWorker()
+            bw = new BackgroundWorker()
             {
-                WorkerReportsProgress = false,
-                WorkerSupportsCancellation = false
+                WorkerReportsProgress = true,
+                WorkerSupportsCancellation = true
             };
 
             if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
@@ -2638,6 +2619,28 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged("PC2InputsList");
             OnPropertyChanged("PC3InputsList");
             OnPropertyChanged("PC4InputsList");
+        }
+
+        private bool Cancelled_RefreshData(DoWorkEventArgs e, BackgroundWorker bw)
+        {
+            if (bw.CancellationPending)
+            {
+                Debug.WriteLine("[KvmViewModel] Cancelled_RefreshData.");
+                _log.Info("[KvmViewModel] Cancelled_RefreshData.");
+                e.Cancel = true;
+                return true;
+            }
+            return false;
+        }
+
+        public void CallCancel()
+        {
+            if (bw.IsBusy)
+            {
+                _log.Info("[KvmViewModel] CallCancel.");
+                bw.CancelAsync();
+                DdpmCommonHelper.DeviceManagerSA.CancelVcpTask((Guid)guid);
+            }
         }
 
         #region Event
