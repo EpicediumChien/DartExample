@@ -92,8 +92,8 @@ namespace DDPM.SA.Plugins.SettingsManager
             _agent = agent;
             WriteLog($"SettingsManagerPlugin constructor ...(Admin:{_IsAdministrator})");
 
-            if(_agent != null)
-            {                
+            if (_agent != null)
+            {
                 WriteLog($"SettingsManagerPlugin constructor ...(Data location: {DDPMFileSecurity.SysLogLocation})");
                 if (!DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(DDPMFileSecurity.SysLogLocation, out string info))
                 {
@@ -185,73 +185,101 @@ namespace DDPM.SA.Plugins.SettingsManager
 
         public Task<DDPMITConfig> ReadITConfigData(bool force_reload = false)
         {
-            if (string.IsNullOrEmpty(_settings_path))
+            try
             {
-                WriteLog($"ReadITConfigData: Empty system _settings_path, use default data");
-                _settings = new DDPMITConfig(); //use it as default settings
+                if (string.IsNullOrEmpty(_settings_path))
+                {
+                    WriteLog($"ReadITConfigData: Empty system _settings_path, use default data");
+                    _settings = new DDPMITConfig(); // use it as default settings
+                    return Task.FromResult(_settings);
+                }
+
+                string info = "Success";
+                if (!force_reload)
+                {
+                    WriteLog($"ReadITConfigData: Force reload");
+                    if (_settings != null)
+                        return Task.FromResult(_settings);
+
+                    WriteLog($"ReadITConfigData: null settings, load data from file");
+                }
+
+                string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settings_path, out info);
+                var tmp = JsonConvert.DeserializeObject<DDPMITConfig>(serialized_string);
+                if (tmp != null)
+                    _settings = tmp;
+                else
+                    WriteLog("ReadITConfigData: force reload but got null data, return original data");
+
                 return Task.FromResult(_settings);
             }
-            //if (string.IsNullOrEmpty(_settingsAccess))
-            //{
-            //    WriteLog($"ReadITConfigData: Empty system info access, use default data");
-            //    _settings = new DDPMITConfig(); //use it as default settings
-            //    return Task.FromResult(_settings);
-            //}
-            string info = "Success";
-            if (!force_reload)
+            catch (JsonException ex)
             {
-                WriteLog($"ReadITConfigData: Force reload");
-                if (_settings != null)
-                    return Task.FromResult(_settings);
-
-                WriteLog($"ReadITConfigData: null settings, load data from file");
+                WriteLog($"ReadITConfigData: JSON parsing error: {ex.Message}");
             }
-            string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settings_path, out info);
-            var tmp = JsonConvert.DeserializeObject<DDPMITConfig>(serialized_string);
-            if (tmp != null)
-                _settings = tmp;
-            else
-                WriteLog("ReadITConfigData: force reload but got null data, return original data");
-            return Task.FromResult(_settings);
+            catch (IOException ex)
+            {
+                WriteLog($"ReadITConfigData: IO error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"ReadITConfigData: Unexpected error: {ex.Message}");
+            }
+
+            // Return default settings in case of error
+            return Task.FromResult(_settings ?? new DDPMITConfig());
         }
 
         public Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam, bool needExceptionString = false)
         {
             string info = string.Empty;
-            if (globalSettingParam == null)
+            try
             {
-                info = "WriteGlobalSettingsToITConfig: null data, failed";
-                WriteLog(info);
-                if(needExceptionString)
+                if (globalSettingParam == null)
                 {
-                    throw new Exception(info);
+                    info = "WriteGlobalSettingsToITConfig: null data, failed";
+                    WriteLog(info);
+                    if (needExceptionString)
+                    {
+                        throw new ArgumentNullException(nameof(globalSettingParam), info);
+                    }
+                    return Task.FromResult(false);
                 }
-                return Task.FromResult(false);
-            }
-            if (_settings == null || _settings.global_setting == null)
-            {
-                info = "WriteGlobalSettingsToITConfig: null cache, failed";
-                WriteLog(info);
-                if (needExceptionString)
+                if (_settings == null || _settings.global_setting == null)
                 {
-                    throw new Exception(info);
+                    info = "WriteGlobalSettingsToITConfig: null cache, failed";
+                    WriteLog(info);
+                    if (needExceptionString)
+                    {
+                        throw new InvalidOperationException(info);
+                    }
+                    return Task.FromResult(false);
                 }
-                return Task.FromResult(false);
-            }
-            _settings.global_setting = globalSettingParam;
+                _settings.global_setting = globalSettingParam;
 
-            bool result = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(_settings).ToString(), _settings_path, out info);
-            if (!result)
+                bool result = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(_settings).ToString(), _settings_path, out info);
+                if (!result)
+                {
+                    info = $"WriteGlobalSettingsToITConfig: write failed, reason: {info}";
+                    WriteLog(info);
+                    if (needExceptionString)
+                    {
+                        throw new IOException(info);
+                    }
+                }
+                return Task.FromResult(result);
+            }
+            catch (Exception ex)
             {
-                info = $"WriteGlobalSettingsToITConfig: write failed, reason: {info}";
-                WriteLog(info);
+                WriteLog($"WriteGlobalSettingsToITConfig: Exception occurred: {ex.Message}");
                 if (needExceptionString)
                 {
-                    throw new Exception(info);
+                    throw;
                 }
+                return Task.FromResult(false);
             }
-            return Task.FromResult(result);
         }
+
 
         /// <summary>
         /// Write IT feature to config file
@@ -397,7 +425,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             string filePath = Path.Combine(folder, GlobalDefinitions.Filename_appsettings_Info);
             InitSysSettingsData("InfoConfig", filePath);
 
-            foreach(string info in InfoHash.Info_Hash)
+            foreach (string info in InfoHash.Info_Hash)
                 AddInfo(info.Trim());
             return _infos;
         }
@@ -429,43 +457,59 @@ namespace DDPM.SA.Plugins.SettingsManager
             }
             WriteLog($"[InitRegUpdateLock] done");
         }
-
         public Task<List<string>> GetInfos(bool force_reload = false)
         {
-            if (_infos == null || _infos.Infos == null || _infos.Infos.Count == 0)
+            try
             {
-                _infos = new InfoObject();
-                if (_infos.Infos == null)
+                if (_infos == null || _infos.Infos == null || _infos.Infos.Count == 0)
                 {
-                    _infos.Infos = new List<string>(InfoHash.Info_Hash);
-                    //_infos.Infos.Add(InfoHash.Info_Hash.Trim());
-                    string msg = string.Empty;
-                    if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(_infos).ToString(), _info_path, out msg))
+                    _infos = new InfoObject();
+                    if (_infos.Infos == null)
                     {
-                        WriteLog($"[GetInfos] recover data failed: {msg}");
-                    }
-                    return Task.FromResult(_infos.Infos);
-                }
-            }
-            if (force_reload)
-            {
-                string msg2 = string.Empty;
-                string read = DDPMFileSecurity.GetSerializedJsonString(_info_path, out msg2);
-                try
-                {
-                    InfoObject obj = JsonConvert.DeserializeObject<InfoObject>(read);
-                    if (obj != null)
-                    {
-                        _infos = obj;
-                        WriteLog($"[GetInfos] read info config ok");
+                        _infos.Infos = new List<string>(InfoHash.Info_Hash);
+                        string msg = string.Empty;
+                        if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(_infos).ToString(), _info_path, out msg))
+                        {
+                            WriteLog($"[GetInfos] recover data failed: {msg}");
+                        }
+                        return Task.FromResult(_infos.Infos);
                     }
                 }
-                catch (Exception ex)
+
+                if (force_reload)
                 {
-                    WriteLog($"[GetInfos] read info config failed: ({ex.Message})");
+                    string msg2 = string.Empty;
+                    string read = DDPMFileSecurity.GetSerializedJsonString(_info_path, out msg2);
+                    try
+                    {
+                        InfoObject obj = JsonConvert.DeserializeObject<InfoObject>(read);
+                        if (obj != null)
+                        {
+                            _infos = obj;
+                            WriteLog($"[GetInfos] read info config ok");
+                        }
+                    }
+                    catch (JsonException ex)
+                    {
+                        WriteLog($"[GetInfos] JSON parsing error: {ex.Message}");
+                    }
+                    catch (IOException ex)
+                    {
+                        WriteLog($"[GetInfos] IO error: {ex.Message}");
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteLog($"[GetInfos] Unexpected error: {ex.Message}");
+                    }
                 }
+
+                return Task.FromResult(_infos.Infos);
             }
-            return Task.FromResult(_infos.Infos);
+            catch (Exception ex)
+            {
+                WriteLog($"[GetInfos] Exception occurred: {ex.Message}");
+                return Task.FromResult(new List<string>());
+            }
         }
 
         public Task AddInfo(string info)
@@ -535,7 +579,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                         directoryInfo = System.IO.Directory.CreateDirectory(folder);
                         WriteLog($"[{type}]re-create system settings folder success");
                     }
-                    catch(Exception ex2)
+                    catch (Exception ex2)
                     {
                         WriteLog($"[{type}]re-create system settings folder failed: {ex2.Message}");
                         return null;
@@ -618,19 +662,32 @@ namespace DDPM.SA.Plugins.SettingsManager
                 string serialized_string = DDPMFileSecurity.GetSerializedJsonString(filePath, out info);
                 if (!string.IsNullOrEmpty(serialized_string))
                 {
-                    switch (type)
+                    try
                     {
-                        case "ITConfig":
-                            _settings = JsonConvert.DeserializeObject<DDPMITConfig>(serialized_string);
-                            break;
-                        case "InfoConfig":
-                            _infos = JsonConvert.DeserializeObject<InfoObject>(serialized_string);
-                            break;
-                        default:
-                            WriteLog($"[InitSysSettingsData] type({type}) is not defined to support.2");
-                            return null;
+                        switch (type)
+                        {
+                            case "ITConfig":
+                                _settings = JsonConvert.DeserializeObject<DDPMITConfig>(serialized_string);
+                                break;
+                            case "InfoConfig":
+                                _infos = JsonConvert.DeserializeObject<InfoObject>(serialized_string);
+                                break;
+                            default:
+                                WriteLog($"[InitSysSettingsData] type({type}) is not defined to support.2");
+                                return null;
+                        }
+                        need_reWrite = false;
                     }
-                    need_reWrite = false;
+                    catch (JsonException ex)
+                    {
+                        WriteLog($"[InitSysSettingsData] JSON parsing error for type({type}): {ex.Message}");
+                        return null;
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteLog($"[InitSysSettingsData] Unexpected error for type({type}): {ex.Message}");
+                        return null;
+                    }
                 }
                 else
                 {
