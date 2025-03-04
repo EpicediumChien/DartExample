@@ -445,17 +445,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ObjGetVCP result = new ObjGetVCP();
 
             //Jason add 0xE9
-            if (code == 0xE9)
+            if (code == 0xE9 && 
+                _displayDataManger != null)
             {
-                if (_displayDataManger != null)
+                uint datacode = 1;
+                if (_displayDataManger.GetMonitorE9(monitorInfo, out datacode))
                 {
-                    uint datacode = 1;
-                    if (_displayDataManger.GetMonitorE9(monitorInfo, out datacode))
-                    {
-                        result.result = true;
-                        result.value = datacode;
-                        return Task.FromResult(result);
-                    }
+                    result.result = true;
+                    result.value = datacode;
+                    return Task.FromResult(result);
                 }
             }
 
@@ -463,12 +461,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 result = _VcpCorePlugin.GetVCPCapability(monitorInfo, code, guid, opt, priority).Result;
 
             //Jason add 0xE9
-            if (result.result && code == 0xE9)
+            if (result.result && 
+                code == 0xE9 && _displayDataManger != null)
             {
-                if (_displayDataManger != null)
-                {
-                    _displayDataManger.SetMonitorE9(monitorInfo, (uint)result.value);
-                }
+                _displayDataManger.SetMonitorE9(monitorInfo, (uint)result.value);
             }
 
             return Task.FromResult(result);
@@ -504,12 +500,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 r = _VcpCorePlugin.SetVCPCapability(monitorInfo, code, val, guid, priority).Result;
 
             //Jason add 0xE9
-            if (r && code == 0xE9)
+            if (r && 
+                code == 0xE9 && 
+                _displayDataManger != null)
             {
-                if (_displayDataManger != null)
-                {
-                    _displayDataManger.SetMonitorE9(monitorInfo, val);
-                }
+                _displayDataManger.SetMonitorE9(monitorInfo, val);
             }
 
             return Task.FromResult(r);
@@ -600,16 +595,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 if (_displayDataManger != null)
                 {
-                    if (_displayDataManger.GetMonitorUSBList(monitorInfo, out _USBPorts))
+                    if (_displayDataManger.GetMonitorUSBList(monitorInfo, out _USBPorts) && 
+                        _USBPorts != null && _USBPorts.Count > 0)
                     {
-                        if (_USBPorts != null && _USBPorts.Count > 0)
+                        foreach (USBPorts usbPort in _USBPorts)
                         {
-                            foreach (USBPorts usbPort in _USBPorts)
-                            {
-                                _usbUpstreamList.Add(usbPort.USBName);
-                            }
-                            return Task.FromResult(_usbUpstreamList);
+                            _usbUpstreamList.Add(usbPort.USBName);
                         }
+                        return Task.FromResult(_usbUpstreamList);
                     }
 
                     if (!string.IsNullOrEmpty(monitorInfo.CapabilityString))
@@ -689,56 +682,125 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         Trace.WriteLine("USBUpstream : " + str + "," + _usb.Value);
                                     }
 
+                                    //try
+                                    //{
+                                    //    if (capabilityString != "" && capabilityString.Length > 10)
+                                    //    {
+                                    //        string[] ss = capabilityString.Split("E7(");
+                                    //        ss = ss[1].Split(")");
+                                    //        ss = ss[0].Split(" ");
+                                    //        if (ss.Length <= _usbUpstreamList.Count)
+                                    //        {
+                                    //            for (int i = 0; i < ss.Length; i++)
+                                    //            {
+                                    //                if (ss[i].Equals("03") && USBUpstream.Count > 0)
+                                    //                {
+                                    //                    string usbkey = USBUpstream.FirstOrDefault(x => x.Value == "11").Key;
+                                    //                    usbUpstreamList.Add(usbkey);
+                                    //                    USBPorts uSBPorts = new USBPorts();
+                                    //                    uSBPorts.USBName = usbkey;
+                                    //                    uSBPorts.USBPort = "11";
+                                    //                    _USBPorts.Add(uSBPorts);
+                                    //                }
+                                    //                else if (ss[i].Equals("02") && USBUpstream.Count > 0)
+                                    //                {
+                                    //                    string usbkey = USBUpstream.FirstOrDefault(x => x.Value == "10").Key;
+                                    //                    usbUpstreamList.Add(usbkey);
+                                    //                    USBPorts uSBPorts = new USBPorts();
+                                    //                    uSBPorts.USBName = usbkey;
+                                    //                    uSBPorts.USBPort = "10";
+                                    //                    _USBPorts.Add(uSBPorts);
+                                    //                }
+                                    //                else if (ss[i].Equals("01") && USBUpstream.Count > 0)
+                                    //                {
+                                    //                    string usbkey = USBUpstream.FirstOrDefault(x => x.Value == "01").Key;
+                                    //                    usbUpstreamList.Add(usbkey);
+                                    //                    USBPorts uSBPorts = new USBPorts();
+                                    //                    uSBPorts.USBName = usbkey;
+                                    //                    uSBPorts.USBPort = "01";
+                                    //                    _USBPorts.Add(uSBPorts);
+                                    //                }
+                                    //                else if (ss[i].Equals("00") && USBUpstream.Count > 0)
+                                    //                {
+                                    //                    string usbkey = USBUpstream.FirstOrDefault(x => x.Value == "00").Key;
+                                    //                    usbUpstreamList.Add(usbkey);
+                                    //                    USBPorts uSBPorts = new USBPorts();
+                                    //                    uSBPorts.USBName = usbkey;
+                                    //                    uSBPorts.USBPort = "00";
+                                    //                    _USBPorts.Add(uSBPorts);
+                                    //                }
+                                    //            }
+                                    //            _displayDataManger.SetMonitorUSBList(monitorInfo, _USBPorts);
+                                    //        }
+                                    //    }
+                                    //}
+                                    //catch
+                                    //{
+                                    //    usbUpstreamList = _usbUpstreamList;
+                                    //    //usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
+                                    //}
+                                    // 250303 Elie: need Jason to double confirm.
                                     try
                                     {
-                                        if (capabilityString != "" && capabilityString.Length > 10)
+                                        if (!string.IsNullOrEmpty(capabilityString) && capabilityString.Length > 10)
                                         {
                                             string[] ss = capabilityString.Split("E7(");
-                                            ss = ss[1].Split(")");
-                                            ss = ss[0].Split(" ");
-                                            if (ss.Length < _usbUpstreamList.Count)
+                                            if (ss.Length > 1)
                                             {
-                                                for (int i = 0; i < ss.Length; i++)
+                                                ss = ss[1].Split(")");
+                                                if (ss.Length > 0)
                                                 {
-                                                    if (ss[i].Equals("03") && _usbUpstreamList.Count > 0)
+                                                    ss = ss[0].Split(" ");
+                                                    if (ss.Length <= _usbUpstreamList.Count)
                                                     {
-                                                        usbUpstreamList.Add(_usbUpstreamList[0]);
-                                                        USBPorts uSBPorts = new USBPorts();
-                                                        uSBPorts.USBName = _usbUpstreamList[0].ToString();
-                                                        uSBPorts.USBPort = "11";
-                                                        _USBPorts.Add(uSBPorts);
-                                                    }
-                                                    else if (ss[i].Equals("02") && _usbUpstreamList.Count > 1)
-                                                    {
-                                                        usbUpstreamList.Add(_usbUpstreamList[1]);
-                                                        USBPorts uSBPorts = new USBPorts();
-                                                        uSBPorts.USBName = _usbUpstreamList[1].ToString();
-                                                        uSBPorts.USBPort = "10";
-                                                        _USBPorts.Add(uSBPorts);
-                                                    }
-                                                    else if (ss[i].Equals("01") && _usbUpstreamList.Count > 2)
-                                                    {
-                                                        usbUpstreamList.Add(_usbUpstreamList[2]);
-                                                        USBPorts uSBPorts = new USBPorts();
-                                                        uSBPorts.USBName = _usbUpstreamList[2].ToString();
-                                                        uSBPorts.USBPort = "01";
-                                                        _USBPorts.Add(uSBPorts);
-                                                    }
-                                                    else if (ss[i].Equals("00") && _usbUpstreamList.Count > 3)
-                                                    {
-                                                        usbUpstreamList.Add(_usbUpstreamList[3]);
-                                                        USBPorts uSBPorts = new USBPorts();
-                                                        uSBPorts.USBName = _usbUpstreamList[3].ToString();
-                                                        uSBPorts.USBPort = "00";
-                                                        _USBPorts.Add(uSBPorts);
+                                                        foreach (var s in ss)
+                                                        {
+                                                            if (USBUpstream.Count > 0)
+                                                            {
+                                                                string usbkey = null;
+                                                                string usbPort = null;
+
+                                                                switch (s)
+                                                                {
+                                                                    case "03":
+                                                                        usbkey = USBUpstream.FirstOrDefault(x => x.Value == "11").Key;
+                                                                        usbPort = "11";
+                                                                        break;
+                                                                    case "02":
+                                                                        usbkey = USBUpstream.FirstOrDefault(x => x.Value == "10").Key;
+                                                                        usbPort = "10";
+                                                                        break;
+                                                                    case "01":
+                                                                        usbkey = USBUpstream.FirstOrDefault(x => x.Value == "01").Key;
+                                                                        usbPort = "01";
+                                                                        break;
+                                                                    case "00":
+                                                                        usbkey = USBUpstream.FirstOrDefault(x => x.Value == "00").Key;
+                                                                        usbPort = "00";
+                                                                        break;
+                                                                }
+
+                                                                if (!string.IsNullOrEmpty(usbkey))
+                                                                {
+                                                                    usbUpstreamList.Add(usbkey);
+                                                                    USBPorts uSBPorts = new USBPorts
+                                                                    {
+                                                                        USBName = usbkey,
+                                                                        USBPort = usbPort
+                                                                    };
+                                                                    _USBPorts.Add(uSBPorts);
+                                                                }
+                                                            }
+                                                        }
+                                                        _displayDataManger.SetMonitorUSBList(monitorInfo, _USBPorts);
                                                     }
                                                 }
-                                                _displayDataManger.SetMonitorUSBList(monitorInfo, _USBPorts);
                                             }
                                         }
                                     }
-                                    catch
+                                    catch (Exception ex)
                                     {
+                                        _logs.DebugMsg($"[Error] Exception occurred: {ex.Message}");
                                         usbUpstreamList = _usbUpstreamList;
                                         //usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
                                     }
@@ -2627,20 +2689,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //SetDisplayOrientation(_VCPchangedEventArgs);
 
             //0611 Dean
-            if (e.vcpcode.Equals("66"))
+            if (e.vcpcode.Equals("66") && 
+                uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result))
             {
-                if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result))
-                {
-                    //update target als config via target monitorinfo with e.value
-                    ALSConfig alsConfig = UpdateALSFeatureByValue(e.monitor, result);
+                //update target als config via target monitorinfo with e.value
+                ALSConfig alsConfig = UpdateALSFeatureByValue(e.monitor, result);
 
-                    Trace.WriteLine("[DisplayMangerPlugin] show_VCPchangedEventArgs 0x66 " + result.ToString() + "|| AllValue = " + alsConfig.AllValue.ToString());
-                    if (alsConfig != null)// && alsConfig.AllValue != result)
-                    {
-                        Task.Run(() => CheckisPrimaryMonitorSyncOnOff(e.monitor, alsConfig, e.vcpcode));//JIRA DDPMW-770
-                        int idx = AllALSConfig.FindIndex(x => x.Edid.Equals(e.monitor.edid));
-                        AllALSConfig[idx].isBusy = false;
-                    }
+                Trace.WriteLine("[DisplayMangerPlugin] show_VCPchangedEventArgs 0x66 " + result.ToString() + "|| AllValue = " + alsConfig.AllValue.ToString());
+                if (alsConfig != null)// && alsConfig.AllValue != result)
+                {
+                    Task.Run(() => CheckisPrimaryMonitorSyncOnOff(e.monitor, alsConfig, e.vcpcode));//JIRA DDPMW-770
+                    int idx = AllALSConfig.FindIndex(x => x.Edid.Equals(e.monitor.edid));
+                    AllALSConfig[idx].isBusy = false;
                 }
             }
 
@@ -2777,7 +2837,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             bool r = false;
                             if (findconfigtocheckmms != null)// || findconfigtocheckmms.isMMSEnable == false)//False need to set, if null or MMS true no action
                             {
-                                if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result))
+                                if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result3))
                                 {
                                     //No need sync, PIMS - 285803
                                     //if (e.vcpcode.Equals("10"))

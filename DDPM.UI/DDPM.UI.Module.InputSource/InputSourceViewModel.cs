@@ -183,7 +183,8 @@ namespace DDPM.UI.Module.InputSource
 
                 if (inputList != null)
                 {
-                    _inputsList.Clear();
+                    //_inputsList.Clear();
+                    _inputsList = new List<InputSourceList>();
                     foreach (var item in inputList)
                     {
                         _inputsList.Add(new InputSourceList()
