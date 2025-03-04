@@ -3079,7 +3079,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     return;
                 }
 
-                if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9 && deviceInfo.BatteryStatus != "Charging" && !LowBatteryIDs.ContainsKey(deviceInfo.ID.ToString()))
+                if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9 && !LowBatteryIDs.ContainsKey(deviceInfo.ID.ToString())) // && deviceInfo.BatteryStatus != "Charging")
                 {
                     OSDType_Device type = OSDType_Device.Unknown;
                     var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
@@ -4166,7 +4166,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 //    OnNotify(_EventArgs);
                 //    break;
                 //}
-                if (_deviceHelper_ForDock.deviceInfo.Count>0)
+                if (_deviceHelper_ForDock.deviceInfo.Count > 0)
                 {
                     DeviceInfo device = _deviceHelper_ForDock.deviceInfo[0];
                     device.IsConnected = false;
