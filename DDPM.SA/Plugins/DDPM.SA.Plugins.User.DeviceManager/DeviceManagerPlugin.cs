@@ -12431,6 +12431,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             // add @ 20250305 stephen
             if (e.count < 0) {
+                writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin, but count < 0 *****");
                 return;
             }
             // add @ 20250305 stephen
