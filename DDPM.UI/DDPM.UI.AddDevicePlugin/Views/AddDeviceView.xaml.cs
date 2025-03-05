@@ -18,9 +18,11 @@ using DDPM.UI.Module.AddWebcam;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using DDPM.UI.Resources.Helper;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -307,7 +309,29 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         private void GoBackHomepage(object sender, MouseButtonEventArgs e)
         {
-            _console.ShowHomePage();
+            //Robert_Lin 2025-3-5 for the back arrow to go back to the "previous" page.
+            //PIMS-301474 Clicking back arrow didn't bring the UI back to the DDPM page previously, before the
+            // settings gear icon is selected
+            //PIMS-314264 The DDPM can not back to previous page after select the Back Arrow in top left.
+            //
+            //OLD:
+            //_console.ShowHomePage();
+            //NEW:
+            IShowPluginManager? showPluginManager = AddDevicePlugin.PluginIoc.GetService<IShowPluginManager>();
+            if (showPluginManager == null)
+                return;
+            if (showPluginManager.HideTakeoverPlugin())
+            {
+                //Request to show "AddDevice" icon on Masthead
+                if (_console != null)
+                {
+                    var args = new EventManagerArgs();
+                    bool isShow = true;
+                    bool isEnabled = true;
+                    args.Tag = new List<bool> { isShow, IsEnabled }; //true=Show, false=Hide
+                    _console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, args);
+                }
+            }
         }
 
         private void RightViewHeaderCtrl_SelectionChanged(object sender, RoutedEventArgs e)

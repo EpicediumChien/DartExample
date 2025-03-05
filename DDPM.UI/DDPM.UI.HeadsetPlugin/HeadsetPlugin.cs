@@ -23,7 +23,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
     [Descriptor(Description = Description)]
     [Publisher(Name = "DDPM HeadsetPlugin", Support = "Wistron DDPM Team")]
     [ExcludeFromCodeCoverage]
-    public class HeadsetPlugin : IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
+    public class HeadsetPlugin : IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
     {
         private const string PluginId = UI.Common.Constants.HeadsetPluginId;
         private const string PluginName = "HeadsetPlugin";

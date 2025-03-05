@@ -22,7 +22,7 @@ namespace DDPM.UI.Plugin.MousePlugin
     [Descriptor(Description = Description)]
     [Publisher(Name = "DDPM MousePlugin", Support = "Wistron DDPM Team")]
     [ExcludeFromCodeCoverage]
-    public class Mouseplugin : IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
+    public class Mouseplugin : IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
     {
         private const string PluginId = UI.Common.Constants.MousePluginId;
         private const string PluginName = "Mouse plugin";
