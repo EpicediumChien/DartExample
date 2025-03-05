@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,5 +72,19 @@ namespace DDPM.SA.Common.Settings
         public const string DDMExeName = "DDPM-NKVM.exe";
         public const string DDMProcessName = "DDPM-NKVM";
 #endif
+        //Overall settings param
+        public const string Folder_Product = "Dell Display and Peripheral Manager";
+        public static readonly string Folder_ProgramData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Dell");
+        //Sys settings param
+        public const string Filename_appsettings_IT = "DDPM.Configs.json";
+        public const string Filename_appsettings_Info = "DDPM.Infos.json";
+        //User settings param
+        public const string Filename_GlobalSetting_peruser = "GlobalSetting.json";
+    }
+
+    public class InfoObject
+    {
+        //string: info value, bool: isActived
+        public List<string> Infos { get; set; } = new List<string>();
     }
 }

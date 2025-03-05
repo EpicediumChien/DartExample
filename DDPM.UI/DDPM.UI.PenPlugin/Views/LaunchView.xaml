@@ -15,9 +15,6 @@
              d:DesignHeight="671" d:DesignWidth="1374">
   <UserControl.Resources>
     <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-      </ResourceDictionary.MergedDictionaries>
       <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
       <PluginCommon:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
       <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
@@ -31,8 +28,9 @@
       <Storyboard x:Key="StoryEnlarge">
         <DoubleAnimation Storyboard.TargetName="largeImage" Storyboard.TargetProperty="MaxWidth" Duration="0:0:0.4" From="500" To="620" />
       </Storyboard>
-      <Style x:Key="ButtonToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+      <Style x:Key="ButtonToolTipStyle" TargetType="ToolTip">
         <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Placement" Value="Top" />
         <Setter Property="VerticalOffset" Value="-7" />
         <Setter Property="HorizontalOffset">

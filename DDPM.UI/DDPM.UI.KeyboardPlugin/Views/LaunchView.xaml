@@ -17,9 +17,6 @@
 
   <UserControl.Resources>
     <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-      </ResourceDictionary.MergedDictionaries>
       <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
       <PluginCommon:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
       <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
@@ -112,8 +109,9 @@
       <!--<Style x:Key="CalculatorStyle" TargetType="Image" BasedOn="{StaticResource CalculatorSize}">
             <Setter Property="Margin" Value="-117, 0, 0, 0" />
             </Style>-->
-      <Style x:Key="KeyToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+      <Style x:Key="KeyToolTipStyle" TargetType="ToolTip">
         <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Placement" Value="Top" />
         <Setter Property="VerticalOffset" Value="-2.5" />
         <Setter Property="HorizontalOffset">

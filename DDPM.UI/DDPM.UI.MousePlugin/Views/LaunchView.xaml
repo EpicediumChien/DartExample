@@ -16,9 +16,6 @@
              SizeChanged="UserControl_SizeChanged">
   <UserControl.Resources>
     <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-      </ResourceDictionary.MergedDictionaries>
       <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
       <PluginCommon:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
       <PluginCommon:CenterVToolTipConverter x:Key="CenterVToolTipConverter" />
@@ -26,8 +23,9 @@
         <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
                                  Duration="0:0:0.4" From="{Binding RightFrameWidthFrom}" To="{Binding RightFrameWidthTo}" FillBehavior="HoldEnd" />
       </Storyboard>
-      <Style x:Key="ButtonToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+      <Style x:Key="ButtonToolTipStyle" TargetType="ToolTip">
         <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Placement" Value="Right" />
         <Setter Property="HorizontalOffset" Value="0" />
         <Setter Property="VerticalOffset">

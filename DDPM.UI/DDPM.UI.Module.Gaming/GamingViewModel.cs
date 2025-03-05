@@ -361,28 +361,23 @@ namespace DDPM.UI.Module.Gaming
                 GamingDisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetGamingProperties_SupportedList(currentMonitorInfo).Result;
                 if (displayPropertiesInfo.IsSupported_GameEnhancementMode)
                 {
-                    displayPropertiesInfo.Current_GameEnhancementMode = DdpmCommonHelper.DeviceManagerSA.GetCurrentGame_EnhancementMode(currentMonitorInfo).Result;
                     IsSupported_GameEnhanceMode = Visibility.Visible;
                 }
                 if (displayPropertiesInfo.IsSupported_ResponseTime)
                 {
-                    displayPropertiesInfo.Current_ResponseTime = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_ResponseTime(currentMonitorInfo).Result;
                     IsSupported_ResponseTime = Visibility.Visible;
                 }
                 if (displayPropertiesInfo.IsSupported_DarkStabilizer)
                 {
-                    displayPropertiesInfo.Current_DarkStabilizer = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_DarkStabilizer(currentMonitorInfo).Result;
                     IsSupported_DarkStabilizer = Visibility.Visible;
                 }
                 if (displayPropertiesInfo.IsSupported_HDRType)
                 {
-                    displayPropertiesInfo.Current_HDRType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_HDRType(currentMonitorInfo).Result;
                     IsGameSeries = currentMonitorInfo.modelName.ToUpper().StartsWith("G") ? Visibility.Visible : Visibility.Collapsed;
                     IsAWSeries = currentMonitorInfo.modelName.ToUpper().StartsWith("AW") ? Visibility.Visible : Visibility.Collapsed;
                 }
                 if (displayPropertiesInfo.IsSupported_DualResolutionType)
                 {
-                    displayPropertiesInfo.Current_DualResolutionType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_DualResolutionType(currentMonitorInfo).Result;
                     IsSupported_DualResolution = Visibility.Visible;
                 }
 

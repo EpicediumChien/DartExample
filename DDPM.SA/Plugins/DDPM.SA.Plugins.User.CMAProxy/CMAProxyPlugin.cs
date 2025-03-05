@@ -298,7 +298,9 @@ namespace DDPM.SA.Plugins.User.CMAProxy
                     _CMAManagerPlugin.Update_DeviceChanged(new CMADeviceChanges() { type = "display", mos = mos, devices = null });
                 }
                 else
+                {
                     WriteLog("_CMAManagerPlugin is null then can't pass call Update_DeviceChanged");
+                }
             }
             else
             {
@@ -306,7 +308,9 @@ namespace DDPM.SA.Plugins.User.CMAProxy
             }
         }
         // add end @ 20250303 stephen
-        private async void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
+
+        // remove start @ 20250304 stephen
+        /*private async void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
             WriteLog("_deviceManager_DeviceChanged() executed");
 
@@ -386,7 +390,8 @@ namespace DDPM.SA.Plugins.User.CMAProxy
                 }
                 WriteLog($"Peripheral count is ${_deviceInfos.Count}");
             }
-        }
+        }*/
+        // remove end @ 20250304 stephen
         #endregion
 
         #region ICLIProxy implementation

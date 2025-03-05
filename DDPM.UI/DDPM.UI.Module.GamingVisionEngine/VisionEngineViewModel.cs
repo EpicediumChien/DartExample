@@ -72,7 +72,6 @@ namespace DDPM.UI.Module.GamingVisionEngine
                 VisionEngineList = new ObservableCollection<UI_VisionEngine>();
                 MonitorInfo currentMonitorInfo = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
                 GamingDisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetGamingProperties_SupportedList(currentMonitorInfo).Result;
-                displayPropertiesInfo.IsEnable_VisionEngineType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_VisionEngineEnableType(currentMonitorInfo, displayPropertiesInfo).Result;
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     for (int i = 0; i < displayPropertiesInfo.Supported_VisionEngineType.Count; i++)
