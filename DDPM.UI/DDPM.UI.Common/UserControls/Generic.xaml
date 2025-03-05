@@ -117,12 +117,17 @@
                             <Path.Style>
                                 <Style TargetType="Path">
                                     <Setter Property="Fill" Value="{DynamicResource PathIcon_Color}" />
-                                    <Style.Triggers>
+                                    <!-- Robert_Lin 2025-3-5 PIMS-348214 [UI]Settings icon should stay white when active 
+                                    The keyboard focus color is a bug,  EDG would like to reomve the color change.
+                                    Comment-out the Trigger
+                                    -->
+
+                                    <!--<Style.Triggers>
                                         <DataTrigger Binding="{Binding IsKeyboardFocused, RelativeSource={RelativeSource AncestorType=Button}}"
                                      Value="True">
                                             <Setter Property="Fill" Value="#FF0077C0" />
                                         </DataTrigger>
-                                    </Style.Triggers>
+                                    </Style.Triggers>-->
                                 </Style>
                             </Path.Style>
                         </Path>

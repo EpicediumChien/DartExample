@@ -33,8 +33,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin
     [PluginRequires(Id = DDPM.SA.Common.IDs.DDPM_EAPlugin_PLUGIN_ID, AllowDynamicResolving = true)]
     //   [PluginRequires(Id = DDPM.SA.Common.IDs.PipPbp_Manager_PLUGIN_ID, AllowDynamicResolving = true)]
     [ExcludeFromCodeCoverage]
-    public class DisplayPlugin : IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
-    //IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
+    public class DisplayPlugin : IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
+    //IConsolePagePlugin, IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
     {
         #region Private
         private const string PluginId = DDPM.UI.Common.Constants.DisplayPluginId;
