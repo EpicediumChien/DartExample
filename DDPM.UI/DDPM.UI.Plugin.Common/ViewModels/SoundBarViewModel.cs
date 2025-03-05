@@ -514,6 +514,11 @@ namespace DDPM.UI.Plugin.ViewModels
                     case "Zoom":
                         ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A_TwoLight.png";
                         break;
+
+                    case "NoLight":
+                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A_NoLight.png";
+                        break;
+
                     default:
                             ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A.png";
                         break;
@@ -558,7 +563,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
 
                 case "SB522A":
-                    ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A.png";
+                    ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A_NoLight.png";
                     break;
                 case "SB725":
                     ImageFilePath = $"/DDPM.UI.Common;component/Resources/Speaker_SB725.png";

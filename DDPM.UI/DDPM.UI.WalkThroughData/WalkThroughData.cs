@@ -181,7 +181,7 @@ namespace DDPM.UI.WalkThroughData
                 { "PN9315A", new List<WalkThroughPageData>
                     {
                         new WalkThroughPageData { MainText = Strings.WalkThroughPen_Main0, SubText = Strings.WalkThroughPen_Sub0, MainImageSource = "WalkThrough/Pen/Millenio/Millenio_1.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughPen_Main1, SubText = Strings.WalkThroughPen_Sub1, MainImageSource = "WalkThrough/Pen/Millenio/Millenio_2.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughPen_Main1, SubText = Strings.WalkThroughPen_Sub1_1, MainImageSource = "WalkThrough/Pen/Millenio/Millenio_2.png" },
                         new WalkThroughPageData { MainText = Strings.WalkThroughPen_Main2, SubText = Strings.WalkThroughPen_Sub2, MainImageSource = "WalkThrough/Pen/Millenio/Millenio_3.png" }
                     }
                 },

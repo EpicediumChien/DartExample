@@ -42,7 +42,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
         public LaunchView()
         {
-
+            DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView Constructor ... in ");
             _vm = (HeadsetViewModel?)HeadsetPlugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
 
             if (_vm != null)
@@ -120,40 +120,62 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                         _vm!.HeadsetGroupChanged += HeadsetGroupChanged;
                 }
             }
+            DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView Constructor ... end ");
         }
 
         private void HeadsetGroupChanged(object? sender, EventArgs e)
-        {
-            
+        {           
                 BuildModuleGroups(_vm.SupportedAnswerCalls);
                 vbarList.ItemsSource = null;
                 vbarList.ItemsSource = _vm!.VbarItems;
-                DdpmCommonHelper.WriteUILog($"[Headset] LaunchView HeadsetGroupChanged SupportedAnswerCalls false");
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView HeadsetGroupChanged SupportedAnswerCalls false");
         }
 
-        private async void LaunchView_UnLoadedStatus(object sender, RoutedEventArgs e)
+        private void LaunchView_UnLoadedStatus(object sender, RoutedEventArgs e)
         {
-            if (_vm == null) return;
-            _vm.UloadHeadset_DTPNotify();
-            _vm!.HeadsetGroupChanged -= HeadsetGroupChanged;
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {               
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
-                DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
-                Loaded -= LaunchView_LoadedStatus;
-                Unloaded -= LaunchView_UnLoadedStatus;
-                DdpmCommonHelper.WriteUILog($"[Headset] ~LaunchView");
+            DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView_UnLoadedStatus ... in ");
+            if (_vm == null)
+            {
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] ~LaunchView_UnLoadedStatus _vm is null");
+                return;
+            }
+            try
+            {
+                _vm.UloadHeadset_DTPNotify();
+                _vm!.HeadsetGroupChanged -= HeadsetGroupChanged;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+                    DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+                    Loaded -= LaunchView_LoadedStatus;
+                    Unloaded -= LaunchView_UnLoadedStatus;
+                    DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] -= DeviceManagerSA_ITSettingsActionEvent、ImageUpdate、LaunchView_LoadedStatus、LaunchView_UnLoadedStatus");
+                }
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] ~LaunchView_UnLoadedStatus DeviceManagerSA is null");
+                }
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView_UnLoadedStatus ... out ");
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView_UnLoadedStatus Exception = {ex.Message}");
             }
         }
 
         private void LaunchView_LoadedStatus(object sender, RoutedEventArgs e)
         {
-            if (_vm == null) return;
+            DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView_LoadedStatus ... in ");
+            if (_vm == null)
+            {
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] ~LaunchView_LoadedStatus _vm is null");
+                return;
+            }
 
             try
             {
                 _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
-                DdpmCommonHelper.WriteUILog($"[Headset] LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
                 if (!_vm.IsRestoreEnable)
                 {
                     btnRestore.Visibility = Visibility.Visible;
@@ -162,11 +184,11 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 {
                     btnRestore.Visibility = Visibility.Collapsed;
                 }
-                DdpmCommonHelper.WriteUILog($"[Headset] LaunchView_LoadedStatus IsRestoreEnable Check Done");
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView_LoadedStatus ... out ");
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"[Headset] LaunchView_LoadedStatus Exception = {ex.Message}");
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView_LoadedStatus Exception = {ex.Message}");
             }
         }
 
@@ -178,18 +200,32 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
         private void LaunchView_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!_vm!.IsDTPReady)
-                DdpmCommonHelper.MyConsole!.ShowHomePage();
+            try
+            {
+                if (!_vm!.IsDTPReady)
+                    DdpmCommonHelper.MyConsole!.ShowHomePage();
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView_Loaded Exception = {ex.Message}");
+            }
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
         {
-            var rst = DdpmCommonHelper.ApplyRestoreFactoryDefaultsEventData(e, "Lock_Audio_RestoreFactoryDefaults");
-            Dispatcher.Invoke(new Action(() =>
+            try
             {
-                RestoreLockIcon.Visibility = rst.isLocked;
-                txtRestore.IsEnabled = rst.isEnabled;
-            }));
+                var rst = DdpmCommonHelper.ApplyRestoreFactoryDefaultsEventData(e, "Lock_Audio_RestoreFactoryDefaults");
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    RestoreLockIcon.Visibility = rst.isLocked;
+                    txtRestore.IsEnabled = rst.isEnabled;
+                }));
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView DeviceManagerSA_ITSettingsActionEvent Exception = {ex.Message}");
+            }
         }
 
         #region Init for Modules
@@ -199,53 +235,61 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         /// </summary>
         private void BuildModuleGroups(bool secondVbar = true)
         {
-            List<ModuleGroup> groups = new List<ModuleGroup>();
-            ModuleGroup moduleGroup;
-            if (_vm.CurrentDeviceInfo.ModelNumber != "SB725")
+            DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] BuildModuleGroups ... in");
+            try
             {
-                moduleGroup = new ModuleGroup()
-                {
-                    GroupName = AudioSettings,
-                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Setting.png"),
-                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.AudioSettings)
-                };
-                moduleGroup.AddHeader(AudioSettings, new HeadsetAudioSettingsModule(_vm!));
-                groups.Add(moduleGroup);
-
-                if(secondVbar)
+                List<ModuleGroup> groups = new List<ModuleGroup>();
+                ModuleGroup moduleGroup;
+                if (_vm.CurrentDeviceInfo.ModelNumber != "SB725")
                 {
                     moduleGroup = new ModuleGroup()
                     {
-                        GroupName = AutomatedActions,
-                        GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
-                        GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
+                        GroupName = AudioSettings,
+                        GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Setting.png"),
+                        GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.AudioSettings)
                     };
-                    moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
+                    moduleGroup.AddHeader(AudioSettings, new HeadsetAudioSettingsModule(_vm!));
+                    groups.Add(moduleGroup);
+
+                    if (secondVbar)
+                    {
+                        moduleGroup = new ModuleGroup()
+                        {
+                            GroupName = AutomatedActions,
+                            GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
+                            GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
+                        };
+                        moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
+                        groups.Add(moduleGroup);
+                    }
+
+                    moduleGroup = new ModuleGroup()
+                    {
+                        GroupName = DeviceSettings,
+                        GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Main.png"),
+                        GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetSettings)
+                    };
+                    moduleGroup.AddHeader(DeviceSettings, new HeadsetDeviceSettingsModule(_vm!));
+                    groups.Add(moduleGroup);
+                }
+                else
+                {
+                    moduleGroup = new ModuleGroup()
+                    {
+                        GroupName = AudioSettings,
+                        GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Setting.png"),
+                        GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.AudioSettings)
+                    };
+                    moduleGroup.AddHeader(AudioSettings, new HeadsetAudioForSB725SettingsModule(_vm!));
                     groups.Add(moduleGroup);
                 }
 
-                moduleGroup = new ModuleGroup()
-                {
-                    GroupName = DeviceSettings,
-                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Main.png"),
-                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetSettings)
-                };
-                moduleGroup.AddHeader(DeviceSettings, new HeadsetDeviceSettingsModule(_vm!));
-                groups.Add(moduleGroup);
+                _vm.ModuleGroups = groups;
             }
-            else 
+            catch (Exception ex)
             {
-                moduleGroup = new ModuleGroup()
-                {
-                    GroupName = AudioSettings,
-                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Setting.png"),
-                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.AudioSettings)
-                };
-                moduleGroup.AddHeader(AudioSettings, new HeadsetAudioForSB725SettingsModule(_vm!));
-                groups.Add(moduleGroup);
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] BuildModuleGroups Exception = {ex.Message}");
             }
-           
-            _vm.ModuleGroups = groups;
         }
 
         #endregion Init for Modules
@@ -258,32 +302,40 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         /// <param name="newItem"></param>
         private void OnVbarItemClicked(VbarItem newItem)
         {
-            if (newItem.Id == _vm!.VbarSelectedIndex) { return; }
+            DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] OnVbarItemClicked ... in");
+            try
+            {
+                if (newItem.Id == _vm!.VbarSelectedIndex) { return; }
 
-            if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm.VbarSelectedIndex + 1])
-            {
-                _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
-                _vm.RightFrameWidthTo = _rightFrameWidth[newItem.Id + 1];
+                if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm.VbarSelectedIndex + 1])
+                {
+                    _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
+                    _vm.RightFrameWidthTo = _rightFrameWidth[newItem.Id + 1];
 
-                InvokeGotoTwoViewModeAnimation();
+                    InvokeGotoTwoViewModeAnimation();
+                }
+                if (newItem.Id == 0)
+                {
+                    InvokeShrinkAnimation();
+                }
+                else if (_vm.VbarSelectedIndex == 0)
+                {
+                    InvokeEnlargeAnimation();
+                }
+                _vm.VbarSelectedIndex = newItem.Id;
+                if (_vm.RightViewHeaders != null)
+                {
+                    rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
+                }
+                btnRestore.Visibility = Visibility.Collapsed;
+                btnUnpair.Visibility = Visibility.Collapsed;
+                _vm.SetLadningMode(false);
+                _vm.SelectVBar();
             }
-            if (newItem.Id == 0)
+            catch (Exception ex)
             {
-                InvokeShrinkAnimation();
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] OnVbarItemClicked Exception = {ex.Message}");
             }
-            else if (_vm.VbarSelectedIndex == 0)
-            {
-                InvokeEnlargeAnimation();
-            }
-            _vm.VbarSelectedIndex = newItem.Id;
-            if (_vm.RightViewHeaders != null)
-            {
-                rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
-            }
-            btnRestore.Visibility = Visibility.Collapsed;
-            btnUnpair.Visibility = Visibility.Collapsed;
-            _vm.SetLadningMode(false);
-            _vm.SelectVBar();
         }
 
         #endregion Vbar
@@ -302,211 +354,271 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
         private void InvokeGotoTwoViewModeAnimation()
         {
-            Dispatcher.Invoke(new Action(() =>
+            try
             {
-                Storyboard sb = (Storyboard)this.FindResource("StoryGotoTwoView");
-                if (sb != null)
+                Dispatcher.Invoke(new Action(() =>
                 {
-                    sb.Completed += (o, s) =>
+                    Storyboard sb = (Storyboard)this.FindResource("StoryGotoTwoView");
+                    if (sb != null)
                     {
-                    };
+                        sb.Completed += (o, s) =>
+                        {
+                        };
 
-                    sb.Begin();
-                }
-            }));
+                        sb.Begin();
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] InvokeGotoTwoViewModeAnimation Exception = {ex.Message}");
+            }
         }
 
         private void InvokeShrinkAnimation()
         {
-            Dispatcher.Invoke(new Action(() =>
+            try
             {
-                Storyboard sb = (Storyboard)this.FindResource("StoryShrink");
-                if (sb != null)
+                Dispatcher.Invoke(new Action(() =>
                 {
-                    sb.Completed += (o, s) =>
+                    Storyboard sb = (Storyboard)this.FindResource("StoryShrink");
+                    if (sb != null)
                     {
-                    };
+                        sb.Completed += (o, s) =>
+                        {
+                        };
 
-                    sb.Begin();
-                }
-            }));
+                        sb.Begin();
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] InvokeShrinkAnimation Exception = {ex.Message}");
+            }
         }
 
         private void InvokeEnlargeAnimation()
         {
-            Dispatcher.Invoke(new Action(() =>
+            try
             {
-                Storyboard sb = (Storyboard)this.FindResource("StoryEnlarge");
-                if (sb != null)
+                Dispatcher.Invoke(new Action(() =>
                 {
-                    sb.Completed += (o, s) =>
+                    Storyboard sb = (Storyboard)this.FindResource("StoryEnlarge");
+                    if (sb != null)
                     {
-                    };
+                        sb.Completed += (o, s) =>
+                        {
+                        };
 
-                    sb.Begin();
-                }
-            }));
+                        sb.Begin();
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] InvokeEnlargeAnimation Exception = {ex.Message}");
+            }
         }
 
         #endregion Mode Change
 
         private void Unpair_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (_vm!.ConnectionType == "Dongle")
+            DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] Unpair_Click ... in");
+            try
             {
-                //UnpairModalDialog unpairModalDialog = new(eDeviceCategory.KB);
-                UnpairModalDialog unpairModalDialog = new(eDeviceCategory.Headset);
-                Window parentWindow = Window.GetWindow(this);
-                if (parentWindow != null)
+                if (_vm!.ConnectionType == "Dongle")
                 {
-                    unpairModalDialog.Owner = parentWindow;
-                }
-
-                bool? dialogResult = unpairModalDialog.ShowDialog();
-                if (dialogResult == true)
-                {
-                    _vm.Unpair();
-                }
-            }
-            else
-            {
-                Version win10Version = new(10, 0);
-                Version currentVersion = Environment.OSVersion.Version;
-#pragma warning disable CA1416
-                if (currentVersion >= win10Version)
-                {
-                    Process.Start(new ProcessStartInfo("ms-settings:bluetooth")
+                    //UnpairModalDialog unpairModalDialog = new(eDeviceCategory.KB);
+                    UnpairModalDialog unpairModalDialog = new(eDeviceCategory.Headset);
+                    Window parentWindow = Window.GetWindow(this);
+                    if (parentWindow != null)
                     {
-                        UseShellExecute = true
-                    });
+                        unpairModalDialog.Owner = parentWindow;
+                    }
+
+                    bool? dialogResult = unpairModalDialog.ShowDialog();
+                    if (dialogResult == true)
+                    {
+                        _vm.Unpair();
+                    }
                 }
                 else
                 {
-                    Process.Start(new ProcessStartInfo("control", "bthprops.cpl")
+                    Version win10Version = new(10, 0);
+                    Version currentVersion = Environment.OSVersion.Version;
+#pragma warning disable CA1416
+                    if (currentVersion >= win10Version)
                     {
-                        UseShellExecute = true
-                    });
-                }
+                        Process.Start(new ProcessStartInfo("ms-settings:bluetooth")
+                        {
+                            UseShellExecute = true
+                        });
+                    }
+                    else
+                    {
+                        Process.Start(new ProcessStartInfo("control", "bthprops.cpl")
+                        {
+                            UseShellExecute = true
+                        });
+                    }
 #pragma warning restore CA1416
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] Unpair_Click Exception = {ex.Message}");
             }
         }
 
         private void Mainframe_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (_vm!.VbarSelectedIndex == -1) { return; }
-            _vm.UpdateResetToDefault();
-            if (_vm!.ConnectionType != "WiredAudio")
+            DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] Mainframe_MouseLeftButtonDown ... in");
+            try
             {
-                btnUnpair.Visibility = Visibility.Visible;
+                if (_vm!.VbarSelectedIndex == -1) { return; }
+                _vm.UpdateResetToDefault();
+                if (_vm!.ConnectionType != "WiredAudio")
+                {
+                    btnUnpair.Visibility = Visibility.Visible;
+                }
+                if (!_vm.IsRestoreEnable)
+                {
+                    btnRestore.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    btnRestore.Visibility = Visibility.Collapsed;
+                }
+                _vm.RightFrameWidthTo = 0;
+                _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
+                InvokeGotoTwoViewModeAnimation();
+                if (_vm.VbarSelectedIndex == 0) { InvokeEnlargeAnimation(); }
+                _vm.VbarSelectedIndex = -1;
+                _vm.SetLadningMode(true);
+                _vm.SelectVBar();
             }
-            if (!_vm.IsRestoreEnable)
+            catch (Exception ex)
             {
-                btnRestore.Visibility = Visibility.Visible;
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] Mainframe_MouseLeftButtonDown Exception = {ex.Message}");
             }
-            else
-            {
-                btnRestore.Visibility = Visibility.Collapsed;
-            }
-            _vm.RightFrameWidthTo = 0;
-            _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
-            InvokeGotoTwoViewModeAnimation();
-            if (_vm.VbarSelectedIndex == 0) { InvokeEnlargeAnimation(); }
-            _vm.VbarSelectedIndex = -1;
-            _vm.SetLadningMode(true);
-            _vm.SelectVBar();
         }
 
         private void Restore_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            RestoreModalDialog restoreModalDialog = new();
-            Window parentWindow = Window.GetWindow(this);
-            if (parentWindow != null)
+            DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] Restore_Click ... in");
+            try
             {
-                restoreModalDialog.Owner = parentWindow;
-            }
+                RestoreModalDialog restoreModalDialog = new();
+                Window parentWindow = Window.GetWindow(this);
+                if (parentWindow != null)
+                {
+                    restoreModalDialog.Owner = parentWindow;
+                }
 
-            bool? dialogResult = restoreModalDialog.ShowDialog();
-            if (dialogResult == true)
+                bool? dialogResult = restoreModalDialog.ShowDialog();
+                if (dialogResult == true)
+                {
+                    _vm!.RestoreToDefault();
+                    //if (_vm.IsRestoreEnable)
+                    //{
+                    //    btnRestore.Visibility = Visibility.Visible;
+                    //}
+                    //else
+                    //{
+                    btnRestore.Visibility = Visibility.Collapsed;
+                    //}
+                    //MessageBox.Show("OK button was clicked");
+                }
+            }
+            catch (Exception ex)
             {
-                _vm!.RestoreToDefault();
-                //if (_vm.IsRestoreEnable)
-                //{
-                //    btnRestore.Visibility = Visibility.Visible;
-                //}
-                //else
-                //{
-                btnRestore.Visibility = Visibility.Collapsed;
-                //}
-                //MessageBox.Show("OK button was clicked");
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] Restore_Click Exception = {ex.Message}");
             }
         }
 
         private void BatteryIndicator_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (_vm!.ConnectionType == "WiredAudio")
+            DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] BatteryIndicator_MouseEnter ... in");
+            try
             {
-                return;
-            }
-            if (_vm!.ConnectionType == "Dongle")
-            {
-                //string pp = DdpmCommonHelper.DeviceManagerSA.GetFirmwareVersionAsyncForDongle(_vm!.CurrentDeviceID.ToString()).Result;
-                //string ppp = DdpmCommonHelper.DeviceManagerSA.GetFirmwareVersionAsync(_vm!.CurrentDeviceID.ToString()).Result;
-                txtSystemName3.Text = " " + Strings.USBWirelessReceiver;
-                txtFirmware.Text = $"{Strings.ReceiverFirmwareVersion} {_vm.PhysicalDeviceFWVersion}";
-                txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
-                DongleConnection.Visibility = Visibility.Visible;
-            }
-            else if (_vm!.ConnectionType == "Bluetooth")//I can't get Headset connection HostName, FW issue?
-            {
-                //_vm.PairedHostName1 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result;
-                //_vm.PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result;
-                //_deviceManager.GetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
-                //string hostName = Dns.GetHostName();
-                string PairedHostName1 = string.Empty;
-                string PairedHostName2 = string.Empty;
-                if (string.IsNullOrEmpty(_vm.PairedHostName1))
-                    PairedHostName1 =_vm.isAirAudio==false? DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result: null; //DTP
-                else
-                    PairedHostName1 = _vm.PairedHostName1; //DTH
-                if (string.IsNullOrEmpty(_vm.PairedHostName2))
-                    PairedHostName2 = _vm.isAirAudio == false ? DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result : null; //DTP
-                else
-                    PairedHostName2 = _vm.PairedHostName2;  //DTH
+                if (_vm!.ConnectionType == "WiredAudio")
+                {
+                    return;
+                }
+                if (_vm!.ConnectionType == "Dongle")
+                {
+                    //string pp = DdpmCommonHelper.DeviceManagerSA.GetFirmwareVersionAsyncForDongle(_vm!.CurrentDeviceID.ToString()).Result;
+                    //string ppp = DdpmCommonHelper.DeviceManagerSA.GetFirmwareVersionAsync(_vm!.CurrentDeviceID.ToString()).Result;
+                    txtSystemName3.Text = " " + Strings.USBWirelessReceiver;
+                    txtFirmware.Text = $"{Strings.ReceiverFirmwareVersion} {_vm.PhysicalDeviceFWVersion}";
+                    txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+                    DongleConnection.Visibility = Visibility.Visible;
+                }
+                else if (_vm!.ConnectionType == "Bluetooth")//I can't get Headset connection HostName, FW issue?
+                {
+                    //_vm.PairedHostName1 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result;
+                    //_vm.PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result;
+                    //_deviceManager.GetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
+                    //string hostName = Dns.GetHostName();
+                    string PairedHostName1 = string.Empty;
+                    string PairedHostName2 = string.Empty;
+                    if (string.IsNullOrEmpty(_vm.PairedHostName1))
+                        PairedHostName1 = _vm.isAirAudio == false ? DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result : null; //DTP
+                    else
+                        PairedHostName1 = _vm.PairedHostName1; //DTH
+                    if (string.IsNullOrEmpty(_vm.PairedHostName2))
+                        PairedHostName2 = _vm.isAirAudio == false ? DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result : null; //DTP
+                    else
+                        PairedHostName2 = _vm.PairedHostName2;  //DTH
 
-                if (string.IsNullOrEmpty(PairedHostName1))
-                {
-                    txt1.Style = ConnectionStyle2;
-                    txtBLHost1.Style = ConnectionStyle2;
-                    //imgBL1.Source = img2;
+                    if (string.IsNullOrEmpty(PairedHostName1))
+                    {
+                        txt1.Style = ConnectionStyle2;
+                        txtBLHost1.Style = ConnectionStyle2;
+                        //imgBL1.Source = img2;
+                    }
+                    else
+                    {
+                        txt1.Style = ConnectionStyle1;
+                        txtBLHost1.Style = ConnectionStyle1;
+                        //imgBL1.Source = img2;
+                    }
+                    if (string.IsNullOrEmpty(PairedHostName2))
+                    {
+                        txt2.Style = ConnectionStyle2;
+                        txtBLHost2.Style = ConnectionStyle2;
+                        //imgBL2.Source = img2;
+                    }
+                    else
+                    {
+                        txt2.Style = ConnectionStyle1;
+                        txtBLHost2.Style = ConnectionStyle1;
+                        //imgBL2.Source = img2;
+                    }
+                    txtBLHost1.Text = string.IsNullOrEmpty(PairedHostName1) ? Strings.ReadyToBePaired : PairedHostName1;
+                    txtBLHost2.Text = string.IsNullOrEmpty(PairedHostName2) ? Strings.ReadyToBePaired : PairedHostName2;
+                    BLConnection.Visibility = Visibility.Visible;
                 }
-                else
-                {
-                    txt1.Style = ConnectionStyle1;
-                    txtBLHost1.Style = ConnectionStyle1;
-                    //imgBL1.Source = img2;
-                }
-                if (string.IsNullOrEmpty(PairedHostName2))
-                {
-                    txt2.Style = ConnectionStyle2;
-                    txtBLHost2.Style = ConnectionStyle2;
-                    //imgBL2.Source = img2;
-                }
-                else
-                {
-                    txt2.Style = ConnectionStyle1;
-                    txtBLHost2.Style = ConnectionStyle1;
-                    //imgBL2.Source = img2;
-                }
-                txtBLHost1.Text = string.IsNullOrEmpty(PairedHostName1) ? Strings.ReadyToBePaired : PairedHostName1;
-                txtBLHost2.Text = string.IsNullOrEmpty(PairedHostName2) ? Strings.ReadyToBePaired : PairedHostName2;
-                BLConnection.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] BatteryIndicator_MouseEnter Exception = {ex.Message}");
             }
         }
 
         private void BatteryIndicator_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            DongleConnection.Visibility = Visibility.Collapsed;
-            BLConnection.Visibility = Visibility.Collapsed;
+            try
+            {
+                DongleConnection.Visibility = Visibility.Collapsed;
+                BLConnection.Visibility = Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] BatteryIndicator_MouseLeave Exception = {ex.Message}");
+            }
         }
 
         private void LargeImage_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -514,9 +626,16 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         }
         private void PushBack(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (sender is Border)
+            try
             {
-                Mainframe_MouseLeftButtonDown(this, e);
+                if (sender is Border)
+                {
+                    Mainframe_MouseLeftButtonDown(this, e);
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView PushBack Exception = {ex.Message}");
             }
         }
     }
