@@ -11793,10 +11793,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.Re_GetMonitors(token).Result);
 
                             // add @ 20250303 stephen
+                            // modified @ 20250305 stephen : set count = -1 as a flag to avoid trigger ui reflash
                             if (_arg != null)
                             {
                                 arg = (DebouncerArg)_arg;
-                                show_displays_changed(arg.sender, new DisplaychangedEventArgs() { count = _AllInfoMonitors.Count, monitors = _AllInfoMonitors });
+                                show_displays_changed(arg.sender, new DisplaychangedEventArgs() { count = -1, monitors = _AllInfoMonitors });
                             }
                             // add @ 20250303 stephen
 
@@ -11949,9 +11950,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EventHandler<DisplaychangedEventArgs> handler = Displaychanged;
 
             // modified @ 20250303 stephen
+            // modified @ 20250305 stephen : new DisplaychangedEventArgs, avoid trigger ui reflash
             if (handler != null)
             {
+                writelog($"DeviceMangerPlugin brocast OnDisplaychanged for CMA ...(e.count = {e.count})");
                 handler.Invoke(this, e);
+            }
+
+            if (e.count < 0) {
+                writelog($"DeviceMangerPlugin brocast OnDisplaychanged End process for CMA ...(e.count = {e.count})");
+                return;
             }
             // modified @ 20250303 stephen
 
@@ -12427,6 +12435,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void show_displays_changed(object sender, DisplaychangedEventArgs e)
         {
+            // add @ 20250305 stephen
+            if (e.count < 0) {
+                writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin, but count < 0 *****");
+                OnDisplaychanged(e);
+                return;
+            }
+            // add @ 20250305 stephen
+
             writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin");
             writelog("Send out Displaychanged Event Notify from DeviceMangerPlugin");
 
