@@ -26,6 +26,7 @@ using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -37,6 +38,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using static VcpCore.Common.EDIDReader;
 using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
@@ -445,7 +447,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ObjGetVCP result = new ObjGetVCP();
 
             //Jason add 0xE9
-            if (code == 0xE9 && 
+            if (code == 0xE9 &&
                 _displayDataManger != null)
             {
                 uint datacode = 1;
@@ -461,7 +463,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 result = _VcpCorePlugin.GetVCPCapability(monitorInfo, code, guid, opt, priority).Result;
 
             //Jason add 0xE9
-            if (result.result && 
+            if (result.result &&
                 code == 0xE9 && _displayDataManger != null)
             {
                 _displayDataManger.SetMonitorE9(monitorInfo, (uint)result.value);
@@ -500,8 +502,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 r = _VcpCorePlugin.SetVCPCapability(monitorInfo, code, val, guid, priority).Result;
 
             //Jason add 0xE9
-            if (r && 
-                code == 0xE9 && 
+            if (r &&
+                code == 0xE9 &&
                 _displayDataManger != null)
             {
                 _displayDataManger.SetMonitorE9(monitorInfo, val);
@@ -595,7 +597,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 if (_displayDataManger != null)
                 {
-                    if (_displayDataManger.GetMonitorUSBList(monitorInfo, out _USBPorts) && 
+                    if (_displayDataManger.GetMonitorUSBList(monitorInfo, out _USBPorts) &&
                         _USBPorts != null && _USBPorts.Count > 0)
                     {
                         foreach (USBPorts usbPort in _USBPorts)
@@ -2689,7 +2691,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //SetDisplayOrientation(_VCPchangedEventArgs);
 
             //0611 Dean
-            if (e.vcpcode.Equals("66") && 
+            if (e.vcpcode.Equals("66") &&
                 uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result))
             {
                 //update target als config via target monitorinfo with e.value
@@ -3045,6 +3047,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             _logs.DebugMsg("[DisplayMangerPlugin] GetDisplayPropertiesInfo start");
             DisplayPropertiesInfo ret_DisplayPropertiesInfo = new DisplayPropertiesInfo();
+            if (_displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out ret_DisplayPropertiesInfo))
+                {
+                    return Task.FromResult(ret_DisplayPropertiesInfo);
+                }
+            }
             string setParam = "USB-C Prioritization";
             string capabilityString = monitorInfos.CapabilityString;
             USBCPrioritizationType PrioritizationType = USBCPrioritizationType.Unknow;
@@ -3109,6 +3118,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     ret_DisplayPropertiesInfo.SupportedProperties.OSD_Orientations = IsSupportOSDOrientation(capabilityString);
                 }
             }
+            if (_displayDataManger != null)
+            {
+                _displayDataManger.SetMonitorDisplayPropertiesInfo(monitorInfos, ret_DisplayPropertiesInfo);
+            }
             return Task.FromResult(ret_DisplayPropertiesInfo);
         }
 
@@ -3166,6 +3179,34 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetDisplayPropertiest go");
                 ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation).Result;
                 isSWSetOrientation = false;
+                if (ret)
+                {
+                    if (_displayDataManger != null)
+                    {
+                        if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
+                        {
+                            bool cleanCurrentFlae = false, setCurrentFlae = false;
+                            foreach (Properties tempProperties in ret_DisplayPropertiesInfo.SupportedProperties.Properties)
+                            {
+                                if (tempProperties.isCurrent && !cleanCurrentFlae)
+                                {
+                                    tempProperties.isCurrent = false;
+                                    cleanCurrentFlae = true;
+                                }
+                                if (tempProperties == properties && !setCurrentFlae)
+                                {
+                                    tempProperties.isCurrent = true;
+                                    setCurrentFlae = true;
+                                }
+                                if (cleanCurrentFlae && setCurrentFlae)
+                                {
+                                    break;
+                                }
+                            }
+                            ret_DisplayPropertiesInfo.CurrentOrientation = orientation;
+                        }
+                    }
+                }
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayPropertiest ret : {ret}");
             _logs.DebugMsg($"[DisplayMangerPlugin] SetDisplayPropertiest done");
@@ -3182,6 +3223,36 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 isSWSetOrientation = true;
                 ret = _DisplayPropertiesPlugin.SetResolutions(monitorInfos.DisplayName, properties).Result;
                 isSWSetOrientation = false;
+                if (ret)
+                {
+                    if (_displayDataManger != null)
+                    {
+                        if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
+                        {
+                            bool cleanCurrentFlae = false, setCurrentFlae = false;
+                            foreach (Properties tempProperties in ret_DisplayPropertiesInfo.SupportedProperties.Properties)
+                            {
+                                if (tempProperties.isCurrent && !cleanCurrentFlae)
+                                {
+                                    tempProperties.isCurrent = false;
+                                    cleanCurrentFlae = true;
+                                }
+                                if (tempProperties.Resolutions_Width == properties.Resolutions_Width &&
+                                    tempProperties.Resolutions_High == properties.Resolutions_High &&
+                                    tempProperties.Frequency == properties.Frequency &&
+                                    !setCurrentFlae)
+                                {
+                                    tempProperties.isCurrent = true;
+                                    setCurrentFlae = true;
+                                }
+                                if (cleanCurrentFlae && setCurrentFlae)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetResolutions done");
             return Task.FromResult(ret);
@@ -3199,6 +3270,20 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 ret = _DisplayPropertiesPlugin.SetOrientation_New(monitorInfos.DisplayName, orientation).Result;
                 //ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
                 isSWSetOrientation = false;
+                if (ret)
+                {
+                    if (_displayDataManger != null)
+                    {
+                        _displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo);
+                        if (ret_DisplayPropertiesInfo != null &&
+                            ret_DisplayPropertiesInfo.SupportedProperties != null &&
+                            ret_DisplayPropertiesInfo.SupportedProperties.Properties != null &&
+                            ret_DisplayPropertiesInfo.SupportedProperties.Properties.Count > 0)
+                        {
+                            ret_DisplayPropertiesInfo.CurrentOrientation = orientation;
+                        }
+                    }
+                }
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOrientation done");
             return Task.FromResult(ret);
@@ -3217,8 +3302,23 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] GetHDRStatus supportedHDR :{supportedHDR}");
             if (supportedHDR)
             {
+                if (_displayDataManger != null)
+                {
+                    if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
+                    {
+                        return Task.FromResult(ret_DisplayPropertiesInfo.isHDREnable);
+                    }
+                }
                 _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.GetHDRStatus go");
-                return Task.FromResult(_DisplayPropertiesPlugin.GetHDRStatus(monitorInfos.edid).Result);
+                bool HDREnable = _DisplayPropertiesPlugin.GetHDRStatus(monitorInfos.edid).Result;
+                if (_displayDataManger != null)
+                {
+                    if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
+                    {
+                        ret_DisplayPropertiesInfo.isHDREnable = HDREnable;
+                    }
+                }
+                return Task.FromResult(HDREnable);
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOrientation done");
             return Task.FromResult(false);
@@ -3279,6 +3379,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
                 count++;
             } while (ret == false && count < 10);
+            if (ret)
+            {
+                if (_displayDataManger != null)
+                {
+                    if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
+                    {
+                        ret_DisplayPropertiesInfo.isHDREnable = onoff;
+                    }
+                }
+            }
             _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetHDRStatus done ret : {ret}");
             _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus done");
             return Task.FromResult(ret && vcp_Ret);
@@ -3311,6 +3421,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             catch (Exception ex)
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] SetUSBCPrioritizationType error:{ex.Message}");
+            }
+            if (ret)
+            {
+                if (_displayDataManger != null)
+                {
+                    if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
+                    {
+                        ret_DisplayPropertiesInfo.USBCPrioritizationType = type;
+                    }
+                }
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] SetUSBCPrioritizationType done");
             return Task.FromResult(ret);
@@ -3627,6 +3747,20 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             if (_DisplayPropertiesPlugin != null)
             {
+                if (_displayDataManger != null)
+                {
+                    if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitor, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
+                    {
+                        foreach (Properties tmp in ret_DisplayPropertiesInfo.SupportedProperties.Properties)
+                        {
+                            if (tmp.isCurrent)
+                            {
+                                rc = tmp.Resolutions_Width.ToString() + " X " + tmp.Resolutions_High.ToString();
+                                return Task.FromResult(rc);
+                            }
+                        }
+                    }
+                }
                 var r = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitor).Result;
                 if (r != null)
                 {
@@ -3649,6 +3783,20 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             if (_DisplayPropertiesPlugin != null)
             {
+                if (_displayDataManger != null)
+                {
+                    if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitor, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
+                    {
+                        foreach (Properties tmp in ret_DisplayPropertiesInfo.SupportedProperties.Properties)
+                        {
+                            if (tmp.isRecommended)
+                            {
+                                rc = tmp.Resolutions_Width.ToString() + " X " + tmp.Resolutions_High.ToString();
+                                return Task.FromResult(rc);
+                            }
+                        }
+                    }
+                }
                 var r = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitor).Result;
                 if (r != null)
                 {
@@ -3671,6 +3819,20 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             if (_DisplayPropertiesPlugin != null)
             {
+                if (_displayDataManger != null)
+                {
+                    if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitor, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
+                    {
+                        foreach (Properties tmp in ret_DisplayPropertiesInfo.SupportedProperties.Properties)
+                        {
+                            if (tmp.isCurrent)
+                            {
+                                rc = tmp.Frequency.ToString();
+                                return Task.FromResult(rc);
+                            }
+                        }
+                    }
+                }
                 var r = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitor).Result;
                 if (r != null)
                 {
@@ -4549,7 +4711,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetGamingProperties_SupportedList)} start");
             GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo = new GamingDisplayPropertiesInfo();
-
+            if (_displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out gamingDisplayPropertiesInfo))
+                {
+                    return Task.FromResult(gamingDisplayPropertiesInfo);
+                }
+            }
             gamingDisplayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
             gamingDisplayPropertiesInfo.SupportedProperties = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfo).Result;
 
@@ -4636,15 +4804,52 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = new bool[gamingDisplayPropertiesInfo.Supported_VisionEngineType.Count];
                 }
             }
+            if (gamingDisplayPropertiesInfo.IsSupported_GameEnhancementMode)
+            {
+                gamingDisplayPropertiesInfo.Current_GameEnhancementMode = GetCurrentGame_EnhancementMode(monitorInfo).Result;
+            }
+            if (gamingDisplayPropertiesInfo.IsSupported_ResponseTime)
+            {
+                gamingDisplayPropertiesInfo.Current_ResponseTime = GetCurrentGaming_ResponseTime(monitorInfo).Result;
+            }
+            if (gamingDisplayPropertiesInfo.IsSupported_DarkStabilizer)
+            {
+                gamingDisplayPropertiesInfo.Current_DarkStabilizer = GetCurrentGaming_DarkStabilizer(monitorInfo).Result;
+            }
+            if (gamingDisplayPropertiesInfo.IsSupported_HDRType)
+            {
+                gamingDisplayPropertiesInfo.Current_HDRType = GetCurrentGaming_HDRType(monitorInfo).Result;
+            }
+            if (gamingDisplayPropertiesInfo.IsSupported_DualResolutionType)
+            {
+                gamingDisplayPropertiesInfo.Current_DualResolutionType = GetCurrentGaming_DualResolutionType(monitorInfo).Result;
+            }
+            if (gamingDisplayPropertiesInfo.IsSupported_VisionEngineType)
+            {
+                gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = GetCurrentGaming_VisionEngineEnableType(monitorInfo, gamingDisplayPropertiesInfo).Result;
+            }
+            if (_displayDataManger != null)
+            {
+                _displayDataManger.SetMonitorGamingDisplayPropertiesInfo(monitorInfo, gamingDisplayPropertiesInfo);
+            }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetGamingProperties_SupportedList)} done");
             return Task.FromResult(gamingDisplayPropertiesInfo);
         }
 
-        public Task<Gaming_GameEnhancementMode> GetCurrentGame_EnhancementMode(MonitorInfo monitorInfo)
+        public Task<Gaming_GameEnhancementMode> GetCurrentGame_EnhancementMode(MonitorInfo monitorInfo, bool reGet = false)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGame_EnhancementMode)} start");
-            GamingChangeEventByPass = true;
             Gaming_GameEnhancementMode GameEnhancementMode = Gaming_GameEnhancementMode.Disable;
+            if (!reGet && _displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo) &&
+                    gamingDisplayPropertiesInfo.Current_GameEnhancementMode != null)
+                {
+                    GameEnhancementMode = (Gaming_GameEnhancementMode)gamingDisplayPropertiesInfo.Current_GameEnhancementMode;
+                    return Task.FromResult(GameEnhancementMode);
+                }
+            }
+            GamingChangeEventByPass = true;
             try
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGame_EnhancementMode)} GetVCPCapability go");
@@ -4661,15 +4866,31 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGame_EnhancementMode)} Error : {ex.ToString()}");
             }
             GamingChangeEventByPass = false;
+            if (_displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                {
+                    gamingDisplayPropertiesInfo.Current_GameEnhancementMode = GameEnhancementMode;
+                }
+            }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGame_EnhancementMode)} done Result : {GameEnhancementMode}");
             return Task.FromResult(GameEnhancementMode);
         }
 
-        public Task<Gaming_ResponseTime> GetCurrentGaming_ResponseTime(MonitorInfo monitorInfo)
+        public Task<Gaming_ResponseTime> GetCurrentGaming_ResponseTime(MonitorInfo monitorInfo, bool reGet = false)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_ResponseTime)} start");
-            GamingChangeEventByPass = true;
             Gaming_ResponseTime ResponseTime = Gaming_ResponseTime.Disable;
+            if (!reGet && _displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo) &&
+                    gamingDisplayPropertiesInfo.Current_ResponseTime != null)
+                {
+                    ResponseTime = (Gaming_ResponseTime)gamingDisplayPropertiesInfo.Current_ResponseTime;
+                    return Task.FromResult(ResponseTime);
+                }
+            }
+            GamingChangeEventByPass = true;
             try
             {
                 ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_ResponseTime)).Result;
@@ -4684,16 +4905,32 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_ResponseTime)} Error : {ex.ToString()}");
             }
+            if (_displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                {
+                    gamingDisplayPropertiesInfo.Current_ResponseTime = ResponseTime;
+                }
+            }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_ResponseTime)} done Result : {ResponseTime}");
             GamingChangeEventByPass = false;
             return Task.FromResult(ResponseTime);
         }
 
-        public Task<Gaming_DarkStabilizer> GetCurrentGaming_DarkStabilizer(MonitorInfo monitorInfo)
+        public Task<Gaming_DarkStabilizer> GetCurrentGaming_DarkStabilizer(MonitorInfo monitorInfo, bool reGet = false)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DarkStabilizer)} start");
-            GamingChangeEventByPass = true;
             Gaming_DarkStabilizer DarkStabilizer = Gaming_DarkStabilizer.Disable;
+            if (!reGet && _displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo) &&
+                    gamingDisplayPropertiesInfo.Current_DarkStabilizer != null)
+                {
+                    DarkStabilizer = (Gaming_DarkStabilizer)gamingDisplayPropertiesInfo.Current_DarkStabilizer;
+                    return Task.FromResult(DarkStabilizer);
+                }
+            }
+            GamingChangeEventByPass = true;
             try
             {
                 ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_DarkStabilizer)).Result;
@@ -4708,16 +4945,32 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DarkStabilizer)} Error : {ex.ToString()}");
             }
+            if (_displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                {
+                    gamingDisplayPropertiesInfo.Current_DarkStabilizer = DarkStabilizer;
+                }
+            }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DarkStabilizer)} done Result : {DarkStabilizer}");
             GamingChangeEventByPass = false;
             return Task.FromResult(DarkStabilizer);
         }
 
-        public Task<Gaming_HDRType> GetCurrentGaming_HDRType(MonitorInfo monitorInfo)
+        public Task<Gaming_HDRType> GetCurrentGaming_HDRType(MonitorInfo monitorInfo, bool reGet = false)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_HDRType)} start");
-            GamingChangeEventByPass = true;
             Gaming_HDRType HDRType = Gaming_HDRType.Disable;
+            if (!reGet && _displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo) &&
+                    gamingDisplayPropertiesInfo.Current_HDRType != null)
+                {
+                    HDRType = (Gaming_HDRType)gamingDisplayPropertiesInfo.Current_HDRType;
+                    return Task.FromResult(HDRType);
+                }
+            }
+            GamingChangeEventByPass = true;
             try
             {
                 ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_HDRType)).Result;
@@ -4749,14 +5002,30 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     }
                 }
             }
+            if (_displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                {
+                    gamingDisplayPropertiesInfo.Current_HDRType = HDRType;
+                }
+            }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_HDRType)} done");
             return Task.FromResult(HDRType);
         }
 
-        public Task<Gaming_DualResolutionType> GetCurrentGaming_DualResolutionType(MonitorInfo monitorInfo)
+        public Task<Gaming_DualResolutionType> GetCurrentGaming_DualResolutionType(MonitorInfo monitorInfo, bool reGet = false)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} start");
             Gaming_DualResolutionType DualResolutionType = Gaming_DualResolutionType.Unknow;
+            if (!reGet && _displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo) &&
+                    gamingDisplayPropertiesInfo.Current_DualResolutionType != null)
+                {
+                    DualResolutionType = (Gaming_DualResolutionType)gamingDisplayPropertiesInfo.Current_DualResolutionType;
+                    return Task.FromResult(DualResolutionType);
+                }
+            }
             try
             {
                 ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, "USB-C Prioritization").Result;
@@ -4771,14 +5040,29 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} Error : {ex.ToString()}");
             }
+            if (_displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                {
+                    gamingDisplayPropertiesInfo.Current_DualResolutionType = DualResolutionType;
+                }
+            }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_DualResolutionType)} done Result : {DualResolutionType}");
             return Task.FromResult(DualResolutionType);
         }
 
-        public Task<Gaming_VisionEngineType> GetCurrentGaming_VisionEngineType(MonitorInfo monitorInfo)
+        public Task<Gaming_VisionEngineType> GetCurrentGaming_VisionEngineType(MonitorInfo monitorInfo, bool reGet = false)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineType)} start");
             Gaming_VisionEngineType current_VisionEngineType = Gaming_VisionEngineType.off;
+            if (!reGet && _displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                {
+                    current_VisionEngineType = gamingDisplayPropertiesInfo.Current_VisionEngineType;
+                    return Task.FromResult(current_VisionEngineType);
+                }
+            }
             try
             {
                 if (monitorInfo.modelName.Contains("G"))
@@ -4796,14 +5080,29 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineType)} Error : {ex.ToString()}");
             }
+            if (_displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                {
+                    gamingDisplayPropertiesInfo.Current_VisionEngineType = current_VisionEngineType;
+                }
+            }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineType)} done Result : {current_VisionEngineType}");
             return Task.FromResult(current_VisionEngineType);
         }
 
-        public Task<bool[]> GetCurrentGaming_VisionEngineEnableType(MonitorInfo monitorInfo, GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo)
+        public Task<bool[]> GetCurrentGaming_VisionEngineEnableType(MonitorInfo monitorInfo, GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo, bool reGet = false)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineEnableType)} start");
             bool[] IsEnable_VisionEngineType = new bool[gamingDisplayPropertiesInfo.IsEnable_VisionEngineType.Length];
+            if (!reGet && _displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo tempGamingDisplayPropertiesInfo))
+                {
+                    IsEnable_VisionEngineType = tempGamingDisplayPropertiesInfo.IsEnable_VisionEngineType;
+                    return Task.FromResult(IsEnable_VisionEngineType);
+                }
+            }
             try
             {
                 if (monitorInfo.modelName.Contains("G"))
@@ -4836,6 +5135,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineEnableType)} Error : {ex.ToString()}");
             }
+            if (_displayDataManger != null)
+            {
+                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo tempGamingDisplayPropertiesInfo))
+                {
+                    gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = IsEnable_VisionEngineType;
+                }
+            }
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetCurrentGaming_VisionEngineEnableType)} done Result :  {IsEnable_VisionEngineType.Length}");
             return Task.FromResult(IsEnable_VisionEngineType);
         }
@@ -4851,6 +5157,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 uint param = (uint)GameEnhancementMode;
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGameEnhancementMode)} title : {title}, param : {param}");
                 ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
+                if (ret)
+                {
+                    if (_displayDataManger != null)
+                    {
+                        if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                        {
+                            gamingDisplayPropertiesInfo.Current_GameEnhancementMode = GameEnhancementMode;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -4872,6 +5188,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 uint param = (uint)ResponseTime;
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_ResponseTime)} title : {title}, param : {param}");
                 ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
+                if (ret)
+                {
+                    if (_displayDataManger != null)
+                    {
+                        if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                        {
+                            gamingDisplayPropertiesInfo.Current_ResponseTime = ResponseTime;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -4893,6 +5219,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 uint param = (uint)DarkStabilizer;
                 _logs.DebugMsg($"[DisplayMangerPlugin] " + nameof(SetGameEnhancementMode) + " title : {title}, param : {param}");
                 ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
+                if (ret)
+                {
+                    if (_displayDataManger != null)
+                    {
+                        if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                        {
+                            gamingDisplayPropertiesInfo.Current_DarkStabilizer = DarkStabilizer;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -4914,6 +5250,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 uint param = (uint)HDRType;
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_HDRType)} title : {title}, param : {param}");
                 ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
+                if (ret)
+                {
+                    if (_displayDataManger != null)
+                    {
+                        if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                        {
+                            gamingDisplayPropertiesInfo.Current_HDRType = HDRType;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -4936,6 +5282,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     string PrioritizationType = DualResolutionType == Gaming_DualResolutionType._4K ? "4K" : "FHD";
                     _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SetGaming_DualResolutionType)} value:" + PrioritizationType);
                     ret = SetVCPCapability(monitorInfo, setParam, PrioritizationType).Result;
+                    if (ret)
+                    {
+                        if (_displayDataManger != null)
+                        {
+                            if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                            {
+                                gamingDisplayPropertiesInfo.Current_DualResolutionType = DualResolutionType;
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -4979,6 +5335,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     if (int.TryParse(command, hexStyle, CultureInfo.CurrentCulture, out number))
                     {
                         ret = SetVCPCapability(monitorInfo, 0xEC, (uint)number).Result;
+                        if (ret)
+                        {
+                            if (_displayDataManger != null)
+                            {
+                                if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                                {
+                                    gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = VisionEngineEnableType;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -4999,6 +5365,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 uint param = (uint)VisionEngineType;
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(SwitchGaming_VisionEngineType)} value : {param}");
                 ret = SetVCPCapability(monitorInfo, 0xEC, param).Result;
+                if (ret)
+                {
+                    if (_displayDataManger != null)
+                    {
+                        if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo))
+                        {
+                            gamingDisplayPropertiesInfo.Current_VisionEngineType = VisionEngineType;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -5015,13 +5391,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             bool ret = false;
             try
             {
-                gamingDisplayPropertiesInfo.Current_GameEnhancementMode = GetCurrentGame_EnhancementMode(monitorInfo).Result;
-                gamingDisplayPropertiesInfo.Current_ResponseTime = GetCurrentGaming_ResponseTime(monitorInfo).Result;
-                gamingDisplayPropertiesInfo.Current_DarkStabilizer = GetCurrentGaming_DarkStabilizer(monitorInfo).Result;
-                gamingDisplayPropertiesInfo.Current_HDRType = GetCurrentGaming_HDRType(monitorInfo).Result;
-                gamingDisplayPropertiesInfo.Current_DualResolutionType = GetCurrentGaming_DualResolutionType(monitorInfo).Result;
-                gamingDisplayPropertiesInfo.Current_VisionEngineType = GetCurrentGaming_VisionEngineType(monitorInfo).Result;
-                gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = GetCurrentGaming_VisionEngineEnableType(monitorInfo, gamingDisplayPropertiesInfo).Result;
+                gamingDisplayPropertiesInfo.Current_GameEnhancementMode = GetCurrentGame_EnhancementMode(monitorInfo, true).Result;
+                gamingDisplayPropertiesInfo.Current_ResponseTime = GetCurrentGaming_ResponseTime(monitorInfo, true).Result;
+                gamingDisplayPropertiesInfo.Current_DarkStabilizer = GetCurrentGaming_DarkStabilizer(monitorInfo, true).Result;
+                gamingDisplayPropertiesInfo.Current_HDRType = GetCurrentGaming_HDRType(monitorInfo, true).Result;
+                gamingDisplayPropertiesInfo.Current_DualResolutionType = GetCurrentGaming_DualResolutionType(monitorInfo, true).Result;
+                gamingDisplayPropertiesInfo.Current_VisionEngineType = GetCurrentGaming_VisionEngineType(monitorInfo, true).Result;
+                gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = GetCurrentGaming_VisionEngineEnableType(monitorInfo, gamingDisplayPropertiesInfo, true).Result;
                 ret = true;
             }
             catch (Exception ex)

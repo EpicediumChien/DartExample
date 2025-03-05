@@ -27,6 +27,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using Windows.Media.AppBroadcasting;
 using DdmLibrary.Utility;
 using System.Globalization;
+using System.Windows.Interop;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -69,21 +70,21 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         //Basic
         //private static string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-        private static string folder_product = "Dell Display and Peripheral Manager";
+        //private const string folder_product = "Dell Display and Peripheral Manager";
 
         //Global
-        private static string folder_localappdata_Applist = "AppLibrary";
-        private static string folder_localappdata_Appicon = "Icons";
-        private static string folder_localappdata_Display = "Display";
-        private static string folder_localappdata_Migration = "Migration";
-        private static string folder_localappdata_Export = "Export";
-        private static string filename_appsettings_peruser = "DDPM.Configs.json";
+        private const string folder_localappdata_Applist = "AppLibrary";
+        private const string folder_localappdata_Appicon = "Icons";
+        private const string folder_localappdata_Display = "Display";
+        private const string folder_localappdata_Migration = "Migration";
+        private const string folder_localappdata_Export = "Export";
+        private const string filename_appsettings_peruser = "DDPM.Configs.json";
 
-        private static string filename_colorpreset_peruser = "ColorSetting.json";
-        private static string filename_hotkey_peruser = "HotkeySetting.json";
-        private static string filename_powernap_peruser = "PowerNapSetting.json";
-        private static string filename_GlobalSetting_peruser = "GlobalSetting.json";
-        private static string filename_InterruptScreen_peruser = "InterruptScreen.json";
+        private const string filename_colorpreset_peruser = "ColorSetting.json";
+        private const string filename_hotkey_peruser = "HotkeySetting.json";
+        private const string filename_powernap_peruser = "PowerNapSetting.json";
+        //private const string filename_GlobalSetting_peruser = "GlobalSetting.json";
+        private const string filename_InterruptScreen_peruser = "InterruptScreen.json";
 
 
         //---
@@ -421,13 +422,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         #endregion Private methods
 
-        private void updateITandGlobalSetting()
+        private void updateITandGlobalSetting(bool force_reload = false)
         {
-            if (_SysSettingsPlugin == null)
-                return;
+            //if (_SysSettingsPlugin == null)
+            //    return;
             try
             {
-                DDPMITConfig tmp = _SysSettingsPlugin.GetITGlobalConfigs().Result;
+                DDPMITConfig tmp = _SysSettingsPlugin == null ? throw new Exception("Null sys setting plugin") : _SysSettingsPlugin.GetITGlobalConfigs(force_reload).Result;
                 if (tmp != null)
                 {
                     _DDPMITConfig = tmp;
@@ -441,7 +442,44 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             catch (Exception ex)
             {
                 //report exception and keep last data
-                WriteLog($"[updateITandGlobalSetting] exception: {ex.Message}");
+                WriteLog($"[updateITandGlobalSetting] call sys exception: {ex.Message}");
+
+                //try to load file via user privilege
+                string folder = Path.Combine(GlobalDefinitions.Folder_ProgramData, GlobalDefinitions.Folder_Product);
+                string filePath = Path.Combine(folder, GlobalDefinitions.Filename_appsettings_IT);
+                if (DDPMFileSecurity.ValidateFilePath(filePath, out string info))
+                {
+                    string serialized_string = DDPMFileSecurity.GetSerializedJsonString(filePath, out info);                    
+                    if (!string.IsNullOrEmpty(serialized_string))
+                    {
+                        try
+                        {
+                            var tmp = JsonConvert.DeserializeObject<DDPMITConfig>(serialized_string);
+                            if (tmp != null)
+                            {
+                                _DDPMITConfig = tmp;
+                                if (tmp.global_setting != null)
+                                {
+                                    _GlobalSettingParam = _DDPMITConfig.global_setting;
+                                    WriteGlobalSettings(_GlobalSettingParam, false);
+                                }
+                                WriteLog("[updateITandGlobalSetting] read IT setting over user success");
+                            }
+                            else
+                                WriteLog("[updateITandGlobalSetting] read IT setting over user, de-serialize got null data");
+                        }
+                        catch (Exception ex2)
+                        {
+                            WriteLog($"[updateITandGlobalSetting] read IT setting over user, de-serialize exception: {ex2.Message}");
+                        }
+                    }
+                    else
+                    {
+                        WriteLog($"[updateITandGlobalSetting] read IT setting over user, null return ({info})");
+                    }
+                }
+                else
+                    WriteLog($"[updateITandGlobalSetting] read IT setting over user, path invalid ({info})");
             }
 
             if (_DDPMITConfig == null)
@@ -493,8 +531,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             //{
             string folder = GetActiveUserLocalAppDataPath();
             WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
-            string folder_appdatapath_display = folder + "\\" + folder_product + "\\" + folder_localappdata_Display;
-            string folder_appdatapath_export = folder + "\\" + folder_product + "\\" + folder_localappdata_Export;
+            string folder_appdatapath_display = folder + "\\" + GlobalDefinitions.Folder_Product + "\\" + folder_localappdata_Display;
+            string folder_appdatapath_export = folder + "\\" + GlobalDefinitions.Folder_Product + "\\" + folder_localappdata_Export;
             //create display folder if not exist
             _display_path = folder_appdatapath_display;
             _export_path = folder_appdatapath_export;
@@ -634,8 +672,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
                 if (_settings != null)
                 {
+                    updateITandGlobalSetting(force_reload);
                     //0819 get IT config and apply it
-                    if (_SysSettingsPlugin != null)
+                    /*if (_SysSettingsPlugin != null)
                     {
                         DDPMITConfig tmp = null;
                         try
@@ -649,7 +688,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         }
                         if (tmp != null)
                             _settings.LockSettings = tmp;
-                    }
+                    }*/
+                    if (_DDPMITConfig != null)
+                        _settings.LockSettings = _DDPMITConfig;
+                    else
+                        WriteLog("[ReloadAppConfigData] _DDPMITConfig is null, can't assign to _settings");
                 }
                 else
                 {
@@ -1493,7 +1536,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             string folder = GetActiveUserLocalAppDataPath();
             WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
-            folder_appdatapath_migration = folder + "\\" + folder_product + "\\" + folder_localappdata_Migration;
+            folder_appdatapath_migration = folder + "\\" + GlobalDefinitions.Folder_Product + "\\" + folder_localappdata_Migration;
             string folder_path = folder_appdatapath_migration + "\\UserFoler";
             if (Directory.Exists(folder_path))
             {
@@ -2154,6 +2197,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam, bool writeToSys = true)
         {
+            if(string.IsNullOrEmpty(_GlobalSetting_path))
+            {
+                string folder = GetActiveUserLocalAppDataPath();
+                WriteLog("WriteGlobalSettings: _GlobalSetting_path is empty, re-combine path");
+                string file_path = Path.Combine(folder, GlobalDefinitions.Folder_Product, GlobalDefinitions.Filename_GlobalSetting_peruser);
+                _GlobalSetting_path = file_path;
+            }
             bool result = WriteSettings_Common(globalSettingParam, "global", _GlobalSetting_path);
             if(!result)
             {
@@ -2307,7 +2357,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             string folder = GetActiveUserLocalAppDataPath();
             WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
-            string folder_appdatapath_ddpm = folder + "\\" + folder_product;
+            string folder_appdatapath_ddpm = folder + "\\" + GlobalDefinitions.Folder_Product;
             WriteLog($"folder_appdatapath_ddpm: {folder_appdatapath_ddpm}");
             string folderInfo = string.Empty, info = string.Empty;
             try
@@ -2653,11 +2703,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string info = string.Empty;
             string folder = GetActiveUserLocalAppDataPath();
             WriteLog($"InitColorPresetConfigFile: appdata path: {folder}");
-            string file_path = Path.Combine(folder, folder_product, folder_localappdata_Applist, filename_colorpreset_peruser);
+            string file_path = Path.Combine(folder, GlobalDefinitions.Folder_Product, folder_localappdata_Applist, filename_colorpreset_peruser);
             _colorsettings_path = file_path;
             //
             // Security check (folder)
-            string tmp_path = Path.Combine(folder, folder_product);
+            string tmp_path = Path.Combine(folder, GlobalDefinitions.Folder_Product);
             if (!DDPMFileSecurity.ValidateFilePath(tmp_path, out info))
             {
                 WriteLog($"[InitColorPresetConfigFile]ValidateFilePath root folder: {info}");
@@ -2665,7 +2715,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     _colorPresetSettings = new List<ColorPresetSettings>();
                 return _colorPresetSettings;
             }
-            tmp_path = Path.Combine(folder, folder_product, folder_localappdata_Applist);
+            tmp_path = Path.Combine(folder, GlobalDefinitions.Folder_Product, folder_localappdata_Applist);
             if (!DDPMFileSecurity.ValidateFilePath(tmp_path, out info))
             {
                 WriteLog($"[InitColorPresetConfigFile]ValidateFilePath AppLibrary folder: {info}");
@@ -2682,7 +2732,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
 
             //create app icon folder if not exist
-            string folder_appicon_path = Path.Combine(folder, folder_product, folder_localappdata_Applist, folder_localappdata_Appicon);
+            string folder_appicon_path = Path.Combine(folder, GlobalDefinitions.Folder_Product, folder_localappdata_Applist, folder_localappdata_Appicon);
             try
             {
                 DirectoryInfo di = System.IO.Directory.CreateDirectory(folder_appicon_path);
@@ -2707,11 +2757,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             string folder = GetActiveUserLocalAppDataPath();
             WriteLog($"InitHotkeyConfigFile: appdata path: {folder}");
-            string file_path = Path.Combine(folder, folder_product, filename_hotkey_peruser);
+            string file_path = Path.Combine(folder, GlobalDefinitions.Folder_Product, filename_hotkey_peruser);
             _hotkeysettings_path = file_path;
             //
             // Security check (folder)
-            string tmp_path = Path.Combine(folder, folder_product);
+            string tmp_path = Path.Combine(folder, GlobalDefinitions.Folder_Product);
             if (!DDPMFileSecurity.ValidateFilePath(tmp_path, out string info))
             {
                 WriteLog($"[InitHotkeyConfigFile]ValidateFilePath root folder: {info}");
@@ -2763,13 +2813,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             string folder = GetActiveUserLocalAppDataPath();
             WriteLog($"InitGlobalSettingConfigFile: appdata path: {folder}");
-            string file_path = Path.Combine(folder, folder_product, filename_GlobalSetting_peruser);
+            string file_path = Path.Combine(folder, GlobalDefinitions.Folder_Product, GlobalDefinitions.Filename_GlobalSetting_peruser);
             _GlobalSetting_path = file_path;
             Trace.WriteLine($"_GlobalSetting_path={_GlobalSetting_path}");
 
             //
             // Security check (folder)
-            string tmp_path = Path.Combine(folder, folder_product);
+            string tmp_path = Path.Combine(folder, GlobalDefinitions.Folder_Product);
             if (!DDPMFileSecurity.ValidateFilePath(tmp_path, out string info))
             {
                 WriteLog($"[InitGlobalSettingConfigFile]ValidateFilePath root folder: {info}");
@@ -2792,11 +2842,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             string folder = GetActiveUserLocalAppDataPath();
             WriteLog($"InitInterruptScreenFile: appdata path: {folder}");
-            string file_path = Path.Combine(folder, folder_product, filename_InterruptScreen_peruser);
+            string file_path = Path.Combine(folder, GlobalDefinitions.Folder_Product, filename_InterruptScreen_peruser);
             _InterruptScreen_path = file_path;
             //
             // Security check (folder)
-            string tmp_path = Path.Combine(folder, folder_product);
+            string tmp_path = Path.Combine(folder, GlobalDefinitions.Folder_Product);
             if (!DDPMFileSecurity.ValidateFilePath(tmp_path, out string info))
             {
                 WriteLog($"[InitInterruptScreenFile]ValidateFilePath root folder: {info}");
@@ -2859,12 +2909,20 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 if (hive == RegistryHive.LocalMachine || hive == RegistryHive.CurrentUser)
                 {
+                    object obj = null;
                     if (_SysSettingsPlugin == null)
                     {
-                        WriteLog($"[User setting plugin] null system settings plugin, can't access local machine registry");
-                        return Task.FromResult(resvalue);
+                        WriteLog($"[User setting plugin] null system settings plugin, can't read registry (read it over user directly)");
+                        //return Task.FromResult(resvalue);
+
+                        //read registry directly from user SA
+                        obj = DDPMRegistryHelper.ReadRegistryKey(hive, keyPath, keyName);//.ReadRegistryData(hive, keyPath, keyName);
                     }
-                    object obj = _SysSettingsPlugin.ReadRegistryData(hive, keyPath, keyName).Result;
+                    else
+                    {
+                        obj = _SysSettingsPlugin.ReadRegistryData(hive, keyPath, keyName).Result;
+                    }
+                    
                     if (obj != null)
                         WriteLog($"[User setting plugin] Read data success");
                     else
@@ -2890,12 +2948,29 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 if (hive == RegistryHive.LocalMachine || hive == RegistryHive.CurrentUser)
                 {
-                    if (_SysSettingsPlugin == null)
+                    if (_SysSettingsPlugin == null && hive == RegistryHive.LocalMachine)
                     {
                         WriteLog($"[User setting plugin] null system settings plugin, can't access local machine registry");
                         return Task.FromResult(false);
                     }
-                    bool result = _SysSettingsPlugin.WriteRegistryData(hive, keyPath, keyName, value).Result;
+                    bool result = false;
+                    if (hive == RegistryHive.LocalMachine)
+                    {
+                        result = _SysSettingsPlugin.WriteRegistryData(hive, keyPath, keyName, value).Result;
+                    }
+                    else//current user, write it directly without impersonation in sys SA
+                    {
+                        try
+                        {
+                            DDPMRegistryHelper.WriteRegistryKey(hive, keyPath, keyName, value);
+                            result = true;
+                        }
+                        catch (Exception e)
+                        {
+                            WriteLog($"[User setting plugin] WARNING: write registry cause exception ({e.Message})");
+                            return Task.FromResult(result);
+                        }                        
+                    }
                     if (result)
                         WriteLog($"[User setting plugin] Write data {value} success");
                     else
@@ -2999,14 +3074,52 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         public Task<List<string>> GetInfos(bool force_reload = false)
         {
             List<string> infos = new List<string>();
-            if (_SysSettingsPlugin != null)
+            try
             {
-                infos = _SysSettingsPlugin.GetInfos(force_reload).Result;
+                if (_SysSettingsPlugin != null)
+                {
+                    infos = _SysSettingsPlugin.GetInfos(force_reload).Result;
+                }
+            }
+            catch (Exception e)
+            {
+                WriteLog($"[GetInfos] over sys setting plugin got exception: {e.Message}");
+                infos.Clear();
             }
             if (infos == null || infos.Count == 0)
             {
+                //use default info hash
                 infos = new List<string>(InfoHash.Info_Hash);
-                //infos.Add(InfoHash.Info_Hash);
+                //try to read from file via user privilege
+                string info_path = Path.Combine(GlobalDefinitions.Folder_ProgramData, GlobalDefinitions.Folder_Product, GlobalDefinitions.Filename_appsettings_Info);
+                string msg = string.Empty;
+                if (File.Exists(info_path) && DDPMFileSecurity.ValidateFilePath(info_path, out msg))
+                {
+                    WriteLog("[GetInfos] get infos from sys setting but empty, try to query from file directly");
+                    msg = string.Empty;
+                    string serialized_string = DDPMFileSecurity.GetSerializedJsonString(info_path, out msg);
+                    if (!string.IsNullOrEmpty(serialized_string))
+                    {
+                        InfoObject local_infos = JsonConvert.DeserializeObject<InfoObject>(serialized_string);
+                        // Use LINQ to add only non-duplicate items from newList to existingList
+                        if (local_infos != null && local_infos.Infos != null && local_infos.Infos.Count > 0)
+                        {
+                            infos.AddRange(local_infos.Infos.Where(item => !infos.Contains(item)));
+                            WriteLog("[GetInfos] query from file directly success");
+                        }
+                    }
+                    else
+                    {
+                        WriteLog($"[GetInfos] query from file is empty also. ({msg})");
+                    }
+                }
+                else
+                {
+                    if (!File.Exists(info_path))
+                        WriteLog("[GetInfos] file not exist, no data loaded");
+                    else if(!string.IsNullOrEmpty(msg))
+                        WriteLog($"[GetInfos] valid file path failed. ({msg})");
+                }
             }
             return Task.FromResult(infos);
         }

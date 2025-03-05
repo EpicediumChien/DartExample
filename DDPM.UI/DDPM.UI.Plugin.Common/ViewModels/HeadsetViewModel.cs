@@ -655,7 +655,8 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, RegPath, RegKeyForQRCode).Result;
+                    //regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, RegPath, RegKeyForQRCode).Result;
+                    regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, RegPath, RegKeyForQRCode);
 
                     if (regValue != null)
                     {

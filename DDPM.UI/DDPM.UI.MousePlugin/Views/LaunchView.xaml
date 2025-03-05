@@ -16,9 +16,6 @@
              SizeChanged="UserControl_SizeChanged">
   <UserControl.Resources>
     <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-      </ResourceDictionary.MergedDictionaries>
       <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
       <PluginCommon:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
       <PluginCommon:CenterVToolTipConverter x:Key="CenterVToolTipConverter" />
@@ -26,9 +23,11 @@
         <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
                                  Duration="0:0:0.4" From="{Binding RightFrameWidthFrom}" To="{Binding RightFrameWidthTo}" FillBehavior="HoldEnd" />
       </Storyboard>
-      <Style x:Key="ButtonToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+      <Style x:Key="ButtonToolTipStyle" TargetType="ToolTip">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Placement" Value="Right" />
-        <Setter Property="HorizontalOffset" Value="8" />
+        <Setter Property="HorizontalOffset" Value="0" />
         <Setter Property="VerticalOffset">
           <Setter.Value>
             <MultiBinding Converter="{StaticResource CenterVToolTipConverter}">
@@ -92,7 +91,14 @@
                                            MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsScrollTiltLeftVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding ScrollTiltLeftTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding ScrollTiltLeftTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -100,7 +106,14 @@
                                            MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsScrollWheelClickVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding ScrollWheelClickTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding ScrollWheelClickTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -108,7 +121,14 @@
                                            MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsScrollTiltRightVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding ScrollTiltRightTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding ScrollTiltRightTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -120,7 +140,12 @@
                                            MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsSideButtonForwardVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding SideButtonForwardTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <TextBlock Text="{Binding SideButtonForwardTooltip}" />
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -128,7 +153,12 @@
                                            MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsSideButtonBackVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding SideButtonBackTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <TextBlock Text="{Binding SideButtonBackTooltip}" />
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>

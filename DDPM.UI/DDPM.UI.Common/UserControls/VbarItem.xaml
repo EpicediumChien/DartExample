@@ -21,7 +21,7 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <Grid Height="64"  VerticalAlignment="Top" Margin="0,0,12,0" HorizontalAlignment="Right"
+  <Grid Height="64"  VerticalAlignment="Top" Margin="0,0,10,0" HorizontalAlignment="Right"
           MouseEnter="rootGrid_MouseEnter" MouseLeave="rootGrid_MouseLeave"
           MouseLeftButtonDown="rootGrid_MouseLeftButtonDown">
 
