@@ -206,7 +206,7 @@ namespace DDPM.SA.Common
     /// <summary>
     /// 顯示器資訊
     /// </summary>
-    public class Properties
+    public sealed class Properties
     {
         /// <summary>
         /// 解析度:寬

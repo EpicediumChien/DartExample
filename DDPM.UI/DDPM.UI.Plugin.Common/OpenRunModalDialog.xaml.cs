@@ -98,7 +98,7 @@ namespace DDPM.UI.Plugin.Common
 
             selectedActionName = name;
             //ID = id;
-            if (OpenRunApps != null && OpenRunApps.Count() > 0 && name == OpenRunApps[0])
+            if (OpenRunApps != null && OpenRunApps.Count > 0 && name == OpenRunApps[0])
             {
                 spOpen.Visibility = Visibility.Visible;
                 btnSave.IsEnabled = false;
