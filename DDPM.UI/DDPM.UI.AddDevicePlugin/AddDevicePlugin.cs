@@ -114,7 +114,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         public void OnShown(string pluginParameter)
         {
             ConfigureServices();
-            GetPeripheralsAsync();
+            //GetPeripheralsAsync();
             GetRFDongleAsync();
             DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceChanged;
             Mouse.OverrideCursor = null;
@@ -122,13 +122,13 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         #endregion Interface IConsolePluginSupportsActivations
 
-        private void GetPeripheralsAsync()
-        {
-            _log.Debug($"GetPeripherals is invoked");
-            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
+        //private void GetPeripheralsAsync()
+        //{
+        //    _log.Debug($"GetPeripherals is invoked");
+        //    Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
 
-            _viewModel?.CheckPandora(task.Result.deviceInfo);
-        }
+        //    _viewModel?.CheckPandora(task.Result.deviceInfo);
+        //}
 
         private void DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
