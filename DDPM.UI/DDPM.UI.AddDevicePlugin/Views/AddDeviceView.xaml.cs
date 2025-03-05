@@ -94,9 +94,12 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                             }
                             Dispatcher.Invoke(new Action(() =>
                             {
-                                waitingModalDialog?.Close();
+                                if (waitingModalDialog != null)
+                                {
+                                    waitingModalDialog.Close();
+                                    _vm.GotoNewDevice();
+                                }
                             }));
-                            _vm.GotoNewDevice();
                         }
                         break;
 
