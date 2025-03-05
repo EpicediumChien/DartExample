@@ -20,25 +20,26 @@
     <Setter Property="FontFamily" Value="Roboto" />
   </Style>-->
   <Style x:Key="InfoToolTipStyle" TargetType="ToolTip">
-    <Setter Property="Template">
-      <Setter.Value>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Background" Value="Transparent"/>
+    <!--<Setter.Value>
         <ControlTemplate TargetType="ToolTip">
-          <Border Background="{TemplateBinding Background}"
-                            BorderBrush="#293B4D"
-                            BorderThickness="1"
+          <Border        BorderThickness="0"
                             CornerRadius="4">
-            <!--<TextBlock Text="{TemplateBinding Content}"
+            -->
+    <!--<TextBlock Text="{TemplateBinding Content}"
                         FontFamily="Arial" ToolTipService.InitialShowDelay="1"
                         FontSize="12"
                         FontWeight="Normal"
                         Foreground="#F5F6F7"
                         Background="#193475F2"
                         Padding="8,12,8,12" />-->
+    <!--
             <ContentPresenter />
           </Border>
         </ControlTemplate>
-      </Setter.Value>
-    </Setter>
+      </Setter.Value>-->
+
   </Style>
   <Style x:Key="MouseToolTipTextStyle" TargetType="TextBlock">
     <Setter Property="ToolTipService.InitialShowDelay" Value="1" />
