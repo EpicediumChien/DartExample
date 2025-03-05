@@ -12888,46 +12888,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetAirAudioIsMicNoiseCancellationAsync(string Guid)
-        {
-            string guid = Guid;
-
-            try
-            {
-                if (!await GetItemIDAsync("AirAudio", guid))
-                    return false;
-
-                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
-                if (commodity is ICommodity)
-                {
-                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsMicNoiseCancellation");
-                    if (value == null)
-                    {
-                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationAsync: IsMicNoiseCancellation is null for {guid}");
-                        return false;
-                    }
-
-                    if (value is bool boolValue)
-                    {
-                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationAsync succeeded for {guid}");
-                        return boolValue;
-                    }
-                    else
-                    {
-                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationAsync: IsMicNoiseCancellation is not a boolean for {guid}");
-                        return false;
-                    }
-                }
-
-                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationAsync failed: Could not retrieve commodity interface for {guid}");
-                return false;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationAsync failed for {guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
+       
 
         public async Task<bool> GetAirAudioIsWearDetectionQuickPauseSupportedAsync(string Guid)
         {
@@ -13668,46 +13629,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetAirAudioIsWearDetectionQuickPauseAsync(string Guid)
-        {
-            string guid = Guid;
-            try
-            {
-                if (!await GetItemIDAsync("AirAudio", guid))
-                    return -1;
-
-                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
-                if (commodity is ICommodity)
-                {
-                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "WearDetectionQuickPause");
-
-                    if (value == null)
-                    {
-                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseAsync failed for {guid}. WearDetectionQuickPause is null.");
-                        return -99;
-                    }
-                    else if (value is int intValue)
-                    {
-                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseAsync succeeded for {guid} with value: {intValue}");
-                        return intValue;
-                    }
-                    else
-                    {
-                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseAsync failed for {guid}. WearDetectionQuickPause is not an integer.");
-                        return -99;
-                    }
-
-                }
-
-                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseAsync failed: Could not retrieve commodity interface for {guid}");
-                return -99;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseAsync failed for {guid} - Exception: {ex.Message}");
-                return -99;
-            }
-        }
+       
 
         public async Task<int> GetAirAudioAncGainAsync(string Guid)
         {
@@ -14361,6 +14283,438 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             catch (Exception ex)
             {
                 writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioODMIdAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<string> GetAirAudioSerialNumberCaseAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "SerialNumberCase");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSerialNumberCaseAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSerialNumberCaseAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSerialNumberCaseAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioBatteryStatusLeftAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BatteryStatusLeft");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryStatusLeftAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryStatusLeftAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryStatusLeftAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioBatteryStatusRightAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BatteryStatusRight");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryStatusRightAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryStatusRightAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryStatusRightAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioBatteryStatusCaseAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BatteryStatusCase");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryStatusCaseAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryStatusCaseAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryStatusCaseAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsAutoPowerOffEnabledAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsAutoPowerOffEnabled");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsAutoPowerOffEnabledAsync: IsMicNoiseCancellation is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsAutoPowerOffEnabledAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsAutoPowerOffEnabledAsync: IsMicNoiseCancellation is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsAutoPowerOffEnabledAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsAutoPowerOffEnabledAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioMicNoiseCancellationAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "MicNoiseCancellation");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMicNoiseCancellationAsync: IsMicNoiseCancellation is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMicNoiseCancellationAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMicNoiseCancellationAsync: IsMicNoiseCancellation is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMicNoiseCancellationAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMicNoiseCancellationAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<int> GetAirAudioWearDetectionQuickPauseAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "WearDetectionQuickPause");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioWearDetectionQuickPauseAsync failed for {guid}. WearDetectionQuickPause is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioWearDetectionQuickPauseAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioWearDetectionQuickPauseAsync failed for {guid}. WearDetectionQuickPause is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioWearDetectionQuickPauseAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioWearDetectionQuickPauseAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionAnswerCallsEnabledAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsWearDetectionAnswerCallsEnabled");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionAnswerCallsEnabledAsync: IsMicNoiseCancellation is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionAnswerCallsEnabledAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionAnswerCallsEnabledAsync: IsMicNoiseCancellation is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionAnswerCallsEnabledAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionAnswerCallsEnabledAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<int> GetAirAudioAutoPowerOffIntervalAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "AutoPowerOffInterval");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioAutoPowerOffIntervalAsync failed for {guid}. WearDetectionQuickPause is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioAutoPowerOffIntervalAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioAutoPowerOffIntervalAsync failed for {guid}. WearDetectionQuickPause is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioAutoPowerOffIntervalAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioAutoPowerOffIntervalAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioBatteryLevelLeftAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BatteryLevelLeft");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelLeftAsync failed for {guid}. WearDetectionQuickPause is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelLeftAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelLeftAsync failed for {guid}. WearDetectionQuickPause is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelLeftAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelLeftAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioBatteryLevelRightAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BatteryLevelRight");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelRightAsync failed for {guid}. WearDetectionQuickPause is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelRightAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelRightAsync failed for {guid}. WearDetectionQuickPause is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelRightAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelRightAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioBatteryLevelCaseAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BatteryLevelCase");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelCaseAsync failed for {guid}. WearDetectionQuickPause is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelCaseAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelCaseAsync failed for {guid}. WearDetectionQuickPause is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelCaseAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelCaseAsync failed for {guid} - Exception: {ex.Message}");
                 return -99;
             }
         }
@@ -15030,6 +15384,122 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             catch (Exception ex)
             {
                 writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioIsWearDetectionMuteMicEnabledAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetFactoryResetAsyncValueForAirAudioAsync(string Guid, bool newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "FactoryReset", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetFactoryResetAsyncValueForAirAudioAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetFactoryResetAsyncValueForAirAudioAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioIsAutoPowerOffEnabledAsync(string Guid, bool newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "IsAutoPowerOffEnabled", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioIsAutoPowerOffEnabledAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioIsAutoPowerOffEnabledAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioIsWearDetectionAnswerCallsEnabledAsync(string Guid, bool newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "IsWearDetectionAnswerCallsEnabled", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioIsWearDetectionAnswerCallsEnabledAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioIsWearDetectionAnswerCallsEnabledAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioAutoPowerOffIntervalAsync(string Guid, int newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "AutoPowerOffInterval", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioAutoPowerOffIntervalAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioAutoPowerOffIntervalAsync failed: {ex.Message}");
                 return false;
             }
         }

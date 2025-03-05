@@ -449,7 +449,29 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         dev.SortOrder = (int)dev.DeviceCategory + idxHeadset;
                         idxHeadset++;
                     }
-
+                    else if (devType.ToString().ToUpper().Contains("LOGICALAIRAUDIO"))
+                    {
+                        string imagepath = "";
+                        switch (di.ModelNumber)
+                        {
+                            case "SP325":
+                                imagepath = "Resources/Speaker_SP325.png";
+                                break;
+                            case "SL525":
+                                imagepath = "Resources/Speaker_SL525.png";
+                                break;
+                            case "SB725":
+                                imagepath = "Resources/Speaker_SB725.png";
+                                break;
+                            default:
+                                imagepath = "Resources/Speaker_SB725.png";
+                                break;
+                        }
+                        dev.DeviceCategory = eDeviceCategory.AirAudio;
+                        dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath);
+                        dev.SortOrder = (int)dev.DeviceCategory + idxAirAudio;
+                        idxAirAudio++;
+                    }
                     //0726 Wayn 新增Soundbar/Speaker LogicalWiredAudio
                     else if (devType.ToString().ToUpper().Contains("LOGICALWIREDAUDIO"))
                     {
