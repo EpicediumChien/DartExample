@@ -1654,6 +1654,37 @@ namespace DDPM.UI.Common
             // Default scaling is 1.0 (100%)
             return 1.0;
         }
+
+        public static object ReadRegistryData(RegistryHive hive, string keyPath, string keyName)
+        {
+            object obj = null;
+            try
+            {
+                if (DeviceManagerSA != null)
+                {
+                    return DeviceManagerSA.ReadRegistryData(hive, keyPath, keyName).Result;
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteUILog($"[ReadRegistryData] over DeviceManager exception: ({ex.ToString()})");
+            }
+            WriteUILog($"[ReadRegistryData] read registry from UI directly");
+            try
+            {
+                obj = DDPMRegistryHelper.ReadRegistryKey(hive, keyPath, keyName);
+            }
+            catch (Exception ex)
+            {
+                WriteUILog($"[ReadRegistryData] over UI exception: ({ex.ToString()})");
+            }
+            if (obj == null)
+            {
+                WriteUILog($"[ReadRegistryData] keyName: {keyName} is null");
+                return null;
+            }
+            return obj;
+        }
     }
 
     public class BindingProxy : Freezable
