@@ -78,7 +78,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private const string folder_localappdata_Display = "Display";
         private const string folder_localappdata_Migration = "Migration";
         private const string folder_localappdata_Export = "Export";
-        private const string filename_appsettings_peruser = "DDPM.Configs.json";
+        //private const string filename_appsettings_peruser = "DDPM.Configs.json";
 
         private const string filename_colorpreset_peruser = "ColorSetting.json";
         private const string filename_hotkey_peruser = "HotkeySetting.json";
@@ -645,6 +645,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 var ddpm_app = new DDPMAppSettings();
                 var ddpm_user = new DDPMUserSettings();
                 var ddpm_it = new DDPMITConfig();
+                if(string.IsNullOrEmpty(_settings_path))
+                {
+                    string folder = GetActiveUserLocalAppDataPath();
+                    string folder_appdatapath_ddpm = folder + "\\" + GlobalDefinitions.Folder_Product;
+                    string file_appdatapath_userconfig = folder_appdatapath_ddpm + "\\" + GlobalDefinitions.Filename_appsettings_peruser;
+                    _settings_path = file_appdatapath_userconfig;
+                    WriteLog("ReloadAppConfigData, null file path, re-combine it");
+                }
 
                 if (!string.IsNullOrEmpty(_settings_path)) // 2024-07-09, Elie: check string is null or empty before using.
                 {
@@ -2377,7 +2385,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 _settings = null;
                 return null;
             }
-            string file_appdatapath_userconfig = folder_appdatapath_ddpm + "\\" + filename_appsettings_peruser;
+            string file_appdatapath_userconfig = folder_appdatapath_ddpm + "\\" + GlobalDefinitions.Filename_appsettings_peruser;
             _settings_path = file_appdatapath_userconfig;
             WriteLog($"_settings_path is {_settings_path}.");
 
