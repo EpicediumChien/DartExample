@@ -12499,7 +12499,7 @@ namespace DDPM.CLI.Plugins.Display
                             else if (commandLineInput.Command == "GET")
                             {
                                 writelog("SPEAKERVOLUME GET entry");
-                                rc = GetVCPCode(devMgr, monitor, "0x62", 2).Result;
+                                rc = GetVCPCode(devMgr, monitor, "0x62", 0).Result;
                                 cli_Response.Value = get_SpeakerVolume_status(Convert.ToInt32(rc.value));
                                 retcode = true;
                             }
