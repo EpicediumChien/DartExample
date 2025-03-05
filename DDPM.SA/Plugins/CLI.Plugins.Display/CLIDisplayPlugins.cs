@@ -7917,16 +7917,16 @@ namespace DDPM.CLI.Plugins.Display
                         S_PowerNap_RESPONSE.Command = "SET";
                         S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
 
-                        read_list.RemoveAll(x => x.SerialNumber == null);
-                        int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                        read_list.RemoveAll(x => x.ServiceTag == null);
+                        int idx = read_list.FindIndex(x => x.ServiceTag.Equals(monitor.edid.ServiceTag));
                         if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                         {
                             await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
                             S_PowerNap_RESPONSE.Result = "PASS";
                             S_PowerNap_RESPONSE.Value = "Off";
                             read_list = (devMgr.ReadPowerNapSettings().Result).ToList();
-                            read_list.RemoveAll(x => x.SerialNumber == null);
-                            idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                            read_list.RemoveAll(x => x.ServiceTag == null);
+                            idx = read_list.FindIndex(x => x.ServiceTag.Equals(monitor.edid.ServiceTag));
                         }
                         if (read_list.Count > 0 || idx >= 0)
                         {
@@ -7968,8 +7968,8 @@ namespace DDPM.CLI.Plugins.Display
                             }
                         }
                         List<PowerNapSetting> rst = devMgr.ReadPowerNapSettings().Result;
-                        rst.RemoveAll(x => x.SerialNumber == null);
-                        int idex = rst.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                        rst.RemoveAll(x => x.ServiceTag == null);
+                        int idex = rst.FindIndex(x => x.ServiceTag.Equals(monitor.edid.ServiceTag));
                         PowerNapSetting tmp = rst[idex];
                         S_PowerNap_RESPONSE.Result = "PASS";
                         if (tmp.RunType.ToString().Equals("SleepIfRunning"))
@@ -7992,16 +7992,16 @@ namespace DDPM.CLI.Plugins.Display
                         S_PowerNap_RESPONSE.Command = "SET";
                         S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
 
-                        read_list.RemoveAll(x => x.SerialNumber == null);
-                        int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                        read_list.RemoveAll(x => x.ServiceTag == null);
+                        int idx = read_list.FindIndex(x => x.ServiceTag.Equals(monitor.edid.ServiceTag));
                         if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                         {
                             await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
                             S_PowerNap_RESPONSE.Result = "PASS";
                             S_PowerNap_RESPONSE.Value = "Off";
                             read_list = (devMgr.ReadPowerNapSettings().Result).ToList();
-                            read_list.RemoveAll(x => x.SerialNumber == null);
-                            idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                            read_list.RemoveAll(x => x.ServiceTag == null);
+                            idx = read_list.FindIndex(x => x.ServiceTag.Equals(monitor.edid.ServiceTag));
                         }
                         if (read_list.Count > 0 || idx >= 0)
                         {
@@ -8042,8 +8042,8 @@ namespace DDPM.CLI.Plugins.Display
                             }
                         }
                         List<PowerNapSetting> rst = devMgr.ReadPowerNapSettings().Result;
-                        rst.RemoveAll(x => x.SerialNumber == null);
-                        int rst_idex = rst.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                        rst.RemoveAll(x => x.ServiceTag == null);
+                        int rst_idex = rst.FindIndex(x => x.ServiceTag.Equals(monitor.edid.ServiceTag));
                         PowerNapSetting tmp = rst[rst_idex];
                         S_PowerNap_RESPONSE.Result = "PASS";
                         if (tmp.RunType.ToString().Equals("SleepIfRunning"))
@@ -8068,16 +8068,16 @@ namespace DDPM.CLI.Plugins.Display
                             S_PowerNap_RESPONSE.Command = "SET";
                             S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
 
-                            read_list.RemoveAll(x => x.SerialNumber == null);
-                            int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                            read_list.RemoveAll(x => x.ServiceTag == null);
+                            int idx = read_list.FindIndex(x => x.ServiceTag.Equals(monitor.edid.ServiceTag));
                             if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                             {
                                 await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
                                 S_PowerNap_RESPONSE.Result = "PASS";
                                 S_PowerNap_RESPONSE.Value = "Off";
                                 read_list = (devMgr.ReadPowerNapSettings().Result).ToList();
-                                read_list.RemoveAll(x => x.SerialNumber == null);
-                                idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                                read_list.RemoveAll(x => x.ServiceTag == null);
+                                idx = read_list.FindIndex(x => x.ServiceTag.Equals(monitor.edid.ServiceTag));
                             }
                             if (read_list.Count > 0 || idx >= 0)
                             {
@@ -8119,8 +8119,8 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                             }
                             List<PowerNapSetting> rst = devMgr.ReadPowerNapSettings().Result;
-                            rst.RemoveAll(x => x.SerialNumber == null);
-                            int idex = rst.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                            rst.RemoveAll(x => x.ServiceTag == null);
+                            int idex = rst.FindIndex(x => x.ServiceTag.Equals(monitor.edid.ServiceTag));
                             PowerNapSetting tmp_rst = rst[idex];
                             S_PowerNap_RESPONSE.Result = "PASS";
                             if (tmp_rst.RunType.ToString().Equals("SleepIfRunning"))
@@ -8146,16 +8146,16 @@ namespace DDPM.CLI.Plugins.Display
                             S_PowerNap_RESPONSE.Command = "SET";
                             S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
 
-                            read_list.RemoveAll(x => x.SerialNumber == null);
-                            int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                            read_list.RemoveAll(x => x.ServiceTag == null);
+                            int idx = read_list.FindIndex(x => x.ServiceTag.Equals(monitor.edid.ServiceTag));
                             if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                             {
                                 await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
                                 S_PowerNap_RESPONSE.Result = "PASS";
                                 S_PowerNap_RESPONSE.Value = "Off";
                                 read_list = (devMgr.ReadPowerNapSettings().Result).ToList();
-                                read_list.RemoveAll(x => x.SerialNumber == null);
-                                idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                                read_list.RemoveAll(x => x.ServiceTag == null);
+                                idx = read_list.FindIndex(x => x.ServiceTag.Equals(monitor.edid.ServiceTag));
                             }
                             if (read_list.Count > 0 || idx >= 0)
                             {
@@ -8197,8 +8197,8 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                             }
                             List<PowerNapSetting> rst = devMgr.ReadPowerNapSettings().Result;
-                            rst.RemoveAll(x => x.SerialNumber == null);
-                            int idex = rst.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                            rst.RemoveAll(x => x.ServiceTag == null);
+                            int idex = rst.FindIndex(x => x.ServiceTag.Equals(monitor.edid.ServiceTag));
                             PowerNapSetting tmp_rst = rst[idex];
                             S_PowerNap_RESPONSE.Result = "PASS";
                             if (tmp_rst.RunType.ToString().Equals("SleepIfRunning"))
@@ -8227,8 +8227,8 @@ namespace DDPM.CLI.Plugins.Display
                         S_PowerNap_RESPONSE.Command = "GET";
                         S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
 
-                        read_list.RemoveAll(x => x.SerialNumber == null);
-                        int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                        read_list.RemoveAll(x => x.ServiceTag == null);
+                        int idx = read_list.FindIndex(x => x.ServiceTag.Equals(monitor.edid.ServiceTag));
                         if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                         {
                             await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
@@ -8259,8 +8259,8 @@ namespace DDPM.CLI.Plugins.Display
                         S_PowerNap_RESPONSE.Command = "GET";
                         S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
 
-                        read_list.RemoveAll(x => x.SerialNumber == null);
-                        int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                        read_list.RemoveAll(x => x.ServiceTag == null);
+                        int idx = read_list.FindIndex(x => x.ServiceTag.Equals(monitor.edid.ServiceTag));
                         if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                         {
                             await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
@@ -8293,8 +8293,8 @@ namespace DDPM.CLI.Plugins.Display
                             S_PowerNap_RESPONSE.Command = "GET";
                             S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
 
-                            read_list.RemoveAll(x => x.SerialNumber == null);
-                            int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
+                            read_list.RemoveAll(x => x.ServiceTag == null);
+                            int idx = read_list.FindIndex(x => x.ServiceTag.Equals(monitor.edid.ServiceTag));
                             if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                             {
                                 await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
