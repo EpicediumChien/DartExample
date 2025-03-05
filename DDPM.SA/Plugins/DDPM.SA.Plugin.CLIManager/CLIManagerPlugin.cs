@@ -1025,24 +1025,32 @@ namespace DDPM.SA.Plugin.CLIManager
         }
         public Task<bool> checkDefer(int from, string guid, string commanddata)
         {
-
-            DeferItem item = new DeferItem(from, guid, commanddata);
-
-            string did = item.deferid;
-            if (!string.IsNullOrEmpty(did))
+            try
             {
-                onCLIToastEventNotify(new CLIEventToastArgs()
-                {
-                    defer_id = did,
-                    toast_message = commanddata,
-                    is_defer = true,
-                    defer_item = item
-                });
-            }
-            
-            bool result = checkToastResult(did, item);
+                DeferItem item = new DeferItem(from, guid, commanddata);
 
-            return Task.FromResult(result);
+                string did = item.deferid;
+                if (!string.IsNullOrEmpty(did))
+                {
+                    onCLIToastEventNotify(new CLIEventToastArgs()
+                    {
+                        defer_id = did,
+                        toast_message = commanddata,
+                        is_defer = true,
+                        defer_item = item
+                    });
+                }
+
+                bool result = checkToastResult(did, item);
+
+                return Task.FromResult(result);
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"[CLIManagerPlugin] checkDefer got exception: {ex.ToString}");
+                return Task.FromResult(false);
+            }
+
         }
 
         public Task<bool> checkDeferSchedule(int from, string guid, DeferItem item)
@@ -1060,7 +1068,7 @@ namespace DDPM.SA.Plugin.CLIManager
                 });
             }
 
-            bool result = checkToastResult(did, item);
+            bool result =  checkToastResult(did, item);
 
             return Task.FromResult(result);
         }
@@ -1079,6 +1087,8 @@ namespace DDPM.SA.Plugin.CLIManager
                 {
                     //if end user select defer within 5 min
                     WriteLog("@@ CLIManagerPlugin::checkToastResult deferResponse.ContainsKey " + key);
+                    Thread.Sleep(1000);
+
                     if (deferResponse[key])
                     {
                         WriteLog("@@ CLIManagerPlugin::checkToastResult deferResponse[did] =  " + deferResponse[key]);
@@ -1092,7 +1102,7 @@ namespace DDPM.SA.Plugin.CLIManager
                     deferResponse.Remove(key);
 
                     // modified @ 20250225 stephen : fix bug while user press update now
-                    return false;    
+                    return false;
                     //break;
                 }
             }
@@ -1212,18 +1222,26 @@ namespace DDPM.SA.Plugin.CLIManager
 
         public Task<bool> checkDeviceConn(int from, string guid, string commanddata, string str_command)
         {
-            DeferItem item = new DeferItem(from, guid, commanddata);
-
-            initResultDeviceCheck();
-
-            onCLIDeviceCheckEventNotify(new CLIEventDeviceConnArgs()
+            try
             {
-                commands = str_command
-            });
+                DeferItem item = new DeferItem(from, guid, commanddata);
 
-            bool result = checkDeviceConnResult(item);
+                initResultDeviceCheck();
 
-            return Task.FromResult(result);
+                onCLIDeviceCheckEventNotify(new CLIEventDeviceConnArgs()
+                {
+                    commands = str_command
+                });
+
+                bool result = checkDeviceConnResult(item);
+
+                return Task.FromResult(result);
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"CLIManagerPlugin::checkDeviceConn got exception: {ex.ToString()}");
+                return Task.FromResult(false);
+            }
         }
 
         private void initResultDeviceCheck()

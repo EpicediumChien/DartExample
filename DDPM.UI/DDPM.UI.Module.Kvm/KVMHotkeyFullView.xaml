@@ -172,7 +172,7 @@
                 <TextBox Width="1" Height="1" Name="tbCleanFocus" Panel.ZIndex="-99" />
             </Grid>
         </Grid>
-        <Border Name="DisableAll" Background="#4C24273C">
+        <Border Grid.RowSpan="2"  Name="DisableAll" Background="#4C24273C">
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="Visibility" Value="Collapsed" />

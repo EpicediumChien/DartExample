@@ -1,7 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.Models;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Threading;
 [assembly: InternalsVisibleTo("DDPM.UI.Common.Tests")]
 
 namespace DDPM.UI.Common
@@ -85,6 +88,10 @@ namespace DDPM.UI.Common
                 if (headers[i].IsShown)
                     _shownCount++;
             }
+            //set default is collapsed
+            Locker1 = Visibility.Collapsed;
+            Locker2 = Visibility.Collapsed;
+            Locker3 = Visibility.Collapsed;
 
             if (_itemCount == 3)
             {
@@ -102,6 +109,17 @@ namespace DDPM.UI.Common
                     _externalIndex1 = 0;
                     _externalIndex2 = 1;
                     _externalIndex3 = 2;
+
+                    //fix timing issue with lock icon
+                    if (Text1.Equals(Strings.RightViewHeader_BrightnessContrast))
+                    {
+                        DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();
+                        if (data != null && data.LockSettings != null)
+                        {
+                            Locker1 = data.LockSettings.Lock_Display_BriCont ? Visibility.Visible : Visibility.Collapsed;
+                            DdpmCommonHelper.WriteUILog($"[SetHeaders] Apply Brightness (lock) : {data.LockSettings.Lock_Display_BriCont}");
+                        }
+                    }
                     return;
                 }
                 if (_shownCount == 2)

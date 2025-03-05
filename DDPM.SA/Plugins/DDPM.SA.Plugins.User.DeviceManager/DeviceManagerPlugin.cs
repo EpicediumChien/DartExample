@@ -2208,6 +2208,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _DisplayManagerPlugin.GetUSBUpstreamList(monitor).Wait();
                     _DisplayManagerPlugin.GetAllUSBUpstream(monitor).Wait();
                     _DisplayManagerPlugin.GetVCPCapability(monitor, 0xE9).Wait();
+                    _DisplayManagerPlugin.GetDisplayPropertiesInfo(monitor).Wait();
+                    if (monitor.CapabilityString.Contains("F4"))
+                    {
+                        _DisplayManagerPlugin.GetGamingProperties_SupportedList(monitor).Wait();
+                    }
                 }
                 UpdateHotkeyInfo();
 
@@ -11789,6 +11794,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() into Re-GetDevices ...");
                             //Call VCP to catch updated monitor info
                             _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.Re_GetMonitors(token).Result);
+
+                            // add @ 20250303 stephen
+                            // modified @ 20250305 stephen : set count = -1 as a flag to avoid trigger ui reflash
+                            if (_arg != null)
+                            {
+                                arg = (DebouncerArg)_arg;
+                                show_displays_changed(arg.sender, new DisplaychangedEventArgs() { count = -1, monitors = _AllInfoMonitors });
+                            }
+                            // add @ 20250303 stephen
+
                             //NKVM monitor change
                             if (_NKVMPlugin != null)
                             {
@@ -11936,8 +11951,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"DeviceMangerPlugin brocast OnDisplaychanged ...(monitor count {e.monitors.Count})");
 
             EventHandler<DisplaychangedEventArgs> handler = Displaychanged;
-            //if (handler != null)
-            //    handler.Invoke(this, e);
+
+            // modified @ 20250303 stephen
+            // modified @ 20250305 stephen : new DisplaychangedEventArgs, avoid trigger ui reflash
+            if (handler != null)
+            {
+                writelog($"DeviceMangerPlugin brocast OnDisplaychanged for CMA ...(e.count = {e.count})");
+                handler.Invoke(this, e);
+            }
+
+            if (e.count < 0) {
+                writelog($"DeviceMangerPlugin brocast OnDisplaychanged End process for CMA ...(e.count = {e.count})");
+                return;
+            }
+            // modified @ 20250303 stephen
+
             //if (_DisplayManagerPlugin != null)
             //{
             //    displayInOut = false;
@@ -12410,6 +12438,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void show_displays_changed(object sender, DisplaychangedEventArgs e)
         {
+            // add @ 20250305 stephen
+            if (e.count < 0) {
+                writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin, but count < 0 *****");
+                OnDisplaychanged(e);
+                return;
+            }
+            // add @ 20250305 stephen
+
             writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin");
             writelog("Send out Displaychanged Event Notify from DeviceMangerPlugin");
 
@@ -16298,12 +16334,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             strpcsList = JsonConvert.SerializeObject(pcslist, Formatting.Indented);
             return strpcsList;
         }
-
         private Dictionary<string, PCsInfo> USBKVMPCsListDeserialize(string strpcslist)
         {
-            Dictionary<string, PCsInfo> pcslist = new Dictionary<string, PCsInfo>();
-            pcslist = JsonConvert.DeserializeObject<Dictionary<string, PCsInfo>>(strpcslist);
-            return pcslist;
+            try
+            {
+                Dictionary<string, PCsInfo> pcslist = JsonConvert.DeserializeObject<Dictionary<string, PCsInfo>>(strpcslist);
+                return pcslist;
+            }
+            catch (JsonException ex)
+            {
+                WriteLog($"[USBKVMPCsListDeserialize] JSON deserialization error: {ex.Message}");
+                return new Dictionary<string, PCsInfo>();
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"[USBKVMPCsListDeserialize] Unexpected error: {ex.Message}");
+                return new Dictionary<string, PCsInfo>();
+            }
         }
 
         #endregion
@@ -16956,12 +17003,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //PowerNap
             DDMtoDDPM_PowerNap(DDMmonitorsettings);
             //Consent Page
-            //DDMtoDDPM_ConsentPage(DDMusersettings);
+            DDMtoDDPM_ConsentPage(DDMusersettings);
         }
 
         private void DDMtoDDPM_KVM(DDMMonitorSettings ddmMonitorSettings)
         {
-            try 
+            try
             {
                 if (ddmMonitorSettings != null)
                 {
@@ -17467,6 +17514,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     settings.UserSettings.isDisplayConsentPage = true;
                     settings.LockSettings.global_setting.isTelemetryConsentOn = ddmUserSettings.AllowTelemetry;
                     bool b = _SettingsPlugin.SetAppConfigData(settings).Result;
+                    //write registry
+                    string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.CONSENT_PAGE";
+                    string regPath = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
+                    bool br = WriteRegistryData(RegistryHive.LocalMachine, regPath, regKey, true).Result;
                 }
                 else
                 {
@@ -18150,30 +18201,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                                     case OSDType.Error:
                                         {
-                                            if (State)
+                                            //if (State) 
+                                            //{
+                                            //    try
+                                            //    {
+                                            //        _OSD_Controler.Error_CloseWindow();
+                                            //        _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            //    }
+                                            //    catch (Exception ex)
+                                            //    {
+                                            //        writelog($"[_showosd] ERROR - OSDType.Error: {ex.Message}, State:{State}");
+                                            //    }
+                                            //}
+                                            //else
+                                            //{
+                                            try
                                             {
-                                                try
-                                                {
-                                                    _OSD_Controler.Error_CloseWindow();
-                                                    _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    writelog($"[_showosd] ERROR - OSDType.Error: {ex.Message}, State:{State}");
-                                                }
+                                                _OSD_Controler.Error_CloseWindow();
+                                                _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                             }
-                                            else
+                                            catch (Exception ex)
                                             {
-                                                try
-                                                {
-                                                    _OSD_Controler.Error_CloseWindow();
-                                                    _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    writelog($"[_showosd] ERROR - OSDType.Error: {ex.Message}, State:{State}");
-                                                }
+                                                writelog($"[_showosd] ERROR - OSDType.Error: {ex.Message}, State:{State}");
                                             }
+                                            //}
                                         }
                                         break;
 

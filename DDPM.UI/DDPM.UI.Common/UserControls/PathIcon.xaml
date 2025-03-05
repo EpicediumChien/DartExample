@@ -9,7 +9,7 @@
              Width="32" Height="32"
              d:DesignHeight="32" d:DesignWidth="32" 
              
-             PreviewKeyDown="UserControl_PreviewKeyDown">
+             PreviewKeyDown="UserControl_PreviewKeyDown" MouseLeftButtonDown="UserControl_MouseLeftButtonDowm">
     <!-- 
     KeyboardNavigation.TabNavigation="None"
     -->

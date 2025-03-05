@@ -2431,6 +2431,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _iDeviceManager = _iClient.DeviceManager;
                     _iDeviceManager.DeviceAddedEvent += _iDeviceManager_DeviceAddedEvent;
                     _iDeviceManager.DeviceRemovedEvent += _iDeviceManager_DeviceRemovedEvent;
+                    _iClient.RawInputManager.DisplayDataChanged += RawInputManager_DisplayDataChanged;
                     // First go through existing PhysicalDevices and add events
                     foreach (var iPhysicalDevice in _iDeviceManager.Devices)
                     {
@@ -2514,6 +2515,22 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             //Console.WriteLine(_clientInfo.ToString());
             //Debug.WriteLine(_clientInfo.ToString());
             writelog(_clientInfo.ToString());
+        }
+
+        private void RawInputManager_DisplayDataChanged(string obj)
+        {
+            writelog($"KeyStroke DisplayDataChanged: value:{obj}");
+            DeviceInfo di = new()
+            {
+                Message = obj
+            };
+            DeviceChangedEventArgs _EventArgs = new()
+            {
+                type = DeviceChangedType.Peripherals_SettingsChange,
+                device_peripherals = di,
+                changedProperty = "KeyStrokeDisplayDataChanged"
+            };
+            OnNotify(_EventArgs);
         }
 
         private void _iCTKMessageHelper_IsZoomCallbacksRegisteredChanged(bool obj)
@@ -2966,6 +2983,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
                 if (deviceInfo != null)
                 {
+                    var oldStatus = deviceInfo.BatteryStatus;
                     deviceInfo.BatteryStatus = arg2.ToString();
 
                     DeviceChangedEventArgs _EventArgs = new();
@@ -2975,12 +2993,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     OnNotify(_EventArgs);
                     Debug.WriteLine($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
                     writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
-                    CheckLowBatteryOSD(deviceInfo);
 
                     // << 250217 added by Hess to meet PIMS-341711
-                    if (deviceInfo.BatteryStatus == "Charging")
+                    if (deviceInfo.BatteryStatus == "Charging" || oldStatus == "Charging")
                         LowBatteryIDs.Remove(deviceInfo.ID.ToString());
                     // >>
+                    CheckLowBatteryOSD(deviceInfo);
                 }
                 else
                 {
@@ -3062,7 +3080,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     return;
                 }
 
-                if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9 && deviceInfo.BatteryStatus != "Charging" && !LowBatteryIDs.ContainsKey(deviceInfo.ID.ToString()))
+                if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9 && !LowBatteryIDs.ContainsKey(deviceInfo.ID.ToString())) // && deviceInfo.BatteryStatus != "Charging")
                 {
                     OSDType_Device type = OSDType_Device.Unknown;
                     var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
@@ -4135,9 +4153,23 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 toastContentBuilder.AddText(LangHelper.Instance["Multiple_docks_are_detected2"]);
                 toastContentBuilder.Show(); // 顯示Toast通知
                 _deviceHelper_ForDock.deviceInfo = _deviceHelper.deviceInfo.FindAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
-                for (int i = 0; i < _deviceHelper_ForDock.deviceInfo.Count; i++)
+                //for (int i = 0; i < _deviceHelper_ForDock.deviceInfo.Count; i++)
+                //{
+                //    DeviceInfo device = _deviceHelper_ForDock.deviceInfo[i];
+                //    device.IsConnected = false;
+
+                //    DeviceChangedEventArgs _EventArgs = new()
+                //    {
+                //        type = DeviceChangedType.Display_UnPlug,
+                //        device_peripherals = device,
+                //        changedProperty = "LogicalDeviceRemoved"
+                //    };
+                //    OnNotify(_EventArgs);
+                //    break;
+                //}
+                if (_deviceHelper_ForDock.deviceInfo.Count > 0)
                 {
-                    DeviceInfo device = _deviceHelper_ForDock.deviceInfo[i];
+                    DeviceInfo device = _deviceHelper_ForDock.deviceInfo[0];
                     device.IsConnected = false;
 
                     DeviceChangedEventArgs _EventArgs = new()
@@ -4147,7 +4179,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         changedProperty = "LogicalDeviceRemoved"
                     };
                     OnNotify(_EventArgs);
-                    break;
                 }
                 //Bruce 02/24 If multiple docks are docked consecutively, all docks will remove
                 writelog("ChangeDock Connecting multiple docks so remove all dock");

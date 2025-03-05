@@ -449,7 +449,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="DCF.Security" Version="2.4.2.1" />
-		<PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
+		<PackageReference Include="DCF.UX.WPF" Version="2.3.14.3" />
 		<PackageReference Include="DellClientFramework" Version="6.4.11.2" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
 	</ItemGroup>
