@@ -219,6 +219,9 @@ namespace DDPM.SA.Common
 
         Task<bool> SetUSBUpstream(MonitorInfo monitorInfo, string inputsource, string upstream);
 
+        Task<bool> SetAllUSBUpstream(MonitorInfo monitorInfo, string input1, string usb1, string input2, string usb2,
+                                                                    string input3 = "", string usb3 = "", string input4 = "", string usb4 = "");
+
         Task<bool> USBSwitch(MonitorInfo monitorInfo, string inputsource1, string upstream1, string inputsource2, string upstream2);
 
         Task<string> GetCurrentInput(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low);
@@ -270,7 +273,7 @@ namespace DDPM.SA.Common
 
         Task<bool> SetOnUSBKVM(MonitorInfo monitorInfo, bool isON);
 
-        Task<bool> isScreenPartition(MonitorInfo monitorInfo);
+        Task<bool> isScreenPartition(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low);
 
         #endregion public for USBKVM
 

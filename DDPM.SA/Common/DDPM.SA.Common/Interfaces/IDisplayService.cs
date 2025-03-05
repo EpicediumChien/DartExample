@@ -149,7 +149,7 @@ namespace DDPM.SA.Common
 
         Task<Dictionary<string, PCsInfo>> GetUSBKVMPCsList(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputList, List<InputSourceObj> subInputList);
 
-        Task<bool> isScreenPartition(MonitorInfo monitorInfo);
+        Task<bool> isScreenPartition(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low);
 
         #endregion USBKVM
 
@@ -278,6 +278,7 @@ namespace DDPM.SA.Common
         #region DisplayData
 
         Task InitDisplayData(List<MonitorInfo> monitorInfos);
+        Task<bool> SetAllUSBUpstream(MonitorInfo monitorInfo, string input1, string usb1, string input2, string usb2, string input3 = null, string usb3 = null, string input4 = null, string usb4 = null);
 
         #endregion DisplayData
     }

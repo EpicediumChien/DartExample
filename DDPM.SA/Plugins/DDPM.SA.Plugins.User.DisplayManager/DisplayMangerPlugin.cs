@@ -1151,6 +1151,150 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(false);
         }
 
+        public Task<bool> SetAllUSBUpstream(MonitorInfo monitorInfo, string input1, string usb1, string input2, string usb2, 
+                                                                    string input3 = "", string usb3 = "", string input4 = "", string usb4 = "")
+        {
+            int input_num = 0;
+            ObjGetVCP objGetVCP = new ObjGetVCP();
+            List<InputSource_USB> allinputSource_USB = new List<InputSource_USB>();
+            if (monitorInfo.CapabilityDic.ContainsKey("E7"))
+            {
+                objGetVCP = GetVCPCapability(monitorInfo, 0xE7).Result;
+
+                if (objGetVCP.result)
+                {
+                    if (_getVCPCapabilities == string.Empty)
+                    {
+                        _getVCPCapabilities = GetVCPCapabilities(monitorInfo).Result;
+                    }
+                    if (!string.IsNullOrEmpty(_getVCPCapabilities))
+                    {
+                        usbUpstreamList = GetUSBUpstreamList(monitorInfo).Result;
+                        JObject VCPjson = JObject.Parse(_getVCPCapabilities);
+
+                        JObject capsDataMap = (JObject)VCPjson["CapsDataMap"];
+                        JArray input = (JArray)capsDataMap["Input Select"];
+                        string getUpstream = Convert.ToString((uint)objGetVCP.value, 2);
+                        string newstrUpstream = getUpstream;
+                        string strsetUpstream = string.Empty;
+                        if (getUpstream.Length < 16)
+                        {
+                            for (int i = 0; i < (16 - getUpstream.Length); i++)
+                            {
+                                newstrUpstream = "0" + newstrUpstream;
+                            }
+                        }
+                        List<USBPorts> uSBPorts = new List<USBPorts>();
+                        _displayDataManger.GetMonitorUSBList(monitorInfo, out uSBPorts);
+                        if (uSBPorts != null && uSBPorts.Count != 0)
+                        {
+                            strsetUpstream = newstrUpstream;
+                            Trace.WriteLine("strsetUpstream:" + strsetUpstream);
+                            if (monitorInfo.CapabilityDic.ContainsKey("EE"))
+                            {
+                                foreach (var tmp in input)
+                                {
+                                    Trace.WriteLine("tmp:" + tmp.ToString());
+                                    int index = -1;
+                                    Trace.WriteLine("input_num:" + input_num.ToString());
+                                    if (tmp.ToString() == input1)
+                                    {
+                                        index = uSBPorts.FindIndex(x => x.USBName == usb1);
+                                        strsetUpstream = strsetUpstream.Substring(0, input_num * 2) + uSBPorts[index].USBPort + strsetUpstream.Substring((input_num + 1) * 2, strsetUpstream.Length - ((input_num + 1) * 2));
+                                        Trace.WriteLine("strsetUpstream:" + strsetUpstream);
+                                    }
+                                    else if (tmp.ToString() == input2)
+                                    {
+                                        index = uSBPorts.FindIndex(x => x.USBName == usb2);
+                                        strsetUpstream = strsetUpstream.Substring(0, input_num * 2) + uSBPorts[index].USBPort + strsetUpstream.Substring((input_num + 1) * 2, strsetUpstream.Length - ((input_num + 1) * 2));
+                                        Trace.WriteLine("strsetUpstream:" + strsetUpstream);
+                                    }
+                                    else if (tmp.ToString() == input3)
+                                    {
+                                        index = uSBPorts.FindIndex(x => x.USBName == usb3);
+                                        strsetUpstream = strsetUpstream.Substring(0, input_num * 2) + uSBPorts[index].USBPort + strsetUpstream.Substring((input_num + 1) * 2, strsetUpstream.Length - ((input_num + 1) * 2));
+                                        Trace.WriteLine("strsetUpstream:" + strsetUpstream);
+                                    }
+                                    else if (tmp.ToString() == input4)
+                                    {
+                                        index = uSBPorts.FindIndex(x => x.USBName == usb4);
+                                        strsetUpstream = strsetUpstream.Substring(0, input_num * 2) + uSBPorts[index].USBPort + strsetUpstream.Substring((input_num + 1) * 2, strsetUpstream.Length - ((input_num + 1) * 2));
+                                        Trace.WriteLine("strsetUpstream:" + strsetUpstream);
+                                    }
+                                    input_num = input_num + 1;
+                                }
+                            }
+                            else
+                            {
+                                foreach (var tmp in input)
+                                {
+                                    Trace.WriteLine("tmp:" + tmp.ToString());
+                                    int index = -1;
+                                    Trace.WriteLine("input_num:" + input_num.ToString());
+                                    if (tmp.ToString() == input1)
+                                    {
+                                        index = uSBPorts.FindIndex(x => x.USBName == usb1);
+                                        strsetUpstream = strsetUpstream.Substring(0, strsetUpstream.Length - ((input_num + 1) * 2)) + uSBPorts[index].USBPort + strsetUpstream.Substring(strsetUpstream.Length - (input_num * 2));
+                                        Trace.WriteLine("strsetUpstream:" + strsetUpstream);
+                                    }
+                                    else if (tmp.ToString() == input2)
+                                    {
+                                        index = uSBPorts.FindIndex(x => x.USBName == usb2);
+                                        strsetUpstream = strsetUpstream.Substring(0, strsetUpstream.Length - ((input_num + 1) * 2)) + uSBPorts[index].USBPort + strsetUpstream.Substring(strsetUpstream.Length - (input_num * 2));
+                                        Trace.WriteLine("strsetUpstream:" + strsetUpstream);
+                                    }
+                                    else if (tmp.ToString() == input3)
+                                    {
+                                        index = uSBPorts.FindIndex(x => x.USBName == usb3);
+                                        strsetUpstream = strsetUpstream.Substring(0, strsetUpstream.Length - ((input_num + 1) * 2)) + uSBPorts[index].USBPort + strsetUpstream.Substring(strsetUpstream.Length - (input_num * 2));
+                                        Trace.WriteLine("strsetUpstream:" + strsetUpstream);
+                                    }
+                                    else if (tmp.ToString() == input4)
+                                    {
+                                        index = uSBPorts.FindIndex(x => x.USBName == usb4);
+                                        strsetUpstream = strsetUpstream.Substring(0, strsetUpstream.Length - ((input_num + 1) * 2)) + uSBPorts[index].USBPort + strsetUpstream.Substring(strsetUpstream.Length - (input_num * 2));
+                                        Trace.WriteLine("strsetUpstream:" + strsetUpstream);
+                                    }
+                                    input_num = input_num + 1;
+                                }
+                            }
+                            if (!string.IsNullOrEmpty(strsetUpstream))
+                            {
+                                uint code = Convert.ToUInt16(strsetUpstream, 2);
+                                Trace.WriteLine("strsetUpstream:" + code.ToString());
+                                bool b = SetVCPCapability(monitorInfo, 0xE7, code).Result;
+                                if (b)
+                                {
+                                    _displayDataManger.GetMonitorUSB(monitorInfo, out allinputSource_USB);
+                                    foreach (InputSource_USB inputSource_USB in allinputSource_USB)
+                                    {
+                                        if (inputSource_USB.inputSource == input1)
+                                        {
+                                            inputSource_USB.USB = usb1;
+                                        }
+                                        else if (inputSource_USB.inputSource == input2)
+                                        {
+                                            inputSource_USB.USB = usb2;
+                                        }
+                                        else if (inputSource_USB.inputSource == input3)
+                                        {
+                                            inputSource_USB.USB = usb3;
+                                        }
+                                        else if (inputSource_USB.inputSource == input4)
+                                        {
+                                            inputSource_USB.USB = usb4;
+                                        }
+                                    }
+                                }
+                                return Task.FromResult(b);
+                            }
+                        }
+                    }
+                }
+            }
+            return Task.FromResult(false);
+        }
+
         public Task ChangeCurrentInput(Dictionary<string, InputInfo> inputSource, string input)
         {
             //set VCP
@@ -1224,28 +1368,30 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(false);
         }
 
-        public Task<bool> isScreenPartition(MonitorInfo monitorInfo)
+        public Task<bool> isScreenPartition(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
         {
-            ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, 0xF2).Result;
-            if (objGetVCP != null && objGetVCP.result &&
-                (uint)objGetVCP.value != 0)
+            ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, 0xF2, guid, priority:priority).Result;
+            if (objGetVCP != null && objGetVCP.result)
             {
-                string strSP = Convert.ToString((uint)objGetVCP.value, 2);
-                string strSP_16 = strSP;
-                //add 16 to string
-                if (strSP.Length < 16)
+                if ((uint)objGetVCP.value != 0)
                 {
-                    for (int i = 0; i < (16 - strSP.Length); i++)
+                    string strSP = Convert.ToString((uint)objGetVCP.value, 2);
+                    string strSP_16 = strSP;
+                    //add 16 to string
+                    if (strSP.Length < 16)
                     {
-                        strSP_16 = "0" + strSP_16;
+                        for (int i = 0; i < (16 - strSP.Length); i++)
+                        {
+                            strSP_16 = "0" + strSP_16;
+                        }
                     }
-                }
-                _logs.DebugMsg("[DisplayMangerPlugin][isScreenPartition] strSP_16 : " + strSP_16);
-                //find 8
-                if (strSP_16.Length == 16 &&
-                    strSP_16.Substring(7, 1) == "1")
-                {
-                    return Task.FromResult(true);
+                    _logs.DebugMsg("[DisplayMangerPlugin][isScreenPartition] strSP_16 : " + strSP_16);
+                    //find 8
+                    if (strSP_16.Length == 16 &&
+                        strSP_16.Substring(7, 1) == "1")
+                    {
+                        return Task.FromResult(true);
+                    }
                 }
             }
             return Task.FromResult(false);
