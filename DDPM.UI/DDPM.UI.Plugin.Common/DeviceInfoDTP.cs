@@ -117,7 +117,7 @@ namespace DDPM.UI.Plugin.Common
     }
     public class AirAudioDeviceDefaultSettings : HeadsetDeviceDefaultSettings 
     {
-    
+
     }
     //***********************************************************************
     //DeviceInfoDTP.AncMode.....................= 2

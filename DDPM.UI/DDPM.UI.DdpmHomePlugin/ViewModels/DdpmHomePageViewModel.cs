@@ -243,7 +243,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 //Determine the SortOrder in the foreach loop.
                 //Each Category have their index, would be in order of ModelNumber
                 int idxWebcam = 0, idxKB = 0, idxMouse = 0,
-                    idxPen = 0, idxHeadset = 0, idxSpeaker = 0, idxDock = 0, idxBootloader = 0;
+                    idxPen = 0, idxHeadset = 0, idxSpeaker = 0, idxDock = 0, idxBootloader = 0, idxAirAudio = 0;
 
                 //Robert_Lin 2024-5-16 This method should be called once, provide all
                 //monitor in this call. So it will clear original list at first
@@ -413,7 +413,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         idxDock++;
                     }
                     //0618 Wayn 新增HeadSet
-                    else if (devType.ToString().ToUpper().Contains("HEADSET") || devType.ToString().ToUpper().Contains("LOGICALAIRAUDIO"))
+                    else if (devType.ToString().ToUpper().Contains("HEADSET"))
                     {
                         string imagepath = "";
                         switch (di.ModelNumber)
@@ -436,9 +436,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
                             case "WH3024":
                                 imagepath = "Resources/HeadsetModel_WH3024-Airmax.png";
-                                break;
-                            case "SB725":
-                                imagepath = "Resources/Speaker_SB725.png";
                                 break;
                             default:
                                 imagepath = "Resources/HeadsetModel_WL7024-Mito.png";

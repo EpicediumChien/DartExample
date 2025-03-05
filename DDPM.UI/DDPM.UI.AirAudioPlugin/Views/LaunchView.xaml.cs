@@ -46,61 +46,63 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
         {
 
             _vm = (AirAudioViewModel?)AirAudioPlugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
+
             if (_vm != null)
             {
                 _deviceManager = _vm._deviceManager;
-                InitializeComponent();
-                _vm.Reset();
-                DataContext = _vm;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-                BuildModuleGroups();
-                if (_vm!.ConnectionType == "WiredAudio")
-                {
-                    btnUnpair.Visibility = Visibility.Collapsed;
-                }
+                    InitializeComponent();
+                    _vm.Reset();
+                    DataContext = _vm;
+                    _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                    BuildModuleGroups();
+                    if (_vm!.ConnectionType == "WiredAudio")
+                    {
+                        btnUnpair.Visibility = Visibility.Collapsed;
+                    }
 
-                //txtUnpair.Text = Unpair;
-                //txtRestore.Text = Restore;
+                    //txtUnpair.Text = Unpair;
+                    //txtRestore.Text = Restore;
 
-                ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
-                ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
-                //txtSystemName1.Text = Dns.GetHostName(); ;// _vm!.VisiblePairedHostName1;
-                //txtSystemName2.Text = _vm.VisiblePairedHostName1;
-                txtSystemName3.Text = _vm.VisiblePairedHostName1;
-                txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
-                txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
-                txtAudioBLText.Text = string.Format(Strings.Paired_Info, _vm.CurrentDeviceInfo.TotalNumberOfPairedHostName);
+                    ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
+                    ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
+                    //txtSystemName1.Text = Dns.GetHostName(); ;// _vm!.VisiblePairedHostName1;
+                    //txtSystemName2.Text = _vm.VisiblePairedHostName1;
+                    txtSystemName3.Text = _vm.VisiblePairedHostName1;
+                    txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
+                    txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+                    txtAudioBLText.Text = string.Format(Strings.Paired_Info, _vm.CurrentDeviceInfo.TotalNumberOfPairedHostName);
                 if (_deviceManager != null)
-                {
+                    {
                     _deviceManager.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
 
                     DDPMSettings data = _deviceManager.ReloadAppConfigData().Result;
-                    if (data != null)
-                    {
-                        if (data.LockSettings.Lock_Setting_RestoreDefaults)
+                        if (data != null)
                         {
-                            RestoreLockIcon.Visibility = Visibility.Visible;
-                            txtRestore.IsEnabled = false;
-                        }
-                        else
-                        {
-                            txtRestore.IsEnabled = !data.LockSettings.Lock_Audio_RestoreFactoryDefaults;
-                            RestoreLockIcon.Visibility = data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
-
-                            //Lock Functionality 9/7
-                            //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Audio]
-                            if (data.LockSettings != null &&
-                                DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Audio"))
+                            if (data.LockSettings.Lock_Setting_RestoreDefaults)
                             {
                                 RestoreLockIcon.Visibility = Visibility.Visible;
                                 txtRestore.IsEnabled = false;
                             }
+                            else
+                            {
+                                txtRestore.IsEnabled = !data.LockSettings.Lock_Audio_RestoreFactoryDefaults;
+                                RestoreLockIcon.Visibility = data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+
+                                //Lock Functionality 9/7
+                                //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Audio]
+                                if (data.LockSettings != null && 
+                                    DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Audio"))
+                                {
+                                    RestoreLockIcon.Visibility = Visibility.Visible;
+                                    txtRestore.IsEnabled = false;
+                                }
+                            }
                         }
                     }
+                    DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+                    Loaded += LaunchView_LoadedStatus;
+                    Unloaded += LaunchView_UnLoadedStatus;
                 }
-                DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
-                Loaded += LaunchView_LoadedStatus;
-                Unloaded += LaunchView_UnLoadedStatus;
             }
         }
 
