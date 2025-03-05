@@ -11953,7 +11953,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             // modified @ 20250305 stephen : new DisplaychangedEventArgs, avoid trigger ui reflash
             if (handler != null)
             {
-                handler.Invoke(this, new DisplaychangedEventArgs() { count = -1, monitors = e.monitors });
+                writelog($"DeviceMangerPlugin brocast OnDisplaychanged for CMA ...(e.count = {e.count})");
+                handler.Invoke(this, e);
+            }
+
+            if (e.count < 0) {
+                writelog($"DeviceMangerPlugin brocast OnDisplaychanged End process for CMA ...(e.count = {e.count})");
+                return;
             }
             // modified @ 20250303 stephen
 
@@ -12432,6 +12438,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             // add @ 20250305 stephen
             if (e.count < 0) {
                 writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin, but count < 0 *****");
+                OnDisplaychanged(e);
                 return;
             }
             // add @ 20250305 stephen
