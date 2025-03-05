@@ -1442,7 +1442,11 @@ namespace DDPM.SA.Plugins.User.EzMemory
                 if (ddpmSettings != null)
                 {
                     List<EAProfileDDPM> checkEAID = ddpmSettings.UserSettings.EAProfile;
-                    if (checkEAID.Count > 0)
+                    //Robert_Lin 2025-3-4, when no any EAProfile in the Computer,EAProfile will be null.
+                    //OLD:
+                    // if (checkEAID.Count > 0)
+                    //NEW:
+                    if ((checkEAID != null) && (checkEAID.Count > 0))
                     {
                         exists = checkEAID.Any(profile => profile.Layout == eAID);
                         _logs.Info($"[EzMemoryManagerPlugin] CheckEAIDExit Success");

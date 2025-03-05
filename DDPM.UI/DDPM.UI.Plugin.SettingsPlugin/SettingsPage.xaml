@@ -24,6 +24,8 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" >
+            <!-- Robert_Lin 2025-3-5 -->
+            <!-- OLD:
             <UXControls:UXTextBlock Grid.Row="0"
                                 Grid.Column="0"
                                 Text="&#xe223; "
@@ -36,6 +38,21 @@
                                 TextBlockSemanticColorType="Light"
                                 MouseLeftButtonDown="leftArrow_MouseLeftButtonDown"
                                 Foreground="{DynamicResource DefaultTheme_TxtColor}"  />
+            
+            -->
+            <!-- NEW: -->
+            <Button Width="24" Height="24" Margin="0,0,16,0"
+                    Style="{StaticResource StatelessButton}"
+                    VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand"
+                    KeyboardNavigation.TabIndex="11" 
+                    AutomationProperties.Name="{Binding [Back], Source={x:Static lang:LangHelper.Instance}}" 
+                    Click="backArrowButton_Click" 
+                    >
+                <Grid Background="{StaticResource FakeTransparent}" >
+                    <ContentControl Template="{StaticResource icon_BackArrow}" Foreground="{DynamicResource TextBlock_ForegroundColor}"/>
+                </Grid>
+            </Button>
+
             <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="{Binding [Settings], Source={x:Static lang:LangHelper.Instance}}"
                                 HorizontalAlignment="Left" TextBlockType="Header2"
                                 FontSize="28" Focusable="True"
