@@ -22,16 +22,24 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
     {
         private string PrivacyUrl = "https://www.dell.com/learn/us/en/uscorp1/policies-privacy-country-specific-privacy-policy";
         private WalkThroughPageViewModel ViewModel => (WalkThroughPageViewModel)DataContext;
-        private WalkThroughBox msgBox;
+        private WalkThroughBox? msgBox;
         public WalkThroughPage()
         {
-            InitializeComponent();
-            DataContext = new WalkThroughPageViewModel();
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPage] WalkThroughPage Constructed ... in ");
+            try
+            {
+                InitializeComponent();
+                DataContext = new WalkThroughPageViewModel();
 
-            ViewModel.ControlIcon(true, false);
+                //ViewModel.ControlIcon(true, false);
 
-            Application.Current.MainWindow.MouseLeftButtonUp -= MouseDragEvent;
-            Application.Current.MainWindow.MouseLeftButtonUp += MouseDragEvent;
+                Application.Current.MainWindow.MouseLeftButtonUp -= MouseDragEvent;
+                Application.Current.MainWindow.MouseLeftButtonUp += MouseDragEvent;
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPage] WalkThroughPage Constructed Exception: {ex.Message}");
+            }
         }
 
         ~WalkThroughPage()
@@ -60,29 +68,36 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         private void DoProgressAnimation(bool isForward)
         {
             double newProgressValue;
-            if (isForward)
+            try
             {
-                // Move
-                newProgressValue = Math.Min(ViewModel.ProgressValue + 1, ViewModel.CurrentAnimationPage);
+                if (isForward)
+                {
+                    // Move
+                    newProgressValue = Math.Min(ViewModel.ProgressValue + 1, ViewModel.CurrentAnimationPage);
+                }
+                else
+                {
+                    // Back
+                    newProgressValue = Math.Max(ViewModel.ProgressValue - 1, 1);
+                }
+
+                DoubleAnimation progressAnimation = new DoubleAnimation
+                {
+                    From = ViewModel.ProgressValue,
+                    To = newProgressValue,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.5)), // Time
+                    FillBehavior = FillBehavior.HoldEnd
+                };
+
+                WalkThroughProgressbar.BeginAnimation(ProgressBar.ValueProperty, progressAnimation);
+
+                // refresh ProgressValue
+                ViewModel.ProgressValue = newProgressValue;
             }
-            else
+            catch (Exception ex)
             {
-                // Back
-                newProgressValue = Math.Max(ViewModel.ProgressValue - 1, 1);
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPage] DoProgressAnimation Exception: {ex.Message}");
             }
-
-            DoubleAnimation progressAnimation = new DoubleAnimation
-            {
-                From = ViewModel.ProgressValue,
-                To = newProgressValue,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5)), // Time
-                FillBehavior = FillBehavior.HoldEnd
-            };
-
-            WalkThroughProgressbar.BeginAnimation(ProgressBar.ValueProperty, progressAnimation);
-
-            // refresh ProgressValue
-            ViewModel.ProgressValue = newProgressValue;
         }
 
         private void MainNextBtn_Click(object sender, RoutedEventArgs e)
@@ -121,32 +136,53 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void No_MouseLeftButtonDown(object sender, RoutedEventArgs e)
         {
+            try
+            { 
             _ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(false).Result;
             //DialogResult = false;
             Close();
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPage] No_MouseLeftButtonDown Exception: {ex.Message}");
+            }
         }
 
         private void Yes_MouseLeftButtonDown(object sender, RoutedEventArgs e)
         {
-            _ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(true).Result;
-            //DialogResult = true;
-            Close();
+            try
+            {
+                _ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(true).Result;
+                //DialogResult = true;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPage] Yes_MouseLeftButtonDown Exception: {ex.Message}");
+            }
         }
 
         private void Close()
         {
-            ViewModel.WriteWalkThroughReg("CONSENT_PAGE");
-            DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(new WalkThroughInfo("CONSENT_PAGE", "CONSENT_PAGE", null)); // Add DDPM to the end of the queue
-            DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAll(item => item.ModelName == "CONSENT_PAGE"); // Remove all DDPM from the queue
-            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
+            try
             {
-                ViewModel.SwitchToDDPMPage();
+                ViewModel.WriteWalkThroughReg("CONSENT_PAGE");
+                DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(new WalkThroughInfo("CONSENT_PAGE", "CONSENT_PAGE", null)); // Add DDPM to the end of the queue
+                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAll(item => item.ModelName == "CONSENT_PAGE"); // Remove all DDPM from the queue
+                if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
+                {
+                    ViewModel.SwitchToDDPMPage();
+                }
+                else
+                {
+                    ViewModel.IsConsentPageVisible = false;
+                    ViewModel.IsPeripheralVisible = true;
+                    skip_WalkThroughUnit();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                ViewModel.IsConsentPageVisible = false;
-                ViewModel.IsPeripheralVisible = true;
-                skip_WalkThroughUnit();
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPage] Close Exception: {ex.Message}");
             }
         }
 
@@ -159,25 +195,32 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void skip_WalkThroughUnit()
         {
-            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
+            try
             {
-                ViewModel.UpdateLastlogicalDeviceType();
-                ViewModel.WriteWalkThroughReg(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName);
-                DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0]);
-                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDeviceFromQueue RemoveAt {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName}");
-                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
                 if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
                 {
-                    ViewModel.InitializeDeviceFromQueue();
+                    ViewModel.UpdateLastlogicalDeviceType();
+                    ViewModel.WriteWalkThroughReg(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName);
+                    DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0]);
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDeviceFromQueue RemoveAt {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName}");
+                    DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
+                    if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
+                    {
+                        ViewModel.InitializeDeviceFromQueue();
+                    }
+                    else
+                    {
+                        ViewModel.EndWalkThrough();
+                    }
                 }
                 else
                 {
                     ViewModel.EndWalkThrough();
                 }
             }
-            else
+            catch (Exception ex)
             {
-                ViewModel.EndWalkThrough();
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPage] skip_WalkThroughUnit Exception: {ex.Message}");
             }
         }
     }
