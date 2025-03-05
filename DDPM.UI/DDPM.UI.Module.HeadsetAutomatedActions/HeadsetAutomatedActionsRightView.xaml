@@ -91,6 +91,7 @@
             <local:BooleanToForegroundConverter2 x:Key="BooleanToForegroundConverter2" />
             <local:BooleanToForegroundConverter3 x:Key="BooleanToForegroundConverter3" />
             <local:BooleanToForegroundConverter4 x:Key="BooleanToForegroundConverter4" />
+            <local:BooleanToOpacityConverter x:Key="BooleanToOpacityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -387,8 +388,15 @@
                                                 </UXControls:UXTextBlock.Text>
                                             </UXControls:UXTextBlock>
                                             <StackPanel x:Name="SensitivityStackPanel" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
-                                                <UXControls:UXToggleSwitch x:Name="NormalButton" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}" Background="{DynamicResource ToggleSwitch_NormalBackground}" Width="208" Height="52" Margin="0,20,0,20"
+                                                <UXControls:UXToggleSwitch x:Name="NormalButton" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}"
+                                                                           Background="{DynamicResource ToggleSwitch_NormalBackground}" Width="208" Height="52" Margin="0,20,0,20"
                                                                            IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" IsChecked="{Binding IsNormalChecked, Mode=TwoWay}" IsTabStop="{Binding isWearTabStopped}">
+                                                    <UXControls:UXToggleSwitch.Opacity>
+                                                        <MultiBinding Converter="{StaticResource BooleanToOpacityConverter}">
+                                                            <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
+                                                            <Binding Path="QuickPauseStatus"/>
+                                                        </MultiBinding>
+                                                    </UXControls:UXToggleSwitch.Opacity>
                                                     <UXControls:UXToggleSwitch.Template>
                                                         <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                             <Border x:Name="NormalButtonBorder" CornerRadius="4,4,4,4" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}">
@@ -396,14 +404,14 @@
                                                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                                         <!--<UXControls:UXTextBlock Text="{Binding [HeadsetAutomatedActions.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" TextAlignment="Center" />-->
                                                                         <UXControls:UXTextBlock x:Name="NormalButtonTextBlock" FontSize="14" TextAlignment="Center" >
-                                                                            <UXControls:UXTextBlock.Foreground>
+                                                                            <!--<UXControls:UXTextBlock.Foreground>
                                                                                 <MultiBinding Converter="{StaticResource BooleanToForegroundConverter2}">
                                                                                     <Binding Path="IsDarkTheme"/>
                                                                                     <Binding Path="IsNormalChecked"/>
                                                                                     <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
                                                                                     <Binding Path="QuickPauseStatus"/>
                                                                                 </MultiBinding>
-                                                                            </UXControls:UXTextBlock.Foreground>
+                                                                            </UXControls:UXTextBlock.Foreground>-->
                                                                             <UXControls:UXTextBlock.Text>
                                                                                 <Binding Path="[HeadsetAutomatedActions.3]" Source="{x:Static lang:LangHelper.Instance}" />
                                                                             </UXControls:UXTextBlock.Text>
@@ -420,8 +428,15 @@
                                                         </ControlTemplate>
                                                     </UXControls:UXToggleSwitch.Template>
                                                 </UXControls:UXToggleSwitch>
-                                                <UXControls:UXToggleSwitch x:Name="SensitiveButton" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}" Background="{DynamicResource ToggleSwitch_NormalBackground}" 
+                                                <UXControls:UXToggleSwitch x:Name="SensitiveButton" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}"
+                                                                           Background="{DynamicResource ToggleSwitch_NormalBackground}" 
                                                                            Width="208" Height="52" Margin="8,0,0,0" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" IsChecked="{Binding IsSensitiveChecked, Mode=TwoWay}" IsTabStop="{Binding isWearTabStopped}">
+                                                    <UXControls:UXToggleSwitch.Opacity>
+                                                        <MultiBinding Converter="{StaticResource BooleanToOpacityConverter}">
+                                                            <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
+                                                            <Binding Path="QuickPauseStatus"/>
+                                                        </MultiBinding>
+                                                    </UXControls:UXToggleSwitch.Opacity>
                                                     <UXControls:UXToggleSwitch.Template>
                                                         <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                             <Border x:Name="SensitiveButtonBorder" CornerRadius="4,4,4,4" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}">
@@ -429,14 +444,14 @@
                                                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                                         <!--<UXControls:UXTextBlock Text="{Binding [HeadsetAutomatedActions.1], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" TextAlignment="Center" />-->
                                                                         <UXControls:UXTextBlock x:Name="SensitiveButtonTextBlock" FontSize="14" TextAlignment="Center">
-                                                                            <UXControls:UXTextBlock.Foreground>
+                                                                            <!--<UXControls:UXTextBlock.Foreground>
                                                                                 <MultiBinding Converter="{StaticResource BooleanToForegroundConverter2}">
                                                                                     <Binding Path="IsDarkTheme"/>
                                                                                     <Binding Path="IsSensitiveChecked"/>
                                                                                     <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
                                                                                     <Binding Path="QuickPauseStatus"/>
                                                                                 </MultiBinding>
-                                                                            </UXControls:UXTextBlock.Foreground>
+                                                                            </UXControls:UXTextBlock.Foreground>-->
                                                                             <UXControls:UXTextBlock.Text>
                                                                                 <Binding Path="[HeadsetAutomatedActions.1]" Source="{x:Static lang:LangHelper.Instance}" />
                                                                             </UXControls:UXTextBlock.Text>
