@@ -2696,14 +2696,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     //Telementry Collection
                     var Displaysettings_Function = new Displaysettings_Function();
-                    if (Displaysettings_Function.Send_USB_Telementry(_TelementryScheduler, monitorInfo, upstream, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo)))
-                    {
-                        writelog("[SetUSBUpstream] [Telementry] Send Telementry for USB Association Success ...");
-                    }
-                    else
-                    {
-                        writelog("[SetUSBUpstream] [Telementry] Send Telementry for USB Association Fail ...");
-                    }
+                    Displaysettings_Function.Send_USB_Telementry(_TelementryScheduler, monitorInfo, upstream, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
                     return Task.FromResult(true);
                 }
             }
@@ -2712,6 +2705,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("[SetUSBUpstream] _DisplayManagerPlugin is null.");
             }
 
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> SetAllUSBUpstream(MonitorInfo monitorInfo, string input1, string usb1, string input2, string usb2,
+                                                                    string input3 = "", string usb3 = "", string input4 = "", string usb4 = "")
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.SetAllUSBUpstream(monitorInfo, input1, usb1, input2, usb2, input3, usb3, input4, usb4);
+            }
             return Task.FromResult(false);
         }
 
@@ -2782,11 +2785,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
-        public Task<bool> isScreenPartition(MonitorInfo monitorInfo)
+        public Task<bool> isScreenPartition(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
         {
             if (_DisplayManagerPlugin != null)
             {
-                return _DisplayManagerPlugin.isScreenPartition(monitorInfo);
+                return _DisplayManagerPlugin.isScreenPartition(monitorInfo, guid, priority);
             }
             return Task.FromResult(false);
         }
