@@ -1098,8 +1098,8 @@ namespace DDPM.CLI.Plugins.Display
             //    return (int)CLI_ExitCode.null_device_manager;
             //}
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
 
             string output = string.Empty;
 
@@ -8853,8 +8853,8 @@ namespace DDPM.CLI.Plugins.Display
             List<DeviceInfo> _deviceinfo = null;
             _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = devMgr.GetMonitors().Result;
+            //if (_AllInfoMonitors == null)
+            _AllInfoMonitors = await devMgr.GetMonitors();
             _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
             _deviceInfoFinal = GetDDeviceIndeies(commandLineInput, _deviceinfo);
 
