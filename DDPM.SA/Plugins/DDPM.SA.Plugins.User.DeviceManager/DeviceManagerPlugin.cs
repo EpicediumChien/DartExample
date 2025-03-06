@@ -17901,7 +17901,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 thread.SetApartmentState(ApartmentState.STA);
                 thread.Start();
 
-                ReleaseThreadResources(cts, thread);
+                //ReleaseThreadResources(cts, thread);
                 //});
 
                 //=====================================================================================
@@ -18166,7 +18166,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         try
                                         {
-                                            //_OSD_Controler.NumLockOn_CloseWindow(cts);
+                                            //_OSD_Controler.NumLockOn_CloseWindow();
                                             _OSD_Controler.NumLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                         }
                                         catch (Exception ex)
@@ -18195,7 +18195,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         try
                                         {
-                                            _OSD_Controler.CapsLockOn_CloseWindow();
+                                            //_OSD_Controler.CapsLockOn_CloseWindow();
                                             _OSD_Controler.CapsLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                         }
                                         catch (Exception ex)
@@ -18207,7 +18207,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         try
                                         {
-                                            _OSD_Controler.CapsLockOff_CloseWindow();
+                                            //_OSD_Controler.CapsLockOff_CloseWindow();
                                             _OSD_Controler.CapsLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                         }
                                         catch (Exception ex)
@@ -18222,7 +18222,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-                                        _OSD_Controler.Fingerprint_CloseWindow();
+                                        //_OSD_Controler.Fingerprint_CloseWindow();
                                         _OSD_Controler.Fingerprint_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                     }
                                     catch (Exception ex)

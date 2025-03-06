@@ -96,14 +96,22 @@ namespace DDPM.OSDs
                     this.Close();
 
                     // 退出 Dispatcher 消息循环
-                    if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
-                    {
-                        System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
-                    }
+                    //if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+                    //{
+                    //    System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+                    //}
                 };
 
                 sb.Begin();
             });
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
         }
 
         //public void StopFadeOutAnimation()

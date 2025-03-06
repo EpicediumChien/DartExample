@@ -8,8 +8,8 @@ namespace DDPM.OSDs
     public class OSD_Controler
     {
         private BatteryLowIIWin BatteryLowIIWinx;
-        private CapsLockOffWin CapsLockOffWinx;
-        private CapsLockOnWin CapsLockOnWinx;
+        private CapsLockOffWin? CapsLockOffWinx = null;
+        private CapsLockOnWin? CapsLockOnWinx = null;
         private DisplayChangedWin DisplayChangedWinx;
         private FingerprintWin FingerprintWinx;
         private HeadsetBatteryLowIWin HeadsetBatteryLowIWinx;
@@ -246,6 +246,8 @@ namespace DDPM.OSDs
         public void NumLockOn_ShowWindow(double Top, double Left)
         {
             NumLockOnWinx = null;
+            NumLockOffWinx = null;
+
             NumLockOnWinx = new NumLockOnWin();
 
             NumLockOnWinx.Top = Top;
@@ -264,7 +266,9 @@ namespace DDPM.OSDs
 
         public void NumLockOff_ShowWindow(double Top, double Left)
         {
+            NumLockOnWinx = null;
             NumLockOffWinx = null;
+
             NumLockOffWinx = new NumLockOffWin();
 
             NumLockOffWinx.Top = Top;
