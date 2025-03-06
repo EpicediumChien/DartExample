@@ -725,7 +725,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread.Start();
 
             _disDevHelper = new DisplayDeviceHelper(Log);
-            _AirAudioHelper = new PeripheralAirAudioHelper(Log);
+            if (_AirAudioHelper == null)
+                _AirAudioHelper = new PeripheralAirAudioHelper(Log);
         }
 
         private void OnCurrentSessionInactived(object sender, EventArgs e)
@@ -13460,7 +13461,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //Derek 1119
                         _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
                         UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
-                        _AirAudioHelper?.UpdateDDPMPluginInstances(_DTPProxyPlugin);
+                        if(_AirAudioHelper == null)
+                            _AirAudioHelper = new PeripheralAirAudioHelper(Log);
+                        _AirAudioHelper.UpdateDDPMPluginInstances(_DTPProxyPlugin);
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
@@ -13479,6 +13482,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //Derek 1119
                         _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
                         UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
+                        if (_AirAudioHelper == null)
+                            _AirAudioHelper = new PeripheralAirAudioHelper(Log);
                         _AirAudioHelper?.UpdateDDPMPluginInstances(_DTPProxyPlugin);
                     }
                 }
