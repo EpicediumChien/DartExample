@@ -1052,8 +1052,7 @@ namespace DDPM.CLI.Plugins.Display
                     writelog("LogicalHeadset entry");
                     var audio = new DeviceDataAudioResponse(index, device);
                     writelog("_devMgr.GetHeadsetSerialNumber entry");
-                    audio.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(guid).Result ?? "N/A";
-                    Debug.WriteLine(audio.SerialNumber.ToString());
+                    audio.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(guid).Result ?? "N/A";                    
                     writelog("_devMgr.GetConnectionTypeAsync entry");
                     audio.Connectiontype = get_headsetconnection_type(_devMgr.GetConnectionTypeAsync(guid).Result);
                     writelog("_devMgr.GetIsANCSupportedAsync entry");
@@ -1087,7 +1086,6 @@ namespace DDPM.CLI.Plugins.Display
                     var dock = new DeviceDataDockResponse(index, device);
                     writelog("_devMgr.GetDockServiceTagForDock entry");
                     dock.ServiceTag = _devMgr.GetDockServiceTagForDock(guid).Result ?? "N/A";
-                    Debug.WriteLine(dock.ServiceTag.ToString());
                     return dock;
                     //return new DeviceDataDockResponse(index, device);
                 default:
@@ -9136,11 +9134,6 @@ namespace DDPM.CLI.Plugins.Display
                         case "DOCK":
                             if (!string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
-                                Debug.WriteLine("guidstr" + commandLineInput.GuidString[0].ToString());
-                                foreach (var name in _deviceinfo)
-                                {
-                                    Debug.WriteLine(name.ID);
-                                }
                                 var match= _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
                                 if (match != null)
                                 { 
