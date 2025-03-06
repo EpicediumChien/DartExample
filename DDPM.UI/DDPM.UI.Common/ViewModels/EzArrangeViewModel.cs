@@ -144,7 +144,7 @@ namespace DDPM.UI.Common.ViewModels
             {
                 //Log?.Info($"** RefreshData result: {e.Result}");
 
-                if (e.Result == "OK")
+                if (e.Result.ToString() == "OK")
                 {
                     //RefreshPbpSplitListView();
                     //Result is passed.

@@ -446,7 +446,7 @@ namespace DDPM.UI.Module.PipPbp
             {
                 Log?.Info($"** RefreshData result: {e.Result}");
 
-                if (e.Result == "OK")
+                if ((string)e.Result == "OK")
                 {
                     RefreshPbpSplitListView();
                     //Result is passed.
