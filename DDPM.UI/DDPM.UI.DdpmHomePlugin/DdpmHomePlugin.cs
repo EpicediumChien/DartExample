@@ -1786,6 +1786,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _log.Info($"[Walkthrough] {nameof(CollectAndCompareDevicesAsync)} Start");
             try
             {
+                if(_deviceManager == null)
+                {
+                    _log.Info($"[Walkthrough] {nameof(CollectAndCompareDevicesAsync)} _deviceManager is null");
+                    return;
+                }
                 List<MonitorInfo> monitorInfos = _deviceManager.GetMonitors().Result;
                 var deviceHelper = _deviceManager.GetDevices().Result;
                 _log.Info($"[Walkthrough] CollectAndCompareDevicesAsync, monitor count:{monitorInfos.Count.ToString()}, device count : {deviceHelper.deviceInfo.Count.ToString()}");

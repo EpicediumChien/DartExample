@@ -245,6 +245,7 @@
 		<None Remove="Resources\Images\Speaker_Interactions_light.png" />
 		<None Remove="Resources\Images\Speaker_SB3022.png" />
 		<None Remove="Resources\Images\Speaker_SB3022_AllLight.png" />
+		<None Remove="Resources\Images\Speaker_SB522A.png" />
 		<None Remove="Resources\Images\Speaker_SB522A_AllLight.png" />
 		<None Remove="Resources\Images\Speaker_SB522A_NoLight.png" />
 		<None Remove="Resources\Images\Speaker_SB522A_TwoLight.png" />
@@ -584,6 +585,9 @@
 		</Resource>
 		<Resource Include="Resources\Images\Speaker_Interactions_light.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Images\Speaker_SB522A.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Resources\Images\Speaker_SB522A_AllLight.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
