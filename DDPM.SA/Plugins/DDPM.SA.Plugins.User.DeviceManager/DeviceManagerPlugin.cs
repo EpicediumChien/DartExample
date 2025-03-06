@@ -2199,8 +2199,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     monitors = (_DisplayManagerPlugin.GetMonitors().Result).ToList();
                     _AllInfoMonitors = monitors;
 
-                _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.GetMonitors().Result);
-
                 //review monitor list to check duplicated data
                 ReviewAllMonitorToAvoidDuplicatedInfo();
                 //InitMonitorSettings();
