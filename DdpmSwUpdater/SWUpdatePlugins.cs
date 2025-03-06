@@ -882,7 +882,7 @@ namespace DdpmSwUpdater
                 watcher.EventArrived += new EventArrivedEventHandler(OnRegistryValueChanged);
                 watcher.Start();
                 LogManage.LogMessage("Waiting for _processTimer event...");
-                _processTimer.Interval = TimeSpan.FromSeconds(15).TotalMilliseconds;
+                _processTimer.Interval = TimeSpan.FromSeconds(3).TotalMilliseconds;
                 _processTimer.Elapsed += new ElapsedEventHandler(InstallingProcessTimer_Elapsed);
                 _processTimer.Start();
                 LogManage.LogMessage($"RegEvent watcher done");
@@ -930,23 +930,27 @@ namespace DdpmSwUpdater
                     string nextProcess_str = (registryKey.GetValue("NextProcess")?.ToString());
                     if (!string.IsNullOrEmpty(curProcess_str) && int.TryParse(curProcess_str, out int curProcess))
                     {
-                        _CurrentProcess = curProcess;
-                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
-                        {
-                            DeviceName = _SWUpdateInfo.SoftwareName,
-                            TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                            ProcessName = "Installing",
-                            ProcessProgress = _CurrentProcess,
-                        };
-                        sendMessageToEvent(updateProgressInfo);
+                        //_CurrentProcess = curProcess;
+                        //UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                        //{
+                        //    DeviceName = _SWUpdateInfo.SoftwareName,
+                        //    TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
+                        //    ProcessName = "Installing",
+                        //    ProcessProgress = _CurrentProcess,
+                        //};
+                        //sendMessageToEvent(updateProgressInfo);
                     }
                     if (!string.IsNullOrEmpty(nextProcess_str) && int.TryParse(nextProcess_str, out int nextProcess))
                     {
                         _CurrentProcessLimit = nextProcess;
+                        if (_CurrentProcessLimit >= 90)
+                        {
+                            _CurrentProcessLimit = 100;
+                        }
                     }
                     LogManage.LogMessage($"OnRegistryValueChanged curProcess :{curProcess_str}");
                     LogManage.LogMessage($"OnRegistryValueChanged nextProcess :{nextProcess_str}");
-                    ResetTimer();
+                    //ResetTimer();
                 }
             }
         }
@@ -961,9 +965,31 @@ namespace DdpmSwUpdater
                     DeviceName = _SWUpdateInfo.SoftwareName,
                     TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
                     ProcessName = "Installing",
-                    ProcessProgress = _CurrentProcess++,
+                    ProcessProgress = ++_CurrentProcess,
                 };
                 sendMessageToEvent(updateProgressInfo);
+            }
+            if (_processTimer != null)
+            {
+                float difference = (float)_CurrentProcess / (float)_CurrentProcessLimit;
+                LogManage.LogMessage($"InstallingProcessTimer_Elapsed difference :{difference}");
+                if (difference <= 0.75)
+                {
+                    _processTimer.Interval = TimeSpan.FromSeconds(0.5).TotalMilliseconds;
+                }
+                else if (difference <= 0.95)
+                {
+                    _processTimer.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
+                }
+                else
+                {
+                    _processTimer.Interval = TimeSpan.FromSeconds(3).TotalMilliseconds;
+                }
+                if (_CurrentProcessLimit >= 100)
+                {
+                    _processTimer.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
+                }
+                LogManage.LogMessage($"InstallingProcessTimer_Elapsed _processTimer.Interval :{_processTimer.Interval}");
             }
         }
         private void ResetTimer()
@@ -973,7 +999,7 @@ namespace DdpmSwUpdater
             {
                 LogManage.LogMessage($"ResetTimer go");
                 _processTimer.Stop();
-                _processTimer.Interval = TimeSpan.FromSeconds(12).TotalMilliseconds;
+                _processTimer.Interval = TimeSpan.FromSeconds(3).TotalMilliseconds;
                 _processTimer.Start();
             }
             LogManage.LogMessage($"ResetTimer done");
