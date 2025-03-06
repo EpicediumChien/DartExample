@@ -568,7 +568,7 @@ namespace DDPM.SA.Common
             ID = deviceInfo.ID.ToString();
             Index = index.ToString();
             Model = deviceInfo.ModelNumber;
-            ServiceTag = string.IsNullOrEmpty( deviceInfo.DockServiceTag) ? "N/A":deviceInfo.DockServiceTag;
+            //ServiceTag = string.IsNullOrEmpty( deviceInfo.DockServiceTag) ? "N/A":deviceInfo.DockServiceTag;
             FirmwareVersion = deviceInfo.FirmwareVersion;
             BatteryStatus = deviceInfo.BatteryStatus;
             DeviceType = deviceInfo.LogicalDeviceType;

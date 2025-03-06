@@ -1083,7 +1083,13 @@ namespace DDPM.CLI.Plugins.Display
                 case "LogicalPen":
                     return new DeviceDataPenResponse(index, device);
                 case "LogicalDock":
-                    return new DeviceDataDockResponse(index, device);
+                    writelog("LogicalDock entry");
+                    var dock = new DeviceDataDockResponse(index, device);
+                    writelog("_devMgr.GetDockServiceTagForDock entry");
+                    dock.ServiceTag = _devMgr.GetDockServiceTagForDock(guid).Result ?? "N/A";
+                    Debug.WriteLine(dock.ServiceTag.ToString());
+                    return dock;
+                    //return new DeviceDataDockResponse(index, device);
                 default:
                     return new PeripheralResponse(index, device);
             }
