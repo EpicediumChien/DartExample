@@ -419,23 +419,23 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         switch (di.ModelNumber)
                         {
                             case "WL7024":
-                                imagepath = "Resources/HeadsetModel_WL7024-Mito.png";
+                                imagepath = "Resources/Images/WL7024.png";
                                 break;
 
                             case "WL5024":
-                                imagepath = "Resources/HeadsetModel_WL5024-Pegasus.png";
+                                imagepath = "Resources/Images/WL5024.png";
                                 break;
 
                             case "WH5024":
-                                imagepath = "Resources/HeadsetModel_WH5024-Vinflo.png";
+                                imagepath = "Resources/Images/WH5024.png";
                                 break;
 
                             case "WL3024":
-                                imagepath = "Resources/HeadsetModel_WL3024-Vaporfly.png";
+                                imagepath = "Resources/Images/WL3024.png";
                                 break;
 
                             case "WH3024":
-                                imagepath = "Resources/HeadsetModel_WH3024-Airmax.png";
+                                imagepath = "Resources/Images/WH3024.png";
                                 break;
                             case "SB725":
                                 imagepath = "Resources/Speaker_SB725.png";
@@ -445,7 +445,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                                 break;
                         }
                         dev.DeviceCategory = eDeviceCategory.Headset;
-                        dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath);
+                        dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath, "DDPM.UI.Resources");
                         dev.SortOrder = (int)dev.DeviceCategory + idxHeadset;
                         idxHeadset++;
                     }
@@ -457,18 +457,18 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         switch (di.ModelNumber)
                         {
                             case "SP3022":
-                                imagepath = "Resources/Speaker_SP3022.png";
+                                imagepath = "Resources/Images/Speaker_SP3022.png";
                                 break;
 
                             case "SB522A":
-                                imagepath = "Resources/Speaker_SB522A.png";
+                                imagepath = "Resources/Images/Speaker_SB522A.png";
                                 break;
                             default:
-                                imagepath = "Resources/Speaker_SP3022.png";
+                                imagepath = "Resources/Images/Speaker_SP3022.png";
                                 break;
                         }
                         dev.DeviceCategory = eDeviceCategory.Soundbar;
-                        dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath);
+                        dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath, "DDPM.UI.Resources");
                         dev.SortOrder = (int)dev.DeviceCategory + idxSpeaker;
                         idxSpeaker++;
                     }
