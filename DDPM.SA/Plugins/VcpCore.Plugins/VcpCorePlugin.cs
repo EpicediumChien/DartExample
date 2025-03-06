@@ -3446,7 +3446,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        private bool Set_VCPCapability(MonitorInfo_complex monitorInfoX, byte code, uint val, bool retry = true, bool IsNotifyVcpCanged = true)
+        private bool Set_VCPCapability(MonitorInfo_complex monitorInfoX, byte code, uint val, bool retry = true, bool IsNotifyVcpCanghed = true)
         {
             try
             {
@@ -3467,7 +3467,7 @@ namespace VcpCore.Plugins
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ Set_VCPCapability ctr code is " + code.ToString("X"));
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ Set_VCPCapability ctr code value is " + val.ToString());
 
-                            if (IsNotifyVcpCanged)//Bruce Added 0306
+                            if (IsNotifyVcpCanghed)//Bruce Added 0306
                             {
                                 VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                 _VCPchangedEventArgs.vcpcode = code.ToString("X");
