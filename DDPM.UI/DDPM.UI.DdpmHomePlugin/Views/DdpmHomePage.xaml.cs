@@ -283,6 +283,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     else
                         newWidth = CalculateItemWidthV3_ItemsPerRow4(cxView, cyView);
                 }
+                else if (_ddpmHomePageViewModel.HomeDevices.Count < 7)
+                {
+                    newWidth = CalculateItemWidthV3_ItemsPerRow3(cxView, cyView);
+                }
                 //2024-6-23, HomePage RWD, 4 items per row first, so never > 4 items/row
                 //ItemCount > 4
                 // MinWidth = 910 (3 items)
