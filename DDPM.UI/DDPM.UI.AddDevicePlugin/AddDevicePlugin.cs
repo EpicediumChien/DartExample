@@ -57,16 +57,20 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         private void GetRFDongleAsync()
         {
-            _log.Debug($"GetPeripherals is invoked");
+            _log.Debug($"GetRFDongleAsync is invoked");
             //Task<DeviceHelper> tsk = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
             //_viewModel!.WacomVersion = tsk.Result.IsdDriverVersion;
-            Task<string> tsk = DdpmCommonHelper.DeviceManagerSA!.GetIsdDriverVersion();
-            _viewModel!.WacomVersion = tsk.Result;
+            if (DdpmCommonHelper.DeviceManagerSA == null)
+            {
+                DdpmCommonHelper.WriteUILog($"Error: DeviceManagerSA is null");
+            }
+            else
+            {
+                _viewModel!.WacomVersion = DdpmCommonHelper.DeviceManagerSA.GetIsdDriverVersion().Result;
+                _deviceHelper = DdpmCommonHelper.DeviceManagerSA.GetRFDongleDevices().Result;
 
-            Task<RFDeviceHelper> task = DdpmCommonHelper.DeviceManagerSA.GetRFDongleDevices();
-            _deviceHelper = task.Result;
-
-            _viewModel?.PrepareDongleInfo(_deviceHelper.dongleInfo);
+                _viewModel?.PrepareDongleInfo(_deviceHelper.dongleInfo);
+            }
         }
 
         /// <summary>
@@ -105,7 +109,10 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         /// <inheritdoc/>
         public void OnDeactivated()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceChanged;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceChanged;
+            }
             _viewModel!.StopPairing();
             //Mouse.OverrideCursor = Cursors.Wait;
         }
@@ -114,21 +121,24 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         public void OnShown(string pluginParameter)
         {
             ConfigureServices();
-            GetPeripheralsAsync();
+            //GetPeripheralsAsync();
             GetRFDongleAsync();
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceChanged;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceChanged;
+            }
             Mouse.OverrideCursor = null;
         }
 
         #endregion Interface IConsolePluginSupportsActivations
 
-        private void GetPeripheralsAsync()
-        {
-            _log.Debug($"GetPeripherals is invoked");
-            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
+        //private void GetPeripheralsAsync()
+        //{
+        //    _log.Debug($"GetPeripherals is invoked");
+        //    Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
 
-            _viewModel?.CheckPandora(task.Result.deviceInfo);
-        }
+        //    _viewModel?.CheckPandora(task.Result.deviceInfo);
+        //}
 
         private void DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
@@ -139,34 +149,34 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                     GetRFDongleAsync();
                     return;
                 }
-                if (_viewModel!.CurrentDongle != null && e.device_peripherals != null && e.device_peripherals.PhyscialDeviceID == _viewModel!.CurrentDongle.ID)
-                {
-                    _viewModel.NewDevice = e.device_peripherals;
-                    //if(e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
-                    _viewModel.GotoNewDevice();
-                }
+                //if (_viewModel!.CurrentDongle != null && e.device_peripherals != null && e.device_peripherals.PhyscialDeviceID == _viewModel!.CurrentDongle.ID)
+                //{
+                //    _viewModel.NewDevice = e.device_peripherals;
+                //    //if(e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
+                //    _viewModel.GotoNewDevice();
+                //}
                 if (e.device_peripherals!.PhysicalDeviceType == DeviceType.PhysicalBluetooth || e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalBluetoothAudio || e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalPen)
                 {
                     _viewModel.NewDevice = e.device_peripherals;
                     _viewModel.GotoNewDevice();
                 }
             }
-            if (e.type == DeviceChangedType.Peripherals_UnPlug && e.changedProperty == "PhysicalDeviceRemoved")
+            if (e.changedProperty == "PhysicalDeviceRemoved")
             {
                 GetRFDongleAsync();
                 return;
             }
-            if (e.device_peripherals?.IsPhysicalDeviceDongle ?? false)
-            {
-                if (e.type == DeviceChangedType.Peripherals_SettingsChange)
-                {
-                    //_viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
-                }
-                else
-                {
-                    GetRFDongleAsync();
-                }
-            }
+            //if (e.device_peripherals?.IsPhysicalDeviceDongle ?? false)
+            //{
+            //    if (e.type == DeviceChangedType.Peripherals_SettingsChange)
+            //    {
+            //        //_viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
+            //    }
+            //    else
+            //    {
+            //        GetRFDongleAsync();
+            //    }
+            //}
         }
     }
 }
