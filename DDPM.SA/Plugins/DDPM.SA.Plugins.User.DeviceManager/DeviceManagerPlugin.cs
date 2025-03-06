@@ -722,7 +722,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
 
-            _disDevHelper = new DisplayDeviceHelper(Log);
+            IDeviceManagerSA deviceManagerSA = (IDeviceManagerSA)this;
+            _disDevHelper = new DisplayDeviceHelper(Log, deviceManagerSA);
         }
 
         private void OnCurrentSessionInactived(object sender, EventArgs e)
