@@ -782,8 +782,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                                 if (ss.Length > 0)
                                                 {
                                                     ss = ss[0].Split(" ");
-                                                    if (ss.Length <= _usbUpstreamList.Count)
-                                                    {
+                                                    //if (ss.Length <= _usbUpstreamList.Count)
+                                                    //{
                                                         foreach (var s in ss)
                                                         {
                                                             if (USBUpstream.Count > 0)
@@ -827,7 +827,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                                             }
                                                         }
                                                         _displayDataManger.SetMonitorUSBList(monitorInfo, _USBPorts);
-                                                    }
+                                                    //}
                                                 }
                                             }
                                         }
@@ -5902,6 +5902,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (monitorInfos != null)
             {
                 _displayDataManger.InitDisplayData(monitorInfos);
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task SetVCPtoDisplayData(MonitorInfo monitorInfo, int vcpcode, int value)
+        {
+            if (monitorInfo != null) 
+            {
+                if (vcpcode == 0xE9)
+                {
+                    _displayDataManger.SetMonitorE9(monitorInfo, (uint)value);
+                }
             }
             return Task.CompletedTask;
         }

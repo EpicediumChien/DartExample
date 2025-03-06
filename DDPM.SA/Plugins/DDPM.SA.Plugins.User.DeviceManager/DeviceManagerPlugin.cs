@@ -2200,22 +2200,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     monitors = (_DisplayManagerPlugin.GetMonitors().Result).ToList();
                     _AllInfoMonitors = monitors;
 
-                    //review monitor list to check duplicated data
-                    ReviewAllMonitorToAvoidDuplicatedInfo();
-                    InitMonitorSettings();
-                    _DisplayManagerPlugin.InitDisplayData(_AllInfoMonitors);
-                    foreach (MonitorInfo monitor in _AllInfoMonitors)
-                    {
-                        _DisplayManagerPlugin.GetUSBUpstreamList(monitor).Wait();
-                        _DisplayManagerPlugin.GetAllUSBUpstream(monitor).Wait();
-                        _DisplayManagerPlugin.GetVCPCapability(monitor, 0xE9).Wait();
-                        _DisplayManagerPlugin.GetDisplayPropertiesInfo(monitor).Wait();
-                        if (monitor.CapabilityString.Contains("F4"))
-                        {
-                            _DisplayManagerPlugin.GetGamingProperties_SupportedList(monitor).Wait();
-                        }
-                    }
-                    UpdateHotkeyInfo();
+                //review monitor list to check duplicated data
+                ReviewAllMonitorToAvoidDuplicatedInfo();
+                //InitMonitorSettings();
+                //_DisplayManagerPlugin.InitDisplayData(_AllInfoMonitors);
+                //foreach (MonitorInfo monitor in _AllInfoMonitors)
+                //{
+                //    _DisplayManagerPlugin.GetUSBUpstreamList(monitor).Wait();
+                //    _DisplayManagerPlugin.GetAllUSBUpstream(monitor);
+                //    _DisplayManagerPlugin.GetVCPCapability(monitor, 0xE9);
+                //    _DisplayManagerPlugin.GetDisplayPropertiesInfo(monitor);
+                //    if (monitor.CapabilityString.Contains("F4"))
+                //    {
+                //        _DisplayManagerPlugin.GetGamingProperties_SupportedList(monitor);
+                //    }
+                //}
+                //UpdateHotkeyInfo();
 
                     Task.Run(() => //support last selected monitor info from settings
                     {
@@ -11809,6 +11809,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             var NewMonitors = (_DisplayManagerPlugin.Re_GetMonitors(token).Result).ToList();
                             _AllInfoMonitors = NewMonitors.ToList();
 
+                            //Task.Run(() => {
+                            InitMonitorSettings(_AllInfoMonitors);
+                            //});
+
                             // add @ 20250303 stephen
                             // modified @ 20250305 stephen : set count = -1 as a flag to avoid trigger ui reflash
                             if (_arg != null)
@@ -12453,6 +12457,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             OnMonitorinfoUpdatechanged(_EventArgss);
         }
 
+        private void InitMonitorSettings(List<MonitorInfo> AllMonitors)
+        {
+            InitMonitorSettings();
+            _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait();
+            for (int i = 0; i < AllMonitors.Count; i++)
+            {
+                _DisplayManagerPlugin.GetVCPCapability(AllMonitors[i], 0xE9);
+                _DisplayManagerPlugin.GetDisplayPropertiesInfo(AllMonitors[i]);
+                if (AllMonitors[i].CapabilityString.Contains("F4"))
+                {
+                    _DisplayManagerPlugin.GetGamingProperties_SupportedList(AllMonitors[i]);
+                }
+                _DisplayManagerPlugin.GetUSBUpstreamList(AllMonitors[i]).Wait();
+                _DisplayManagerPlugin.GetAllUSBUpstream(AllMonitors[i]);
+            }
+            UpdateHotkeyInfo();
+        }
+
         private void show_displays_changed(object sender, DisplaychangedEventArgs e)
         {
             // add @ 20250305 stephen
@@ -12468,6 +12490,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("Send out Displaychanged Event Notify from DeviceMangerPlugin");
 
             _AllInfoMonitors = new List<MonitorInfo>(e.monitors);
+
+            //Task.Run(() => {
+            InitMonitorSettings(_AllInfoMonitors);
+            //});
 
             DisplaychangedEventArgs _displaychangedEventArgs = new DisplaychangedEventArgs();
             _displaychangedEventArgs.count = e.count;
@@ -13405,6 +13431,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_NKVMPluginCondition = pluginCondition;
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
                         _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
+                        _NKVMPlugin.NKVMSetVCPEvent += NKVMSetVCPCode;
                         //ToNKVM_SupportedMonitorList();
                         //ToNKVM_initHotKeys();
                     }
@@ -13414,6 +13441,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_NKVMPluginCondition = pluginCondition;
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
                         _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
+                        _NKVMPlugin.NKVMSetVCPEvent += NKVMSetVCPCode;
                         //ToNKVM_SupportedMonitorList();
                         //ToNKVM_initHotKeys();
                     }
@@ -16472,6 +16500,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             SetNKVMHotkey(e);
         }
 
+        private void NKVMSetVCPCode(object sender, NKVMSetVCP e)
+        {
+            SetVCPfromNKVM(e);
+        }
+
         private void SendCLINKVMRespone(NKVMRespone e)
         {
             EventHandler<NKVMRespone> handler = NKVMCLIRespone;
@@ -16526,6 +16559,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             else
             {
                 writelog("[SetNKVMHotkey] _NKVMPlugin is null");
+            }
+        }
+
+        private void SetVCPfromNKVM(NKVMSetVCP e) 
+        {
+            writelog("[SetVCPfromNKVM] SetVCPfromNKVM");
+            if (_DisplayManagerPlugin != null)
+            {
+                _DisplayManagerPlugin.SetVCPtoDisplayData(e.monitorInfo, e.code, e.value).Wait();
             }
         }
 
