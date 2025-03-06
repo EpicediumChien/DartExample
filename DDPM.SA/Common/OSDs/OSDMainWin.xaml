@@ -24,8 +24,9 @@
                 <DataTemplate DataType="{x:Type local:OSDUserControl}">
                     <local:OSDUserControl Margin="1,0,1,4" Width="332" Height="135"
                                  Closed="{Binding DataContext.OSDWinClosed,RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                 GUID="{Binding GUID}" OSDType="{Binding OSDType}" 
-                                 ShowStringTitle="{Binding ShowStringTitle}" ShowStringContent="{Binding ShowStringContent}"/>
+                                 GUID="{Binding GUID}" OSDType_Device="{Binding OSDType_Device}" 
+                                 ShowStringTitle="{Binding ShowStringTitle}" ShowStringContent="{Binding ShowStringContent}"
+                                 IsFadeOut="{Binding IsFadeOut}" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

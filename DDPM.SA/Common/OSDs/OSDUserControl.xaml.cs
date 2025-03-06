@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DDPM.SA.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +11,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -16,12 +19,23 @@ using System.Windows.Threading;
 
 namespace DDPM.OSDs
 {
-    public class OSDWinInfo
+    public class OSDWinInfo : ObservableObject
     {
         public required string GUID { get; set; }
-        public int OSDType { get; set; }
+        public OSDType_Device OSDType_Device { get; set; }
         public required string ShowStringTitle { get; set; }
         public required string ShowStringContent { get; set; }
+
+        private bool isFadeOut = false;
+        public bool IsFadeOut
+        {
+            get { return isFadeOut; }
+            set
+            {
+                isFadeOut = value;
+                OnPropertyChanged("IsFadeOut");
+            }
+        }
     }
 
     /// <summary>
@@ -43,15 +57,15 @@ namespace DDPM.OSDs
             DependencyProperty.Register("GUID", typeof(string), typeof(OSDUserControl), new PropertyMetadata(""));
 
 
-        public int OSDType
+        public OSDType_Device OSDType_Device
         {
-            get { return (int)GetValue(OSDTypeProperty); }
-            set { SetValue(OSDTypeProperty, value); }
+            get { return (OSDType_Device)GetValue(OSDType_DeviceProperty); }
+            set { SetValue(OSDType_DeviceProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for OSDType.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty OSDTypeProperty =
-            DependencyProperty.Register("OSDType", typeof(int), typeof(OSDUserControl), new PropertyMetadata(1));
+        public static readonly DependencyProperty OSDType_DeviceProperty =
+            DependencyProperty.Register("OSDType_Device", typeof(OSDType_Device), typeof(OSDUserControl), new PropertyMetadata(OSDType_Device.Unknown));
 
 
         public string ShowStringTitle
@@ -75,6 +89,23 @@ namespace DDPM.OSDs
         public static readonly DependencyProperty ShowStringContentProperty =
             DependencyProperty.Register("ShowStringContent", typeof(string), typeof(OSDUserControl), new PropertyMetadata(""));
 
+
+
+        public bool IsFadeOut
+        {
+            get { return (bool)GetValue(IsFadeOutProperty); }
+            set { SetValue(IsFadeOutProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsFadeOut.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsFadeOutProperty =
+            DependencyProperty.Register("IsFadeOut", typeof(bool), typeof(OSDUserControl), new PropertyMetadata(false, OnPropertyChanged));
+
+        private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            OSDUserControl osdUserControl = (OSDUserControl)d;
+            osdUserControl.InvokeFadeOutAnimation();
+        }
 
         public ICommand? Closed
         {
@@ -113,6 +144,35 @@ namespace DDPM.OSDs
             {
                 time = time.Add(TimeSpan.FromMilliseconds(-1000));
             }
+        }
+        private void InvokeFadeOutAnimation()
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                Storyboard? sb = Resources["FadeOut"] as Storyboard;
+                if (sb == null)
+                    return;
+
+                sb.Completed += (o, s) =>
+                {
+                    Closed?.Execute(GUID);
+                };
+
+                sb.Begin();
+            });
+        }
+
+        public void StopFadeOutAnimation()
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                Storyboard? sb = Resources["FadeOut"] as Storyboard;
+
+                if (sb == null)
+                    return;
+
+                sb.Stop();
+            });
         }
 
         private void close_Click(object sender, MouseButtonEventArgs e)

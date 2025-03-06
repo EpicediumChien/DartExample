@@ -45,40 +45,41 @@
         <DataTemplate x:Key="KeyboardIcon">
             <!--Keyboard-->
             <Canvas Grid.Row="0"
-                    Width="50" Height="50"
+                    Width="50" Height="44"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
                     Tag="{DynamicResource Default_SA_OSD_PathColor}">
-                <Path Data="M26.2812 14.6562V10.9062H27.6875C28.5163 10.9062 29.3112 10.577 29.8972 9.99096C30.4833 9.40491 30.8125 8.61005 30.8125 7.78125V3.125H27.4063V7.5625H26C25.1712 7.5625 24.3763 7.89174 23.7903 8.47779C23.2042 9.06384 22.875 9.8587 22.875 10.6875V14.6562H0V46.875H50V14.6562H26.2812ZM46.6562 43.4688H3.34375V18H46.6562V43.4688Z"
+                <Path Data="M26.2812 11.6562V7.90625H27.6875C28.5163 7.90625 29.3112 7.57701 29.8972 6.99096C30.4833 6.40491 30.8125 5.61005 30.8125 4.78125V0.125H27.4063V4.5625H26C25.1712 4.5625 24.3763 4.89174 23.7903 5.47779C23.2042 6.06384 22.875 6.8587 22.875 7.6875V11.6562H0V43.875H50V11.6562H26.2812ZM46.6562 40.4688H3.34375V15H46.6562V40.4688Z"
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                <Path Data="M7.84375 20.1562H12.7188V23.5H7.84375V20.1562Z"
+                <Path Data="M7.84375 17.1562H12.7188V20.5H7.84375V17.1562Z"
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                <Path Data="M7.84375 26.0312H12.7188V29.3438H7.84375V26.0312Z"
+                <Path Data="M7.84375 23.0312H12.7188V26.3438H7.84375V23.0312Z"
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                <Path Data="M7.84375 31.8125H12.7188V35.1562H7.84375V31.8125Z"
+                <Path Data="M7.84375 28.8125H12.7188V32.1562H7.84375V28.8125Z"
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                <Path Data="M17.6562 20.1562H22.5312V23.5H17.6562V20.1562Z"
+                <Path Data="M17.6562 17.1562H22.5312V20.5H17.6562V17.1562Z"
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                <Path Data="M17.6562 26.0312H22.5312V29.3438H17.6562V26.0312Z"
+                <Path Data="M17.6562 23.0312H22.5312V26.3438H17.6562V23.0312Z"
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                <Path Data="M17.6562 31.8125H22.5312V35.1562H17.6562V31.8125Z"
+                <Path Data="M17.6562 28.8125H22.5312V32.1562H17.6562V28.8125Z"
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                <Path Data="M27.4688 20.1562H32.3438V23.5H27.4688V20.1562Z"
+                <Path Data="M27.4688 17.1562H32.3438V20.5H27.4688V17.1562Z"
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                <Path Data="M27.4688 26.0312H32.3438V29.3438H27.4688V26.0312Z"
+                <Path Data="M27.4688 23.0312H32.3438V26.3438H27.4688V23.0312Z"
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                <Path Data="M27.4688 31.8125H32.3438V35.1562H27.4688V31.8125Z"
+                <Path Data="M27.4688 28.8125H32.3438V32.1562H27.4688V28.8125Z"
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                <Path Data="M37.2812 20.1562H42.1562V23.5H37.2812V20.1562Z"
+                <Path Data="M37.2812 17.1562H42.1562V20.5H37.2812V17.1562Z"
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                <Path Data="M37.2812 26.0312H42.1562V29.3438H37.2812V26.0312Z"
+                <Path Data="M37.2812 23.0312H42.1562V26.3438H37.2812V23.0312Z"
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                <Path Data="M37.2812 31.8125H42.1562V35.1562H37.2812V31.8125Z"
+                <Path Data="M37.2812 28.8125H42.1562V32.1562H37.2812V28.8125Z"
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                <Path Data="M15.3438 37.6562H34.625V41H15.3438V37.6562Z"
+                <Path Data="M15.3438 34.6562H34.625V38H15.3438V34.6562Z"
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
             </Canvas>
         </DataTemplate>
+
         <DataTemplate x:Key="WirelessMouseIcon">
             <!--Wireless Mouse-->
             <Canvas Grid.Row="0"
@@ -151,19 +152,19 @@
                         <ContentControl.Style>
                             <Style TargetType="ContentControl">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding OSDType}" Value="0">
+                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="Unknown">
                                         <Setter Property="ContentTemplate" Value="{StaticResource BatteryLowIcon}"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType}" Value="1">
+                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="Keyboard">
                                         <Setter Property="ContentTemplate" Value="{StaticResource KeyboardIcon}"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType}" Value="2">
+                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="Mouse">
                                         <Setter Property="ContentTemplate" Value="{StaticResource WirelessMouseIcon}"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType}" Value="3">
+                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="Headset">
                                         <Setter Property="ContentTemplate" Value="{StaticResource HeadsetIcon}"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType}" Value="4">
+                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="Pen">
                                         <Setter Property="ContentTemplate" Value="{StaticResource PencilIcon}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
