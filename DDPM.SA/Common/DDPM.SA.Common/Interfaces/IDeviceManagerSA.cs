@@ -1659,7 +1659,6 @@ namespace DDPM.SA.Common
         Task<bool> GetDTPProxyPluginReady();
 
         #region Get
-
         Task<HeadsetConnectionType> GetAirAudioConnectionTypeAsync(string Guid);
 
         Task<JArray> GetAirAudioDeviceItemsAsync();
