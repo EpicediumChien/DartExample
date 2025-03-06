@@ -69,6 +69,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     DataContext = _vm;
                     _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
                     BuildModuleGroups();
+                    InitializeButtonImage();
                     if (_vm!.ConnectionType == "WiredAudio")
                     {
                         btnUnpair.Visibility = Visibility.Collapsed;
@@ -289,6 +290,56 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] BuildModuleGroups Exception = {ex.Message}");
+            }
+        }
+
+        private void InitializeButtonImage()
+        {
+            try
+            {
+                switch (_vm!.Model.ToUpper())
+                {
+                    case "WL7024":
+                        RecT.Height = 50;
+                        RecB.Height = 120;
+                        RecL.Width = 150;
+                        RecR.Width = 135;
+                        break;
+                    case "WL5024":
+                        RecT.Height = 100;
+                        RecB.Height = 105;
+                        RecL.Width = 185;
+                        RecR.Width = 185;
+                        break;
+                    case "WH5024":
+                        RecT.Height = 100;
+                        RecB.Height = 105;
+                        RecL.Width = 185;
+                        RecR.Width = 185;
+                        break;
+                    case "WL3024":
+                        RecT.Height = 90;
+                        RecB.Height = 100;
+                        RecL.Width = 180;
+                        RecR.Width = 170;
+                        break;
+                    case "WH3024":
+                        RecT.Height = 90;
+                        RecB.Height = 100;
+                        RecL.Width = 180;
+                        RecR.Width = 170;
+                        break;
+                    default:
+                        RecT.Height = 50;
+                        RecB.Height = 120;
+                        RecL.Width = 136;
+                        RecR.Width = 133;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] InitializeButtonImage Exception = {ex.Message}");
             }
         }
 

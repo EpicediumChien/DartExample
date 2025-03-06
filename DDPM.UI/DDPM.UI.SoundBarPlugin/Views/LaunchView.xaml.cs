@@ -70,6 +70,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                     DataContext = _vm;
                     _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
                     BuildModuleGroups();
+                    InitializeButtonImage();
                     //txtUnpair.Text = Unpair;
                     //txtRestore.Text = Restore;
                     ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
@@ -220,6 +221,39 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                 ArrowLeft.Source = (BitmapImage)Application.Current.Resources[resourceKey];
             }
         }
+
+        private void InitializeButtonImage()
+        {
+            try
+            {
+                switch (_vm!.Model.ToUpper())
+                {
+                    case "SP3022":
+                        RecT.Height = 165;
+                        RecB.Height = 170;
+                        RecL.Width = 50;
+                        RecR.Width = 50;
+                        break;
+                    case "SB522A":
+                        RecT.Height = 220;
+                        RecB.Height = 220;
+                        RecL.Width = 30;
+                        RecR.Width = 30;
+                        break;
+                    default:
+                        RecT.Height = 165;
+                        RecB.Height = 170;
+                        RecL.Width = 50;
+                        RecR.Width = 50;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] InitializeButtonImage Exception = {ex.Message}");
+            }
+        }
+
         #endregion Init for Modules
 
         #region Vbar
