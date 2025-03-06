@@ -88,7 +88,7 @@ namespace DdpmSwUpdater
             object o = DDPMRegistryHelper.ReadRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Dell\\DDPM Subagent", "SkipCA");
             if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
             {
-                isSkipCA = o.ToString().Equals("1") ? true : false;
+                isSkipCA = o.Equals("1") ? true : false;
             }
             return isSkipCA;
         }
@@ -98,7 +98,7 @@ namespace DdpmSwUpdater
             object o = DDPMRegistryHelper.ReadRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Dell\\DDPM Subagent", "SkipSHA");
             if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
             {
-                isSkipSHA = o.ToString().Equals("1") ? true : false;
+                isSkipSHA = o.Equals("1") ? true : false;
             }
             return isSkipSHA;
         }
