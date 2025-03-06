@@ -253,7 +253,7 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received Monitors List requested ...");
 
-            List<MonitorInfo> _AllDisplays = new List<MonitorInfo>(_AllInfoMonitors_Mix.Select(M => M.Item2).ToList());
+            List<MonitorInfo> _AllDisplays = _AllInfoMonitors_Mix.Select(M => M.Item2).ToList();
 
             _logs.DebugMsg("[VcpCorePlugin] AllInfoMonitors count is " + _AllDisplays.Count.ToString());
 

@@ -1,0 +1,262 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
+using DDPM.SA.Common;
+using DDPM.UI.Common;
+using DDPM.UI.Interfaces;
+using DDPM.UI.Plugin.ViewModels;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.PluginConditions;
+using Dell.Client.Framework.UX.WPF;
+using Microsoft.Extensions.DependencyInjection;
+using NGA.ThickClient.Interfaces;
+using System.Diagnostics.CodeAnalysis;
+using System.Windows.Forms;
+using System.Windows.Input;
+using Cursors = System.Windows.Input.Cursors;
+
+namespace DDPM.UI.Plugin.AirAudioPlugin
+{
+    /// <summary>
+    /// Interaction logic for PenPlugin
+    /// </summary>
+    [Plugin(PluginId, PluginName, Version = PluginVersion, Category = Category.Utility)]
+    [Descriptor(Description = Description)]
+    [Publisher(Name = "DDPM AirAudioPlugin", Support = "Wistron DDPM Team")]
+    [ExcludeFromCodeCoverage]
+    public class AirAudioPlugin : IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
+    {
+        private const string PluginId = UI.Common.Constants.AirAudioPluginId;
+        private const string PluginName = "AirAudioPlugin";
+        private const string PluginVersion = "1.0";
+        private const string Description = "Display Headset page";
+
+        internal static readonly Ioc PluginIoc = new();
+
+        private readonly ILog _log;
+        private readonly IConsole _console;
+        private readonly IPluginManager _pluginManager;
+        private readonly IShowPluginManager _showPluginManager;
+        private readonly string? _applicationName;
+        private AirAudioViewModel? _viewModel;
+
+        private bool _isConfigured;
+        private IDeviceManagerSA _deviceManagerPlugin;
+        private IFrameworkPluginConditionNotification? _deviceManagerPluginCondition;
+        private CancellationTokenSource StartupCancellationTokenSource { get; } = new();
+        private CancellationToken CancellationToken { get; }
+        private readonly SemaphoreSlim _lock = new(1, 1);
+        private DeviceHelper _deviceHelper = new();
+        private List<DeviceInfo> _deviceInfos = new();
+        private bool IsEventRegistered = false;
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public AirAudioPlugin(IShowPluginManager showPluginManager, IPluginManager pluginManager, IConsole console)
+        {
+            _showPluginManager = showPluginManager;
+            _pluginManager = pluginManager;
+            _console = console;
+            _log = console.CreateLog("AirAudio");
+            _log.Info($"{nameof(LaunchView)} - Constructed");
+
+            CancellationToken = StartupCancellationTokenSource.Token;
+            _pluginManager.PluginsStarted += PluginManager_PluginsStarted;
+        }
+        //private void ShowAddDeviceView() {
+        //  _console.ShowPluginById(PluginId);
+        //}
+
+        private void PluginManager_PluginsStarted(object? sender, PluginsStartedEventArgs pluginsStartedEventArgs)
+        {
+            _log.Info($"{nameof(PluginManager_PluginsStarted)} started");
+            try
+            {
+                _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
+
+                if (_deviceManagerPlugin == null)
+                {
+                    _log.Error($"{nameof(PluginManager_PluginsStarted)} DeviceManager Plugin is null");
+                    return;
+                }
+
+                // Manager Peripheralslugin Condition
+                _deviceManagerPluginCondition = _deviceManagerPlugin as IFrameworkPluginConditionNotification;
+
+                if (_deviceManagerPluginCondition == null)
+                    return;
+
+                // Subscribe to plugin changes
+                _deviceManagerPluginCondition.PluginConditionChangeHandler += _peripheralsPluginCondition_PluginConditionChangeHandler;
+
+                // Get current condition
+                _ = Task.Run(GetCurrentPeripheralsPluginCondition, CancellationToken);
+            }
+            catch (Exception ex)
+            {
+                var message = $"{nameof(PluginManager_PluginsStarted)} failed: {ex.Message}";
+                _log.Error(ex, message);
+            }
+        }
+
+        private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
+        {
+            try
+            {
+                if (e.device_peripherals != null && (e.device_peripherals.LogicalDeviceType.Contains("AirAudio")))
+                {
+                    if (e.type == DeviceChangedType.Peripherals_UnPlug)
+                    {
+                        if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == _viewModel.CurrentInstanceID.GetHashCode())
+                        {
+                            _viewModel.OnGoBackClicked();
+                            return;
+                        }
+                        GetPeripheralsAsync();
+                    }
+                    _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
+                }
+            }
+            catch (Exception ex)
+            {
+                var message = $"{nameof(PluginManager_PluginsStarted)} failed: {ex.Message}";
+                _log.Error(ex, message);
+            }
+        }
+
+        private void PeripheralsPlugin_UpdateNotify(object? sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void _peripheralsPluginCondition_PluginConditionChangeHandler(object? sender, EventArgs e)
+        {
+            _ = Task.Run(GetCurrentPeripheralsPluginCondition, CancellationToken);
+        }
+
+        private async Task GetCurrentPeripheralsPluginCondition()
+        {
+            await _lock.WaitAsync(CancellationToken);
+            _log.Trace($"{nameof(GetCurrentPeripheralsPluginCondition)} lock");
+            try
+            {
+                if (_deviceManagerPluginCondition == null)
+                    return;
+
+                var pluginCondition = await _deviceManagerPluginCondition.CurrentConditionAsync();
+
+                if (pluginCondition is PluginErrorCondition)
+                {
+                    _log.Info($"{nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginErrorCondition)}");
+                }
+                else if (pluginCondition is PluginRunningCondition)
+                {
+                    _log.Info($"{nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginRunningCondition)}");
+                }
+            }
+            catch (Exception ex)
+            {
+                var message = $"{nameof(GetCurrentPeripheralsPluginCondition)} failed with error - {ex.Message}";
+                _log.Error(ex, message);
+                //throw new NotificationPluginException(message);
+            }
+            finally
+            {
+                _lock.Release();
+                _log.Trace($"{nameof(GetCurrentPeripheralsPluginCondition)} unlock");
+            }
+        }
+
+        private void GetPeripheralsAsync()
+        {
+            _log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... in");
+            if (!SpinWait.SpinUntil(() =>
+            _deviceManagerPluginCondition is IFrameworkPluginConditionNotification, TimeSpan.FromMinutes(2)))
+            {
+                Console.WriteLine("Could not establish communication with DDPM!!");
+                return;
+            }
+            //_log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... 1 in");
+            _log.Debug($"GetPeripherals is invoked");
+            //_deviceHelper = await peripheralsPlugin.GetDevices();
+            Task<DeviceHelper> task = _deviceManagerPlugin.GetDevices();
+            //_log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... 2 in");
+            _deviceHelper = task.Result;
+            //_log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... 3 in");
+            _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
+            _log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... out");
+        }
+
+        /// <summary>
+        /// Initialize or register services
+        /// </summary>
+        /// <remarks>Below code will be removed when <see cref="IConsole"/> provides the bootstrapper support</remarks>
+        private void ConfigureServices()
+        {
+            _log.Info($"[HeadsetPlugin] ConfigureServices ... in");
+            if (_isConfigured)
+                return;
+
+            // Marked all the instances as singleton
+            // Pass the existing _console and _log instance so that Ioc doesn't new'up them
+            PluginIoc.ConfigureServices(new ServiceCollection()
+                .AddSingleton(_showPluginManager)
+                .AddSingleton(_console)
+                .AddSingleton(_log)
+                .AddSingleton(_deviceManagerPlugin)
+                .AddSingleton<IPeripheralViewModel, AirAudioViewModel>()
+                .BuildServiceProvider());
+
+            _viewModel = (AirAudioViewModel?)PluginIoc.GetService<IPeripheralViewModel>();
+            _isConfigured = true;
+            _log.Info($"[HeadsetPlugin] ConfigureServices ... out");
+        }
+
+        public string HeaderText => "Dell Headset";
+        public Type PageType => typeof(LaunchView);
+
+        #region Interface IConsolePluginSupportsActivations
+
+        /// <inheritdoc/>
+        public void OnActivated()
+        {
+            if (!IsEventRegistered)
+            {
+                _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
+                IsEventRegistered = true;
+            }
+            Mouse.OverrideCursor = null;
+        }
+
+        /// <inheritdoc/>
+        public void OnDeactivated()
+        {
+            if (IsEventRegistered)
+            {
+                _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
+                IsEventRegistered = false;
+            }
+            Mouse.OverrideCursor = Cursors.Wait;
+        }
+
+        /// <inheritdoc/>
+        public void OnShown(string pluginParameter)
+        {
+            _log.Info($"[HeadsetPlugin] OnShown ... in");
+            if (!IsEventRegistered)
+            {
+                _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
+                IsEventRegistered = true;
+            }
+            ConfigureServices();
+            GetPeripheralsAsync();
+            if (_viewModel != null && !_viewModel.SetCurrentDevice(pluginParameter)) { }
+            _log.Info($"[HeadsetPlugin] OnShown ... out");
+        }
+        #endregion Interface IConsolePluginSupportsActivations
+
+        ~AirAudioPlugin()
+        {
+            _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
+        }
+    }
+}

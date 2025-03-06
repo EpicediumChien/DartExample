@@ -109,7 +109,6 @@ namespace DDPM.QAM
                         //ImportWebcamProfiles(CurrentDeviceInfo.ModelNumber, devMgr, log);// filePath);
                         ZoomMax = CurrentDeviceInfo.ZoomMax;
                         ZoomMin = CurrentDeviceInfo.ZoomMin;
-
                         //if (!CurrentDeviceInfo.IsPropertyAutoFramingSupported)
                         if (!IsAutoFramingVisable())
                         {
