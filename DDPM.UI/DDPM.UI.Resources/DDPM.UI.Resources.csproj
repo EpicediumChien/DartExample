@@ -221,6 +221,8 @@
 		<None Remove="Resources\Images\SB3022.png" />
 		<None Remove="Resources\Images\SB522A.png" />
 		<None Remove="Resources\Images\SB725.png" />
+		<None Remove="Resources\Images\SP325.png" />
+		<None Remove="Resources\Images\SL525.png" />
 		<None Remove="Resources\Images\ScrollButton1.png" />
 		<None Remove="Resources\Images\ScrollButton2.png" />
 		<None Remove="Resources\Images\SD25.png" />
@@ -248,6 +250,8 @@
 		<None Remove="Resources\Images\Speaker_SB522A_NoLight.png" />
 		<None Remove="Resources\Images\Speaker_SB522A_TwoLight.png" />
 		<None Remove="Resources\Images\Speaker_SB725.png" />
+		<None Remove="Resources\Images\Speaker_SP325.png" />
+		<None Remove="Resources\Images\Speaker_SL525.png" />
 		<None Remove="Resources\Images\Speaker_SP3022.png" />
 		<None Remove="Resources\Images\Speaker_SP3022_AllLight.png" />
 		<None Remove="Resources\Images\Speaker_SP3022_FourLight.png" />
@@ -499,6 +503,12 @@
 		<Resource Include="Resources\Images\SB725.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
+		<Resource Include="Resources\Images\SP325.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Images\SL525.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Resources\Images\SD25.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
@@ -590,6 +600,12 @@
 		</Resource>
 		<Resource Include="Resources\Images\Speaker_SB725.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Images\Speaker_SP325.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Images\Speaker_SL525.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Resources\Images\Speaker_SP3022.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>

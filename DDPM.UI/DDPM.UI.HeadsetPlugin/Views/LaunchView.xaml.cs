@@ -105,7 +105,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
                                 //Lock Functionality 9/7
                                 //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Audio]
-                                if (data.LockSettings != null && 
+                                if (data.LockSettings != null &&
                                     DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Audio"))
                                 {
                                     RestoreLockIcon.Visibility = Visibility.Visible;
@@ -117,8 +117,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
                     Loaded += LaunchView_LoadedStatus;
                     Unloaded += LaunchView_UnLoadedStatus;
-                    if(!_vm.isAirAudio)
-                        _vm!.HeadsetGroupChanged += HeadsetGroupChanged;
+                    _vm!.HeadsetGroupChanged += HeadsetGroupChanged;
                 }
             }
             DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView Constructor ... end ");
