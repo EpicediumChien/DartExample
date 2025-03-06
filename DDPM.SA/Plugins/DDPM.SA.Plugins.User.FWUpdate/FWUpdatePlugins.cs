@@ -780,8 +780,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         Model = fwUpdateInfos[i].Model,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                         ProcessName = "Downloading",
-                        ProcessProgress = 100,
+                        ProcessProgress = 0,
                     };
+                    sendMessageToEvent(updateProgressInfo);
                     string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                     string saveFolderName = Guid.NewGuid().ToString();
                     string savePath;
