@@ -1,16 +1,6 @@
 @echo OFF
 :: start /wait /B cmd.exe /C .\del_files.bat
-::-----------
-::SA related folders
-set Dir_Subagent_assemblies=.\DDPM.SA\dll
-set Dir_Subagent_CommonDll=.\DDPM.SA\bin\CommonDll\%build_type%\net8.0-windows10.0.19041.0
-set Dir_Subagent_user=.\DDPM.SA\bin\DDPM.Subagent.User\%build_type%\net8.0-windows10.0.19041.0
-set Dir_Subagent_sys=.\DDPM.SA\bin\DDPM.Subagent\%build_type%\net8.0-windows10.0.19041.0
-set Dir_Subagent_cli=.\DDPM.SA\bin\CLI.Subagent\%build_type%\net8.0-windows10.0.19041.0
-::-----------
-::UI related folders
-set Dir_UI_CommonDll=.\DDPM.UI\CommonDll
-set Dir_UI_output=.\DDPM.UI\bin\net8.0-windows10.0.19041.0
+
 
 
 
@@ -25,6 +15,21 @@ set build_arch="Any CPU"
 
 ::Build for [Release] or [Debug]
 set ConfigType=%1
+
+
+::-----------
+::SA related folders
+set Dir_Subagent_assemblies=.\DDPM.SA\dll
+set Dir_Subagent_CommonDll=.\DDPM.SA\bin\CommonDll\%ConfigType%\net8.0-windows10.0.19041.0
+set Dir_Subagent_user=.\DDPM.SA\bin\DDPM.Subagent.User\%ConfigType%\net8.0-windows10.0.19041.0
+set Dir_Subagent_sys=.\DDPM.SA\bin\DDPM.Subagent\%ConfigType%\net8.0-windows10.0.19041.0
+set Dir_Subagent_cli=.\DDPM.SA\bin\CLI.Subagent\%ConfigType%\net8.0-windows10.0.19041.0
+::-----------
+::UI related folders
+set Dir_UI_CommonDll=.\DDPM.UI\CommonDll
+set Dir_UI_output=.\DDPM.UI\bin\net8.0-windows10.0.19041.0
+
+
 
 ::It's going to build UI.
 set GetGotoUI=%2
