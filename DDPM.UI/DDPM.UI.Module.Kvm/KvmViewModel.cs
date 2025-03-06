@@ -1253,8 +1253,8 @@ namespace DDPM.UI.Module.Kvm
                         original_pcsList = pcsList.ToDictionary(entry => entry.Key, entry => entry.Value);
                         if (pcsList != null && pcsList.Count > 1)   // 2024-06-19 Elie, fix exception.
                         {
-                            if (inputList.Count != _inputsList.Count && usbsList.Count != _usbsList.Count)
-                            {
+                            //if (inputList.Count != _inputsList.Count && usbsList.Count != _usbsList.Count)
+                            //{
                                 string pathData = string.Empty;
                                 //_inputsList.Clear();
                                 _inputsList = new List<InputSourceList>();
@@ -1407,7 +1407,7 @@ namespace DDPM.UI.Module.Kvm
                                 {
                                     _log?.Info("PC1 or PC2 not found in pcsList.");
                                 }
-                            }
+                            //}
 
                         }
                         else
