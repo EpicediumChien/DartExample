@@ -2017,6 +2017,15 @@ namespace NetworkKVM.Plugins
                         {
                             WriteAsync(set_VCP_R.ToJson()).Wait();
                         }
+                        if (b)
+                        {
+                            _logs.DebugMsg("[NetworkKVM] SetVCPEvent.....");
+                            NKVMSetVCP nKVMSetVCP = new NKVMSetVCP();
+                            nKVMSetVCP.monitorInfo = _AllInfoMonitors[set_VCP.MonitorIndex];
+                            nKVMSetVCP.code = set_VCP.VcpCode;
+                            nKVMSetVCP.value = set_VCP.Value;
+                            SetVCPEvent(nKVMSetVCP);
+                        }
                         isSetVCP = false;
                         lockVCP = 0;
                         return Task.CompletedTask;
@@ -2644,6 +2653,8 @@ namespace NetworkKVM.Plugins
 
         public event EventHandler<NKVMSetHotkey> NKVMSetHotkey;
 
+        public event EventHandler<NKVMSetVCP> NKVMSetVCPEvent;
+
         public class EventArgsjson : EventArgs
         {
             public EventArgsjson(string jsonstring)
@@ -2883,6 +2894,12 @@ namespace NetworkKVM.Plugins
         {
             _logs.DebugMsg("[NetworkKVM] Send SetDDPMHotkey Event");
             NKVMSetHotkey?.AsyncFireAndForget(this, setHotkey, System.Threading.CancellationToken.None);
+        }
+
+        public void SetVCPEvent(NKVMSetVCP nKVMSetVCP)
+        {
+            _logs.DebugMsg("[NetworkKVM] NKVMSetVCP Event");
+            NKVMSetVCPEvent?.AsyncFireAndForget(this, nKVMSetVCP, System.Threading.CancellationToken.None);
         }
 
         #endregion Event Handler

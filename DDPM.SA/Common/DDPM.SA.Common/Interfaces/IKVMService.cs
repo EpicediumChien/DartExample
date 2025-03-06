@@ -21,6 +21,8 @@ namespace DDPM.SA.Common
 
         event EventHandler<NKVMSetHotkey> NKVMSetHotkey;
 
+        event EventHandler<NKVMSetVCP> NKVMSetVCPEvent;
+
         Task CreatNewNamedpipe();
 
         Task<bool> IsNamedpipeConnected();

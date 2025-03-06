@@ -100,7 +100,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     {
                         USB = _displayData[mi].DisplayUSB[index].USB;
                         WriteLog("[GetMonitorUSB]USB : " + USB);
-                        return true;
+                        if (USB != string.Empty)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
                 }
                 else

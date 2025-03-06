@@ -1294,8 +1294,19 @@ namespace DDPM.UI.Module.Kvm
                                 {
                                     _PC1selectInput = _inputsList.Find(x => (x.Type == KvmModule.SelectedHomeDevice.MonitorInfo.inputSource));
                                     _PC1selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC1"].USBUpstream));
-                                    _PC2selectInput = _inputsList.Find(x => (x.Type == pcsList["PC2"].InputType));
+                                    ModifiedPCinputList();
+                                    _PC2selectInput = _inputsList2.Find(x => (x.Type == pcsList["PC2"].InputType));
+                                    if (_PC2selectInput == null)
+                                    {
+                                        _PC2selectInput = _inputsList2[0];
+                                        pcsList["PC2"].InputType = _inputsList2[0].Type;
+                                        pcsList["PC2"].Code = inputList[_inputsList2[0].Type].Code;
+                                        pcsList["PC2"].InputName = inputList[_inputsList2[0].Type].InputName;
+                                        pcsList["PC2"].USBUpstream = inputList[_inputsList2[0].Type].USBUpstream;
+
+                                    }
                                     _PC2selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC2"].USBUpstream));
+                                    ModifiedPCinputList();
                                     PC1_Input = pcsList["PC1"].InputType;
                                     PC2_Input = pcsList["PC2"].InputType;
                                     if (!USBKVMisON)
@@ -1313,8 +1324,17 @@ namespace DDPM.UI.Module.Kvm
                                     {
                                         if (pcsList.TryGetValue("PC3", out var pc3))
                                         {
-                                            _PC3selectInput = _inputsList.Find(x => (x.Type == pcsList["PC3"].InputType));
+                                            _PC3selectInput = _inputsList3.Find(x => (x.Type == pcsList["PC3"].InputType));
+                                            if (_PC3selectInput == null)
+                                            {
+                                                _PC3selectInput = _inputsList3[0];
+                                                pcsList["PC3"].InputType = _inputsList3[0].Type;
+                                                pcsList["PC3"].Code = inputList[_inputsList3[0].Type].Code;
+                                                pcsList["PC3"].InputName = inputList[_inputsList3[0].Type].InputName;
+                                                pcsList["PC3"].USBUpstream = inputList[_inputsList3[0].Type].USBUpstream;
+                                            }
                                             _PC3selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC3"].USBUpstream));
+                                            ModifiedPCinputList();
                                             PC3_Input = pcsList["PC3"].InputType;
                                             if (!USBKVMisON)
                                             {
@@ -1330,7 +1350,15 @@ namespace DDPM.UI.Module.Kvm
                                             {
                                                 if (pcsList.TryGetValue("PC4", out var pc4))
                                                 {
-                                                    _PC4selectInput = _inputsList.Find(x => (x.Type == pcsList["PC4"].InputType));
+                                                    _PC4selectInput = _inputsList4.Find(x => (x.Type == pcsList["PC4"].InputType));
+                                                    if (_PC4selectInput == null)
+                                                    {
+                                                        _PC4selectInput = _inputsList4[0];
+                                                        pcsList["PC4"].InputType = _inputsList4[0].Type;
+                                                        pcsList["PC4"].Code = inputList[_inputsList4[0].Type].Code;
+                                                        pcsList["PC4"].InputName = inputList[_inputsList4[0].Type].InputName;
+                                                        pcsList["PC4"].USBUpstream = inputList[_inputsList4[0].Type].USBUpstream;
+                                                    }
                                                     _PC4selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC4"].USBUpstream));
                                                     PC4_Input = pcsList["PC4"].InputType;
                                                     if (!USBKVMisON)
@@ -1364,11 +1392,11 @@ namespace DDPM.UI.Module.Kvm
                                     {
                                         return;
                                     }
-                                    ModifiedPCinputList();
-                                    if (Cancelled_RefreshData(e, bwk))
-                                    {
-                                        return;
-                                    }
+                                    //ModifiedPCinputList();
+                                    //if (Cancelled_RefreshData(e, bwk))
+                                    //{
+                                    //    return;
+                                    //}
                                     USBDisenable();
                                     if (Cancelled_RefreshData(e, bwk))
                                     {
