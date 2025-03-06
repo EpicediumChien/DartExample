@@ -223,7 +223,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Connect your dock via USB port on your system. 的當地語系化字串。
+        ///   查詢類似 Connect your dock via USB port on your system 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Dock_0 {
             get {
@@ -538,7 +538,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Connect your speaker or soundbar via USB port on your system. 的當地語系化字串。
+        ///   查詢類似 Connect your speakerphone or soundbar via USB port on your system 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Speaker_0 {
             get {
