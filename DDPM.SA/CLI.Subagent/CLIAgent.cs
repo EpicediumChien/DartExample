@@ -259,7 +259,7 @@ namespace CLI.Subagent
                         /// Need to replace defer, forceWithNotice, forceWithNoNotice with empty strings for subsequent CLI use.
                         else if (commandLineInput.Options.Count > 0)
                         {
-                            if (IsTelemetryConsent(commandLineInput))
+                            if (IsTelemetryConsentInAppUpdateUpdateSourceLocation(commandLineInput))
                             {
                                 if (commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITHNOTICE")))
                                 {
@@ -416,9 +416,19 @@ namespace CLI.Subagent
             return commandLineInput.TargetType.Equals("APP") && commandLineInput.TargetFeature.Equals("UPDATE");
         }
 
-        private bool IsTelemetryConsent(CommandLineInput commandLineInput)
+        private bool IsTelemetryConsentInAppUpdateUpdateSourceLocation(CommandLineInput commandLineInput)
         {
-            return commandLineInput.TargetType.Equals("APP") && commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT");
+            var validFeatures = new HashSet<string>
+            {
+                "TELEMETRYCONSENT",
+                "UPDATESOURCELOCATION",
+                "INAPPUPDATE"
+            };
+
+            if (commandLineInput.TargetType.Equals("APP") && validFeatures.Contains(commandLineInput.TargetFeature))
+                return true;
+            else 
+                return false;
         }
 
         private bool CLIFWUpdateCheckDevice(string[] args, CommandLineInput commandLineInput)
