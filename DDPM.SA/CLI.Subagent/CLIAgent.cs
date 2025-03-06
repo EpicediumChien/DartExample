@@ -273,6 +273,34 @@ namespace CLI.Subagent
                                 }
                             }
 
+                            if (IsInAppUpdate(commandLineInput))
+                            {
+                                if (commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITHNOTICE")))
+                                {
+                                    _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput);
+                                    return;
+                                }
+
+                                if (!commandLineInput.Options.Any(_ => _.Option_Value.Contains("FORCEWITHNONOTICE")))
+                                {
+                                    commandLineInput.Options[0].Option_Value += ",FORCEWITHNONOTICE";
+                                }
+                            }
+
+                            if (IsUpdateSourceLocation(commandLineInput))
+                            {
+                                if (commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITHNOTICE")))
+                                {
+                                    _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput);
+                                    return;
+                                }
+
+                                if (!commandLineInput.Options.Any(_ => _.Option_Value.Contains("FORCEWITHNONOTICE")))
+                                {
+                                    commandLineInput.Options[0].Option_Value += ",FORCEWITHNONOTICE";
+                                }
+                            }
+
                             foreach (var option in commandLineInput.Options)
                             {
                                 if (option.Option_Value.Contains("DEFER"))
@@ -429,6 +457,16 @@ namespace CLI.Subagent
                 return true;
             else 
                 return false;
+        }
+
+        private bool IsInAppUpdate(CommandLineInput commandLineInput)
+        {
+            return commandLineInput.TargetType.Equals("APP") && commandLineInput.TargetFeature.Equals("INAPPUPDATE");
+        }
+
+        private bool IsUpdateSourceLocation(CommandLineInput commandLineInput)
+        {
+            return commandLineInput.TargetType.Equals("APP") && commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION");
         }
 
         private bool CLIFWUpdateCheckDevice(string[] args, CommandLineInput commandLineInput)
