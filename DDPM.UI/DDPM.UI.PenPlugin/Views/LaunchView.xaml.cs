@@ -9,6 +9,7 @@ using DDPM.UI.Plugin.ViewModels;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 
 namespace DDPM.UI.Plugin.PenPlugin
@@ -127,6 +128,25 @@ namespace DDPM.UI.Plugin.PenPlugin
                     SectionC.Margin = new Thickness(155, 343.5, 0, 0);
                     this.Resources["B2Width"] = 45.0;
                     this.Resources["B2Height"] = 36.0;
+
+                    PolyT.Points = new PointCollection
+                    {
+                       new Point(0, 0),
+                        new Point(620, 0),
+                        new Point(620, 146),
+                        new Point(597, 111),
+                        new Point(61, 410),
+                        new Point(0, 466)
+                    };
+                    PolyB.Points = new PointCollection 
+                    {
+                        new Point(0, 540),
+                        new Point(620, 540),
+                        new Point(620,153),
+                        new Point(83, 450),
+                        new Point(30,466),
+                        new Point(0, 467)
+                    };
                     break;
 
                 case "PN9315A":
@@ -135,6 +155,25 @@ namespace DDPM.UI.Plugin.PenPlugin
                     SectionC.Margin = new Thickness(151, 348, 0, 0);
                     this.Resources["B2Width"] = 55.0;
                     this.Resources["B2Height"] = 46.0;
+
+                    PolyT.Points = new PointCollection 
+                    {
+                       new Point(0, 0),
+                        new Point(620, 0),
+                        new Point(620, 154),
+                        new Point(597, 117),
+                        new Point(52, 422),
+                        new Point(0, 475)
+                    };
+                    PolyB.Points = new PointCollection 
+                    {
+                        new Point(0, 540),
+                        new Point(620, 540),
+                        new Point(620,157),
+                        new Point(80, 459),
+                        new Point(30,472),
+                        new Point(0, 475)
+                    };
                     break;
 
                 case "PN5122W":
@@ -142,6 +181,25 @@ namespace DDPM.UI.Plugin.PenPlugin
                     SectionC.Margin = new Thickness(159, 301, 0, 0);
                     this.Resources["B2Width"] = 63.0;
                     this.Resources["B2Height"] = 52.0;
+
+                    PolyT.Points = new PointCollection
+                    {
+                        new Point(0, 0),
+                        new Point(620, 0),
+                        new Point(620, 112),
+                        new Point(597, 74),
+                        new Point(53, 376),
+                        new Point(0, 429)
+                    };
+                    PolyB.Points = new PointCollection
+                    {
+                        new Point(0, 540),
+                        new Point(620, 540),
+                        new Point(620,116),
+                        new Point(83, 415),
+                        new Point(30,429),
+                        new Point(0, 430)
+                    };
                     break;
             }
         }

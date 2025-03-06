@@ -595,10 +595,10 @@
     <value>Fornece acesso rápido aos controles de conferência. Ativar/desativar as\nteclas exibirá ou ocultará essas teclas no teclado durante\numa chamada do Microsoft Teams ou Zoom.</value>
   </data>
   <data name="Collaboration.3" xml:space="preserve">
-    <value>Ative o efeito de piscar quando houver uma nova mensagem de chat durante uma\nchamada</value>
+    <value>Ative o efeito de piscar quando houver uma nova mensagem de chat durante uma chamada</value>
   </data>
   <data name="Collaboration.4" xml:space="preserve">
-    <value>Ative ícones no teclado com dois toques em vez de um\ntoque</value>
+    <value>Ative ícones no teclado com dois toques em vez de um toque</value>
   </data>
   <data name="Collaboration.5" xml:space="preserve">
     <value>Para usar o teclado de colaboração com o Microsoft Teams, verifique se você está conectado e usando a versão mais recente do Microsoft Teams e se a API de aplicativos de terceiros está ativada</value>
