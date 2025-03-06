@@ -595,10 +595,10 @@
     <value>회의 컨트롤에 빠르게 액세스할 수 있습니다. 키를 켜거나 끄면\nMicrosoft Teams 또는 Zoom 통화 중에\n키보드에서 키가 표시되거나 숨겨집니다.</value>
   </data>
   <data name="Collaboration.3" xml:space="preserve">
-    <value>전화 회의 중 새 채팅 메시지가 있을 때 깜박임 효과를\n활성화합니다.</value>
+    <value>전화 회의 중 새 채팅 메시지가 있을 때 깜박임 효과를활성화합니다.</value>
   </data>
   <data name="Collaboration.4" xml:space="preserve">
-    <value>한 번 탭하는 대신 두 번 탭하여 키보드의 아이콘을\n활성화합니다.</value>
+    <value>한 번 탭하는 대신 두 번 탭하여 키보드의 아이콘을활성화합니다.</value>
   </data>
   <data name="Collaboration.5" xml:space="preserve">
     <value>Microsoft Teams와 협업 키보드를 사용하려면 최신 버전의 Microsoft Teams에 로그인하여 사용하고 있으며 타사 앱 API가 활성화되어 있는지 확인하십시오.</value>
@@ -2818,7 +2818,7 @@
     <value>붙여넣기 후 서식 병합</value>
   </data>
   <data name="Camera.25" xml:space="preserve">
-    <value>USB 3.0을 통해 모니터를 연결하고 USB-C 우선순위 지정에서 &apos;빠른 데이터 속도&apos;를 선택하여 4K UHD 해상도를 활성화합니다.</value>
+    <value>USB 3.0을 통해 모니터를 연결하고 USB-C 우선순위 지정에서 '빠른 데이터 속도'를 선택하여 4K UHD 해상도를 활성화합니다.</value>
   </data>
   <data name="HeadsetAutomatedActions.14" xml:space="preserve">
     <value>감도</value>

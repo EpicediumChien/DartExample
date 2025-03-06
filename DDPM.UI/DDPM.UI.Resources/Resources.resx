@@ -597,10 +597,10 @@
     <value>Provides quick access to conference controls. Toggling the\nkeys on/off will show or hide them on the keyboard while in\na Microsoft Teams or Zoom call.</value>
   </data>
   <data name="Collaboration.3" xml:space="preserve">
-    <value>Enable blink effect when there is a new chat message in conference\ncall</value>
+    <value>Enable blink effect when there is a new chat message in conference call</value>
   </data>
   <data name="Collaboration.4" xml:space="preserve">
-    <value>Activate icons on the keyboard by double tapping instead of single\ntapping</value>
+    <value>Activate icons on the keyboard by double tapping instead of single tapping</value>
   </data>
   <data name="Collaboration.5" xml:space="preserve">
     <value>To use Collaboration Keyboard with Microsoft Teams, ensure that you are signed into and using the latest version of Microsoft Teams, and that Third-party app API is enabled</value>

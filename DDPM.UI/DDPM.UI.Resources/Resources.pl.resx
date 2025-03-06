@@ -595,10 +595,10 @@
     <value>Zapewnia szybki dostęp do elementów sterujących konferencji. Włączanie/wyłączanie \nklawiszy spowoduje ich wyświetlenie lub ukrycie na klawiaturze podczas połączenia\nMicrosoft Teams lub Zoom.</value>
   </data>
   <data name="Collaboration.3" xml:space="preserve">
-    <value>Włącz efekt migania, gdy w rozmowie konferencyjnej pojawi się nowa wiadomość\nna czacie</value>
+    <value>Włącz efekt migania, gdy w rozmowie konferencyjnej pojawi się nowa wiadomość na czacie</value>
   </data>
   <data name="Collaboration.4" xml:space="preserve">
-    <value>Aktywuj ikony na klawiaturze przez dwukrotne dotknięcie zamiast pojedynczego\ndotknięcia</value>
+    <value>Aktywuj ikony na klawiaturze przez dwukrotne dotknięcie zamiast pojedynczego dotknięcia</value>
   </data>
   <data name="Collaboration.5" xml:space="preserve">
     <value>Aby używać klawiatury do współpracy z Microsoft Teams, upewnij się, że jesteś zalogowany i korzystasz z najnowszej wersji Microsoft Teams oraz że jest włączony interfejs API aplikacji innych firm</value>
