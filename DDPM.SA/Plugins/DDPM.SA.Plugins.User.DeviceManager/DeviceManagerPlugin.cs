@@ -2696,14 +2696,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     //Telementry Collection
                     var Displaysettings_Function = new Displaysettings_Function();
-                    if (Displaysettings_Function.Send_USB_Telementry(_TelementryScheduler, monitorInfo, upstream, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo)))
-                    {
-                        writelog("[SetUSBUpstream] [Telementry] Send Telementry for USB Association Success ...");
-                    }
-                    else
-                    {
-                        writelog("[SetUSBUpstream] [Telementry] Send Telementry for USB Association Fail ...");
-                    }
+                    Displaysettings_Function.Send_USB_Telementry(_TelementryScheduler, monitorInfo, upstream, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
                     return Task.FromResult(true);
                 }
             }
@@ -2712,6 +2705,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("[SetUSBUpstream] _DisplayManagerPlugin is null.");
             }
 
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> SetAllUSBUpstream(MonitorInfo monitorInfo, string input1, string usb1, string input2, string usb2,
+                                                                    string input3 = "", string usb3 = "", string input4 = "", string usb4 = "")
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.SetAllUSBUpstream(monitorInfo, input1, usb1, input2, usb2, input3, usb3, input4, usb4);
+            }
             return Task.FromResult(false);
         }
 
@@ -2782,11 +2785,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
-        public Task<bool> isScreenPartition(MonitorInfo monitorInfo)
+        public Task<bool> isScreenPartition(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
         {
             if (_DisplayManagerPlugin != null)
             {
-                return _DisplayManagerPlugin.isScreenPartition(monitorInfo);
+                return _DisplayManagerPlugin.isScreenPartition(monitorInfo, guid, priority);
             }
             return Task.FromResult(false);
         }
@@ -11793,10 +11796,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.Re_GetMonitors(token).Result);
 
                             // add @ 20250303 stephen
+                            // modified @ 20250305 stephen : set count = -1 as a flag to avoid trigger ui reflash
                             if (_arg != null)
                             {
                                 arg = (DebouncerArg)_arg;
-                                show_displays_changed(arg.sender, new DisplaychangedEventArgs() { count = _AllInfoMonitors.Count, monitors = _AllInfoMonitors });
+                                show_displays_changed(arg.sender, new DisplaychangedEventArgs() { count = -1, monitors = _AllInfoMonitors });
                             }
                             // add @ 20250303 stephen
 
@@ -11949,9 +11953,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EventHandler<DisplaychangedEventArgs> handler = Displaychanged;
 
             // modified @ 20250303 stephen
+            // modified @ 20250305 stephen : new DisplaychangedEventArgs, avoid trigger ui reflash
             if (handler != null)
             {
+                writelog($"DeviceMangerPlugin brocast OnDisplaychanged for CMA ...(e.count = {e.count})");
                 handler.Invoke(this, e);
+            }
+
+            if (e.count < 0) {
+                writelog($"DeviceMangerPlugin brocast OnDisplaychanged End process for CMA ...(e.count = {e.count})");
+                return;
             }
             // modified @ 20250303 stephen
 
@@ -12427,6 +12438,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void show_displays_changed(object sender, DisplaychangedEventArgs e)
         {
+            // add @ 20250305 stephen
+            if (e.count < 0) {
+                writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin, but count < 0 *****");
+                OnDisplaychanged(e);
+                return;
+            }
+            // add @ 20250305 stephen
+
             writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin");
             writelog("Send out Displaychanged Event Notify from DeviceMangerPlugin");
 

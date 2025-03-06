@@ -346,10 +346,12 @@
     <value>Connect your headset via USB port on your system.</value>
   </data>
   <data name="AddDevice.Speaker.0" xml:space="preserve">
-    <value>Connect your Speaker or soundbar via USB port on your system.</value>
+    <value>Connect your speaker or soundbar via USB port on your system.</value>
+    <comment>PIMS-348231, Change Speaker to speaker</comment>
   </data>
   <data name="AddDevice.Dock.0" xml:space="preserve">
-    <value>Connect your Dock via USB port on your system.</value>
+    <value>Connect your dock via USB port on your system.</value>
+    <comment>PIMS-348231, Change Dock to dock</comment>
   </data>
   <data name="HomePage.0" xml:space="preserve">
     <value>Please wait...</value>

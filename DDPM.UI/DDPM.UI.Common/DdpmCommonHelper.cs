@@ -6,6 +6,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -360,15 +361,53 @@ namespace DDPM.UI.Common
         //Default data from cache, load from user subagent if force_reload = true
         public static DDPMSettings ReadDDPMSettings(bool reload_from_SA = false)
         {
-            if (reload_from_SA)
+            DDPMSettings tmp = null;
+            try
             {
-                if (DeviceManagerSA == null)
-                    return null;
-
-                DDPMSettings data = DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null)
+                if (reload_from_SA)
                 {
-                    Settings_Cache = data;
+                    tmp = DeviceManagerSA == null ? throw new Exception("NULL DevMgr") : DeviceManagerSA.ReloadAppConfigData().Result;
+                    if (tmp != null)
+                    {
+                        Settings_Cache = tmp;
+                    }
+                    else
+                        throw new Exception("Null Data from SA");
+                }
+                if (Settings_Cache == null)
+                    throw new Exception("Null Data Cache");
+            }
+            catch (Exception ex)
+            {
+                WriteUILog($"[ReadDDPMSettings] exception: {ex.Message}");
+
+                //20250304 Dean, read it with file directly from UI
+                string folder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
+                string _settings_path = System.IO.Path.Combine(folder, GlobalDefinitions.Folder_Product, GlobalDefinitions.Filename_appsettings_peruser);
+                WriteUILog("[ReadDDPMSettings] Read from file directly over UI");
+
+                if (File.Exists(_settings_path))
+                {
+                    if (DDPMFileSecurity.ValidateFilePath(_settings_path, out string info))
+                    {
+                        string output = DDPMFileSecurity.GetSerializedJsonString(_settings_path, out info);//, false);
+                        var _settings = JsonConvert.DeserializeObject<DDPMSettings>(output);
+                        if (_settings != null)
+                        {
+                            Settings_Cache = _settings;
+                            return Settings_Cache;
+                        }
+                        else
+                            WriteUILog("[ReadDDPMSettings] de-serialize got null data");
+                    }
+                    else
+                    {
+                        WriteUILog($"[ReadDDPMSettings] ValidateFilePath failed: {info}");
+                    }
+                }
+                else
+                {
+                    WriteUILog("[ReadDDPMSettings] file is not exist");
                 }
             }
             return Settings_Cache;

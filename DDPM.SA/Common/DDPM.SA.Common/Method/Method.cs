@@ -48,13 +48,18 @@ namespace DDPM.SA.Common.Method
             WriteLog($"{nameof(CreateZipFile)} end");
             return result;
         }
-        public bool ExecuteWevtutilCommand(string exportFilePath)
+        /// <summary>
+        /// Get system events
+        /// </summary>
+        /// <param name="exportFilePath">save path</param>
+        /// <param name="logName">"Application", "System", "Security"</param>
+        /// <returns></returns>
+        public bool ExecuteWevtutilCommand(string exportFilePath, string logName)
         {
             bool result = false;
             try
             {
                 // 設定要查詢的日誌名稱
-                string logName = "Application"; // 可選擇 "Application", "System", "Security"
 
                 // 獲取當前時間
                 DateTime now = DateTime.UtcNow;

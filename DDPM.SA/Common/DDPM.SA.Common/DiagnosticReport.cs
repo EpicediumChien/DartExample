@@ -473,26 +473,47 @@ namespace DDPM.SA.Common
                             log.Error("ProgramDataPath is null, it means is no active user currently");
                         }
 
-                        // EventLog
+                        // Application EventLog
                         try
                         {
-                            string logFileName = "EventLog.evtx";
+                            string logFileName = "Application_EventLog.evtx";
                             string logFilePath = Path.Combine(saveFolderPath, logFileName);
-                            if (!method.ExecuteWevtutilCommand(logFilePath))
+                            if (!method.ExecuteWevtutilCommand(logFilePath, "Application"))
                             {
-                                fail_info += "[EventLog] : Fail, ";
+                                fail_info += "[Application EventLog] : Fail, ";
                                 log.Info("SaveLogFile - EventLog : Fail ");
                             }
                             else
                             {
-                                success_info += "[EventLog] : Success, ";
-                                log.Info("SaveLogFile - EventLog : Success ");
+                                success_info += "[Application EventLog] : Success, ";
+                                log.Info("SaveLogFile - Application EventLog : Success ");
                             }
                         }
                         catch (Exception ex)
                         {
-                            fail_info += "[EventLog] : Exception Fail, ";
-                            log.Error($"SaveLogFile - EventLog : {ex.Message}");
+                            fail_info += "[Application EventLog] : Exception Fail, ";
+                            log.Error($"SaveLogFile - Application EventLog : {ex.Message}");
+                        }
+                        // System EventLog
+                        try
+                        {
+                            string logFileName = "System_EventLog.evtx";
+                            string logFilePath = Path.Combine(saveFolderPath, logFileName);
+                            if (!method.ExecuteWevtutilCommand(logFilePath, "System"))
+                            {
+                                fail_info += "[System EventLog] : Fail, ";
+                                log.Info("SaveLogFile - System EventLog : Fail ");
+                            }
+                            else
+                            {
+                                success_info += "[System EventLog] : Success, ";
+                                log.Info("SaveLogFile - System EventLog : Success ");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            fail_info += "[System EventLog] : Exception Fail, ";
+                            log.Error($"SaveLogFile - System EventLog : {ex.Message}");
                         }
 
                         // NKVM install.log

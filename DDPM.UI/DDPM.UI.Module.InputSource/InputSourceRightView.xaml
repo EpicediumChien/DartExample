@@ -24,7 +24,8 @@
 
                         <StackPanel>
                             <Grid Height="50">
-                                <UXControls:UXTextBlock AutomationProperties.Name="abc" Text="{Binding [InputSource.0], Source={x:Static lang:LangHelper.Instance}}"
+                                <UXControls:UXTextBlock Text="{Binding [InputSource.0], Source={x:Static lang:LangHelper.Instance}}"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="101" Name="labelCurrentInputSource"
                                                         FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" />
                                 <!--
                                 <UXControls:UXComboBox AutomationProperties.Name="SelectedCheck"
@@ -39,13 +40,22 @@
 
                                 -->
                                 <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
+                                          KeyboardNavigation.TabIndex="102" AutomationProperties.LabeledBy="{Binding ElementName=labelCurrentInputSource}"
+                                          KeyboardNavigation.TabNavigation="Continue"
                                           HorizontalAlignment="Right" VerticalAlignment="Center"
                                           ItemsSource="{Binding InputsList, Mode=TwoWay}" Width="184"
                                           SelectedItem="{Binding Items_Selected, Mode=TwoWay}"
-                                          DisplayMemberPath="inputDisplayText" />
+                                          DisplayMemberPath="inputDisplayText" >
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource DdpmComboBoxItemContainerStyle}">
+                                            <Setter Property="AutomationProperties.Name" Value="{Binding inputDisplayText}"/>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+
+                                </ComboBox>
                             </Grid>
                             <Grid Height="60">
-                                <UXControls:UXTextBlock AutomationProperties.Name="TextDisplay1"
+                                <UXControls:UXTextBlock Focusable="True" KeyboardNavigation.TabIndex="103"
                                                         Text="{Binding InputTitle}" Margin="0,10,0,0"
                                                         VerticalAlignment="Center" TextWrapping="WrapWithOverflow"
                                                         FontSize="16" HorizontalAlignment="Left" />
@@ -56,7 +66,8 @@
                                     <ColumnDefinition Width="1.5*" />
                                     <ColumnDefinition Width="2*" />
                                 </Grid.ColumnDefinitions>
-                                <UXControls:UXTextBlock Grid.Column="0" AutomationProperties.Name="TextBody3"
+                                <UXControls:UXTextBlock Grid.Column="0" Name="labelInput"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="104"
                                                         FontSize="14" TextWrapping="WrapWithOverflow"
                                                         Text="{Binding [InputSource.2], Source={x:Static lang:LangHelper.Instance}}" TextBlockType="Body3" HorizontalAlignment="Left" Margin="8,8,8,8" />
                                 <Grid Grid.Column="1">
@@ -65,16 +76,20 @@
                                         <ColumnDefinition Width="{Binding USBHWidth}" />
                                     </Grid.ColumnDefinitions>
                                     <UXControls:UXTextBlock Grid.Column="{Binding NameHColumn}" x:Name="InputNameHeader"
-                                                            AutomationProperties.Name="TextBody3" Text="{Binding [InputSource.3], Source={x:Static lang:LangHelper.Instance}}"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="105"
+                                                            Text="{Binding [InputSource.3], Source={x:Static lang:LangHelper.Instance}}"
                                                             FontSize="14" TextWrapping="WrapWithOverflow"
                                                             TextBlockType="Body3" HorizontalAlignment="Left" Margin="8,8,8,8" />
                                     <UXControls:UXTextBlock Grid.Column="1" x:Name="USBUpstreamHeader" Visibility="{Binding IsUSBH}"
-                                                            AutomationProperties.Name="TextBody3" Text="{Binding [InputSource.4], Source={x:Static lang:LangHelper.Instance}}"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="106"
+                                                            Text="{Binding [InputSource.4], Source={x:Static lang:LangHelper.Instance}}"
                                                             FontSize="14" TextWrapping="WrapWithOverflow"
                                                             TextBlockType="Body3" HorizontalAlignment="Left" Margin="8,8,8,8" />
                                 </Grid>
                             </Grid>
-                            <ItemsControl ItemsSource="{Binding items}">
+                            <ItemsControl ItemsSource="{Binding items}" KeyboardNavigation.IsTabStop="False"
+                                          KeyboardNavigation.TabNavigation="Continue"
+                                          >
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
@@ -85,8 +100,21 @@
                                             </Grid.ColumnDefinitions>
                                             <Path Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
                                                    Data="{Binding InputImage}" Stretch="None" Margin="8" />
+                                            <!-- Robert_Lin 2025-3-3 for Narrator
+                                            Label is not keyboard focusable, event I has set Focusable="True", but it still not focusable, 
+                                            so I change it to TextBlock.
+                                            OLD:
                                             <Label Grid.Column="1" VerticalAlignment="Center"
+                                                   Focusable="True" 
+                                                   KeyboardNavigation.TabIndex="112"
                                                    Content="{Binding InputType}" FontSize="14"
+                                                   Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
+                                            -->
+                                            <TextBlock Grid.Column="1" VerticalAlignment="Center"
+                                                       FontFamily="Roboto"
+                                                   Focusable="True" 
+                                                   KeyboardNavigation.TabIndex="112"
+                                                   Text="{Binding InputType}" FontSize="14"
                                                    Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
                                             <Grid Grid.Column="2">
                                                 <Grid.ColumnDefinitions>
@@ -97,6 +125,8 @@
                                                                       Text="{Binding InputName}" TextChanged="TextBox_TextChanged" MaxLength="30"
                                                                       Tag="{Binding Index}" PreviewTextInput="InputName_PreviewTextInput"
                                                                       BorderThickness="1" FontSize="14"
+                                                                      AutomationProperties.LabeledBy="{Binding ElementName=InputNameHeader}"
+                                                                      KeyboardNavigation.TabIndex="113"
                                                                       VerticalContentAlignment="Center" />
                                                 <ComboBox Grid.Column="1" x:Name="USBCB" Margin="4"
                                                           AutomationProperties.Name="SelectedCheck"
@@ -104,6 +134,9 @@
                                                           HorizontalAlignment="Right"
                                                           ItemsSource="{Binding USBUpstream}"
                                                           Tag="{Binding Index}"
+                                                          KeyboardNavigation.TabNavigation="Continue"
+                                                          AutomationProperties.LabeledBy="{Binding ElementName=USBUpstreamHeader}"
+                                                          KeyboardNavigation.TabIndex="114"
                                                           SelectedIndex="{Binding UpstreamIndex}"
                                                           SelectionChanged="UXComboBox_SelectionChanged_1"
                                                           HorizontalContentAlignment="Right"

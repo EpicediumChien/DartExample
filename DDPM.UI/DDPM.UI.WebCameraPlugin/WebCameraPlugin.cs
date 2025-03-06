@@ -30,7 +30,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
     [Descriptor(Description = Description)]
     [Publisher(Name = "DDPM WebCameraPlugin", Support = "Wistron DDPM Team")]
     [ExcludeFromCodeCoverage]
-    public class WebCameraplugin : IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
+    public class WebCameraplugin : IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
     {
         private const string PluginId = UI.Common.Constants.WebCameraPluginId;
         private const string PluginName = "WebCamera plugin";

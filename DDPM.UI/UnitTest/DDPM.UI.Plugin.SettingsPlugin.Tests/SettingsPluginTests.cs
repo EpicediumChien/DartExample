@@ -14,10 +14,15 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         private IGearMenu? gearMenu;
         private Mock<ILog>? _logMock;
         private ILog? _log;
+        private IShowPluginManager? showPluginManager;
+        private Mock<IShowPluginManager>? showPluginManagerMock;
 
         [SetUp]
         public void Setup()
         {
+            //Robert_Lin 2025-3-5 change for SettingsPlugin ctor arguments changed
+            showPluginManagerMock = new Mock<IShowPluginManager>();
+            showPluginManager = showPluginManagerMock.Object;
             consoleMock = new Mock<IConsole>();
             console = consoleMock.Object;
             gearMenuMock = new Mock<IGearMenu>();
@@ -25,7 +30,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             _logMock = new Mock<ILog>();
             _log = _logMock.Object;
             consoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(_logMock.Object);
-            settingsPlugin = new SettingsPlugin(console, gearMenu);
+
+            settingsPlugin = new SettingsPlugin(showPluginManager, console, gearMenu);
         }
 
         [Test]
