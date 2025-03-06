@@ -205,7 +205,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Connect your display via HDMI/USB-C port on your system. 的當地語系化字串。
+        ///   查詢類似 Connect your display via HDMI/USB-C port on your system 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Display_1 {
             get {
@@ -592,7 +592,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Connect your webcam via USB port on your system. 的當地語系化字串。
+        ///   查詢類似 Connect your webcam via USB port on your system 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Webcam_0 {
             get {

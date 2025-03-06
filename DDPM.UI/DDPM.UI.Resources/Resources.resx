@@ -265,10 +265,10 @@
     <value>Pairing may take some time. Do not disconnect your device</value>
   </data>
   <data name="AddDevice.Display.1" xml:space="preserve">
-    <value>Connect your display via HDMI/USB-C port on your system.</value>
+    <value>Connect your display via HDMI/USB-C port on your system</value>
   </data>
   <data name="AddDevice.Webcam.0" xml:space="preserve">
-    <value>Connect your webcam via USB port on your system.</value>
+    <value>Connect your webcam via USB port on your system</value>
   </data>
   <data name="AddDevice.KnM.0" xml:space="preserve">
     <value>Bluetooth Connection</value>
