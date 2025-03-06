@@ -19,24 +19,17 @@ using VcpCore.Common;
 using static System.Net.WebRequestMethods;
 
 using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using System.IO.Compression;
 using System.Security.Policy;
 using System.Net.Http;
 using static DDPM.UI.Module.Color.ColorViewModel;
 
 using System.Security.Cryptography;
-using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows.Input;
 using ABI.System;
-using Microsoft.Win32;
 //using RegistryUtils = DDPM.SA.Common.;
-using System.Management;
 using System.Windows.Media.Animation;
 using MonitorProfile = DDPM.SA.Common.MonitorProfile;
-using System.Runtime.CompilerServices;
-using Dell.Client.Framework.Common;
-using DDPM.UI.Common.Models;
 using System.Reflection;
 using System.Diagnostics;
 using System;
