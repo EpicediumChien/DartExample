@@ -18137,7 +18137,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         try
                                         {
-                                            _OSD_Controler.ScrollLockOn_CloseWindow();
+                                            //_OSD_Controler.ScrollLockOn_CloseWindow();
                                             _OSD_Controler.ScrollLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                         }
                                         catch (Exception ex)
@@ -18149,7 +18149,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         try
                                         {
-                                            _OSD_Controler.ScrollLockOff_CloseWindow();
+                                            //_OSD_Controler.ScrollLockOff_CloseWindow();
                                             _OSD_Controler.ScrollLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                         }
                                         catch (Exception ex)
