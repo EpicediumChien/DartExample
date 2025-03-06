@@ -200,10 +200,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                 };
                 moduleGroup.AddHeader(Interactions, new SpeakerInteractionsModule(_vm!));
                 groups.Add(moduleGroup);
-                if (_vm?.CurrentDeviceInfo?.ModelNumber == "SB725")
-                {
-                    groups.RemoveAt(groups.Count - 1);
-                }
+
                 _vm!.ModuleGroups = groups;
                 DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] BuildModuleGroups ... out ");
             }
