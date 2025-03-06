@@ -63,8 +63,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         /// <summary>
         /// Default constructor
         /// </summary>
-        public SettingsPlugin(IConsole console, IGearMenu gearMenu)
+        //Robert_Lin 2025-3-5 for the back arrow to go back to the "previous" page.
+        //PIMS-301474 Clicking back arrow didn't bring the UI back to the DDPM page previously, before the
+        // settings gear icon is selected
+        //PIMS-314264 The DDPM can not back to previous page after select the Back Arrow in top left.
+        //Add the IShowPluginManager to the constructor
+        public SettingsPlugin(IShowPluginManager showPluginManager, IConsole console, IGearMenu gearMenu)
         {
+            _showPluginManager = showPluginManager;
             _console = console;
             _log = console.CreateLog("SettingsPLG");
             _log.Info($"{nameof(SettingsPlugin)} - Constructed");
@@ -108,6 +114,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             PluginIoc.ConfigureServices(new ServiceCollection()
                 .AddSingleton(_console)
                 .AddSingleton(_log)
+                .AddSingleton(_showPluginManager)
                 .AddSingleton<ISettingsPageViewModel, SettingsPageViewModel>()
                 .BuildServiceProvider());
 

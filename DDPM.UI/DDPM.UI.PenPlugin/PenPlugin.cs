@@ -23,7 +23,7 @@ namespace DDPM.UI.Plugin.PenPlugin
     [Descriptor(Description = Description)]
     [Publisher(Name = "DDPM PenPlugin", Support = "Wistron DDPM Team")]
     [ExcludeFromCodeCoverage]
-    public class Penplugin : IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
+    public class Penplugin : IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
     {
         private const string PluginId = UI.Common.Constants.PenPluginId;
         private const string PluginName = "Pen plugin";

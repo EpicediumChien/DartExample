@@ -356,17 +356,26 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetMonitors requested ...");
 
                 if (_VcpCorePlugin != null)
-                    _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.GetMonitors().Result);
-
-                _logs.DebugMsg("[DisplayMangerPlugin] GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
-
-                if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
                 {
-                    AllALSConfig.Clear();
-                    _logs.DebugMsg("[DisplayMangerPlugin] GetMonitors() AllALSConfig Clear ");
-                }
+                    var monitorInfos = (_VcpCorePlugin.GetMonitors().Result).ToList();
 
-                return Task.FromResult(_AllInfoMonitors);
+                    _AllInfoMonitors = monitorInfos.ToList();
+
+                    _logs.DebugMsg("[DisplayMangerPlugin] GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
+
+                    if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
+                    {
+                        AllALSConfig.Clear();
+                        _logs.DebugMsg("[DisplayMangerPlugin] GetMonitors() AllALSConfig Clear ");
+                    }
+
+                    return Task.FromResult(monitorInfos);
+                }
+                else
+                {
+                    _logs.DebugMsg("[DisplayMangerPlugin] _VcpCorePlugin is null");
+                    return Task.FromResult(new List<MonitorInfo>());
+                }
             }
         }
 
@@ -377,16 +386,25 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Re_GetMonitors requested ...");
 
                 if (_VcpCorePlugin != null)
-                    _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.Re_GetMonitors(Token).Result);
+                {
+                    var monitorInfos = (await _VcpCorePlugin.Re_GetMonitors(Token)).ToList();
 
-                InitializeAllALSInfo();
+                    _AllInfoMonitors = monitorInfos.ToList();
 
-                //Robert_Lin, 2024-12-10 added to notify EAPlugin
-                NotifyEAPluginAllInfoMonitorsChanged();
+                    _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
 
-                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
+                    InitializeAllALSInfo();
 
-                return _AllInfoMonitors;
+                    //Robert_Lin, 2024-12-10 added to notify EAPlugin
+                    NotifyEAPluginAllInfoMonitorsChanged();
+
+                    return monitorInfos;
+                }
+                else
+                {
+                    _logs.DebugMsg("[DisplayMangerPlugin] _VcpCorePlugin is null");
+                    return new List<MonitorInfo>();
+                }
             }
             catch (Exception ex)
             {
@@ -400,10 +418,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received MultiCommandsRun requested ...");
             _logs.DebugMsg($"[DisplayMangerPlugin] MultiCommands count is {_multiCommands.Count}");
 
-            var r = new List<MultiCommandArch>();
+            var r = _multiCommands.ToList();
 
             if (_VcpCorePlugin != null)
-                r = _VcpCorePlugin.MultiCommandsRun(_multiCommands).Result;
+                r = (_VcpCorePlugin.MultiCommandsRun(_multiCommands).Result).ToList();
+            else
+                _logs.DebugMsg("[DisplayMangerPlugin] _VcpCorePlugin is null");
 
             return Task.FromResult(r);
         }
@@ -418,6 +438,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             if (_VcpCorePlugin != null)
                 r = _VcpCorePlugin.GetCapabilitiesString(monitorInfo, guid, priority).Result;
+            else
+                _logs.DebugMsg("[DisplayMangerPlugin] _VcpCorePlugin is null");
 
             return Task.FromResult(r);
         }
@@ -432,6 +454,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             if (_VcpCorePlugin != null)
                 r = _VcpCorePlugin.GetVCPCapabilities(monitorInfo, guid, priority).Result;
+            else
+                _logs.DebugMsg("[DisplayMangerPlugin] _VcpCorePlugin is null");
 
             return Task.FromResult(r);
         }
@@ -444,13 +468,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg("[DisplayMangerPlugin] VcpCode is " + BitConverter.ToString(new byte[] { code }));
             _logs.DebugMsg("[DisplayMangerPlugin] opt is " + opt.ToString());
 
-            ObjGetVCP result = new ObjGetVCP();
+            ObjGetVCP result = new ObjGetVCP() { result = false, value = null };
 
             //Jason add 0xE9
-            if (code == 0xE9 &&
-                _displayDataManger != null)
+            if (code == 0xE9 && _displayDataManger != null)
             {
                 uint datacode = 1;
+
                 if (_displayDataManger.GetMonitorE9(monitorInfo, out datacode))
                 {
                     result.result = true;
@@ -460,14 +484,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
 
             if (_VcpCorePlugin != null)
+            {
                 result = _VcpCorePlugin.GetVCPCapability(monitorInfo, code, guid, opt, priority).Result;
 
-            //Jason add 0xE9
-            if (result.result &&
-                code == 0xE9 && _displayDataManger != null)
-            {
-                _displayDataManger.SetMonitorE9(monitorInfo, (uint)result.value);
+                //Jason add 0xE9
+                if (result.result && code == 0xE9 && _displayDataManger != null)
+                    _displayDataManger.SetMonitorE9(monitorInfo, (uint)result.value);
             }
+            else
+                _logs.DebugMsg("[DisplayMangerPlugin] _VcpCorePlugin is null");
 
             return Task.FromResult(result);
         }
@@ -480,10 +505,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg("[DisplayMangerPlugin] VcpCode is " + FunctionName);
             _logs.DebugMsg("[DisplayMangerPlugin] opt is " + opt.ToString());
 
-            ObjGetVCP result = new ObjGetVCP();
+            ObjGetVCP result = new ObjGetVCP() { result = false, value = null };
 
             if (_VcpCorePlugin != null)
                 result = _VcpCorePlugin.GetVCPCapability(monitorInfo, FunctionName, guid, opt, priority).Result;
+            else
+                _logs.DebugMsg("[DisplayMangerPlugin] _VcpCorePlugin is null");
 
             return Task.FromResult(result);
         }
@@ -499,15 +526,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             bool r = false;
 
             if (_VcpCorePlugin != null)
+            {
                 r = _VcpCorePlugin.SetVCPCapability(monitorInfo, code, val, guid, priority).Result;
 
-            //Jason add 0xE9
-            if (r &&
-                code == 0xE9 &&
-                _displayDataManger != null)
-            {
-                _displayDataManger.SetMonitorE9(monitorInfo, val);
+                //Jason add 0xE9
+                if (r && code == 0xE9 && _displayDataManger != null)
+                    _displayDataManger.SetMonitorE9(monitorInfo, val);
             }
+            else
+                _logs.DebugMsg("[DisplayMangerPlugin] _VcpCorePlugin is null");
 
             return Task.FromResult(r);
         }
@@ -523,12 +550,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             bool r = false;
 
             if (_VcpCorePlugin != null)
+            {
                 r = _VcpCorePlugin.SetVCPCapability(monitorInfoX, FunctionName, val, guid, priority).Result;
 
-            if (r && FunctionName == "Input Select")
-            {
-                _AllInfoMonitors = GetMonitors().Result;
+                if (r && FunctionName.Equals("Input Select"))
+                    _AllInfoMonitors = GetMonitors().Result;
             }
+            else
+                _logs.DebugMsg("[DisplayMangerPlugin] _VcpCorePlugin is null");
 
             return Task.FromResult(r);
         }
@@ -768,14 +797,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                                                         usbkey = USBUpstream.FirstOrDefault(x => x.Value == "11").Key;
                                                                         usbPort = "11";
                                                                         break;
+
                                                                     case "02":
                                                                         usbkey = USBUpstream.FirstOrDefault(x => x.Value == "10").Key;
                                                                         usbPort = "10";
                                                                         break;
+
                                                                     case "01":
                                                                         usbkey = USBUpstream.FirstOrDefault(x => x.Value == "01").Key;
                                                                         usbPort = "01";
                                                                         break;
+
                                                                     case "00":
                                                                         usbkey = USBUpstream.FirstOrDefault(x => x.Value == "00").Key;
                                                                         usbPort = "00";
@@ -1211,7 +1243,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(false);
         }
 
-        public Task<bool> SetAllUSBUpstream(MonitorInfo monitorInfo, string input1, string usb1, string input2, string usb2, 
+        public Task<bool> SetAllUSBUpstream(MonitorInfo monitorInfo, string input1, string usb1, string input2, string usb2,
                                                                     string input3 = "", string usb3 = "", string input4 = "", string usb4 = "")
         {
             int input_num = 0;
@@ -1430,7 +1462,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<bool> isScreenPartition(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
         {
-            ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, 0xF2, guid, priority:priority).Result;
+            ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, 0xF2, guid, priority: priority).Result;
             if (objGetVCP != null && objGetVCP.result)
             {
                 if ((uint)objGetVCP.value != 0)

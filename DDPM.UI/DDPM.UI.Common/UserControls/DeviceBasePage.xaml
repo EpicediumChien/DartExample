@@ -237,11 +237,12 @@
                                 <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Name="marketName"
                                                         d:Text="Monitor Market Name" d:MaxWidth="200"
                                                         Text="{Binding SelectedHomeDevice.LandingMarketName}"
+                                                        FontWeight="Normal"
                                                         HorizontalAlignment="Left" VerticalAlignment="Center"
                                                         TextBlockType="Header2" TextWrapping="Wrap"
                                                         TextBlockSemanticColorType="DefaultHeader"
                                                         Focusable="True" KeyboardNavigation.TabIndex="12"
-                                                        Foreground="{DynamicResource TextBlock_ForegroundColor}" 
+                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}" 
                                                         FontSize="24" TextTrimming="WordEllipsis"
                                                         MaxWidth="{Binding Path=ActualWidth, ElementName=markeyNameWidthGrid}"
                                                         MaxHeight="90" SizeChanged="marketNameText_SizeChanged"/>
@@ -261,8 +262,9 @@
                                                             TextTrimming="CharacterEllipsis" x:Name="tbDisplayName"
                                                             HorizontalAlignment="Left"  VerticalAlignment="Center"
                                                             Focusable="True" KeyboardNavigation.TabIndex="13"
+                                                            FontWeight="Normal"
                                                             MaxWidth="{Binding Path=ActualWidth, ElementName=markeyNameWidthGrid}"
-                                                            Foreground="{DynamicResource DefaultTheme_ProcessBarTxtColor}"
+                                                            Foreground="{DynamicResource ModelNumberText_TxtColor}"
                                                             Visibility="{Binding SelectedHomeDeviceTextVisibiliity}" FontSize="20" />
                                 </Grid>
                                 <!-- #endregion ModelName for signle monitor -->

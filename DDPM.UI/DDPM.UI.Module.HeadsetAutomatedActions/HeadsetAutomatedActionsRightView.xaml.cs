@@ -172,4 +172,35 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
             throw new NotSupportedException();
         }
     }
+
+    public class BooleanToOpacityConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                if (values.Length == 1
+                    && (bool)values[0])
+                    return 1.0;
+                if (values.Length > 1
+                    && values[0] is bool isChecked
+                    && values[1] is bool quickPauseStatus)
+                {
+                    if (isChecked && quickPauseStatus)
+                        return 1.0;
+                }
+                return 0.6;
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[BooleanToOpacityConverter] Exception thrown: {ex.Message}. Stack trace: {ex.StackTrace}");
+                return 0.6;
+            }
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

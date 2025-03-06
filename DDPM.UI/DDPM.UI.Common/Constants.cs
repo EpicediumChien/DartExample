@@ -50,6 +50,11 @@ public class Constants
     public const string HeadsetPluginId = "{ce791669-1a9d-454b-aa36-18b32bef6c21}";
 
     /// <summary>
+    /// DDPM.UI.Plugin.PenPlugin PluginId
+    /// </summary>
+    public const string AirAudioPluginId = "{9d619c49-25e7-8035-6bfc-d756738ee038}";
+
+    /// <summary>
     /// DDPM.UI.Plugin.AddDevicePlugin PluginId
     /// </summary>
     public const string AddDevicePluginId = "{53efd083-c124-4269-af20-1bd6b90e4375}";

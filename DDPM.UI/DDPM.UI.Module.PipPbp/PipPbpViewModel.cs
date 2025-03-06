@@ -194,14 +194,12 @@ namespace DDPM.UI.Module.PipPbp
                 LogInfo($"  * GetPipPbpCapabilities elapsed {sw.ElapsedMilliseconds} msec.");
 
                 //Robert_Lin 2025-2-25, for Loading performance improvement.
-                if (_bwRefreshData != null)
+                if (_bwRefreshData != null && 
+                    _bwRefreshData.CancellationPending)
                 {
-                    if (_bwRefreshData.CancellationPending)
-                    {
-                        LogInfo("DwWor_RefresData(), Step=[GetCapabilities], cancellation is detected.");
-                        e.Cancel = true;
-                        return;
-                    }
+                    LogInfo("DwWor_RefresData(), Step=[GetCapabilities], cancellation is detected.");
+                    e.Cancel = true;
+                    return;
                 }
 
                 //Get current monitor's Pxp mode
@@ -222,14 +220,12 @@ namespace DDPM.UI.Module.PipPbp
                 }
 
                 //Robert_Lin 2025-2-25, for Loading performance improvement.
-                if (_bwRefreshData != null)
+                if (_bwRefreshData != null && 
+                    _bwRefreshData.CancellationPending)
                 {
-                    if (_bwRefreshData.CancellationPending)
-                    {
-                        LogInfo("DwWor_RefresData(), Step=[GetPxpMode], cancellation is detected.");
-                        e.Cancel = true;
-                        return;
-                    }
+                    LogInfo("DwWor_RefresData(), Step=[GetPxpMode], cancellation is detected.");
+                    e.Cancel = true;
+                    return;
                 }
 
                 //Robert_Lin 2025-2-25, for Loading performance improvement.
@@ -242,14 +238,12 @@ namespace DDPM.UI.Module.PipPbp
                 sw.Stop();
                 LogInfo($"  * ReadKvmSettings elapsed {sw.ElapsedMilliseconds} msec.");
 
-                if (_bwRefreshData != null)
+                if (_bwRefreshData != null && 
+                    _bwRefreshData.CancellationPending)
                 {
-                    if (_bwRefreshData.CancellationPending)
-                    {
-                        LogInfo("DwWor_RefresData(), Step=[ReadKvmSettings], cancellation is detected.");
-                        e.Cancel = true;
-                        return;
-                    }
+                    LogInfo("DwWor_RefresData(), Step=[ReadKvmSettings], cancellation is detected.");
+                    e.Cancel = true;
+                    return;
                 }
 
                 //Build  VideoSwapItems
@@ -508,14 +502,12 @@ namespace DDPM.UI.Module.PipPbp
             // HDMI   "To Sony TV", "USB1", 0xxy
 
             //Robert_Lin 2025-2-25, for Loading performance improvement.
-            if (_bwRefreshData != null)
+            if (_bwRefreshData != null && 
+                _bwRefreshData.CancellationPending)
             {
-                if (_bwRefreshData.CancellationPending)
-                {
-                    LogInfo("Worker_RefreshInputSourceList(), Step=[GetInputSourceList], cancellation is detected.");
-                    e.Cancel = true;
-                    return;
-                }
+                LogInfo("Worker_RefreshInputSourceList(), Step=[GetInputSourceList], cancellation is detected.");
+                e.Cancel = true;
+                return;
             }
 
             //In below code section, we will build a List<VideoSwapComboBoxInputSourceItem> as the ItemSource of ComboBoxes
@@ -544,14 +536,12 @@ namespace DDPM.UI.Module.PipPbp
             //OnPropertyChanged("VideoSwapItems");
 
             //Robert_Lin 2025-2-25, for Loading performance improvement.
-            if (_bwRefreshData != null)
+            if (_bwRefreshData != null && 
+                _bwRefreshData.CancellationPending)
             {
-                if (_bwRefreshData.CancellationPending)
-                {
-                    LogInfo("Worker_RefreshInputSourceList(), Step=[BuildInputSourceList], cancellation is detected.");
-                    e.Cancel = true;
-                    return;
-                }
+                LogInfo("Worker_RefreshInputSourceList(), Step=[BuildInputSourceList], cancellation is detected.");
+                e.Cancel = true;
+                return;
             }
 
             //Get current Main InputSource from MonitorInfo
@@ -601,14 +591,12 @@ namespace DDPM.UI.Module.PipPbp
             List<InputSourceObj> subInputs = DdpmCommonHelper.DeviceManagerSA.GetSubInputs(SelectedHomeDevice.MonitorInfo).Result;
 
             //Robert_Lin 2025-2-25, for Loading performance improvement.
-            if (_bwRefreshData != null)
+            if (_bwRefreshData != null && 
+                _bwRefreshData.CancellationPending)
             {
-                if (_bwRefreshData.CancellationPending)
-                {
-                    LogInfo("Worker_RefreshInputSourceList(), Step=[QuerySubInputs], cancellation is detected.");
-                    e.Cancel = true;
-                    return;
-                }
+                LogInfo("Worker_RefreshInputSourceList(), Step=[QuerySubInputs], cancellation is detected.");
+                e.Cancel = true;
+                return;
             }
             if (subInputs != null)
             {

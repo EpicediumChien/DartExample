@@ -23,7 +23,7 @@ namespace DDPM.UI.Plugin.DockPlugin
     [Descriptor(Description = TileDetailText)]
     [Publisher(Name = "DDPM DisplayPlugin", Support = "Wistron DDPM Team")]
     [ExcludeFromCodeCoverage]
-    public class DockPlugin : IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
+    public class DockPlugin : IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
     {
         private const string PluginId = UI.Common.Constants.DockPluginId;
         private const string PluginName = "Dock plugin";

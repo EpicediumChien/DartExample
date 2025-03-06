@@ -1662,7 +1662,6 @@ namespace DDPM.SA.Common
         Task<bool> GetDTPProxyPluginReady();
 
         #region Get
-
         Task<HeadsetConnectionType> GetAirAudioConnectionTypeAsync(string Guid);
 
         Task<JArray> GetAirAudioDeviceItemsAsync();
@@ -1692,11 +1691,15 @@ namespace DDPM.SA.Common
         Task<string> GetAirAudioDeviceIdAsync(string Guid);
 
         Task<string> GetAirAudioDeviceNameAsync(string Guid);
+        Task<string> GetAirAudioSerialNumberCaseAsync(string Guid);
 
+        Task<string> GetAirAudioBatteryStatusLeftAsync(string Guid);
+        Task<string> GetAirAudioBatteryStatusRightAsync(string Guid);
+        Task<string> GetAirAudioBatteryStatusCaseAsync(string Guid);
         Task<DeviceInterfaceType> GetAirAudioDeviceInterfaceTypeAsync(string Guid);
 
         //Task<bool> GetAirAudioIsWearDetectionAsync(string Guid);
-
+        Task<bool> GetAirAudioIsAutoPowerOffEnabledAsync(string Guid);
         Task<bool> GetAirAudioMuteStatusAsync(string Guid);
 
         Task<bool> GetAirAudioBoomMicAsync(string Guid);
@@ -1715,9 +1718,9 @@ namespace DDPM.SA.Common
 
         Task<bool> GetAirAudioIsMicNCIncomingSupportedAsync(string Guid);
 
-        Task<bool> GetAirAudioIsMicNoiseCancellationAsync(string Guid);
+        Task<bool> GetAirAudioMicNoiseCancellationAsync(string Guid);
 
-        Task<bool> GetAirAudioIsWearDetectionQuickPauseSupportedAsync(string Guid);
+        Task<int> GetAirAudioWearDetectionQuickPauseAsync(string Guid);
 
         Task<bool> GetAirAudioIsWearDetectionMuteMicSupportedAsync(string Guid);
 
@@ -1748,10 +1751,11 @@ namespace DDPM.SA.Common
         Task<bool> GetAirAudioIsWearDetectionPauseMusicEnabledAsync(string Guid);
 
         Task<bool> GetAirAudioIsWearDetectionMuteMicEnabledAsync(string Guid);
-
+        Task<bool> GetAirAudioIsWearDetectionAnswerCallsEnabledAsync(string Guid);
         Task<bool> GetAirAudioIsBatteryLevelSupportedAsync(string Guid);
 
         Task<int> GetAirAudioWearDetectionSensitivityAsync(string Guid);
+        Task<int> GetAirAudioAutoPowerOffIntervalAsync(string Guid);
 
         Task<int> GetAirAudioIsWearDetectionQuickPauseAsync(string Guid);
 
@@ -1787,6 +1791,9 @@ namespace DDPM.SA.Common
 
         Task<int> GetAirAudioODMIdAsync(string Guid);
 
+        Task<int> GetAirAudioBatteryLevelLeftAsync(string Guid);
+        Task<int> GetAirAudioBatteryLevelRightAsync(string Guid);
+        Task<int> GetAirAudioBatteryLevelCaseAsync(string Guid);
         #endregion Get
 
         #region Set
@@ -1837,6 +1844,12 @@ namespace DDPM.SA.Common
 
         Task<bool> SetAirAudioIsWearDetectionMuteMicEnabledAsync(string Guid, bool newValue);
 
+        Task<bool> SetFactoryResetAsyncValueForAirAudioAsync(string Guid, bool newValue);
+
+        Task<bool> SetAirAudioIsAutoPowerOffEnabledAsync(string Guid, bool newValue);
+        Task<bool> SetAirAudioIsWearDetectionAnswerCallsEnabledAsync(string Guid, bool newValue);
+
+        Task<bool> SetAirAudioAutoPowerOffIntervalAsync(string Guid, int newValue);
         #endregion Set
 
         #endregion IAirAudioCommodity

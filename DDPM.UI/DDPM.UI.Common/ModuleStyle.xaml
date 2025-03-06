@@ -57,7 +57,7 @@
   <SolidColorBrush x:Key="DefaultTheme_DialogBoxBkColor" Color="#132F54"/>
   <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
   <SolidColorBrush x:Key="DefaultThemeRightViewAlertBkColor" Color="#364861" />
-  <Style TargetType="UXControls:UXTextBlock"
+    <Style TargetType="UXControls:UXTextBlock"
            BasedOn="{StaticResource {x:Type UXControls:UXTextBlock}}">
     <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
     <Setter Property="Background" Value="{DynamicResource FakeTransparent}" />

@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 
 namespace DDPM.SA.Common
 {
-    public class InterruptScreenRoot
+    public sealed class InterruptScreenRoot
     {
         public int version { get; set; }
         public List<FeaturesList> featuresList { get; set; }
@@ -49,7 +49,7 @@ namespace DDPM.SA.Common
             return other;
         }
     }
-    public class FeaturesList
+    public sealed class FeaturesList
     {
         public int categoryId { get; set; }
         public Content content { get; set; }
@@ -75,7 +75,7 @@ namespace DDPM.SA.Common
             return other;
         }
     }
-    public class Content
+    public sealed class Content
     {
         public string id { get; set; }
         public string imageUrl { get; set; }
@@ -131,7 +131,7 @@ namespace DDPM.SA.Common
             return other;
         }
     }
-    public class ProductLabel
+    public sealed class ProductLabel
     {
         public string source { get; set; }
         public Translations translations { get; set; }
@@ -159,7 +159,7 @@ namespace DDPM.SA.Common
             return this.source == other.source;
         }
     }
-    public class BugDescription
+    public sealed class BugDescription
     {
         public string source { get; set; }
         public Translations translations { get; set; }
