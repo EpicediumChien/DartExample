@@ -318,10 +318,10 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                         RecR.Width = 185;
                         break;
                     case "WL3024":
-                        RecT.Height = 90;
-                        RecB.Height = 100;
-                        RecL.Width = 180;
-                        RecR.Width = 170;
+                        RecT.Height = 50;
+                        RecB.Height = 120;
+                        RecL.Width = 150;
+                        RecR.Width = 135;
                         break;
                     case "WH3024":
                         RecT.Height = 90;
