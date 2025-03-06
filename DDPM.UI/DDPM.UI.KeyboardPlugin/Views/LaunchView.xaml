@@ -536,8 +536,12 @@
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
               <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal" Margin="20,18,0,0">
-                  <ContentControl Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
+                <!-- Robert_Lin PIMS-348226 [UI]Home Page - Dongle/Wireless Receiver icon is not left-aligned 
+                    Change Margin="20,18,0,0" to Margin="16,18,0,0" -->
+                <StackPanel Orientation="Horizontal" Margin="16,18,0,0">
+                   <!-- Robert_Lin PIMS-348226 [UI]Home Page - Dongle/Wireless Receiver icon is not left-aligned 
+                    Change Margin="4,0,0,0" to Margin="0,0,0,0" -->
+                  <ContentControl Margin="0,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
                   <!-- <Image Margin="4,0,0,0" Width="16" Height="16" Source="/DDPM.UI.Resources;component/Resources/Images/Dongle.png" /> -->
                   <UXControls:UXTextBlock Width="200" TextTrimming="CharacterEllipsis" Name="txtDongleHost" Foreground="{DynamicResource DefaultTheme_TxtColor}" VerticalAlignment="Center" Margin="7,0,0,0"
                                                             HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" FontWeight="Bold" Text="{Binding [USBWirelessReceiver], Source={x:Static lang:LangHelper.Instance}}"/>

@@ -1521,6 +1521,8 @@ namespace DDPM.SA.Common
 
         Task<DockData> GetDockData(string guid);
 
+        Task<string> GetDockServiceTagForDock(string Guid);
+
         #endregion Dock
 
         #endregion public for DTPProxy

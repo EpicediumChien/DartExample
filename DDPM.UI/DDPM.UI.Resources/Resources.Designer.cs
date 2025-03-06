@@ -4525,7 +4525,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transparency.
+        ///   查詢類似 Transparency 的當地語系化字串。
         /// </summary>
         internal static string HeadsetAudioSettings_2 {
             get {
@@ -9241,7 +9241,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In the app, you can customize the actions of  your pen’s buttons and set the tip and tilt sensitivity\r\n.
+        ///   查詢類似 Your pen is charged X%.\n\nTo charge your pen fully, make sure it is attached to your tablet screen. You will be notified once the pen is done charging.\n\nLow battery notifications will appear once the battery charge is below 10%.  的當地語系化字串。
+        /// </summary>
+        internal static string WalkThroughPen_Sub_1_1 {
+            get {
+                return ResourceManager.GetString("WalkThroughPen_Sub.1_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 In the app, you can customize the actions of  your pen’s buttons and set the tip and tilt sensitivity\r\n 的當地語系化字串。
         /// </summary>
         internal static string WalkThroughPen_Sub_2 {
             get {

@@ -187,8 +187,10 @@
 		<None Remove="Resources\WebCamModel_WB5023_Small.png" />
 		<None Remove="Resources\WebCamModel_WB7022_Large.png" />
 		<None Remove="Resources\WebCamModel_WB7022_Small.png" />
+		<None Remove="Resources\WH3024.png" />
 		<None Remove="Resources\WH5024.png" />
 		<None Remove="Resources\Wired.png" />
+		<None Remove="Resources\WL5024.png" />
 		<None Remove="Resources\ZoomIn.png" />
 		<None Remove="Resources\ZoomOut.png" />
 	</ItemGroup>
@@ -574,11 +576,17 @@
 		<Resource Include="Resources\WebCamModel_WB7022_Small.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
+		<Resource Include="Resources\WH3024.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Resources\WH5024.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Resources\Wired.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WL5024.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Resources\ZoomIn.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
