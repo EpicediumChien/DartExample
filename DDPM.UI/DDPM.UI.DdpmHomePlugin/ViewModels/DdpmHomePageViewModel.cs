@@ -441,7 +441,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                                 imagepath = "Resources/Speaker_SB725.png";
                                 break;
                             default:
-                                imagepath = "Resources/HeadsetModel_WL7024-Mito.png";
+                                imagepath = "Resources/Images/WL7024.png";
                                 break;
                         }
                         dev.DeviceCategory = eDeviceCategory.Headset;
