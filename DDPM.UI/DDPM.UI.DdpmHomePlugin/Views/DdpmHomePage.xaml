@@ -87,7 +87,7 @@
                                 Padding="0" Margin="0" SnapsToDevicePixels="true">
                             <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" HorizontalAlignment="Stretch" MinWidth="1050"
                                           MaxWidth="{Binding ScrollViewMaxWidth}">
-                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                             </ScrollViewer>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -273,7 +273,7 @@
                         <!-- ListView.ItemContainerStyle : Apply custom style to remove selection hover border -->
                         <Style TargetType="ListViewItem">
                             <Setter Property="SnapsToDevicePixels" Value="True" />
-                            <Setter Property="Margin" Value="40,0,0,0" />
+                            <Setter Property="Margin" Value="40,0,0,40" />
                             <Setter Property="MinWidth" Value="{Binding ItemMinWidth}" />
                             <Setter Property="MinHeight" Value="{Binding ItemMinWidth}" />
                             <Setter Property="MaxWidth" Value="{Binding ItemMaxWidth}" />
@@ -301,7 +301,7 @@
                     </ListView.ItemContainerStyle>
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <local:HomeDevicesPanel HorizontalContentAlignment="Center" VerticalAlignment="Center" />
+                            <local:HomeDevicesPanel HorizontalContentAlignment="Center" VerticalAlignment="Center"/>
                         </ItemsPanelTemplate>
                     </ListView.ItemsPanel>
 
