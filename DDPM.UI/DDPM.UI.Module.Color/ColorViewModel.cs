@@ -1281,7 +1281,7 @@ namespace DDPM.UI.Module.Color
             {
                 Log?.Info($"** RefreshData result: {e.Result}");
 
-                if ((string)e.Result == "OK")
+                if (e.Result.ToString() == "OK")
                 {
                     //Result is passed.
                 }
@@ -1372,7 +1372,7 @@ namespace DDPM.UI.Module.Color
             {
                 Log?.Info($"** DownloadICCData result: {e.Result}");
 
-                if ((string)e.Result == "OK")
+                if (e.Result.ToString() == "OK")
                 {
                     //Result is passed.
                 }
