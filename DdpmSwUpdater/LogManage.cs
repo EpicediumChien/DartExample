@@ -127,9 +127,11 @@ namespace DdpmSwUpdater
                 Console.WriteLine($"{DateTime.Now}: {message}");
 #endif
             }
-            catch
+            catch(Exception ex)
             {
-
+#if DEBUG
+                Console.WriteLine($"LogMessage exception, message: {ex.Message}");
+#endif
             }
         }
     }
