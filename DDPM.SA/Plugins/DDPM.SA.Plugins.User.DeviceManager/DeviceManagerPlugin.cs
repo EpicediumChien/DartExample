@@ -2145,7 +2145,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task Reset0x52TimerTick(int millisecond, int processID = -0xFF)
         {
-            writelog("DeviceMangerPlugin received Reset0x52TimerTick: " + millisecond.ToString() + $" requested, process ID[{processID}]");
+            writelog("[DeviceMangerPlugin] received Reset0x52TimerTick: " + millisecond.ToString() + $" requested, process ID[{processID}]");
 
             if (_DisplayManagerPlugin != null)
                 _DisplayManagerPlugin.Reset0x52TimerTick(millisecond, processID);
@@ -2157,24 +2157,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task SetIsUserActive(bool IsUserActive)
         {
-            writelog("DeviceMangerPlugin received SetIsUserActive: " + IsUserActive.ToString() + " requested ...");
+            writelog("[DeviceMangerPlugin] received SetIsUserActive: " + IsUserActive.ToString() + " requested ...");
 
             if (_DisplayManagerPlugin != null)
                 _DisplayManagerPlugin.SetIsUserActive(IsUserActive);
             else
-                writelog("_DisplayManagerPlugin is Null");
+                writelog("[DeviceMangerPlugin] _DisplayManagerPlugin is Null");
 
             return Task.CompletedTask;
         }
 
         public Task CancelVcpTask(Guid user_guid)
         {
-            writelog("DeviceMangerPlugin received CancelVcpTask: " + user_guid.ToString() + " requested ...");
+            writelog("[DeviceMangerPlugin] received CancelVcpTask: " + user_guid.ToString() + " requested ...");
 
             if (_DisplayManagerPlugin != null)
                 _DisplayManagerPlugin.CancelVcpTask(user_guid);
             else
-                writelog("_DisplayManagerPlugin is Null");
+                writelog("[DeviceMangerPlugin] _DisplayManagerPlugin is Null");
 
             return Task.CompletedTask;
         }
@@ -2183,252 +2183,265 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             lock (_MoLock)//this) //Dean 0626 fix SAST issue, do not lock over this object
             {
-                writelog("DeviceMangerPlugin received GetMonitors requested ...");
+                writelog("[DeviceMangerPlugin] received GetMonitors requested ...");
 
                 if (_AllInfoMonitors != null)
                     _AllInfoMonitors.Clear();
 
-                writelog("DeviceMangerPlugin received GetMonitors requested ...");
-                //if (_AllInfoMonitorsRecord.Count == 0)
-                //{
-                if (_DisplayManagerPlugin == null)
-                {
-                    writelog("null _DisplayManagerPlugin in [GetMonitors], retrun empty monitor list");
-                    return Task.FromResult(new List<MonitorInfo>());
-                }
+                var monitors = new List<MonitorInfo>();
 
-                _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.GetMonitors().Result);
-
-                //review monitor list to check duplicated data
-                ReviewAllMonitorToAvoidDuplicatedInfo();
-                InitMonitorSettings();
-                _DisplayManagerPlugin.InitDisplayData(_AllInfoMonitors);
-                foreach (MonitorInfo monitor in _AllInfoMonitors)
+                if (_DisplayManagerPlugin != null)
                 {
-                    _DisplayManagerPlugin.GetUSBUpstreamList(monitor).Wait();
-                    _DisplayManagerPlugin.GetAllUSBUpstream(monitor).Wait();
-                    _DisplayManagerPlugin.GetVCPCapability(monitor, 0xE9).Wait();
-                    _DisplayManagerPlugin.GetDisplayPropertiesInfo(monitor).Wait();
-                    if (monitor.CapabilityString.Contains("F4"))
+                    monitors = (_DisplayManagerPlugin.GetMonitors().Result).ToList();
+                    _AllInfoMonitors = monitors;
+
+                    //review monitor list to check duplicated data
+                    ReviewAllMonitorToAvoidDuplicatedInfo();
+                    InitMonitorSettings();
+                    _DisplayManagerPlugin.InitDisplayData(_AllInfoMonitors);
+                    foreach (MonitorInfo monitor in _AllInfoMonitors)
                     {
-                        _DisplayManagerPlugin.GetGamingProperties_SupportedList(monitor).Wait();
-                    }
-                }
-                UpdateHotkeyInfo();
-
-                Task.Run(() => //support last selected monitor info from settings
-                {
-                    if (_SettingsPlugin != null)
-                    {
-                        try
+                        _DisplayManagerPlugin.GetUSBUpstreamList(monitor).Wait();
+                        _DisplayManagerPlugin.GetAllUSBUpstream(monitor).Wait();
+                        _DisplayManagerPlugin.GetVCPCapability(monitor, 0xE9).Wait();
+                        _DisplayManagerPlugin.GetDisplayPropertiesInfo(monitor).Wait();
+                        if (monitor.CapabilityString.Contains("F4"))
                         {
-                            DDPMSettings data = _SettingsPlugin.ReloadAppConfigData().Result;
-                            if (data != null && data.UserSettings != null)
+                            _DisplayManagerPlugin.GetGamingProperties_SupportedList(monitor).Wait();
+                        }
+                    }
+                    UpdateHotkeyInfo();
+
+                    Task.Run(() => //support last selected monitor info from settings
+                    {
+                        if (_SettingsPlugin != null)
+                        {
+                            try
                             {
-                                DDPMSimpleMonitorRecord mo = data.UserSettings.lastUISelectedMonitor;
-                                if (mo != null && !string.IsNullOrEmpty(mo.ModelName) && !string.IsNullOrEmpty(mo.ServiceTag))
+                                DDPMSettings data = _SettingsPlugin.ReloadAppConfigData().Result;
+                                if (data != null && data.UserSettings != null)
                                 {
-                                    if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
+                                    DDPMSimpleMonitorRecord mo = data.UserSettings.lastUISelectedMonitor;
+                                    if (mo != null && !string.IsNullOrEmpty(mo.ModelName) && !string.IsNullOrEmpty(mo.ServiceTag))
                                     {
-                                        int idx = _AllInfoMonitors.FindIndex(x => x.modelName.Equals(mo.ModelName) && x.edid.ServiceTag.Equals(mo.ServiceTag));
-                                        if (idx >= 0)
-                                            lastSelectedMonitor_UI = _AllInfoMonitors[idx];
-                                        else
-                                            lastSelectedMonitor_UI = null;
+                                        if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
+                                        {
+                                            int idx = _AllInfoMonitors.FindIndex(x => x.modelName.Equals(mo.ModelName) && x.edid.ServiceTag.Equals(mo.ServiceTag));
+                                            if (idx >= 0)
+                                                lastSelectedMonitor_UI = _AllInfoMonitors[idx];
+                                            else
+                                                lastSelectedMonitor_UI = null;
+                                        }
                                     }
+                                    else
+                                        throw new ArgumentNullException("lastUISelectedMonitor");
                                 }
                                 else
-                                    throw new ArgumentNullException("lastUISelectedMonitor");
+                                    throw new ArgumentNullException("data");
                             }
-                            else
-                                throw new ArgumentNullException("data");
+                            catch (Exception ex)
+                            {
+                                writelog($"Read last selected monitor from settings failed. ({ex.Message})");
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            writelog($"Read last selected monitor from settings failed. ({ex.Message})");
-                        }
-                    }
-                });
+                    });
+                }
+                else
+                    writelog("[DeviceMangerPlugin] _DisplayManagerPlugin is Null");
 
-                return Task.FromResult(_AllInfoMonitors);
+                return Task.FromResult(monitors);
             }
         }
 
         public Task<List<MonitorInfo>> Re_GetMonitors()
         {
-            writelog("DeviceMangerPlugin received Re_GetMonitors requested ...");
+            writelog("[DeviceMangerPlugin] received Re_GetMonitors requested ...");
             Task.Run(() => _SystemEvents_DisplaySettingsChanged(null)).Wait();
             return Task.FromResult(_AllInfoMonitors.ToList());
         }
 
         public Task<List<MultiCommandArch>> MultiCommandsRun(List<MultiCommandArch> _multiCommands)
         {
-            writelog("DeviceMangerPlugin received MultiCommandsRun requested ...");
-            writelog($"DeviceMangerPlugin MultiCommands count is {_multiCommands.Count}");
+            writelog("[DeviceMangerPlugin] received MultiCommandsRun requested ...");
+            writelog($"[DeviceMangerPlugin] MultiCommands count is {_multiCommands.Count}");
 
             var r = new List<MultiCommandArch>();
 
             if (_DisplayManagerPlugin != null)
                 r = _DisplayManagerPlugin.MultiCommandsRun(_multiCommands).Result;
+            else
+                writelog("[DeviceMangerPlugin] _DisplayManagerPlugin is Null");
 
             return Task.FromResult(r);
         }
 
         public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
         {
-            writelog("DeviceMangerPlugin received GetCapabilitiesString requested ...");
-            writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
-            writelog("TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
+            writelog("[DeviceMangerPlugin] received GetCapabilitiesString requested ...");
+            writelog("[DeviceMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
+            writelog("[DeviceMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
 
             string r = string.Empty;
 
             if (_DisplayManagerPlugin != null)
                 r = _DisplayManagerPlugin.GetCapabilitiesString(monitorInfo, guid, priority).Result;
+            else
+                writelog("[DeviceMangerPlugin] _DisplayManagerPlugin is Null");
 
             return Task.FromResult(r);
         }
 
         public Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
         {
-            writelog("DeviceMangerPlugin received GetVCPCapabilities requested ...");
-            writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
-            writelog("TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
+            writelog("[DeviceMangerPlugin] received GetVCPCapabilities requested ...");
+            writelog("[DeviceMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
+            writelog("[DeviceMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
 
             string r = string.Empty;
 
             if (_DisplayManagerPlugin != null)
                 r = _DisplayManagerPlugin.GetVCPCapabilities(monitorInfo, guid, priority).Result;
+            else
+                writelog("[DeviceMangerPlugin] _DisplayManagerPlugin is Null");
 
             return Task.FromResult(r);
         }
 
         public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, Guid guid = default, int opt = 0, Priority priority = Priority.Low)
         {
-            writelog("DeviceMangerPlugin received GetVCPCapability requested ...");
-            writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
-            writelog("TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
-            writelog("VcpCode is " + BitConverter.ToString(new byte[] { code }));
-            writelog("opt is " + opt.ToString());
+            writelog("[DeviceMangerPlugin] received GetVCPCapability requested ...");
+            writelog("[DeviceMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
+            writelog("[DeviceMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
+            writelog("[DeviceMangerPlugin] VcpCode is " + BitConverter.ToString(new byte[] { code }));
+            writelog("[DeviceMangerPlugin] opt is " + opt.ToString());
 
-            ObjGetVCP r = new ObjGetVCP();
+            ObjGetVCP r = new ObjGetVCP() { result = false, value = null };
 
             if (_DisplayManagerPlugin != null)
                 r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, code, guid, opt, priority).Result;
+            else
+                writelog("[DeviceMangerPlugin] _DisplayManagerPlugin is Null");
 
             return Task.FromResult(r);
         }
 
         public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, Guid guid = default, int opt = 0, Priority priority = Priority.Low)//Dean 0626 fix SAST issue, syncup param name as well
         {
-            writelog("DeviceMangerPlugin received GetVCPCapability requested ...");
-            writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
-            writelog("TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
-            writelog("VcpCode is " + FunctionName);
-            writelog("opt is " + opt.ToString());
+            writelog("[DeviceMangerPlugin] received GetVCPCapability requested ...");
+            writelog("[DeviceMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
+            writelog("[DeviceMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
+            writelog("[DeviceMangerPlugin] VcpCode is " + FunctionName);
+            writelog("[DeviceMangerPlugin] opt is " + opt.ToString());
 
-            ObjGetVCP r = new ObjGetVCP();
+            ObjGetVCP r = new ObjGetVCP() { result = false, value = null };
 
             if (_DisplayManagerPlugin != null)
                 r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, FunctionName, guid, opt, priority).Result;
+            else
+                writelog("[DeviceMangerPlugin] _DisplayManagerPlugin is Null");
 
             return Task.FromResult(r);
         }
 
         public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val, Guid guid = default, Priority priority = Priority.Low)
         {
-            writelog("DeviceMangerPlugin received SetVCPCapability requested ...");
-            writelog("TargetMonitor DisplayName is " + monitorInfo.DisplayName);
-            writelog("TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
-            writelog("VcpCode is " + BitConverter.ToString(new byte[] { code }));
-            writelog("val is " + val.ToString());
+            writelog("[DeviceMangerPlugin] received SetVCPCapability requested ...");
+            writelog("[DeviceMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
+            writelog("[DeviceMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
+            writelog("[DeviceMangerPlugin] VcpCode is " + BitConverter.ToString(new byte[] { code }));
+            writelog("[DeviceMangerPlugin] val is " + val.ToString());
 
             bool r = false;
 
             if (_DisplayManagerPlugin != null)
+            {
                 r = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, code, val, guid, priority).Result;
 
-            //0715 Jason add
-            if (r && code == 0x04 && _NKVMPlugin != null)
-            {
-                _NKVMPlugin.SetVCPNotify(monitorInfo, code, (int)val).Wait();
-            }
-            else if (!r && code == 0x04)
-            {
-                writelog("Set VCP code 0x04 Fail...");
-            }
+                //0715 Jason add
+                if (r && code == 0x04 && _NKVMPlugin != null)
+                {
+                    _NKVMPlugin.SetVCPNotify(monitorInfo, code, (int)val).Wait();
+                }
+                else if (!r && code == 0x04)
+                {
+                    writelog("[DeviceMangerPlugin] Set VCP code 0x04 Fail...");
+                }
 
-            //Telementry Collection
-            var rt = false;
-            var Displaysettings_Function = new Displaysettings_Function();
-            switch (code)
-            {
-                case 0x10:
+                //Telementry Collection
+                var rt = false;
+                var Displaysettings_Function = new Displaysettings_Function();
+                switch (code)
+                {
+                    case 0x10:
 
-                    if (monitorInfo.CapabilityDic.ContainsKey("12"))
-                    {
-                        Task.Run(() =>
+                        if (monitorInfo.CapabilityDic.ContainsKey("12"))
                         {
-                            writelog("[DeviceMangerPlugin] Send Telementry for Brightness...");
-                            rt = Displaysettings_Function.Send_Brightness_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
-                            if (rt)
-                                writelog("[DeviceMangerPlugin] Send Telementry for Brightness Success ...");
-                            else
-                                writelog("[DeviceMangerPlugin] Send Telementry for Brightness Fail ...");
-                        }).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        Task.Run(() =>
-                        {
-                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Luminanc...");
-                            rt = Displaysettings_Function.Send_Luminance_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
-                            if (rt)
-                                writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Success ...");
-                            else
-                                writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Fail ...");
-                        }).ConfigureAwait(false);
-                    }
-                    break;
-
-                case 0x12:
-
-                    Task.Run(() =>
-                    {
-                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast...");
-                        rt = Displaysettings_Function.Send_Contrast_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
-                        if (rt)
-                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Success ...");
-                        else
-                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Fail ...");
-                    }).ConfigureAwait(false);
-                    break;
-
-                case 0xE9:
-                    {
-                        NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
-                        nKVMVCPValue.monitorInfo = monitorInfo;
-                        nKVMVCPValue.value = (int)val;
-                        if (_NKVMPlugin != null)
-                        {
-                            _NKVMPlugin.SaveVCPcode(nKVMVCPValue);
+                            Task.Run(() =>
+                            {
+                                writelog("[DeviceMangerPlugin] Send Telementry for Brightness...");
+                                rt = Displaysettings_Function.Send_Brightness_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                                if (rt)
+                                    writelog("[DeviceMangerPlugin] Send Telementry for Brightness Success ...");
+                                else
+                                    writelog("[DeviceMangerPlugin] Send Telementry for Brightness Fail ...");
+                            }).ConfigureAwait(false);
                         }
-                    }
-                    break;
+                        else
+                        {
+                            Task.Run(() =>
+                            {
+                                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Luminanc...");
+                                rt = Displaysettings_Function.Send_Luminance_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                                if (rt)
+                                    writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Success ...");
+                                else
+                                    writelog("[DeviceMangerPlugin] [Telementry] Send  Telementry for Luminanc Fail ...");
+                            }).ConfigureAwait(false);
+                        }
+                        break;
 
-                default:
-                    break;
+                    case 0x12:
+
+                        Task.Run(() =>
+                        {
+                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast...");
+                            rt = Displaysettings_Function.Send_Contrast_Telementry(_TelementryScheduler, monitorInfo, val, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                            if (rt)
+                                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Success ...");
+                            else
+                                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for Contrast Fail ...");
+                        }).ConfigureAwait(false);
+                        break;
+
+                    case 0xE9:
+                        {
+                            NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
+                            nKVMVCPValue.monitorInfo = monitorInfo;
+                            nKVMVCPValue.value = (int)val;
+                            if (_NKVMPlugin != null)
+                            {
+                                _NKVMPlugin.SaveVCPcode(nKVMVCPValue);
+                            }
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
             }
+            else
+                writelog("[DeviceMangerPlugin] _DisplayManagerPlugin is Null");
 
             return Task.FromResult(r);
         }
 
         public Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val, Guid guid = default, Priority priority = Priority.Low)//Dean 0626 fix SAST issue, syncup param name as well
         {
-            writelog("DeviceMangerPlugin received SetVCPCapability requested ...");
-            writelog("TargetMonitor DisplayName is " + monitorInfoX.DisplayName);
-            writelog("TargetMonitor AliasDeviceName is " + monitorInfoX.AliasDeviceName);
-            writelog("FunctionName is " + FunctionName);
-            writelog("val is " + val);
+            writelog("[DeviceMangerPlugin] received SetVCPCapability requested ...");
+            writelog("[DeviceMangerPlugin] TargetMonitor DisplayName is " + monitorInfoX.DisplayName);
+            writelog("[DeviceMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfoX.AliasDeviceName);
+            writelog("[DeviceMangerPlugin] unctionName is " + FunctionName);
+            writelog("[DeviceMangerPlugin] val is " + val);
 
             bool r = false;
 
@@ -2437,42 +2450,37 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (!string.IsNullOrEmpty(val))
                 {
                     if (_DisplayManagerPlugin != null)
+                    {
                         r = _DisplayManagerPlugin.SetVCPCapability(monitorInfoX, FunctionName, val, guid, priority).Result;
 
-                    //Telementry Collection
-                    var Displaysettings_Function = new Displaysettings_Function();
-                    //0712 Jason add
-                    if (r && FunctionName == "Input Select")
-                    {
-                        if (_NKVMPlugin != null)
+                        //Telementry Collection
+                        var Displaysettings_Function = new Displaysettings_Function();
+                        //0712 Jason add
+                        if (r && FunctionName == "Input Select")
                         {
-                            ObjGetVCP objGetVCP = new ObjGetVCP();
-                            objGetVCP = _DisplayManagerPlugin.GetVCPCapability(monitorInfoX, 0x60, guid, 0, priority).Result;
-                            if (objGetVCP.result)
+                            if (_NKVMPlugin != null)
                             {
-                                _NKVMPlugin.SetVCPNotify(monitorInfoX, 0x60, (int)(uint)objGetVCP.value).Wait();
+                                ObjGetVCP objGetVCP = new ObjGetVCP();
+                                objGetVCP = _DisplayManagerPlugin.GetVCPCapability(monitorInfoX, 0x60, guid, 0, priority).Result;
+                                if (objGetVCP.result)
+                                    _NKVMPlugin.SetVCPNotify(monitorInfoX, 0x60, (int)(uint)objGetVCP.value).Wait();
                             }
+                            if (Displaysettings_Function.Send_InputSource_Telementry(_TelementryScheduler, monitorInfoX, val, GetMonitorCurrentResolution(monitorInfoX), GetMonitorMaxResolution(monitorInfoX)))
+                                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for InputSource Success ...");
+                            else
+                                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for InputSource Fail ...");
+
+                            _AllInfoMonitors = GetMonitors().Result;
                         }
-                        if (Displaysettings_Function.Send_InputSource_Telementry(_TelementryScheduler, monitorInfoX, val, GetMonitorCurrentResolution(monitorInfoX), GetMonitorMaxResolution(monitorInfoX)))
-                        {
-                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for InputSource Success ...");
-                        }
-                        else
-                        {
-                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for InputSource Fail ...");
-                        }
-                        _AllInfoMonitors = GetMonitors().Result;
                     }
+                    else
+                        writelog("[DeviceMangerPlugin] _DisplayManagerPlugin is Null");
                 }
                 else
-                {
                     writelog("[DeviceMangerPlugin] [SetVCPCapability] val is null or empty...");
-                }
             }
             else
-            {
                 writelog("[DeviceMangerPlugin] [SetVCPCapability] monitorInfoX is null ...");
-            }
 
             return Task.FromResult(r);
         }
@@ -11793,14 +11801,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() into Re-GetDevices ...");
                             //Call VCP to catch updated monitor info
-                            _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.Re_GetMonitors(token).Result);
+                            var NewMonitors = (_DisplayManagerPlugin.Re_GetMonitors(token).Result).ToList();
+                            _AllInfoMonitors = NewMonitors.ToList();
 
                             // add @ 20250303 stephen
                             // modified @ 20250305 stephen : set count = -1 as a flag to avoid trigger ui reflash
                             if (_arg != null)
                             {
                                 arg = (DebouncerArg)_arg;
-                                show_displays_changed(arg.sender, new DisplaychangedEventArgs() { count = -1, monitors = _AllInfoMonitors });
+                                show_displays_changed(arg.sender, new DisplaychangedEventArgs() { count = -1, monitors = NewMonitors });
                             }
                             // add @ 20250303 stephen
 
@@ -11808,7 +11817,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             if (_NKVMPlugin != null)
                             {
                                 writelog("[DeviceMangerPlugin] NKVM UpdateMonitorInfo ...");
-                                _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, token);
+                                _NKVMPlugin.UpdateMonitorInfo(NewMonitors, token);
                             }
 
                             token.ThrowIfCancellationRequested();
@@ -11816,14 +11825,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             ReviewAllMonitorToAvoidDuplicatedInfo();
 
                             //List<MonitorInfo> new_mo = new List<MonitorInfo>();
-                            //if (_AllInfoMonitors.Count > 0)
-                            //    new_mo.AddRange(_AllInfoMonitors);
+                            //if (NewMonitors.Count > 0)
+                            //    new_mo.AddRange(NewMonitors);
 
-                            writelog($"[DeviceManager] _SystemEvents_DisplaySettingsChanged() Got event, monitor count {_AllInfoMonitors.Count}");
+                            writelog($"[DeviceManager] _SystemEvents_DisplaySettingsChanged() Got event, monitor count {NewMonitors.Count}");
 
                             token.ThrowIfCancellationRequested();
-                            if (_AllInfoMonitors.Count > 0)
-                                OnDeviceChanged(_AllInfoMonitors[0], null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");//DeviceChangedType.Display_PlugIn);
+
+                            if (NewMonitors.Count > 0)
+                                OnDeviceChanged(NewMonitors[0], null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");//DeviceChangedType.Display_PlugIn);
                             else
                                 OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");
 
@@ -11841,9 +11851,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             if (_agent != null && !token.IsCancellationRequested)
                                 _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
+
                             writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() _agent.RaiseEvent finish ...");
 
-                            if (_AllInfoMonitors.Count > 0 && !token.IsCancellationRequested)
+                            if (NewMonitors.Count > 0 && !token.IsCancellationRequested)
                             {
                                 Task.Run(() =>
                                 {
@@ -11851,7 +11862,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     var rt = false;
                                     var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
                                     writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
-                                    rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, _AllInfoMonitors);
+                                    rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, NewMonitors);
                                     if (rt)
                                         writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
                                     else
@@ -11860,18 +11871,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             }
 
                             ////1117 Bruce 不用自動旋轉把下兩行註解
-                            //if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
-                            //_DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
+                            //if (displayDeviceNumChange && NewMonitors.Count > 0)
+                            //_DisplayManagerPlugin.SetDisplayOrientation(NewMonitors).Wait();
                             //writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
 
                             token.ThrowIfCancellationRequested();
-                            _DisplayManagerPlugin.UpdateExistAlsConfig(_AllInfoMonitors.ToList());
+                            _DisplayManagerPlugin.UpdateExistAlsConfig(NewMonitors.ToList());
                             writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() UpdateExistAlsConfig finish ...");
                             writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
 
                             writelog($"[DeviceMangerPlugin] Toast Windows notification token.IsCancellationRequested: {token.IsCancellationRequested}");
-                            if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0 && !token.IsCancellationRequested)
-                                Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, _AllInfoMonitors.ToList(), _SettingsPlugin));
+                            if (NewMonitors != null && NewMonitors.Count > 0 && !token.IsCancellationRequested)
+                                Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, NewMonitors.ToList(), _SettingsPlugin));
                         }
                         catch (TaskCanceledException)
                         {
@@ -11960,7 +11971,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 handler.Invoke(this, e);
             }
 
-            if (e.count < 0) {
+            if (e.count < 0)
+            {
                 writelog($"DeviceMangerPlugin brocast OnDisplaychanged End process for CMA ...(e.count = {e.count})");
                 return;
             }
@@ -12439,7 +12451,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void show_displays_changed(object sender, DisplaychangedEventArgs e)
         {
             // add @ 20250305 stephen
-            if (e.count < 0) {
+            if (e.count < 0)
+            {
                 writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin, but count < 0 *****");
                 OnDisplaychanged(e);
                 return;
@@ -16334,6 +16347,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             strpcsList = JsonConvert.SerializeObject(pcslist, Formatting.Indented);
             return strpcsList;
         }
+
         private Dictionary<string, PCsInfo> USBKVMPCsListDeserialize(string strpcslist)
         {
             try
@@ -18201,7 +18215,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                                     case OSDType.Error:
                                         {
-                                            //if (State) 
+                                            //if (State)
                                             //{
                                             //    try
                                             //    {
