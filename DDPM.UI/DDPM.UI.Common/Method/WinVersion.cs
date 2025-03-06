@@ -69,7 +69,7 @@ namespace DDPM.UI.Common.Method
             if (rst != 0) 
             {
 #if DEBUG
-                Console.WriteLine("[WinVersion] RtlGetVersion failed.");
+                Console.WriteLine($"[WinVersion] RtlGetVersion failed, status code: {rst}");
 #endif
             }
 
