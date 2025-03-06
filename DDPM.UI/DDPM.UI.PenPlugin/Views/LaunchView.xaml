@@ -82,10 +82,19 @@
         <Border Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
         <!--Image-->
         <Grid>
-          <Viewbox Name="largeImage" Margin="30,60" MaxWidth="620">
+          <Viewbox Name="largeImage" Margin="0,50,0,0" MaxWidth="620">
             <Grid>
+          <Border Background="#0000FF00" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
               <Grid>
                 <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="620" />
+                <Canvas>
+                  <!--<Polygon Name="PolyT" StrokeThickness="0" Fill="Red" Points="0,0 620,0 620,154 597,117 52,422 0,475"  MouseDown="Mainframe_MouseLeftButtonDown" />
+                  <Polygon Name="PolyB" StrokeThickness="0" Fill="Blue" Points="0,540 620,540 620,157 80,459 30,472 0,476"  MouseDown="Mainframe_MouseLeftButtonDown"/>-->
+                  <Polygon Name="PolyT" StrokeThickness="0" Fill="Transparent" MouseDown="Mainframe_MouseLeftButtonDown" />
+                  <Polygon Name="PolyB" StrokeThickness="0" Fill="Transparent" MouseDown="Mainframe_MouseLeftButtonDown"/>
+                  <!--<Polygon Name="PolyT" StrokeThickness="0" Fill="Red" MouseDown="Mainframe_MouseLeftButtonDown" />
+                  <Polygon Name="PolyB" StrokeThickness="0" Fill="Blue" MouseDown="Mainframe_MouseLeftButtonDown"/>-->
+                </Canvas>
                 <Image x:Name="imgTopButtonBackground" Source="{Binding TopButtonBackground}"  VerticalAlignment="Top" HorizontalAlignment="Right"
                                        Stretch="Uniform" Width="75" Height="75" Margin="0,130,-48,0" Visibility="Collapsed" />
               </Grid>
@@ -208,7 +217,7 @@
         </ItemsControl>
       </Grid>
       <!--Battery-->
-      <Grid VerticalAlignment="Bottom" Height="200">
+      <Grid VerticalAlignment="Bottom" MinHeight="200">
         <Border Background="Transparent" MouseDown="PushBack"></Border>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom">
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
