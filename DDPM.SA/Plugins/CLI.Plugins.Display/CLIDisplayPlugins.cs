@@ -1051,7 +1051,7 @@ namespace DDPM.CLI.Plugins.Display
                 case "LogicalHeadset":
                     writelog("LogicalHeadset entry");
                     var audio = new DeviceDataAudioResponse(index, device);
-                    writelog("_devMgr.GetWebcamSerialNumber entry");
+                    writelog("_devMgr.GetHeadsetSerialNumber entry");
                     audio.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(guid).Result ?? "N/A";
                     Debug.WriteLine(audio.SerialNumber.ToString());
                     writelog("_devMgr.GetConnectionTypeAsync entry");
