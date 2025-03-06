@@ -935,12 +935,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             DdpmCommonHelper.MyConsole = PluginIoc.GetService<IConsole>();
             DdpmCommonHelper.MyShowPluginManager = PluginIoc.GetService<IShowPluginManager>();
 
-
-            //Robert_Lin, 2024-7-17, fix PIMS-286435 in AddDevice menu, the AddDevice icon is in Top Right side.
-            if (_iconAddDevice != null)
-                _iconAddDevice.Visibility = Visibility.Visible;
-            if (_iconGear != null)
-                _iconGear.Visibility = Visibility.Visible;
+            //Robert_Lin 2025-3-5 Change to new method instead
+            ShowAllMastheadIcons();
+            ////Robert_Lin, 2024-7-17, fix PIMS-286435 in AddDevice menu, the AddDevice icon is in Top Right side.
+            //if (_iconAddDevice != null)
+            //    _iconAddDevice.Visibility = Visibility.Visible;
+            //if (_iconGear != null)
+            //    _iconGear.Visibility = Visibility.Visible;
         }
 
         [Obsolete]
