@@ -9,7 +9,9 @@ using DDPM.UI.Module.HeadsetAutomatedActions;
 using DDPM.UI.Module.HeadsetDeviceSettings;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
+using Microsoft.VisualBasic.Logging;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -20,15 +22,15 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 
-namespace DDPM.UI.Plugin.HeadsetPlugin
+namespace DDPM.UI.Plugin.AirAudioPlugin
 {
     /// <summary>
     /// HeadsetPlugin.xaml 的互動邏輯
     /// </summary>
     public partial class LaunchView : UserControl
     {
-        private readonly HeadsetViewModel? _vm;
-
+        private readonly AirAudioViewModel? _vm;
+        private IDeviceManagerSA _deviceManager;
         private readonly int[] _rightFrameWidth = new int[] { 0, 533, 533, 533 };
         //private readonly string Restore = "Restore to default";
         //private readonly string Unpair = "Unpair";
@@ -43,101 +45,74 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         public LaunchView()
         {
 
-            _vm = (HeadsetViewModel?)HeadsetPlugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
+            _vm = (AirAudioViewModel?)AirAudioPlugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
 
             if (_vm != null)
             {
-                if (false)//!_vm.IsDTPReady)
+                _deviceManager = _vm._deviceManager;
+                InitializeComponent();
+                _vm.Reset();
+                DataContext = _vm;
+                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                BuildModuleGroups();
+                if (_vm!.ConnectionType == "WiredAudio")
                 {
-                    MessageModalDialog messageModalDialog = new(Strings.Error, Strings.DTPUnavailable, "");
-                    Window mainWindow = System.Windows.Application.Current.MainWindow;
-                    if (mainWindow != null)
-                    {
-                        messageModalDialog.Owner = mainWindow;
-                        messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
-                        messageModalDialog.Top = mainWindow.Top + 300;
-                    }
-                    Mouse.OverrideCursor = null;
-                    messageModalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-                    messageModalDialog.ShowDialog();
-                    this.Loaded += LaunchView_Loaded;
+                    btnUnpair.Visibility = Visibility.Collapsed;
                 }
-                else
+
+                //txtUnpair.Text = Unpair;
+                //txtRestore.Text = Restore;
+
+                ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
+                ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
+                //txtSystemName1.Text = Dns.GetHostName(); ;// _vm!.VisiblePairedHostName1;
+                //txtSystemName2.Text = _vm.VisiblePairedHostName1;
+                txtSystemName3.Text = _vm.VisiblePairedHostName1;
+                txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
+                txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+                txtAudioBLText.Text = string.Format(Strings.Paired_Info, _vm.CurrentDeviceInfo.TotalNumberOfPairedHostName);
+                if (_deviceManager != null)
                 {
-                    InitializeComponent();
-                    _vm.Reset();
-                    DataContext = _vm;
-                    _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-                    BuildModuleGroups();
-                    if (_vm!.ConnectionType == "WiredAudio")
+                    _deviceManager.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+
+                    DDPMSettings data = _deviceManager.ReloadAppConfigData().Result;
+                    if (data != null)
                     {
-                        btnUnpair.Visibility = Visibility.Collapsed;
-                    }
-
-                    //txtUnpair.Text = Unpair;
-                    //txtRestore.Text = Restore;
-
-                    ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
-                    ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
-                    //txtSystemName1.Text = Dns.GetHostName(); ;// _vm!.VisiblePairedHostName1;
-                    //txtSystemName2.Text = _vm.VisiblePairedHostName1;
-                    txtSystemName3.Text = _vm.VisiblePairedHostName1;
-                    txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
-                    txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
-                    txtAudioBLText.Text = string.Format(Strings.Paired_Info, _vm.CurrentDeviceInfo.TotalNumberOfPairedHostName);
-                    if (DdpmCommonHelper.DeviceManagerSA != null)
-                    {
-                        DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
-
-                        DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                        if (data != null)
+                        if (data.LockSettings.Lock_Setting_RestoreDefaults)
                         {
-                            if (data.LockSettings.Lock_Setting_RestoreDefaults)
+                            RestoreLockIcon.Visibility = Visibility.Visible;
+                            txtRestore.IsEnabled = false;
+                        }
+                        else
+                        {
+                            txtRestore.IsEnabled = !data.LockSettings.Lock_Audio_RestoreFactoryDefaults;
+                            RestoreLockIcon.Visibility = data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+
+                            //Lock Functionality 9/7
+                            //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Audio]
+                            if (data.LockSettings != null &&
+                                DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Audio"))
                             {
                                 RestoreLockIcon.Visibility = Visibility.Visible;
                                 txtRestore.IsEnabled = false;
                             }
-                            else
-                            {
-                                txtRestore.IsEnabled = !data.LockSettings.Lock_Audio_RestoreFactoryDefaults;
-                                RestoreLockIcon.Visibility = data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
-
-                                //Lock Functionality 9/7
-                                //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Audio]
-                                if (data.LockSettings != null &&
-                                    DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Audio"))
-                                {
-                                    RestoreLockIcon.Visibility = Visibility.Visible;
-                                    txtRestore.IsEnabled = false;
-                                }
-                            }
                         }
                     }
-                    DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
-                    Loaded += LaunchView_LoadedStatus;
-                    Unloaded += LaunchView_UnLoadedStatus;
-                    _vm!.HeadsetGroupChanged += HeadsetGroupChanged;
                 }
+                DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+                Loaded += LaunchView_LoadedStatus;
+                Unloaded += LaunchView_UnLoadedStatus;
             }
         }
 
-        private void HeadsetGroupChanged(object? sender, EventArgs e)
-        {
-            
-                BuildModuleGroups(_vm.SupportedAnswerCalls);
-                vbarList.ItemsSource = null;
-                vbarList.ItemsSource = _vm!.VbarItems;
-                DdpmCommonHelper.WriteUILog($"[Headset] LaunchView HeadsetGroupChanged SupportedAnswerCalls false");
-        }
 
         private async void LaunchView_UnLoadedStatus(object sender, RoutedEventArgs e)
         {
             if (_vm == null) return;
-            _vm.UloadHeadset_DTPNotify();
-            _vm!.HeadsetGroupChanged -= HeadsetGroupChanged;
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {               
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            _vm.UloadAirAudio_DTPNotify();
+            if (_deviceManager != null)
+            {
+                _deviceManager.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
                 DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
                 Loaded -= LaunchView_LoadedStatus;
                 Unloaded -= LaunchView_UnLoadedStatus;
@@ -206,28 +181,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Setting.png"),
                 GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.AudioSettings)
             };
-            moduleGroup.AddHeader(AudioSettings, new HeadsetAudioSettingsModule(_vm!));
-            groups.Add(moduleGroup);
-
-            if (secondVbar)
-            {
-                moduleGroup = new ModuleGroup()
-                {
-                    GroupName = AutomatedActions,
-                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
-                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
-                };
-                moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
-                groups.Add(moduleGroup);
-            }
-
-            moduleGroup = new ModuleGroup()
-            {
-                GroupName = DeviceSettings,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Main.png"),
-                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetSettings)
-            };
-            moduleGroup.AddHeader(DeviceSettings, new HeadsetDeviceSettingsModule(_vm!));
+            moduleGroup.AddHeader(AudioSettings, new HeadsetAudioForSB725SettingsModule(_vm!));
             groups.Add(moduleGroup);
             _vm.ModuleGroups = groups;
         }
@@ -383,7 +337,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             {
                 btnUnpair.Visibility = Visibility.Visible;
             }
-            if (!_vm.IsRestoreEnable)
+            if (_vm.IsRestoreEnable)
             {
                 btnRestore.Visibility = Visibility.Visible;
             }
@@ -449,11 +403,11 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 string PairedHostName1 = string.Empty;
                 string PairedHostName2 = string.Empty;
                 if (string.IsNullOrEmpty(_vm.PairedHostName1))
-                    PairedHostName1 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
+                    PairedHostName1 = _vm.isAirAudio == false ? _deviceManager.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result : null; //DTP
                 else
                     PairedHostName1 = _vm.PairedHostName1; //DTH
                 if (string.IsNullOrEmpty(_vm.PairedHostName2))
-                    PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
+                    PairedHostName2 = _vm.isAirAudio == false ? _deviceManager.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result : null; //DTP
                 else
                     PairedHostName2 = _vm.PairedHostName2;  //DTH
 

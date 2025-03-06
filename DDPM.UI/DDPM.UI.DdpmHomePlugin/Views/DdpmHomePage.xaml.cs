@@ -651,6 +651,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
                 _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.HeadsetPluginId, selectedHomeDevice.DeviceInfo.ID.ToString() + instanceNo);
             }
+            //20250313 Wayn 新增AirAudio UI
+            if (selectedHomeDevice?.DeviceCategory == eDeviceCategory.AirAudio)
+            {
+                //Check if it's fake device
+                if (selectedHomeDevice.DeviceInfo == null)
+                    return;
+
+                IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
+                _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.AirAudioPluginId, selectedHomeDevice.DeviceInfo.ID.ToString() + instanceNo);
+            }
             //0726 Wayn 新增Soundbar UI
             if (selectedHomeDevice?.DeviceCategory == eDeviceCategory.Soundbar)
             {
@@ -780,7 +790,23 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
             RefreshListViewItemWidth();
         }
+        private void addAirAudio_Click(object sender, RoutedEventArgs e)
+        {
+            int id = _ddpmHomePageViewModel.HomeDevices.Count;
 
+            HomeDevice demo = new HomeDevice()
+            {
+                DeviceCategory = eDeviceCategory.AirAudio,
+                DeviceName = $"Demo {id}",
+                DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/SB725.png"),
+                DeviceInfo = new DeviceInfo()
+                {
+                    Name = "AirAudio"
+                }
+            };
+            _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
+            RefreshListViewItemWidth();
+        }
         private void addAllTest_Click(object sender, RoutedEventArgs e)
         {
             AddAll();
@@ -1086,6 +1112,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     Name = "WH3024",
                     ModelNumber = "WH3024"
+                }
+            };
+            _ddpmHomePageViewModel?.AddDemoHomeDevice(demo);
+            id++;
+            demo = new HomeDevice()
+            {
+                DeviceCategory = eDeviceCategory.AirAudio,
+                DeviceName = $"Demo {id}",
+                //DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/WH3024.png"),
+                DeviceInfo = new DeviceInfo()
+                {
+                    Name = "SB725",
+                    ModelNumber = "SB725"
                 }
             };
             _ddpmHomePageViewModel?.AddDemoHomeDevice(demo);

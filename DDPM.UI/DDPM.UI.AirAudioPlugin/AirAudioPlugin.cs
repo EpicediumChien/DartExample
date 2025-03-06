@@ -14,19 +14,19 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using Cursors = System.Windows.Input.Cursors;
 
-namespace DDPM.UI.Plugin.HeadsetPlugin
+namespace DDPM.UI.Plugin.AirAudioPlugin
 {
     /// <summary>
     /// Interaction logic for PenPlugin
     /// </summary>
     [Plugin(PluginId, PluginName, Version = PluginVersion, Category = Category.Utility)]
     [Descriptor(Description = Description)]
-    [Publisher(Name = "DDPM HeadsetPlugin", Support = "Wistron DDPM Team")]
+    [Publisher(Name = "DDPM AirAudioPlugin", Support = "Wistron DDPM Team")]
     [ExcludeFromCodeCoverage]
-    public class HeadsetPlugin : IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
+    public class AirAudioPlugin : IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
     {
-        private const string PluginId = UI.Common.Constants.HeadsetPluginId;
-        private const string PluginName = "HeadsetPlugin";
+        private const string PluginId = UI.Common.Constants.AirAudioPluginId;
+        private const string PluginName = "AirAudioPlugin";
         private const string PluginVersion = "1.0";
         private const string Description = "Display Headset page";
 
@@ -37,7 +37,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         private readonly IPluginManager _pluginManager;
         private readonly IShowPluginManager _showPluginManager;
         private readonly string? _applicationName;
-        private HeadsetViewModel? _viewModel;
+        private AirAudioViewModel? _viewModel;
 
         private bool _isConfigured;
         private IDeviceManagerSA _deviceManagerPlugin;
@@ -51,12 +51,12 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         /// <summary>
         /// Default constructor
         /// </summary>
-        public HeadsetPlugin(IShowPluginManager showPluginManager, IPluginManager pluginManager, IConsole console)
+        public AirAudioPlugin(IShowPluginManager showPluginManager, IPluginManager pluginManager, IConsole console)
         {
             _showPluginManager = showPluginManager;
             _pluginManager = pluginManager;
             _console = console;
-            _log = console.CreateLog("Headset");
+            _log = console.CreateLog("AirAudio");
             _log.Info($"{nameof(LaunchView)} - Constructed");
 
             CancellationToken = StartupCancellationTokenSource.Token;
@@ -102,7 +102,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         {
             try
             {
-                if (e.device_peripherals != null && (e.device_peripherals.LogicalDeviceType.Contains("Headset")))
+                if (e.device_peripherals != null && (e.device_peripherals.LogicalDeviceType.Contains("AirAudio")))
                 {
                     if (e.type == DeviceChangedType.Peripherals_UnPlug)
                     {
@@ -203,10 +203,10 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 .AddSingleton(_console)
                 .AddSingleton(_log)
                 .AddSingleton(_deviceManagerPlugin)
-                .AddSingleton<IPeripheralViewModel, HeadsetViewModel>()
+                .AddSingleton<IPeripheralViewModel, AirAudioViewModel>()
                 .BuildServiceProvider());
 
-            _viewModel = (HeadsetViewModel?)PluginIoc.GetService<IPeripheralViewModel>();
+            _viewModel = (AirAudioViewModel?)PluginIoc.GetService<IPeripheralViewModel>();
             _isConfigured = true;
             _log.Info($"[HeadsetPlugin] ConfigureServices ... out");
         }
@@ -221,7 +221,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         {
             if (!IsEventRegistered)
             {
-                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+                _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
                 IsEventRegistered = true;
             }
             Mouse.OverrideCursor = null;
@@ -232,7 +232,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         {
             if (IsEventRegistered)
             {
-                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+                _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
                 IsEventRegistered = false;
             }
             Mouse.OverrideCursor = Cursors.Wait;
@@ -244,7 +244,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             _log.Info($"[HeadsetPlugin] OnShown ... in");
             if (!IsEventRegistered)
             {
-                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+                _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
                 IsEventRegistered = true;
             }
             ConfigureServices();
@@ -254,7 +254,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         }
         #endregion Interface IConsolePluginSupportsActivations
 
-        ~HeadsetPlugin()
+        ~AirAudioPlugin()
         {
             _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
         }
