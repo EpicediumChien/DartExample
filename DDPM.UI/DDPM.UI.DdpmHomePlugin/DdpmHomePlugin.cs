@@ -60,7 +60,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
     [Publisher(Name = "DDPM HomePlugin", Support = "Wistron DDPM Team")]
     [PluginRequires(Id = DDPM.SA.Common.IDs.Device_Manager_Plugin_ID, AllowDynamicResolving = true)]
     [ExcludeFromCodeCoverage]
-    public class DdpmHomePlugin : IThickClientHomePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin, IDisposable, IConsolePlugin
+    public class DdpmHomePlugin : IThickClientHomePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin, IDisposable
     {
         private const string PluginId = DDPMConstants.DdpmHomePluginId;
         private const string PluginName = "DDPM Home plugin";
