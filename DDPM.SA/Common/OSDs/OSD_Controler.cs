@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common;
 using System;
 using System.Diagnostics;
+using System.Threading;
 
 namespace DDPM.OSDs
 {
@@ -17,8 +18,8 @@ namespace DDPM.OSDs
         private StylusBatteryLowIWin StylusBatteryLowIWin;
         private MuteWin MuteWinx;
         private UnMuteWin UnMuteWinx;
-        private NumLockOffWin NumLockOffWinx;
-        private NumLockOnWin NumLockOnWinx;
+        private NumLockOffWin? NumLockOffWinx = null;
+        private NumLockOnWin? NumLockOnWinx = null;
         private ScrollLockOffWin ScrollLockOffWinx;
         private ScrollLockOnWin ScrollLockOnWinx;
         private StartRecordingWin StartRecordingWinx;
@@ -237,11 +238,14 @@ namespace DDPM.OSDs
         public void ScrollLockOff_CloseWindow()
         {
             if (ScrollLockOffWinx != null)
+            {
                 ScrollLockOffWinx.CloseWindow();
+            }
         }
 
         public void NumLockOn_ShowWindow(double Top, double Left)
         {
+            NumLockOnWinx = null;
             NumLockOnWinx = new NumLockOnWin();
 
             NumLockOnWinx.Top = Top;
@@ -252,11 +256,15 @@ namespace DDPM.OSDs
         public void NumLockOn_CloseWindow()
         {
             if (NumLockOnWinx != null)
+            {
                 NumLockOnWinx.CloseWindow();
+                NumLockOnWinx = null;
+            }
         }
 
         public void NumLockOff_ShowWindow(double Top, double Left)
         {
+            NumLockOffWinx = null;
             NumLockOffWinx = new NumLockOffWin();
 
             NumLockOffWinx.Top = Top;
@@ -267,7 +275,10 @@ namespace DDPM.OSDs
         public void NumLockOff_CloseWindow()
         {
             if (NumLockOffWinx != null)
+            {
                 NumLockOffWinx.CloseWindow();
+                NumLockOffWinx = null;
+            }
         }
 
         public void CapsLockOn_ShowWindow(double Top, double Left)
