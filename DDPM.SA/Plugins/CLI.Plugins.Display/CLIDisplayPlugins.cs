@@ -1081,7 +1081,7 @@ namespace DDPM.CLI.Plugins.Display
                     return new DeviceDataMouseResponse(index, device);
                 case "LogicalPen":
                     return new DeviceDataPenResponse(index, device);
-                case "LogicalDock":
+                case "LogicalDock"://20250306Elsa add for dock get servicetag
                     writelog("LogicalDock entry");
                     var dock = new DeviceDataDockResponse(index, device);
                     writelog("_devMgr.GetDockServiceTagForDock entry");
@@ -9132,12 +9132,12 @@ namespace DDPM.CLI.Plugins.Display
                         case "HEADSET":
                         case "PEN":
                         case "DOCK":
-                            if (!string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
+                            if (!string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))//20250306Elsa add for DeviceData filter guid
                             {
                                 var match= _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
                                 if (match != null)
                                 { 
-                                    recode_per = true;
+                                   recode_per = true;
                                    output += "\n" + GetDeviceDataPeripheralResponse(0, match).ToJson(); 
                                 }
                                 else
