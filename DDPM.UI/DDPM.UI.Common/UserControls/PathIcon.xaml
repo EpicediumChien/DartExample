@@ -116,6 +116,7 @@
             -->
         </Path>
 
+        <!-- -->
         <!-- Layer when it get the keyboard focused -->
         <Path Data="{Binding Path=PathData, RelativeSource={RelativeSource AncestorType=UserControl}}"
               Fill="#FF0077C0" d:Visibility="Visible"
@@ -124,12 +125,16 @@
             <Path.Style>
                 <Style TargetType="Path">
                     <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
+                    <!-- Robert_Lin 2025-3-5 PIMS-348214 [UI]Settings icon should stay white when active 
+                                    The keyboard focus color is a bug,  EDG would like to reomve the color change.
+                                    Comment-out the Trigger
+                                    -->
+                    <!--<Style.Triggers>
                         <DataTrigger Binding="{Binding IsKeyboardFocused, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="True">
                             <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
-                    </Style.Triggers>
+                    </Style.Triggers>-->
                 </Style>
             </Path.Style>
         </Path>

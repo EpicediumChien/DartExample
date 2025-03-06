@@ -21,7 +21,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
     [Publisher(Name = "DDPM WalkThroughPlugin", Support = "Wistron DDPM Team")]
     //[PluginRequires(Id = DDPM.SA.Common.IDs.Device_Manager_Plugin_ID, AllowDynamicResolving = true)]
     [ExcludeFromCodeCoverage]
-    public class WalkThroughPlugin : IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
+    public class WalkThroughPlugin : IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
     {
         private const string PluginId = DDPMConstants.WalkThroughPluginId;
         private const string PluginName = "DDPM WalkThrough Plugin";

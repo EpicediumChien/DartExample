@@ -21,7 +21,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
     [Descriptor(Description = Description)]
     [Publisher(Name = "DDPM SoundBarPlugin", Support = "Wistron DDPM Team")]
     [ExcludeFromCodeCoverage]
-    public class SoundBarPlugin : IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
+    public class SoundBarPlugin : IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
     {
         private const string PluginId = UI.Common.Constants.SoundBarPluginId;
         private const string PluginName = "SoundBarPlugin";

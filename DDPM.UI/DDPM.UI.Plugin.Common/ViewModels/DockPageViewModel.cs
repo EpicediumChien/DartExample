@@ -80,13 +80,11 @@ namespace DDPM.UI.Plugin.ViewModels
             _isEnableUpdate = false;
             foreach (FWUpdateInfo fWUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
             {
-                if (!fWUpdateInfo.IsDisplay)
+                if (!fWUpdateInfo.IsDisplay && 
+                    fWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "").Equals(instanceIDs))
                 {
-                    if (fWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "").Equals(instanceIDs))
-                    {
-                        _isEnableUpdate = true;
-                        break;
-                    }
+                    _isEnableUpdate = true;
+                    break;
                 }
             }
             return true;

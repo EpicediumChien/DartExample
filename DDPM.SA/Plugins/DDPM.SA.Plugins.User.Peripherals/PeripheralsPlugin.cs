@@ -2658,15 +2658,21 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                             ScanDevices();
 
-                            if (iPhysicalDevice.Type == DeviceType.PhysicalAudioDongle || iPhysicalDevice.Type == DeviceType.PhysicalDongle)
-                            {
-                                DeviceChangedEventArgs _EventArgs = new();
-                                _EventArgs.type = DeviceChangedType.Peripherals_UnPlug;
-                                _EventArgs.changedProperty = "PhysicalDeviceRemoved";
-                                OnNotify(_EventArgs);
-                            }
+                            //if (iPhysicalDevice.Type == DeviceType.PhysicalAudioDongle || iPhysicalDevice.Type == DeviceType.PhysicalDongle)
+                            //{
+                            //    DeviceChangedEventArgs _EventArgs = new();
+                            //    _EventArgs.type = DeviceChangedType.Peripherals_UnPlug;
+                            //    _EventArgs.changedProperty = "PhysicalDeviceRemoved";
+                            //    OnNotify(_EventArgs);
+                            //}
                         }
                     }
+                    DeviceChangedEventArgs _EventArgs = new()
+                    {
+                        type = DeviceChangedType.Peripherals_UnPlug,
+                        changedProperty = "PhysicalDeviceRemoved"
+                    };
+                    OnNotify(_EventArgs);
                 }
             }
         }

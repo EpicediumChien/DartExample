@@ -155,15 +155,59 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 }
             }));
         }
+
+        //[Unused] Robert_Lin 2025-3-5 - Unused - move code to Handle_BackArrowClicked()
         private void leftArrow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            IConsole? console = SettingsPlugin.PluginIoc.GetService<IConsole>();
-            var args = new EventManagerArgs();
-            bool isShow = true;
-            bool isEnabled = true;
-            args.Tag = new List<bool> { isShow, IsEnabled }; //true=Show, false=Hide
-            console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsIcon, this, args);
-            console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+            //Robert_Lin 2025-3-5 for the back arrow to go back to the "previous" page.
+            //PIMS-301474 Clicking back arrow didn't bring the UI back to the DDPM page previously, before the
+            // settings gear icon is selected
+            //PIMS-314264 The DDPM can not back to previous page after select the Back Arrow in top left.
+            //
+            //OLD:
+            //IConsole? console = SettingsPlugin.PluginIoc.GetService<IConsole>();
+            //var args = new EventManagerArgs();
+            //bool isShow = true;
+            //bool isEnabled = true;
+            //args.Tag = new List<bool> { isShow, IsEnabled }; //true=Show, false=Hide
+            //console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsIcon, this, args);
+            //console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+            //NEW:
+            IShowPluginManager? showPluginManager = SettingsPlugin.PluginIoc.GetService<IShowPluginManager>();
+            if (showPluginManager == null)
+                return;
+            if (showPluginManager.HideTakeoverPlugin())
+            {
+                //Request to show "AddDevice" icon on Masthead
+                IConsole? console = SettingsPlugin.PluginIoc.GetService<IConsole>();
+                if (console != null)
+                {
+                    var args = new EventManagerArgs();
+                    bool isShow = true;
+                    bool isEnabled = true;
+                    args.Tag = new List<bool> { isShow, IsEnabled }; //true=Show, false=Hide
+                    console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsIcon, this, args);
+                }
+            }
+        }
+        private void Handle_BackArrowClicked()
+        {
+            IShowPluginManager? showPluginManager = SettingsPlugin.PluginIoc.GetService<IShowPluginManager>();
+            if (showPluginManager == null)
+                return;
+            if (showPluginManager.HideTakeoverPlugin())
+            {
+                //Request to show "AddDevice" icon on Masthead
+                IConsole? console = SettingsPlugin.PluginIoc.GetService<IConsole>();
+                if (console != null)
+                {
+                    var args = new EventManagerArgs();
+                    bool isShow = true;
+                    bool isEnabled = true;
+                    args.Tag = new List<bool> { isShow, IsEnabled }; //true=Show, false=Hide
+                    console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsIcon, this, args);
+                }
+            }
         }
         //0614 將按鈕改成UXTextBlock，事件也變更，讓風格更像figma，不影響功能作動
         private void GeneralButton_Click(object sender, MouseButtonEventArgs e)
@@ -233,6 +277,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 DdpmCommonHelper.WriteUILog($"DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM == false");
         }
 
+        //Unused, can be removed (Robert_Lin 2025-3-5)
         private void leftArrow_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Enter)
@@ -295,6 +340,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 e.Handled = true;
                 vm.SetSelected(4);
             }
+        }
+
+        private void backArrowButton_Click(object sender, RoutedEventArgs e)
+        {
+            Handle_BackArrowClicked();
         }
     }
 }
