@@ -34,7 +34,6 @@ namespace DDPM.UI.Common
             string str = resManager.GetString(key, DdpmCultureMap.MappedCultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
 #endif
 
-            //This statement is required
             return System.Text.RegularExpressions.Regex.Unescape(str);
         }
         //private static string GetString(string key, string culture = "en-US")
@@ -523,6 +522,7 @@ namespace DDPM.UI.Common
         public static readonly string WalkThroughPen_Sub0 = GetString("WalkThroughPen_Sub.0");
         public static readonly string WalkThroughPen_Main1 = GetString("WalkThroughPen_Main.1");
         public static readonly string WalkThroughPen_Sub1 = GetString("WalkThroughPen_Sub.1");
+        public static readonly string WalkThroughPen_Sub1_1 = GetString("WalkThroughPen_Sub.1_1");
         public static readonly string WalkThroughPen_Main2 = GetString("WalkThroughPen_Main.2");
         public static readonly string WalkThroughPen_Sub2 = GetString("WalkThroughPen_Sub.2");
         public static readonly string WalkThroughWebCamWB3023_Main0 = GetString("WalkThroughWebCamWB3023_Main.0");

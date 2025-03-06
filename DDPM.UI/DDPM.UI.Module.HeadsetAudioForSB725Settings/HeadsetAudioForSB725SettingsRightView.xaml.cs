@@ -25,18 +25,18 @@ namespace DDPM.UI.Module.HeadsetAudioForSB725Settings
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly HeadsetViewModel _vm;
+        private readonly AirAudioViewModel _vm;
 
         /// <summary>
         /// AirAudioViewModel data in
         /// </summary>
         /// <param name="vm">ViewModel</param>
-        public HeadsetAudioForSB725SettingsRightView(HeadsetViewModel vm)
+        public HeadsetAudioForSB725SettingsRightView(AirAudioViewModel vm)
         {
             InitializeComponent();
-            var converter = (CollaborationCheckedToVisibilityConverter)Resources["CollaborationCheckedToVisibilityConverter"];
+            //var converter = (CollaborationCheckedToVisibilityConverter)Resources["CollaborationCheckedToVisibilityConverter"];
             _vm = vm;
-            converter.ViewModel = _vm;
+            //converter.ViewModel = _vm;
 
             InitializeAsync();
             _vm!.AirAudioChanged += AirAudioChanged;
@@ -296,38 +296,23 @@ namespace DDPM.UI.Module.HeadsetAudioForSB725Settings
                 switch (currentNode.Name)
                 {
                     case "Node1":
-                        if(_vm.isAirAudio==false)
-                            _vm._deviceManager.SetBand1GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node1Text.Text)).Wait();
-                        else
-                            _vm._deviceManager.SetAirAudioBand1GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node1Text.Text)).Wait();
+                        _vm._deviceManager.SetAirAudioBand1GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node1Text.Text)).Wait();
                         break;
 
                     case "Node2":
-                        if (_vm.isAirAudio == false)
-                            _vm._deviceManager.SetBand2GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node2Text.Text)).Wait();
-                        else
-                            _vm._deviceManager.SetAirAudioBand2GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node2Text.Text)).Wait();
+                         _vm._deviceManager.SetAirAudioBand2GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node2Text.Text)).Wait();
                         break;
 
                     case "Node3":
-                        if (_vm.isAirAudio == false)
-                            _vm._deviceManager.SetBand3GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node3Text.Text)).Wait();
-                        else
-                            _vm._deviceManager.SetAirAudioBand3GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node3Text.Text)).Wait();
+                         _vm._deviceManager.SetAirAudioBand3GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node3Text.Text)).Wait();
                         break;
 
                     case "Node4":
-                        if (_vm.isAirAudio == false)
-                            _vm._deviceManager.SetBand4GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node4Text.Text)).Wait();
-                        else
-                            _vm._deviceManager.SetAirAudioBand4GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node4Text.Text)).Wait();
+                        _vm._deviceManager.SetAirAudioBand4GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node4Text.Text)).Wait();
                         break;
 
                     case "Node5":
-                        if (_vm.isAirAudio == false)
-                            _vm._deviceManager.SetBand5GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node5Text.Text)).Wait();
-                        else
-                            _vm._deviceManager.SetAirAudioBand5GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node5Text.Text)).Wait();
+                        _vm._deviceManager.SetAirAudioBand5GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node5Text.Text)).Wait();
                         break;
                 }
 

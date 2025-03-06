@@ -23,6 +23,7 @@ using System.Linq;
 using System.Runtime.Intrinsics.X86;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using VcpCore.Common;
 using Windows.Foundation.Collections;
 using static DDPM.SA.Common.ICLICommandTable;
@@ -973,7 +974,7 @@ namespace DDPM.CLI.Plugins.Display
             switch (g.LogicalDeviceType)
             {
                 case "LogicalHeadset":
-                    //cli_Response2.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(g.ID.ToString()).Result ?? "N/A";
+                    cli_Response2.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(g.ID.ToString()).Result ?? "N/A";
                     cli_Response2.Connectiontype = get_headsetconnection_type(_devMgr.GetConnectionTypeAsync(g.ID.ToString()).Result);
                     break;
                 case "LogicalWebcam":
@@ -1050,10 +1051,10 @@ namespace DDPM.CLI.Plugins.Display
                 case "LogicalHeadset":
                     writelog("LogicalHeadset entry");
                     var audio = new DeviceDataAudioResponse(index, device);
-
+                    writelog("_devMgr.GetHeadsetSerialNumber entry");
+                    audio.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(guid).Result ?? "N/A";                    
                     writelog("_devMgr.GetConnectionTypeAsync entry");
                     audio.Connectiontype = get_headsetconnection_type(_devMgr.GetConnectionTypeAsync(guid).Result);
-                    //audio.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(guid).Result ?? "N/A";
                     writelog("_devMgr.GetIsANCSupportedAsync entry");
                     if (_devMgr.GetIsANCSupportedAsync(guid).Result)
                     {
@@ -1080,8 +1081,13 @@ namespace DDPM.CLI.Plugins.Display
                     return new DeviceDataMouseResponse(index, device);
                 case "LogicalPen":
                     return new DeviceDataPenResponse(index, device);
-                case "LogicalDock":
-                    return new DeviceDataDockResponse(index, device);
+                case "LogicalDock"://20250306Elsa add for dock get servicetag
+                    writelog("LogicalDock entry");
+                    var dock = new DeviceDataDockResponse(index, device);
+                    writelog("_devMgr.GetDockServiceTagForDock entry");
+                    dock.ServiceTag = _devMgr.GetDockServiceTagForDock(guid).Result ?? "N/A";
+                    return dock;
+                    //return new DeviceDataDockResponse(index, device);
                 default:
                     return new PeripheralResponse(index, device);
             }
@@ -8857,7 +8863,7 @@ namespace DDPM.CLI.Plugins.Display
             _AllInfoMonitors = await devMgr.GetMonitors();
             _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
             _deviceInfoFinal = GetDDeviceIndeies(commandLineInput, _deviceinfo);
-
+    
             int index = 0;
 
             if (commandLineInput.Options.Count > 0)
@@ -9126,15 +9132,31 @@ namespace DDPM.CLI.Plugins.Display
                         case "HEADSET":
                         case "PEN":
                         case "DOCK":
-                            foreach (var device in _deviceInfoFinal)
+                            if (!string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))//20250306Elsa add for DeviceData filter guid
                             {
-                                if (device.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    index++;
-                                    recode_per = true;
-                                    output += "\n" + GetDeviceDataPeripheralResponse(index, device).ToJson();
+                                var match= _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (match != null)
+                                { 
+                                   recode_per = true;
+                                   output += "\n" + GetDeviceDataPeripheralResponse(0, match).ToJson(); 
                                 }
+                                else
+                                {
+                                   output += "\n" + "Invalid GUID.";
+                                }                                
                             }
+                            else
+                            {
+                                foreach (var device in _deviceInfoFinal)
+                                {
+                                    if (device.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        index++;
+                                        recode_per = true;
+                                        output += "\n" + GetDeviceDataPeripheralResponse(index, device).ToJson();
+                                    }
+                                }
+                            } 
                             break;
                         default:
                             break;

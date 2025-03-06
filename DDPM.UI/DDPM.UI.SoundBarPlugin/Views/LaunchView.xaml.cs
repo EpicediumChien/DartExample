@@ -7,6 +7,7 @@ using DDPM.UI.Module.SpeakerAudioSettings;
 using DDPM.UI.Module.SpeakerInteractions;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
@@ -43,6 +44,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
 
         public LaunchView()
         {
+            DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] LaunchView Constructor ... in ");
             _vm = (SoundBarViewModel?)SoundBarPlugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
             if (_vm != null)
             {
@@ -68,6 +70,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                     DataContext = _vm;
                     _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
                     BuildModuleGroups();
+                    InitializeButtonImage();
                     //txtUnpair.Text = Unpair;
                     //txtRestore.Text = Restore;
                     ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
@@ -82,29 +85,51 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                     Unloaded += LaunchView_UnLoadedStatus;
                 }
             }
+            DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] LaunchView Constructor ... end ");
         }
 
-        private async void LaunchView_UnLoadedStatus(object sender, RoutedEventArgs e)
+        private void LaunchView_UnLoadedStatus(object sender, RoutedEventArgs e)
         {
-            if (_vm == null) return;
-            _vm.UloadSpeaker_DTPNotify();
-            if (DdpmCommonHelper.DeviceManagerSA != null)
+            DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] LaunchView_UnLoadedStatus ... in ");
+            if (_vm == null)
             {
-                DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;              
-                Loaded -= LaunchView_LoadedStatus;
-                Unloaded -= LaunchView_UnLoadedStatus;
-                DdpmCommonHelper.WriteUILog($"[SoundBar] ~LaunchView_UnLoadedStatus");
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] ~LaunchView_UnLoadedStatus _vm is null");
+                return;
+            }
+            try
+            {
+                _vm.UloadSpeaker_DTPNotify();
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+                    Loaded -= LaunchView_LoadedStatus;
+                    Unloaded -= LaunchView_UnLoadedStatus;
+                    DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] -= ImageUpdate、LaunchView_LoadedStatus、LaunchView_UnLoadedStatus");
+                }
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] ~LaunchView_UnLoadedStatus DeviceManagerSA is null");
+                }
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] LaunchView_UnLoadedStatus ... out ");
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] LaunchView_UnLoadedStatus Exception = {ex.Message}");
             }
         }
 
-        private async void LaunchView_LoadedStatus(object sender, RoutedEventArgs e)
+        private void LaunchView_LoadedStatus(object sender, RoutedEventArgs e)
         {
-            if (_vm == null) return;
+            DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] LaunchView_LoadedStatus ... in ");
+            if (_vm == null)
+            {
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] ~LaunchView_LoadedStatus _vm is null");
+                return;
+            }
 
             try
             {
                 //await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
-                DdpmCommonHelper.WriteUILog($"[SoundBar] LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
                 if (!_vm.IsRestoreEnable)
                 {
                     btnRestore.Visibility = Visibility.Visible;
@@ -113,11 +138,11 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                 {
                     btnRestore.Visibility = Visibility.Collapsed;
                 }
-                DdpmCommonHelper.WriteUILog($"[SoundBar] LaunchView_LoadedStatus IsRestoreEnable Check Done");
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] LaunchView_LoadedStatus ... out ");
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"[SoundBar] LaunchView_LoadedStatus Exception = {ex.Message}");
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] LaunchView_LoadedStatus Exception = {ex.Message}");
             }
         }
 
@@ -129,8 +154,11 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
 
         private void LaunchView_Loaded(object sender, RoutedEventArgs e)
         {
+            DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] LaunchView LaunchView_Loaded ... in ");
             if (!_vm!.IsDTPReady)
                 DdpmCommonHelper.MyConsole!.ShowHomePage();
+
+            DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] LaunchView LaunchView_Loaded ... out ");
         }
 
         #region Init for Modules
@@ -140,40 +168,46 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         /// </summary>
         private void BuildModuleGroups()
         {
-            List<ModuleGroup> groups = new List<ModuleGroup>();
-            ModuleGroup moduleGroup;
+            DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] BuildModuleGroups ... in ");
+            try
+            {
+                List<ModuleGroup> groups = new List<ModuleGroup>();
+                ModuleGroup moduleGroup;
 
-            moduleGroup = new ModuleGroup()
-            {
-                GroupName = AudioPreset,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_AudioPreset.png"),
-                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.SpeakerPhonePreset)
-            };
-            moduleGroup.AddHeader(AudioPreset, new SpeakerAudioPresetModule(_vm!));
-            groups.Add(moduleGroup);
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = AudioPreset,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_AudioPreset.png"),
+                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.SpeakerPhonePreset)
+                };
+                moduleGroup.AddHeader(AudioPreset, new SpeakerAudioPresetModule(_vm!));
+                groups.Add(moduleGroup);
 
-            moduleGroup = new ModuleGroup()
-            {
-                GroupName = AudioSettings,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_AudioSettings.png"),
-                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.AudioSettings)
-            };
-            moduleGroup.AddHeader(AudioSettings, new SpeakerAudioSettingsModule(_vm!));
-            groups.Add(moduleGroup);
-            
-            moduleGroup = new ModuleGroup()
-            {
-                GroupName = Interactions,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_Interactions.png"),
-                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.SpeakerPhoneInteractions)
-            };
-            moduleGroup.AddHeader(Interactions, new SpeakerInteractionsModule(_vm!));
-            groups.Add(moduleGroup);
-            if (_vm?.CurrentDeviceInfo?.ModelNumber == "SB725") 
-            {
-                groups.RemoveAt(groups.Count - 1);
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = AudioSettings,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_AudioSettings.png"),
+                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.AudioSettings)
+                };
+                moduleGroup.AddHeader(AudioSettings, new SpeakerAudioSettingsModule(_vm!));
+                groups.Add(moduleGroup);
+
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Interactions,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_Interactions.png"),
+                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.SpeakerPhoneInteractions)
+                };
+                moduleGroup.AddHeader(Interactions, new SpeakerInteractionsModule(_vm!));
+                groups.Add(moduleGroup);
+
+                _vm!.ModuleGroups = groups;
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] BuildModuleGroups ... out ");
             }
-            _vm!.ModuleGroups = groups;
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] BuildModuleGroups Exception = {ex.Message}");
+            }
         }
 
         private void ArrowLeftImageUpdate(string resourceKey)
@@ -184,6 +218,39 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                 ArrowLeft.Source = (BitmapImage)Application.Current.Resources[resourceKey];
             }
         }
+
+        private void InitializeButtonImage()
+        {
+            try
+            {
+                switch (_vm!.Model.ToUpper())
+                {
+                    case "SP3022":
+                        RecT.Height = 165;
+                        RecB.Height = 170;
+                        RecL.Width = 50;
+                        RecR.Width = 50;
+                        break;
+                    case "SB522A":
+                        RecT.Height = 220;
+                        RecB.Height = 220;
+                        RecL.Width = 30;
+                        RecR.Width = 30;
+                        break;
+                    default:
+                        RecT.Height = 165;
+                        RecB.Height = 170;
+                        RecL.Width = 50;
+                        RecR.Width = 50;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] InitializeButtonImage Exception = {ex.Message}");
+            }
+        }
+
         #endregion Init for Modules
 
         #region Vbar
@@ -194,33 +261,49 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         /// <param name="newItem"></param>
         private void OnVbarItemClicked(VbarItem newItem)
         {
-            if (newItem.Id == _vm!.VbarSelectedIndex) { return; }
-            _vm.ChangeImage(_vm.Model, "Default");
-            if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm.VbarSelectedIndex + 1])
+            DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] OnVbarItemClicked ... in ");
+            try
             {
-                _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
-                _vm.RightFrameWidthTo = _rightFrameWidth[newItem.Id + 1];
+                if (newItem.Id == _vm!.VbarSelectedIndex) { return; }
+                if(_vm.Model == "SB522A" && newItem.Id == 2)
+                {
+                    _vm.ChangeImage(_vm.Model, "NoLight");
+                }
+                else
+                {
+                    _vm.ChangeImage(_vm.Model, "Default");
+                }
+                if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm.VbarSelectedIndex + 1])
+                {
+                    _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
+                    _vm.RightFrameWidthTo = _rightFrameWidth[newItem.Id + 1];
 
-                InvokeGotoTwoViewModeAnimation();
-                InvokeEnlargeAnimation();
+                    InvokeGotoTwoViewModeAnimation();
+                    InvokeEnlargeAnimation();
+                }
+                if (newItem.Id == 0)
+                {
+                    InvokeShrinkAnimation();
+                }
+                else if (_vm.VbarSelectedIndex == 0)
+                {
+                    InvokeEnlargeAnimation();
+                }
+                _vm.VbarSelectedIndex = newItem.Id;
+                if (_vm.RightViewHeaders != null)
+                {
+                    rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
+                }
+                btnRestore.Visibility = Visibility.Collapsed;
+                //btnUnpair.Visibility = Visibility.Collapsed;
+                _vm.SetLadningMode(false);
+                _vm.SelectVBar();
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] OnVbarItemClicked ... out ");
             }
-            if (newItem.Id == 0)
+            catch (Exception ex)
             {
-                InvokeShrinkAnimation();
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] OnVbarItemClicked Exception = {ex.Message}");
             }
-            else if (_vm.VbarSelectedIndex == 0)
-            {
-                InvokeEnlargeAnimation();
-            }
-            _vm.VbarSelectedIndex = newItem.Id;
-            if (_vm.RightViewHeaders != null)
-            {
-                rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
-            }
-            btnRestore.Visibility = Visibility.Collapsed;
-            //btnUnpair.Visibility = Visibility.Collapsed;
-            _vm.SetLadningMode(false);
-            _vm.SelectVBar();
         }
 
         #endregion Vbar
@@ -239,34 +322,48 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
 
         private void InvokeGotoTwoViewModeAnimation()
         {
-            Dispatcher.Invoke(new Action(() =>
+            try
             {
-                Storyboard sb = (Storyboard)this.FindResource("StoryGotoTwoView");
-                if (sb != null)
+                Dispatcher.Invoke(new Action(() =>
                 {
-                    sb.Completed += (o, s) =>
+                    Storyboard sb = (Storyboard)this.FindResource("StoryGotoTwoView");
+                    if (sb != null)
                     {
-                    };
+                        sb.Completed += (o, s) =>
+                        {
+                        };
 
-                    sb.Begin();
-                }
-            }));
+                        sb.Begin();
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] InvokeGotoTwoViewModeAnimation Exception = {ex.Message}");
+            }
         }
 
         private void InvokeShrinkAnimation()
         {
-            Dispatcher.Invoke(new Action(() =>
+            try
             {
-                Storyboard sb = (Storyboard)this.FindResource("StoryShrink");
-                if (sb != null)
+                Dispatcher.Invoke(new Action(() =>
                 {
-                    sb.Completed += (o, s) =>
+                    Storyboard sb = (Storyboard)this.FindResource("StoryShrink");
+                    if (sb != null)
                     {
-                    };
+                        sb.Completed += (o, s) =>
+                        {
+                        };
 
-                    sb.Begin();
-                }
-            }));
+                        sb.Begin();
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] InvokeShrinkAnimation Exception = {ex.Message}");
+            }
         }
 
         private void InvokeEnlargeAnimation()
@@ -289,124 +386,160 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
 
         private void Unpair_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (_vm!.ConnectionType == "Dongle")
+            try
             {
-                //UnpairModalDialog unpairModalDialog = new(eDeviceCategory.KB);
-                UnpairModalDialog unpairModalDialog = new(eDeviceCategory.Soundbar);
-                Window parentWindow = Window.GetWindow(this);
-                if (parentWindow != null)
+                if (_vm!.ConnectionType == "Dongle")
                 {
-                    unpairModalDialog.Owner = parentWindow;
-                }
-
-                bool? dialogResult = unpairModalDialog.ShowDialog();
-                if (dialogResult == true)
-                {
-                    _vm.Unpair();
-                }
-            }
-            else
-            {
-                Version win10Version = new(10, 0);
-                Version currentVersion = Environment.OSVersion.Version;
-#pragma warning disable CA1416
-                if (currentVersion >= win10Version)
-                {
-                    Process.Start(new ProcessStartInfo("ms-settings:bluetooth")
+                    //UnpairModalDialog unpairModalDialog = new(eDeviceCategory.KB);
+                    UnpairModalDialog unpairModalDialog = new(eDeviceCategory.Soundbar);
+                    Window parentWindow = Window.GetWindow(this);
+                    if (parentWindow != null)
                     {
-                        UseShellExecute = true
-                    });
+                        unpairModalDialog.Owner = parentWindow;
+                    }
+
+                    bool? dialogResult = unpairModalDialog.ShowDialog();
+                    if (dialogResult == true)
+                    {
+                        _vm.Unpair();
+                    }
                 }
                 else
                 {
-                    Process.Start(new ProcessStartInfo("control", "bthprops.cpl")
+                    Version win10Version = new(10, 0);
+                    Version currentVersion = Environment.OSVersion.Version;
+#pragma warning disable CA1416
+                    if (currentVersion >= win10Version)
                     {
-                        UseShellExecute = true
-                    });
-                }
+                        Process.Start(new ProcessStartInfo("ms-settings:bluetooth")
+                        {
+                            UseShellExecute = true
+                        });
+                    }
+                    else
+                    {
+                        Process.Start(new ProcessStartInfo("control", "bthprops.cpl")
+                        {
+                            UseShellExecute = true
+                        });
+                    }
 #pragma warning restore CA1416
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] Unpair_Click Exception = {ex.Message}");
             }
         }
 
         private void Mainframe_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (_vm!.VbarSelectedIndex == -1) { return; }
-            _vm.UpdateResetToDefault();
-            if (!_vm.IsRestoreEnable)
+            try
             {
-                btnRestore.Visibility = Visibility.Visible;
+                if (_vm!.VbarSelectedIndex == -1) { return; }
+                _vm.UpdateResetToDefault();
+                if (!_vm.IsRestoreEnable)
+                {
+                    btnRestore.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    btnRestore.Visibility = Visibility.Collapsed;
+                }
+                _vm.ChangeImage(_vm.Model, "Default");
+                _vm.RightFrameWidthTo = 0;
+                _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
+                InvokeGotoTwoViewModeAnimation();
+                if (_vm.VbarSelectedIndex == 0) { InvokeEnlargeAnimation(); }
+                _vm.VbarSelectedIndex = -1;
+                _vm.SetLadningMode(true);
+                _vm.SelectVBar();
             }
-            else
+            catch (Exception ex)
             {
-                btnRestore.Visibility = Visibility.Collapsed;
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] Mainframe_MouseLeftButtonDown Exception = {ex.Message}");
             }
-            _vm.ChangeImage(_vm.Model, "Default");
-            _vm.RightFrameWidthTo = 0;
-            _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
-            InvokeGotoTwoViewModeAnimation();
-            if (_vm.VbarSelectedIndex == 0) { InvokeEnlargeAnimation(); }
-            _vm.VbarSelectedIndex = -1;
-            _vm.SetLadningMode(true);
-            _vm.SelectVBar();
         }
 
         private void Restore_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            RestoreModalDialog restoreModalDialog = new();
-            Window parentWindow = Window.GetWindow(this);
-            if (parentWindow != null)
+            try
             {
-                restoreModalDialog.Owner = parentWindow;
-            }
+                RestoreModalDialog restoreModalDialog = new();
+                Window parentWindow = Window.GetWindow(this);
+                if (parentWindow != null)
+                {
+                    restoreModalDialog.Owner = parentWindow;
+                }
 
-            bool? dialogResult = restoreModalDialog.ShowDialog();
-            if (dialogResult == true)
+                bool? dialogResult = restoreModalDialog.ShowDialog();
+                if (dialogResult == true)
+                {
+                    _vm!.RestoreToDefault();
+                    btnRestore.Visibility = Visibility.Collapsed;
+                    //((Border)sender).Visibility = Visibility.Collapsed;
+                }
+            }
+            catch (Exception ex)
             {
-                _vm!.RestoreToDefault();
-                btnRestore.Visibility = Visibility.Collapsed;
-                //((Border)sender).Visibility = Visibility.Collapsed;
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] Restore_Click Exception = {ex.Message}");
             }
         }
 
         private void BatteryIndicator_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (_vm!.ConnectionType == "WiredAudio")
+            DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] BatteryIndicator_MouseEnter ... in");
+            try
             {
-                return;
-            }
-            if (_vm!.ConnectionType == "Dongle")
-            {
-                DongleConnection.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                string hostName = Dns.GetHostName();
-                if (_vm.VisiblePairedHostName1 == hostName)
+                if (_vm!.ConnectionType == "WiredAudio")
                 {
-                    txt1.Style = ConnectionStyle1;
-                    txt2.Style = ConnectionStyle2;
-                    imgBL1.Source = img1;
-                    imgBL2.Source = img2;
-                    txtSystemName1.Style = ConnectionStyle1;
-                    txtSystemName2.Style = ConnectionStyle2;
+                    return;
+                }
+                if (_vm!.ConnectionType == "Dongle")
+                {
+                    DongleConnection.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    txt1.Style = ConnectionStyle2;
-                    txt2.Style = ConnectionStyle1;
-                    imgBL1.Source = img2;
-                    imgBL2.Source = img1;
-                    txtSystemName1.Style = ConnectionStyle2;
-                    txtSystemName2.Style = ConnectionStyle1;
+                    string hostName = Dns.GetHostName();
+                    if (_vm.VisiblePairedHostName1 == hostName)
+                    {
+                        txt1.Style = ConnectionStyle1;
+                        txt2.Style = ConnectionStyle2;
+                        imgBL1.Source = img1;
+                        imgBL2.Source = img2;
+                        txtSystemName1.Style = ConnectionStyle1;
+                        txtSystemName2.Style = ConnectionStyle2;
+                    }
+                    else
+                    {
+                        txt1.Style = ConnectionStyle2;
+                        txt2.Style = ConnectionStyle1;
+                        imgBL1.Source = img2;
+                        imgBL2.Source = img1;
+                        txtSystemName1.Style = ConnectionStyle2;
+                        txtSystemName2.Style = ConnectionStyle1;
+                    }
+                    BLConnection.Visibility = Visibility.Visible;
                 }
-                BLConnection.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] BatteryIndicator_MouseEnter Exception = {ex.Message}");
             }
         }
 
         private void BatteryIndicator_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            DongleConnection.Visibility = Visibility.Collapsed;
-            BLConnection.Visibility = Visibility.Collapsed;
+            try
+            {
+                DongleConnection.Visibility = Visibility.Collapsed;
+                BLConnection.Visibility = Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] BatteryIndicator_MouseLeave Exception = {ex.Message}");
+            }
         }
 
         private void LargeImage_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -415,9 +548,16 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
 
         private void PushBack(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (sender is Border)
+            try
             {
-                Mainframe_MouseLeftButtonDown(this, e);
+                if (sender is Border)
+                {
+                    Mainframe_MouseLeftButtonDown(this, e);
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] PushBack Exception = {ex.Message}");
             }
         }
 

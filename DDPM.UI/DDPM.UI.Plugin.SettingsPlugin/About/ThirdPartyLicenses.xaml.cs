@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Resources;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
@@ -19,6 +20,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -30,17 +32,19 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     /// <summary>
     /// Interaction logic for ThirdPartyLicenses.xaml
     /// </summary>
-    public partial class ThirdPartyLicenses : Window, INotifyPropertyChanged
+    public partial class ThirdPartyLicenses : Window //, INotifyPropertyChanged
     {
         private ResourceManager resManager = ThirdPartyLicense.ResourceManager;
         private ResourceManager resManager_NKVM = ThirdPartyLicense_NKVM.ResourceManager;
         private ILog? _log;
-        public ObservableCollection<UI_ThirdPartyLicenses> ThirdPartyLicensesList { get; set; }
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+
+        //public ObservableCollection<UI_ThirdPartyLicenses> ThirdPartyLicensesList { get; set; }
+        public List<UI_ThirdPartyLicenses> ThirdPartyLicensesList { get; set; }
+        //public event PropertyChangedEventHandler PropertyChanged;
+        //protected void OnPropertyChanged(string propertyName)
+        //{
+        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //}
         public ThirdPartyLicenses()
         {
             _log = SettingsPlugin.PluginIoc?.GetService<ILog>();
@@ -53,7 +57,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private void UXWindow_Loaded(object sender, RoutedEventArgs e)
         {
             _log?.Info("ThirdPartyLicenses UXWindow_Loaded start");
-            ThirdPartyLicensesList = new ObservableCollection<UI_ThirdPartyLicenses>();
+            //ThirdPartyLicensesList = new ObservableCollection<UI_ThirdPartyLicenses>();
+            ThirdPartyLicensesList = new();
             ResourceSet resourceSet = resManager.GetResourceSet(CultureInfo.CurrentCulture, true, true);
             ResourceSet resource_NKVMSet = resManager_NKVM.GetResourceSet(CultureInfo.CurrentCulture, true, true);
             int resourceCount = 0;
@@ -73,8 +78,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     });
 
                     //PIMS-313975
-                    TextToCopy += Title;
-                    TextToCopy += (System.Environment.NewLine + System.Environment.NewLine + Content + System.Environment.NewLine);
+                    //TextToCopy += Title;
+                    //TextToCopy += (System.Environment.NewLine + System.Environment.NewLine + Content + System.Environment.NewLine);
                 }
             }
             resourceCount = 0;
@@ -94,13 +99,37 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     });
 
                     //PIMS-313975
-                    TextToCopy += Title;
-                    TextToCopy += (System.Environment.NewLine + System.Environment.NewLine + Content + System.Environment.NewLine);
+                    //TextToCopy += Title;
+                    //TextToCopy += (System.Environment.NewLine + System.Environment.NewLine + Content + System.Environment.NewLine);
                 }
             }
             _log?.Info($"ThirdPartyLicenses ThirdPartyLicensesList.Count : {ThirdPartyLicensesList.Count}");
-            OnPropertyChanged("TextToCopy");
-            OnPropertyChanged("ThirdPartyLicensesList");
+            //OnPropertyChanged("TextToCopy");
+            //OnPropertyChanged("ThirdPartyLicensesList");
+
+            FlowDocument doc = new();
+            Paragraph paragraph = new()
+            {
+                LineHeight = 24
+            };
+            foreach (var item in ThirdPartyLicensesList)
+            {
+                Run run1 = new($"{item.Title}")
+                {
+                    FontSize = 20,
+                    FontWeight = FontWeights.Bold
+                };
+                Run run2 = new($"\n{item.Content}\n")
+                {
+                    FontSize = 16,
+                    FontWeight = FontWeights.Normal
+                };
+                paragraph.Inlines.Add(run1);
+                paragraph.Inlines.Add(run2);
+            }
+            doc.Blocks.Add(paragraph);
+            txtThirdPartyLicense.Document = doc;
+            txtThirdPartyLicense.Foreground = DdpmCommonHelper.isDarkMode() ? new SolidColorBrush(Color.FromRgb(0xB6, 0xB6, 0xB6)) : Brushes.Black;
             _log?.Info("ThirdPartyLicenses UXWindow_Loaded done");
         }
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
@@ -108,16 +137,16 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             this.Close();
         }
 
-        private string _textToCopy = string.Empty;
-        public string TextToCopy
-        {
-            get => _textToCopy;
-            set
-            {
-                _textToCopy = value;
-                //OnPropertyChanged("TextToCopy");
-            }
-        }
+        //private string _textToCopy = string.Empty;
+        //public string TextToCopy
+        //{
+        //    get => _textToCopy;
+        //    set
+        //    {
+        //        _textToCopy = value;
+        //        //OnPropertyChanged("TextToCopy");
+        //    }
+        //}
 
         private void Window_Deactivated(object sender, EventArgs e)
         {
@@ -128,6 +157,24 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             catch (Exception ex)
             {
                 _log?.Error("Window Deactivated already", ex);
+            }
+        }
+
+        private void txtThirdPartyLicense_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.A && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                txtThirdPartyLicense.SelectAll();
+                e.Handled = true;
+            }
+        }
+
+        private void txtThirdPartyLicense_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            if (sender is System.Windows.Controls.RichTextBox rtb)
+            {
+                var menuItem = rtb.ContextMenu.Items[0] as MenuItem;
+                menuItem!.IsEnabled = !rtb.Selection.IsEmpty;
             }
         }
     }

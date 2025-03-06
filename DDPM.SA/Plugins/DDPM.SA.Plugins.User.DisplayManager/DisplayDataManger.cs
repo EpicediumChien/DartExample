@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VcpCore.Common;
+﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
-using static VcpCore.Common.User32;
-using DDPM.SA.Common.Settings;
-using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
-using Microsoft.Toolkit.Uwp.Notifications;
-using System.Diagnostics;
+using System;
+using System.Collections.Generic;
+using VcpCore.Common;
 
 namespace DDPM.SA.Plugins.User.DisplayManager
 {
@@ -210,8 +203,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
                                                      x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (mi != -1 && 
-                    _displayData[mi].InputSourceList != null && 
+                if (mi != -1 &&
+                    _displayData[mi].InputSourceList != null &&
                     _displayData[mi].InputSourceList.Count > 0)
                 {
                     inputSourceList = _displayData[mi].InputSourceList;
@@ -261,8 +254,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
                                                      x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (mi != -1 && 
-                    _displayData[mi].USBList != null && 
+                if (mi != -1 &&
+                    _displayData[mi].USBList != null &&
                     _displayData[mi].USBList.Count > 0)
                 {
                     usbList = _displayData[mi].USBList;
@@ -348,6 +341,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             return false;
         }
+
         public bool GetMonitorDisplayPropertiesInfo(MonitorInfo monitorInfo, out DisplayPropertiesInfo displayPropertiesInfo)
         {
             if (monitorInfo != null)
@@ -402,6 +396,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return false;
         }
+
         public bool GetMonitorGamingDisplayPropertiesInfo(MonitorInfo monitorInfo, out GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo)
         {
             if (monitorInfo != null)

@@ -148,8 +148,8 @@ namespace DDPM.SA.Common.UpdateProgressPage
         {
             InitializeComponent();
             DataContext = this;
-            //_Logs = logs;
-            //_Logs?.DebugMsg_1($"[UpdateProgress] UpdateProgress go");
+            _Logs = logs;
+            _Logs?.DebugMsg_1($"[UpdateProgress] UpdateProgress go");
             GetSystemTheme();
         }
 

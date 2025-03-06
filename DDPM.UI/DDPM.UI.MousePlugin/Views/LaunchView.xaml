@@ -244,7 +244,10 @@
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
               <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal" Margin="19,18,0,0">
+                  <!-- Robert_Lin PIMS-348226 [UI]Home Page - Dongle/Wireless Receiver icon is not left-aligned 
+                  Change Margin="19,18,0,0" to Margin="16,18,0,0"
+                  -->
+               <StackPanel Orientation="Horizontal" Margin="16,18,0,0">
                   <ContentControl Width="16" Height="16" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
                   <!-- <Image Margin="0" Width="16" Height="16" Source="/DDPM.UI.Resources;component/Resources/Images/Dongle.png" /> -->
                   <!-- Elsa 20250107 For PIMS [PIMS-334377] add Width="200" TextTrimming="CharacterEllipsis" -->
