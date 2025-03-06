@@ -16,7 +16,6 @@ using VcpCore.Common;
 using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHomePageViewModel;
 using DDPM.SA.Common.Settings;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
