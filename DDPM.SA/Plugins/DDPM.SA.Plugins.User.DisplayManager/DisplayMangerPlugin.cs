@@ -3047,6 +3047,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             //Bruce 0820
             GamingChangeEventHandle(_VCPchangedEventArgs);
+            if (e.vcpcode.Equals("EA"))
+            {
+                GetUSBCPrioritization(_VCPchangedEventArgs.monitor);
+            }
+            GetHDRStatus(_VCPchangedEventArgs.monitor, true).Wait();
         }
 
         private void PeocessALSTriggerEvent(VCPchangedEventArgs e)
@@ -3266,18 +3271,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             if (supportedUSBC)
             {
-                int count = 0;
-                ObjGetVCP ObjGetVCP;
-                do
-                {
-                    ObjGetVCP = GetVCPCapability(monitorInfos, setParam).Result;
-                    count++;
-                } while (ObjGetVCP.result != true && count < 3);
-                if (ObjGetVCP.result == true)
-                {
-                    PrioritizationType = ObjGetVCP.value.ToString() == "High Data Speed" ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
-                    _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplayPropertiesInfo PrioritizationType:{PrioritizationType}");
-                }
+                PrioritizationType = GetUSBCPrioritization(monitorInfos);
             }
             ret_DisplayPropertiesInfo = _DisplayPropertiesPlugin.GetDisplayPropertiesInfo(monitorInfos, capabilityString, supportedHDR, isHDREnable, supportedUSBC, PrioritizationType).Result;
             ret_DisplayPropertiesInfo.Supported_OSD_Orientation = supported_OSD_Orientation;
@@ -3472,7 +3466,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(_DisplayPropertiesPlugin.CallWindowsDisplaySetting().Result);
         }
 
-        public Task<bool> GetHDRStatus(MonitorInfo monitorInfos)
+        public Task<bool> GetHDRStatus(MonitorInfo monitorInfos, bool reGet = false)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] GetHDRStatus start");
             string capabilityString = monitorInfos.CapabilityString;
@@ -3480,7 +3474,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] GetHDRStatus supportedHDR :{supportedHDR}");
             if (supportedHDR)
             {
-                if (_displayDataManger != null)
+                if (!reGet && _displayDataManger != null)
                 {
                     if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
                     {
@@ -3744,6 +3738,33 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation ret : {ret}");
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation done");
             return Task.FromResult(ret);
+        }
+
+        private USBCPrioritizationType GetUSBCPrioritization(MonitorInfo monitorInfo)
+        {
+            string setParam = "USB-C Prioritization";
+            USBCPrioritizationType PrioritizationType = USBCPrioritizationType.Unknow;
+            int count = 0;
+            ObjGetVCP ObjGetVCP;
+            do
+            {
+                ObjGetVCP = GetVCPCapability(monitorInfo, setParam).Result;
+                count++;
+            } while (ObjGetVCP.result != true && count < 3);
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetUSBCPrioritization ObjGetVCP.result:{ObjGetVCP.result}");
+            if (ObjGetVCP.result == true)
+            {
+                PrioritizationType = ObjGetVCP.value.ToString() == "High Data Speed" ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetUSBCPrioritization PrioritizationType:{PrioritizationType}");
+                if (_displayDataManger != null)
+                {
+                    if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfo, out DisplayPropertiesInfo displayPropertiesInfo))
+                    {
+                        displayPropertiesInfo.USBCPrioritizationType = PrioritizationType;
+                    }
+                }
+            }
+            return PrioritizationType;
         }
 
         /// <summary>
