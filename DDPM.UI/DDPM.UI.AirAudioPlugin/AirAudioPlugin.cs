@@ -221,7 +221,7 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
         {
             if (!IsEventRegistered)
             {
-                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+                _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
                 IsEventRegistered = true;
             }
             Mouse.OverrideCursor = null;
@@ -232,7 +232,7 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
         {
             if (IsEventRegistered)
             {
-                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+                _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
                 IsEventRegistered = false;
             }
             Mouse.OverrideCursor = Cursors.Wait;
@@ -244,7 +244,7 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
             _log.Info($"[HeadsetPlugin] OnShown ... in");
             if (!IsEventRegistered)
             {
-                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+                _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
                 IsEventRegistered = true;
             }
             ConfigureServices();

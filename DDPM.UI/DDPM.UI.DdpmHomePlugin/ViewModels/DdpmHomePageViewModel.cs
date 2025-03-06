@@ -451,7 +451,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         string imagepath = "";
                         switch (di.ModelNumber)
                         {
-                            
+                            case "SP325":
+                                imagepath = "Resources/Speaker_SP325.png";
+                                break;
+                            case "SL525":
+                                imagepath = "Resources/Speaker_SL525.png";
+                                break;
                             case "SB725":
                                 imagepath = "Resources/Speaker_SB725.png";
                                 break;

@@ -115,7 +115,10 @@ namespace DDPM.UI.Plugin.Common
         public int WearDetectionSensitivityFromDTP { get; set; } = 0;
         public bool AnswerCall { get; set; } = false;
     }
+    public class AirAudioDeviceDefaultSettings : HeadsetDeviceDefaultSettings 
+    {
 
+    }
     //***********************************************************************
     //DeviceInfoDTP.AncMode.....................= 2
     //DeviceInfoDTP.AncGain.....................= 3

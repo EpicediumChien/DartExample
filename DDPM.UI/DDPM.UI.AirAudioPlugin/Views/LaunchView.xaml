@@ -252,7 +252,7 @@
 
         <!-- Please Wait -->
         <Grid x:Name="PleaseWaitGrid" Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Background="Transparent">
-            <Border Width="587" Height="265"
+            <Border Width="{Binding ActualWidth, ElementName=largeImage}" Height="{Binding ActualHeight, ElementName=largeImage}"
                      BorderThickness="1" CornerRadius="4"
                     HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel>
