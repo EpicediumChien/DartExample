@@ -319,13 +319,13 @@ namespace DDPM.UI.Module.DisplayOthers
                 case "result_fail":
                     Dispatcher.Invoke(new Action(() =>
                     {
-                        DisplayMsgBox(LangHelper.Instance["ImportFail"], string.Format(LangHelper.Instance["ImportFailMsg"], model));
+                        DisplayMsgBox(LangHelper.Instance["Error"], string.Format(LangHelper.Instance["ImportFailMsg"], model));
                     }));
                     break;
                 case "result_success":
                     Dispatcher.Invoke(new Action(() =>
                     {
-                        DisplayMsgBox(Strings.ImpExp_Success, Strings.ImpExp_SuccessMsg0);
+                        DisplayMsgBox(LangHelper.Instance["Success"], LangHelper.Instance["ImpExp_SuccessMsg.0"]);
                     }));
                     break;
                 case "result_success_model":
