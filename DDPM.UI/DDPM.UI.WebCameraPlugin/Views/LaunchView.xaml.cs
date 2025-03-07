@@ -54,6 +54,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.Linq.Expressions;
 using DDPM.SA.Common.Alert;
+using DDPM.UI.Common.UserControls;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -259,7 +260,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 CheckUSBtype();
 
                 //grdPreview.Visibility = _vm.WebcamGrid ? Visibility.Visible : Visibility.Hidden;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                _vm.VbarItemClickCommand = new RelayCommand<VbarItem1>(OnVbarItemClicked!);
                 BuildModuleGroups();
                 DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             }
@@ -1786,7 +1787,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         #region Vbar
 
-        private void OnVbarItemClicked(VbarItem newItem)
+        private void OnVbarItemClicked(VbarItem1 newItem)
         {
             if (newItem.Id == _vm!.VbarSelectedIndex)
             { return; }

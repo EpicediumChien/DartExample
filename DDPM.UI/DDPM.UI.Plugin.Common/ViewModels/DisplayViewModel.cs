@@ -150,24 +150,24 @@ namespace DDPM.UI.Plugin.Common.ViewModels
             GroupSelectedIndex = -1;
         }
 
-        //_moduleGroups must be build at first before calling to this method.
-        private void RebuildVbarItems()
-        {
-            _vbarItems.Clear();
+        ////_moduleGroups must be build at first before calling to this method.
+        //private void RebuildVbarItems()
+        //{
+        //    _vbarItems.Clear();
 
-            int idx = 0;
-            foreach (ModuleGroup mg in _moduleGroups)
-            {
-                if (mg.GroupIcon != null)
-                {
-                    VbarItem vbarItem = new VbarItem(idx, mg.GroupIcon, mg.GroupName);
-                    vbarItem.ClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked);
-                    _vbarItems.Add(vbarItem);
-                    idx++;
-                }
-            }
-            OnPropertyChanged("VbarItems");
-        }
+        //    int idx = 0;
+        //    foreach (ModuleGroup mg in _moduleGroups)
+        //    {
+        //        if (mg.GroupIcon != null)
+        //        {
+        //            VbarItem vbarItem = new VbarItem(idx, mg.GroupIcon, mg.GroupName);
+        //            vbarItem.ClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked);
+        //            _vbarItems.Add(vbarItem);
+        //            idx++;
+        //        }
+        //    }
+        //    OnPropertyChanged("VbarItems");
+        //}
 
         private void RebuildVbarItems1()
         {
@@ -227,7 +227,7 @@ namespace DDPM.UI.Plugin.Common.ViewModels
 
                 //Update VbarItem.IsSelected
                 int idx = 0;
-                foreach (VbarItem vbItem in VbarItems)
+                foreach (VbarItem1 vbItem in VbarItems1)
                 {
                     if (idx == GroupSelectedIndex)
                     {
@@ -257,71 +257,71 @@ namespace DDPM.UI.Plugin.Common.ViewModels
             }
         }
 
-        /// <summary>
-        /// Handler when a VbarItem is clicked (MouseLeftButtonDown event)
-        /// The event handler is installed with below code: (for each VbarItem)
-        ///     vbarItem.ClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked);
-        /// </summary>
-        /// <param name="clickedItem">The VbarItem which is clicked</param>
-        private void OnVbarItemClicked(VbarItem? clickedItem)
-        {
-            //If we are in Landing mode
-            if (IsLandingMode)
-            {
-                if (LeaveLandingMode != null)
-                    LeaveLandingMode(this, new RoutedEventArgs());
+        ///// <summary>
+        ///// Handler when a VbarItem is clicked (MouseLeftButtonDown event)
+        ///// The event handler is installed with below code: (for each VbarItem)
+        /////     vbarItem.ClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked);
+        ///// </summary>
+        ///// <param name="clickedItem">The VbarItem which is clicked</param>
+        //private void OnVbarItemClicked(VbarItem? clickedItem)
+        //{
+        //    //If we are in Landing mode
+        //    if (IsLandingMode)
+        //    {
+        //        if (LeaveLandingMode != null)
+        //            LeaveLandingMode(this, new RoutedEventArgs());
 
-                foreach (VbarItem vbarItem in _vbarItems)
-                {
-                    vbarItem.SetLadningMode(false);
-                }
+        //        foreach (VbarItem vbarItem in _vbarItems)
+        //        {
+        //            vbarItem.SetLadningMode(false);
+        //        }
 
-                //    //Transit to TwoView mode
-                //    InvokeGotoTwoViewModeAnimation();
+        //        //    //Transit to TwoView mode
+        //        //    InvokeGotoTwoViewModeAnimation();
 
-                //    //Set the RightViewHeader seklection to 0
-                //    //_ivm.RightViewHeaderSelectedIndex = 0;
+        //        //    //Set the RightViewHeader seklection to 0
+        //        //    //_ivm.RightViewHeaderSelectedIndex = 0;
 
-                //    RightFrame.Visibility = Visibility.Visible;
-            }
+        //        //    RightFrame.Visibility = Visibility.Visible;
+        //    }
 
-            if (clickedItem == null)
-                return;
+        //    if (clickedItem == null)
+        //        return;
 
-            //Check if clickedItem is the same Group (selection is NOT changed)
-            if (clickedItem.Id == GroupSelectedIndex)
-                return;
-            //VbarItem selection is changed
+        //    //Check if clickedItem is the same Group (selection is NOT changed)
+        //    if (clickedItem.Id == GroupSelectedIndex)
+        //        return;
+        //    //VbarItem selection is changed
 
-            GroupSelectedIndex = clickedItem.Id;
+        //    GroupSelectedIndex = clickedItem.Id;
 
-            ////Determine the selection index of Vbar items[]
-            //int newSelectedVarItem = -1;
-            //if ((newItem != null) && (_ivm != null))
-            //{
-            //    newSelectedVarItem = newItem.Id;
-            //}
+        //    ////Determine the selection index of Vbar items[]
+        //    //int newSelectedVarItem = -1;
+        //    //if ((newItem != null) && (_ivm != null))
+        //    //{
+        //    //    newSelectedVarItem = newItem.Id;
+        //    //}
 
-            ////Check if VbarItem selection is NOT changed, if Yes, noting to do
-            //if (newSelectedVarItem == _ivm?.VbarSelectedIndex)
-            //    return;
+        //    ////Check if VbarItem selection is NOT changed, if Yes, noting to do
+        //    //if (newSelectedVarItem == _ivm?.VbarSelectedIndex)
+        //    //    return;
 
-            //if (_ivm != null)
-            //{
-            //    //Change the Vbar item selection index
-            //    _ivm.VbarSelectedIndex = newSelectedVarItem;
+        //    //if (_ivm != null)
+        //    //{
+        //    //    //Change the Vbar item selection index
+        //    //    _ivm.VbarSelectedIndex = newSelectedVarItem;
 
-            //    //Due to RightViewHeaderCtrl has no SelectionChanged event
-            //    //
-            //    if (_ivm != null)
-            //    {
-            //        if (_ivm.RightViewHeaders != null)
-            //        {
-            //            rightViewHeaderCtrl.SetHeaders(_ivm.RightViewHeaders.ToArray());
-            //        }
-            //    }
-            //}
-        }
+        //    //    //Due to RightViewHeaderCtrl has no SelectionChanged event
+        //    //    //
+        //    //    if (_ivm != null)
+        //    //    {
+        //    //        if (_ivm.RightViewHeaders != null)
+        //    //        {
+        //    //            rightViewHeaderCtrl.SetHeaders(_ivm.RightViewHeaders.ToArray());
+        //    //        }
+        //    //    }
+        //    //}
+        //}
 
         #endregion Group Selection
 

@@ -2,6 +2,7 @@
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Common.UserControls;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.Collaboration;
 using DDPM.UI.Module.Illumination;
@@ -43,7 +44,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             }
 
             DataContext = _vm;
-            _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+            _vm.VbarItemClickCommand = new RelayCommand<VbarItem1>(OnVbarItemClicked!);
 
             if (_vm.EOLKBList.Contains(_vm.Model))
             {
@@ -248,7 +249,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         #region Vbar
 
-        private void OnVbarItemClicked(VbarItem newItem)
+        private void OnVbarItemClicked(VbarItem1 newItem)
         {
             //if(newItem.Id == _vm!.VbarSelectedIndex) { return; }
 
