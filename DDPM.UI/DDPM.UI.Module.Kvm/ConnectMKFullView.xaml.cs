@@ -53,6 +53,7 @@ namespace DDPM.UI.Module.Kvm
 
         private void CloseUSBKVM(object sender, RoutedEventArgs e)
         {
+            vm.CancelSetUSBKVM();
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
             vm.FromProgressValue = 0;
             vm.ToProgressValue = 1;
@@ -69,10 +70,14 @@ namespace DDPM.UI.Module.Kvm
             {
                 vm.FinishtoSetPCs();
                 vm.isOnUSBKVM(true);
-                vm.isOnNKVM(false);
+                if (vm.NKVMisON)
+                {
+                    vm.isOnNKVM(false);
+                }
                 vm.isOnNoKVM(false);
                 vm.USBKVMisON = true;
                 vm.NKVMisON = false;
+                vm.NoKVMisON = false;
                 //Return to DdpmHomePage              
                 IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
                 console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);

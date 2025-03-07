@@ -180,8 +180,13 @@ namespace DDPM.UI.Module.Kvm
                 button_Net.Visibility = Visibility.Collapsed;
                 if (vm != null)
                 {
-                    vm.isOnNKVM(false);
+                    if (vm.NKVMisON)
+                    {
+                        vm.isOnNKVM(false);
+                    }
                     vm.isOnNoKVM(false);
+                    vm.NKVMisON = false;
+                    vm.NoKVMisON = false;
                     if (vm.USBKVMisON)
                     {
                         vm._log.Info("[SelectUSBKVM]USBKVM is on");
@@ -239,7 +244,8 @@ namespace DDPM.UI.Module.Kvm
                 //{
                 //    vm.isNKVM = true;
                 //}
-                vm.isOnNoKVM(false);
+                //vm.isOnNoKVM(false);
+                //vm.NoKVMisON = false;
                 vm.LoadnewLeftView(true);
             }
         }
@@ -265,7 +271,12 @@ namespace DDPM.UI.Module.Kvm
                 //    vm.isNoKVM = true;
                 //}
                 vm.isOnNoKVM(true);
-                vm.isOnNKVM(false);
+                if (vm.NKVMisON)
+                {
+                    vm.isOnNKVM(false);
+                }
+                vm.NoKVMisON = false;
+                vm.NKVMisON = false;
                 vm.LoadnewLeftView(true);
                 //DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM");
             }

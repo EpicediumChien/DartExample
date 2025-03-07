@@ -4292,7 +4292,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<Dictionary<string, PCsInfo>> GetUSBKVMPCsList(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputList, List<InputSourceObj> subInputList)
         {
             _PCsList = new Dictionary<string, PCsInfo>();
-            string currentInput = monitorInfo.inputSource;
+            string currentInput = GetCurrentInput(monitorInfo).Result;
 
             if (inputList.Count <= 0) // 2024-06-19 Elie, fix exception.
                 return Task.FromResult(_PCsList);

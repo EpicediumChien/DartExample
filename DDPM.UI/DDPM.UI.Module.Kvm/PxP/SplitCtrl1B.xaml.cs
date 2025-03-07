@@ -28,7 +28,10 @@ namespace DDPM.UI.Module.Kvm
                 vm.PCSwap("PC1", "PC2");
                 if (!vm.isPxPFullView)
                 {
-                    DdpmCommonHelper.DeviceManagerSA.VideoSwap(vm.KvmModule.SelectedHomeDevice.MonitorInfo, 0, 1);
+                    if (DdpmCommonHelper.DeviceManagerSA.VideoSwap(vm.KvmModule.SelectedHomeDevice.MonitorInfo, 0, 1).Result)
+                    {
+                        vm.UpdatePCList();
+                    }
                 }
                 else
                 {
