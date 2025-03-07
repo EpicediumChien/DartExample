@@ -108,6 +108,11 @@
                                 <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding Critical_UpdateList}">
                                     <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_TxtColor}" Margin="20,16,0,0" FontSize="16" Grid.Row="0" Text="{Binding [Critical], Source={x:Static lang:LangHelper.Instance}}" TextBlockType="Header1" HorizontalAlignment="Left" />
                                     <ListBox PreviewMouseWheel="HandlePreviewMouseWheel" Height="auto" ItemsSource="{Binding Critical_UpdateList_UI}" Name="listTopics" Background="Transparent" BorderThickness="0" Margin="20,0,0,0">
+                                        <ListBox.ItemContainerStyle>
+                                            <Style TargetType="ListBoxItem">
+                                                <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource AncestorType=Grid}, Path=ActualWidth}"/>
+                                            </Style>
+                                        </ListBox.ItemContainerStyle>
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
@@ -135,6 +140,11 @@
                                 <StackPanel  Grid.Row="2" Margin="0,0,0,24" Visibility="{Binding Recommended_UpdateList}">
                                     <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_TxtColor}" FontSize="16" Grid.Row="0" Text="{Binding [Recommended], Source={x:Static lang:LangHelper.Instance}}" TextBlockType="Header1" HorizontalAlignment="Left" Margin="20,16,0,0" Focusable="True"/>
                                     <ListBox PreviewMouseWheel="HandlePreviewMouseWheel" Height="auto" ItemsSource="{Binding Recommended_UpdateList_UI}" Background="Transparent" BorderThickness="0" Margin="20,0,0,0">
+                                        <ListBox.ItemContainerStyle>
+                                            <Style TargetType="ListBoxItem">
+                                                <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource AncestorType=Grid}, Path=ActualWidth}"/>
+                                            </Style>
+                                        </ListBox.ItemContainerStyle>
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
@@ -162,6 +172,11 @@
                                 <StackPanel Grid.Row="3" Visibility="{Binding Optional_UpdateList}">
                                     <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_TxtColor}" FontSize="16" Grid.Row="0" Text="{Binding [Optional], Source={x:Static lang:LangHelper.Instance}}" TextBlockType="Header1" HorizontalAlignment="Left" Margin="20,4,4,4" Focusable="True"/>
                                     <ListBox PreviewMouseWheel="HandlePreviewMouseWheel" Height="auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" ItemsSource="{Binding Optional_UpdateList_UI}" Background="Transparent" BorderThickness="0" Margin="20,0,0,0">
+                                        <ListBox.ItemContainerStyle>
+                                            <Style TargetType="ListBoxItem">
+                                                <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource AncestorType=Grid}, Path=ActualWidth}"/>
+                                            </Style>
+                                        </ListBox.ItemContainerStyle>
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
