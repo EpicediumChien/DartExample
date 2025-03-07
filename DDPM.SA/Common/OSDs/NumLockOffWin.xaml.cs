@@ -108,7 +108,7 @@ namespace DDPM.OSDs
             });
         }
 
-        private void Window_Closed(object sender, EventArgs e)
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
             {
