@@ -133,7 +133,10 @@ namespace DDPM.UI.Module.Kvm
                 //vm.VideoSwapContent = new PBPSplitCtrl2A();
                 if (!vm.isPxPFullView)
                 {
-                    DdpmCommonHelper.DeviceManagerSA.VideoSwap(vm.KvmModule.SelectedHomeDevice.MonitorInfo, 0, 1);
+                    if (DdpmCommonHelper.DeviceManagerSA.VideoSwap(vm.KvmModule.SelectedHomeDevice.MonitorInfo, 0, 1).Result)
+                    {
+                        vm.UpdatePCList();
+                    }
                 }
             }
         }
