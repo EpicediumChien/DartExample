@@ -2200,22 +2200,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     monitors = (_DisplayManagerPlugin.GetMonitors().Result).ToList();
                     _AllInfoMonitors = monitors;
 
-                //review monitor list to check duplicated data
-                ReviewAllMonitorToAvoidDuplicatedInfo();
-                //InitMonitorSettings();
-                //_DisplayManagerPlugin.InitDisplayData(_AllInfoMonitors);
-                //foreach (MonitorInfo monitor in _AllInfoMonitors)
-                //{
-                //    _DisplayManagerPlugin.GetUSBUpstreamList(monitor).Wait();
-                //    _DisplayManagerPlugin.GetAllUSBUpstream(monitor);
-                //    _DisplayManagerPlugin.GetVCPCapability(monitor, 0xE9);
-                //    _DisplayManagerPlugin.GetDisplayPropertiesInfo(monitor);
-                //    if (monitor.CapabilityString.Contains("F4"))
-                //    {
-                //        _DisplayManagerPlugin.GetGamingProperties_SupportedList(monitor);
-                //    }
-                //}
-                //UpdateHotkeyInfo();
+                    //review monitor list to check duplicated data
+                    ReviewAllMonitorToAvoidDuplicatedInfo();
+                    //InitMonitorSettings();
+                    //_DisplayManagerPlugin.InitDisplayData(_AllInfoMonitors);
+                    //foreach (MonitorInfo monitor in _AllInfoMonitors)
+                    //{
+                    //    _DisplayManagerPlugin.GetUSBUpstreamList(monitor).Wait();
+                    //    _DisplayManagerPlugin.GetAllUSBUpstream(monitor);
+                    //    _DisplayManagerPlugin.GetVCPCapability(monitor, 0xE9);
+                    //    _DisplayManagerPlugin.GetDisplayPropertiesInfo(monitor);
+                    //    if (monitor.CapabilityString.Contains("F4"))
+                    //    {
+                    //        _DisplayManagerPlugin.GetGamingProperties_SupportedList(monitor);
+                    //    }
+                    //}
+                    //UpdateHotkeyInfo();
 
                     Task.Run(() => //support last selected monitor info from settings
                     {
@@ -11851,9 +11851,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             var NewMonitors = (_DisplayManagerPlugin.Re_GetMonitors(token).Result).ToList();
                             _AllInfoMonitors = NewMonitors.ToList();
 
-                            //Task.Run(() => {
-                            InitMonitorSettings(_AllInfoMonitors);
-                            //});
+                            //250307 Add a Task to init monitor settings. (Jarvis suggests to add this task to avoid the UI thread blocking)
+                            Task.Run(() =>
+                            {
+                                InitMonitorSettings(_AllInfoMonitors);
+                            });
 
                             // add @ 20250303 stephen
                             // modified @ 20250305 stephen : set count = -1 as a flag to avoid trigger ui reflash
@@ -12533,9 +12535,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             _AllInfoMonitors = new List<MonitorInfo>(e.monitors);
 
-            //Task.Run(() => {
-            InitMonitorSettings(_AllInfoMonitors);
-            //});
+            //250307 Add a Task to init monitor settings. (Jarvis and Jason suggest to add this task to avoid the UI thread blocking)
+            Task.Run(() =>
+                InitMonitorSettings(_AllInfoMonitors)
+            );
 
             DisplaychangedEventArgs _displaychangedEventArgs = new DisplaychangedEventArgs();
             _displaychangedEventArgs.count = e.count;
@@ -13584,7 +13587,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //Derek 1119
                         _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
                         UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
-                        if(_AirAudioHelper == null)
+                        if (_AirAudioHelper == null)
                             _AirAudioHelper = new PeripheralAirAudioHelper(Log);
                         _AirAudioHelper.UpdateDDPMPluginInstances(_DTPProxyPlugin);
                     }
@@ -16604,7 +16607,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        private void SetVCPfromNKVM(NKVMSetVCP e) 
+        private void SetVCPfromNKVM(NKVMSetVCP e)
         {
             writelog("[SetVCPfromNKVM] SetVCPfromNKVM");
             if (_DisplayManagerPlugin != null)
@@ -17137,7 +17140,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Consent Page
             DDMtoDDPM_ConsentPage(DDMusersettings);
 
-            if(isSameModel != null)
+            if (isSameModel != null)
                 DDMtoDDPM_IsSameModel(DDMmonitorsettings, (bool)isSameModel);
         }
 
@@ -19468,7 +19471,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public async Task<bool> SetAirAudioBandsGainAsync(string Guid, byte[] newValue)
         {
-            return await _AirAudioHelper.SetAirAudioBandsGainAsync(Guid,newValue);
+            return await _AirAudioHelper.SetAirAudioBandsGainAsync(Guid, newValue);
         }
 
         public async Task<bool> SetAirAudioBand1GainAsync(string Guid, int newValue)
