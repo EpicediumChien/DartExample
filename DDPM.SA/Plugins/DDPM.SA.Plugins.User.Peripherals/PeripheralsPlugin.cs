@@ -1384,7 +1384,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         protected override void OnPluginStarting()
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
-            writelog("DTPProxyPlugin plugin starting");
+            writelog("PeripheralsPlugin plugin starting");
 
             PluginCondition = new PluginStartedCondition();
             //InitializeDeviceManagerPlugin();

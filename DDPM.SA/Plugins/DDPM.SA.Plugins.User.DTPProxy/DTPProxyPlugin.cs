@@ -10451,10 +10451,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private void InitializeDTPProxy()
         {
             if (_commSdk != null)
+            {
+                writelog($"InitializeDTPProxy First check _commSdk not null, return ... ");
                 return;
+            }
 
+            writelog($"InitializeDTPProxy before FindPluginByType because _commSdk null ... ");
             _commSdk = (ICommodityClientSdk)_agent.PluginManager.FindPluginByType(typeof(ICommodityClientSdk));
-
+            
             try
             {
                 if (_commSdk != null)
@@ -10609,10 +10613,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
+                    writelog($"InitializeDTPProxy After FindPluginByType, _commSdk not null ... ");
                     if (_commSdk is IFrameworkPluginConditionNotification pluginCondition)
                     {
                         pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
                         GetCurrentDTPProxyPluginCondition();
+                        writelog($"InitializeDTPProxy After GetCurrentDTPProxyPluginCondition ... ");
                     }
                 }
             }
