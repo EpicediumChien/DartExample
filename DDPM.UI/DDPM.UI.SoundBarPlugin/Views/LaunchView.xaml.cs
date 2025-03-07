@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
 using DDPM.UI.Common;
+using DDPM.UI.Common.UserControls;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.SpeakerAudioPreset;
 using DDPM.UI.Module.SpeakerAudioSettings;
@@ -68,7 +69,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                     InitializeComponent();
                     _vm.Reset();
                     DataContext = _vm;
-                    _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                    _vm.VbarItemClickCommand = new RelayCommand<VbarItem1>(OnVbarItemClicked!);
                     BuildModuleGroups();
                     InitializeButtonImage();
                     //txtUnpair.Text = Unpair;
@@ -259,7 +260,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         /// Contron Menu slider position
         /// </summary>
         /// <param name="newItem"></param>
-        private void OnVbarItemClicked(VbarItem newItem)
+        private void OnVbarItemClicked(VbarItem1 newItem)
         {
             DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] OnVbarItemClicked ... in ");
             try

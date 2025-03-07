@@ -225,7 +225,7 @@
       </Grid>
       <!-- Vbar -->
       <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
-        <ItemsControl Name="vbarList" Margin="0,10,0,0"
+        <ItemsControl Name="vbarList" Margin="0,5,10,0"
                                   HorizontalAlignment="Right" VerticalAlignment="Top"
                                   ItemsSource="{Binding VbarItems}">
           <ItemsControl.ItemTemplate>

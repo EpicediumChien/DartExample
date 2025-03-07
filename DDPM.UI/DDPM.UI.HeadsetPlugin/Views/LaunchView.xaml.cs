@@ -2,6 +2,7 @@
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Common.UserControls;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.HeadsetAudioForSB725Settings;
 using DDPM.UI.Module.HeadsetAudioSettings;
@@ -67,7 +68,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     InitializeComponent();
                     _vm.Reset();
                     DataContext = _vm;
-                    _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                    _vm.VbarItemClickCommand = new RelayCommand<VbarItem1>(OnVbarItemClicked!);
                     BuildModuleGroups();
                     InitializeButtonImage();
                     if (_vm!.ConnectionType == "WiredAudio")
@@ -336,7 +337,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         /// Contron Menu slider position
         /// </summary>
         /// <param name="newItem"></param>
-        private void OnVbarItemClicked(VbarItem newItem)
+        private void OnVbarItemClicked(VbarItem1 newItem)
         {
             DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] OnVbarItemClicked ... in");
             try
