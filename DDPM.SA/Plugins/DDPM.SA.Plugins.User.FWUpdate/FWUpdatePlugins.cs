@@ -2376,10 +2376,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             if (!fwUpdateInfo.IsDisplay)
             {
                 // 要運行的安裝程式路徑和命令行參數
-                arguments = (fwUpdateInfo.IsUOD ? "/uod " : "") + "/silent" + " /pipename:" + namedPipeName;
                 if (fwUpdateInfo.DeviceType != DeviceType.LogicalDock &&
                     fwUpdateInfo.DeviceType != DeviceType.PhysicalWiredDock)
                 {
+                    arguments = "/silent" + " /pipename:" + namedPipeName;
                     //deviceIndex commandLine
                     _logs.DebugMsg_1($"BuildArgs deviceIndex go");
                     arguments += $" /deviceIndex:" + fwUpdateInfo.DeviceIndex;
@@ -2433,25 +2433,22 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     arguments += $" /devicePath:" + fwUpdateInfo.DevicePath;
                     _logs.DebugMsg_1($"BuildArgs devicePath done");
                 }
-                _logs.DebugMsg_1($"BuildArgs Log go");
-                //Log commandLine
-                switch (fwUpdateInfo.DeviceType)
+                else
                 {
-                    case DeviceType.LogicalDock:
-                    case DeviceType.PhysicalWiredDock:
-                        if (_IsSkipSHA)
-                        {
-                            _logs.DebugMsg_1($"BuildArgs _IsSkipSHA is true so add /f");
-                            arguments += $" /f";
-                        }
-                        if (!string.IsNullOrEmpty(logPath))
-                        {
-                            arguments += $" /debuglog /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\" /dp";
-                            _logs.DebugMsg_1($"BuildArgs Add : /debuglog /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\" /dp");
-                        }
-                        break;
+                    _logs.DebugMsg_1($"BuildArgs Dock go");
+                    arguments = (fwUpdateInfo.IsUOD ? "/uod " : "") + "/s" + " /pipename:" + namedPipeName;
+                    if (_IsSkipSHA)
+                    {
+                        _logs.DebugMsg_1($"BuildArgs _IsSkipSHA is true so add /f");
+                        arguments += $" /f";
+                    }
+                    if (!string.IsNullOrEmpty(logPath))
+                    {
+                        arguments += $" /debuglog /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\" /dp";
+                        _logs.DebugMsg_1($"BuildArgs Add : /debuglog /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\" /dp");
+                    }
+                    _logs.DebugMsg_1($"BuildArgs Dock done");
                 }
-                _logs.DebugMsg_1($"BuildArgs Log done");
             }
             else
             {

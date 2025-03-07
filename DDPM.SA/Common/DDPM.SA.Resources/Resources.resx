@@ -552,4 +552,7 @@
   <data name="Seconds" xml:space="preserve">
     <value>s</value>
   </data>
+  <data name="Multiple_docks_are_detected3" xml:space="preserve">
+    <value>Multiple docks detected. Keep only one dock connected to prevent damage to your docks. Restart the PC, then connect only one dock.</value>
+  </data>
 </root>
