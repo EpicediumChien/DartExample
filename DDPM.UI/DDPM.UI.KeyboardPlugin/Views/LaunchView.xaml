@@ -17,9 +17,6 @@
 
   <UserControl.Resources>
     <ResourceDictionary>
-      <!--<ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
-      </ResourceDictionary.MergedDictionaries>-->
       <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
       <PluginCommon:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
       <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
@@ -112,9 +109,11 @@
       <!--<Style x:Key="CalculatorStyle" TargetType="Image" BasedOn="{StaticResource CalculatorSize}">
             <Setter Property="Margin" Value="-117, 0, 0, 0" />
             </Style>-->
-      <Style x:Key="KeyToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+      <Style x:Key="KeyToolTipStyle" TargetType="ToolTip">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Placement" Value="Top" />
-        <Setter Property="VerticalOffset" Value="-5" />
+        <Setter Property="VerticalOffset" Value="-2.5" />
         <Setter Property="HorizontalOffset">
           <Setter.Value>
             <MultiBinding Converter="{StaticResource CenterToolTipConverter}">
@@ -158,55 +157,108 @@
             <Grid>
               <Grid>
                 <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="900" MinWidth="715"/>
+                <Rectangle Name="RecT" Fill="Transparent" Width="900" VerticalAlignment="Top" MouseDown="Mainframe_MouseLeftButtonDown"/>
+                <Rectangle Name="RecB"  Fill="Transparent" Width="900" VerticalAlignment="Bottom" MouseDown="Mainframe_MouseLeftButtonDown"/>
+                <Rectangle Name="RecL"  Fill="Transparent" Height="500" HorizontalAlignment="Left" MouseDown="Mainframe_MouseLeftButtonDown"/>
+                <Rectangle Name="RecR"  Fill="Transparent" Height="500" HorizontalAlignment="Right" MouseDown="Mainframe_MouseLeftButtonDown"/>
               </Grid>
               <Grid Name="SectionA" Margin="75,146,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <StackPanel Orientation="Horizontal">
                   <Image x:Name="F1" Source="{Binding F1ImageFile}" Stretch="Fill" Style="{StaticResource F1Style}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F1Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F1Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F2" Source="{Binding F2ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F2Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F2Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F3" Source="{Binding F3ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F3Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F3Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F4" Source="{Binding F4ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F4Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F4Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F5" Source="{Binding F5ImageFile}" Stretch="Fill" Style="{StaticResource F5Style}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F5Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F5Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F6" Source="{Binding F6ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F6Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F6Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F7" Source="{Binding F7ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F7Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F7Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -214,35 +266,70 @@
                                            Visibility="{Binding IsF8Visible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F8Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F8Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F9" Source="{Binding F9ImageFile}" Stretch="Fill" Style="{StaticResource F9Style}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F9Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F9Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F10" Source="{Binding F10ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F10Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F10Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F11" Source="{Binding F11ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F11Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F11Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="F12" Source="{Binding F12ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F12Tooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding F12Tooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -250,7 +337,14 @@
                                            Visibility="{Binding IsPrtScVisible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding PrtScTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding PrtScTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -258,7 +352,14 @@
                                            Visibility="{Binding IsScrollLockVisible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding ScrollLockTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding ScrollLockTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -266,7 +367,14 @@
                                            Visibility="{Binding IsPauseBreakVisible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding PauseBreakTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding PauseBreakTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -274,7 +382,14 @@
                                            Visibility="{Binding IsCalculatorVisible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding CalculatorTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding CalculatorTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -286,7 +401,14 @@
                                            Visibility="{Binding IsHomeVisible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding HomeTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding HomeTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -294,7 +416,14 @@
                                            Visibility="{Binding IsEndVisible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding EndTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding EndTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -302,7 +431,14 @@
                                            Visibility="{Binding IsPgUpVisible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding PgUpTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding PgUpTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -310,7 +446,14 @@
                                            Visibility="{Binding IsPgDownVisible, Converter={StaticResource BoolToHiddenConverter}}">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding PgDownTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding PgDownTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -397,8 +540,12 @@
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
               <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal" Margin="20,18,0,0">
-                  <ContentControl Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
+                <!-- Robert_Lin PIMS-348226 [UI]Home Page - Dongle/Wireless Receiver icon is not left-aligned 
+                    Change Margin="20,18,0,0" to Margin="16,18,0,0" -->
+                <StackPanel Orientation="Horizontal" Margin="16,18,0,0">
+                   <!-- Robert_Lin PIMS-348226 [UI]Home Page - Dongle/Wireless Receiver icon is not left-aligned 
+                    Change Margin="4,0,0,0" to Margin="0,0,0,0" -->
+                  <ContentControl Margin="0,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
                   <!-- <Image Margin="4,0,0,0" Width="16" Height="16" Source="/DDPM.UI.Resources;component/Resources/Images/Dongle.png" /> -->
                   <UXControls:UXTextBlock Width="200" TextTrimming="CharacterEllipsis" Name="txtDongleHost" Foreground="{DynamicResource DefaultTheme_TxtColor}" VerticalAlignment="Center" Margin="7,0,0,0"
                                                             HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" FontWeight="Bold" Text="{Binding [USBWirelessReceiver], Source={x:Static lang:LangHelper.Instance}}"/>
@@ -504,7 +651,7 @@
             <ContentControl Name="EOLDongle" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Height="40" Visibility="Collapsed" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
             <!-- <Image Name="EOLDongle" Source="/DDPM.UI.Resources;component/Resources/Images/EOLDongle.png" Stretch="Fill" Visibility="Collapsed"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="40" Height="40" /> -->
-            <Border Style="{StaticResource BorderUnpair}" Width="auto" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair"
+            <Border Style="{StaticResource BorderUnpair}" Width="auto" MinWidth="105" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair"
                                 BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
               <UXControls:UXTextBlock Padding="10,0,10,0" Name="txtUnpair" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}" 
                                       Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}"

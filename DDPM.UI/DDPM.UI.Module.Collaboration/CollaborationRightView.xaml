@@ -141,6 +141,20 @@
                                         <UXControls:UXTextBlock Name="txtShare" Style="{StaticResource TextStyle1}" Margin="8,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding [Share], Source={x:Static lang:LangHelper.Instance}}"/>
                                         <Image Margin="8,0,0,0" Name="imgLock" Source="/DDPM.UI.Common;component/Resources/Lock.png" Stretch="Uniform" VerticalAlignment="Center"
                                                Width="19" Height="20" HorizontalAlignment="Left" Visibility="Collapsed">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
                                         </Image>
                                     </StackPanel>
                                     <Grid Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}">

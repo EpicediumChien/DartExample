@@ -149,7 +149,7 @@ namespace DDPM.SA.Common
 
         Task<Dictionary<string, PCsInfo>> GetUSBKVMPCsList(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputList, List<InputSourceObj> subInputList);
 
-        Task<bool> isScreenPartition(MonitorInfo monitorInfo);
+        Task<bool> isScreenPartition(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low);
 
         #endregion USBKVM
 
@@ -233,19 +233,19 @@ namespace DDPM.SA.Common
 
         Task<GamingDisplayPropertiesInfo> GetGamingProperties_SupportedList(MonitorInfo monitorInfo);
 
-        Task<Gaming_GameEnhancementMode> GetCurrentGame_EnhancementMode(MonitorInfo monitorInfo);
+        Task<Gaming_GameEnhancementMode> GetCurrentGame_EnhancementMode(MonitorInfo monitorInfo, bool reGet = false);
 
-        Task<Gaming_ResponseTime> GetCurrentGaming_ResponseTime(MonitorInfo monitorInfo);
+        Task<Gaming_ResponseTime> GetCurrentGaming_ResponseTime(MonitorInfo monitorInfo, bool reGet = false);
 
-        Task<Gaming_DarkStabilizer> GetCurrentGaming_DarkStabilizer(MonitorInfo monitorInfo);
+        Task<Gaming_DarkStabilizer> GetCurrentGaming_DarkStabilizer(MonitorInfo monitorInfo, bool reGet = false);
 
-        Task<Gaming_HDRType> GetCurrentGaming_HDRType(MonitorInfo monitorInfo);
+        Task<Gaming_HDRType> GetCurrentGaming_HDRType(MonitorInfo monitorInfo, bool reGet = false);
 
-        Task<Gaming_DualResolutionType> GetCurrentGaming_DualResolutionType(MonitorInfo monitorInfo);
+        Task<Gaming_DualResolutionType> GetCurrentGaming_DualResolutionType(MonitorInfo monitorInfo, bool reGet = false);
 
-        Task<Gaming_VisionEngineType> GetCurrentGaming_VisionEngineType(MonitorInfo monitorInfo);
+        Task<Gaming_VisionEngineType> GetCurrentGaming_VisionEngineType(MonitorInfo monitorInfo, bool reGet = false);
 
-        Task<bool[]> GetCurrentGaming_VisionEngineEnableType(MonitorInfo monitorInfo, GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo);
+        Task<bool[]> GetCurrentGaming_VisionEngineEnableType(MonitorInfo monitorInfo, GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo, bool reGet = false);
 
         Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode);
 
@@ -278,6 +278,8 @@ namespace DDPM.SA.Common
         #region DisplayData
 
         Task InitDisplayData(List<MonitorInfo> monitorInfos);
+        Task<bool> SetAllUSBUpstream(MonitorInfo monitorInfo, string input1, string usb1, string input2, string usb2, string input3 = null, string usb3 = null, string input4 = null, string usb4 = null);
+        Task SetVCPtoDisplayData(MonitorInfo monitorInfo, int vcpcode, int value);
 
         #endregion DisplayData
     }

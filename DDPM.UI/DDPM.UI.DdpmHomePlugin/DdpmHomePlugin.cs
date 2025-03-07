@@ -745,7 +745,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 DdpmCommonHelper.DeviceManagerSA = deviceManager;
                 DdpmCommonHelper.Log = this._log;//assign this log for global using
-                DdpmCommonHelper.Settings_Cache = deviceManager.ReloadAppConfigData().Result;
+                DdpmCommonHelper.ReadDDPMSettings(true);//.Settings_Cache = deviceManager.ReloadAppConfigData().Result;
                 //List<MonitorInfo> monitorInfos = deviceManager.GetMonitors().Result;
                 if (condition.Equals("all") || condition.Equals("displaychanged"))
                 {
@@ -935,12 +935,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             DdpmCommonHelper.MyConsole = PluginIoc.GetService<IConsole>();
             DdpmCommonHelper.MyShowPluginManager = PluginIoc.GetService<IShowPluginManager>();
 
-
-            //Robert_Lin, 2024-7-17, fix PIMS-286435 in AddDevice menu, the AddDevice icon is in Top Right side.
-            if (_iconAddDevice != null)
-                _iconAddDevice.Visibility = Visibility.Visible;
-            if (_iconGear != null)
-                _iconGear.Visibility = Visibility.Visible;
+            //Robert_Lin 2025-3-5 Change to new method instead
+            ShowAllMastheadIcons();
+            ////Robert_Lin, 2024-7-17, fix PIMS-286435 in AddDevice menu, the AddDevice icon is in Top Right side.
+            //if (_iconAddDevice != null)
+            //    _iconAddDevice.Visibility = Visibility.Visible;
+            //if (_iconGear != null)
+            //    _iconGear.Visibility = Visibility.Visible;
         }
 
         [Obsolete]
@@ -1520,7 +1521,18 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private bool WTSQuerySessionInformation_Public(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned)
         {
-            return WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
+            bool rst = WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
+
+            if (!rst) 
+            {
+                _log.Info($"[DdpmHomePlugin] WTSQuerySessionInformation failed.");
+
+#if DEBUG
+                Console.WriteLine("[DdpmHomePlugin] WTSQuerySessionInformation failed.");
+#endif
+            }
+
+            return rst;
         }
         /// <summary>
         /// From SA code
@@ -1642,7 +1654,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     // Check ConsentPage reg
                     regPath = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
-                    regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForConsentPage);
+                    //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForConsentPage);
+                    regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForConsentPage);
 
                     if (!Convert.ToBoolean(regValue))
                     {
@@ -1658,7 +1671,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 else if (modelNumber == "DDPM" && modelType == "DDPM")
                 {
                     // Check DDPM walkthrough
-                    regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
+                    //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
+                    regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
 
                     if (!Convert.ToBoolean(regValue))
                     {
@@ -1679,12 +1693,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     if (modelNumber == "U3224KB" || modelNumber == "U3224KBA") // correct DPeM typo
                     {
                         regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.U3224KB";
-                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.   
+                        //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.   
+                        regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
                         if (!CheckRegReturnValue(regValue)) // If false, need to check "U3224KBA" again
                         {
                             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} U3224KB ReadRegistryData false");
                             regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.U3224KBA";
-                            regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                            //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                            regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
                         }
                         else
                             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} U3224KB ReadRegistryData true");
@@ -1692,12 +1708,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     else if (modelNumber == "P2424HEB") // correct DPeM typo
                     {
                         regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.CXXXXXX";
-                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.                   
+                        //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey); //false, mean DPeM already have walkthrough.                   
+                        regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
                         if (!CheckRegReturnValue(regValue)) // If false, need to check "P2424HEB" again
                         {
                             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} CXXXXXX ReadRegistryData false");
                             regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.P2424HEB";
-                            regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                            //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                            regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
                         }
                         else
                             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} CXXXXXX ReadRegistryData true");
@@ -1705,10 +1723,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     else if (modelNumber == "MS700/7")
                     {
                         regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.MS700";
-                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                        //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                        regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
                     }
                     else
-                        regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                        //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                        regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
 
                     _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} regPath : {regPath}");
                     _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} regPath : {regKey}");
@@ -1766,6 +1786,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _log.Info($"[Walkthrough] {nameof(CollectAndCompareDevicesAsync)} Start");
             try
             {
+                if(_deviceManager == null)
+                {
+                    _log.Info($"[Walkthrough] {nameof(CollectAndCompareDevicesAsync)} _deviceManager is null");
+                    return;
+                }
                 List<MonitorInfo> monitorInfos = _deviceManager.GetMonitors().Result;
                 var deviceHelper = _deviceManager.GetDevices().Result;
                 _log.Info($"[Walkthrough] CollectAndCompareDevicesAsync, monitor count:{monitorInfos.Count.ToString()}, device count : {deviceHelper.deviceInfo.Count.ToString()}");

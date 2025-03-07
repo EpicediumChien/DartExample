@@ -205,7 +205,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Connect your display via HDMI/USB-C port on your system. 的當地語系化字串。
+        ///   查詢類似 Connect your display via HDMI/USB-C port on your system 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Display_1 {
             get {
@@ -223,7 +223,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Connect your Dock via USB port on your system. 的當地語系化字串。
+        ///   查詢類似 Connect your dock via USB port on your system 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Dock_0 {
             get {
@@ -538,7 +538,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Connect your Speaker or soundbar via USB port on your system. 的當地語系化字串。
+        ///   查詢類似 Connect your speakerphone or soundbar via USB port on your system 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Speaker_0 {
             get {
@@ -592,7 +592,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Connect your webcam via USB port on your system. 的當地語系化字串。
+        ///   查詢類似 Connect your webcam via USB port on your system 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Webcam_0 {
             get {
@@ -1699,7 +1699,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Enable blink effect when there is a new chat message in conference\ncall 的當地語系化字串。
+        ///   查詢類似 Enable blink effect when there is a new chat message in conference call 的當地語系化字串。
         /// </summary>
         internal static string Collaboration_3 {
             get {
@@ -1708,7 +1708,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Activate icons on the keyboard by double tapping instead of single\ntapping 的當地語系化字串。
+        ///   查詢類似 Activate icons on the keyboard by double tapping instead of single tapping 的當地語系化字串。
         /// </summary>
         internal static string Collaboration_4 {
             get {
@@ -4012,7 +4012,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Enable shortcut reminder for Quick Accesswidget 的當地語系化字串。
+        ///   查詢類似 Enable shortcut reminder for Quick Access widget 的當地語系化字串。
         /// </summary>
         internal static string Enable_shortcut_reminder_for_Quick_Accesswidget {
             get {
@@ -5173,7 +5173,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The same monitor is detected, do you want to import settings for {0}?.
+        ///   查詢類似 The same monitor is detected, do you want to import settings for {0}? 的當地語系化字串。
         /// </summary>
         internal static string ImpExp_WarningMsg_0 {
             get {
@@ -5214,6 +5214,15 @@ namespace DDPM.UI.Resources {
         internal static string ImportFailMsg {
             get {
                 return ResourceManager.GetString("ImportFailMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 This device is not compatible with Dell Display and Peripheral Manager 的當地語系化字串。
+        /// </summary>
+        internal static string Incompatible {
+            get {
+                return ResourceManager.GetString("Incompatible", resourceCulture);
             }
         }
         
@@ -6109,7 +6118,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Click to Assign an action 的當地語系化字串。
+        ///   查詢類似 Click to assign an action 的當地語系化字串。
         /// </summary>
         internal static string Mouse_14 {
             get {
@@ -9223,11 +9232,20 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Your pen is charged X%.\n\nTo charge your pen fully, make sure it is attached to your tablet screen. You will be notified once the pen is done charging.\n\nLow battery notifications will appear once the battery charge is below 10%. 的當地語系化字串。
+        ///   查詢類似 Your pen is charged X%.\n\nTo charge your pen fully, make sure it is connected via cable. You will be notified once the pen is done charging.\n\nLow battery notifications will appear once the battery charge is below 10%. 的當地語系化字串。
         /// </summary>
         internal static string WalkThroughPen_Sub_1 {
             get {
                 return ResourceManager.GetString("WalkThroughPen_Sub.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Your pen is charged X%.\n\nTo charge your pen fully, make sure it is attached to your tablet screen. You will be notified once the pen is done charging.\n\nLow battery notifications will appear once the battery charge is below 10%.  的當地語系化字串。
+        /// </summary>
+        internal static string WalkThroughPen_Sub_1_1 {
+            get {
+                return ResourceManager.GetString("WalkThroughPen_Sub.1_1", resourceCulture);
             }
         }
         

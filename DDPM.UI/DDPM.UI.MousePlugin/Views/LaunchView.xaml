@@ -16,9 +16,6 @@
              SizeChanged="UserControl_SizeChanged">
   <UserControl.Resources>
     <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-      </ResourceDictionary.MergedDictionaries>
       <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
       <PluginCommon:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
       <PluginCommon:CenterVToolTipConverter x:Key="CenterVToolTipConverter" />
@@ -26,9 +23,11 @@
         <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
                                  Duration="0:0:0.4" From="{Binding RightFrameWidthFrom}" To="{Binding RightFrameWidthTo}" FillBehavior="HoldEnd" />
       </Storyboard>
-      <Style x:Key="ButtonToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+      <Style x:Key="ButtonToolTipStyle" TargetType="ToolTip">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Placement" Value="Right" />
-        <Setter Property="HorizontalOffset" Value="8" />
+        <Setter Property="HorizontalOffset" Value="0" />
         <Setter Property="VerticalOffset">
           <Setter.Value>
             <MultiBinding Converter="{StaticResource CenterVToolTipConverter}">
@@ -85,6 +84,10 @@
             <Grid>
               <Grid>
                 <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="500" />
+                <Rectangle Name="RecT" Fill="Transparent" Width="500" VerticalAlignment="Top" MouseDown="Mainframe_MouseLeftButtonDown"/>
+                <Rectangle Name="RecB" Fill="Transparent" Width="500" VerticalAlignment="Bottom" MouseDown="Mainframe_MouseLeftButtonDown"/>
+                <Rectangle Name="RecL" Fill="Transparent" Height="500" HorizontalAlignment="Left" MouseDown="Mainframe_MouseLeftButtonDown"/>
+                <Rectangle Name="RecR" Fill="Transparent" Height="500" HorizontalAlignment="Right" MouseDown="Mainframe_MouseLeftButtonDown"/>
               </Grid>
               <Grid Name="SectionA" Margin="210,106,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <StackPanel Orientation="Horizontal">
@@ -92,7 +95,14 @@
                                            MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsScrollTiltLeftVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding ScrollTiltLeftTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding ScrollTiltLeftTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -100,7 +110,14 @@
                                            MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsScrollWheelClickVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding ScrollWheelClickTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding ScrollWheelClickTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -108,7 +125,14 @@
                                            MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsScrollTiltRightVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding ScrollTiltRightTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding ScrollTiltRightTooltip}" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -120,7 +144,12 @@
                                            MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsSideButtonForwardVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding SideButtonForwardTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <TextBlock Text="{Binding SideButtonForwardTooltip}" />
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -128,7 +157,12 @@
                                            MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsSideButtonBackVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding SideButtonBackTooltip}" />
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <TextBlock Text="{Binding SideButtonBackTooltip}" />
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -210,7 +244,10 @@
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
               <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal" Margin="19,18,0,0">
+                  <!-- Robert_Lin PIMS-348226 [UI]Home Page - Dongle/Wireless Receiver icon is not left-aligned 
+                  Change Margin="19,18,0,0" to Margin="16,18,0,0"
+                  -->
+               <StackPanel Orientation="Horizontal" Margin="16,18,0,0">
                   <ContentControl Width="16" Height="16" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
                   <!-- <Image Margin="0" Width="16" Height="16" Source="/DDPM.UI.Resources;component/Resources/Images/Dongle.png" /> -->
                   <!-- Elsa 20250107 For PIMS [PIMS-334377] add Width="200" TextTrimming="CharacterEllipsis" -->
@@ -296,7 +333,7 @@
             <ContentControl Name="EOLDongle" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Height="40" Visibility="Collapsed" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
             <!-- <Image Name="EOLDongle" Source="/DDPM.UI.Resources;component/Resources/Images/EOLDongle.png" Stretch="Fill" Visibility="Collapsed"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="40" Height="40" /> -->
-            <Border Padding="10,0,10,0" Width="Auto" Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair"
+            <Border Padding="10,0,10,0" Width="Auto" MinWidth="105" Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair" 
                                 BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
               <UXControls:UXTextBlock Name="txtUnpair" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}"/>
             </Border>

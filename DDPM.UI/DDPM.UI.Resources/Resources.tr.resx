@@ -595,10 +595,10 @@
     <value>Konferans denetimlerine hızlı erişim sağlar.\nTuşları açmak/kapatmak, Microsoft Teams veya\nZoom araması sırasında tuşları klavyede gösterir veya gizler.</value>
   </data>
   <data name="Collaboration.3" xml:space="preserve">
-    <value>Konferans\ngörüşmesinde yeni bir sohbet mesajı olduğunda göz kırpma efektini etkinleştirin</value>
+    <value>Konferans görüşmesinde yeni bir sohbet mesajı olduğunda göz kırpma efektini etkinleştirin</value>
   </data>
   <data name="Collaboration.4" xml:space="preserve">
-    <value>Klavyedeki simgeleri tek\ndokunma yerine çift dokunma ile etkinleştirin</value>
+    <value>Klavyedeki simgeleri tek dokunma yerine çift dokunma ile etkinleştirin</value>
   </data>
   <data name="Collaboration.5" xml:space="preserve">
     <value>İş Birliği Klavyesini Microsoft Teams ile kullanmak için Microsoft Teams'in en son sürümünde oturum açtığınızdan ve kullandığınızdan ve Üçüncü taraf uygulama API'sinin etkinleştirildiğinden emin olun</value>

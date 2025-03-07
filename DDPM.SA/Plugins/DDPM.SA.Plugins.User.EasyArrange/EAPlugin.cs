@@ -829,6 +829,15 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         return true;
                     }
 
+                    //Get the selected/edited CustomName from SaveCustomWindow
+                    string customName = "";
+                    if (_saveCustomWindow.SelectedCustomItem != null)
+                    {
+                        customName = _saveCustomWindow.SelectedCustomItem.CustomName;
+                    }
+
+                    WriteLog($"SaveCustomWindow.SaveClicked, CutomName=[{customName}]");
+
                     _overlapWindow = new OverlapWindow(_log);
                     //Handler of CaptureDone
                     //After CaptureOverlapLayout() finished it job and returned.

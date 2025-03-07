@@ -504,7 +504,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             CheckTestCase();
             //CheckTestCase2();
 
-           
+
             print_debug("check_PresenceFunction() s22-20250102 14:43 update ver step");
 
             print_debug("check_PresenceFunction() end");
@@ -1412,7 +1412,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 foreach (var property in _vm.allProperties)
                 {
                     string properties_temp = property.GetFriendlyName();
-                    if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase) && property.EncodingProperties.Subtype != "MJPG")
+                    if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) &&
+                        properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase) &&
+                        property.EncodingProperties.Subtype != "MJPG")
                     {
                         DdpmCommonHelper.WriteUILog($"properties_temp: {properties_temp}");
                         var encodingProperties = property.EncodingProperties;
@@ -2125,7 +2127,18 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private static extern bool GetDiskFreeSpaceEx(string lpDirectoryName, out ulong lpFreeBytesAvailable, out ulong lpTotalNumberOfBytes, out ulong lpTotalNumberOfFreeBytes);
         private static bool _GetDiskFreeSpaceEx(string lpDirectoryName, out ulong lpFreeBytesAvailable, out ulong lpTotalNumberOfBytes, out ulong lpTotalNumberOfFreeBytes)
         {
-            return GetDiskFreeSpaceEx(lpDirectoryName, out lpFreeBytesAvailable, out lpTotalNumberOfBytes, out lpTotalNumberOfFreeBytes);
+            bool rst = GetDiskFreeSpaceEx(lpDirectoryName, out lpFreeBytesAvailable, out lpTotalNumberOfBytes, out lpTotalNumberOfFreeBytes);
+
+            if (!rst)
+            {
+                DdpmCommonHelper.WriteUILog("[LaunchView] GetDiskFreeSpaceEx failed.");
+
+#if DEBUG
+                Console.WriteLine("[LaunchView] GetDiskFreeSpaceEx failed.");
+#endif
+            }
+
+            return rst;
         }
 
         public static bool HasEnoughSpace(string path, ulong requiredBytes)

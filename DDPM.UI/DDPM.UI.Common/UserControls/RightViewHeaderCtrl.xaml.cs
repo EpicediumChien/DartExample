@@ -25,7 +25,7 @@ namespace DDPM.UI.Common
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
-                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
+                /*DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
                 Dispatcher.Invoke(new Action(() =>
                 {
                     RightViewHeaderCtrlViewModel local_vm = (RightViewHeaderCtrlViewModel)this.DataContext;
@@ -35,7 +35,7 @@ namespace DDPM.UI.Common
                         local_vm.Locker1 = data.LockSettings.Lock_Display_BriCont ? Visibility.Visible : Visibility.Collapsed;
                         Trace.WriteLine($"[SettingsPage] Apply Brightness (lock) : {data.LockSettings.Lock_Display_BriCont}");
                     }
-                }));
+                }));*/
             }
         }
 
@@ -222,6 +222,5 @@ namespace DDPM.UI.Common
             }
         }
         #endregion Selection Changed
-
     }
 }

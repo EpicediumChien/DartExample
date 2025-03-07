@@ -9,8 +9,8 @@
         Title="MessageModalDialog" Width="417" ResizeMode="NoResize" ShowInTaskbar="False"
         WindowStartupLocation="Manual" WindowStyle="None" SizeToContent="Height"
         Background="{DynamicResource DefaultTheme_DialogBoxBkColor}">
-    <Window.Resources>
-        <!--
+  <Window.Resources>
+    <!--
         <Style x:Key="BorderYes" TargetType="Border">
             <Setter Property="Background" Value="#0E1C2F" />
             <Setter Property="CornerRadius" Value="2" />
@@ -26,23 +26,23 @@
             <Setter Property="Height" Value="40" />
             <Setter Property="BorderThickness" Value="0" />
         </Style> -->
-    </Window.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
-        <Border CornerRadius="4" Grid.Row="0" BorderThickness="1"
+  </Window.Resources>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="auto"/>
+    </Grid.RowDefinitions>
+    <Border CornerRadius="4" Grid.Row="0" BorderThickness="1" 
                 Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}">
-            <StackPanel Orientation="Vertical" Margin="35,36,0,0">
-                <UXControls:UXTextBlock Name="txtCaption" VerticalAlignment="Center" FontWeight="Normal"
+      <StackPanel Orientation="Vertical" Margin="35,36,0,0">
+        <UXControls:UXTextBlock Name="txtCaption" VerticalAlignment="Center" FontWeight="Normal"
                                         HorizontalAlignment="Left" FontFamily="Roboto" FontSize="20" Margin="0,0,0,10" />
-                <UXControls:UXTextBlock Name="txtMessage" VerticalAlignment="Center" FontWeight="Normal" TextWrapping="Wrap"
+        <UXControls:UXTextBlock Name="txtMessage" VerticalAlignment="Center" FontWeight="Normal" TextWrapping="Wrap"
                                         HorizontalAlignment="Left" FontFamily="Roboto" FontSize="16" LineHeight="24" Width="352" />
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,30">
-                    <!--
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,30">
+          <!--
                     <Border x:Name="Button1" Style="{StaticResource BorderYes}" Cursor="Hand" MouseLeftButtonDown="No_MouseLeftButtonDown" Margin="0,8,6,0">
                         <UXControls:UXTextBlock Name="txtButton1" VerticalAlignment="Center" FontWeight="Medium"
                                                 HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
@@ -51,27 +51,27 @@
                         <UXControls:UXTextBlock Name="txtButton2" VerticalAlignment="Center" FontWeight="Medium"
                                                 HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Margin="5,0,0,0" />
                     </Border> -->
-                    <UXControls:UXButton
+          <UXControls:UXButton
                         Name="txtButton1" MinHeight="40" MinWidth="107"
                         Margin="0,8,6,0"                      
                         ButtonType="Secondary"
-                        Click="Yes_MouseLeftButtonDown"
+                        Click="No_MouseLeftButtonDown"
                         Content="N/A" FontFamily="Roboto" FontSize="14" FontWeight="Medium"
                         CornerRadius="2"/>
-                    <UXControls:UXButton
+          <UXControls:UXButton
                         Name="txtButton2" MinHeight="40" MinWidth="107"
                         Margin="0,8,0,0"
                         ButtonType="Primary"
-                        Click="No_MouseLeftButtonDown"
+                        Click="Yes_MouseLeftButtonDown"
                         Content="N/A" FontFamily="Roboto" FontSize="14" FontWeight="Medium"
                         CornerRadius="2" />
-                </StackPanel>
-            </StackPanel>
-        </Border>
-        <StackPanel Grid.Row="1" Visibility="Collapsed">
-            <UXControls:UXCheckBox Name="uxCheckBox" IsChecked="True" Content="test string"/>
         </StackPanel>
-        <Image x:Name="CloseIcon" Margin="0,17,17,0" Source="/DDPM.UI.Resources;component/Resources/Images/CloseX.png" Stretch="Fill"
+      </StackPanel>
+    </Border>
+    <StackPanel Grid.Row="1" Visibility="Collapsed">
+      <UXControls:UXCheckBox Name="uxCheckBox" IsChecked="True" Content="test string"/>
+    </StackPanel>
+    <Image x:Name="CloseIcon" Margin="0,17,17,0" Source="/DDPM.UI.Resources;component/Resources/Images/CloseX.png" Stretch="Fill"
                VerticalAlignment="Top" HorizontalAlignment="Right" Width="14" Height="14" MouseLeftButtonDown="No_MouseLeftButtonDown" Cursor="" />
-    </Grid>
+  </Grid>
 </Window>

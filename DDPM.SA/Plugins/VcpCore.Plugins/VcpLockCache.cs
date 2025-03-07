@@ -71,7 +71,7 @@ namespace VcpCore.Plugins
                     _logs.DebugMsg("[VcpCorePlugin] Class_VcpLockCache SetToCacheTable TargetMonitor AliasDeviceName is " + MonitorInfo.AliasDeviceName);
                     _logs.DebugMsg("[VcpCorePlugin] Class_VcpLockCache SetToCacheTable Key is " + ((key is string) ? key.ToString() : Convert.ToByte(key).ToString("X")));
 
-                    var ignoreCodes = new List<byte> { 0x02, 0x04, 0x05, 0x10, 0x12, 0x52, 0x60, 0xE9, 0xEC };
+                    var ignoreCodes = new List<byte> { 0x02, 0x04, 0x05, 0x10, 0x12, 0x52, 0x60, 0xE9, 0xEC, 0x62, 0x8D };
 
                     if ((key != null) && (!(key is string)) && (ignoreCodes.Contains(Convert.ToByte(key))))
                     {

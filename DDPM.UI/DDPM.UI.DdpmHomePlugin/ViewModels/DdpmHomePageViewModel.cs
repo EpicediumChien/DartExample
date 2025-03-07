@@ -243,7 +243,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 //Determine the SortOrder in the foreach loop.
                 //Each Category have their index, would be in order of ModelNumber
                 int idxWebcam = 0, idxKB = 0, idxMouse = 0,
-                    idxPen = 0, idxHeadset = 0, idxSpeaker = 0, idxDock = 0, idxBootloader = 0;
+                    idxPen = 0, idxHeadset = 0, idxSpeaker = 0, idxDock = 0, idxBootloader = 0, idxAirAudio = 0;
 
                 //Robert_Lin 2024-5-16 This method should be called once, provide all
                 //monitor in this call. So it will clear original list at first
@@ -413,43 +413,62 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         idxDock++;
                     }
                     //0618 Wayn 新增HeadSet
-                    else if (devType.ToString().ToUpper().Contains("HEADSET") || devType.ToString().ToUpper().Contains("LOGICALAIRAUDIO"))
+                    else if (devType.ToString().ToUpper().Contains("HEADSET"))
                     {
                         string imagepath = "";
                         switch (di.ModelNumber)
                         {
                             case "WL7024":
-                                imagepath = "Resources/HeadsetModel_WL7024-Mito.png";
+                                imagepath = "Resources/Images/WL7024.png";
                                 break;
 
                             case "WL5024":
-                                imagepath = "Resources/HeadsetModel_WL5024-Pegasus.png";
+                                imagepath = "Resources/Images/WL5024.png";
                                 break;
 
                             case "WH5024":
-                                imagepath = "Resources/HeadsetModel_WH5024-Vinflo.png";
+                                imagepath = "Resources/Images/WH5024.png";
                                 break;
 
                             case "WL3024":
-                                imagepath = "Resources/HeadsetModel_WL3024-Vaporfly.png";
+                                imagepath = "Resources/Images/WL3024.png";
                                 break;
 
                             case "WH3024":
-                                imagepath = "Resources/HeadsetModel_WH3024-Airmax.png";
+                                imagepath = "Resources/Images/WH3024.png";
+                                break;
+                            default:
+                                imagepath = "Resources/Images/WL7024.png";
+                                break;
+                        }
+                        dev.DeviceCategory = eDeviceCategory.Headset;
+                        dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath, "DDPM.UI.Resources");
+                        dev.SortOrder = (int)dev.DeviceCategory + idxHeadset;
+                        idxHeadset++;
+                    }
+                    else if (devType.ToString().ToUpper().Contains("LOGICALAIRAUDIO"))
+                    {
+                        string imagepath = "";
+                        switch (di.ModelNumber)
+                        {
+                            case "SP325":
+                                imagepath = "Resources/Speaker_SP325.png";
+                                break;
+                            case "SL525":
+                                imagepath = "Resources/Speaker_SL525.png";
                                 break;
                             case "SB725":
                                 imagepath = "Resources/Speaker_SB725.png";
                                 break;
                             default:
-                                imagepath = "Resources/HeadsetModel_WL7024-Mito.png";
+                                imagepath = "Resources/Speaker_SB725.png";
                                 break;
                         }
-                        dev.DeviceCategory = eDeviceCategory.Headset;
+                        dev.DeviceCategory = eDeviceCategory.AirAudio;
                         dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath);
-                        dev.SortOrder = (int)dev.DeviceCategory + idxHeadset;
-                        idxHeadset++;
+                        dev.SortOrder = (int)dev.DeviceCategory + idxAirAudio;
+                        idxAirAudio++;
                     }
-
                     //0726 Wayn 新增Soundbar/Speaker LogicalWiredAudio
                     else if (devType.ToString().ToUpper().Contains("LOGICALWIREDAUDIO"))
                     {
@@ -457,18 +476,18 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         switch (di.ModelNumber)
                         {
                             case "SP3022":
-                                imagepath = "Resources/Speaker_SP3022.png";
+                                imagepath = "Resources/Images/Speaker_SP3022.png";
                                 break;
 
                             case "SB522A":
-                                imagepath = "Resources/Speaker_SB522A.png";
+                                imagepath = "Resources/Images/Speaker_SB522A.png";
                                 break;
                             default:
-                                imagepath = "Resources/Speaker_SP3022.png";
+                                imagepath = "Resources/Images/Speaker_SP3022.png";
                                 break;
                         }
                         dev.DeviceCategory = eDeviceCategory.Soundbar;
-                        dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath);
+                        dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath, "DDPM.UI.Resources");
                         dev.SortOrder = (int)dev.DeviceCategory + idxSpeaker;
                         idxSpeaker++;
                     }

@@ -6,6 +6,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -360,15 +361,53 @@ namespace DDPM.UI.Common
         //Default data from cache, load from user subagent if force_reload = true
         public static DDPMSettings ReadDDPMSettings(bool reload_from_SA = false)
         {
-            if (reload_from_SA)
+            DDPMSettings tmp = null;
+            try
             {
-                if (DeviceManagerSA == null)
-                    return null;
-
-                DDPMSettings data = DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null)
+                if (reload_from_SA)
                 {
-                    Settings_Cache = data;
+                    tmp = DeviceManagerSA == null ? throw new Exception("NULL DevMgr") : DeviceManagerSA.ReloadAppConfigData().Result;
+                    if (tmp != null)
+                    {
+                        Settings_Cache = tmp;
+                    }
+                    else
+                        throw new Exception("Null Data from SA");
+                }
+                if (Settings_Cache == null)
+                    throw new Exception("Null Data Cache");
+            }
+            catch (Exception ex)
+            {
+                WriteUILog($"[ReadDDPMSettings] exception: {ex.Message}");
+
+                //20250304 Dean, read it with file directly from UI
+                string folder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
+                string _settings_path = System.IO.Path.Combine(folder, GlobalDefinitions.Folder_Product, GlobalDefinitions.Filename_appsettings_peruser);
+                WriteUILog("[ReadDDPMSettings] Read from file directly over UI");
+
+                if (File.Exists(_settings_path))
+                {
+                    if (DDPMFileSecurity.ValidateFilePath(_settings_path, out string info))
+                    {
+                        string output = DDPMFileSecurity.GetSerializedJsonString(_settings_path, out info);//, false);
+                        var _settings = JsonConvert.DeserializeObject<DDPMSettings>(output);
+                        if (_settings != null)
+                        {
+                            Settings_Cache = _settings;
+                            return Settings_Cache;
+                        }
+                        else
+                            WriteUILog("[ReadDDPMSettings] de-serialize got null data");
+                    }
+                    else
+                    {
+                        WriteUILog($"[ReadDDPMSettings] ValidateFilePath failed: {info}");
+                    }
+                }
+                else
+                {
+                    WriteUILog("[ReadDDPMSettings] file is not exist");
                 }
             }
             return Settings_Cache;
@@ -377,37 +416,63 @@ namespace DDPM.UI.Common
 
         public static void updateMergedDictionaries(ResourceManager resourceManager)
         {
-            OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
-            if (PreviousOsTheme == oSTheme)
-                return;
-            string darkModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml";
-            ResourceDictionary? darkResourceDictionary = Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(darkModeStyle));
-            Application.Current.Resources.MergedDictionaries.Remove(darkResourceDictionary);
-            darkResourceDictionary = new ResourceDictionary()
+            try
             {
-                Source = new Uri(darkModeStyle)
-            };
-            Application.Current.Resources.MergedDictionaries.Add(darkResourceDictionary);
-
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                switch (oSTheme)
+                var uxSystemParameters = UXSystemParameters.Instance;
+                if (uxSystemParameters == null)
                 {
-                    case OSThemeEnum.Light:
-                        SwitchToLightMode();
-                        break;
-                    case OSThemeEnum.Dark:
-                    default:
-                        SwitchToDarkMode();
-                        break;
+                    WriteUILog("[updateMergedDictionaries] UXSystemParameters.Instance is null.");
+                    return;
+                }
+
+                OSThemeEnum oSTheme = uxSystemParameters.OSTheme;
+                WriteUILog($"[updateMergedDictionaries] Detected OS theme: {oSTheme.ToString()} number: {oSTheme}.");
+
+                if (PreviousOsTheme == oSTheme)
+                {
+                    WriteUILog($"[updateMergedDictionaries] PreviousOsTheme == oSTheme, then skip.");
+                    return;
+                }
+
+
+                //OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
+                //WriteUILog($"[updateMergedDictionaries] Detected OS theme: {oSTheme.ToString()} number: {oSTheme}.");
+                //if (PreviousOsTheme == oSTheme)
+                //    return;
+                string darkModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml";
+                ResourceDictionary? darkResourceDictionary = Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(darkModeStyle));
+                Application.Current.Resources.MergedDictionaries.Remove(darkResourceDictionary);
+                darkResourceDictionary = new ResourceDictionary()
+                {
+                    Source = new Uri(darkModeStyle)
                 };
-                resourceManager.SwapDarkAndLightThemes();
-                resourceManager.StageResources();
-                resourceManager.CommitResources();
-                Application.Current.MainWindow?.InvalidateVisual();
-            }, System.Windows.Threading.DispatcherPriority.Loaded);
-            // Debug.WriteLine($"updateMergedDictionarie to {oSTheme.ToString()}");
-            PreviousOsTheme = oSTheme;
+                Application.Current.Resources.MergedDictionaries.Add(darkResourceDictionary);
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    switch (oSTheme)
+                    {
+                        case OSThemeEnum.Light:
+                            SwitchToLightMode();
+                            break;
+                        case OSThemeEnum.Dark:
+                        default:
+                            SwitchToDarkMode();
+                            break;
+                    };
+                    resourceManager.SwapDarkAndLightThemes();
+                    resourceManager.StageResources();
+                    resourceManager.CommitResources();
+                    Application.Current.MainWindow?.InvalidateVisual();
+                }, System.Windows.Threading.DispatcherPriority.Loaded);
+                // Debug.WriteLine($"updateMergedDictionarie to {oSTheme.ToString()}");
+                PreviousOsTheme = oSTheme;
+            }
+            catch (Exception ex)
+            {
+                WriteUILog($"[updateMergedDictionaries] An error occurred: {ex.Message}");
+                return;
+            }
         }
 
         public static bool isDarkMode()
@@ -1588,6 +1653,37 @@ namespace DDPM.UI.Common
 
             // Default scaling is 1.0 (100%)
             return 1.0;
+        }
+
+        public static object ReadRegistryData(RegistryHive hive, string keyPath, string keyName)
+        {
+            object obj = null;
+            try
+            {
+                if (DeviceManagerSA != null)
+                {
+                    return DeviceManagerSA.ReadRegistryData(hive, keyPath, keyName).Result;
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteUILog($"[ReadRegistryData] over DeviceManager exception: ({ex.ToString()})");
+            }
+            WriteUILog($"[ReadRegistryData] read registry from UI directly");
+            try
+            {
+                obj = DDPMRegistryHelper.ReadRegistryKey(hive, keyPath, keyName);
+            }
+            catch (Exception ex)
+            {
+                WriteUILog($"[ReadRegistryData] over UI exception: ({ex.ToString()})");
+            }
+            if (obj == null)
+            {
+                WriteUILog($"[ReadRegistryData] keyName: {keyName} is null");
+                return null;
+            }
+            return obj;
         }
     }
 

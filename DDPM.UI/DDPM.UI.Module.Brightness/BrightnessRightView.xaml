@@ -88,7 +88,7 @@
                                     </Grid>
                                 </Grid>
                                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                    <TextBlock FontFamily="Roboto" FontSize="13">
+                                    <TextBlock FontFamily="Roboto" FontSize="13" Focusable="True" KeyboardNavigation.TabIndex="101">
                                         <Run Text="{Binding [Brightness.1], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                                         <Hyperlink Click="Hyperlink_Click">
                                             <Run Text="{Binding [Brightness.2], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
@@ -116,7 +116,7 @@
                             Name="Expander_Manual"
                             Expanded="Expander_Manual_Expanded"
                             AutomationProperties.Name="{Binding [Manual], Source={x:Static lang:LangHelper.Instance}}"
-                            Style="{StaticResource RightExpanderStyle}">
+                            Style="{StaticResource RightExpanderStyle}" PreviewKeyDown="brightnewwManulExpander_PreviewKeyDown">
                             <!--  IsExpanded="{Binding ExpanderGroup, Mode=TwoWay, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=0}">  -->
                             <Expander.Header>
                                 <!--  Group Header: Manual  -->
@@ -129,7 +129,7 @@
                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                         Text="{Binding [Manual], Source={x:Static lang:LangHelper.Instance}}"
                                         TextBlockSemanticColorType="Light"
-                                        Focusable="True"
+                                        Focusable="True" KeyboardNavigation.TabIndex="110"
                                         TextBlockType="Caption" />
                                 </Grid>
                             </Expander.Header>
@@ -146,7 +146,7 @@
                                                     FontSize="16"
                                                     Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                     Text="{Binding [Brightness], Source={x:Static lang:LangHelper.Instance}}"
-                                                    Focusable="True"
+                                                    Focusable="True" KeyboardNavigation.TabIndex="112"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
                                             </Grid>
@@ -181,6 +181,7 @@
                                                     Margin="8,0"
                                                     HorizontalContentAlignment="Stretch"
                                                     AutoToolTipPlacement="None"
+                                                    KeyboardNavigation.TabIndex="113"
                                                     AutomationProperties.AutomationId="UXSlider_HorizontalToolTipNone"
                                                     AutomationProperties.Name="{Binding [Manual], Source={x:Static lang:LangHelper.Instance}}"
                                                     IsSnapToTickEnabled="True"
@@ -193,6 +194,7 @@
                                                 <UXControls:UXTextBlock
                                                     Name="BrightnessTextBlock"
                                                     Grid.Column="2"
+                                                    Focusable="True" KeyboardNavigation.TabIndex="114"
                                                     VerticalAlignment="Center"
                                                     Foreground="{DynamicResource PercentageTextColor}"
                                                     Text="{Binding Path=BrightnessValue, StringFormat={}{0}%}"
@@ -207,7 +209,7 @@
                                                     FontSize="16"
                                                     Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                     Text="{Binding [Contrast], Source={x:Static lang:LangHelper.Instance}}"
-                                                    Focusable="True"
+                                                    Focusable="True" KeyboardNavigation.TabIndex="116"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
                                             </Grid>
@@ -242,6 +244,7 @@
                                                     Margin="8,0"
                                                     HorizontalContentAlignment="Stretch"
                                                     AutoToolTipPlacement="None"
+                                                    KeyboardNavigation.TabIndex="118"
                                                     AutomationProperties.AutomationId="UXSlider_HorizontalToolTipNone"
                                                     AutomationProperties.Name="{Binding [Contrast], Source={x:Static lang:LangHelper.Instance}}"
                                                     IsSnapToTickEnabled="True"
@@ -254,6 +257,7 @@
                                                 <UXControls:UXTextBlock
                                                     Name="ContrastTextBlock"
                                                     Grid.Column="2"
+                                                    Focusable="True" KeyboardNavigation.TabIndex="119"
                                                     VerticalAlignment="Center"
                                                     Foreground="{DynamicResource PercentageTextColor}"
                                                     Text="{Binding Path=ContrastValue, StringFormat={}{0}%}"
@@ -273,6 +277,7 @@
                                                         ButtonType="Secondary"
                                                         Click="Hotkey_Click"
                                                         CornerRadius="2"
+                                                        KeyboardNavigation.TabIndex="122"
                                                         IsEnabled="{Binding ManualBCHotkeyBtn}"
                                                         Style="{StaticResource Button_WhiteFrame}">
                                                         <Button.Content>
@@ -287,6 +292,7 @@
                                                         ButtonSemanticColorType="Destructive"
                                                         ButtonType="Primary"
                                                         Click="Reset_Click"
+                                                        KeyboardNavigation.TabIndex="123"
                                                         Content="{Binding [Reset], Source={x:Static lang:LangHelper.Instance}}"
                                                         CornerRadius="2"
                                                         Foreground="{DynamicResource RightView_Btn_TextColor}" />
@@ -315,7 +321,7 @@
                                             FontSize="16"
                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             Text="{Binding [Brightness.4], Source={x:Static lang:LangHelper.Instance}}"
-                                            Focusable="True"
+                                            Focusable="True" KeyboardNavigation.TabIndex="125"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
 
@@ -351,7 +357,22 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                            Visibility="{Binding synchronizeLock}" />
+                                            Visibility="{Binding synchronizeLock}">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
 
                                         <UXControls:UXToggleSwitch
                                             Name="SynchronizeSwitch"
@@ -359,6 +380,8 @@
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Center"
                                             VerticalContentAlignment="Center"
+                                            KeyboardNavigation.TabIndex="127"
+                                            AutomationProperties.LabeledBy="{Binding ElementName=SynchronizeTextBlock}"
                                             AutomationProperties.Name="{Binding [Brightness.4], Source={x:Static lang:LangHelper.Instance}}"
                                             Click="SynchronizeSwitch_Click"
                                             Content="{Binding Path=IsSynchronize_String}"
@@ -541,7 +564,22 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                            Visibility="{Binding synchronizeLock}" />
+                                            Visibility="{Binding synchronizeLock}">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
 
                                         <UXControls:UXToggleSwitch
                                             Name="SynchronizeSwitch_Luminance"
@@ -595,7 +633,22 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                        Visibility="{Binding AutoALSLock}" />
+                                        Visibility="{Binding AutoALSLock}">
+                                        <Image.ToolTip>
+                                            <ToolTip>
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                    <Border.Resources>
+                                                        <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                    </Border.Resources>
+                                                    <StackPanel>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Border>
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
                                 </Grid>
                             </Expander.Header>
 
@@ -673,7 +726,22 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                            Visibility="{Binding AutoBrightnessLock}" />
+                                            Visibility="{Binding AutoBrightnessLock}">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
                                         <UXControls:UXToggleSwitch
                                             Name="AutoBrightnessSwitch"
                                             Grid.Column="3"
@@ -773,7 +841,22 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                            Visibility="{Binding AutoBrigRangeLevelLock}" />
+                                            Visibility="{Binding AutoBrigRangeLevelLock}">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
                                         <ComboBox
                                             x:Name="cbAutoBrightness"
                                             Grid.Column="3"
@@ -857,7 +940,22 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                            Visibility="{Binding AutoTemperatureLock}" />
+                                            Visibility="{Binding AutoTemperatureLock}">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
                                         <UXControls:UXToggleSwitch
                                             Name="AutoColorTempSwitch"
                                             Grid.Column="3"
@@ -960,7 +1058,22 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                            Visibility="{Binding PrimaryMonitorSyncLock}" />
+                                            Visibility="{Binding PrimaryMonitorSyncLock}">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
                                         <UXControls:UXToggleSwitch
                                             Name="PrimaryMonitorSyncSwitch"
                                             Grid.Column="3"
@@ -1016,7 +1129,7 @@
                         <Expander
                             Name="Expander_Schedule"
                             Expanded="Expander_Schedule_Expanded"
-                            Style="{StaticResource RightExpanderStyle}">
+                            Style="{StaticResource RightExpanderStyle}" PreviewKeyUp="brightnessScheduledExpander_PreviewKeyDown">
 
                             <Expander.Header>
                                 <!--  Group Header: Scheduled  -->
@@ -1026,6 +1139,7 @@
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         FontSize="20"
+                                        Focusable="True" KeyboardNavigation.TabIndex="130"
                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                         Text="{Binding [Scheduled], Source={x:Static lang:LangHelper.Instance}}"
                                         TextBlockSemanticColorType="Light"
@@ -1081,6 +1195,8 @@
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Bottom"
                                                             FontSize="16"
+                                                            Name="labelPreset1Name"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="131"
                                                             Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
                                                             Text="{Binding [Brightness.14], Source={x:Static lang:LangHelper.Instance}}"
                                                             TextBlockSemanticColorType="Light"
@@ -1093,6 +1209,7 @@
                                                             BorderBrush="#7E7E7E"
                                                             BorderThickness="1"
                                                             FontSize="14"
+                                                            KeyboardNavigation.TabIndex="132" AutomationProperties.LabeledBy="{Binding ElementName=labelPreset1Name}"
                                                             IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                             MaxLength="30"
                                                             PreviewTextInput="InputName_PreviewTextInput"
@@ -1125,6 +1242,8 @@
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Bottom"
                                                             FontSize="15"
+                                                            Name="labelStartTime1"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="133"
                                                             Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
                                                             Text="{Binding [Brightness.15], Source={x:Static lang:LangHelper.Instance}}"
                                                             TextBlockSemanticColorType="Light"
@@ -1136,6 +1255,8 @@
                                                             Grid.Column="0"
                                                             Height="40"
                                                             MinWidth="70"
+                                                            KeyboardNavigation.TabIndex="134" KeyboardNavigation.TabNavigation="Continue"
+                                                            AutomationProperties.LabeledBy="{Binding ElementName=labelStartTime1}"
                                                             IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding hOurs}"
                                                             SelectedItem="{Binding hOurs1, Mode=TwoWay}"
@@ -1150,6 +1271,8 @@
                                                             Grid.Column="2"
                                                             Height="40"
                                                             MinWidth="70"
+                                                            KeyboardNavigation.TabIndex="135" KeyboardNavigation.TabNavigation="Continue"
+                                                            AutomationProperties.LabeledBy="{Binding ElementName=labelStartTime1}"
                                                             IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding mIns}"
                                                             SelectedItem="{Binding mIns1, Mode=TwoWay}"
@@ -1165,6 +1288,7 @@
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Center"
                                                             FontSize="15"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="136"
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             Text="{Binding [AM], Source={x:Static lang:LangHelper.Instance}}"
                                                             TextBlockSemanticColorType="Light"
@@ -1196,7 +1320,9 @@
                                                                 TextWrapping="WrapWithOverflow"                                                                   
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Bottom"
-                                                                FontSize="16"                                                               
+                                                                FontSize="16"
+                                                                Name="labelTransitionLength1"
+                                                                Focusable="True" KeyboardNavigation.TabIndex="137"
                                                                 Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
                                                                 Text="{Binding [Brightness.16], Source={x:Static lang:LangHelper.Instance}}"
                                                                 TextBlockSemanticColorType="Light"
@@ -1233,6 +1359,7 @@
                                                             Grid.Column="0"
                                                             Height="40"
                                                             MinWidth="70"
+                                                            KeyboardNavigation.TabIndex="139"
                                                             IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding dUration}"
                                                             SelectedItem="{Binding dUration1, Mode=TwoWay}"
@@ -1245,6 +1372,7 @@
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Center"
                                                             FontSize="16"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="140" KeyboardNavigation.TabNavigation="Continue"
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             Text="{Binding [Min], Source={x:Static lang:LangHelper.Instance}}"
                                                             TextBlockSemanticColorType="Light"
@@ -1260,6 +1388,8 @@
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
+                                                        Name="labelPreset1Brightness"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="141"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                         Text="{Binding [Brightness], Source={x:Static lang:LangHelper.Instance}}"
                                                         TextBlockSemanticColorType="Light"
@@ -1288,6 +1418,8 @@
                                                         Grid.Column="1"
                                                         Margin="8,-10,0,-40"
                                                         HorizontalContentAlignment="Stretch"
+                                                        KeyboardNavigation.TabIndex="143" 
+                                                        AutomationProperties.LabeledBy="{Binding ElementName=labelPreset1Brightness}"
                                                         IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                         IsSnapToTickEnabled="True"
                                                         LargeChange="1"
@@ -1300,6 +1432,9 @@
                                                         Name="preset1_BrightnessTextBlock"
                                                         Grid.Column="2"
                                                         VerticalAlignment="Center"
+                                                        Focusable="True"
+                                                        KeyboardNavigation.TabIndex="144" 
+                                                        AutomationProperties.LabeledBy="{Binding ElementName=labelPreset1Brightness}"
                                                         Foreground="{DynamicResource PercentageTextColor}"
                                                         Text="{Binding Path=PR1BrightnessValue, StringFormat={}{0}%}"
                                                         TextBlockSemanticColorType="Light"
@@ -1314,6 +1449,8 @@
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
+                                                        Name="labelPreset1Contrast"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="145"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                         Text="{Binding [Contrast], Source={x:Static lang:LangHelper.Instance}}"
                                                         TextBlockSemanticColorType="Light"
@@ -1341,6 +1478,8 @@
                                                         Name="preset1_C_slider"
                                                         Grid.Column="1"
                                                         Margin="8,0"
+                                                        KeyboardNavigation.TabIndex="147"
+                                                        AutomationProperties.LabeledBy="{Binding ElementName=labelPreset1Contrast}"
                                                         HorizontalContentAlignment="Stretch"
                                                         IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                         IsSnapToTickEnabled="True"
@@ -1354,6 +1493,8 @@
                                                         Name="preset1_ContrastTextBlock"
                                                         Grid.Column="2"
                                                         VerticalAlignment="Center"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="148"
+                                                        AutomationProperties.LabeledBy="{Binding ElementName=labelPreset1Contrast}"
                                                         Foreground="{DynamicResource PercentageTextColor}"
                                                         Text="{Binding Path=PR1ContrastValue, StringFormat={}{0}%}"
                                                         TextBlockSemanticColorType="Light"
@@ -1369,6 +1510,7 @@
                                                             MinWidth="173"
                                                             Height="40"
                                                             Padding="24,8"
+                                                            KeyboardNavigation.TabIndex="149"
                                                             ButtonSemanticColorType="Neutral"
                                                             ButtonType="Secondary"
                                                             Click="PR1_Preview_UXButton_Click"
@@ -1427,6 +1569,8 @@
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Bottom"
                                                             FontSize="16"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="151"
+                                                            Name="labelPreset2Name"
                                                             Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
                                                             Text="{Binding [Brightness.18], Source={x:Static lang:LangHelper.Instance}}"
                                                             TextBlockSemanticColorType="Light"
@@ -1439,6 +1583,8 @@
                                                             BorderBrush="#7E7E7E"
                                                             BorderThickness="1"
                                                             FontSize="14"
+                                                            KeyboardNavigation.TabIndex="152"
+                                                            AutomationProperties.LabeledBy="{Binding ElementName=labelPreset2Name}"
                                                             IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                             MaxLength="30"
                                                             PreviewTextInput="InputName_PreviewTextInput"
@@ -1471,6 +1617,8 @@
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Bottom"
                                                             FontSize="16"
+                                                            Name="labelPreset2StartTime"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="153"
                                                             Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
                                                             Text="{Binding [Brightness.15], Source={x:Static lang:LangHelper.Instance}}"
                                                             TextBlockSemanticColorType="Light"
@@ -1482,6 +1630,9 @@
                                                             Grid.Column="0"
                                                             Height="40"
                                                             MinWidth="70"
+                                                            KeyboardNavigation.TabIndex="154"
+                                                            AutomationProperties.LabeledBy="{Binding ElementName=labelPreset2StartTime}"
+                                                            KeyboardNavigation.TabNavigation="Continue"
                                                             IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding hOurs}"
                                                             SelectedItem="{Binding hOurs2, Mode=TwoWay}"
@@ -1496,6 +1647,9 @@
                                                             Grid.Column="2"
                                                             Height="40"
                                                             MinWidth="70"
+                                                            KeyboardNavigation.TabIndex="155"
+                                                            AutomationProperties.LabeledBy="{Binding ElementName=labelPreset2StartTime}"
+                                                            KeyboardNavigation.TabNavigation="Continue"
                                                             IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding mIns}"
                                                             SelectedItem="{Binding mIns2, Mode=TwoWay}"
@@ -1510,6 +1664,7 @@
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Center"
                                                             FontSize="15"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="156"       
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             Text="{Binding [PM], Source={x:Static lang:LangHelper.Instance}}"
                                                             TextBlockSemanticColorType="Light"
@@ -1542,6 +1697,8 @@
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Bottom"
                                                                 FontSize="16"
+                                                                Name="labelTransitionLength2"
+                                                                Focusable="True" KeyboardNavigation.TabIndex="157"
                                                                 Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
                                                                 Text="{Binding [Brightness.16], Source={x:Static lang:LangHelper.Instance}}"
                                                                 TextBlockSemanticColorType="Light"
@@ -1578,6 +1735,9 @@
                                                             Grid.Column="0"
                                                             Height="40"
                                                             MinWidth="70"
+                                                            KeyboardNavigation.TabIndex="159"
+                                                            KeyboardNavigation.TabNavigation="Continue"
+                                                            AutomationProperties.LabeledBy="{Binding ElementName=labelTransitionLength2}"
                                                             IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                             ItemsSource="{Binding dUration}"
                                                             SelectedItem="{Binding dUration2, Mode=TwoWay}"
@@ -1590,6 +1750,7 @@
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Center"
                                                             FontSize="16"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="160"
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             Text="{Binding [Min], Source={x:Static lang:LangHelper.Instance}}"
                                                             TextBlockSemanticColorType="Light"
@@ -1605,6 +1766,8 @@
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
+                                                        Name="labelPreset2Brightness"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="161"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                         Text="{Binding [Brightness], Source={x:Static lang:LangHelper.Instance}}"
                                                         TextBlockSemanticColorType="Light"
@@ -1635,6 +1798,8 @@
                                                         HorizontalContentAlignment="Stretch"
                                                         IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                         IsSnapToTickEnabled="True"
+                                                        KeyboardNavigation.TabIndex="163"
+                                                        AutomationProperties.LabeledBy="{Binding ElementName=labelPreset2Brightness}"
                                                         LargeChange="1"
                                                         Maximum="100"
                                                         Minimum="0"
@@ -1645,6 +1810,8 @@
                                                         Name="preset2_BrightnessTextBlock"
                                                         Grid.Column="2"
                                                         VerticalAlignment="Center"
+                                                        Focusable="True"
+                                                        KeyboardNavigation.TabIndex="164"
                                                         Foreground="{DynamicResource PercentageTextColor}"
                                                         Text="{Binding Path=PR2BrightnessValue, StringFormat={}{0}%}"
                                                         TextBlockSemanticColorType="Light"
@@ -1659,6 +1826,8 @@
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
+                                                        Name="labelPreset2Contrast"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="165"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                         Text="{Binding [Contrast], Source={x:Static lang:LangHelper.Instance}}"
                                                         TextBlockSemanticColorType="Light"
@@ -1688,6 +1857,8 @@
                                                         Margin="8,0"
                                                         HorizontalContentAlignment="Stretch"
                                                         IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
+                                                        KeyboardNavigation.TabIndex="167"
+                                                        AutomationProperties.LabeledBy="{Binding ElementName=labelPreset2Contrast}"
                                                         IsSnapToTickEnabled="True"
                                                         LargeChange="1"
                                                         Maximum="100"
@@ -1699,6 +1870,8 @@
                                                         Name="preset2_ContrastTextBlock"
                                                         Grid.Column="2"
                                                         VerticalAlignment="Center"
+                                                        Focusable="True"
+                                                        KeyboardNavigation.TabIndex="168"
                                                         Foreground="{DynamicResource PercentageTextColor}"
                                                         Text="{Binding Path=PR2ContrastValue, StringFormat={}{0}%}"
                                                         TextBlockSemanticColorType="Light"
@@ -1715,6 +1888,7 @@
                                                             Padding="24,8"
                                                             ButtonSemanticColorType="Neutral"
                                                             ButtonType="Secondary"
+                                                            KeyboardNavigation.TabIndex="169"
                                                             Click="PR2_Preview_UXButton_Click"
                                                             Content="{Binding PR2ButtonContent}"
                                                             CornerRadius="2"
@@ -1743,6 +1917,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
+                                            Focusable="True" KeyboardNavigation.TabIndex="171"
                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             Text="{Binding [Brightness.4], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
@@ -1780,7 +1955,22 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                            Visibility="{Binding synchronizeLock}" />
+                                            Visibility="{Binding synchronizeLock}">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
 
                                         <UXControls:UXToggleSwitch
                                             Name="ScheduledSynchronizeSwitch"
@@ -1793,6 +1983,8 @@
                                             Content="{Binding Path=IsSynchronize_Scheduled_String}"
                                             ContentPlacement="Left"
                                             ContentTextVisibility="True"
+                                            KeyboardNavigation.TabIndex="173"
+                                            AutomationProperties.LabeledBy="{Binding ElementName=ScheduledSynchronizeTextBlock}"
                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                             IsChecked="{Binding Path=IsSynchronize_Scheduled}"
                                             IsEnabled="{Binding IsSynchronizeDisabled, Converter={StaticResource InverseBooleanConverter}}" />
@@ -2442,7 +2634,22 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                            Visibility="{Binding synchronizeLock}" />
+                                            Visibility="{Binding synchronizeLock}">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
 
                                         <UXControls:UXToggleSwitch
                                             Name="ScheduledLuminanceSynchronizeSwitch"

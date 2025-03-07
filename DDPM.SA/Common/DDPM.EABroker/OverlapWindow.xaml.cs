@@ -162,7 +162,9 @@ namespace DDPM.EABroker
 
             //Enumerate all Window handle which will be fitered by IsTargetWindow()
             List<IntPtr> hWnds = Win32.GetWindowHandles(IsTargetWindow);
-            WriteLog($"@ EAEditWindow.CaptureCustomLayout(), Enum candidate Window and add Borders");
+            Rectangle rcScreen = screen.WorkingArea;
+            WriteLog($"@ EAEditWindow.CaptureCustomLayout(screen), Screen.WorkingArea=({rcScreen.Left},{rcScreen.Top}) {rcScreen.Width}x{rcScreen.Height}");
+
             //_cellJsons.Clear();
             int idx = -1;
             int addCount = 0;
@@ -176,11 +178,51 @@ namespace DDPM.EABroker
 
                 IntPtr hWndParent = Win32._GetParent(hWnd);
 
+                //Check if hWnd is in the target screen
+                //
+                //Get the Window Rect
                 Win32.RECT rcWnd = new Win32.RECT();
                 Win32._GetWindowRect(hWnd, out rcWnd);
-
+                WriteLog($"  #{idx}[{windowText}] ({rcWnd.Left},{rcWnd.Top}){rcWnd.Width}x{rcWnd.Height}");
+                //Convert RECT to Rectangle
+                Rectangle rectWnd = new Rectangle(rcWnd.Left, rcWnd.Top, rcWnd.Width, rcWnd.Height);
+                //Get the intersection of screen and window
+                Rectangle rectIntersect = Rectangle.Intersect(rcScreen, rectWnd);
+                //If they has not any intersection, then skip this window
+                if (rectIntersect.IsEmpty)
+                {
+                    WriteLog($"    #{idx}[{windowText}] Abandon: Not in target screen.");
+                    continue;
+                }
+                //Calculate intersection ratio
+                double areaWindow = rectWnd.Width * rectWnd.Height;
+                double areaIntersect = rectIntersect.Width * rectIntersect.Height;
+                if (areaWindow <= 0.000)
+                {
+                    WriteLog($"    #{idx} Abandon: Window size is zero.");
+                    continue;
+                }
+                double ratioIntersec = areaIntersect / areaWindow;
+                WriteLog($"    #{idx} Intersection {rectIntersect.Width}x{rectIntersect.Height}, ratio={ratioIntersec}");
+                if (rectIntersect.Width < 50.000)
+                {
+                    WriteLog($"    #{idx} Abandon: Intersec Width too small.");
+                    continue;
+                }
+                if (rectIntersect.Height < 50.000)
+                {
+                    WriteLog($"    #{idx} Abandon: Intersec Height too small.");
+                    continue;
+                }
+                if (ratioIntersec < 0.001)
+                {
+                    WriteLog($"    #{idx} Abandon: Intersec Ratio too small.");
+                    continue;
+                }
                 //WriteLog($"[{idx}] hWnd=0x{hWnd:X08}, hWndParent=0x{hWndParent:X08}, Text=[{windowText}], rcWnd=({rcWnd.Left},{rcWnd.Top}){rcWnd.Width}x{rcWnd.Height}");
 
+                //OLD: Before 2025-3-4
+                /*
                 //Check if the Window is in current screen
                 Screen screenOfhWnd = Screen.FromHandle(hWnd);
                 if (screenOfhWnd == null)
@@ -200,6 +242,7 @@ namespace DDPM.EABroker
                     WriteLog($"    [{idx}] Abandon: Not inside target screen (no acroess).");
                     continue;
                 }
+                */
 
                 //Get the Process from hWnd
                 Process process;
@@ -234,8 +277,20 @@ namespace DDPM.EABroker
                     continue;
                 }
 
+                //Trim the partion out of screen
+                if (rcWnd.Right > rcScreen.Right)
+                    rcWnd.Right = rcScreen.Right;
+                if (rcWnd.Bottom > rcScreen.Bottom)
+                    rcWnd.Bottom = rcScreen.Bottom;
+                if (rcWnd.Left < rcScreen.Left)
+                    rcWnd.Left = rcScreen.Left;
+                if (rcWnd.Top < rcScreen.Top)
+                    rcWnd.Top = rcScreen.Top;
+
                 double width = rcWnd.Width / scale;
                 double height = rcWnd.Height / scale;
+
+
 
                 //Add Border to canvas
                 //Border border = new Border();
@@ -286,11 +341,27 @@ namespace DDPM.EABroker
                 //Canvas.SetLeft(border, left);
                 //Canvas.SetTop(border, top);
 
+                //Reserve in screen area
+                //double r = left + width;
+                //double b = top + height;
+                //if (r > rcScreen.Right)
+                //    r = rcScreen.Right;
+                //if (b > rcScreen.Bottom)
+                //    b = rcScreen.Bottom;
+
+                //if (left < rcScreen.Left)
+                //    left = rcScreen.Left;
+                //if (top < rcScreen.Top)
+                //    top = rcScreen.Top;
+
+                //width = r - left;
+                //height = b - top;
+
                 settings.Add(left);
                 settings.Add(top);
                 settings.Add(width);
                 settings.Add(height);
-                WriteLog($"    [{idx}] Accept: Add a Border to EAEditWindow");
+                WriteLog($"    [{idx}] Accept: Add a Border ({left},{top}){width}x{height} to EAEditWindow");
 
                 //CellJson cellJson = new CellJson();
                 //cellJson.Name = $"0b{addCount}";

@@ -57,7 +57,75 @@ namespace DDPM.SA.Common.Defer
             writeToFile();
         }
 
+        // Add Error handling.
         public static List<string> displayConnected(List<MonitorInfo> list)
+        {
+            if (list == null)
+            {
+                throw new ArgumentNullException(nameof(list), "The list of MonitorInfo cannot be null.");
+            }
+
+            init();
+
+            if (listFwJob.Count == 0)
+            {
+                return null;
+            }
+
+            List<string> deferItems = new List<string>();
+            List<FwRule> fwRules = new List<FwRule>();
+
+            foreach (MonitorInfo info in list)
+            {
+                if (info?.edid == null)
+                {
+                    continue; // 跳過 info 或 info.edid 為 null 的情況
+                }
+
+                FwRule fwRule = new FwRule
+                {
+                    devicetype = Params.DeviceType.DISPLAY,
+                    model = info.edid.ModelName?.ToLower(),
+                    servicetag = info.edid.ServiceTag?.ToLower()
+                };
+
+                fwRules.Add(fwRule);
+            }
+
+            if (fwRules.Count == 0)
+            {
+                return null;
+            }
+
+            foreach (FwRule rule in fwRules)
+            {
+                foreach (string fwjob in listFwJob)
+                {
+                    // add @ 20250206 stephen : fix bug
+                    if (!fwjob.ToLower().Contains("model") && !fwjob.ToLower().Contains("servicetag"))
+                    {
+                        deferItems.Add(fwjob);
+                        continue;
+                    }
+
+                    if (fwjob.ToLower().Contains(rule.model) || fwjob.ToLower().Contains(rule.servicetag))
+                    {
+                        deferItems.Add(fwjob);
+                    }
+                }
+
+                foreach (string deferItem in deferItems)
+                {
+                    listFwJob.Remove(deferItem);
+                }
+            }
+
+            writeToFile();
+
+            return deferItems;
+        }
+
+        public static List<string> displayConnected_old(List<MonitorInfo> list)
         {
 
             init();

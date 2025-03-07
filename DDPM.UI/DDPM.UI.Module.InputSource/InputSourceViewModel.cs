@@ -183,7 +183,8 @@ namespace DDPM.UI.Module.InputSource
 
                 if (inputList != null)
                 {
-                    _inputsList.Clear();
+                    //_inputsList.Clear();
+                    _inputsList = new List<InputSourceList>();
                     foreach (var item in inputList)
                     {
                         _inputsList.Add(new InputSourceList()
@@ -330,6 +331,7 @@ namespace DDPM.UI.Module.InputSource
                 OnPropertyChanged("IsUSBH");
                 OnPropertyChanged("Items_Selected");
                 OnPropertyChanged("items"); //0607 Jason
+                OnPropertyChanged("InputsList");
 
                 //Lock/unlock data init here
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;

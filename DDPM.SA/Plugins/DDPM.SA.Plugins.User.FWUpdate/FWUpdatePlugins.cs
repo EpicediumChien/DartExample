@@ -774,6 +774,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 for (int i = 0; i < fwUpdateInfos.Count; i++)
                 {
                     _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} DeviceName : {fwUpdateInfos[i].DeviceName} Model : {fwUpdateInfos[i].Model} start");
+                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                    {
+                        DeviceName = fwUpdateInfos[i].DeviceName,
+                        Model = fwUpdateInfos[i].Model,
+                        TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                        ProcessName = "Downloading",
+                        ProcessProgress = 0,
+                    };
+                    sendMessageToEvent(updateProgressInfo);
                     string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                     string saveFolderName = Guid.NewGuid().ToString();
                     string savePath;
@@ -877,7 +886,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile finish");
                         _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
                         _downloadTimer.Stop();
-                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                        updateProgressInfo = new UpdateProgressInfo()
                         {
                             DeviceName = fwUpdateInfos[i].DeviceName,
                             Model = fwUpdateInfos[i].Model,

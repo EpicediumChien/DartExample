@@ -13,7 +13,6 @@
     <PackageReference Include="Dell.UnifiedAgent.Client" Version="1.4.8.2" />
     <PackageReference Include="Dell.TechHub.Settings" Version="1.5.7.1" />
     <PackageReference Include="Dell.DTM.Platinum.Sdk" Version="3.1.0" />
-    <PackageReference Include="MessagePack" Version="2.5.192" />
   </ItemGroup>
 
   <ItemGroup>

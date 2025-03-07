@@ -102,6 +102,7 @@
                 -->
                 <!--Chewlin 20250111 for fix Display page RestoreToDefault clipping issue(No PIMS number) change Width="176" to  MinWidth="176" ADD Width="auto"-->
                 <Button Grid.Row="1" Style="{StaticResource SecondaryButtonStyle}"  MinWidth="176" Width="auto" Click="Restore_Click"  Cursor="Hand" Margin="8,0,0,70" x:Name="btnRestore"
+                        KeyboardNavigation.TabIndex="29"
                         Visibility="{Binding IsRestoreBtnVisible}" AutomationProperties.Name="{Binding ElementName=txtRestore, Path=Text, Mode=OneWay}">
                     <Grid>
                         <Grid.ColumnDefinitions>

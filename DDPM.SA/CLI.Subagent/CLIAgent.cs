@@ -110,7 +110,7 @@ namespace CLI.Subagent
             while (!_Agent.IsStarted)
                 await Task.Delay(10);
 
-            if(!DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(LogLocation, out string info))
+            if (!DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(LogLocation, out string info))
             {
                 _Log.Error($"[CLI][StartAsync] error: {info}");
 #if DEBUG
@@ -132,7 +132,7 @@ namespace CLI.Subagent
                 return;
             }
             // 2024-08-28 Casper: move upper to let command parser work earlier
-            ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);            
+            ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
             List<CommandLineInput> commandLineInputs = new List<CommandLineInput>();
 
             //support multi-command one line, Dean 1115
@@ -247,7 +247,7 @@ namespace CLI.Subagent
                                 }
                             }
 
-                            if (!(isDefer || isForceWithNotice || isForceWithNoNotice) && 
+                            if (!(isDefer || isForceWithNotice || isForceWithNoNotice) &&
                                 CLIDefer(args, commandLineInput))
                             {
                                 return;
@@ -259,19 +259,20 @@ namespace CLI.Subagent
                         /// Need to replace defer, forceWithNotice, forceWithNoNotice with empty strings for subsequent CLI use.
                         else if (commandLineInput.Options.Count > 0)
                         {
-                            if (IsTelemetryConsent(commandLineInput))
-                            {
-                                if (commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITHNOTICE")))
-                                {
-                                    _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput);
-                                    return;
-                                }
+                            //if (IsTelemetryConsentInAppUpdateUpdateSourceLocation(commandLineInput))
+                            //{
+                            //    
+                            //    if (commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITHNOTICE")))
+                            //    {
+                            //        _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput);
+                            //        return;
+                            //    }
 
-                                if (!commandLineInput.Options.Any(_ => _.Option_Value.Contains("FORCEWITHNONOTICE")))
-                                {
-                                    commandLineInput.Options[0].Option_Value += ",FORCEWITHNONOTICE";
-                                }
-                            }
+                            //    if (!commandLineInput.Options.Any(_ => _.Option_Value.Contains("FORCEWITHNONOTICE")))
+                            //    {
+                            //        commandLineInput.Options[0].Option_Value += ",FORCEWITHNONOTICE";
+                            //    }
+                            //}
 
                             foreach (var option in commandLineInput.Options)
                             {
@@ -398,9 +399,9 @@ namespace CLI.Subagent
 
         private bool IsNotSupportDeferCommand(CommandLineInput commandLineInput)
         {
-            var notSupportTargetFeatures = new List<string> { "SILENTFWUPDATE", "UPDATESOURCELOCATION", "IMPORTSETTINGS" };
+            var notSupportTargetFeatures = new List<string> { "SILENTFWUPDATE", "UPDATESOURCELOCATION", "IMPORTSETTINGS", "TELEMETRYCONSENT", "INAPPUPDATE"};
 
-            if (commandLineInput.Options.Count > 0 && 
+            if (commandLineInput.Options.Count > 0 &&
                 commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITH")) &&
                 notSupportTargetFeatures.Any(_ => _.Equals(commandLineInput.TargetFeature)))
             {
@@ -416,10 +417,20 @@ namespace CLI.Subagent
             return commandLineInput.TargetType.Equals("APP") && commandLineInput.TargetFeature.Equals("UPDATE");
         }
 
-        private bool IsTelemetryConsent(CommandLineInput commandLineInput)
-        {
-            return commandLineInput.TargetType.Equals("APP") && commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT");
-        }
+        //private bool IsTelemetryConsentInAppUpdateUpdateSourceLocation(CommandLineInput commandLineInput)
+        //{
+        //    var validFeatures = new HashSet<string>
+        //    {
+        //        "TELEMETRYCONSENT",
+        //        "UPDATESOURCELOCATION",
+        //        "INAPPUPDATE"
+        //    };
+
+        //    if (commandLineInput.TargetType.Equals("APP") && validFeatures.Contains(commandLineInput.TargetFeature))
+        //        return true;
+        //    else 
+        //        return false;
+        //}
 
         private bool CLIFWUpdateCheckDevice(string[] args, CommandLineInput commandLineInput)
         {
@@ -476,8 +487,20 @@ namespace CLI.Subagent
                                                           .Replace(",FORCEWITHNOTICE", "")
                                                           .Replace("FORCEWITHNOTICE", "")));
 
-            var deferItem = new DeferItem(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds);
-            _CliManagerPlugin.showNotification(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), deferItem);
+            try
+            {
+                var deferItem = new DeferItem(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds);
+                _CliManagerPlugin.showNotification(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), deferItem);
+            }
+            catch (Exception ex)
+            {
+                _Log.Error($"[CLI] CLIForceWithNotice exception: {ex.ToString}");
+#if DEBUG
+                Console.WriteLine($"[CLI] CLIForceWithNotice exception: {ex.ToString}");
+#endif
+            }
+
+
             //Thread.Sleep(5000);
         }
         #endregion

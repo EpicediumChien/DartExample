@@ -1,6 +1,9 @@
 @echo OFF
 :: start /wait /B cmd.exe /C .\del_files.bat
 
+
+
+
 set NET=net8.0
 :: dotnet.exe build -c "Debug" /p:Framework=%NET% /p:platform="Any CPU" /p:EnableWindowsTargeting=true ".\DDPM.SA\DDPM.SA.sln"
 :: dotnet.exe build -c "Debug" /p:Framework=%NET% /p:platform="Any CPU" /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.UI.sln"
@@ -12,6 +15,21 @@ set build_arch="Any CPU"
 
 ::Build for [Release] or [Debug]
 set ConfigType=%1
+
+
+::-----------
+::SA related folders
+set Dir_Subagent_assemblies=.\DDPM.SA\dll
+set Dir_Subagent_CommonDll=.\DDPM.SA\bin\CommonDll\%ConfigType%\net8.0-windows10.0.19041.0
+set Dir_Subagent_user=.\DDPM.SA\bin\DDPM.Subagent.User\%ConfigType%\net8.0-windows10.0.19041.0
+set Dir_Subagent_sys=.\DDPM.SA\bin\DDPM.Subagent\%ConfigType%\net8.0-windows10.0.19041.0
+set Dir_Subagent_cli=.\DDPM.SA\bin\CLI.Subagent\%ConfigType%\net8.0-windows10.0.19041.0
+::-----------
+::UI related folders
+set Dir_UI_CommonDll=.\DDPM.UI\CommonDll
+set Dir_UI_output=.\DDPM.UI\bin\net8.0-windows10.0.19041.0
+
+
 
 ::It's going to build UI.
 set GetGotoUI=%2
@@ -57,8 +75,8 @@ echo BUILD DDPM.Easy.Common SUCCESS
 echo BUILD DDPM.Easy.Common SUCCESS
 echo BUILD DDPM.Easy.Common SUCCESS
 echo *************************************
-xcopy /Y ".\DDPM.UI\bin\%NET%-windows10.0.19041.0\DDPM.Easy.Common.dll" ".\DDPM.SA\dll\DDPM.Easy.Common.dll"  
-xcopy /Y ".\DDPM.UI\bin\%NET%-windows10.0.19041.0\DDPM.Easy.Common.deps.json" ".\DDPM.SA\dll\DDPM.Easy.Common.deps.json"  
+xcopy /Y /S /Q ".\DDPM.UI\bin\%NET%-windows10.0.19041.0\DDPM.Easy.Common.dll" ".\DDPM.SA\dll\DDPM.Easy.Common.dll"  
+xcopy /Y /S /Q ".\DDPM.UI\bin\%NET%-windows10.0.19041.0\DDPM.Easy.Common.deps.json" ".\DDPM.SA\dll\DDPM.Easy.Common.deps.json"  
 
 
 
@@ -89,6 +107,9 @@ if errorlevel 1 goto errorSA
 :: pause
 echo Build SA
 dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.SA\DDPM.SA.sln"
+xcopy "%Dir_Subagent_CommonDll%\*.*" "%Dir_UI_CommonDll%\" /Y /S /Q
+xcopy "%Dir_Subagent_CommonDll%\DDPM.SA.Common.*" "%RootDir%\DdpmSwUpdater\CommonDll\" /Y /S /Q
+xcopy "%Dir_Subagent_CommonDll%\VcpCore.Common.*" "%RootDir%\DdpmSwUpdater\CommonDll\" /Y /S /Q
 :: msbuild .\DDPM.SA\DDPM.SA.sln  /p:platform=%build_arch% /p:configuration=%ConfigType%
 if errorlevel 1 goto errorSA
 echo *************************************

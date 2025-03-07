@@ -22,7 +22,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
     [Descriptor(Description = Description)]
     [Publisher(Name = "DDPM KeyboardPlugin", Support = "Wistron DDPM Team")]
     [ExcludeFromCodeCoverage]
-    public class Keyboardplugin : IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
+    public class Keyboardplugin : IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
     {
         private const string PluginId = UI.Common.Constants.KeyboardPluginId;
         private const string PluginName = "Keyboard plugin";

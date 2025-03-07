@@ -11,44 +11,58 @@
         Width="600"
         WindowStyle="None"
         AllowsTransparency="True"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterOwner"
         Background="Transparent"
         Topmost="True"
         ResizeMode="NoResize" Deactivated="Window_Deactivated"
         Loaded="UXWindow_Loaded">
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
-    <Border  BorderThickness="1" CornerRadius="10" BorderBrush="{DynamicResource PartBorderColor}" Background="{DynamicResource PartBorderColor}">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-            </Grid.RowDefinitions>
-            <Border  BorderThickness="1" CornerRadius="10"  Width="25" Height="25" Margin="5" Grid.Row="0"  HorizontalAlignment="Right"
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+        <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+  <Border Padding="12,8"  BorderThickness="1" CornerRadius="10" BorderBrush="{StaticResource BorderStyle1_BgColor}" Background="{DynamicResource PartBorderColor}">
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"></RowDefinition>
+        <RowDefinition Height="*"></RowDefinition>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="auto"/>
+      </Grid.ColumnDefinitions>
+      <Border CornerRadius="10" Width="25" Height="25" Margin="5" Grid.Row="1"  HorizontalAlignment="Right"
                     VerticalAlignment="Top" MouseDown="Grid_MouseDown" >
-                <Grid  MouseDown="Grid_MouseDown" >
-                    <Path VerticalAlignment="Center" HorizontalAlignment="Center"  MouseDown="Grid_MouseDown"
+        <Grid  MouseDown="Grid_MouseDown" >
+          <Path VerticalAlignment="Center" HorizontalAlignment="Center"  MouseDown="Grid_MouseDown"
                   Data="M14 0.7175L13.2825 0L7 6.3L0.7175 0.04375L0 0.76125L6.25625 7L0.04375 13.2388L0.76125 14L7 7.74375L13.2388 14L13.9563 13.2825L7.7 7L14 0.7175Z" />
-                </Grid>
-            </Border>
-            <Grid Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <UXControls:UXTextBlock  Grid.Column="0"
-                                     FontSize="20"
+        </Grid>
+      </Border>
+      <Grid Grid.Row="1">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <UXControls:UXTextBlock  Grid.Column="0" Margin="16,20,0,0"
+                                     FontSize="20" FontWeight="Normal" FontFamily="Roboto"
                                      Text="{Binding [ThirdPartyLicense.Title], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"/>
-                <UXControls:UXScrollViewer Grid.Row="1"
-                                       Margin="0,10,0,0">
-                    <StackPanel>
-                        <ItemsControl ItemsSource="{Binding ThirdPartyLicensesList}"
+        <UXControls:UXScrollViewer Grid.Row="1"
+                                       Margin="6,10,0,0">
+          <StackPanel>
+            <RichTextBox Name="txtThirdPartyLicense" IsReadOnly="True" PreviewKeyDown="txtThirdPartyLicense_PreviewKeyDown" Background="Transparent" 
+                         FontFamily="Roboto" BorderThickness="0" ContextMenuOpening="txtThirdPartyLicense_ContextMenuOpening">
+              <RichTextBox.ContextMenu>
+                <ContextMenu>
+                  <MenuItem Header="{Binding [Copy], Source={x:Static lang:LangHelper.Instance}}"
+                              Command="ApplicationCommands.Copy"
+                              IsEnabled="False"/>
+                </ContextMenu>
+              </RichTextBox.ContextMenu>
+            </RichTextBox>
+            <!--<ItemsControl ItemsSource="{Binding ThirdPartyLicensesList}"
                                   Name="listTopics"
                                   BorderThickness="0">
                             <ItemsControl.ItemTemplate>
@@ -56,7 +70,7 @@
                                     <StackPanel>
                                         <UXControls:UXTextBlock  Grid.Column="0"
                                                              Width="524"
-                                                             FontSize="20"
+                                                             FontSize="20" FontFamily="Roboto"
                                                              FontWeight="Bold"
                                                              TextWrapping="WrapWithOverflow"
                                                              local:SelectableTextBlockBehavior.IsSelectable="True"
@@ -64,7 +78,7 @@
                                                              Text="{Binding Title}" />
                                         <UXControls:UXTextBlock  Grid.Column="0"
                                                              Width="524"
-                                                             FontSize="15"
+                                                             FontSize="15" FontFamily="Roboto"
                                                              TextWrapping="WrapWithOverflow"
                                                              local:SelectableTextBlockBehavior.IsSelectable="True"
                                                              local:SelectableTextBlockBehavior.CopyText="{Binding TextToCopy}"
@@ -72,11 +86,11 @@
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </UXControls:UXScrollViewer>
-            </Grid>
-        </Grid>
+                        </ItemsControl>-->
+          </StackPanel>
+        </UXControls:UXScrollViewer>
+      </Grid>
+    </Grid>
 
-    </Border>
+  </Border>
 </Window>

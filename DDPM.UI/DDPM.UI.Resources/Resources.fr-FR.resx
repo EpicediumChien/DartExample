@@ -595,10 +595,10 @@
     <value>Permet d’accéder rapidement aux commandes de conférence. Si elles sont activées,\nles touches s’afficheront sur le clavier lors d’un appel Microsoft Teams ou Zoom.\nElles seront masquées dans le cas contraire.</value>
   </data>
   <data name="Collaboration.3" xml:space="preserve">
-    <value>Activez l’effet de clignotement à réception d’un nouveau message de chat\nau cours d’une conférence</value>
+    <value>Activez l’effet de clignotement à réception d’un nouveau message de chat au cours d’une conférence</value>
   </data>
   <data name="Collaboration.4" xml:space="preserve">
-    <value>Activez les icônes du clavier par une double pression plutôt\nqu’une simple pression</value>
+    <value>Activez les icônes du clavier par une double pression plutôt qu’une simple pression</value>
   </data>
   <data name="Collaboration.5" xml:space="preserve">
     <value>Pour utiliser le clavier de collaboration avec Microsoft Teams, assurez-vous que vous êtes connecté, que vous utilisez la dernière version de Microsoft Teams et que l’API d’application tierce est activée</value>
@@ -2284,10 +2284,10 @@
     <value>Connexion du récepteur sans fil</value>
   </data>
   <data name="ConsentNo" xml:space="preserve">
-    <value>Non, je n&apos;accepte pas</value>
+    <value>Non, je n'accepte pas</value>
   </data>
   <data name="ConsentYes" xml:space="preserve">
-    <value>Oui, j&apos;accepte</value>
+    <value>Oui, j'accepte</value>
   </data>
   <data name="AppName" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
@@ -3370,7 +3370,7 @@
     <value>Power Automate</value>
   </data>
   <data name="SnippingTool" xml:space="preserve">
-    <value>Outil Capture d&apos;écran</value>
+    <value>Outil Capture d'écran</value>
   </data>
   <data name="SolitaireCasualGames" xml:space="preserve">
     <value>Solitaire &amp; Casual Games</value>
@@ -3406,7 +3406,7 @@
     <value>Piste suivante</value>
   </data>
   <data name="PrtSc" xml:space="preserve">
-    <value>Impression d&apos;écran</value>
+    <value>Impression d'écran</value>
   </data>
   <data name="ScrollLock" xml:space="preserve">
     <value>Arrêt défil</value>

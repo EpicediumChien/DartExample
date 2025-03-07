@@ -23,7 +23,7 @@ namespace DDPM.UI.Plugin.BootloaderPlugin
     [Descriptor(Description = TileDetailText)]
     [Publisher(Name = "DDPM BootloaderPlugin", Support = "Wistron DDPM Team")]
     [ExcludeFromCodeCoverage]
-    public class BootloaderPlugin : IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
+    public class BootloaderPlugin : IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
     {
         private const string PluginId = UI.Common.Constants.BootloaderPluginId;
         private const string PluginName = "Bootloader plugin";
