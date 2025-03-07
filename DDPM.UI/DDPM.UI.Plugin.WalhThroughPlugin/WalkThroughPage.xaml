@@ -127,8 +127,12 @@
                             <!-- Elsa 20250116 change Width="164" to MinWidth="164" for Next Button's Text clipping -->
                             <UXControls:UXButton x:Name="NextBtn" IconPosition="IconRight" HorizontalContentAlignment="Center" ButtonType="Primary" Padding="20, 8" ButtonSize="Medium" VerticalContentAlignment="Center" Margin="10, 0, 0, 0" IconAnimation="Move" MinWidth="164" Height="40" Click="NextBtn_Click">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <UXControls:UXTextBlock Margin="8,0" Text="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"/>
-                                    <Path x:Name="ArrowPath" Margin="0,2" Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white">
+                                    <UXControls:UXTextBlock Margin="8,0" Text="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"
+                                                            Visibility="{Binding SkipButtonVisibility}"/>
+                                    <UXControls:UXTextBlock Margin="8,0" Text="{Binding [Finish], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"
+                                                            Visibility="{Binding FinishButtonVisibility}"/>
+                                    <Path x:Name="ArrowPath" Margin="0,2" Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white"
+                                          Visibility="{Binding SkipButtonVisibility}">
                                         <Path.RenderTransform>
                                             <ScaleTransform ScaleX="1" ScaleY="1"/>
                                         </Path.RenderTransform>

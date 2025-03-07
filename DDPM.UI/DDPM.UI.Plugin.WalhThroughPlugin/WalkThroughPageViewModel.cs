@@ -346,6 +346,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             // refresh button
             ArrowButtonVisibility = (_currentPageIndex == 0) ? Visibility.Collapsed : Visibility.Visible;
             SkipButtonVisibility = _currentPageIndex < _currentTotalPage ? Visibility.Visible : Visibility.Collapsed;
+            FinishButtonVisibility = SkipButtonVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public void ControlIcon(bool show_hide, bool IsEnabled = true)
@@ -380,6 +381,13 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             get => _skipButtonVisibility;
             set => SetProperty(ref _skipButtonVisibility, value);
+        }
+
+        private Visibility _finishButtonVisibility = Visibility.Collapsed;
+        public Visibility FinishButtonVisibility
+        {
+            get => _finishButtonVisibility;
+            set => SetProperty(ref _finishButtonVisibility, value);
         }
 
         public List<HomeDevice> HomeDevices
