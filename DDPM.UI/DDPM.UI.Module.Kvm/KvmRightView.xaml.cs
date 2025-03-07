@@ -158,17 +158,14 @@ namespace DDPM.UI.Module.Kvm
                     //vm.SetPXP = Visibility.Collapsed;
                     //vm.EditInput = Visibility.Visible;
                     //vm.EditPXP = Visibility.Visible;
-                    InputSourceFullView _inputSourceFullView = new InputSourceFullView();
-                    _inputSourceFullView.DataContext = vm;
-                    DdpmCommonHelper.ModuleOwner?.OpenFullView(_inputSourceFullView);
                 }
                 else
                 {
                     vm.Invoke_USBKVM();
-                    InputSourceFullView _inputSourceFullView = new InputSourceFullView();
-                    _inputSourceFullView.DataContext = this;
-                    DdpmCommonHelper.ModuleOwner?.OpenFullView(_inputSourceFullView);
                 }
+                InputSourceFullView _inputSourceFullView = new InputSourceFullView();
+                _inputSourceFullView.DataContext = vm;
+                DdpmCommonHelper.ModuleOwner?.OpenFullView(_inputSourceFullView);
             }
         }
 
