@@ -73,7 +73,7 @@ namespace DDPM.SA.Common
 
         Task<bool> CallWindowsDisplaySetting();
 
-        Task<bool> GetHDRStatus(MonitorInfo monitorInfos);
+        Task<bool> GetHDRStatus(MonitorInfo monitorInfos, bool reGet = false);
 
         Task<bool> SetHDRStatus(MonitorInfo monitorInfos, bool onoff);
 

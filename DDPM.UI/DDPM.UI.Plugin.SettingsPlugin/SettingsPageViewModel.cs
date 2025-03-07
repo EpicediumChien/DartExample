@@ -530,6 +530,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     }
                 }
             }
+            Log?.Info($"Critical_UpdateList_UI.Count : {Critical_UpdateList_UI.Count}");
+            Log?.Info($"Recommended_UpdateList_UI.Count : {Recommended_UpdateList_UI.Count}");
+            Log?.Info($"Optional_UpdateList_UI.Count : {Optional_UpdateList_UI.Count}");
             Log?.Info($"SetUpdateInfoUI done");
         }
 
@@ -754,39 +757,48 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 Log?.Info($"DeviceChanged deviceChangedEventArgs.deviceID : {deviceChangedEventArgs.deviceID}");
                 foreach (UIUpdateInfo uiUpdateInfo in Critical_UpdateList_UI)
                 {
-                    if (uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
+                    if (uiUpdateInfo.FWUpdateInfo != null && !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId))
                     {
-                        ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
-                        uiUpdateInfo.Refresh();
-                        OnPropertyChanged("Critical_UpdateList_UI");
-                        return;
+                        if (uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
+                        {
+                            ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
+                            uiUpdateInfo.Refresh();
+                            OnPropertyChanged("Critical_UpdateList_UI");
+                            return;
+                        }
                     }
                 }
                 foreach (UIUpdateInfo uiUpdateInfo in Recommended_UpdateList_UI)
                 {
-                    if (uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
+                    if (uiUpdateInfo.FWUpdateInfo != null && !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId))
                     {
-                        ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
-                        uiUpdateInfo.Refresh();
-                        OnPropertyChanged("Recommended_UpdateList_UI");
-                        return;
+                        if (uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
+                        {
+                            ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
+                            uiUpdateInfo.Refresh();
+                            OnPropertyChanged("Recommended_UpdateList_UI");
+                            return;
+                        }
                     }
                 }
                 foreach (UIUpdateInfo uiUpdateInfo in Optional_UpdateList_UI)
                 {
-                    if (uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
+                    if (uiUpdateInfo.FWUpdateInfo != null && !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId))
                     {
-                        ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
-                        uiUpdateInfo.Refresh();
-                        OnPropertyChanged("Optional_UpdateList_UI");
-                        return;
+                        if (uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
+                        {
+                            ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
+                            uiUpdateInfo.Refresh();
+                            OnPropertyChanged("Optional_UpdateList_UI");
+                            return;
+                        }
                     }
                 }
             }
         }
         private void ChangeStatus(UIUpdateInfo uiUpdateInfo, DeviceChangedEventArgs deviceChangedEventArgs)
         {
-            
+
             if (uiUpdateInfo != null)
             {
                 uiUpdateInfo.UXAlertItemVisibility = Visibility.Collapsed;

@@ -2734,7 +2734,7 @@ namespace VcpCore.Plugins
 
                 do
                 {
-                    bool r = Set_VCPCapability(monitor, ctr, checkMask, false);
+                    bool r = Set_VCPCapability(monitor, ctr, checkMask, false, false);
 
                     if (r)
                     {
@@ -3446,7 +3446,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        private bool Set_VCPCapability(MonitorInfo_complex monitorInfoX, byte code, uint val, bool retry = true)
+        private bool Set_VCPCapability(MonitorInfo_complex monitorInfoX, byte code, uint val, bool retry = true, bool IsNotifyVcpCanghed = true)
         {
             try
             {
@@ -3467,12 +3467,15 @@ namespace VcpCore.Plugins
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ Set_VCPCapability ctr code is " + code.ToString("X"));
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ Set_VCPCapability ctr code value is " + val.ToString());
 
-                            VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
-                            _VCPchangedEventArgs.vcpcode = code.ToString("X");
-                            _VCPchangedEventArgs.value = val.ToString();
-                            _VCPchangedEventArgs.monitor = mo_tmp;
+                            if (IsNotifyVcpCanghed)//Bruce Added 0306
+                            {
+                                VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
+                                _VCPchangedEventArgs.vcpcode = code.ToString("X");
+                                _VCPchangedEventArgs.value = val.ToString();
+                                _VCPchangedEventArgs.monitor = mo_tmp;
 
-                            OnVCPchanged(_VCPchangedEventArgs);
+                                OnVCPchanged(_VCPchangedEventArgs);
+                            }
 
                             return rc;
                         }
