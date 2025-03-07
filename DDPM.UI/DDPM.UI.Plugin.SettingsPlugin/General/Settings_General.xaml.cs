@@ -130,7 +130,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         // 10/12/2024 Derek add for RWD
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            // PIMS-348210 no need to change orientation
             //if (this.ActualWidth <= breakPoints - 212 - 50)
             //    reportsStackPanel.Orientation = System.Windows.Controls.Orientation.Vertical;
             //else
@@ -141,6 +140,12 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 btnSaveDiagnosticReport.Width = btnSaveMonitorAssetReport.ActualWidth;
             else
                 btnSaveMonitorAssetReport.Width = btnSaveDiagnosticReport.ActualWidth;
+
+            // PIMS-348210 no need to change orientation
+            if (btnSaveDiagnosticReport.ActualWidth + btnSaveMonitorAssetReport.ActualWidth > reportsBorder.ActualWidth - 70)
+                reportsStackPanel.Orientation = System.Windows.Controls.Orientation.Vertical;
+            else
+                reportsStackPanel.Orientation = System.Windows.Controls.Orientation.Horizontal;
         }
     }
 }
