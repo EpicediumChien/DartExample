@@ -402,14 +402,19 @@ namespace CLI.Subagent
             var notSupportTargetFeatures = new List<string> { "SILENTFWUPDATE", "UPDATESOURCELOCATION", "IMPORTSETTINGS", "TELEMETRYCONSENT", "INAPPUPDATE"};
 
             if (commandLineInput.Options.Count > 0 &&
-                commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITH")) &&
+                commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITHNOTICE")) &&
                 notSupportTargetFeatures.Any(_ => _.Equals(commandLineInput.TargetFeature)))
             {
                 _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput);
                 return true;
             }
-
-            return false;
+            if (commandLineInput.Options.Count > 0 &&
+                !commandLineInput.Options.Any(_ => _.Option_Value.Contains("FORCEWITHNONOTICE")) &&
+                notSupportTargetFeatures.Any(_ => _.Equals(commandLineInput.TargetFeature)))
+            {
+                    commandLineInput.Options[0].Option_Value += ",FORCEWITHNONOTICE";
+            }
+                return false;
         }
 
         private bool IsSWUpdate(CommandLineInput commandLineInput)
