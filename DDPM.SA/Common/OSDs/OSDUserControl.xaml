@@ -108,7 +108,39 @@
             </Canvas>
         </DataTemplate>
 
-
+        <DataTemplate x:Key="QAM">
+            <!--QAM-->
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Vertical">
+                <TextBlock Grid.Row="0" Margin="5,5,5,0"
+                           x:Name="ShowStringText"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Top"
+                           FontFamily="Roboto"
+                           MinWidth="270"
+                           MinHeight="40"
+                           TextWrapping="WrapWithOverflow"
+                           FontSize="14"
+                           FontWeight="Medium"
+                           Foreground="{DynamicResource Default_SA_QAM_Path_BkColor}"
+                           Text="{Binding DataContext.ShowStringTitle, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
+                <Button Grid.Row="1" Margin="0,5,0,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        FontFamily="Roboto"
+                        Width="Auto"
+                        Height="40"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Click="Button_Click"
+                        Style="{StaticResource PrimaryButtonStyle}">
+                    <Button.Content>
+                        <TextBlock Margin="0,0" Text="{Binding DataContext.ShowStringContent, RelativeSource={RelativeSource AncestorType=ContentControl,AncestorLevel=2}}"></TextBlock>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </DataTemplate>
 
     </UserControl.Resources>
     <Grid
@@ -167,16 +199,32 @@
                                     <DataTrigger Binding="{Binding OSDType_Device}" Value="Pen">
                                         <Setter Property="ContentTemplate" Value="{StaticResource PencilIcon}"/>
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="QAM">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource QAM}"/>
+                                        <Setter Property="Grid.RowSpan" Value="2"/>
+                                    </DataTrigger>
+
                                 </Style.Triggers>
                             </Style>
                         </ContentControl.Style>
                     </ContentControl>
 
-                    <StackPanel
+                    <StackPanel                   
+                     x:Name="StringPart"
                      Grid.Row="1"
                      HorizontalAlignment="Center"
                      VerticalAlignment="Center"
                      Orientation="Vertical">
+
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="QAM">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
 
                         <TextBlock
                          HorizontalAlignment="Center"

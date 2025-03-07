@@ -78,7 +78,8 @@ namespace DDPM.OSDs
                     {
                         GUID = guid,
                         OSDType_Device = oSDType_Device,
-                        ShowStringTitle = title + "(" + guid.Substring(0, 4) + ")",
+                        ShowStringTitle = title,
+                        /* ShowStringTitle = title + "(" + guid.Substring(0, 4) + ")",*/
                         ShowStringContent = content
                     });
                 }
@@ -102,10 +103,6 @@ namespace DDPM.OSDs
                 if (OSDMainWin != null)
                 {
                     OSDMainWin.OSDWins.ForEach(x => x.IsFadeOut = true);
-                    /* foreach (var item in OSDMainWin.OSDWins)
-                     {
-                         item.IsFadeOut = true;
-                     }*/
                 }
             }
 
