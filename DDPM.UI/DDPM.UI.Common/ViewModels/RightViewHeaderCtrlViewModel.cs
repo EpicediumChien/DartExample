@@ -79,8 +79,10 @@ namespace DDPM.UI.Common
         public void SetHeaders(RightViewHeader[] headers)
         {
             _itemCount = headers.Length;
-            if (_itemCount >= 3) _itemCount = 3;
-            if (_itemCount <= 1) _itemCount = 0;
+            if (_itemCount >= 3)
+                _itemCount = 3;
+            if (_itemCount <= 1)
+                _itemCount = 0;
 
             _shownCount = 0;
             for (int i = 0; i < _itemCount; i++)
@@ -279,6 +281,13 @@ namespace DDPM.UI.Common
             get => (int)_internalSelectedIndex;
             set => SetProperty(ref _internalSelectedIndex, value);
         }
+        private int _hoverSelectedIndex = -1;
+
+        public int HoverSelectedIndex
+        {
+            get => (int)_hoverSelectedIndex;
+            set => SetProperty(ref _hoverSelectedIndex, value);
+        }
 
         /// <summary>
         /// Set from user side (DisplayPageView)
@@ -323,7 +332,7 @@ namespace DDPM.UI.Common
             {
                 if (_shownCount == 2)
                 {
-                    switch(_caseNo)
+                    switch (_caseNo)
                     {
                         case 2:
                             if (value == 0)
