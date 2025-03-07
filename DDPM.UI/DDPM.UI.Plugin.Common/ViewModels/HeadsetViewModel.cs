@@ -2004,65 +2004,100 @@ namespace DDPM.UI.Plugin.ViewModels
             if (_deviceManager.GetDTPProxyPluginReady().Result)
             {
                 IsDTPReady = true;
-                _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetDTPProxyPluginReady, true ...");
+                _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetDTPProxyPluginReady, IsDTPReady true ...");
             }
             else
             {
                 IsDTPReady = false;
-                _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetDTPProxyPluginReady, false ...");
+                _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetDTPProxyPluginReady, IsDTPReady false ...");
             }
-            if (!_waitHeadsetReady) //If false, re-get once time
-                _waitHeadsetReady = _deviceManager.GetIsReadyAsync(CurrentDeviceID.ToString()).Result;
-            //Thread.Sleep(500);
-            //if ((FirmwareVersion2 == null || FirmwareVersion2 == "0.0.0.0") || !_waitHeadsetReady)
-            if (!_waitHeadsetReady)
-            {
-                int tick = 0;
-                while (!_deviceManager.GetIsReadyAsync(CurrentDeviceID.ToString()).Result)
-                {
-                    _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetIsReadyAsync, false ... {tick.ToString()}");
-                    if (tick >= 20) // 20 sec force exit
-                    {
-                        _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... Can not get HeadsetReady ...... {tick.ToString()} sec, fail ...");
-                        break;
-                    }
-                    Thread.Sleep(1000); // IL provide info, DPeM 18 need 3sec, DPeM 20 need 18~25 sec,
-                    tick++;
-                }
-                if (_waitHeadsetReady)
-                {
-                    FirmwareVersion2 = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
-                    if (FirmwareVersion2 != null && FirmwareVersion2 != "0.0.0.0")
-                    {
-                        FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
-                        _waitHeadsetReady = true;
-                        _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... Get waitHeadsetReady event True, {FirmwareVersion2} ...... ");
-                    }
-                    else
-                    {
-                        FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
-                        _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... Get waitHeadsetReady event True, but {FirmwareVersion2} ...... ");
-                    }
-                }
-            }
-            else
-            {
-                _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetHeadsetFirmwareVersionAsync ...... DTP success ...");
-                _waitHeadsetReady = true;
-                if (!FirmwareVersion2.Contains(Strings.FirmwareVersion))
-                    FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
-                _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... Firmware Version from DTP ... {FirmwareVersion2} ...");
-            }
+
             if (IsDTPReady)
+            {
+                if (!_waitHeadsetReady)
+                {
+                    int tick = 0;
+                    while (!_deviceManager.GetIsReadyAsync(CurrentDeviceID.ToString()).Result)
+                    {
+                        _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetIsReadyAsync, false ... {tick.ToString()}");
+                        if (tick >= 20) // 20 sec force exit
+                        {
+                            _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... Can not get HeadsetReady ...... {tick.ToString()} sec, fail ...");
+                            break;
+                        }
+                        Thread.Sleep(1000); // IL provide info, DPeM 18 need 3sec, DPeM 20 need 18~25 sec,
+                        tick++;
+                    }
+                    if (_waitHeadsetReady)
+                    {
+                        FirmwareVersion2 = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
+                        if (FirmwareVersion2 != null && FirmwareVersion2 != "0.0.0.0")
+                        {
+                            FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
+                            _waitHeadsetReady = true;
+                            _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... Get waitHeadsetReady event True, {FirmwareVersion2} ...... ");
+                        }
+                        else
+                        {
+                            FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
+                            _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... Get waitHeadsetReady event True, but {FirmwareVersion2} ...... ");
+                        }
+                    }
+                }
+                else
+                {
+                    _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetHeadsetFirmwareVersionAsync ...... DTP success ...");
+                    _waitHeadsetReady = true;
+                    if (!FirmwareVersion2.Contains(Strings.FirmwareVersion))
+                        FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
+                    _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... Firmware Version from DTP ... {FirmwareVersion2} ...");
+                }
                 UpdateDTPValue();
+            }
             else
+            {
+                if (!_waitHeadsetReady)
+                {
+                    int tick = 0;
+                    while (!CurrentDeviceInfo!.IsReady)
+                    {
+                        _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... DTH_IsReady, false ... {tick.ToString()}");
+                        if (tick >= 20) // 20 sec force exit
+                        {
+                            _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... Can not get DTH_IsReady ...... {tick.ToString()} sec, fail ...");
+                            break;
+                        }
+                        Thread.Sleep(1000); // IL provide info, DPeM 18 need 3sec, DPeM 20 need 18~25 sec,
+                        tick++;
+                    }
+                    if (_waitHeadsetReady)
+                    {
+                        FirmwareVersion2 = CurrentDeviceInfo.FirmwareVersion;
+                        if (FirmwareVersion2 != null && FirmwareVersion2 != "0.0.0.0")
+                        {
+                            FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
+                            _waitHeadsetReady = true;
+                            _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... DTH_IsReady True, {FirmwareVersion2} ...... ");
+                        }
+                        else
+                        {
+                            FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
+                            _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... DTH_IsReady True, but {FirmwareVersion2} ...... ");
+                        }
+                    }
+                }
+                else
+                {
+                    _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... DTH_IsReady ...... success ...");
+                    _waitHeadsetReady = true;
+                    if (!FirmwareVersion2.Contains(Strings.FirmwareVersion))
+                        FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
+                    _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... Firmware Version from DTH ... {FirmwareVersion2} ...");
+                }
                 UpdateDTHValue();
-            // Call DetectPageShow
+            }
+
             DetectPageShow(model);
-            //System.Windows.Application.Current.Dispatcher.Invoke(() =>
-            //{
-            //    HeadsetGroupChanged?.Invoke(this, EventArgs.Empty);
-            //});
             Thread.Sleep(500);
             HidePleaseWait();
         }
@@ -2072,16 +2107,16 @@ namespace DDPM.UI.Plugin.ViewModels
             vm.ShowPleaseWait();
             try
             {
-                using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
-                {
-                    Task.Run(() => DoWork_PleaseWait(model, vm), cts.Token);
-                }
+                //using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+                //{
+                Task.Run(() => DoWork_PleaseWait(model, vm));
+                //}
             }
-            catch (OperationCanceledException)
-            {
-                _log!.Error("[HeadsetViewModel] Invoke_PleaseWaitAsync timed out");
-                throw;
-            }
+            //catch (OperationCanceledException)
+            //{
+            //    _log!.Error("[HeadsetViewModel] Invoke_PleaseWaitAsync timed out");
+            //    throw;
+            //}
             catch (Exception ex)
             {
                 vm._log!.Error($"[HeadsetViewModel] Invoke_PleaseWaitAsync exception: {ex.Message}");
