@@ -2,7 +2,7 @@
   "profiles": {
     "GenDdpmSplashImages": {
       "commandName": "Project",
-      "commandLineArgs": "-Dir \"D:\\DDPM\\GenDdpmSplashImages\\bin\\Release\\net6.0-windows10.0.19041.0\" -Year 2024 -Build 2.0.0.10"
+      "commandLineArgs": "-Year 2025 -Build 2.0.1.9"
     }
   }
 }
