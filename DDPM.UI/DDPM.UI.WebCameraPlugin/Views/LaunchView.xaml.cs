@@ -2726,6 +2726,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 txbName.Text = "";
                 txbName.Focus();
                 _vm.TooltipVisibility = Visibility.Visible;
+
+                if (_vm!.VbarSelectedIndex == -1)
+                {
+                    OnVbarItemClicked(_vm.VbarItems[0]);
+                }
             }
             catch (Exception ex)
             {

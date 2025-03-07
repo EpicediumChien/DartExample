@@ -57,7 +57,7 @@
   <SolidColorBrush x:Key="DefaultTheme_DialogBoxBkColor" Color="#132F54"/>
   <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
   <SolidColorBrush x:Key="DefaultThemeRightViewAlertBkColor" Color="#364861" />
-    <Style TargetType="UXControls:UXTextBlock"
+  <Style TargetType="UXControls:UXTextBlock"
            BasedOn="{StaticResource {x:Type UXControls:UXTextBlock}}">
     <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
     <Setter Property="Background" Value="{DynamicResource FakeTransparent}" />
@@ -1222,9 +1222,15 @@
   <!-- Default -->
   <SolidColorBrush x:Key="Vbar_BkBrush_Default" Color="#99132F54" />
   <SolidColorBrush x:Key="Vbar_BdBrush_Default" Color="#99132F54" />
+  <SolidColorBrush x:Key="SubNav_Selected_BkBrush_Default" Color="#0672CB" />
   <!-- Hover -->
   <SolidColorBrush x:Key="Vbar_BkBrush_Hover" Color="#99132F54" />
   <SolidColorBrush x:Key="Vbar_BdBrush_Hover" Color="#FF1B385F" />
+  <SolidColorBrush x:Key="SubNav_BkBrush_Hover_Dark" Color="#132F54" />
+  <SolidColorBrush x:Key="SubNav_BkBrush_Hover_Light" Color="#F5F6F7" />
+  <SolidColorBrush x:Key="SubNav_Selected_BkBrush_Hover" Color="#0063B8" />
+  <SolidColorBrush x:Key="MainNav_BdBrush_Hover_Dark" Color="#132F54" />
+  <SolidColorBrush x:Key="MainNav_BdBrush_Hover_Light" Color="#1282D6" />
   <!-- Disabled -->
   <SolidColorBrush x:Key="Vbar_BkBrush_Disabled" Color="#FF596067" />
   <SolidColorBrush x:Key="Vbar_BdBrush_Disabled" Color="#FF596067" />
