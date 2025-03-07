@@ -42,8 +42,7 @@ namespace DdpmSwUpdater
                 }
                 logFilePath = path + "\\" + logFilePath;
                 logs = new Logs(logFilePath, "DdpmSwUpdater");
-                var version = Assembly.GetExecutingAssembly().GetName().Version;
-                LogMessage($"DdpmSwUpdater Ver:{version}");
+                LogMessage($"DdpmSwUpdater Ver:{Assembly.GetExecutingAssembly().GetName().Version}");
 
                 //Dean 0124 According to log move into %programdata%\Dell\Dell Display and Peripheral Manager, using oridignal ACL as well 
                 /*#if RELEASE
@@ -89,7 +88,7 @@ namespace DdpmSwUpdater
             object o = DDPMRegistryHelper.ReadRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Dell\\DDPM Subagent", "SkipCA");
             if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
             {
-                isSkipCA = o.ToString().Equals("1") ? true : false;
+                isSkipCA = o.Equals("1") ? true : false;
             }
             return isSkipCA;
         }
@@ -99,7 +98,7 @@ namespace DdpmSwUpdater
             object o = DDPMRegistryHelper.ReadRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Dell\\DDPM Subagent", "SkipSHA");
             if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
             {
-                isSkipSHA = o.ToString().Equals("1") ? true : false;
+                isSkipSHA = o.Equals("1") ? true : false;
             }
             return isSkipSHA;
         }
@@ -128,9 +127,11 @@ namespace DdpmSwUpdater
                 Console.WriteLine($"{DateTime.Now}: {message}");
 #endif
             }
-            catch
+            catch(Exception ex)
             {
-
+#if DEBUG
+                Console.WriteLine($"LogMessage exception, message: {ex.Message}");
+#endif
             }
         }
     }
