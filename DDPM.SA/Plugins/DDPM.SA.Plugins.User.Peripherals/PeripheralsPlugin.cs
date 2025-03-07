@@ -2010,8 +2010,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         //_iDeviceManager_DeviceAddedEvent(device);
                     }
                     //Console.WriteLine(_deviceHelper.ToString());
-                    CheckDocks();
                     writelog(_deviceHelper.ToString());
+                    CheckDocks();
+                    writelog($"after CheckDocks --- {_deviceHelper.ToString()}");
                 }
             }
         }
@@ -4137,6 +4138,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         {
             //Scenario 1: If multiple docks are connected, and the message pops up while the dock is still connected
             //Scenario 2: If the first dock is connected, the message pops up
+            writelog($"CheckDocks _IsConnectingMultipleDocks : {_IsConnectingMultipleDocks}");
+            writelog($"CheckDocks _DockCount : {_DockCount}");
             if ((_IsConnectingMultipleDocks && _DockCount >= 1) ||
                 _DockCount >= 2)
             {
@@ -4148,13 +4151,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 toastContentBuilder.AddText(LangHelper.Instance["Warning"]);
                 toastContentBuilder.AddText(LangHelper.Instance["Multiple_docks_are_detected3"]);
                 toastContentBuilder.Show(); // 顯示Toast通知
-
-                //Bruce 02/24 If multiple docks are docked consecutively, all docks will remove
-                writelog("ChangeDock Connecting multiple docks so remove all dock");
-                _deviceHelper.deviceInfo.RemoveAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
                 if (!_IsConnectingMultipleDocks)
                 {
-                    DeviceInfo device = _deviceHelper.deviceInfo.First(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
+                    DeviceInfo device = _deviceHelper.deviceInfo.FirstOrDefault(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
                     _IsConnectingMultipleDocks = true;
                     if (device != null)
                     {
@@ -4169,6 +4168,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         OnNotify(_EventArgs);
                     }
                 }
+                //Bruce 02/24 If multiple docks are docked consecutively, all docks will remove
+                writelog("ChangeDock Connecting multiple docks so remove all dock");
+                _deviceHelper.deviceInfo.RemoveAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
             }
         }
     }
