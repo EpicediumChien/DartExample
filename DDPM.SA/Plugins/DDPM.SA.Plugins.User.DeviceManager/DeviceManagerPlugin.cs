@@ -724,9 +724,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
 
-            _disDevHelper = new DisplayDeviceHelper(Log);
             if (_AirAudioHelper == null)
                 _AirAudioHelper = new PeripheralAirAudioHelper(Log);
+            IDeviceManagerSA deviceManagerSA = (IDeviceManagerSA)this;
+            _disDevHelper = new DisplayDeviceHelper(Log, deviceManagerSA);
         }
 
         private void OnCurrentSessionInactived(object sender, EventArgs e)
@@ -17001,62 +17002,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         hotkeySettings.ServiceTag = "DDPM";
                         hotkeySettings.SerialNumber = "DDPM";
                         hotkeySettings.ModelName = "DDPM";
-                        foreach (var file in di.GetFiles("*_*"))
+                        List<DDMMonitorSettings> _dDMMonitorCache = new List<DDMMonitorSettings>();
+                        Dictionary<string, bool> modelImportFlags = new Dictionary<string, bool>();
+
+                        // Override the ApplicationSettingsImportYesOrNo for each model setup
+                        FileInfo[] dDMFiles = di.GetFiles("*_*");
+                        foreach (var file in dDMFiles)
                         {
+                            WriteLog($"[DDMMigration] Start processing file: {file.Name} ...");
                             DDMMonitorSettings DDMmonitorsettings = new DDMMonitorSettings();
                             string path = migrationPath + "\\" + file.Name;
                             if (_SettingsPlugin.ReadDDMMonitorSettings(path, ref DDMmonitorsettings).Result)
                             {
-                                if (DDMmonitorsettings.ServiceTag != string.Empty)
+                                //cache DDM monitor data for model update
+                                _dDMMonitorCache.Add(DDMmonitorsettings);
+                                if (string.IsNullOrEmpty(DDMmonitorsettings.ServiceTag)
+                                    && !modelImportFlags.ContainsKey(file.Name.Trim('_')))
                                 {
-                                    //add settings file in DDPM
-                                    bool binit = false;
-                                    List<DDPMMonitorSettings> ddpmMonitorSettings = new List<DDPMMonitorSettings>();
-                                    ddpmMonitorSettings = _SettingsPlugin.ReloadMonitorSettings(DDMmonitorsettings.Model).Result;
-                                    if (ddpmMonitorSettings == null)
-                                    {
-                                        ddpmMonitorSettings = _SettingsPlugin.InitDDPMMonitorConfigFile(DDMmonitorsettings.Model, out binit).Result;
-                                    }
-                                    else
-                                    {
-                                        if (ddpmMonitorSettings.Count == 0)
-                                        {
-                                            ddpmMonitorSettings = _SettingsPlugin.InitDDPMMonitorConfigFile(DDMmonitorsettings.Model, out binit).Result;
-                                        }
-                                        else
-                                        {
-                                            binit = true;
-                                        }
-                                    }
-                                    if (binit)
-                                    {
-                                        if (ddpmMonitorSettings == null)
-                                        {
-                                            ddpmMonitorSettings = new List<DDPMMonitorSettings>();
-                                            DDPMMonitorSettings settings = new DDPMMonitorSettings();
-                                            settings.Model = DDMmonitorsettings.Model;
-                                            settings.ServiceTag = DDMmonitorsettings.ServiceTag;
-                                            ddpmMonitorSettings.Add(settings);
-                                            bool b = _SettingsPlugin.WriteMonitorSettings(DDMmonitorsettings.Model, ddpmMonitorSettings).Result;
-                                        }
-                                        else
-                                        {
-                                            if (!ddpmMonitorSettings.Exists(x => (x.ServiceTag == DDMmonitorsettings.ServiceTag)))
-                                            {
-                                                DDPMMonitorSettings settings = new DDPMMonitorSettings();
-                                                settings.Model = DDMmonitorsettings.Model;
-                                                settings.ServiceTag = DDMmonitorsettings.ServiceTag;
-                                                ddpmMonitorSettings.Add(settings);
-                                                bool b = _SettingsPlugin.WriteMonitorSettings(DDMmonitorsettings.Model, ddpmMonitorSettings).Result;
-                                            }
-                                        }
-                                        //DDM settings -> DDPM settings
-                                        ImportDDMMonitorSettings(DDMmonitorsettings, ddmUserSettings);
-                                    }
-                                    else
-                                    {
-                                        writelog("[DDMMigration] InitDDPMMonitorConfigFile fail");
-                                    }
+                                    modelImportFlags.Add(file.Name.Trim('_'), DDMmonitorsettings.Display.ApplicationSettingsImportYesOrNo);
                                 }
                             }
                             else
@@ -17064,6 +17027,67 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 writelog($"[DDMMigration] read DDM MonitorSettings file fail: {path}");
                             }
                         }
+
+                        // Loop through DDM monitor files
+                        foreach (var dDMMonitorSetting in _dDMMonitorCache)
+                        {
+                            if (dDMMonitorSetting.ServiceTag != string.Empty)
+                            {
+                                //add settings file in DDPM
+                                bool binit = false;
+                                List<DDPMMonitorSettings> ddpmMonitorSettings = new List<DDPMMonitorSettings>();
+                                ddpmMonitorSettings = _SettingsPlugin.ReloadMonitorSettings(dDMMonitorSetting.Model).Result;
+                                if (ddpmMonitorSettings == null)
+                                {
+                                    ddpmMonitorSettings = _SettingsPlugin.InitDDPMMonitorConfigFile(dDMMonitorSetting.Model, out binit).Result;
+                                }
+                                else
+                                {
+                                    if (ddpmMonitorSettings.Count == 0)
+                                    {
+                                        ddpmMonitorSettings = _SettingsPlugin.InitDDPMMonitorConfigFile(dDMMonitorSetting.Model, out binit).Result;
+                                    }
+                                    else
+                                    {
+                                        binit = true;
+                                    }
+                                }
+                                if (binit)
+                                {
+                                    if (ddpmMonitorSettings == null)
+                                    {
+                                        ddpmMonitorSettings = new List<DDPMMonitorSettings>();
+                                        DDPMMonitorSettings settings = new DDPMMonitorSettings();
+                                        settings.Model = dDMMonitorSetting.Model;
+                                        settings.ServiceTag = dDMMonitorSetting.ServiceTag;
+                                        ddpmMonitorSettings.Add(settings);
+                                        bool b = _SettingsPlugin.WriteMonitorSettings(dDMMonitorSetting.Model, ddpmMonitorSettings).Result;
+                                    }
+                                    else
+                                    {
+                                        if (!ddpmMonitorSettings.Exists(x => (x.ServiceTag == dDMMonitorSetting.ServiceTag)))
+                                        {
+                                            DDPMMonitorSettings settings = new DDPMMonitorSettings();
+                                            settings.Model = dDMMonitorSetting.Model;
+                                            settings.ServiceTag = dDMMonitorSetting.ServiceTag;
+                                            ddpmMonitorSettings.Add(settings);
+                                            bool b = _SettingsPlugin.WriteMonitorSettings(dDMMonitorSetting.Model, ddpmMonitorSettings).Result;
+                                        }
+                                    }
+
+                                    bool? isSameModel = null;
+                                    if (modelImportFlags.ContainsKey(dDMMonitorSetting.Model))
+                                        isSameModel = modelImportFlags[dDMMonitorSetting.Model];
+                                    //DDM settings -> DDPM settings
+                                    ImportDDMMonitorSettings(dDMMonitorSetting, ddmUserSettings, isSameModel);
+                                }
+                                else
+                                {
+                                    writelog("[DDMMigration] InitDDPMMonitorConfigFile fail");
+                                }
+                            }
+                        }
+
                         if (CopyFile(migrationPath, migration + "\\" + "CopyMigrationFile"))
                         {
                             try
@@ -17089,7 +17113,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        private void ImportDDMMonitorSettings(DDMMonitorSettings DDMmonitorsettings, DDMUserSettings DDMusersettings)
+        private void ImportDDMMonitorSettings(DDMMonitorSettings DDMmonitorsettings, DDMUserSettings DDMusersettings, bool? isSameModel = null)
         {
             //Input
             DDMtoDDPM_Input(DDMmonitorsettings);
@@ -17112,6 +17136,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             DDMtoDDPM_PowerNap(DDMmonitorsettings);
             //Consent Page
             DDMtoDDPM_ConsentPage(DDMusersettings);
+
+            if(isSameModel != null)
+                DDMtoDDPM_IsSameModel(DDMmonitorsettings, (bool)isSameModel);
         }
 
         private void DDMtoDDPM_KVM(DDMMonitorSettings ddmMonitorSettings)
@@ -17638,6 +17665,47 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        private void DDMtoDDPM_IsSameModel(DDMMonitorSettings dDMMonitorSettings, bool isSameModel)
+        {
+            try
+            {
+                if (dDMMonitorSettings != null)
+                {
+                    string model = dDMMonitorSettings.Model;
+                    string serviceTag = dDMMonitorSettings.ServiceTag;
+                    if (_SettingsPlugin != null)
+                    {
+                        List<DDPMMonitorSettings> ddpmMonitorSettings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+                        if (ddpmMonitorSettings != null)
+                        {
+                            int index = ddpmMonitorSettings.FindIndex(x => x.ServiceTag == serviceTag);
+                            if (index != -1)
+                            {
+                                ddpmMonitorSettings[index].ImpExpSettings.SameModel = isSameModel;
+                            }
+
+                            bool b = _SettingsPlugin.WriteMonitorSettings(model, ddpmMonitorSettings).Result;
+                        }
+                        else
+                        {
+                            writelog("[DDMtoDDPM_IsSameModel]ddpmMonitorSettings is null!");
+                        }
+                    }
+                    else
+                    {
+                        writelog("[DDMtoDDPM_IsSameModel]_SettingsPlugin is null!");
+                    }
+                }
+                else
+                {
+                    writelog("[DDMtoDDPM_IsSameModel]ddmMonitorSettings is null!");
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"DDMtoDDPM_IsSameModel Exception {ex.Message.ToString()}");
+            }
+        }
         #endregion Migration
 
         #region Event Handler

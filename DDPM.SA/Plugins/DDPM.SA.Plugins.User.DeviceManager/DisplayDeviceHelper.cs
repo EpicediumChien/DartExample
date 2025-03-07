@@ -31,6 +31,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static ISettingsManagerDev settingsManagerDev = null;
         private static IDeviceManagerSA devManagerSA = null;
         private static IDisplayService displayService = null;
+        private static IDeviceManagerSA _baseDeviceManagerSA;
 
         private string path = string.Empty;
 
@@ -54,9 +55,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private static ILog _log = null;
 
-        public DisplayDeviceHelper(ILog Log)
+        public DisplayDeviceHelper(ILog Log, IDeviceManagerSA baseDeviceManagerSA = null)
         {
             _log = Log;
+            _baseDeviceManagerSA = baseDeviceManagerSA;
             ToastNotificationManagerCompat.OnActivated += toastArgs =>
             {
                 AutoImport(toastArgs);
@@ -123,7 +125,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //Need jason to implement import/export check here
                         string exportpath = path + "\\" + model + ".json";
                         string displayProfilePath = $"{localAppDataPath}\\Dell Display and Peripheral Manager\\Display\\{model}.json";
-                        if(devManagerSA != null)
+                        // try fix cannot devManagerSA didn't initialize issue
+                        if(devManagerSA == null)
+                            devManagerSA = _baseDeviceManagerSA;
+                        if (devManagerSA != null)
                             isSameModelFlag = devManagerSA.ReadSameModelAutoApplySameModelFlag(displayProfilePath, model).Result;
                         else
                             WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Error devManagerSA not initialized.");

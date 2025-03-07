@@ -157,6 +157,10 @@
             <Grid>
               <Grid>
                 <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="900" MinWidth="715"/>
+                <Rectangle Name="RecT" Fill="Transparent" Width="900" VerticalAlignment="Top" MouseDown="Mainframe_MouseLeftButtonDown"/>
+                <Rectangle Name="RecB"  Fill="Transparent" Width="900" VerticalAlignment="Bottom" MouseDown="Mainframe_MouseLeftButtonDown"/>
+                <Rectangle Name="RecL"  Fill="Transparent" Height="500" HorizontalAlignment="Left" MouseDown="Mainframe_MouseLeftButtonDown"/>
+                <Rectangle Name="RecR"  Fill="Transparent" Height="500" HorizontalAlignment="Right" MouseDown="Mainframe_MouseLeftButtonDown"/>
               </Grid>
               <Grid Name="SectionA" Margin="75,146,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <StackPanel Orientation="Horizontal">
