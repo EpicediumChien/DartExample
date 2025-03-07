@@ -164,6 +164,7 @@ namespace DDPM.UI.Module.Kvm
                     SetPxP();
                     vm.isOnUSBKVM(true);//bool b = DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(true).Result;
                     vm.isOnNKVM(false);
+                    vm.isOnNoKVM(false);
                     vm.USBKVMisON = true;
                     vm.NKVMisON = false;
                     vm.FromProgressValue = 0;

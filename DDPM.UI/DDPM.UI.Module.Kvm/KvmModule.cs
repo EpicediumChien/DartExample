@@ -16,6 +16,8 @@ namespace DDPM.UI.Module.Kvm
         public bool IsModuleActive { get; set; } = false;
 
         public bool isUSBKVM { get; set; } = false;
+        public bool isNKVM { get; set; } = false;
+        public bool isNoKVM { get; set; } = false;
 
         public KvmModule(IModuleOwner? moduleOwner)
         {
@@ -24,7 +26,9 @@ namespace DDPM.UI.Module.Kvm
             _rightView = new KvmRightView(vm);
             _rightView.DataContext = vm;
             isUSBKVM = DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
-            if (isUSBKVM)
+            isNKVM = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
+            isNoKVM = DdpmCommonHelper.DeviceManagerSA.GetNoKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
+            if (isUSBKVM && !isNKVM && !isNoKVM)
             {
                 _leftView = new KvmLeftView(vm);
                 _leftView.DataContext = vm;
@@ -77,7 +81,9 @@ namespace DDPM.UI.Module.Kvm
             vm._log.Info("[InitNewViewModel] running...");
             this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
             isUSBKVM = DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
-            if (isUSBKVM)
+            isNKVM = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
+            isNoKVM = DdpmCommonHelper.DeviceManagerSA.GetNoKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
+            if (isUSBKVM && !isNKVM && !isNoKVM)
             {
                 _leftView = new KvmLeftView(vm);
                 _leftView.DataContext = vm;

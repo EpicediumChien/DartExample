@@ -6998,6 +6998,48 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        public Task<bool> GetNoKVM(MonitorInfo monitorInfo)
+        {
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+            if (settings != null)
+            {
+                DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (monitorSetting != null)
+                {
+                    if (monitorSetting.KVM.isNoKVM != null)
+                    {
+                        return Task.FromResult(monitorSetting.KVM.isNoKVM);
+                    }
+                }
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> SetNoKVM(MonitorInfo monitorInfo, bool isON)
+        {
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+            if (settings != null) //Robert_Lin 0731
+            {
+                foreach (DDPMMonitorSettings setting in settings)
+                {
+                    if (setting != null && setting.ServiceTag == monitorInfo.edid.ServiceTag)
+                    {
+                        setting.KVM.isNoKVM = isON;
+                        if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
+                        {
+                            if (isON)
+                            {
+                                bool b = SentKVMtoTelementry(monitorInfo, "KVMMode", "NoKVM").Result;
+                            }
+                            return Task.FromResult(true);
+                        }
+                        break;
+                    }
+                }
+            }
+            return Task.FromResult(false);
+        }
+
         #endregion
 
         #region ALS feature functions

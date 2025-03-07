@@ -70,6 +70,7 @@ namespace DDPM.UI.Module.Kvm
                 vm.FinishtoSetPCs();
                 vm.isOnUSBKVM(true);
                 vm.isOnNKVM(false);
+                vm.isOnNoKVM(false);
                 vm.USBKVMisON = true;
                 vm.NKVMisON = false;
                 //Return to DdpmHomePage              

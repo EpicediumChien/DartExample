@@ -317,6 +317,7 @@ namespace DDPM.UI.Module.Kvm
         public Dictionary<string, PCsInfo> pcsList { get; set; }
         public List<string> usbsList { get; set; }
         public Dictionary<string, PCsInfo> original_pcsList { get; set; }
+        public bool NoKVMisON = false;
         public bool USBKVMisON = false;
         public bool NKVMisON = false;
 
@@ -509,6 +510,8 @@ namespace DDPM.UI.Module.Kvm
         public bool isScreenPartition = false;
 
         public bool LeftButtonEnable { get; set; } = true;
+
+        public bool firstinKVM {  get; set; } = true;
 
         #region Hotkey
 
@@ -926,12 +929,15 @@ namespace DDPM.UI.Module.Kvm
                 WorkerSupportsCancellation = true
             };
             guid = Guid.NewGuid();
+            firstinKVM = true;
             if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
             {
                 MonitorInfo mi = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
 
                 USBKVMisON = /*KvmModule.isUSBKVM;*/ DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(mi).Result;
-                if (USBKVMisON)
+                NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(mi).Result;
+                NoKVMisON = DdpmCommonHelper.DeviceManagerSA.GetNoKVM(mi).Result;
+                if (USBKVMisON && !NKVMisON && !NoKVMisON)
                 {
                     LeftButtonEnable = false;
                     OnPropertyChanged("LeftButtonEnable");
@@ -944,7 +950,7 @@ namespace DDPM.UI.Module.Kvm
 
             bw.DoWork -= DoWork_RefreshData;
             bw.DoWork += DoWork_RefreshData;
-            if (USBKVMisON)
+            if (USBKVMisON && !NKVMisON && !NoKVMisON)
             {
                 bw.DoWork -= DoWork_USBKVM;
                 bw.DoWork += DoWork_USBKVM;
@@ -1034,15 +1040,8 @@ namespace DDPM.UI.Module.Kvm
                 {
                     SupportUSBKVM = Visibility.Collapsed;
                     OnPropertyChanged("SupportUSBKVM");
-                    USBKVMisON = false;
+                    //USBKVMisON = false;
                 }
-
-                if (Cancelled_RefreshData(e, bwk))
-                {
-                    return;
-                }
-
-                NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(mi).Result;
 
                 if (Cancelled_RefreshData(e, bwk))
                 {
@@ -1066,23 +1065,21 @@ namespace DDPM.UI.Module.Kvm
                     return;
                 }
 
-                if (USBKVMisON && !isScreenPartition)
-                {
-                    isUSBKVM = true;
-                    //EnableUSBKVM = Visibility.Visible;
-                    //DisenableUSBKVM = Visibility.Collapsed;
-                }
-                else if (NKVMisON)
+                //if (USBKVMisON && !isScreenPartition)
+                //{
+                //    isUSBKVM = true;
+                //}
+                if (NKVMisON)
                 {
                     isNKVM = true;
-                    //EnableUSBKVM = Visibility.Collapsed;
-                    //DisenableUSBKVM = Visibility.Visible;
+                }
+                else if (NoKVMisON || isScreenPartition)
+                {
+                    isNoKVM = true;
                 }
                 else
                 {
-                    isNoKVM = true;
-                    //EnableUSBKVM = Visibility.Collapsed;
-                    //DisenableUSBKVM = Visibility.Visible;
+                    isUSBKVM = true;
                 }
 
                 if (Cancelled_RefreshData(e, bwk))
@@ -1105,6 +1102,7 @@ namespace DDPM.UI.Module.Kvm
             DateTime entryUSBKVM = DateTime.Now;
             _log.Info($"[RunWorkerCompleted_RefreshData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
             IsKVMBusy = false;
+            firstinKVM = false;
             _log.Info("[KvmViewModel] RunWorkerCompleted_RefreshData End");
             entryUSBKVM = DateTime.Now;
             _log.Info($"[RunWorkerCompleted_RefreshData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
@@ -1634,9 +1632,6 @@ namespace DDPM.UI.Module.Kvm
             EditInput = Visibility.Collapsed;
             EditPXP = Visibility.Collapsed;
             IsKVMBusy = false;
-            InputSourceFullView _inputSourceFullView = new InputSourceFullView();
-            _inputSourceFullView.DataContext = this;
-            DdpmCommonHelper.ModuleOwner?.OpenFullView(_inputSourceFullView);
             
             _log.Info("[KvmViewModel] RunWorkerCompleted_USBKVM End");
             entryUSBKVM = DateTime.Now;
@@ -2256,9 +2251,17 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
-        public void LoaddefLeftView()
+        public void LoadnewLeftView(bool def)
         {
-            KvmModule._leftView = null;
+            if (!def && USBKVMisON && !NKVMisON && !NoKVMisON)
+            {
+                KvmModule._leftView = new KvmLeftView(this);
+                KvmModule._leftView.DataContext = this;
+            }
+            else
+            {
+                KvmModule._leftView = null;
+            }
             DdpmCommonHelper.ModuleOwner.LoadLeftView();
         }
 
@@ -2269,6 +2272,15 @@ namespace DDPM.UI.Module.Kvm
             //    DdpmCommonHelper.DeviceManagerSA.SupportedNKVMMonitors().Wait();
             //}
             DdpmCommonHelper.DeviceManagerSA.SetOnNKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, ison).Wait();
+        }
+
+        public void isOnNoKVM(bool ison)
+        {
+            //if (ison)
+            //{
+            //    DdpmCommonHelper.DeviceManagerSA.SupportedNKVMMonitors().Wait();
+            //}
+            DdpmCommonHelper.DeviceManagerSA.SetNoKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, ison).Wait();
         }
 
         #region KVM Loading
@@ -2306,6 +2318,7 @@ namespace DDPM.UI.Module.Kvm
                 if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
                 {
                     isOnNKVM(true);
+                    isOnNoKVM(false);
                     _log.Info("NKVMOpenUI i = " + i);
                     DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
                     e.Result = true;
