@@ -2070,6 +2070,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         Thread.Sleep(1000); // IL provide info, DPeM 18 need 3sec, DPeM 20 need 18~25 sec,
                         tick++;
                     }
+                    _waitHeadsetReady = CurrentDeviceInfo!.IsReady;
                     if (_waitHeadsetReady)
                     {
                         FirmwareVersion2 = CurrentDeviceInfo.FirmwareVersion;
