@@ -2771,7 +2771,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_DisplayManagerPlugin != null)
             {
-                return _DisplayManagerPlugin.GetCurrentInput(monitorInfo, guid, priority);
+                string currentInput = _DisplayManagerPlugin.GetCurrentInput(monitorInfo, guid, priority).Result;
+                writelog("[GetCurrentInput] currentInput is " + currentInput);
+                return Task.FromResult(currentInput);
             }
             else
             {
