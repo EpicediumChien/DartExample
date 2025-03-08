@@ -1670,7 +1670,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 resetState();
                 _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " _updateErrorCode : " + _updateErrorCode);
-                _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} _notificationStr {_notificationStr}");
+                _logs.DebugMsg_1($"{nameof(Install)} DeviceName : {fwUpdateInfo.DeviceName}, Model : {fwUpdateInfo.Model} _updateErrorCode : {_updateErrorCode}");
+                _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} _notificationStr : {_notificationStr}");
                 _logs.DebugMsg_1($"{nameof(Install)} done");
                 WriteLog($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} Result : {_updateErrorCode}");
                 _ProgressLogPath = string.Empty;
