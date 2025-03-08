@@ -1503,6 +1503,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"workingDirectory is not null");
                         if (DDPMFileSecurity.ValidateFilePath(workingDirectory, out info))
                         {
+                            _updateErrorCode = FWUErrorCode.Service_not_running_Try_again;
+
                             bool b = WTSFunction.StartProcessAndBypassUACWithAdmin(arguments_Final, workingDirectory, out procInfo);
                             string processName = Path.GetFileNameWithoutExtension(fwUpdateInfo.InstallPaths);
                             _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} Searching for process: {processName}");
@@ -1548,7 +1550,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             {
                                 _logs.DebugMsg_1($"{processName} process not found.");
                                 resetState();
-                                _updateErrorCode = FWUErrorCode.Unknow;
+                                _updateErrorCode = FWUErrorCode.Service_not_running_Try_again;
                                 _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName} {nameof(Install)} {LangHelper.Instance["Service_not_running_Try_again"]}");
                                 _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
                                 return _updateErrorCode;
@@ -1588,6 +1590,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     if (_updateErrorCode == FWUErrorCode.Unknow)
                     {
                         _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                    }
+                    else if(_updateErrorCode == FWUErrorCode.Service_not_running_Try_again)
+                    {
+                        _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
                     }
                     _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " _updateErrorCode : " + _updateErrorCode);
 

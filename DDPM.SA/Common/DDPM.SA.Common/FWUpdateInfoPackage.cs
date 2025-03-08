@@ -160,6 +160,7 @@ namespace DDPM.SA.Common
         FileCheckFail = 14,
         ConnectMultipleSameModels = 15,
         DeviceBatteryTooLow = 16,
+        Service_not_running_Try_again = 17,
         Unknow = 99
     }
 
