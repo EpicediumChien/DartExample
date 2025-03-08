@@ -1291,6 +1291,7 @@ namespace DDPM.UI.Module.Kvm
                                 if (pcsList.TryGetValue("PC1", out var pc1) && pcsList.TryGetValue("PC2", out var pc2))
                                 {
                                     _PC1selectInput = _inputsList.Find(x => (x.Type == pcsList["PC1"].InputType));
+                                    _log?.Info("[KvmViewModel] PC1 input source : " + pcsList["PC1"].InputType);
                                     _PC1selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC1"].USBUpstream));
                                     ModifiedPCinputList();
                                     _PC2selectInput = _inputsList2.Find(x => (x.Type == pcsList["PC2"].InputType));
@@ -2086,6 +2087,7 @@ namespace DDPM.UI.Module.Kvm
             if (pcsList.TryGetValue("PC1", out var pc1) && pcsList.TryGetValue("PC2", out var pc2))
             {
                 _PC1selectInput = _inputsList.Find(x => (x.Type == pcsList["PC1"].InputType));
+                _log?.Info("[KvmViewModel][UpdatePCList] PC1 input source : " + pcsList["PC1"].InputType);
                 _PC1selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC1"].USBUpstream));
                 OnPropertyChanged("PC1Inputs_Selected");
                 ModifiedPCinputList();

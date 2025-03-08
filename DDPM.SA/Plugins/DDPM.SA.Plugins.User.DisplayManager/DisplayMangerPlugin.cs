@@ -1399,7 +1399,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, "input select", guid, priority: priority).Result;
             if (objGetVCP != null && objGetVCP.result)
             {
-                Trace.WriteLine("CurrentInput:" + objGetVCP.value.ToString());
+                _logs.DebugMsg("[DisplayManger]CurrentInput:" + objGetVCP.value.ToString());
                 string currentInpt = objGetVCP.value.ToString();
                 return Task.FromResult(currentInpt);
             }
