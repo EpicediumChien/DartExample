@@ -1595,8 +1595,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
                     }
-                    _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " _updateErrorCode : " + _updateErrorCode);
-
                 }
                 _logs.DebugMsg_1($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} exitCode : {exitCode}");
                 if (fwUpdateInfo.IsDisplay)
@@ -1671,6 +1669,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     sendMessageToEvent(updateProgressInfo);
                 }
                 resetState();
+                _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " _updateErrorCode : " + _updateErrorCode);
                 _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} _notificationStr {_notificationStr}");
                 _logs.DebugMsg_1($"{nameof(Install)} done");
                 WriteLog($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} Result : {_updateErrorCode}");
