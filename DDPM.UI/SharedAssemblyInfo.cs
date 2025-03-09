@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 [assembly: System.Runtime.InteropServices.ComVisible(false)]
 [assembly: System.Reflection.AssemblyInformationalVersion("2.0.1.10-61e493b4")]
 [assembly: System.Reflection.AssemblyCompany("Dell")]
-[assembly: System.Reflection.AssemblyCopyright("© 2025 Dell Inc. All Rights Reserved")]
+[assembly: System.Reflection.AssemblyCopyright("© 2022 Dell Inc. All Rights Reserved")]
 [assembly: System.Reflection.AssemblyFileVersion("2.0.1.10")]
 [assembly: System.Reflection.AssemblyVersion("2.0.1.10")]
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Color.Tests, PublicKey=" +
