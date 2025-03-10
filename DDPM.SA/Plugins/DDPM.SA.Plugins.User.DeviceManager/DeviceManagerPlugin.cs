@@ -18080,7 +18080,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 CancellationTokenSource cts = new CancellationTokenSource();
                 Thread thread = new Thread(() =>
                 {
-                    ShowOSDThread(cts, monitorInfo, _types, _DeviceType, Content, State, title);
+                    ShowOSDThread(cts, monitorInfo, _types, _DeviceType, Content, State, title, stayOpen, guid);
                     System.Windows.Threading.Dispatcher.Run();
                 });
                 thread.SetApartmentState(ApartmentState.STA);
@@ -18124,7 +18124,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void ShowOSDThread(CancellationTokenSource cts, object monitorInfo, OSDType _types, 
                                 OSDType_Device _DeviceType, string Content, bool State = false, 
-                                string title = "", bool stayOpen = false)
+                                string title = "", bool stayOpen = false, Guid guid = default)
         {
             if (monitorInfo != null)
             {
