@@ -3467,6 +3467,7 @@
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
     <value>للوصول إلى ميزات استشعار التواجد، استخدم الرابط أدناه لتنزيل برنامج ثابت متوافق لكاميرا الويب</value>
+  </data>
   <data name="Bootloader" xml:space="preserve">
     <value>برنامج Bootloader</value>
   </data>
