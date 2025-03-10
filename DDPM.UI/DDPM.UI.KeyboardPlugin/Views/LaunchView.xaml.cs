@@ -433,6 +433,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             _vm.SetLadningMode(true);
             _vm.SelectVBar();
             _vm.ClearSelectedKey();
+            _vm.ActiveModule = null;
             _vm.IsAllKeysVisible = Visibility.Visible;
         }
 
