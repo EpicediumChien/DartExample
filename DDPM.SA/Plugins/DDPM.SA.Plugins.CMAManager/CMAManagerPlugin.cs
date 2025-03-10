@@ -1104,10 +1104,12 @@ namespace DDPM.SA.Plugins.CMAManager
         public event EventHandler<CMAEventArgs> CMARequestEvent;
 
         // add @ 20250220 stephen : add fwupdate result return code
-        private int responseFwResultCode(int code)
+        private int responseFwResultCode(int code, out string msg)
         {
 
             int resultCode = -1;
+
+            msg = string.Empty;
 
             switch (code)
             {
@@ -1117,14 +1119,17 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 case (int)FWUErrorCode.DeviceDisconnected:
                     resultCode = Params.Response.STATUS_FW_UPDATE_DEVICE_NOT_CONNECTED;
+                    msg = "STATUS_FW_UPDATE_DEVICE_NOT_CONNECTED";
                     break;
 
                 case (int)FWUErrorCode.Unknow:
                     resultCode = Params.Response.UNKNOWN_ERROR;
+                    msg = "UNKNOWN_ERROR";
                     break;
 
                 default:
                     resultCode = Params.Response.STATUS_FW_UPDATE_ERROR;
+                    msg = "UNKNOWN_ERROR";
                     break;
 
             }
@@ -1198,11 +1203,12 @@ namespace DDPM.SA.Plugins.CMAManager
                     InfoResponse infoResponse = new InfoResponse(cmdResponse.getData(), false);
                     sid = infoResponse.sid;
                 }
-                
+
 
                 string response = string.Empty;
+                string errMsg = string.Empty;
 
-                response = "{\"sid\":\"" + sid + "\",\"gid\":\"" + data.Guid + "\",\"response\":[{\"tid\":1,\"result\":" + responseFwResultCode((int)data.FWUErrorCode) + ",\"msg\":\"\",\"data\":";
+                response = "{\"sid\":\"" + sid + "\",\"gid\":\"" + data.Guid + "\",\"response\":[{\"tid\":1,\"result\":" + responseFwResultCode((int)data.FWUErrorCode, errMsg) + ",\"msg\":\"" + errMsg + "\",\"data\":";
                 response = response + "[{";
                 response = response + "\"seqnum\":" + 2 + ",";
                 response = response + "\"index\":\"" + data.DeviceIndex + "\",";
