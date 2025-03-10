@@ -319,11 +319,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     di.LogicalDeviceType = paras[0];
                     di.ModelNumber = paras[3];
                 }
+
+                writelog("[DeviceMangerPlugin] DeviceMangerPlugin Notify UI Update in _DTPProxyPlugin_DTPEventHandler ...");
                 DeviceChangedEventArgs _EventArgs = new DeviceChangedEventArgs();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
                 _EventArgs.device_peripherals = di;
                 _EventArgs.changedProperty = paras[1];
-                DeviceChanged?.Invoke(this, _EventArgs);
+                Task.Run(() => DeviceChanged?.Invoke(this, _EventArgs)).ConfigureAwait(false);
             }
             else
                 OnUIUpdateNotify(e);
@@ -2999,12 +3001,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Collaboration Screen Share Enable is {newValue}");
             _PeripheralsPlugin.SetCollaborationScreenShareEnable(newValue, deviceId);
 
+            writelog("[DeviceMangerPlugin] DeviceMangerPlugin Notify UI Update in SetCollaborationScreenShareEnable ...");
             DeviceInfo di = _PeripheralsPlugin.GetDevices().Result.deviceInfo.FirstOrDefault(x => x.ID == deviceId);
             DeviceChangedEventArgs _EventArgs = new DeviceChangedEventArgs();
             _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
             _EventArgs.device_peripherals = di;
             _EventArgs.changedProperty = "CollaborationScreenShareEnable";
-            DeviceChanged?.Invoke(this, _EventArgs);
+            Task.Run(() => DeviceChanged?.Invoke(this, _EventArgs)).ConfigureAwait(false);
 
             return Task.FromResult(true);
         }
@@ -10121,6 +10124,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             var result = _DTPProxyPlugin.SetIsHDROn(Guid, newValue);
+
+            writelog("[DeviceMangerPlugin] DeviceMangerPlugin Notify UI Update in SetIsHDROn ...");
             DeviceInfo di = new()
             {
                 LogicalDeviceType = "Webcam",
@@ -10133,7 +10138,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 device_peripherals = di,
                 changedProperty = "IsHDROnChanged"
             };
-            DeviceChanged?.Invoke(this, _EventArgs);
+            Task.Run(() => DeviceChanged?.Invoke(this, _EventArgs)).ConfigureAwait(false);
 
             return result;
         }
@@ -11853,11 +11858,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             var NewMonitors = (_DisplayManagerPlugin.Re_GetMonitors(token).Result).ToList();
                             _AllInfoMonitors = NewMonitors.ToList();
 
-                            //250307 Add a Task to init monitor settings. (Jarvis suggests to add this task to avoid the UI thread blocking)
-                            Task.Run(() =>
-                            {
-                                InitMonitorSettings(_AllInfoMonitors);
-                            });
+                            writelog($"[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() get monitor count {NewMonitors.Count} ...");
+
+                            Task.Run(() => InitMonitorSettings(_AllInfoMonitors)).ConfigureAwait(false);
 
                             // add @ 20250303 stephen
                             // modified @ 20250305 stephen : set count = -1 as a flag to avoid trigger ui reflash
@@ -12039,12 +12042,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    _DisplayManagerPlugin.SetDisplayOrientation(e.monitors).Wait();
             //    displayInOut = true;
             //}
+
+            writelog("[DeviceMangerPlugin] DeviceMangerPlugin Notify UI Update in OnDisplaychanged ...");
             DeviceChangedEventArgs arg = new DeviceChangedEventArgs();
             arg.changedProperty = "DisplayChanged";
             arg.type = DeviceChangedType.NotifyOnly;
             EventHandler<DeviceChangedEventArgs> devHandler = DeviceChanged;
             if (devHandler != null)
-                devHandler.Invoke(this, arg);
+                Task.Run(() => devHandler.Invoke(this, arg)).ConfigureAwait(false);
 
             if (_NKVMPlugin != null)
             {
@@ -12282,6 +12287,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 type = DeviceChangedType.NotifyOnly;
                 changedProperty = "DisplayChanged";
             }
+
+            writelog("[DeviceMangerPlugin] DeviceMangerPlugin Notify UI Update in OnDeviceChanged ...");
 
             _EventArgs.type = type;
             _EventArgs.device_display = mo;
@@ -12535,12 +12542,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin");
             writelog("Send out Displaychanged Event Notify from DeviceMangerPlugin");
 
-            _AllInfoMonitors = new List<MonitorInfo>(e.monitors);
+            _AllInfoMonitors = (e.monitors).ToList();
 
-            //250307 Add a Task to init monitor settings. (Jarvis and Jason suggest to add this task to avoid the UI thread blocking)
-            Task.Run(() =>
-                InitMonitorSettings(_AllInfoMonitors)
-            );
+            writelog($"monitor count {e.monitors.Count} ...");
+
+            Task.Run(() => InitMonitorSettings(_AllInfoMonitors)).ConfigureAwait(false);
 
             DisplaychangedEventArgs _displaychangedEventArgs = new DisplaychangedEventArgs();
             _displaychangedEventArgs.count = e.count;
@@ -17717,6 +17723,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"DDMtoDDPM_IsSameModel Exception {ex.Message.ToString()}");
             }
         }
+
         #endregion Migration
 
         #region Event Handler
@@ -19194,6 +19201,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #region Air Audio with DTPProxyPlugin
+
         public async Task<HeadsetConnectionType> GetAirAudioConnectionTypeAsync(string Guid)
         {
             return await _AirAudioHelper.GetAirAudioConnectionTypeAsync(Guid);
@@ -19698,6 +19706,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await _AirAudioHelper.SetAirAudioAutoPowerOffIntervalAsync(Guid, newValue);
         }
+
         #endregion
     }
 }
