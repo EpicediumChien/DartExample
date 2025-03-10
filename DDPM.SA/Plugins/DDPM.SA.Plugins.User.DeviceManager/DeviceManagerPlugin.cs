@@ -14399,12 +14399,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
             bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
 
+            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.StartRecording);
+            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
+            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", true);
             //test
             /*ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Headset, "Dell Multi-Device Headset - MS5320W");
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Mouse, "Dell Multi-Device Mouse - MS5320W");
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
-            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
-            CallQAM_UI(this);*/
+            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");*/
 
             //will register as ALT+Z ?
             if (_altPressed && strKey.Equals("Z") && !_ctrlPressed && !_shiftPressed)

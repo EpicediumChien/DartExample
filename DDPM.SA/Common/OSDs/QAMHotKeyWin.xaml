@@ -36,13 +36,14 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Grid x:Name="fadeOutCtrl"
+        <Grid Margin="0,50,0,0"
+              x:Name="fadeOutCtrl"
               Grid.Row="0"
               Grid.Column="1"
               HorizontalAlignment="Center"
               VerticalAlignment="Bottom">
-            <Border Width="366"
-                    Height="145"
+            <Border Width="332"
+                    Height="135"
                     Background="{DynamicResource Default_SA_OSD_Border_BkColor}"
                     BorderBrush="#0DFFFFFF"
                     BorderThickness="1.5"
