@@ -114,17 +114,22 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             }
             Unloaded += LaunchView_Unloaded;
             Loaded += LaunchView_Loaded;
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
-                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
-            }
+            //if (DdpmCommonHelper.DeviceManagerSA != null)
+            //{
+            //    DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
+            //    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+            //}
             DdpmCommonHelper.WriteUILog($"Keyboard UI LaunchView End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
 
         private void LaunchView_Loaded(object sender, RoutedEventArgs e)
         {
             DdpmCommonHelper.WriteUILog($"Keyboard UI Loaded timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+            }
         }
 
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
