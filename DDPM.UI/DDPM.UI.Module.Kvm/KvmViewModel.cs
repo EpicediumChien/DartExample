@@ -1329,7 +1329,7 @@ namespace DDPM.UI.Module.Kvm
                                             pcsList["PC3"].InputType = _inputsList3[0].Type;
                                             pcsList["PC3"].Code = inputList[_inputsList3[0].Type].Code;
                                             pcsList["PC3"].InputName = inputList[_inputsList3[0].Type].InputName;
-                                            pcsList["PC3"].USBUpstream = inputList[_inputsList3[0].Type].USBUpstream;
+                                            pcsList["PC3"].USBUpstream = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, _inputsList3[0].Type).Result; ;
                                             _PC3selectInput = _inputsList3[0];
                                         }
                                         _PC3selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC3"].USBUpstream));
@@ -1356,7 +1356,7 @@ namespace DDPM.UI.Module.Kvm
                                                     pcsList["PC4"].InputType = _inputsList4[0].Type;
                                                     pcsList["PC4"].Code = inputList[_inputsList4[0].Type].Code;
                                                     pcsList["PC4"].InputName = inputList[_inputsList4[0].Type].InputName;
-                                                    pcsList["PC4"].USBUpstream = inputList[_inputsList4[0].Type].USBUpstream;
+                                                    pcsList["PC4"].USBUpstream = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, _inputsList4[0].Type).Result; ;
                                                     _PC4selectInput = _inputsList4[0];
                                                 }
                                                 _PC4selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC4"].USBUpstream));
