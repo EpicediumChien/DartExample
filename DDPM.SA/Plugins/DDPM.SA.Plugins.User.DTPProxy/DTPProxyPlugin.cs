@@ -10452,7 +10452,75 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             return Task.FromResult(DTPProxyPluginReady);
         }
 
+        private void InitializeCommodity(string commodityName, ref Type interfaceType, ref MethodInfo methodInfo)
+        {
+            writelog($"Find {commodityName} Init time : {DateTime.Now:hh.mm.ss.ffffff}");
+            interfaceType = FindCommodityInterfaceType(commodityName);
+            if (interfaceType != null)
+            {
+                methodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                        .MakeGenericMethod(interfaceType);
+                writelog($"Find {commodityName} found time : {DateTime.Now:hh.mm.ss.ffffff}");
+            }
+            else
+            {
+                writelog($"Find {commodityName} not find time: {DateTime.Now:hh.mm.ss.ffffff}");
+            }
+        }
+
         private void InitializeDTPProxy()
+        {
+            if (_commSdk != null)
+            {
+                writelog($"InitializeDTPProxy First check _commSdk not null, return ... ");
+                return;
+            }
+
+            writelog($"InitializeDTPProxy before FindPluginByType because _commSdk null ... ");
+            _commSdk = (ICommodityClientSdk)_agent.PluginManager.FindPluginByType(typeof(ICommodityClientSdk));
+            //_commSdk = _agent.PluginManager.FindPluginByType<ICommodityClientSdk>(PluginResolution.Dynamic);
+
+            try
+            {
+                if (_commSdk != null)
+                {
+                    _ = Task.Run(async () =>
+                    {
+                        InitializeCommodity("IGlobalPeripheralCommodity", ref _globalperipheralInterfaceType, ref _globalperipheralMethodInfo);
+                        InitializeCommodity("IMouseCommodity", ref _mouseInterfaceType, ref _mouseMethodInfo);
+                        InitializeCommodity("IKeyboardCommodity", ref _keyboardInterfaceType, ref _keyboardMethodInfo);
+                        InitializeCommodity("IWebcamCommodity", ref _webcamInterfaceType, ref _webcamMethodInfo);
+                        InitializeCommodity("IPenCommodity", ref _penInterfaceType, ref _penMethodInfo);
+                        InitializeCommodity("IHeadsetCommodity", ref _headsetInterfaceType, ref _headsetMethodInfo);
+                        InitializeCommodity("ISpeakerCommodity", ref _speakerInterfaceType, ref _speakerMethodInfo);
+                        InitializeCommodity("IDongleCommodity", ref _dongleInterfaceType, ref _dongleMethodInfo);
+                        InitializeCommodity("IDockCommodity", ref _dockInterfaceType, ref _dockMethodInfo);
+                        InitializeCommodity("IAiraudioCommodity", ref _airaudioInterfaceType, ref _airaudioMethodInfo);
+
+                        DTPProxyPluginReady = true;
+                        DTPProxyPluginSDKNotify(new UpdateDTPProxyNotify() { State = "DTPProxyPluginSDK Ready OK" });
+                        _ = RegisterEventAsync();
+                    });
+                }
+                else
+                {
+                    writelog($"InitializeDTPProxy After FindPluginByType, _commSdk is NULL... ERROR");
+                    if (_commSdk is IFrameworkPluginConditionNotification pluginCondition)
+                    {
+                        pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
+                        GetCurrentDTPProxyPluginCondition();
+                        writelog($"InitializeDTPProxy After GetCurrentDTPProxyPluginCondition ... ");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch exception[{e.Message}] in InitializeDTPProxy function");
+            }
+        }
+
+
+        private void InitializeDTPProxy_old()
         {
             if (_commSdk != null)
             {
