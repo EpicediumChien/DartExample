@@ -3467,5 +3467,22 @@
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
     <value>Pour accéder aux fonctionnalités de détection de présence, utilisez le lien ci-dessous afin de télécharger le firmware de webcam compatible</value>
+  <data name="Bootloader" xml:space="preserve">
+    <value>Chargeur de démarrage</value>
+  </data>
+  <data name="Bootloader.0" xml:space="preserve">
+    <value>Votre appareil n’est pas disponible.</value>
+  </data>
+  <data name="Bootloader.1" xml:space="preserve">
+    <value>Cliquez</value>
+  </data>
+  <data name="Bootloader.2" xml:space="preserve">
+    <value>ici</value>
+  </data>
+  <data name="Bootloader.3" xml:space="preserve">
+    <value>pour mettre à jour votre firmware afin de restaurer les fonctionnalités.</value>
+  </data>
+  <data name="Update_Dock_Alert_2" xml:space="preserve">
+    <value>Remarque : Les périphériques connectés à cette station d’accueil ne seront peut-être pas disponibles pendant le processus de mise à jour</value>
   </data>
 </root>

@@ -3472,5 +3472,22 @@
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
     <value>Kişi algılama özelliklerine erişmek için uyumlu web kamerası bellenimini indirmek üzere aşağıdaki bağlantıyı kullanın</value>
+  <data name="Bootloader" xml:space="preserve">
+    <value>Önyükleyici</value>
+  </data>
+  <data name="Bootloader.0" xml:space="preserve">
+    <value>Aygıtınız kullanılamıyor.</value>
+  </data>
+  <data name="Bootloader.1" xml:space="preserve">
+    <value>İşlevselliği geri yüklemek üzere bellenimi güncelleştirmek için lütfen</value>
+  </data>
+  <data name="Bootloader.2" xml:space="preserve">
+    <value>buraya</value>
+  </data>
+  <data name="Bootloader.3" xml:space="preserve">
+    <value>tıklayın.</value>
+  </data>
+  <data name="Update_Dock_Alert_2" xml:space="preserve">
+    <value>Not: Bu bağlantı istasyonuna bağlı çevre birimleri güncelleştirme işlemi sırasında kullanılamayabilir.</value>
   </data>
 </root>

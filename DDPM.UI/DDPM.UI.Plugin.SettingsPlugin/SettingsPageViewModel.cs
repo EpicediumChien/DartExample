@@ -964,7 +964,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 case DeviceType.LogicalDock:
                 case DeviceType.PhysicalWiredDock:
                     UXAlertItemVisibility = Visibility.Visible;
-                    UXAlertItemMessage = LangHelper.Instance["Update_Dock_Alert"];
+                    UXAlertItemMessage = LangHelper.Instance["Update_Dock_Alert_2"];
                     using (BatteryInfo batteryInfo = new BatteryInfo())
                     {
                         batteryInfo.GetBatteryInfo(out var battery);

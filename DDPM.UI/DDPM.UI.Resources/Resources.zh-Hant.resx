@@ -3467,5 +3467,22 @@
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
     <value>如需存取在場感應功能，請使用以下連結下載相容的網路攝影機韌體</value>
+  <data name="Bootloader" xml:space="preserve">
+    <value>開機載入器</value>
+  </data>
+  <data name="Bootloader.0" xml:space="preserve">
+    <value>您的裝置無法使用。</value>
+  </data>
+  <data name="Bootloader.1" xml:space="preserve">
+    <value>請按一下</value>
+  </data>
+  <data name="Bootloader.2" xml:space="preserve">
+    <value>此處</value>
+  </data>
+  <data name="Bootloader.3" xml:space="preserve">
+    <value>來更新韌體以還原功能。</value>
+  </data>
+  <data name="Update_Dock_Alert_2" xml:space="preserve">
+    <value>備註：在更新過程中，連接到此擴充基座的周邊設備可能無法使用</value>
   </data>
 </root>

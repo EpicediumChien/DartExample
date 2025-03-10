@@ -3467,5 +3467,22 @@
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
     <value>للوصول إلى ميزات استشعار التواجد، استخدم الرابط أدناه لتنزيل برنامج ثابت متوافق لكاميرا الويب</value>
+  <data name="Bootloader" xml:space="preserve">
+    <value>برنامج Bootloader</value>
+  </data>
+  <data name="Bootloader.0" xml:space="preserve">
+    <value>جهازك غير متاح.</value>
+  </data>
+  <data name="Bootloader.1" xml:space="preserve">
+    <value>يرجى النقر</value>
+  </data>
+  <data name="Bootloader.2" xml:space="preserve">
+    <value>هنا</value>
+  </data>
+  <data name="Bootloader.3" xml:space="preserve">
+    <value>لتحديث برنامجك الثابت لكي تستعيد الوظائف.</value>
+  </data>
+  <data name="Update_Dock_Alert_2" xml:space="preserve">
+    <value>ملاحظة: قد لا تتوفر الأجهزة الطرفية المتصلة بوحدة الإرساء هذه أثناء عملية التحديث</value>
   </data>
 </root>

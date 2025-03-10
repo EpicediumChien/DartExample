@@ -3470,5 +3470,22 @@
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
     <value>Para aceder às funcionalidades de deteção de presença, utilize a ligação abaixo para transferir o firmware da câmara Web compatível</value>
+  <data name="Bootloader" xml:space="preserve">
+    <value>Carregador de arranque</value>
+  </data>
+  <data name="Bootloader.0" xml:space="preserve">
+    <value>O dispositivo está indisponível.</value>
+  </data>
+  <data name="Bootloader.1" xml:space="preserve">
+    <value>Clique</value>
+  </data>
+  <data name="Bootloader.2" xml:space="preserve">
+    <value>aqui</value>
+  </data>
+  <data name="Bootloader.3" xml:space="preserve">
+    <value>para atualizar o firmware para restaurar a funcionalidade.</value>
+  </data>
+  <data name="Update_Dock_Alert_2" xml:space="preserve">
+    <value>Nota: os periféricos ligados a esta estação de ancoragem podem não estar disponíveis durante o processo de atualização.</value>
   </data>
 </root>

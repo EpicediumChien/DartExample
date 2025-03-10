@@ -3471,5 +3471,22 @@
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
     <value>Чтобы получить доступ к функциям обнаружения присутствия, используйте ссылку ниже для скачивания компилируемой микропрограммы веб-камеры</value>
+  <data name="Bootloader" xml:space="preserve">
+    <value>Загрузчик</value>
+  </data>
+  <data name="Bootloader.0" xml:space="preserve">
+    <value>Ваше устройство недоступно.</value>
+  </data>
+  <data name="Bootloader.1" xml:space="preserve">
+    <value>Нажм.</value>
+  </data>
+  <data name="Bootloader.2" xml:space="preserve">
+    <value>по этой ссылке</value>
+  </data>
+  <data name="Bootloader.3" xml:space="preserve">
+    <value>для обновления микропрограммы и восстановления функциональности.</value>
+  </data>
+  <data name="Update_Dock_Alert_2" xml:space="preserve">
+    <value>Примечание. Периферийные устройства, подключенные к этой стыковочной станции, могут быть недоступны в процессе обновления</value>
   </data>
 </root>

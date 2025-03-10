@@ -3467,5 +3467,22 @@
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
     <value>プレゼンス センシング機能にアクセスするには、次のリンクにアクセスして互換性のあるWebカメラのファームウェアをダウンロードしてください。</value>
+  <data name="Bootloader" xml:space="preserve">
+    <value>ブートローダー</value>
+  </data>
+  <data name="Bootloader.0" xml:space="preserve">
+    <value>お使いのデバイスが使用不可です。</value>
+  </data>
+  <data name="Bootloader.1" xml:space="preserve">
+    <value>クリックしてください</value>
+  </data>
+  <data name="Bootloader.2" xml:space="preserve">
+    <value>こちらから輸出コンプライアンスに記入してください。</value>
+  </data>
+  <data name="Bootloader.3" xml:space="preserve">
+    <value>機能を復元するためにファームウェアをアップデートします。</value>
+  </data>
+  <data name="Update_Dock_Alert_2" xml:space="preserve">
+    <value>メモ：このドッキング ステーションに接続されている周辺機器は、アップデート プロセス中に使用できない場合があります。</value>
   </data>
 </root>
