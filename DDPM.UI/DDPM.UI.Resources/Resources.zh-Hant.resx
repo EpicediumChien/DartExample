@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>將組態與重要事項匯出至相同型號的另一個顯示器</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>您可以從這裡匯出最愛的設定，然後輕鬆將其匯入另一台相同型號的顯示器中。</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>高資料速度</value>
   </data>
@@ -914,6 +917,9 @@
   </data>
   <data name="InputSource.4" xml:space="preserve">
     <value>USB 上游</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>重新命名輸入來源</value>
   </data>
   <data name="KeyCustomization.0" xml:space="preserve">
     <value>若要自訂按鍵，請按一下左側映像上其中一個有輪廓的按鍵</value>
@@ -2271,12 +2277,6 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>此功能使我們的眼睛能夠適應所需的設定。</value>
   </data>
-  <data name="DisplayOthers.8" xml:space="preserve">
-    <value>您可以從這裡匯出最愛的設定，然後輕鬆將其匯入另一台相同型號的顯示器中。</value>
-  </data>
-  <data name="InputSource.5" xml:space="preserve">
-    <value>重新命名輸入來源</value>
-  </data>
   <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
     <value>請拔下顯示器的所有 USB 儲存裝置。</value>
   </data>
@@ -3459,6 +3459,14 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>深入瞭解軟體</value>
   </data>
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>如需存取 Microsoft 在場感應功能，請造訪 Windows 設定</value>
+  </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>相容的韌體</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>如需存取在場感應功能，請使用以下連結下載相容的網路攝影機韌體</value>
   <data name="Bootloader" xml:space="preserve">
     <value>開機載入器</value>
   </data>

@@ -538,12 +538,15 @@
     <value>Utilise l’analyse intelligente de la scène et le suivi du visage pour effectuer un zoom et un panoramique lorsque vous vous déplacez</value>
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
-    <value />
+    <value>Plusieurs stations d’accueil ont été détectées. Pour éviter tout dommage aux stations d’accueil, veuillez n’en connecter qu’une.</value>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value />
+    <value>s</value>
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
-    <value />
+    <value>Plusieurs stations d’accueil détectées. Gardez une seule station d’accueil connectée pour éviter d’endommager vos stations d’accueil. Redémarrez l’ordinateur, puis connectez une seule station d’accueil.</value>
+  </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>N’éteignez pas le système tant que les mises à jour ne sont pas terminées</value>
   </data>
 </root>

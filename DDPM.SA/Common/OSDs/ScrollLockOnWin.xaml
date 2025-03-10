@@ -12,7 +12,7 @@
     ShowInTaskbar="False"
     Topmost="True"
     WindowStartupLocation="Manual"
-    WindowStyle="None"
+    WindowStyle="None" Closed="Window_Closed"
     mc:Ignorable="d">
 
     <Window.Resources>
@@ -41,7 +41,7 @@
         </Grid.ColumnDefinitions>
 
         <Grid
-            Margin="0,32,0,0"
+            Margin="0,50,0,0"
             x:Name="fadeOutCtrl"
             Grid.Row="0"
             Grid.Column="1"
@@ -49,8 +49,8 @@
             VerticalAlignment="Bottom">
 
             <Border
-                Width="366"
-                Height="148"
+                Width="332"
+                Height="135"
                 Background="{DynamicResource Default_SA_OSD_Border_BkColor}"
                 BorderBrush="#0DFFFFFF"
                 BorderThickness="1.5"

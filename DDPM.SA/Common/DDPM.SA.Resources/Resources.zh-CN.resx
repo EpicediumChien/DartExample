@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>无法打开应用程序</value>
   </data>
-    <data name="will_be_updated_to" xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>将更新为 </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -435,7 +435,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>大写锁定开启</value>
   </data>
-    <data name="Caps Lock Off" xml:space="preserve">
+  <data name="Caps Lock Off" xml:space="preserve">
     <value>大写锁定关闭</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -477,7 +477,7 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>离开锁定</value>
   </data>
-    <data name="Caps_Lock_Off" xml:space="preserve">
+  <data name="Caps_Lock_Off" xml:space="preserve">
     <value>大写锁定关闭</value>
   </data>
   <data name="App_Name" xml:space="preserve">
@@ -538,12 +538,15 @@
     <value>利用智能场景分析和面部跟踪，在您移动时缩放和平移视图</value>
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
-    <value />
+    <value>检测到多个坞站。请只连接一个坞站，以防止坞站损坏。</value>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value />
+    <value>s</value>
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
-    <value />
+    <value>检测到多个坞站。请仅连接一个坞站，以防止坞站损坏。重新启动 PC，然后仅连接一个坞站。</value>
+  </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>在更新完成之前，请勿关闭系统电源</value>
   </data>
 </root>

@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>구성 및 중요 사항을 동일한 모델의 다른 모니터로 내보냅니다.</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>여기에 즐겨 찾는 구성을 내보낸 후 복잡한 과정 없이 동일한 모델의 다른 모니터로 가져올 수 있습니다.</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>빠른 데이터 속도</value>
   </data>
@@ -914,6 +917,9 @@
   </data>
   <data name="InputSource.4" xml:space="preserve">
     <value>USB 업스트림</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>입력 소스 이름 바꾸기</value>
   </data>
   <data name="KeyCustomization.0" xml:space="preserve">
     <value>키를 맞춤 구성하려면 왼쪽에 있는 이미지에서 윤곽선이 표시된 키 중 하나를 클릭합니다.</value>
@@ -2271,12 +2277,6 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>이 기능은 사용자의 눈이 원하는 설정에 적응할 수 있도록 합니다.</value>
   </data>
-  <data name="DisplayOthers.8" xml:space="preserve">
-    <value>여기에 즐겨 찾는 구성을 내보낸 후 복잡한 과정 없이 동일한 모델의 다른 모니터로 가져올 수 있습니다.</value>
-  </data>
-  <data name="InputSource.5" xml:space="preserve">
-    <value>입력 소스 이름 바꾸기</value>
-  </data>
   <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
     <value>모니터에서 모든 USB 스토리지 디바이스를 분리합니다.</value>
   </data>
@@ -3459,6 +3459,14 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>소프트웨어에 대해 자세히 알아보기</value>
   </data>
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>Microsoft 존재 감지 기능을 사용하려면 Windows 설정으로 이동하십시오.</value>
+  </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>호환되는 펌웨어</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>존재 감지 기능을 사용하려면 아래 링크를 사용하여 호환되는 웹캠 펌웨어를 다운로드하십시오.</value>
   <data name="Bootloader" xml:space="preserve">
     <value>부트로더</value>
   </data>

@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Falha ao abrir o aplicativo</value>
   </data>
-    <data name="will_be_updated_to" xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>será atualizado para </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -435,7 +435,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>Caps Lock ativado</value>
   </data>
-    <data name="Caps Lock Off" xml:space="preserve">
+  <data name="Caps Lock Off" xml:space="preserve">
     <value>Caps Lock desativado</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -477,7 +477,7 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Bloqueio por distanciamento</value>
   </data>
-    <data name="Caps_Lock_Off" xml:space="preserve">
+  <data name="Caps_Lock_Off" xml:space="preserve">
     <value>Caps Lock desativado</value>
   </data>
   <data name="App_Name" xml:space="preserve">
@@ -538,12 +538,15 @@
     <value>Utiliza a análise de cena inteligente e o rastreamento facial para aplicar o zoom ou a exibição panorâmica enquanto você se move</value>
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
-    <value />
+    <value>Várias dock stations foram detectadas. Mantenha apenas uma dock station conectada para evitar danos às docks.</value>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value />
+    <value>s</value>
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
-    <value />
+    <value>Várias docks detectadas. Mantenha apenas uma dock conectada para evitar danos às suas docks. Reinicie o PC e conecte apenas uma dock.</value>
+  </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>Não desligue o sistema até que as atualizações estejam concluídas</value>
   </data>
 </root>

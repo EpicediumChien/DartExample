@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>تصدير تكوين واستيراده إلى شاشة أخرى من نفس الطراز</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>يمكنك تصدير التكوين المفضل لديك من هنا واستيراده إلى شاشة أخرى من الطراز نفسه من دون عناء.</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>سرعة بيانات عالية</value>
   </data>
@@ -914,6 +917,9 @@
   </data>
   <data name="InputSource.4" xml:space="preserve">
     <value>منفذ USB العلوي</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>إعادة تسمية مصدر الإدخال</value>
   </data>
   <data name="KeyCustomization.0" xml:space="preserve">
     <value>لتخصيص مفتاح، انقر فوق أحد المفاتيح الموضحة في الصورة على اليسار</value>
@@ -2271,12 +2277,6 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>تمكّن هذه الميزة أعيننا من التكيف مع الإعداد المطلوب.</value>
   </data>
-  <data name="DisplayOthers.8" xml:space="preserve">
-    <value>يمكنك تصدير التكوين المفضل لديك من هنا واستيراده إلى شاشة أخرى من الطراز نفسه من دون عناء.</value>
-  </data>
-  <data name="InputSource.5" xml:space="preserve">
-    <value>إعادة تسمية مصدر الإدخال</value>
-  </data>
   <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
     <value>افصل كل أجهزة تخزين USB عن الشاشة.</value>
   </data>
@@ -3459,6 +3459,14 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>تعرف على المزيد عن البرنامج</value>
   </data>
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>للوصول إلى ميزات استشعار التواجد من Microsoft، قم بزيارة إعدادات Windows</value>
+  </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>البرنامج الثابت متوافق</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>للوصول إلى ميزات استشعار التواجد، استخدم الرابط أدناه لتنزيل برنامج ثابت متوافق لكاميرا الويب</value>
   <data name="Bootloader" xml:space="preserve">
     <value>برنامج Bootloader</value>
   </data>

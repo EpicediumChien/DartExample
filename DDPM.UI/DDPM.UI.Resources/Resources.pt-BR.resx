@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>Exportar uma configuração e importá-la para outro monitor do mesmo modelo</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>Você pode exportar sua configuração favorita daqui e importá-la para outro monitor do mesmo modelo sem complicações.</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>Alta velocidade de dados</value>
   </data>
@@ -914,6 +917,9 @@
   </data>
   <data name="InputSource.4" xml:space="preserve">
     <value>USB upstream</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>Renomear fonte de entrada</value>
   </data>
   <data name="KeyCustomization.0" xml:space="preserve">
     <value>Para personalizar uma tecla, clique em uma das teclas destacadas na imagem à esquerda</value>
@@ -2274,12 +2280,6 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>Esse recurso permite que nossos olhos se adaptem a uma configuração desejada.</value>
   </data>
-  <data name="DisplayOthers.8" xml:space="preserve">
-    <value>Você pode exportar sua configuração favorita daqui e importá-la para outro monitor do mesmo modelo sem complicações.</value>
-  </data>
-  <data name="InputSource.5" xml:space="preserve">
-    <value>Renomear fonte de entrada</value>
-  </data>
   <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
     <value>Desconecte todos os dispositivos de armazenamento USB do monitor.</value>
   </data>
@@ -3462,6 +3462,14 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Saiba mais sobre o software</value>
   </data>
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>Para acessar os recursos do Microsoft Presence Sensing, acesse as Configurações do Windows</value>
+  </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>Firmware compatível</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>Para acessar os recursos de detecção de presença, use o link abaixo para fazer o download do firmware da webcam compatível</value>
   <data name="Bootloader" xml:space="preserve">
     <value>Inicialização</value>
   </data>

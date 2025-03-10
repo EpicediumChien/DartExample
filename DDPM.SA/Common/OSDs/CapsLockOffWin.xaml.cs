@@ -10,7 +10,7 @@ namespace DDPM.OSDs
     /// </summary>
     public partial class CapsLockOffWin : Window
     {
-        private DispatcherTimer? animationTimer = null;
+        //private DispatcherTimer? animationTimer = null;
         private TimeSpan time;
 
         public CapsLockOffWin()
@@ -53,29 +53,29 @@ namespace DDPM.OSDs
             }
             Close();
         }
-        private void RunTimerTick(object sender, EventArgs e)
-        {
-            if (time == TimeSpan.Zero)
-            {
-                animationTimer?.Stop();
-                this.Dispatcher.Invoke(() =>
-                {
-                    this.Close();
-                });
-            }
-            else
-            {
-                time = time.Add(TimeSpan.FromMilliseconds(-100));
+        //private void RunTimerTick(object sender, EventArgs e)
+        //{
+        //    if (time == TimeSpan.Zero)
+        //    {
+        //        animationTimer?.Stop();
+        //        this.Dispatcher.Invoke(() =>
+        //        {
+        //            this.Close();
+        //        });
+        //    }
+        //    else
+        //    {
+        //        time = time.Add(TimeSpan.FromMilliseconds(-100));
 
-                //if (time.TotalMilliseconds < 800)
-                if (time.TotalMilliseconds < 500)
-                {
-                    this.Dispatcher.Invoke(() =>
-                    {
-                    });
-                }
-            }
-        }
+        //        //if (time.TotalMilliseconds < 800)
+        //        if (time.TotalMilliseconds < 500)
+        //        {
+        //            this.Dispatcher.Invoke(() =>
+        //            {
+        //            });
+        //        }
+        //    }
+        //}
 
         private void InvokeFadeOutAnimation()
         {
@@ -94,17 +94,25 @@ namespace DDPM.OSDs
             });
         }
 
-        public void StopFadeOutAnimation()
+        private void Window_Closed(object sender, EventArgs e)
         {
-            this.Dispatcher.Invoke(() =>
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
             {
-                Storyboard? sb = Resources["FadeOut"] as Storyboard;
-
-                if (sb == null)
-                    return;
-
-                sb.Stop();
-            });
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
         }
+
+        //public void StopFadeOutAnimation()
+        //{
+        //    this.Dispatcher.Invoke(() =>
+        //    {
+        //        Storyboard? sb = Resources["FadeOut"] as Storyboard;
+
+        //        if (sb == null)
+        //            return;
+
+        //        sb.Stop();
+        //    });
+        //}
     }
 }
