@@ -273,6 +273,10 @@ namespace DDPM.SA.Common
 
         Task<bool> SetOnUSBKVM(MonitorInfo monitorInfo, bool isON);
 
+        Task<bool> GetNoKVM(MonitorInfo monitorInfo);
+
+        Task<bool> SetNoKVM(MonitorInfo monitorInfo, bool isON);
+
         Task<bool> isScreenPartition(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low);
 
         #endregion public for USBKVM

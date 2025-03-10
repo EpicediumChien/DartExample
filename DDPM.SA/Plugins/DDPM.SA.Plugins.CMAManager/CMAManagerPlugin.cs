@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using static DDPM.SA.Common.ICLICommandTable;
+using static DDPM.SA.Plugins.CMAManager.CmdResponse;
 using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugins.CMAManager
@@ -1103,10 +1104,12 @@ namespace DDPM.SA.Plugins.CMAManager
         public event EventHandler<CMAEventArgs> CMARequestEvent;
 
         // add @ 20250220 stephen : add fwupdate result return code
-        private int responseFwResultCode(int code)
+        private int responseFwResultCode(int code, out string msg)
         {
 
             int resultCode = -1;
+
+            msg = string.Empty;
 
             switch (code)
             {
@@ -1116,14 +1119,17 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 case (int)FWUErrorCode.DeviceDisconnected:
                     resultCode = Params.Response.STATUS_FW_UPDATE_DEVICE_NOT_CONNECTED;
+                    msg = "STATUS_FW_UPDATE_DEVICE_NOT_CONNECTED";
                     break;
 
                 case (int)FWUErrorCode.Unknow:
                     resultCode = Params.Response.UNKNOWN_ERROR;
+                    msg = "UNKNOWN_ERROR";
                     break;
 
                 default:
                     resultCode = Params.Response.STATUS_FW_UPDATE_ERROR;
+                    msg = "STATUS_FW_UPDATE_ERROR";
                     break;
 
             }
@@ -1186,11 +1192,23 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 }*/
 
+                // modified @ 20250308 stephe : fix sid
                 WriteLog("[CMA] UpdateFwStatus() Response");
+                string sid = string.Empty;
+
+                CmdResponse cmdResponse = new CmdResponse(data.Guid, true, null);
+                if (cmdResponse.getErrorMsg().Equals("success"))
+                {
+                    WriteLog("[CMA] UpdateFwStatus() Response cmdResponse.getErrorMsg() = success");
+                    InfoResponse infoResponse = new InfoResponse(cmdResponse.getData(), false);
+                    sid = infoResponse.sid;
+                }
+
 
                 string response = string.Empty;
+                string errMsg = string.Empty;
 
-                response = "{\"sid\":\"N/A\",\"gid\":\"" + data.Guid + "\",\"response\":[{\"tid\":1,\"result\":" + responseFwResultCode((int)data.FWUErrorCode) + ",\"msg\":\"E\",\"data\":";
+                response = "{\"sid\":\"" + sid + "\",\"gid\":\"" + data.Guid + "\",\"response\":[{\"tid\":1,\"result\":" + responseFwResultCode((int)data.FWUErrorCode, out errMsg) + ",\"msg\":\"" + errMsg + "\",\"data\":";
                 response = response + "[{";
                 response = response + "\"seqnum\":" + 2 + ",";
                 response = response + "\"index\":\"" + data.DeviceIndex + "\",";
@@ -1198,8 +1216,8 @@ namespace DDPM.SA.Plugins.CMAManager
                 response = response + "\"servicetag\":\"" + data.ServiceTag + "\",";
                 response = response + "\"marketingname\":\"" + "N/A" + "\",";
                 response = response + "\"serialnumber\":\"" + "N/A" + "\",";
-                response = response + "\"fwversion\":\"" + data.TheLatestVersion + "\",";
-                response = response + "\"fwupdateresponse\":\"" + string.Empty + "\"";
+                response = response + "\"fwversion\":\"[" + data.TheLatestVersion + "]\",";
+                response = response + "\"fwupdateresponse\":[\"" + string.Empty + "\"]";
                 response = response + "}]";
                 response = response + "}]}";
 

@@ -32,7 +32,6 @@
                       Margin="32,32,68,32">
                     <Grid>
                         <UXControls:UXTextBlock Grid.Column="0"
-                                                Width="276"
                                                 FontSize="40"
                                                 FontFamily="Roboto"
                                                 TextWrapping="WrapWithOverflow"

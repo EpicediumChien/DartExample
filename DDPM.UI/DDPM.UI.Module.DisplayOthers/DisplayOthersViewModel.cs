@@ -7,8 +7,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DDPM.UI.Common;
-using DDPM.SA.Common.Display;
 using System.Windows.Forms;
 using System.Windows;
 using DDPM.SA.Common.Settings;

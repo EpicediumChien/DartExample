@@ -174,7 +174,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             var commodity = new ConnectedArgs("");
 
             InitializeDTPProxy();
-            writelog($"Initialized successfully");
+            writelog($"DTPProxyPlugin constructor end...");
         }
 
         //Derek 1219
@@ -10346,6 +10346,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
 
             PluginCondition = new PluginStartedCondition();
+
+            writelog($"--- run InitializeDTPProxy at OnPluginStarting before ----");
+            InitializeDTPProxy();
+            writelog($"--- run InitializeDTPProxy at OnPluginStarting after ----");
             writelog("DTPProxyPlugin plugin starting");
         }
 
@@ -10451,9 +10455,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private void InitializeDTPProxy()
         {
             if (_commSdk != null)
+            {
+                writelog($"InitializeDTPProxy First check _commSdk not null, return ... ");
                 return;
+            }
 
+            writelog($"InitializeDTPProxy before FindPluginByType because _commSdk null ... ");
             _commSdk = (ICommodityClientSdk)_agent.PluginManager.FindPluginByType(typeof(ICommodityClientSdk));
+            //_commSdk = _agent.PluginManager.FindPluginByType<ICommodityClientSdk>(PluginResolution.Dynamic);
 
             try
             {
@@ -10609,10 +10618,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
+                    writelog($"InitializeDTPProxy After FindPluginByType, _commSdk is NULL... ERROR");
                     if (_commSdk is IFrameworkPluginConditionNotification pluginCondition)
                     {
                         pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
                         GetCurrentDTPProxyPluginCondition();
+                        writelog($"InitializeDTPProxy After GetCurrentDTPProxyPluginCondition ... ");
                     }
                 }
             }
@@ -11498,16 +11509,22 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     if (pluginCondition is PluginErrorCondition)
                     {
-                        //writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in an error condition");
+                        writelog($"PluginErrorCondition");
                         //_DisplayManagerPluginCondition = pluginCondition;
                     }
                     else if (pluginCondition is PluginRunningCondition)
                     {
+                        writelog($"PluginRunningCondition");
                         //_DisplayManagerPluginCondition = pluginCondition;
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
+                        writelog($"PluginStartedCondition");
                         //_DisplayManagerPluginCondition = pluginCondition;
+                    }
+                    else
+                    {
+                        writelog($"Unknow condition.");
                     }
                 }
             });
@@ -12888,7 +12905,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-       
+
 
         public async Task<bool> GetAirAudioIsWearDetectionQuickPauseSupportedAsync(string Guid)
         {
@@ -13629,7 +13646,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-       
+
 
         public async Task<int> GetAirAudioAncGainAsync(string Guid)
         {

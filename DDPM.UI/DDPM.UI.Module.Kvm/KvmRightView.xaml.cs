@@ -164,7 +164,7 @@ namespace DDPM.UI.Module.Kvm
                 }
                 else
                 {
-                    vm.Invoke_USBKVM();
+                    vm.Invoke_USBKVM(true);
                 }
             }
         }
@@ -180,6 +180,13 @@ namespace DDPM.UI.Module.Kvm
                 button_Net.Visibility = Visibility.Collapsed;
                 if (vm != null)
                 {
+                    if (vm.NKVMisON)
+                    {
+                        vm.isOnNKVM(false);
+                    }
+                    vm.isOnNoKVM(false);
+                    vm.NKVMisON = false;
+                    vm.NoKVMisON = false;
                     if (vm.USBKVMisON)
                     {
                         vm._log.Info("[SelectUSBKVM]USBKVM is on");
@@ -196,6 +203,11 @@ namespace DDPM.UI.Module.Kvm
                         //    vm._log.Info("[SelectUSBKVM]No E8");
                         //    button_USBHotkeys.Visibility = Visibility.Collapsed;
                         //}
+                        vm.LoadnewLeftView(false);
+                        if (!vm.firstinKVM)
+                        {
+                            vm.Invoke_USBKVM(false);
+                        }
                     }
                     else
                     {
@@ -232,8 +244,9 @@ namespace DDPM.UI.Module.Kvm
                 //{
                 //    vm.isNKVM = true;
                 //}
-                vm.isOnUSBKVM(false);
-                vm.USBKVMisON = false;
+                //vm.isOnNoKVM(false);
+                //vm.NoKVMisON = false;
+                vm.LoadnewLeftView(true);
             }
         }
 
@@ -257,16 +270,15 @@ namespace DDPM.UI.Module.Kvm
                 //{
                 //    vm.isNoKVM = true;
                 //}
-                if (!vm.isScreenPartition)
+                vm.isOnNoKVM(true);
+                if (vm.NKVMisON)
                 {
-                    vm.USBKVMisON = false;
-                    vm.isOnUSBKVM(false);
+                    vm.isOnNKVM(false);
                 }
-                else
-                {
-                    vm.LoaddefLeftView();
-                }
-                DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM");
+                vm.NoKVMisON = false;
+                vm.NKVMisON = false;
+                vm.LoadnewLeftView(true);
+                //DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM");
             }
 
             //radioButton.IsEnabled = true;

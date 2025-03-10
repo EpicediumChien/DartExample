@@ -3563,4 +3563,7 @@
   <data name="WalkThroughPen_Sub.1_1" xml:space="preserve">
     <value>Your pen is charged X%.\n\nTo charge your pen fully, make sure it is attached to your tablet screen. You will be notified once the pen is done charging.\n\nLow battery notifications will appear once the battery charge is below 10%. </value>
   </data>
+  <data name="Update_Dock_Alert_2" xml:space="preserve">
+    <value>Note: peripherals connecting with this dock may not be available during the update process</value>
+  </data>
 </root>

@@ -29,15 +29,17 @@
 	  <None Remove="Resources\Images\Masthead_Add_Icon.png" />
 	  <None Remove="Resources\Images\Masthead_Gear_Icon.png" />
 	  <None Remove="Resources\Images\splash-round.png" />
+	  <None Remove="Resources\Images\splash-round_light.png" />
 	  <None Remove="Resources\Images\splash-square.png" />
 	  <None Remove="Resources\Images\Splash.png" />
 	  <None Remove="Resources\Images\splash4k-round.png" />
+	  <None Remove="Resources\Images\splash4k-round_light.png" />
 	  <None Remove="Resources\Images\splash4k-square.png" />
 	  <None Remove="Resources\Images\Welcome1.png" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="MessagePack" Version="2.5.192" />
+	  <PackageReference Include="MessagePack" Version="3.1.3" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -55,8 +57,10 @@
 	  <Resource Include="Resources\Images\Masthead_Add_Icon.png" />
 	  <Resource Include="Resources\Images\Masthead_Gear_Icon.png" />
 	  <Resource Include="Resources\Images\splash-round.png" />
+	  <Resource Include="Resources\Images\splash-round_light.png" />
 	  <Resource Include="Resources\Images\splash-square.png" />
 	  <Resource Include="Resources\Images\splash4k-round.png" />
+	  <Resource Include="Resources\Images\splash4k-round_light.png" />
 	  <Resource Include="Resources\Images\splash4k-square.png" />
 	  <Resource Include="Resources\Images\Welcome1.png" />
 	</ItemGroup>

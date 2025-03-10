@@ -12,12 +12,27 @@ namespace DDPM.UI.Common.UserControls
     /// </summary>
     public partial class VbarItem1 : UserControl
     {
+        private VbarItemViewModel vm = new VbarItemViewModel();
+        public int Id => vm.Id;
+
         #region Ctor
 
         public VbarItem1()
         {
             InitializeComponent();
             //DataContext = this;
+        }
+
+        public VbarItem1(int id, ImageSource icon, string text, Canvas? iconCanvas = null)
+        {
+            InitializeComponent();
+            vm.Id = id;
+            vm.Icon = icon;
+            this.Text = text;
+            if (iconCanvas != null)
+                IconCanvasContent.Content = iconCanvas;
+            //vm.Command = command;
+            this.DataContext = vm;
         }
 
         #endregion Ctor
@@ -37,7 +52,10 @@ namespace DDPM.UI.Common.UserControls
         public string Text
         {
             get { return (string)GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); }
+            set {
+                vm.Text = value;
+                SetValue(TextProperty, value); 
+            }
         }
 
         // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
@@ -309,5 +327,17 @@ namespace DDPM.UI.Common.UserControls
             InputMethod.SetPreferredImeState(this, InputMethodState.Off);
 
         }
+
+        #region MigrateFromVbarItem legacy
+        public Visibility TooltipVisibility
+        {
+            get => vm.TooltipVisibility;
+            set => vm.TooltipVisibility = value;
+        }
+        public void SetLadningMode(bool isLandingMode)
+        {
+            this.IsLandingMode = isLandingMode;
+        }
+        #endregion
     }
 }

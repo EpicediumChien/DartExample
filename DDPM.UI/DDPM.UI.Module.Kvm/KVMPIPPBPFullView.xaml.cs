@@ -163,9 +163,14 @@ namespace DDPM.UI.Module.Kvm
                     //set pxp
                     SetPxP();
                     vm.isOnUSBKVM(true);//bool b = DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(true).Result;
-                    vm.isOnNKVM(false);
+                    if (vm.NKVMisON)
+                    {
+                        vm.isOnNKVM(false);
+                    }
+                    vm.isOnNoKVM(false);
                     vm.USBKVMisON = true;
                     vm.NKVMisON = false;
+                    vm.NoKVMisON = false;
                     vm.FromProgressValue = 0;
                     vm.ToProgressValue = 1;
                     vm.isPxPFullView = false;
@@ -387,6 +392,7 @@ namespace DDPM.UI.Module.Kvm
                 vm.isPxPFullView = false;
                 //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[vm.PxPCode];
                 //vm.OnPipPbpCapsChanged();
+                vm.CancelSetUSBKVM();
             }
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
         }

@@ -33,6 +33,8 @@ namespace DDPM.SA.Plugins.CMAManager
         /*        private List<InfoTask> tasks;
                 private List<InfoData> taskDatas;*/
 
+        private string errorMsg = string.Empty;
+
         public CmdResponse(string _data)
         {
             data = _data;
@@ -55,6 +57,18 @@ namespace DDPM.SA.Plugins.CMAManager
             listResponse = new List<string>();
 
             response = new InfoResponse(data, isFileLoad, _fWUpdateInfo);
+
+        }
+
+        public string getData()
+        {
+            return data;
+
+        }
+
+        public string getErrorMsg()
+        {
+            return errorMsg;
 
         }
 
@@ -82,8 +96,8 @@ namespace DDPM.SA.Plugins.CMAManager
             try
             {
 
-                string info = string.Empty;
-                string serialized_string = DDPMFileSecurity.GetSerializedJsonString((FILE_PATH + guid + ".txt"), out info);
+                //string info = string.Empty;
+                string serialized_string = DDPMFileSecurity.GetSerializedJsonString((FILE_PATH + guid + ".txt"), out errorMsg);
 
                 //Console.WriteLine(serialized_string);
 
