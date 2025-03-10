@@ -10461,8 +10461,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
             writelog($"InitializeDTPProxy before FindPluginByType because _commSdk null ... ");
-            //_commSdk = (ICommodityClientSdk)_agent.PluginManager.FindPluginByType(typeof(ICommodityClientSdk));
-            _commSdk = _agent.PluginManager.FindPluginByType<ICommodityClientSdk>(PluginResolution.Dynamic);
+            _commSdk = (ICommodityClientSdk)_agent.PluginManager.FindPluginByType(typeof(ICommodityClientSdk));
+            //_commSdk = _agent.PluginManager.FindPluginByType<ICommodityClientSdk>(PluginResolution.Dynamic);
 
             try
             {
