@@ -538,12 +538,15 @@
     <value>Використовує алгоритми інтелектуального аналізу сцени та відстеження обличчя для масштабування та панорамування зображення, коли ви рухаєтеся.</value>
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
-    <value />
+    <value>Виявлено кілька док-станцій. Щоб запобігти пошкодженню док-станцій, не підключайте більше однієї.</value>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value />
+    <value>с</value>
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
-    <value />
+    <value>Виявлено кілька док-станцій. Щоб не допустити пошкодження док-станцій, підключайте лише одну з них за раз. Перезавантажте ПК, потім підключіть лише одну док-станцію.</value>
+  </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>Не вимикайте живлення системи до завершення оновлення</value>
   </data>
 </root>

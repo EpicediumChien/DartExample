@@ -538,12 +538,15 @@
     <value>Yapay Zeka Otomatik Çerçeveleme akıllı sahne analizi ve hareket ettiğinizde görünümü yakınlaştırıp kaydırmak için yüz takibi sağlar</value>
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
-    <value />
+    <value>Birden fazla bağlantı istasyonu algılandı. Bağlantı istasyonlarınızın hasar görmesini önlemek için yalnızca bir bağlantı istasyonunu bağlı tutun.</value>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value />
+    <value>s</value>
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
-    <value />
+    <value>Birden fazla bağlantı istasyonu algılandı. Bağlantı istasyonlarınızın zarar görmesini önlemek için yalnızca tek bir bağlantı istasyonunu bağlı tutun. Bilgisayarı yeniden başlatın, ardından yalnızca bir bağlantı istasyonu bağlayın.</value>
+  </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>Güncelleştirmeler tamamlanana kadar sistemi kapatmayın</value>
   </data>
 </root>

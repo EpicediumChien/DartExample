@@ -538,12 +538,15 @@
     <value>지능형 장면 분석 및 얼굴 추적 기능을 활용하여 확대/축소하며, 움직일 때 뷰를 좌우로 이동합니다.</value>
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
-    <value />
+    <value>도크가 여러 개 감지되었습니다. 도크가 손상되지 않도록 1개의 도크만 연결해 두십시오.</value>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value />
+    <value>s</value>
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
-    <value />
+    <value>도크가 여러 개 감지되었습니다. 도크가 손상되지 않도록 1개의 도크만 연결해 두십시오. PC를 재시작한 다음 도크를 1개만 연결하십시오.</value>
+  </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>업데이트가 완료될 때까지 시스템 전원을 끄지 마십시오.</value>
   </data>
 </root>
