@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>Eksportowanie ważnej konfiguracji do innego monitora tego samego modelu</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>Tutaj możesz wyeksportować swoją ulubioną konfigurację i bezproblemowo zaimportować ją do innego monitora tego samego modelu.</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>Wysoka prędkość danych</value>
   </data>
@@ -914,6 +917,9 @@
   </data>
   <data name="InputSource.4" xml:space="preserve">
     <value>USB przed</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>Zmień nazwę źródła sygnału wejściowego</value>
   </data>
   <data name="KeyCustomization.0" xml:space="preserve">
     <value>Aby dostosować klawisz, kliknij jeden z zaznaczonych klawiszy na obrazie po lewej stronie</value>
@@ -2271,12 +2277,6 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>Ta funkcja umożliwia oczom dostosowanie się do wybranego ustawienia.</value>
   </data>
-  <data name="DisplayOthers.8" xml:space="preserve">
-    <value>Tutaj możesz wyeksportować swoją ulubioną konfigurację i bezproblemowo zaimportować ją do innego monitora tego samego modelu.</value>
-  </data>
-  <data name="InputSource.5" xml:space="preserve">
-    <value>Zmień nazwę źródła sygnału wejściowego</value>
-  </data>
   <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
     <value>Odłącz wszystkie urządzenia pamięci masowej USB od monitora.</value>
   </data>
@@ -3459,7 +3459,13 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Dowiedz się więcej o oprogramowaniu</value>
   </data>
-  <data name="Update_Dock_Alert_2" xml:space="preserve">
-    <value />
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>Aby uzyskać dostęp do funkcji wykrywania obecności firmy Microsoft, odwiedź sekcję Ustawienia systemu Windows</value>
+  </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>Kompatybilne oprogramowanie wewnętrzne</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>Aby uzyskać dostęp do funkcji wykrywania obecności, użyj poniższego łącza, aby pobrać kompatybilne oprogramowanie wewnętrzne kamery internetowej.</value>
   </data>
 </root>

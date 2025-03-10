@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>Exporte una configuración e impórtela a otro monitor del mismo modelo</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>Puede exportar su configuración favorita desde aquí e importarla a otro monitor del mismo modelo fácilmente.</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>Alta velocidad de datos</value>
   </data>
@@ -914,6 +917,9 @@
   </data>
   <data name="InputSource.4" xml:space="preserve">
     <value>USB ascendente</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>Cambiar de nombre la fuente de entrada</value>
   </data>
   <data name="KeyCustomization.0" xml:space="preserve">
     <value>Para personalizar una tecla, haga clic en las teclas delineadas de la imagen de la izquierda</value>
@@ -2271,12 +2277,6 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>Esta función permite que nuestros ojos se adapten a la configuración deseada.</value>
   </data>
-  <data name="DisplayOthers.8" xml:space="preserve">
-    <value>Puede exportar su configuración favorita desde aquí e importarla a otro monitor del mismo modelo fácilmente.</value>
-  </data>
-  <data name="InputSource.5" xml:space="preserve">
-    <value>Cambiar de nombre la fuente de entrada</value>
-  </data>
   <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
     <value>Desconecte todos los dispositivos de almacenamiento USB del monitor.</value>
   </data>
@@ -3459,7 +3459,13 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Más información sobre el software</value>
   </data>
-  <data name="Update_Dock_Alert_2" xml:space="preserve">
-    <value />
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>Para acceder a las funciones de detección de presencia de Microsoft, visite Configuración de Windows</value>
+  </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>Firmware compatible</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>Para acceder a las funciones de detección de presencia, utilice el enlace siguiente para descargar el firmware de la cámara web compatible</value>
   </data>
 </root>

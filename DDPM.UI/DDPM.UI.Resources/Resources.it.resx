@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>Esportare una configurazione e importarla su un altro monitor dello stesso modello</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>È possibile esportare la configurazione preferita da qui e importarla in un altro monitor dello stesso modello senza problemi.</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>Velocità dati elevata</value>
   </data>
@@ -914,6 +917,9 @@
   </data>
   <data name="InputSource.4" xml:space="preserve">
     <value>USB upstream</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>Rinomina sorgente di ingresso</value>
   </data>
   <data name="KeyCustomization.0" xml:space="preserve">
     <value>Per personalizzare un tasto, cliccare su uno dei tasti evidenziati nell'immagine a sinistra</value>
@@ -2271,12 +2277,6 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>Questa funzione consente agli occhi di adattarsi all'ambiente desiderato.</value>
   </data>
-  <data name="DisplayOthers.8" xml:space="preserve">
-    <value>È possibile esportare la configurazione preferita da qui e importarla in un altro monitor dello stesso modello senza problemi.</value>
-  </data>
-  <data name="InputSource.5" xml:space="preserve">
-    <value>Rinomina sorgente di ingresso</value>
-  </data>
   <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
     <value>Scollega tutti i dispositivi di storage USB dal monitor.</value>
   </data>
@@ -3459,7 +3459,13 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Ulteriori informazioni sul software</value>
   </data>
-  <data name="Update_Dock_Alert_2" xml:space="preserve">
-	<value></value>
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>Per accedere alle funzioni Microsoft Presence Sensing, visitare le Impostazioni di Windows</value>
+  </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>Firmware compatibile</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>Per accedere alle funzioni di rilevamento della presenza, utilizzare il link riportato di seguito per scaricare il firmware della webcam</value>
   </data>
 </root>

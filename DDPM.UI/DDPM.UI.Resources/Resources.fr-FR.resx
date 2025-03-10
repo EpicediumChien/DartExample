@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>Exporter une configuration et un élément important vers un autre écran du même modèle</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>Vous pouvez exporter la configuration de votre choix à partir de cet emplacement, puis l’importer facilement dans un autre écran du même modèle.</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>Vitesse de transmission des données élevée</value>
   </data>
@@ -914,6 +917,9 @@
   </data>
   <data name="InputSource.4" xml:space="preserve">
     <value>USB en amont</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>Renommer la source d’entrée</value>
   </data>
   <data name="KeyCustomization.0" xml:space="preserve">
     <value>Pour personnaliser une touche, cliquez sur l’une des touches soulignées sur l’image de gauche</value>
@@ -2271,12 +2277,6 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>Cette fonctionnalité permet à nos yeux de s’adapter au réglage souhaité.</value>
   </data>
-  <data name="DisplayOthers.8" xml:space="preserve">
-    <value>Vous pouvez exporter la configuration de votre choix à partir de cet emplacement, puis l’importer facilement dans un autre écran du même modèle.</value>
-  </data>
-  <data name="InputSource.5" xml:space="preserve">
-    <value>Renommer la source d’entrée</value>
-  </data>
   <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
     <value>Déconnectez tous les périphériques de stockage USB de l’écran.</value>
   </data>
@@ -3459,7 +3459,13 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>En savoir plus sur le logiciel</value>
   </data>
-  <data name="Update_Dock_Alert_2" xml:space="preserve">
-    <value />
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>Pour accéder aux fonctionnalités de détection de présence de Microsoft, accédez aux Paramètres Windows</value>
+  </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>Firmware compatible</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>Pour accéder aux fonctionnalités de détection de présence, utilisez le lien ci-dessous afin de télécharger le firmware de webcam compatible</value>
   </data>
 </root>
