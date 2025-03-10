@@ -110,6 +110,18 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                     _ivm.SelectedHomeDevice.MonitorInfo != null)
                     _deviceManagerSA.SetLastSelectedMonitorFromUI(_ivm.SelectedHomeDevice.MonitorInfo);
             }
+
+            basePage.SetModuleGroupList(BuildModuleGroups());
+
+            HomeDevice? homeDev = GetSelectedHomeDevice();
+            if (_ivm != null && homeDev != null)
+            {
+                _ivm.SelectedHomeDevice.IsRestoreBtnVisible = Visibility.Visible;
+                if (!homeDev.MonitorInfo.DDCisON)
+                {
+                    HandleDdcCiOnOffEvent(homeDev.MonitorInfo, homeDev.MonitorInfo.DDCisON);
+                }
+            }
         }
 
         ~DisplayPage()
@@ -127,17 +139,17 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             {
                 _log.Info("DisplayPage.UserControl_Loaded");
             }
-            basePage.SetModuleGroupList(BuildModuleGroups());
+            //basePage.SetModuleGroupList(BuildModuleGroups());
 
-            HomeDevice? homeDev = GetSelectedHomeDevice();
-            if (homeDev != null)
-            {
-                _ivm.SelectedHomeDevice.IsRestoreBtnVisible = Visibility.Visible;
-                if (!homeDev.MonitorInfo.DDCisON)
-                {
-                    HandleDdcCiOnOffEvent(homeDev.MonitorInfo, homeDev.MonitorInfo.DDCisON);
-                }
-            }
+            //HomeDevice? homeDev = GetSelectedHomeDevice();
+            //if (homeDev != null)
+            //{
+            //    _ivm.SelectedHomeDevice.IsRestoreBtnVisible = Visibility.Visible;
+            //    if (!homeDev.MonitorInfo.DDCisON)
+            //    {
+            //        HandleDdcCiOnOffEvent(homeDev.MonitorInfo, homeDev.MonitorInfo.DDCisON);
+            //    }
+            //}
 
             ApplyockStatusFromSettingsFile();
             //basePage.SetLockModuleGroup(Constants.GroupName_EasyArrange, true);

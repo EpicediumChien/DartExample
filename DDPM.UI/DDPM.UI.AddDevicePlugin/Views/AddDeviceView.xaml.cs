@@ -74,8 +74,8 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
             }
             txtCaption.Text = Caption;
-            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += AddDeviceView_DeviceChanged;
+            //DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+            //DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += AddDeviceView_DeviceChanged;
         }
 
         bool IsRequested = false;
@@ -421,6 +421,9 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
             //Robert_Ln 2025-2-19 for Narrator, setup the focus to the left Arrow at start up
             ArrowLeft.Focus();
+
+            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += AddDeviceView_DeviceChanged;
         }
 
         private void Pairing(object sender, StylusDownEventArgs e)
