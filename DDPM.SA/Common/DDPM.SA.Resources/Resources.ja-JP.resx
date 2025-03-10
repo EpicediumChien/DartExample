@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>アプリケーションを開くことができませんでした</value>
   </data>
-    <data name="will_be_updated_to" xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>が次にアップデートされます: </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -435,7 +435,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>Caps Lockオン</value>
   </data>
-    <data name="Caps Lock Off" xml:space="preserve">
+  <data name="Caps Lock Off" xml:space="preserve">
     <value>Caps Lockオフ</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -477,7 +477,7 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>退席中ロック</value>
   </data>
-    <data name="Caps_Lock_Off" xml:space="preserve">
+  <data name="Caps_Lock_Off" xml:space="preserve">
     <value>Caps Lockオフ</value>
   </data>
   <data name="App_Name" xml:space="preserve">
@@ -538,12 +538,15 @@
     <value>インテリジェントなシーン分析と顔追跡を利用して、ユーザーが移動するとビューを拡大縮小したり、パンしたりします</value>
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
-    <value />
+    <value>複数のドッキング ステーションが検出されました。ドッキング ステーションの損傷を防ぐため、ドッキング ステーションは1つのみを接続してください。</value>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value />
+    <value>秒</value>
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
-    <value />
+    <value>複数のドッキング ステーションが検出されました。ドッキング ステーションの損傷を防ぐため、1つのドッキング ステーションのみを接続してください。PCを再起動してから、1つのドッキング ステーションのみを接続してください。</value>
+  </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>アップデートが完了するまでシステムの電源を切らない</value>
   </data>
 </root>
