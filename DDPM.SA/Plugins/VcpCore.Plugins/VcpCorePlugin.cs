@@ -4734,7 +4734,7 @@ namespace VcpCore.Plugins
             if (FWVersionTable.HideFWModel.Contains(modelName, StringComparer.InvariantCultureIgnoreCase))
             {
                 _logs.DebugMsg("[VcpCorePlugin] FwVersion in hide list return \"Ignor\"");
-                var stringIgnor = ("Ignor", "Ignor", "Ignor");
+                var stringIgnor = ("\n", "Ignor", "Ignor");
                 return stringIgnor;
             }
 
