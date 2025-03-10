@@ -21,21 +21,31 @@
     </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer>
+            <!-- Robert_Lin 2025-3-6 PIMS-348208 S-348208 Multiple Instances of Incorrect Padding (too much space) in Settings 
+            Fix Margins of UI elements 
+            -->
             <Border Style="{StaticResource GroupBorderStyle}"
                     CornerRadius="13">
                 <StackPanel>
-                    <Grid Margin="20,20,8,8">
+                    <!-- Robert_Lin 2025-3-6, OLD: <Grid Margin="20,20,8,8">
+                    Add to UXTextBlock: VerticalAlignment="Center" -->
+                    <Grid Margin="0,0,0,0" Height="28">
                         <UXControls:UXTextBlock Text="{Binding [About], Source={x:Static lang:LangHelper.Instance}}"
-                                                FontSize="20" Focusable="True"
-                                                TextBlockType="Header1"
+                                                FontSize="20" Focusable="True" TextBlockType="Header1"
+                                                VerticalAlignment="Center"
                                                 Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
                     </Grid>
-                    <Grid Margin="20,20,8,8">
+
+                    <!-- Robert_Lin 2025-3-6, OLD: <Grid Margin="20,20,8,8"> -->
+                    <Grid Margin="0,24,0,24">
+                        <!-- PartBorderStyle Padding="16" -->
                         <Border Style="{StaticResource PartBorderStyle}"
                                 BorderThickness="0" CornerRadius="6">
+                            <!-- OLD: Margin="15,0,0,0" -->
                             <StackPanel Orientation="Vertical"
-                                        Margin="15,0,0,0">
-                                <UXControls:UXTextBlock Margin="0,5,0,0" Focusable="True"
+                                        Margin="8">
+                                <!-- OLD: Margin="0,5,0,0"  -->
+                                <UXControls:UXTextBlock Margin="0,0,0,0" Focusable="True"
                                                         FontSize="16"
                                                         Text="{Binding SWVersion}"
                                                         Foreground="{DynamicResource DefaultTheme_TxtColor}" />
@@ -46,12 +56,13 @@
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0,0,0,0">
                                     <!-- Derek 2025/01/11 for PIMS-334386 -->
+                                    <!-- OLD: Margin="0,20,5,20" -->
                                     <Button Style="{DynamicResource Button_WhiteFrame}"
                                             MinWidth="176"
                                             Height="40"
                                             Click="ThirdPartyLicenses_Click"
                                             Cursor="Hand"
-                                            Margin="0,20,5,20"
+                                            Margin="0,20,5,0"
                                             Visibility="Visible"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
@@ -65,17 +76,25 @@
                             </StackPanel>
                         </Border>
                     </Grid>
-                    <Grid Margin="20,20,8,8">
+                    <!-- OLD:
+                     <Grid Margin="20,20,8,8">
+                    Add to UXTextBlock: VerticalAlignment="Center" -->
+                    <Grid Margin="0,0,8,0" Height="28">
                         <UXControls:UXTextBlock Text="{Binding [Help], Source={x:Static lang:LangHelper.Instance}}"
-                                                FontSize="20" Focusable="True"
+                                                FontSize="20" Focusable="True" VerticalAlignment="Center" TextBlockType="Header1"
                                                 Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
                     </Grid>
-                    <Grid Margin="20,20,8,8">
+                    <!-- OLD:
+                     <Grid Margin="20,20,8,8">
+                   -->
+                    <Grid Margin="0,24,8,8">
                         <Border Style="{StaticResource PartBorderStyle}"
                                 BorderThickness="0" CornerRadius="6">
+                            <!-- OLD: Margin="15,0,0,0" -->
                             <StackPanel Orientation="Vertical"
-                                        Margin="15,0,0,0">
-                                <UXControls:UXTextBlock Margin="0,20,0,0" Focusable="True"
+                                        Margin="8">
+                                <!-- OLD:  Margin="0,20,0,0" -->
+                                <UXControls:UXTextBlock Margin="0,0,0,0" Focusable="True"
                                                         FontSize="16"
                                                         Text="{Binding [Need_help], Source={x:Static lang:LangHelper.Instance}}"
                                                         Foreground="{DynamicResource DefaultTheme_TxtColor}"
@@ -83,12 +102,13 @@
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0,0,0,0">
                                     <!-- Derek 20250111 for PIMS-334386 -->
+                                    <!-- OLD: Margin="0,20,5,20" -->
                                     <Button Style="{DynamicResource Button_WhiteFrame}"
                                             MinWidth="176"
                                             Height="40"
                                             Click="LearnMore_Click"
                                             Cursor="Hand"
-                                            Margin="0,20,5,20"
+                                            Margin="0,20,5,0"
                                             Visibility="Visible"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"

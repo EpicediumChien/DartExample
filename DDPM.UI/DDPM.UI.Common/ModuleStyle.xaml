@@ -2363,4 +2363,10 @@
     </Setter>
   </Style>
   <!-- #endregion BackArrowButton -->
+    
+    <!-- #region SettingsPlugin.UpdatePage.GroupBorder -->
+    <SolidColorBrush x:Key="UpdateGroup_BdColor" Color="Transparent"/>
+    <SolidColorBrush x:Key="UpdateGroup_BkColor" Color="#99132F54"/>
+    <!-- #endregion SettingsPlugin.UpdatePage.GroupBorder -->
+
 </ResourceDictionary>

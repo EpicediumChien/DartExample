@@ -33,7 +33,8 @@
                                 </Style>
                             </StackPanel.Resources>
 
-                            <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.0], Source={x:Static lang:LangHelper.Instance}}" FontSize="20" Margin="4,16,0,20" />
+                            <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.0], Source={x:Static lang:LangHelper.Instance}}" FontSize="20" Margin="4,16,0,20" 
+                                                    Focusable="True" KeyboardNavigation.TabIndex="101"/>
                             <Grid Height="50">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
@@ -41,7 +42,9 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Loaded="UXDisplayHotkeys1TextBlock_Loaded" TextTrimming="CharacterEllipsis" MaxWidth="300" Text="{Binding [DisplayHotkeys.1], Source={x:Static lang:LangHelper.Instance}}">
+                                <UXControls:UXTextBlock Loaded="UXDisplayHotkeys1TextBlock_Loaded" TextTrimming="CharacterEllipsis" MaxWidth="300" 
+                                                        Focusable="True" KeyboardNavigation.TabIndex="102" Name="labelToggleNextInputSource"
+                                                        Text="{Binding [DisplayHotkeys.1], Source={x:Static lang:LangHelper.Instance}}">
                                     <UXControls:UXTextBlock.ToolTip>
                                         <ToolTip Placement="Center" Visibility="Hidden" VerticalOffset="45" x:Name="displayHotkeys1Tooltip">
                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
@@ -61,6 +64,8 @@
                                                       Text="{Binding ToggleInputSourceKey,Mode=TwoWay}"
                                                       Width="230" BorderThickness="1" FontSize="14"
                                                       HorizontalAlignment="Center" VerticalContentAlignment="Center"
+                                                      KeyboardNavigation.TabIndex="103"
+                                                      AutomationProperties.LabeledBy="{Binding ElementName=labelToggleNextInputSource}"
                                                       Name="tbToggleInputSource"
                                                       AcceptsReturn="True"
                                                       PreviewKeyDown="tbToggleInputSource_PreviewKeyDown"
@@ -85,7 +90,8 @@
                                 </Style>
                             </StackPanel.Resources>
 
-                            <UXControls:UXTextBlock Text="{Binding [VideoSwap], Source={x:Static lang:LangHelper.Instance}}" FontSize="20" Margin="4,16,0,20" />
+                            <UXControls:UXTextBlock Text="{Binding [VideoSwap], Source={x:Static lang:LangHelper.Instance}}" FontSize="20" Margin="4,16,0,20" 
+                                                    Focusable="True" KeyboardNavigation.TabIndex="104"/>
                             <Grid>
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -100,11 +106,14 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.2], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" Grid.ColumnSpan="2" />
+                                    <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.2], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" Grid.ColumnSpan="2" 
+                                                            Focusable="True" KeyboardNavigation.TabIndex="105" Name="labelFavoriteInput"/>
                                     <UXControls:UXTextBox Grid.Column="2" Margin="2" Height="20"
                                                           Text="{Binding FavoriteInputSourceKey,Mode=TwoWay}"
                                                           Width="230" BorderThickness="1" FontSize="14"
                                                           HorizontalAlignment="Center" VerticalContentAlignment="Center"
+                                                          KeyboardNavigation.TabIndex="106"
+                                                          AutomationProperties.LabeledBy="{Binding ElementName=labelFavoriteInput}"
                                                           Name="tbFavoriteInputSource"
                                                           AcceptsReturn="True"
                                                           PreviewKeyDown="tbFavoriteInputSource_PreviewKeyDown"
@@ -117,10 +126,21 @@
                                                           InputLanguageManager.RestoreInputLanguage="True"/>
                                     <ComboBox Grid.Row="1" HorizontalAlignment="Right" Style="{StaticResource DdpmComboBoxStyle}"
                                               Width="140" Margin="0,8,8,8" DisplayMemberPath="inputDisplayText"
+                                              KeyboardNavigation.TabIndex="107"
                                               ItemsSource="{Binding InputsList}"                                                                         
+                                          KeyboardNavigation.TabNavigation="Continue"
                                               SelectedItem="{Binding FavoriteInput_Selected, Mode=OneWay}"
-                                              SelectionChanged="ComboBox_SelectionChanged"/>
-                                    <UXControls:UXTextBlock Loaded="UXDisplayHotkeys3TextBlock_Loaded"  TextTrimming="CharacterEllipsis" MaxWidth="300" Text="{Binding [DisplayHotkeys.3], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="2" Grid.ColumnSpan="2">
+                                              SelectionChanged="ComboBox_SelectionChanged">
+                                        <ComboBox.ItemContainerStyle>
+                                            <Style TargetType="ComboBoxItem" BasedOn="{StaticResource DdpmComboBoxItemContainerStyle}">
+                                                <Setter Property="AutomationProperties.Name" Value="{Binding inputDisplayText}"/>
+                                            </Style>
+                                        </ComboBox.ItemContainerStyle>
+
+                                    </ComboBox>
+                                    <UXControls:UXTextBlock Loaded="UXDisplayHotkeys3TextBlock_Loaded"  TextTrimming="CharacterEllipsis" MaxWidth="300"
+                                                            Focusable="True" KeyboardNavigation.TabIndex="108" Name="labelSwitchInputSource"
+                                                            Text="{Binding [DisplayHotkeys.3], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="2" Grid.ColumnSpan="2">
                                         <UXControls:UXTextBlock.ToolTip>
                                             <ToolTip Placement="Center" VerticalOffset="45" x:Name="displayHotkeys3Tooltip" Visibility="Hidden">
                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
@@ -139,6 +159,8 @@
                                     <UXControls:UXTextBox Grid.Column="2" Grid.Row="2" Margin="2" Height="20"
                                                           Text="{Binding SwitchInputSourceKey,Mode=TwoWay}"
                                                           Width="230" BorderThickness="1" FontSize="14"
+                                                          KeyboardNavigation.TabIndex="109"
+                                                          AutomationProperties.LabeledBy="{Binding ElementName=labelSwitchInputSource}"
                                                           HorizontalAlignment="Center" VerticalContentAlignment="Center"
                                                           Name="tbSwitchInputSource"
                                                           AcceptsReturn="True"
@@ -153,15 +175,32 @@
                                     <ComboBox Grid.Row="3" HorizontalAlignment="Right" Style="{StaticResource DdpmComboBoxStyle}"
                                               Width="140" Margin="0,8,5,8" DisplayMemberPath="inputDisplayText"
                                               ItemsSource="{Binding InputsList}"
+                                              KeyboardNavigation.TabIndex="110"
+                                          KeyboardNavigation.TabNavigation="Continue"
                                               SelectedItem="{Binding SwitchInput1_Selected, Mode=OneWay}" 
-                                              SelectionChanged="ComboBox_SelectionChanged_1"/>
+                                              SelectionChanged="ComboBox_SelectionChanged_1">
+                                        <ComboBox.ItemContainerStyle>
+                                            <Style TargetType="ComboBoxItem" BasedOn="{StaticResource DdpmComboBoxItemContainerStyle}">
+                                                <Setter Property="AutomationProperties.Name" Value="{Binding inputDisplayText}"/>
+                                            </Style>
+                                        </ComboBox.ItemContainerStyle>
+                                    </ComboBox>
                                     <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" Margin="0,8,8,8">
                                         <Image x:Name="SwapInputIcon"    Source="/DDPM.UI.Resources;component/Resources/Images/SwapArrow.png" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" Width="14" Height="14" />
-                                        <ComboBox  Style="{StaticResource DdpmComboBoxStyle}"
+                                        <ComboBox Style="{StaticResource DdpmComboBoxStyle}"
                                                   Width="140" Margin="5,0,0,0" DisplayMemberPath="inputDisplayText"
+                                                  KeyboardNavigation.TabIndex="111"
+                                          KeyboardNavigation.TabNavigation="Continue"
                                                   ItemsSource="{Binding InputsList}"
                                                   SelectedItem="{Binding SwitchInput2_Selected, Mode=OneWay}" 
-                                                  SelectionChanged="ComboBox_SelectionChanged_2"/>
+                                                  SelectionChanged="ComboBox_SelectionChanged_2">
+                                            <ComboBox.ItemContainerStyle>
+                                                <Style TargetType="ComboBoxItem" BasedOn="{StaticResource DdpmComboBoxItemContainerStyle}">
+                                                    <Setter Property="AutomationProperties.Name" Value="{Binding inputDisplayText}"/>
+                                                </Style>
+                                            </ComboBox.ItemContainerStyle>
+
+                                        </ComboBox>
                                     </StackPanel>
                                 </Grid>
                             </Grid>
@@ -178,7 +217,8 @@
                                 </Style>
                             </StackPanel.Resources>
 
-                            <UXControls:UXTextBlock Text="{Binding [PIPorPBP], Source={x:Static lang:LangHelper.Instance}}" FontSize="20" Margin="4,16,0,20" />
+                            <UXControls:UXTextBlock Text="{Binding [PIPorPBP], Source={x:Static lang:LangHelper.Instance}}" FontSize="20" Margin="4,16,0,20" 
+                                                    Focusable="True" KeyboardNavigation.TabIndex="120"/>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
@@ -190,7 +230,9 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <!--Chewlin 20240114 Fix RU/UK inputsource hotkeys PIP/PBP clpping issue ADD TextTrimming="CharacterEllipsis" Width="300" -->
-                                <UXControls:UXTextBlock Loaded="UXTextBlock_Loaded" TextTrimming="CharacterEllipsis" Width="300" Text="{Binding [DisplayHotkeys.4], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0">
+                                <UXControls:UXTextBlock Loaded="UXTextBlock_Loaded" TextTrimming="CharacterEllipsis" Width="300" 
+                                                        Text="{Binding [DisplayHotkeys.4], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="121" Name="labelSwapPxpWindows">
                                     <UXControls:UXTextBlock.ToolTip>
                                         <ToolTip Placement="Center" VerticalOffset="45" x:Name="displayHotkeys4Tooltip" Visibility="Hidden">
                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
@@ -208,6 +250,8 @@
                                 </UXControls:UXTextBlock>
                                 <UXControls:UXTextBox Grid.Column="2" Margin="2" Height="20"
                                                       Text="{Binding SwapPIPPBPInputSourceKey,Mode=TwoWay}"
+                                                      KeyboardNavigation.TabIndex="122"
+                                                      AutomationProperties.LabeledBy="{Binding ElementName=labelSwapPxpWindows}"
                                                       Width="230" BorderThickness="1" FontSize="14"
                                                       HorizontalAlignment="Center" VerticalContentAlignment="Center"
                                                       Name="tbSwapPIPPBPInputSource"
@@ -224,12 +268,14 @@
                                 <!-- #region Row of "Change PIP position -->
                                 <!-- Robert_Lin, 2024-11-14, if the Monitor has no PIP position capability then will collapse this row -->
                                 <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.5], Source={x:Static lang:LangHelper.Instance}}" 
-                                                        Grid.Row="1"
+                                                        Grid.Row="1" Name="labelChangePipPosition" Focusable="True" KeyboardNavigation.TabIndex="123"
                                                         Visibility="{Binding HasCapability_PipTogglePosition, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 <UXControls:UXTextBox Grid.Column="2" Grid.Row="1" Margin="2" Height="20"
                                                       Text="{Binding ChangePIPPositionKey,Mode=TwoWay}"
                                                       Width="230" BorderThickness="1" FontSize="14"
                                                       HorizontalAlignment="Center" VerticalContentAlignment="Center"
+                                                      KeyboardNavigation.TabIndex="124"
+                                                      AutomationProperties.LabeledBy="{Binding ElementName=labelChangePipPosition}"
                                                       Name="tbChangePIPPosition"
                                                       AcceptsReturn="True"
                                                       PreviewKeyDown="tbChangePIPPosition_PreviewKeyDown"
