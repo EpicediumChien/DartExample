@@ -1202,7 +1202,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 string response = string.Empty;
 
-                response = "{\"sid\":\"" + sid + "\",\"gid\":\"" + data.Guid + "\",\"response\":[{\"tid\":1,\"result\":" + responseFwResultCode((int)data.FWUErrorCode) + ",\"msg\":\"E\",\"data\":";
+                response = "{\"sid\":\"" + sid + "\",\"gid\":\"" + data.Guid + "\",\"response\":[{\"tid\":1,\"result\":" + responseFwResultCode((int)data.FWUErrorCode) + ",\"msg\":\"\",\"data\":";
                 response = response + "[{";
                 response = response + "\"seqnum\":" + 2 + ",";
                 response = response + "\"index\":\"" + data.DeviceIndex + "\",";
@@ -1211,7 +1211,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 response = response + "\"marketingname\":\"" + "N/A" + "\",";
                 response = response + "\"serialnumber\":\"" + "N/A" + "\",";
                 response = response + "\"fwversion\":\"" + data.TheLatestVersion + "\",";
-                response = response + "\"fwupdateresponse\":\"" + string.Empty + "\"";
+                response = response + "\"fwupdateresponse\":[\"" + string.Empty + "\"]";
                 response = response + "}]";
                 response = response + "}]}";
 
