@@ -18161,7 +18161,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 try
                                                 {
-                                                    _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.Headset, Content, LangHelper.Instance["Battery_Low"]);
+                                                    //default guid {B70715F8-9DF6-440F-B5BE-A48336A4B261}
+                                                    _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "B70715F8-9DF6-440F-B5BE-A48336A4B261" : guid.ToString(), OSDType_Device.Headset, Content, LangHelper.Instance["Battery_Low"]);
                                                     /*  if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Headset))
                                                       {
                                                           _latestBatterylowContent = Content;
@@ -18179,7 +18180,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 try
                                                 {
-                                                    _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.Keyboard, Content, LangHelper.Instance["Battery_Low"]);
+                                                    //default guid {377C7B36-ED5B-446F-93A6-3418F0447836}
+                                                    _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "377C7B36-ED5B-446F-93A6-3418F0447836" : guid.ToString(), OSDType_Device.Keyboard, Content, LangHelper.Instance["Battery_Low"]);
                                                     /*if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Keyboard))
                                                     {
                                                         //when keyboard battery low, press CapsLock/ScrollLock/NumLockLock combine with
@@ -18198,7 +18200,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 try
                                                 {
-                                                    _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.Mouse, Content, LangHelper.Instance["Battery_Low"]);
+                                                    //default guid {1D5E64AD-212C-4364-AF84-BA1C95723ED7}
+                                                    _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "1D5E64AD-212C-4364-AF84-BA1C95723ED7" : guid.ToString(), OSDType_Device.Mouse, Content, LangHelper.Instance["Battery_Low"]);
                                                     /*if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Mouse))
                                                     {
                                                         _latestBatterylowContent = Content;
@@ -18216,7 +18219,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 try
                                                 {
-                                                    _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.Pen, Content, LangHelper.Instance["Battery_Low"]);
+                                                    //default guid {9239EAA6-660D-4DC5-B141-937D3AB0C3EF}
+                                                    _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "9239EAA6-660D-4DC5-B141-937D3AB0C3EF" : guid.ToString(), OSDType_Device.Pen, Content, LangHelper.Instance["Battery_Low"]);
 
                                                     /* if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Pen))
                                                       {
@@ -18427,7 +18431,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 try
                                                 {
-                                                    _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.QAM, LangHelper.Instance["QAM_OSD_Msg"], LangHelper.Instance["Go_to_Widget_Settings"]);
+                                                    //default guid {C563A281-26EB-4DCD-8642-EC7498108266}
+                                                    _OSD_Controler.ShowMultipleOSD("C563A281-26EB-4DCD-8642-EC7498108266", OSDType_Device.QAM, LangHelper.Instance["QAM_OSD_Msg"], LangHelper.Instance["Go_to_Widget_Settings"]);
                                                     /*_OSD_Controler.QAMHotKeyWin_CloseWindow();
                                                     _OSD_Controler.QAMHotKeyWin_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
                                                 }
@@ -18457,7 +18462,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             {
                                                 try
                                                 {
-                                                    _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.Keyboard, Content, "");
+                                                    //default guid {1233BBAF-348B-4498-8051-DB0E53004AAB}
+                                                    _OSD_Controler.ShowMultipleOSD("1233BBAF-348B-4498-8051-DB0E53004AAB", OSDType_Device.Keyboard, Content, "");
 
                                                     /*_OSD_Controler.CollaborationNotAvailableWin_CloseWindow();
                                                     _OSD_Controler.CollaborationNotAvailableWin_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
