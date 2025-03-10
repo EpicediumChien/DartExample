@@ -3459,7 +3459,22 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Weitere Informationen zur Software</value>
   </data>
+  <data name="Bootloader" xml:space="preserve">
+    <value>Bootloader</value>
+  </data>
+  <data name="Bootloader.0" xml:space="preserve">
+    <value>Ihr Gerät ist nicht verfügbar.</value>
+  </data>
+  <data name="Bootloader.1" xml:space="preserve">
+    <value>Klicken Sie</value>
+  </data>
+  <data name="Bootloader.2" xml:space="preserve">
+    <value>hier,</value>
+  </data>
+  <data name="Bootloader.3" xml:space="preserve">
+    <value>um Ihre Firmware zu aktualisieren und die Funktionalität wiederherzustellen.</value>
+  </data>
   <data name="Update_Dock_Alert_2" xml:space="preserve">
-    <value />
+    <value>Hinweis: Peripheriegeräte, die mit dieser Dockingstation verbunden sind, sind während des Updatevorgangs möglicherweise nicht verfügbar.</value>
   </data>
 </root>

@@ -3462,7 +3462,22 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Saiba mais sobre o software</value>
   </data>
+  <data name="Bootloader" xml:space="preserve">
+    <value>Inicialização</value>
+  </data>
+  <data name="Bootloader.0" xml:space="preserve">
+    <value>O dispositivo está indisponível.</value>
+  </data>
+  <data name="Bootloader.1" xml:space="preserve">
+    <value>Clique</value>
+  </data>
+  <data name="Bootloader.2" xml:space="preserve">
+    <value>aqui</value>
+  </data>
+  <data name="Bootloader.3" xml:space="preserve">
+    <value>para atualizar seu firmware a fim de restaurar a funcionalidade.</value>
+  </data>
   <data name="Update_Dock_Alert_2" xml:space="preserve">
-    <value />
+    <value>Observação: os periféricos conectados a essa dock podem não estar disponíveis durante o processo de atualização</value>
   </data>
 </root>

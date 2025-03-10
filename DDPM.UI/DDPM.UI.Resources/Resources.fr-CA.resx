@@ -3459,7 +3459,22 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>En savoir plus sur le logiciel</value>
   </data>
+  <data name="Bootloader" xml:space="preserve">
+    <value>Chargeur de démarrage</value>
+  </data>
+  <data name="Bootloader.0" xml:space="preserve">
+    <value>Votre appareil n’est pas disponible.</value>
+  </data>
+  <data name="Bootloader.1" xml:space="preserve">
+    <value>Veuillez cliquer</value>
+  </data>
+  <data name="Bootloader.2" xml:space="preserve">
+    <value>ici</value>
+  </data>
+  <data name="Bootloader.3" xml:space="preserve">
+    <value>pour mettre à jour votre micrologiciel afin de restaurer la fonctionnalité.</value>
+  </data>
   <data name="Update_Dock_Alert_2" xml:space="preserve">
-    <value />
+    <value>Remarque : Les périphériques connectés à cette station d’accueil peuvent ne pas être disponibles pendant le processus de mise à jour</value>
   </data>
 </root>
