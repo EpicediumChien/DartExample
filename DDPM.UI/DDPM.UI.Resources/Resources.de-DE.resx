@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>Eine Konfiguration exportieren auf einen anderen Monitor desselben Modells importieren</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>Sie können Ihre bevorzugte Konfiguration von hier aus exportieren und problemlos in einen anderen Monitor desselben Modells importieren.</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>Hohe Datengeschwindigkeit</value>
   </data>
@@ -914,6 +917,9 @@
   </data>
   <data name="InputSource.4" xml:space="preserve">
     <value>USB-Upstream</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>Eingabequelle umbenennen</value>
   </data>
   <data name="KeyCustomization.0" xml:space="preserve">
     <value>Klicken Sie zum Anpassen einer Taste auf eine der umrandeten Tasten im Bild auf der linken Seite.</value>
@@ -2271,12 +2277,6 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>Diese Funktion ermöglicht es unseren Augen, sich an eine gewünschte Einstellung anzupassen.</value>
   </data>
-  <data name="DisplayOthers.8" xml:space="preserve">
-    <value>Sie können Ihre bevorzugte Konfiguration von hier aus exportieren und problemlos in einen anderen Monitor desselben Modells importieren.</value>
-  </data>
-  <data name="InputSource.5" xml:space="preserve">
-    <value>Eingabequelle umbenennen</value>
-  </data>
   <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
     <value>Trennen Sie alle USB-Storage-Geräte vom Monitor.</value>
   </data>
@@ -3459,7 +3459,13 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Weitere Informationen zur Software</value>
   </data>
-  <data name="Update_Dock_Alert_2" xml:space="preserve">
-    <value />
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>Um auf die Microsoft  Presence Sensing-Funktionen zuzugreifen, rufen Sie die Windows-Einstellungen auf</value>
+  </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>Kompatible Firmware</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>Um auf die Presence Sensing-Funktionen zuzugreifen, verwenden Sie den folgenden Link, um kompatible Webcam-Firmware herunterzuladen</value>
   </data>
 </root>

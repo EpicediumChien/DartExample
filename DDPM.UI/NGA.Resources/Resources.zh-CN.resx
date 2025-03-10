@@ -228,15 +228,6 @@
   <data name="ReturnToHomePage_Text" xml:space="preserve">
     <value>返回到主页</value>
   </data>
-  <data name="CriticalAlertsText" xml:space="preserve">
-    <value>严重警报</value>
-  </data>
-  <data name="NotificationsText" xml:space="preserve">
-    <value>通知</value>
-  </data>
-  <data name="PrivacyNoticeText" xml:space="preserve">
-    <value>隐私声明</value>
-  </data>
   <data name="Discovery_Notification_Button1" xml:space="preserve">
     <value>了解更多信息</value>
   </data>
@@ -252,20 +243,29 @@
   <data name="Inspiron" xml:space="preserve">
     <value>Inspiron 灵越</value>
   </data>
+  <data name="XPS" xml:space="preserve">
+    <value>XPS</value>
+  </data>
   <data name="Latitude" xml:space="preserve">
     <value>Latitude</value>
   </data>
-  <data name="Vostro" xml:space="preserve">
-    <value>Vostro 成就</value>
+  <data name="CriticalAlertsText" xml:space="preserve">
+    <value>严重警报</value>
   </data>
-  <data name="XPS" xml:space="preserve">
-    <value>XPS</value>
+  <data name="NotificationsText" xml:space="preserve">
+    <value>通知</value>
+  </data>
+  <data name="PrivacyNoticeText" xml:space="preserve">
+    <value>隐私声明</value>
   </data>
   <data name="ProductRegistration_GearMenuItem" xml:space="preserve">
     <value>注册产品</value>
   </data>
   <data name="Url_DellProductRegistration" xml:space="preserve">
     <value>https://www.dell.com/support/retail-registration/</value>
+  </data>
+  <data name="Vostro" xml:space="preserve">
+    <value>Vostro 成就</value>
   </data>
   <data name="Shutdown_MessageBoxText" xml:space="preserve">
     <value>目前，{0} 中没有可用的功能。{0} 将立即关闭。</value>
@@ -587,17 +587,17 @@ mso-bidi-theme-font:minor-latin;mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;/o
 
 &lt;/html&gt;</value>
   </data>
-  <data name="Consent_Button" xml:space="preserve">
-    <value>是的，我同意</value>
-  </data>
-  <data name="DontConsent_Button" xml:space="preserve">
-    <value>不，我不同意</value>
-  </data>
   <data name="ConnectionIssue" xml:space="preserve">
     <value>抱歉，连接到主机时出现问题，请重试。</value>
   </data>
+  <data name="Consent_Button" xml:space="preserve">
+    <value>是的，我同意</value>
+  </data>
   <data name="Done_Button" xml:space="preserve">
     <value>完成</value>
+  </data>
+  <data name="DontConsent_Button" xml:space="preserve">
+    <value>不，我不同意</value>
   </data>
   <data name="TelemetryConsent_Part1_Text" xml:space="preserve">
     <value>一旦单击“是”，即表明您已阅读我们的</value>
@@ -668,5 +668,14 @@ mso-bidi-theme-font:minor-latin;mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;/o
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="SystrayIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\SystrayIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>兼容固件</value>
+  </data>
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>要访问 Microsoft 用户感应功能，请访问 Windows 设置</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>要访问用户感应功能，请通过下方链接下载兼容的网络摄像头固件</value>
   </data>
 </root>

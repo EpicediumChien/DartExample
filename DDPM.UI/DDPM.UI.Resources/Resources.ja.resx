@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>同じモデルの別のモニターにインポートできるように構成をエクスポート</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>ここからお気に入りの構成をエクスポートして、同じモデルの別のモニターに簡単にインポートできます。</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>高データ速度</value>
   </data>
@@ -914,6 +917,9 @@
   </data>
   <data name="InputSource.4" xml:space="preserve">
     <value>USBアップストリーム</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>入力ソースの名前変更</value>
   </data>
   <data name="KeyCustomization.0" xml:space="preserve">
     <value>キーをカスタマイズするには、左側の画像で輪郭が示されているいずれかのキーをクリックします</value>
@@ -2271,12 +2277,6 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>この機能により、私たちの目は目的の設定に適応できます。</value>
   </data>
-  <data name="DisplayOthers.8" xml:space="preserve">
-    <value>ここからお気に入りの構成をエクスポートして、同じモデルの別のモニターに簡単にインポートできます。</value>
-  </data>
-  <data name="InputSource.5" xml:space="preserve">
-    <value>入力ソースの名前変更</value>
-  </data>
   <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
     <value>モニターからすべてのUSBストレージ デバイスを取り外します。</value>
   </data>
@@ -3459,7 +3459,13 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>ソフトウェアに関する詳細情報</value>
   </data>
-  <data name="Update_Dock_Alert_2" xml:space="preserve">
-    <value />
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>Microsoftプレゼンス センシング機能にアクセスするには、Windowsの設定にアクセスします。</value>
+  </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>互換性のあるファームウェア</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>プレゼンス センシング機能にアクセスするには、次のリンクにアクセスして互換性のあるWebカメラのファームウェアをダウンロードしてください。</value>
   </data>
 </root>
