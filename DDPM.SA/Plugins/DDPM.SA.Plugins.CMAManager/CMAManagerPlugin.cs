@@ -1216,7 +1216,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 response = response + "\"servicetag\":\"" + data.ServiceTag + "\",";
                 response = response + "\"marketingname\":\"" + "N/A" + "\",";
                 response = response + "\"serialnumber\":\"" + "N/A" + "\",";
-                response = response + "\"fwversion\":\"" + data.TheLatestVersion + "\",";
+                response = response + "\"fwversion\":\"[" + data.TheLatestVersion + "]\",";
                 response = response + "\"fwupdateresponse\":[\"" + string.Empty + "\"]";
                 response = response + "}]";
                 response = response + "}]}";
