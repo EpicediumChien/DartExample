@@ -1129,7 +1129,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 default:
                     resultCode = Params.Response.STATUS_FW_UPDATE_ERROR;
-                    msg = "UNKNOWN_ERROR";
+                    msg = "STATUS_FW_UPDATE_ERROR";
                     break;
 
             }
