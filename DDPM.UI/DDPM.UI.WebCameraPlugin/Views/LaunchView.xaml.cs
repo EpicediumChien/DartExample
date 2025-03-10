@@ -512,8 +512,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         }
         private void CheckTestCase()
         {
+            string model = _vm.CurrentDeviceInfo!.ModelNumber;
             noPresenceFunction = false;
-            if (is_camera_dell7 && !AllSupportedResolutions)
+            if ((is_camera_dell7 && model.ToUpper() != "U3223QZ") && !AllSupportedResolutions)
             {
                 print_debug("is_camera_dell7 && !AllSupportedResolutions");
                 noPresenceFunction = true;
@@ -692,7 +693,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return true;
 
             string model = WinVersion.GetComputerModel();
-            if (model != null && (model.Contains("Latitude 7350", StringComparison.OrdinalIgnoreCase) || model.Contains("XPS 9345", StringComparison.OrdinalIgnoreCase) || model.Contains("XPS 13 9345", StringComparison.OrdinalIgnoreCase)))
+            if (model != null && (model.Contains("Latitude 7350", StringComparison.OrdinalIgnoreCase) || model.Contains("XPS 9345", StringComparison.OrdinalIgnoreCase))) /*|| model.Contains("XPS 13 9345", StringComparison.OrdinalIgnoreCase)*/
             {
                 return true;
             }
