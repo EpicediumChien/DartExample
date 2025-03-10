@@ -784,49 +784,49 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                                     ss = ss[0].Split(" ");
                                                     //if (ss.Length <= _usbUpstreamList.Count)
                                                     //{
-                                                        foreach (var s in ss)
+                                                    foreach (var s in ss)
+                                                    {
+                                                        if (USBUpstream.Count > 0)
                                                         {
-                                                            if (USBUpstream.Count > 0)
+                                                            string usbkey = null;
+                                                            string usbPort = null;
+
+                                                            switch (s)
                                                             {
-                                                                string usbkey = null;
-                                                                string usbPort = null;
+                                                                case "03":
+                                                                    usbkey = USBUpstream.FirstOrDefault(x => x.Value == "11").Key;
+                                                                    usbPort = "11";
+                                                                    break;
 
-                                                                switch (s)
+                                                                case "02":
+                                                                    usbkey = USBUpstream.FirstOrDefault(x => x.Value == "10").Key;
+                                                                    usbPort = "10";
+                                                                    break;
+
+                                                                case "01":
+                                                                    usbkey = USBUpstream.FirstOrDefault(x => x.Value == "01").Key;
+                                                                    usbPort = "01";
+                                                                    break;
+
+                                                                case "00":
+                                                                    usbkey = USBUpstream.FirstOrDefault(x => x.Value == "00").Key;
+                                                                    usbPort = "00";
+                                                                    break;
+                                                            }
+
+                                                            if (!string.IsNullOrEmpty(usbkey))
+                                                            {
+                                                                usbUpstreamList.Add(usbkey);
+                                                                USBPorts uSBPorts = new USBPorts
                                                                 {
-                                                                    case "03":
-                                                                        usbkey = USBUpstream.FirstOrDefault(x => x.Value == "11").Key;
-                                                                        usbPort = "11";
-                                                                        break;
-
-                                                                    case "02":
-                                                                        usbkey = USBUpstream.FirstOrDefault(x => x.Value == "10").Key;
-                                                                        usbPort = "10";
-                                                                        break;
-
-                                                                    case "01":
-                                                                        usbkey = USBUpstream.FirstOrDefault(x => x.Value == "01").Key;
-                                                                        usbPort = "01";
-                                                                        break;
-
-                                                                    case "00":
-                                                                        usbkey = USBUpstream.FirstOrDefault(x => x.Value == "00").Key;
-                                                                        usbPort = "00";
-                                                                        break;
-                                                                }
-
-                                                                if (!string.IsNullOrEmpty(usbkey))
-                                                                {
-                                                                    usbUpstreamList.Add(usbkey);
-                                                                    USBPorts uSBPorts = new USBPorts
-                                                                    {
-                                                                        USBName = usbkey,
-                                                                        USBPort = usbPort
-                                                                    };
-                                                                    _USBPorts.Add(uSBPorts);
-                                                                }
+                                                                    USBName = usbkey,
+                                                                    USBPort = usbPort
+                                                                };
+                                                                _USBPorts.Add(uSBPorts);
                                                             }
                                                         }
-                                                        _displayDataManger.SetMonitorUSBList(monitorInfo, _USBPorts);
+                                                    }
+                                                    _displayDataManger.SetMonitorUSBList(monitorInfo, _USBPorts);
                                                     //}
                                                 }
                                             }
@@ -3052,6 +3052,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 GetUSBCPrioritization(_VCPchangedEventArgs.monitor);
             }
             GetHDRStatus(_VCPchangedEventArgs.monitor, true).Wait();
+            ComparisonResolutionAndUpdateDisplayData(_VCPchangedEventArgs.monitor);
         }
 
         private void PeocessALSTriggerEvent(VCPchangedEventArgs e)
@@ -3200,12 +3201,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         #endregion
 
-        #region Bruce display properties
+        #region Display properties
 
         private IDisplayProperties _DisplayPropertiesPlugin;
         private PluginCondition _DisplayPropertiesPluginCondition;
 
-        #region Bruce display properties implementation
+        #region Display properties implementation
 
         public Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo)
         {
@@ -3938,6 +3939,25 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation ret.Count : {ret.Count}");
             _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation done");
             return (ret.ToArray());
+        }
+        private void ComparisonResolutionAndUpdateDisplayData(MonitorInfo monitor)
+        {
+            _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData start");
+            if (_displayDataManger != null)
+            {
+                _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData _displayDataManger is not null");
+                if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitor, out DisplayPropertiesInfo displayPropertiesInfo))
+                {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData _displayDataManger is get properties from display data");
+                    _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData monitor.DisplayName != displayPropertiesInfo.DisplayName : {monitor.DisplayName != displayPropertiesInfo.DisplayName}");
+                    if (monitor.DisplayName != displayPropertiesInfo.DisplayName)
+                    {
+                        _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData GetDisplayPropertiesInfo go");
+                        displayPropertiesInfo = GetDisplayPropertiesInfo(monitor).Result;
+                    }
+                }
+            }
+            _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData done");
         }
 
         public Task<string> GetMonitorCurrentResolution(MonitorInfo monitor)
@@ -5929,7 +5949,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task SetVCPtoDisplayData(MonitorInfo monitorInfo, int vcpcode, int value)
         {
-            if (monitorInfo != null) 
+            if (monitorInfo != null)
             {
                 if (vcpcode == 0xE9)
                 {
