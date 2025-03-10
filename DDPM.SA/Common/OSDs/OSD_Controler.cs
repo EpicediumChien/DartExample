@@ -1,16 +1,19 @@
-﻿using DDPM.SA.Common;
+﻿using DDPM.QAM;
+using DDPM.SA.Common;
 using Dell.TechHub.Sdk.Common.Utilities.Extensions;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Windows;
 
 namespace DDPM.OSDs
 {
     public class OSD_Controler
     {
         private BatteryLowIIWin BatteryLowIIWinx;
-        private CapsLockOffWin CapsLockOffWinx;
-        private CapsLockOnWin CapsLockOnWinx;
+        private CapsLockOffWin? CapsLockOffWinx = null;
+        private CapsLockOnWin? CapsLockOnWinx = null;
         private DisplayChangedWin DisplayChangedWinx;
         private FingerprintWin FingerprintWinx;
         private HeadsetBatteryLowIWin HeadsetBatteryLowIWinx;
@@ -19,10 +22,10 @@ namespace DDPM.OSDs
         private StylusBatteryLowIWin StylusBatteryLowIWin;
         private MuteWin MuteWinx;
         private UnMuteWin UnMuteWinx;
-        private NumLockOffWin NumLockOffWinx;
-        private NumLockOnWin NumLockOnWinx;
-        private ScrollLockOffWin ScrollLockOffWinx;
-        private ScrollLockOnWin ScrollLockOnWinx;
+        private NumLockOffWin? NumLockOffWinx = null;
+        private NumLockOnWin? NumLockOnWinx = null;
+        private ScrollLockOffWin? ScrollLockOffWinx = null;
+        private ScrollLockOnWin? ScrollLockOnWinx = null;
         private StartRecordingWin StartRecordingWinx;
         private WalkAwayLockWin WalkAwayLockWinx;
         private EasyMemoryWin EasyMemoryWinx;
@@ -259,92 +262,362 @@ namespace DDPM.OSDs
 
         public void ScrollLockOn_ShowWindow(double Top, double Left)
         {
-            ScrollLockOnWinx = new ScrollLockOnWin();
+            try
+            {
+                //Close ScrollLockOff if exist
+                ScrollLockOff_CloseWindow();
 
-            ScrollLockOnWinx.Top = Top;
-            ScrollLockOnWinx.Left = Left;
-            ScrollLockOnWinx.ShowWindow();
+                if (null != ScrollLockOnWinx)
+                {
+                    return;
+                }
+
+                ScrollLockOnWinx = new ScrollLockOnWin();
+                ScrollLockOnWinx.Closed += ScrollLockOnWinx_Closed;
+
+                ScrollLockOnWinx.Top = Top;
+                ScrollLockOnWinx.Left = Left;
+                ScrollLockOnWinx.ShowWindow();
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when ScrollLockOn_ShowWindow");
+            }
+        }
+
+        private void ScrollLockOnWinx_Closed(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (null != ScrollLockOnWinx)
+                {
+                    ScrollLockOnWinx.Closed -= ScrollLockOnWinx_Closed;
+                    ScrollLockOnWinx = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when ScrollLockOnWinx_Closed");
+            }
         }
 
         public void ScrollLockOn_CloseWindow()
         {
-            if (ScrollLockOnWinx != null)
-                ScrollLockOnWinx.CloseWindow();
+            try
+            {
+                if (ScrollLockOnWinx != null)
+                {
+                    _ = ScrollLockOnWinx.Dispatcher.BeginInvoke(() => ScrollLockOnWinx.Hide());
+                    ScrollLockOnWinx.CloseWindow();
+                    ScrollLockOnWinx = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when ScrollLockOn_CloseWindow");
+            }
+            
         }
 
         public void ScrollLockOff_ShowWindow(double Top, double Left)
         {
-            ScrollLockOffWinx = new ScrollLockOffWin();
+            try
+            {
+                //Close ScrollLockOn if exist
+                ScrollLockOn_CloseWindow();
 
-            ScrollLockOffWinx.Top = Top;
-            ScrollLockOffWinx.Left = Left;
-            ScrollLockOffWinx.ShowWindow();
+                if (null != ScrollLockOffWinx)
+                {
+                    return;
+                }
+
+                ScrollLockOffWinx = new ScrollLockOffWin();
+                ScrollLockOffWinx.Closed += ScrollLockOffWinx_Closed;
+
+                ScrollLockOffWinx.Top = Top;
+                ScrollLockOffWinx.Left = Left;
+                ScrollLockOffWinx.ShowWindow();
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when ScrollLockOff_ShowWindow");
+            }
+            
+        }
+
+        private void ScrollLockOffWinx_Closed(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (null != ScrollLockOffWinx)
+                {
+                    ScrollLockOffWinx.Closed -= ScrollLockOffWinx_Closed;
+                    ScrollLockOffWinx = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when ScrollLockOffWinx_Closed");
+            }
         }
 
         public void ScrollLockOff_CloseWindow()
         {
-            if (ScrollLockOffWinx != null)
-                ScrollLockOffWinx.CloseWindow();
+            try
+            {
+                if (ScrollLockOffWinx != null)
+                {
+                    _ = ScrollLockOffWinx.Dispatcher.BeginInvoke(() => ScrollLockOffWinx.Hide());
+                    ScrollLockOffWinx.CloseWindow();
+                    ScrollLockOffWinx = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when ScrollLockOff_CloseWindow");
+            }
         }
 
         public void NumLockOn_ShowWindow(double Top, double Left)
         {
-            NumLockOnWinx = new NumLockOnWin();
+            try
+            {
+                //Close NumLockOff if exist
+                NumLockOff_CloseWindow();
 
-            NumLockOnWinx.Top = Top;
-            NumLockOnWinx.Left = Left;
-            NumLockOnWinx.ShowWindow();
+                if (null != NumLockOnWinx)
+                {
+                    return;
+                }
+
+                NumLockOnWinx = new NumLockOnWin();
+                NumLockOnWinx.Closed += NumLockOnWinx_Closed;
+
+                NumLockOnWinx.Top = Top;
+                NumLockOnWinx.Left = Left;
+                NumLockOnWinx.ShowWindow();
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when NumLockOn_ShowWindow");
+            }
+            
+        }
+
+        private void NumLockOnWinx_Closed(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (null != NumLockOnWinx)
+                {
+                    NumLockOnWinx.Closed -= NumLockOnWinx_Closed;
+                    NumLockOnWinx = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when NumLockOnWinx_Closed");
+            }
         }
 
         public void NumLockOn_CloseWindow()
         {
-            if (NumLockOnWinx != null)
-                NumLockOnWinx.CloseWindow();
+            try
+            {
+                if (NumLockOnWinx != null)
+                {
+                    //NumLockOnWinx.Dispatcher.InvokeShutdown();
+                    _ = NumLockOnWinx.Dispatcher.BeginInvoke(() => NumLockOnWinx.Hide());
+                    NumLockOnWinx.CloseWindow();
+                    NumLockOnWinx = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when NumLockOn_CloseWindow");
+            }
         }
 
         public void NumLockOff_ShowWindow(double Top, double Left)
         {
-            NumLockOffWinx = new NumLockOffWin();
+            try
+            {
+                //Close NumLockOn if exist
+                NumLockOn_CloseWindow();
 
-            NumLockOffWinx.Top = Top;
-            NumLockOffWinx.Left = Left;
-            NumLockOffWinx.ShowWindow();
+                if (null != NumLockOffWinx)
+                {
+                    return;
+                }
+
+                NumLockOffWinx = new NumLockOffWin();
+                NumLockOffWinx.Closed += NumLockOffWinx_Closed;
+
+                NumLockOffWinx.Top = Top;
+                NumLockOffWinx.Left = Left;
+                NumLockOffWinx.ShowWindow();
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when NumLockOff_ShowWindow");
+            }
         }
 
         public void NumLockOff_CloseWindow()
         {
-            if (NumLockOffWinx != null)
-                NumLockOffWinx.CloseWindow();
+            try
+            {
+                if (NumLockOffWinx != null)
+                {
+                    //MessageBox.Show("NumLockOff_CloseWindow");
+                    _ = NumLockOffWinx.Dispatcher.BeginInvoke(() => NumLockOffWinx.Hide());
+                    NumLockOffWinx.CloseWindow();
+                    NumLockOffWinx = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when NumLockOff_CloseWindow");
+            }            
         }
+
+        private void NumLockOffWinx_Closed(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (null != NumLockOffWinx)
+                {
+                    NumLockOffWinx.Closed -= NumLockOffWinx_Closed;
+                    NumLockOffWinx = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when NumLockOffWinx_Closed");
+            }
+        }
+
+        private void LogMsg(string msg)
+        {
+            if (null != DdpmCommonHelper.DeviceManagerSA)
+                _ = DdpmCommonHelper.DeviceManagerSA.WriteLog(msg);
+        }
+
 
         public void CapsLockOn_ShowWindow(double Top, double Left)
         {
-            CapsLockOnWinx = new CapsLockOnWin();
+            try
+            {
+                //Close CapsLockOff if exist
+                CapsLockOff_CloseWindow();
 
-            CapsLockOnWinx.Top = Top;
-            CapsLockOnWinx.Left = Left;
-            CapsLockOnWinx.ShowWindow();
+                if (null != CapsLockOnWinx)
+                {
+                    return;
+                }
+
+                CapsLockOnWinx = new CapsLockOnWin();
+                CapsLockOnWinx.Closed += CapsLockOnWinx_Closed;
+
+                CapsLockOnWinx.Top = Top;
+                CapsLockOnWinx.Left = Left;
+                CapsLockOnWinx.ShowWindow();
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when CapsLockOn_ShowWindow");
+            } 
+        }
+
+        private void CapsLockOnWinx_Closed(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (CapsLockOnWinx != null)
+                {
+                    CapsLockOnWinx.Closed -= CapsLockOnWinx_Closed;
+                    CapsLockOnWinx = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when CapsLockOnWinx_Closed");
+            }
         }
 
         public void CapsLockOn_CloseWindow()
         {
-            if (CapsLockOnWinx != null)
-                CapsLockOnWinx.CloseWindow();
+            try
+            {
+                if (CapsLockOnWinx != null)
+                {
+                    _ = CapsLockOnWinx.Dispatcher.BeginInvoke(() => CapsLockOnWinx.Hide());
+                    CapsLockOnWinx.CloseWindow();
+                    CapsLockOnWinx = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when CapsLockOn_CloseWindow");
+            }
         }
 
         public void CapsLockOff_ShowWindow(double Top, double Left)
         {
-            CapsLockOffWinx = new CapsLockOffWin();
+            try
+            {
+                //Close CapsLockOnWinx if exist
+                CapsLockOn_CloseWindow();
 
-            CapsLockOffWinx.Top = Top;
-            CapsLockOffWinx.Left = Left;
-            CapsLockOffWinx.ShowWindow();
+                if (null != CapsLockOffWinx)
+                {
+                    return;
+                }
+
+                CapsLockOffWinx = new CapsLockOffWin();
+                CapsLockOffWinx.Closed += CapsLockOffWinx_Closed;
+
+                CapsLockOffWinx.Top = Top;
+                CapsLockOffWinx.Left = Left;
+                CapsLockOffWinx.ShowWindow();
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when CapsLockOff_CloseWindow");
+            }
+        }
+
+        private void CapsLockOffWinx_Closed(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (CapsLockOffWinx != null)
+                {
+                    CapsLockOffWinx.Closed -= CapsLockOffWinx_Closed;
+                    CapsLockOffWinx = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when CapsLockOffWinx_Closed");
+            }
         }
 
         public void CapsLockOff_CloseWindow()
         {
-            if (CapsLockOffWinx != null)
-                CapsLockOffWinx.CloseWindow();
+            try
+            {
+                if (CapsLockOffWinx != null)
+                {
+                    _ = CapsLockOffWinx.Dispatcher.BeginInvoke(() => CapsLockOffWinx.Hide());
+                    CapsLockOffWinx.CloseWindow();
+                    CapsLockOffWinx = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception[{ex.Message}] when CapsLockOff_CloseWindow");
+            }
         }
 
         public void Fingerprint_ShowWindow(double Top, double Left)

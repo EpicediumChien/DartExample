@@ -12,7 +12,7 @@
     ShowInTaskbar="False"
     Topmost="True"
     WindowStartupLocation="Manual"
-    WindowStyle="None"
+    WindowStyle="None" Closed="Window_Closed"
     mc:Ignorable="d">
 
     <Window.Resources>
