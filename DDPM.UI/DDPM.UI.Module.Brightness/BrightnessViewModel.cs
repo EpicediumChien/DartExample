@@ -3781,7 +3781,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 //Log?.Info($"** DownloadICCData result: {e.Result}");
 
-                if (e.Result == "OK")
+                if (e.Result.ToString() == "OK")
                 {
                     //Result is passed.
                 }

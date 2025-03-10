@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Common.UserControls;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.PenButtonSettings;
 using DDPM.UI.Module.PenSettings;
@@ -39,7 +40,7 @@ namespace DDPM.UI.Plugin.PenPlugin
 
                 _vm.Reset();
                 DataContext = _vm;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                _vm.VbarItemClickCommand = new RelayCommand<VbarItem1>(OnVbarItemClicked!);
                 BuildModuleGroups();
 
                 //txtUnpair.Text = Strings.Unpair;
@@ -239,7 +240,7 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         #region Vbar
 
-        private void OnVbarItemClicked(VbarItem newItem)
+        private void OnVbarItemClicked(VbarItem1 newItem)
         {
             try
             {

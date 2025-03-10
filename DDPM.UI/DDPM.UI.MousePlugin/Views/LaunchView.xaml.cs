@@ -2,6 +2,7 @@
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Common.UserControls;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.ButtonSettings;
 using DDPM.UI.Module.MouseSettings;
@@ -63,7 +64,7 @@ namespace DDPM.UI.Plugin.MousePlugin
 
 
                 DataContext = _vm;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                _vm.VbarItemClickCommand = new RelayCommand<VbarItem1>(OnVbarItemClicked!);
 
                 if (_vm.EOLMouseList.Contains(_vm.Model))
                 {
@@ -299,7 +300,7 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         #region Vbar
 
-        private void OnVbarItemClicked(VbarItem newItem)
+        private void OnVbarItemClicked(VbarItem1 newItem)
         {
             if (newItem.Id == _vm!.VbarSelectedIndex)
             { return; }

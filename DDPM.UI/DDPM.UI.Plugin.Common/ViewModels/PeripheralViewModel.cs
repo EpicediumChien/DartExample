@@ -3,7 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Common.UserControls;
 using DDPM.UI.Common.Views;
 using DDPM.UI.Interfaces;
 using Dell.Client.Framework.Common;
@@ -1003,7 +1005,7 @@ namespace DDPM.UI.Plugin.ViewModels
         /// <summary>
         /// Used by varList ListControl.ItemsSource only
         /// </summary>
-        private readonly List<VbarItem> _vbarItems = new();
+        private readonly List<VbarItem1> _vbarItems = new();
 
         /// <summary>
         /// Called when the ModuleGroups reset, will return to Landing Mode
@@ -1018,7 +1020,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (mg.GroupIcon != null)
                 {
-                    VbarItem vbarItem = new(idx, mg.GroupIcon, mg.GroupName, mg.GroupIconCanvas)
+                    VbarItem1 vbarItem = new(idx, mg.GroupIcon, mg.GroupName, mg.GroupIconCanvas)
                     {
                         ClickCommand = VbarItemClickCommand
                     };
@@ -1029,7 +1031,7 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(VbarItems));
         }
 
-        public List<VbarItem> VbarItems
+        public List<VbarItem1> VbarItems
         {
             get => _vbarItems;
         }
@@ -1287,7 +1289,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void SetLadningMode(bool isLandingMode)
         {
-            foreach (VbarItem vbarItem in _vbarItems)
+            foreach (VbarItem1 vbarItem in _vbarItems)
             {
                 vbarItem.SetLadningMode(isLandingMode);
             }
@@ -1295,7 +1297,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void SelectVBar()
         {
-            foreach (VbarItem vbarItem in _vbarItems)
+            foreach (VbarItem1 vbarItem in _vbarItems)
             {
                 vbarItem.IsSelected = vbarItem.Id == VbarSelectedIndex;
             }

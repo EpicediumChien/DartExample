@@ -1,6 +1,8 @@
 ﻿using DDPM.SA.Common;
+using Dell.TechHub.Sdk.Common.Utilities.Extensions;
 using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace DDPM.OSDs
 {
@@ -60,6 +62,51 @@ namespace DDPM.OSDs
             }
         }
 
+        // especially for show the OSD with an "close" button
+        private OSDMainWin OSDMainWin;
+        public void ShowMultipleOSD(string guid, OSDType_Device oSDType_Device, string title, string content)
+        {
+            lock (osdLock)
+            {
+                if (OSDMainWin == null)
+                {
+                    OSDMainWin = new OSDMainWin();
+                }
+                if (!OSDMainWin.OSDWins.Any(x => x.GUID.Equals(guid, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    OSDMainWin.AddShowOSDWinInfo(new OSDWinInfo()
+                    {
+                        GUID = guid,
+                        OSDType_Device = oSDType_Device,
+                        ShowStringTitle = title,
+                        /* ShowStringTitle = title + "(" + guid.Substring(0, 4) + ")",*/
+                        ShowStringContent = content
+                    });
+                }
+                Debug.WriteLine($"OSDMainWin!.OSDWins.Count========{OSDMainWin!.OSDWins.Count}");
+                OSDMainWin.ShowWindow();
+            }
+        }
+
+        public bool ExistMultipleOSD()
+        {
+            lock (osdLock)
+            {
+                return !(OSDMainWin == null) && OSDMainWin.OSDWins.Count > 0;
+            }
+        }
+
+        public void CloseMultipleOSD()
+        {
+            lock (osdLock)
+            {
+                if (OSDMainWin != null)
+                {
+                    OSDMainWin.OSDWins.ForEach(x => x.IsFadeOut = true);
+                }
+            }
+
+        }
         public void Mute_ShowWindow(string Content, double Top, double Left)
         {
             MuteWinx = new MuteWin(Content);

@@ -94,7 +94,10 @@ namespace DDPM.UI.Module.Kvm
                 vm.PCSwap("PC1", "PC2");
                 if (!vm.isPxPFullView)
                 {
-                    DdpmCommonHelper.DeviceManagerSA.VideoSwap(vm.KvmModule.SelectedHomeDevice.MonitorInfo, 0, 1);
+                    if (DdpmCommonHelper.DeviceManagerSA.VideoSwap(vm.KvmModule.SelectedHomeDevice.MonitorInfo, 0, 1).Result)
+                    {
+                        vm.UpdatePCList();
+                    }
                 }
             }
         }
@@ -106,7 +109,10 @@ namespace DDPM.UI.Module.Kvm
                 vm.PCSwap("PC2", "PC3");
                 if (!vm.isPxPFullView)
                 {
-                    DdpmCommonHelper.DeviceManagerSA.VideoSwap(vm.KvmModule.SelectedHomeDevice.MonitorInfo, 1, 2);
+                    if (DdpmCommonHelper.DeviceManagerSA.VideoSwap(vm.KvmModule.SelectedHomeDevice.MonitorInfo, 1, 2).Result)
+                    {
+                        vm.UpdatePCList();
+                    }
                 }
             }
         }
@@ -118,7 +124,10 @@ namespace DDPM.UI.Module.Kvm
                 vm.PCSwap("PC1", "PC3");
                 if (!vm.isPxPFullView)
                 {
-                    DdpmCommonHelper.DeviceManagerSA.VideoSwap(vm.KvmModule.SelectedHomeDevice.MonitorInfo, 0, 2);
+                    if (DdpmCommonHelper.DeviceManagerSA.VideoSwap(vm.KvmModule.SelectedHomeDevice.MonitorInfo, 0, 2).Result)
+                    { 
+                        vm.UpdatePCList(); 
+                    }
                 }
             }
         }

@@ -24,5 +24,6 @@
         Mouse,
         Headset,
         Pen,
+        QAM
     }
 }

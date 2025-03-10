@@ -12,8 +12,10 @@ namespace GenDdpmSplashImages
     {
         //Command Line Arguments
         public static string SolutionDir = ".";
-        public static string Year = "2024";
-        public static string Build = "2.0.0.0";
+        public static string Year = "2025";
+        public static string Build = "2.0.1.0";
+        public static string Color = "dark";
+        public static string Size = "normal";
 
         // ========================================================================================
         //                           GetAppDir
@@ -49,7 +51,10 @@ namespace GenDdpmSplashImages
                             state = 20;
                         else if (arg.Equals("-Build", StringComparison.OrdinalIgnoreCase))
                             state = 21;
-
+                        else if (arg.Equals("-Color", StringComparison.OrdinalIgnoreCase))
+                            state = 30;
+                        else if (arg.Equals("-Size", StringComparison.OrdinalIgnoreCase))
+                            state = 40;
                         break;
                     case 10: // -SolutionDir {SolutionDir}
                         SolutionDir = arg;
@@ -63,6 +68,14 @@ namespace GenDdpmSplashImages
                     case 21: //-Build {Build}
                         Build = arg;
                         state = 0;
+                        break;
+                    case 30: //-Color {dark or light}
+                        state = 0;
+                        Color = arg;
+                        break;
+                    case 40: //-Size {normal or 4k}
+                        state = 0;
+                        Size = arg;
                         break;
                 }
             }

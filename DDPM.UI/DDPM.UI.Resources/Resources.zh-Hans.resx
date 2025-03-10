@@ -3459,4 +3459,7 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>了解有关软件的更多信息</value>
   </data>
+  <data name="Update_Dock_Alert_2" xml:space="preserve">
+    <value />
+  </data>
 </root>

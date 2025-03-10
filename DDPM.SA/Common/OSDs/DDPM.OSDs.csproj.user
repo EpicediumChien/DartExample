@@ -8,6 +8,12 @@
     <Compile Update="KeyAndKeybordBatteryLowWin.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="OSDMainWin.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="OSDUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="QAMHotKeyWin.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
