@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using static DDPM.SA.Common.ICLICommandTable;
+using static DDPM.SA.Plugins.CMAManager.CmdResponse;
 using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugins.CMAManager
@@ -1186,11 +1187,22 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 }*/
 
+                // modified @ 20250308 stephe : fix sid
                 WriteLog("[CMA] UpdateFwStatus() Response");
+                string sid = string.Empty;
+
+                CmdResponse cmdResponse = new CmdResponse(data.Guid, true, null);
+                if (cmdResponse.getErrorMsg().Equals("success"))
+                {
+                    WriteLog("[CMA] UpdateFwStatus() Response cmdResponse.getErrorMsg() = success");
+                    InfoResponse infoResponse = new InfoResponse(cmdResponse.getData(), false);
+                    sid = infoResponse.sid;
+                }
+                
 
                 string response = string.Empty;
 
-                response = "{\"sid\":\"N/A\",\"gid\":\"" + data.Guid + "\",\"response\":[{\"tid\":1,\"result\":" + responseFwResultCode((int)data.FWUErrorCode) + ",\"msg\":\"E\",\"data\":";
+                response = "{\"sid\":\"" + sid + "\",\"gid\":\"" + data.Guid + "\",\"response\":[{\"tid\":1,\"result\":" + responseFwResultCode((int)data.FWUErrorCode) + ",\"msg\":\"E\",\"data\":";
                 response = response + "[{";
                 response = response + "\"seqnum\":" + 2 + ",";
                 response = response + "\"index\":\"" + data.DeviceIndex + "\",";
