@@ -100,7 +100,7 @@
                             FontSize="14"
                             FontWeight="Medium"
                             Foreground="{DynamicResource Default_SA_OSD_PathColor}"
-                            Text="" />
+                            Text="" TextWrapping="Wrap" TextAlignment="Center"/>
                     </Grid>
                 </Grid>
             </Border>

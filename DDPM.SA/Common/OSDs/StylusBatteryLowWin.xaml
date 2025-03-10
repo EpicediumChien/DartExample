@@ -102,6 +102,7 @@
                                 FontFamily="Roboto"
                                 FontSize="14"
                                 FontWeight="Medium"
+                                TextWrapping="Wrap" TextAlignment="Center"
                                 Foreground="{DynamicResource Default_SA_OSD_PathColor}"
                                 Text="" />
 
