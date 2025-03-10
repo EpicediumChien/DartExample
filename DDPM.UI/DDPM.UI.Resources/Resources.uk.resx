@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>Експорт конфігурації та важливих елементів на інший монітор тієї ж моделі</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>Звідси ви можете експортувати свою улюблену конфігурацію та без проблем імпортувати її на інший монітор тієї самої моделі.</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>Висока швидкість передачі даних</value>
   </data>
@@ -914,6 +917,9 @@
   </data>
   <data name="InputSource.4" xml:space="preserve">
     <value>USB-порт вище</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>Перейменування джерела вхідного сигналу</value>
   </data>
   <data name="KeyCustomization.0" xml:space="preserve">
     <value>Для налаштування клавіші клацніть одну із виділених клавіш на зображенні ліворуч</value>
@@ -2274,12 +2280,6 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>Ця функція дає очам змогу адаптуватися до бажаних умов.</value>
   </data>
-  <data name="DisplayOthers.8" xml:space="preserve">
-    <value>Звідси ви можете експортувати свою улюблену конфігурацію та без проблем імпортувати її на інший монітор тієї самої моделі.</value>
-  </data>
-  <data name="InputSource.5" xml:space="preserve">
-    <value>Перейменування джерела вхідного сигналу</value>
-  </data>
   <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
     <value>Від'єднайте всі USB-накопичувачі від монітора.</value>
   </data>
@@ -3462,7 +3462,13 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Дізнайтеся більше про програмне забезпечення</value>
   </data>
-  <data name="Update_Dock_Alert_2" xml:space="preserve">
-    <value />
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>Щоб отримати доступ до функцій датчика присутності Microsoft, перейдіть у Налаштування Windows</value>
+  </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>Сумісна мікропрограма</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>Щоб отримати доступ до функцій датчика присутності, перейдіть за посиланням нижче й завантажте мікропрограму для сумісної вебкамери.</value>
   </data>
 </root>

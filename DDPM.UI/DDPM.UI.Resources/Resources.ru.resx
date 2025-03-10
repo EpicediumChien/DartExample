@@ -729,6 +729,9 @@
   <data name="DisplayOthers.7" xml:space="preserve">
     <value>Экспорт конфигурации и важных данных на другой монитор той же модели</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>Здесь можно легко экспортировать предпочтительную конфигурацию и импортировать ее на другой монитор той же модели.</value>
+  </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>Высокая скорость передачи данных</value>
   </data>
@@ -914,6 +917,9 @@
   </data>
   <data name="InputSource.4" xml:space="preserve">
     <value>Восходящий USB-порт</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>Переименование источника входного сигнала</value>
   </data>
   <data name="KeyCustomization.0" xml:space="preserve">
     <value>Чтобы настроить клавишу, нажмите одну из выделенных клавиш на изображении слева</value>
@@ -2275,12 +2281,6 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>Эта функция позволяет нашим глазам адаптироваться к нужной настройке.</value>
   </data>
-  <data name="DisplayOthers.8" xml:space="preserve">
-    <value>Здесь можно легко экспортировать предпочтительную конфигурацию и импортировать ее на другой монитор той же модели.</value>
-  </data>
-  <data name="InputSource.5" xml:space="preserve">
-    <value>Переименование источника входного сигнала</value>
-  </data>
   <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
     <value>Отсоедините от монитора все накопители USB.</value>
   </data>
@@ -3463,7 +3463,13 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Подробнее о программном обеспечении</value>
   </data>
-  <data name="Update_Dock_Alert_2" xml:space="preserve">
-    <value />
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>Чтобы получить доступ к функциям Microsoft Presence Sensing, перейдите в раздел «Параметры» Windows</value>
+  </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>Совместимая микропрограмма</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>Чтобы получить доступ к функциям обнаружения присутствия, используйте ссылку ниже для скачивания компилируемой микропрограммы веб-камеры</value>
   </data>
 </root>
