@@ -1208,7 +1208,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 string response = string.Empty;
                 string errMsg = string.Empty;
 
-                response = "{\"sid\":\"" + sid + "\",\"gid\":\"" + data.Guid + "\",\"response\":[{\"tid\":1,\"result\":" + responseFwResultCode((int)data.FWUErrorCode, errMsg) + ",\"msg\":\"" + errMsg + "\",\"data\":";
+                response = "{\"sid\":\"" + sid + "\",\"gid\":\"" + data.Guid + "\",\"response\":[{\"tid\":1,\"result\":" + responseFwResultCode((int)data.FWUErrorCode, out errMsg) + ",\"msg\":\"" + errMsg + "\",\"data\":";
                 response = response + "[{";
                 response = response + "\"seqnum\":" + 2 + ",";
                 response = response + "\"index\":\"" + data.DeviceIndex + "\",";
