@@ -390,7 +390,7 @@ namespace DDPM.UI.Module.Kvm
             get => _PC1selectInput;
             set
             {
-                if (_PC1selectInput != value)
+                if (value != null && _PC1selectInput != value)
                 {
                     SetProperty(ref _PC1selectInput, value);
                     SelectInputSource(_PC1selectInput.Type, "PC1");
@@ -403,7 +403,7 @@ namespace DDPM.UI.Module.Kvm
             get => _PC2selectInput;
             set
             {
-                if (_PC2selectInput != value)
+                if (value != null && _PC2selectInput != value)
                 {
                     SetProperty(ref _PC2selectInput, value);
                     SelectInputSource(_PC2selectInput.Type, "PC2");
@@ -416,7 +416,7 @@ namespace DDPM.UI.Module.Kvm
             get => _PC3selectInput;
             set
             {
-                if (_PC3selectInput != value)
+                if (value != null && _PC3selectInput != value)
                 {
                     SetProperty(ref _PC3selectInput, value);
                     SelectInputSource(_PC3selectInput.Type, "PC3");
@@ -429,7 +429,7 @@ namespace DDPM.UI.Module.Kvm
             get => _PC4selectInput;
             set
             {
-                if (_PC4selectInput != value)
+                if (value != null && _PC4selectInput != value)
                 {
                     SetProperty(ref _PC4selectInput, value);
                     SelectInputSource(_PC4selectInput.Type, "PC4");
@@ -1302,8 +1302,7 @@ namespace DDPM.UI.Module.Kvm
                                     pcsList["PC2"].InputName = inputList[_inputsList2[0].Type].InputName;
                                     pcsList["PC2"].USBUpstream = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, _inputsList2[0].Type).Result;
                                     _PC2selectInput = _inputsList2[0];
-
-                            }
+                                }
                                 _PC2selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC2"].USBUpstream));
                                 PC1_Input = pcsList["PC1"].InputType;
                                 PC2_Input = pcsList["PC2"].InputType;
@@ -2514,7 +2513,7 @@ namespace DDPM.UI.Module.Kvm
                                 CurrentInputChange();
                             }
                         }
-                        if (pcsList["PC2"].InputType != original_pcsList["PC2"].InputType)
+                        if (pcsList["PC2"] != original_pcsList["PC2"] || pcsList["PC3"] != original_pcsList["PC3"] || pcsList["PC4"] != original_pcsList["PC4"])
                         {
                             InputSourceObj pc1input = new InputSourceObj((UInt16)pcsList["PC1"].Code, pcsList["PC1"].InputType);
                             InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
