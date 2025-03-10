@@ -595,10 +595,10 @@
     <value>Забезпечує швидкий доступ до елементів керування конференціями. Перемикайте клавіші,\nщоб показати або приховати їх на клавіатурі під час \nконференц-виклику Microsoft Teams або Zoom.</value>
   </data>
   <data name="Collaboration.3" xml:space="preserve">
-    <value>Увімкнення ефекту миготіння, коли з’являється нове повідомлення чату\nпід час конференц-виклику</value>
+    <value>Увімкнення ефекту миготіння, коли з’являється нове повідомлення чату під час конференц-виклику</value>
   </data>
   <data name="Collaboration.4" xml:space="preserve">
-    <value>Активація піктограм на клавіатурі подвійним торканням\nзамість одинарного</value>
+    <value>Активація піктограм на клавіатурі подвійним торканням замість одинарного</value>
   </data>
   <data name="Collaboration.5" xml:space="preserve">
     <value>Для використання клавіатури спільної роботи в Microsoft Teams ввійдіть в останню версію Microsoft Teams і ввімкніть API сторонніх програм.</value>
@@ -3461,5 +3461,8 @@
   </data>
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Дізнайтеся більше про програмне забезпечення</value>
+  </data>
+  <data name="Update_Dock_Alert_2" xml:space="preserve">
+    <value />
   </data>
 </root>

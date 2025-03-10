@@ -2,6 +2,7 @@
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Common.UserControls;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.Collaboration;
 using DDPM.UI.Module.Illumination;
@@ -43,7 +44,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             }
 
             DataContext = _vm;
-            _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+            _vm.VbarItemClickCommand = new RelayCommand<VbarItem1>(OnVbarItemClicked!);
 
             if (_vm.EOLKBList.Contains(_vm.Model))
             {
@@ -248,7 +249,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         #region Vbar
 
-        private void OnVbarItemClicked(VbarItem newItem)
+        private void OnVbarItemClicked(VbarItem1 newItem)
         {
             //if(newItem.Id == _vm!.VbarSelectedIndex) { return; }
 
@@ -561,6 +562,10 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     this.Resources["SectionAMargin"] = new Thickness(-2.6, 0, 0, 0);
                     this.Resources["F5Margin"] = new Thickness(0.2, 0, 0, 0);
                     this.Resources["F9Margin"] = new Thickness(0.1, 0, 0, 0);
+                    RecT.Height = 145;
+                    RecB.Height = 145;
+                    RecL.Width = 20;
+                    RecR.Width = 20;
                     break;
 
                 case "KB500":
@@ -571,6 +576,10 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     this.Resources["SectionAMargin"] = new Thickness(-1, 0, 0, 0);
                     this.Resources["F5Margin"] = new Thickness(0, 0, 0, 0);
                     this.Resources["F9Margin"] = new Thickness(1, 0, 0, 0);
+                    RecT.Height = 139;
+                    RecB.Height = 148;
+                    RecL.Width = 11;
+                    RecR.Width = 9;
                     break;
 
                 case "KB7120W":
@@ -581,6 +590,10 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     this.Resources["SectionAMargin"] = new Thickness(-2, 0, 0, 0);
                     this.Resources["F5Margin"] = new Thickness(-3, 0, 0, 0);
                     this.Resources["F9Margin"] = new Thickness(-3, 0, 0, 0);
+                    RecT.Height = 129;
+                    RecB.Height = 118;
+                    RecL.Width = 19;
+                    RecR.Width = 15;
                     break;
 
                 case "KB555":
@@ -597,6 +610,10 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     this.Resources["CalculatorWidth"] = 43.0;
                     this.Resources["CalculatorHeight"] = 32.5;
                     this.Resources["CalculatorMargin"] = new Thickness(-117, 0, 0, 0);
+                    RecT.Height = 133;
+                    RecB.Height = 131;
+                    RecL.Width = 25;
+                    RecR.Width = 15;
                     break;
 
                 case "KB525C":
@@ -610,6 +627,10 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     this.Resources["PrtScHeight"] = 32.5;
                     this.Resources["PrtScMargin"] = new Thickness(2, 0, 0, 0);
                     this.Resources["SectionBMargin"] = new Thickness(-3, 0, 0, 0);
+                    RecT.Height = 155;
+                    RecB.Height = 128;
+                    RecL.Width = 10;
+                    RecR.Width = 10;
                     break;
 
                 case "KB900":
@@ -626,6 +647,10 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     this.Resources["CalculatorWidth"] = 40.0;
                     this.Resources["CalculatorHeight"] = 32.5;
                     this.Resources["CalculatorMargin"] = new Thickness(7, 0, 0, 0);
+                    RecT.Height = 148;
+                    RecB.Height = 148;
+                    RecL.Width = 25;
+                    RecR.Width = 25;
                     break;
             }
         }
@@ -659,6 +684,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             {
                 OnVbarItemClicked(_vm.VbarItems[0]);
             }
+            e.Handled = true;
         }
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -682,6 +708,11 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             {
                 Mainframe_MouseLeftButtonDown(this, e);
             }
+        }
+
+        private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }

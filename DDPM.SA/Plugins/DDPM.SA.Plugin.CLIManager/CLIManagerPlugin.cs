@@ -812,6 +812,22 @@ namespace DDPM.SA.Plugin.CLIManager
                             response.Result = "FAIL";
                             response.Message = commandResult.message;
                             response.Value = commandResult.value;
+                            break;
+                        }
+                        
+                        if(_commandLineInput.Options[0].Option_Value.Equals("ENABLE"))
+                        {
+                            //Thread.Sleep(10000);
+
+                            commandResult = RunDDMCommand($"/get {command}");
+                            if (commandResult.exitCode != 0x0110)
+                            {
+                                retcode = false;
+                                response.Result = "FAIL";
+                                response.Message = commandResult.message;
+                                response.Value = commandResult.value;
+                                break;
+                            }
                         }
                     }
                 }

@@ -127,112 +127,154 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         public WalkThroughBox(WalkThroughPageViewModel viewModel, Window owner, double factor = 1.0)
         {
-            InitializeComponent();
-            ViewModel = viewModel;
-            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
-            _viewModel = new WalkThroughBoxViewModel
+            DdpmCommonHelper.WriteUILog($"[WalkThroughBox] WalkThroughBox ... in ");
+            try
             {
-                strTitle = devicePages["DDPM"][_currentPage].MainText,
-                strContent = devicePages["DDPM"][_currentPage].SubText,
-                SkipButtonVisibility = _currentPage < _totalPages ? Visibility.Visible : Visibility.Collapsed
-            };
+                InitializeComponent();
+                ViewModel = viewModel;
+                var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
+                _viewModel = new WalkThroughBoxViewModel
+                {
+                    strTitle = devicePages["DDPM"][_currentPage].MainText,
+                    strContent = devicePages["DDPM"][_currentPage].SubText,
+                    SkipButtonVisibility = _currentPage < _totalPages ? Visibility.Visible : Visibility.Collapsed
+                };
 
-            _viewModel.CurrentAnimationPage = devicePages["DDPM"].Count - 2;
-            //_totalPages = devicePages["DDPM"].Count - 1;
+                _viewModel.CurrentAnimationPage = devicePages["DDPM"].Count - 2;
+                //_totalPages = devicePages["DDPM"].Count - 1;
 
-            DataContext = _viewModel;
-            ViewModel.IsOtherVisibility = true;
-            ViewModel.Img3Source = DdpmCommonHelper.GetImageSourceFromCommonResource(devicePages["DDPM"][_currentPage].MainImageSource, "DDPM.UI.WalkThroughData");
-            //_currentPage++;
-            //UpdatePage(devicePages["DDPM"][1].MainImageSource);
-            mainWindow = owner;
-            base.Owner = owner;
-            screenScalingFactor = factor;
-            UpdatePosition("Top_Right");
+                DataContext = _viewModel;
+                ViewModel.IsOtherVisibility = true;
+                ViewModel.Img3Source = DdpmCommonHelper.GetImageSourceFromCommonResource(devicePages["DDPM"][_currentPage].MainImageSource, "DDPM.UI.WalkThroughData");
+                //_currentPage++;
+                //UpdatePage(devicePages["DDPM"][1].MainImageSource);
+                mainWindow = owner;
+                base.Owner = owner;
+                screenScalingFactor = factor;
+                UpdatePosition("Top_Right");
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[WalkThroughBox] WalkThroughBox ... fail: {ex.Message}");
+            }
         }
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
-            _viewModel.IsFirstPage = false;
-            if (_currentPage < _totalPages)
+            try
             {
-                _currentPage++;
-                UpdateText(_currentPage);
-                UpdateProgressBar(true);
-                //_currentPage++;
-                if (_currentPage != _totalPages)
-                    UpdatePosition("Left");
+                _viewModel.IsFirstPage = false;
+                if (_currentPage < _totalPages)
+                {
+                    _currentPage++;
+                    UpdateText(_currentPage);
+                    UpdateProgressBar(true);
+                    //_currentPage++;
+                    if (_currentPage != _totalPages)
+                        UpdatePosition("Left");
+                    else
+                    {
+                        _viewModel.IsLastPage = true;
+                        UpdatePosition("Top_Right");
+                    }
+                }
                 else
                 {
-                    _viewModel.IsLastPage = true;
-                    UpdatePosition("Top_Right");
+                    EndProgress();
                 }
             }
-            else
+            catch (Exception ex)
             {
-                EndProgress();
+                DdpmCommonHelper.WriteUILog($"[WalkThroughBox] NextBtn_Click ... fail: {ex.Message}");
             }
         }
 
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
-            _viewModel.IsLastPage = false;
-            ViewModel.UpdateButtonVisibility();
-            if (_currentPage > 1)
+            try
             {
-                _currentPage--;
-                UpdateText(_currentPage);
-                UpdateProgressBar(false);
-                if (_currentPage == 1)
+                _viewModel.IsLastPage = false;
+                ViewModel.UpdateButtonVisibility();
+                if (_currentPage > 1)
                 {
-                    _viewModel.IsFirstPage = true;
-                    UpdatePosition("Top_Right");
+                    _currentPage--;
+                    UpdateText(_currentPage);
+                    UpdateProgressBar(false);
+                    if (_currentPage == 1)
+                    {
+                        _viewModel.IsFirstPage = true;
+                        UpdatePosition("Top_Right");
+                    }
+                    else
+                        UpdatePosition("Left");
                 }
                 else
-                    UpdatePosition("Left");
+                {
+                    ViewModel.IsDDPMVisibility = true;
+                    this.Close();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                ViewModel.IsDDPMVisibility = true;
-                this.Close();
+                DdpmCommonHelper.WriteUILog($"[WalkThroughBox] ArrowButton_Click ... fail: {ex.Message}");
             }
         }
 
         private void UpdateProgressBar(bool isForward)
         {
             double newProgressValue;
-
-            if (isForward)
+            try
             {
-                // forward
-                newProgressValue = Math.Min(_viewModel.ProgressValue + 1, _totalPages);
+                if (isForward)
+                {
+                    // forward
+                    newProgressValue = Math.Min(_viewModel.ProgressValue + 1, _totalPages);
+                }
+                else
+                {
+                    // backward
+                    newProgressValue = Math.Max(_viewModel.ProgressValue - 1, 1);
+                }
+
+                DoubleAnimation progressAnimation = new DoubleAnimation
+                {
+                    From = _viewModel.ProgressValue,
+                    To = newProgressValue,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+                    FillBehavior = FillBehavior.HoldEnd
+                };
+
+                WalkThroughProgressbar.BeginAnimation(System.Windows.Controls.ProgressBar.ValueProperty, progressAnimation);
+
+                _viewModel.ProgressValue = newProgressValue;
             }
-            else
+            catch (Exception ex)
             {
-                // backward
-                newProgressValue = Math.Max(_viewModel.ProgressValue - 1, 1);
+                DdpmCommonHelper.WriteUILog($"[WalkThroughBox] UpdateProgressBar ... fail: {ex.Message}");
             }
-
-            DoubleAnimation progressAnimation = new DoubleAnimation
-            {
-                From = _viewModel.ProgressValue,
-                To = newProgressValue,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
-                FillBehavior = FillBehavior.HoldEnd
-            };
-
-            WalkThroughProgressbar.BeginAnimation(System.Windows.Controls.ProgressBar.ValueProperty, progressAnimation);
-
-            _viewModel.ProgressValue = newProgressValue;
         }
 
         private void UpdateText(int page)
         {
-            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
+            try
+            {
+                var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
 
-            _viewModel.strTitle = devicePages["DDPM"][page].MainText;
-            _viewModel.strContent = devicePages["DDPM"][page].SubText;
+                if (devicePages != null && devicePages.ContainsKey("DDPM") && devicePages["DDPM"] != null && devicePages["DDPM"].Count > page)
+                {
+                    _viewModel.strTitle = devicePages["DDPM"][page].MainText ?? string.Empty;
+                    _viewModel.strContent = devicePages["DDPM"][page].SubText ?? string.Empty;
 
-            UpdatePage(devicePages["DDPM"][page].MainImageSource);
+                    UpdatePage(devicePages["DDPM"][page].MainImageSource ?? string.Empty);
+                }
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughBox] UpdateText page : {page.ToString()} ... fail: Invalid devicePages data");
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[WalkThroughBox] UpdateText page : {page.ToString()} ... fail: {ex.Message}");
+            }
         }
 
         private void UpdatePage(string page)
@@ -246,75 +288,89 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void UpdatePosition(string position, double factor = 1.0)
         {
-            switch (position.ToLower())
+            try
             {
-                case "top_right":
-                    if (mainWindow != null) {
-                        if (mainWindow.WindowState == WindowState.Normal)
+                switch (position.ToLower())
+                {
+                    case "top_right":
+                        if (mainWindow != null)
                         {
-                            this.Left = this.Owner.Left + base.Owner.Width - this.Width - 122;
-                            this.Top = this.Owner.Top + 64;
+                            if (mainWindow.WindowState == WindowState.Normal)
+                            {
+                                this.Left = this.Owner.Left + base.Owner.Width - this.Width - 122;
+                                this.Top = this.Owner.Top + 64;
+                            }
+                            else
+                            {
+                                var screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(mainWindow).Handle); // Default to primary screen
+                                this.Left = (screen.WorkingArea.Left + screen.WorkingArea.Width) / screenScalingFactor - this.Width - 122;
+                                this.Top = screen.WorkingArea.Top / screenScalingFactor + 64;
+                            }
                         }
                         else
                         {
-                            var screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(mainWindow).Handle); // Default to primary screen
-                            this.Left = (screen.WorkingArea.Left + screen.WorkingArea.Width) / screenScalingFactor - this.Width - 122;
-                            this.Top = screen.WorkingArea.Top / screenScalingFactor + 64 ;
+                            DdpmCommonHelper.WriteUILog("[UpdatePosition] AppWalkThroughBox can not detect MainWindow!!");
                         }
-                    }
-                    else
-                    {
-                        DdpmCommonHelper.WriteUILog("[UpdatePosition] AppWalkThroughBox can not detect MainWindow!!");
-                    }
-                    break;
-                case "left":
-                    if (mainWindow != null)
-                    {
-                        if (mainWindow.WindowState == WindowState.Normal)
+                        break;
+                    case "left":
+                        if (mainWindow != null)
                         {
-                            this.Left = this.Owner.Left + 164; // Align with the left edge of the owner
-                            this.Top = this.Owner.Top + (base.Owner.Height - this.Height) / 2; // Center vertically
+                            if (mainWindow.WindowState == WindowState.Normal)
+                            {
+                                this.Left = this.Owner.Left + 164; // Align with the left edge of the owner
+                                this.Top = this.Owner.Top + (base.Owner.Height - this.Height) / 2; // Center vertically
+                            }
+                            else
+                            {
+                                var screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(mainWindow).Handle); // Default to primary screen
+                                this.Left = screen.WorkingArea.Left / screenScalingFactor + 164; // Align with the left edge of the owner
+                                this.Top = screen.WorkingArea.Top / screenScalingFactor + (screen.WorkingArea.Height / screenScalingFactor - this.Height) / 2; // Center vertically
+                            }
                         }
                         else
                         {
-                            var screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(mainWindow).Handle); // Default to primary screen
-                            this.Left = screen.WorkingArea.Left / screenScalingFactor + 164; // Align with the left edge of the owner
-                            this.Top = screen.WorkingArea.Top / screenScalingFactor + (screen.WorkingArea.Height / screenScalingFactor - this.Height) / 2; // Center vertically
+                            DdpmCommonHelper.WriteUILog("[UpdatePosition] AppWalkThroughBox can not detect MainWindow!!");
                         }
-                    }
-                    else
-                    {
-                        DdpmCommonHelper.WriteUILog("[UpdatePosition] AppWalkThroughBox can not detect MainWindow!!");
-                    }
-                    break;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[WalkThroughBox] UpdatePosition ... fail: {ex.Message}");
             }
         }
 
         private void EndProgress()
         {
-            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count != 0) // Error handling
+            try
             {
-                ViewModel.WriteWalkThroughReg("DDPM");
-                DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(new WalkThroughInfo("DDPM", "DDPM", null)); // Add DDPM to the end of the queue
-                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAll(item => item.ModelName == "DDPM"); // Remove all DDPM from the queue
-            }
-            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
-            {
-                DdpmHomePlugin.DdpmHomePlugin.ShowPluginById = false;
-                ViewModel.EndWalkThrough();
-            }
-            else
-            {
-                if (!DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
+                if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count != 0) // Error handling
                 {
-                    ViewModel.IsPeripheralVisible = true;
-                    ViewModel.IsDDPMVisibility = false;
-                    ViewModel.InitializeDeviceFromQueue();
-                    ViewModel.UpdateButtonVisibility();
+                    ViewModel.WriteWalkThroughReg("DDPM");
+                    DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(new WalkThroughInfo("DDPM", "DDPM", null)); // Add DDPM to the end of the queue
+                    DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAll(item => item.ModelName == "DDPM"); // Remove all DDPM from the queue
                 }
+                if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
+                {
+                    DdpmHomePlugin.DdpmHomePlugin.ShowPluginById = false;
+                    ViewModel.EndWalkThrough();
+                }
+                else
+                {
+                    if (!DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
+                    {
+                        ViewModel.IsPeripheralVisible = true;
+                        ViewModel.IsDDPMVisibility = false;
+                        ViewModel.InitializeDeviceFromQueue();
+                        ViewModel.UpdateButtonVisibility();
+                    }
+                }
+                this.Close();
             }
-
-            this.Close();
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[WalkThroughBox] EndProgress ... fail: {ex.Message}");
+            }
         }
 
         private void SkipBtn_Click(object sender, RoutedEventArgs e)
@@ -324,10 +380,17 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         public void RefreshWalkThroughBoxPosition()
         {
-            if (_currentPage == _totalPages || _currentPage == 1)
-                UpdatePosition("Top_Right");
-            else
-                UpdatePosition("Left");
+            try
+            {
+                if (_currentPage == _totalPages || _currentPage == 1)
+                    UpdatePosition("Top_Right");
+                else
+                    UpdatePosition("Left");
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[WalkThroughBox] RefreshWalkThroughBoxPosition ... fail: {ex.Message}");
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Common.UserControls;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.ButtonSettings;
 using DDPM.UI.Module.MouseSettings;
@@ -63,7 +64,7 @@ namespace DDPM.UI.Plugin.MousePlugin
 
 
                 DataContext = _vm;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                _vm.VbarItemClickCommand = new RelayCommand<VbarItem1>(OnVbarItemClicked!);
 
                 if (_vm.EOLMouseList.Contains(_vm.Model))
                 {
@@ -299,7 +300,7 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         #region Vbar
 
-        private void OnVbarItemClicked(VbarItem newItem)
+        private void OnVbarItemClicked(VbarItem1 newItem)
         {
             if (newItem.Id == _vm!.VbarSelectedIndex)
             { return; }
@@ -647,38 +648,66 @@ namespace DDPM.UI.Plugin.MousePlugin
                 {
                     case "MS300":
                         SectionA.Margin = new Thickness(210, 64, 0, 0);
+                        RecT.Height = 21;
+                        RecB.Height = 60;
+                        RecL.Width = 136;
+                        RecR.Width = 133;
                         break;
 
                     case "MS355":
                         SectionA.Margin = new Thickness(210, 91, 0, 0);
+                        RecT.Height = 48;
+                        RecB.Height = 85;
+                        RecL.Width = 142;
+                        RecR.Width = 140;
                         break;
 
                     case "MS7421W":
                         SectionA.Margin = new Thickness(210, 98, 0, 0);
                         SectionB.Margin = new Thickness(127, 170, 0, 0);
                         this.Resources["B4Margin"] = new Thickness(0, -8, 0, 0);
+                        RecT.Height = 55;
+                        RecB.Height = 73;
+                        RecL.Width = 133;
+                        RecR.Width = 135;
                         break;
 
                     case "MS3320W":
                         SectionA.Margin = new Thickness(210, 108, 0, 0);
+                        RecT.Height = 62;
+                        RecB.Height = 60;
+                        RecL.Width = 140;
+                        RecR.Width = 135;
                         break;
 
                     case "MS5120W":
                         SectionA.Margin = new Thickness(210, 108, 0, 0);
                         SectionB.Margin = new Thickness(127, 164, 0, 0);
                         this.Resources["B4Margin"] = new Thickness(0, -6, 0, 0);
+                        RecT.Height = 62;
+                        RecB.Height = 60;
+                        RecL.Width = 137;
+                        RecR.Width = 138;
                         break;
 
                     case "MS5320W":
                         SectionA.Margin = new Thickness(210, 81, 0, 0);
                         SectionB.Margin = new Thickness(126, 150, 0, 0);
                         this.Resources["B4Margin"] = new Thickness(0, -6, 0, 0);
+                        RecT.Height = 33;
+                        RecB.Height = 53;
+                        RecL.Width = 110;
+                        RecR.Width = 138;
                         break;
 
                     case "MS900":
                         SectionA.Margin = new Thickness(230, 50, 0, 0);
                         SectionB.Margin = new Thickness(156, 126, 0, 0);
                         this.Resources["B4Margin"] = new Thickness(0, -15, 0, 0);
+                        RecT.Height = 13;
+                        RecB.Height = 88;
+                        RecL.Width = 104;
+                        RecR.Width = 115;
                         break;
 
                     case "MS3220":
@@ -686,10 +715,24 @@ namespace DDPM.UI.Plugin.MousePlugin
                         SectionA.Margin = new Thickness(210, 106, 0, 0);
                         SectionB.Margin = new Thickness(140, 173, 0, 0);
                         this.Resources["B4Margin"] = new Thickness(0, -6, 0, 0);
+                        RecT.Height = 72;
+                        RecB.Height = 70;
+                        RecL.Width = 152;
+                        RecR.Width = 150;
                         break;
 
                     case "MS700":
                         SectionA.Visibility = Visibility.Collapsed;
+                        RecT.Height = 21;
+                        RecB.Height = 82;
+                        RecL.Width = 142;
+                        RecR.Width = 140;
+                        break;
+                    default:
+                        RecT.Height = 50;
+                        RecB.Height = 50;
+                        RecL.Width = 130;
+                        RecR.Width = 130;
                         break;
                 }
             }

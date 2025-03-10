@@ -39,4 +39,11 @@ namespace DDPM.SA.Common
         public MonitorInfo monitorInfo { get; set; }
         public int value { get; set; } = 0;// now only 0xE9
     }
+
+    public class NKVMSetVCP
+    {
+        public MonitorInfo monitorInfo { get; set;}
+        public int code { get; set;} = 0;
+        public int value { get; set; } = 0;
+    }
 }

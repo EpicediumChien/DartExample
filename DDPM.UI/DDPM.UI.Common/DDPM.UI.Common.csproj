@@ -107,6 +107,8 @@
 		<None Remove="Resources\SB3022.png" />
 		<None Remove="Resources\SB522A.png" />
 		<None Remove="Resources\SB725.png" />
+		<None Remove="Resources\SP325.png" />
+		<None Remove="Resources\SL525.png" />
 		<None Remove="Resources\SD25.png" />
 		<None Remove="Resources\SD25TB4.png" />
 		<None Remove="Resources\SD25TB5.png" />
@@ -125,6 +127,8 @@
 		<None Remove="Resources\Speaker_SB522A_NoLight.png" />
 		<None Remove="Resources\Speaker_SB522A_TwoLight.png" />
 		<None Remove="Resources\Speaker_SB725.png" />
+		<None Remove="Resources\Speaker_SP325.png" />
+		<None Remove="Resources\Speaker_SL525.png" />
 		<None Remove="Resources\Speaker_SP3022.png" />
 		<None Remove="Resources\Speaker_SP3022_AllLight.png" />
 		<None Remove="Resources\Speaker_SP3022_FourLight.png" />
@@ -183,8 +187,10 @@
 		<None Remove="Resources\WebCamModel_WB5023_Small.png" />
 		<None Remove="Resources\WebCamModel_WB7022_Large.png" />
 		<None Remove="Resources\WebCamModel_WB7022_Small.png" />
+		<None Remove="Resources\WH3024.png" />
 		<None Remove="Resources\WH5024.png" />
 		<None Remove="Resources\Wired.png" />
+		<None Remove="Resources\WL5024.png" />
 		<None Remove="Resources\ZoomIn.png" />
 		<None Remove="Resources\ZoomOut.png" />
 	</ItemGroup>
@@ -256,6 +262,12 @@
 		<Resource Include="Resources\SB725.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
+		<Resource Include="Resources\SP325.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\SL525.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Resources\SD25.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
@@ -303,6 +315,12 @@
 		</Resource>
 		<Resource Include="Resources\Speaker_SB725.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_SP325.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\Speaker_SL525.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Resources\Speaker_SP3022.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -558,11 +576,17 @@
 		<Resource Include="Resources\WebCamModel_WB7022_Small.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
+		<Resource Include="Resources\WH3024.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Resources\WH5024.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Resources\Wired.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WL5024.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Resources\ZoomIn.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -595,10 +595,10 @@
     <value>快速访问会议控件。\n在 Microsoft Teams 或 Zoom 通话中，\n打开/关闭按键将在键盘上显示或隐藏它们。</value>
   </data>
   <data name="Collaboration.3" xml:space="preserve">
-    <value>在电话会议中出现新的聊天消息时启用闪烁\n效果</value>
+    <value>在电话会议中出现新的聊天消息时启用闪烁效果</value>
   </data>
   <data name="Collaboration.4" xml:space="preserve">
-    <value>通过双击而不是单击来激活键盘上的\n图标</value>
+    <value>通过双击而不是单击来激活键盘上的图标</value>
   </data>
   <data name="Collaboration.5" xml:space="preserve">
     <value>若要将协作式键盘与 Microsoft Teams 配合使用，请确保已登录并使用全新版本的 Microsoft Teams，并且已启用第三方应用 API。</value>
@@ -3458,5 +3458,8 @@
   </data>
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>了解有关软件的更多信息</value>
+  </data>
+  <data name="Update_Dock_Alert_2" xml:space="preserve">
+    <value />
   </data>
 </root>

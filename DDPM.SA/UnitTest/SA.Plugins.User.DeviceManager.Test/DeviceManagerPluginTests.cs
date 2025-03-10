@@ -484,7 +484,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             //_ColorPresetPluginMock.Setup(x => x.AutoSetColorPresetForMonitorConfig(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<ISettingsManagerDev>(), It.IsAny<IDeviceManagerSA>(), It.IsAny<bool>(), It.IsAny<List<string>>())).Returns(Task.FromResult(true));
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
-            _DisplayManagerPluginMock.Setup(x => x.GetHDRStatus(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(true));
+            _DisplayManagerPluginMock.Setup(x => x.GetHDRStatus(It.IsAny<MonitorInfo>(), It.IsAny<bool>())).Returns(Task.FromResult(true));
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin);
             privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);

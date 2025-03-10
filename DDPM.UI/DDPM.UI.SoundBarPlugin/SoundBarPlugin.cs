@@ -45,7 +45,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         private readonly SemaphoreSlim _lock = new(1, 1);
         private DeviceHelper _deviceHelper = new();
         private List<DeviceInfo> _deviceInfos = new();
-
+        private bool IsEventRegistered = false;
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -61,20 +61,16 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             _pluginManager.PluginsStarted += PluginManager_PluginsStarted;
         }
 
-        //private void ShowAddDeviceView() {
-        //  _console.ShowPluginById(PluginId);
-        //}
-
         private void PluginManager_PluginsStarted(object? sender, PluginsStartedEventArgs pluginsStartedEventArgs)
         {
-            _log.Info($"{nameof(PluginManager_PluginsStarted)} started");
+            _log.Info($"[SoundBarPlugin] {nameof(PluginManager_PluginsStarted)} started");
             try
             {
                 _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
 
                 if (_deviceManagerPlugin == null)
                 {
-                    _log.Error($"{nameof(PluginManager_PluginsStarted)} DeviceManager Plugin is null");
+                    _log.Error($"[SoundBarPlugin] {nameof(PluginManager_PluginsStarted)} DeviceManager Plugin is null");
                     return;
                 }
 
@@ -89,16 +85,17 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
 
                 // Get current condition
                 _ = Task.Run(GetCurrentPeripheralsPluginCondition, CancellationToken);
+                _log.Info($"[SoundBarPlugin] {nameof(PluginManager_PluginsStarted)} end");
             }
             catch (Exception ex)
             {
-                var message = $"{nameof(PluginManager_PluginsStarted)} failed: {ex.Message}";
-                _log.Error(ex, message);
-            }
+                _log.Error(ex, $"[SoundBarPlugin] PluginManager_PluginsStarted ... failed: {ex.Message}");
+            }          
         }
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
+            _log.Info($"[SoundBarPlugin] {nameof(DeviceManager_DeviceChanged)} started");
             try
             {
                 if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("LogicalWiredAudio"))
@@ -114,12 +111,12 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                     }
                     _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
                 }
+                _log.Info($"[SoundBarPlugin] {nameof(DeviceManager_DeviceChanged)} end");
             }
             catch (Exception ex)
             {
-                var message = $"{nameof(PluginManager_PluginsStarted)} failed: {ex.Message}";
-                _log.Error(ex, message);
-            }
+                _log.Error(ex, $"[SoundBarPlugin] DeviceManager_DeviceChanged ... failed: {ex.Message}");
+            }         
         }
 
         private void PeripheralsPlugin_UpdateNotify(object? sender, EventArgs e)
@@ -130,12 +127,13 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         private void _peripheralsPluginCondition_PluginConditionChangeHandler(object? sender, EventArgs e)
         {
             _ = Task.Run(GetCurrentPeripheralsPluginCondition, CancellationToken);
+            _log.Info($"[SoundBarPlugin] {nameof(_peripheralsPluginCondition_PluginConditionChangeHandler)} trigger ...");
         }
 
         private async Task GetCurrentPeripheralsPluginCondition()
         {
             await _lock.WaitAsync(CancellationToken);
-            _log.Trace($"{nameof(GetCurrentPeripheralsPluginCondition)} lock");
+            _log.Info($"[SoundBarPlugin] {nameof(GetCurrentPeripheralsPluginCondition)} lock");
             try
             {
                 if (_deviceManagerPluginCondition == null)
@@ -145,40 +143,47 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
 
                 if (pluginCondition is PluginErrorCondition)
                 {
-                    _log.Info($"{nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginErrorCondition)}");
+                    _log.Info($"[SoundBarPlugin] {nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginErrorCondition)}");
                 }
                 else if (pluginCondition is PluginRunningCondition)
                 {
-                    _log.Info($"{nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginRunningCondition)}");
+                    _log.Info($"[SoundBarPlugin] {nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginRunningCondition)}");
                 }
             }
             catch (Exception ex)
             {
-                var message = $"{nameof(GetCurrentPeripheralsPluginCondition)} failed with error - {ex.Message}";
-                _log.Error(ex, message);
-                //throw new NotificationPluginException(message);
+                _log.Error(ex, $"[SoundBarPlugin] GetCurrentPeripheralsPluginCondition ... failed: {ex.Message}");
             }
             finally
             {
                 _lock.Release();
-                _log.Trace($"{nameof(GetCurrentPeripheralsPluginCondition)} unlock");
+                _log.Info($"[SoundBarPlugin] {nameof(GetCurrentPeripheralsPluginCondition)} unlock");
             }
         }
 
         private void GetPeripheralsAsync()
         {
-            if (!SpinWait.SpinUntil(() =>
-            _deviceManagerPluginCondition is IFrameworkPluginConditionNotification, TimeSpan.FromMinutes(2)))
+            _log.Info($"[SoundBarPlugin] GetPeripheralsAsync ... in");
+            try
             {
-                Console.WriteLine("Could not establish communication with DDPM!!");
-                return;
-            }
-            _log.Debug($"GetPeripherals is invoked");
-            //_deviceHelper = await peripheralsPlugin.GetDevices();
-            Task<DeviceHelper> task = _deviceManagerPlugin.GetDevices();
-            _deviceHelper = task.Result;
+                if (!SpinWait.SpinUntil(() =>
+                _deviceManagerPluginCondition is IFrameworkPluginConditionNotification, TimeSpan.FromMinutes(2)))
+                {
+                    Console.WriteLine("Could not establish communication with DDPM!!");
+                    return;
+                }
+                _log.Info($"GetPeripherals is invoked");
+                //_deviceHelper = await peripheralsPlugin.GetDevices();
+                Task<DeviceHelper> task = _deviceManagerPlugin.GetDevices();
+                _deviceHelper = task.Result;
 
-            _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
+                _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
+                _log.Info($"[SoundBarPlugin] GetPeripheralsAsync ... out");
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, $"[SoundBarPlugin] GetPeripheralsAsync ... failed: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -187,21 +192,30 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         /// <remarks>Below code will be removed when <see cref="IConsole"/> provides the bootstrapper support</remarks>
         private void ConfigureServices()
         {
-            if (_isConfigured)
-                return;
+            _log.Info($"[SoundBarPlugin] ConfigureServices ... in");
+            try
+            {
+                if (_isConfigured)
+                    return;
 
-            // Marked all the instances as singleton
-            // Pass the existing _console and _log instance so that Ioc doesn't new'up them
-            PluginIoc.ConfigureServices(new ServiceCollection()
-                .AddSingleton(_showPluginManager)
-                .AddSingleton(_console)
-                .AddSingleton(_log)
-                .AddSingleton(_deviceManagerPlugin)
-                .AddSingleton<IPeripheralViewModel, SoundBarViewModel>()
-                .BuildServiceProvider());
+                // Marked all the instances as singleton
+                // Pass the existing _console and _log instance so that Ioc doesn't new'up them
+                PluginIoc.ConfigureServices(new ServiceCollection()
+                    .AddSingleton(_showPluginManager)
+                    .AddSingleton(_console)
+                    .AddSingleton(_log)
+                    .AddSingleton(_deviceManagerPlugin)
+                    .AddSingleton<IPeripheralViewModel, SoundBarViewModel>()
+                    .BuildServiceProvider());
 
-            _viewModel = (SoundBarViewModel?)PluginIoc.GetService<IPeripheralViewModel>();
-            _isConfigured = true;
+                _viewModel = (SoundBarViewModel?)PluginIoc.GetService<IPeripheralViewModel>();
+                _isConfigured = true;
+                _log.Info($"[SoundBarPlugin] ConfigureServices ... out");
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, $"[SoundBarPlugin] ConfigureServices ... failed: {ex.Message}");
+            }
         }
 
         public string HeaderText => "Dell SoundBar";
@@ -212,36 +226,108 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         /// <inheritdoc/>
         public void OnActivated()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
-            //_deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
-            //_deviceManagerPlugin.UpdateNotify += PeripheralsPlugin_UpdateNotify;
-            Mouse.OverrideCursor = null;
+            _log.Info($"[SoundBarPlugin] OnActivated ... in");
+            try
+            {
+                if (!IsEventRegistered)
+                {
+                    if (_deviceManagerPlugin == null)
+                    {
+                        _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
+                        _log.Info($"[SoundBarPlugin] OnActivated ... _deviceManagerPlugin null,  FindPlugin again ... ");
+                    }
+                    if (_deviceManagerPlugin != null)
+                    {
+                        _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
+                        IsEventRegistered = true;
+                        _log.Info($"[SoundBarPlugin] OnActivated ... _deviceManagerPlugin normal ... ");
+                    }
+                    else
+                    {
+                        _log.Info($"[SoundBarPlugin] OnActivated ... _deviceManagerPlugin null,  FindPlugin still failed ... ");
+                    }
+                }
+                Mouse.OverrideCursor = null;
+                _log.Info($"[SoundBarPlugin] OnActivated ... out");
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, $"[SoundBarPlugin] OnActivated ... failed: {ex.Message}");
+            }
         }
 
         /// <inheritdoc/>
         public void OnDeactivated()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
-            //_deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
-            //_deviceManagerPlugin.UpdateNotify -= PeripheralsPlugin_UpdateNotify;
-            Mouse.OverrideCursor = Cursors.Wait;
+            _log.Info($"[SoundBarPlugin] OnDeactivated ... in");
+            try
+            {
+                if (IsEventRegistered)
+                {
+                    if (_deviceManagerPlugin == null)
+                    {
+                        _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
+                        _log.Info($"[SoundBarPlugin] OnDeactivated ... _deviceManagerPlugin null,  FindPlugin again ... ");
+                    }
+                    if (_deviceManagerPlugin != null)
+                    {
+                        _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
+                        IsEventRegistered = false;
+                        _log.Info($"[SoundBarPlugin] OnDeactivated ... _deviceManagerPlugin normal ... ");
+                    }
+                }
+                Mouse.OverrideCursor = Cursors.Wait;
+                _log.Info($"[SoundBarPlugin] OnDeactivated ... out");
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, $"[SoundBarPlugin] OnDeactivated ... failed: {ex.Message}");
+            }
         }
 
         /// <inheritdoc/>
         public void OnShown(string pluginParameter)
         {
-            ConfigureServices();
-            GetPeripheralsAsync();
-            if (_viewModel != null && !_viewModel.SetCurrentDevice(pluginParameter))
-            { }
-            Mouse.OverrideCursor = null;
+            _log.Info($"[SoundBarPlugin] OnShown ... in");
+            try
+            {
+                if (!IsEventRegistered)
+                {
+                    if (_deviceManagerPlugin == null)
+                    {
+                        _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
+                        _log.Info($"[SoundBarPlugin] OnShown ... _deviceManagerPlugin null,  FindPlugin again ... ");
+                    }
+                    if (_deviceManagerPlugin != null)
+                    {
+                        _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
+                        IsEventRegistered = true;
+                        _log.Info($"[SoundBarPlugin] OnShown ... _deviceManagerPlugin normal ... ");
+                    }
+                    else
+                    {
+                        _log.Info($"[SoundBarPlugin] OnShown ... _deviceManagerPlugin null,  FindPlugin still failed ... ");
+                    }
+                }
+                ConfigureServices();
+                GetPeripheralsAsync();
+                if (_viewModel != null && !_viewModel.SetCurrentDevice(pluginParameter)){ }
+                Mouse.OverrideCursor = null;
+                _log.Info($"[SoundBarPlugin] OnShown ... out");
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, $"[SoundBarPlugin] OnShown ... failed: {ex.Message}");
+            }
         }
 
         #endregion Interface IConsolePluginSupportsActivations
 
         ~SoundBarPlugin()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+            _log.Info($"[SoundBarPlugin] ~SoundBarPlugin ... in");
+            _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
+            _log.Info($"[SoundBarPlugin] ~SoundBarPlugin ... out");
         }
     }
 }

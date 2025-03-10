@@ -514,27 +514,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     case "Zoom":
                         ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A_TwoLight.png";
                         break;
-                    default:
-                            ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A.png";
-                        break;
-                }
-            }
-            else
-            {
-                switch (btnName)
-                {
-                    case "MicrosoftTeams":
-                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB725.png";
+
+                    case "NoLight":
+                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A_NoLight.png";
                         break;
 
-                    case "Zoom":
-                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB725.png";
-                        break;
-                    case "MuteStatusChanged":
-                        ImageFilePath = $"/DDPM.UI.Common;component/Resources/Speaker_SB725.png";
-                        break;
                     default:
-                        ImageFilePath = $"/DDPM.UI.Common;component/Resources/Speaker_SB725.png";
+                            ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A.png";
                         break;
                 }
             }
@@ -558,17 +544,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
 
                 case "SB522A":
-                    ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A.png";
-                    break;
-                case "SB725":
-                    ImageFilePath = $"/DDPM.UI.Common;component/Resources/Speaker_SB725.png";
+                    ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A_NoLight.png";
                     break;
                 default:
-                    if (model == "SB725")
-                    {
-                        ImageFilePath = $"/DDPM.UI.Common;component/Resources/Speaker_SB725.png";
-                    }
-                    else
                         ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022.png";
                     break;
             }
@@ -600,45 +578,38 @@ namespace DDPM.UI.Plugin.ViewModels
 
             CurrentDeviceID = new Guid(instanceIDs);
             DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Speaker_DTPNotify;
-            if (DeviceInfos[CurrentDeviceID].ModelNumber.Contains("SB725"))
+
+            string fv = _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()).Result;
+            if (fv == null || fv == string.Empty)
             {
-                IsDTPReady = true;
-                _log.Info($"[SoundBarViewModel] SetCurrentDevice ... ModelNumber ... SB725");
+                int tick = 0;
+                while (tick < 5)
+                {
+                    Thread.Sleep(1000);
+                    fv = _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()).Result;
+                    if (fv != null && fv != string.Empty)
+                    {
+                        break;
+                    }
+                    tick++;
+                }
+                if (fv == null || fv == string.Empty)
+                    IsDTPReady = false;
+                else
+                    IsDTPReady = true;
+                _log.Info($"[SoundBarViewModel] SetCurrentDevice ... GetProfileAsync ... Null or Empty ... DTP fail ...");
             }
             else
             {
-                string fv =  _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()).Result;
-                if (fv == null || fv == string.Empty)
-                {
-                    int tick = 0;   
-                    while (tick < 5)
-                    {
-                        Thread.Sleep(1000);
-                        fv = _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()).Result;
-                        if (fv != null && fv != string.Empty)
-                        {
-                            break;
-                        }
-                        tick++;
-                    }
-                    if (fv == null || fv == string.Empty)
-                        IsDTPReady = false;
-                    else
-                        IsDTPReady = true;
-                    _log.Info($"[SoundBarViewModel] SetCurrentDevice ... GetProfileAsync ... Null or Empty ... DTP fail ...");
-                }
-                else
-                {
-                    IsDTPReady = true;
-                    _log.Info($"[SoundBarViewModel] SetCurrentDevice ... GetProfileAsync ... DTP success ...");
-                }
-                if (!Model.Contains("SB725"))
-                {
-                    UpdateDTPValue();
-                    // Call DetectPageShow
-                    DetectPageShow(Model);
-                }
+                IsDTPReady = true;
+                _log.Info($"[SoundBarViewModel] SetCurrentDevice ... GetProfileAsync ... DTP success ...");
             }
+
+            UpdateDTPValue();
+            // Call DetectPageShow
+            DetectPageShow(Model);
+
+
             return true;
         }
 

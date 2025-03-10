@@ -14,6 +14,7 @@ using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
 using Dell.Client.Framework.UX.WPF.ResourceManager.Enums;
 using Dell.UnifiedAgent.RemotePlugin.Client.Console;
+using Microsoft.Win32;
 using NGA.ThickClient.Interfaces;
 using NGA.ThickClientCore;
 using System.Data.OleDb;
@@ -23,6 +24,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Constants = NGA.Common.Constants;
 
 namespace NGA.ThickClient
@@ -164,9 +166,42 @@ namespace NGA.ThickClient
             if (SystemParameters.PrimaryScreenWidth >= 3840 && SystemParameters.PrimaryScreenHeight >= 2160)
                 sz = Constants.SplashScreenResolution4K;
 
-            _splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), string.Format(DdpmCommonHelper.SplashPath, sz));
+            //20250307 Dean, light mode splash screen support
+            string pic_path = string.Format(DdpmCommonHelper.SplashPath, sz);
+            if (GetSystemTheme() == 1)//light, default is dark
+            {
+                DdpmCommonHelper.SplashPath = "Resources/Images/splash{0}-round_light.png";
+                pic_path = string.Format(DdpmCommonHelper.SplashPath, sz);
+            }
+
+            _splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), pic_path);
 
             return _splashScreen;
+        }
+
+        //return 1 is light mode, others is dark mode
+        int GetSystemTheme()
+        {
+            string key = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+            string value = "AppsUseLightTheme";
+            int ret = 0;
+            try
+            {
+                using (RegistryKey regKey = Registry.CurrentUser.OpenSubKey(key))
+                {
+                    if (regKey != null)
+                    {
+                        object regValue = regKey.GetValue(value);
+                        ret = (int)regValue;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                EventLogHelper.WriteEventLog($"{string.Format(NGA.Resources.Resources.MYDELL_APP_THICKCLIENT_CONSOLE_WINDOWTEXT, NGA.Resources.Resources.ApplicationName)} - Unable to get system theme. {ex}", EventLogEntryType.Error);
+            }
+
+            return ret;
         }
 
         /// <summary>

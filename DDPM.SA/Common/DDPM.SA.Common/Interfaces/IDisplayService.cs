@@ -73,7 +73,7 @@ namespace DDPM.SA.Common
 
         Task<bool> CallWindowsDisplaySetting();
 
-        Task<bool> GetHDRStatus(MonitorInfo monitorInfos);
+        Task<bool> GetHDRStatus(MonitorInfo monitorInfos, bool reGet = false);
 
         Task<bool> SetHDRStatus(MonitorInfo monitorInfos, bool onoff);
 
@@ -279,6 +279,7 @@ namespace DDPM.SA.Common
 
         Task InitDisplayData(List<MonitorInfo> monitorInfos);
         Task<bool> SetAllUSBUpstream(MonitorInfo monitorInfo, string input1, string usb1, string input2, string usb2, string input3 = null, string usb3 = null, string input4 = null, string usb4 = null);
+        Task SetVCPtoDisplayData(MonitorInfo monitorInfo, int vcpcode, int value);
 
         #endregion DisplayData
     }

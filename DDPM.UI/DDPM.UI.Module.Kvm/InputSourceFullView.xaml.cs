@@ -65,6 +65,7 @@ namespace DDPM.UI.Module.Kvm
         {
             if (vm != null)
             {
+                vm.CancelSetUSBKVM();
                 vm.FromProgressValue = 0;
                 vm.ToProgressValue = 1;
             }

@@ -595,10 +595,10 @@
     <value>Proporciona acceso rápido a los controles de conferencia. Activar o desactivar las\nteclas las mostrará u ocultará en el teclado mientras se encuentra en\nuna llamada de Microsoft Teams o Zoom.</value>
   </data>
   <data name="Collaboration.3" xml:space="preserve">
-    <value>Habilitar parpadeo cuando hay un nuevo mensaje de chat en una llamada\nde conferencia</value>
+    <value>Habilitar parpadeo cuando hay un nuevo mensaje de chat en una llamada de conferencia</value>
   </data>
   <data name="Collaboration.4" xml:space="preserve">
-    <value>Toque dos veces los íconos en el teclado en lugar de una vez\npara activarlos</value>
+    <value>Toque dos veces los íconos en el teclado en lugar de una vez para activarlos</value>
   </data>
   <data name="Collaboration.5" xml:space="preserve">
     <value>Para utilizar el teclado colaborativo con Microsoft Teams, asegúrese de haber iniciado sesión en Microsoft Teams y de tener instalada la versión más reciente, y de que la opción API de aplicaciones de otros fabricantes esté habilitada</value>
@@ -3455,5 +3455,8 @@
   </data>
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Obtener más información sobre el software</value>
+  </data>
+  <data name="Update_Dock_Alert_2" xml:space="preserve">
+    <value />
   </data>
 </root>

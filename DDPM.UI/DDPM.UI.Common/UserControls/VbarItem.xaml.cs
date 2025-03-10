@@ -10,6 +10,7 @@ namespace DDPM.UI.Common
     /// <summary>
     /// Interaction logic for VbarItem.xaml
     /// </summary>
+    [Obsolete("All VberItem should move to VbarItem1 for latest design")]
     public partial class VbarItem : System.Windows.Controls.UserControl
     {
         private VbarItemViewModel vm = new VbarItemViewModel();

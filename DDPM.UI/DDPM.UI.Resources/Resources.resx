@@ -265,10 +265,10 @@
     <value>Pairing may take some time. Do not disconnect your device</value>
   </data>
   <data name="AddDevice.Display.1" xml:space="preserve">
-    <value>Connect your display via HDMI/USB-C port on your system.</value>
+    <value>Connect your display via HDMI/USB-C port on your system</value>
   </data>
   <data name="AddDevice.Webcam.0" xml:space="preserve">
-    <value>Connect your webcam via USB port on your system.</value>
+    <value>Connect your webcam via USB port on your system</value>
   </data>
   <data name="AddDevice.KnM.0" xml:space="preserve">
     <value>Bluetooth Connection</value>
@@ -346,11 +346,11 @@
     <value>Connect your headset via USB port on your system.</value>
   </data>
   <data name="AddDevice.Speaker.0" xml:space="preserve">
-    <value>Connect your speaker or soundbar via USB port on your system.</value>
+    <value>Connect your speakerphone or soundbar via USB port on your system</value>
     <comment>PIMS-348231, Change Speaker to speaker</comment>
   </data>
   <data name="AddDevice.Dock.0" xml:space="preserve">
-    <value>Connect your dock via USB port on your system.</value>
+    <value>Connect your dock via USB port on your system</value>
     <comment>PIMS-348231, Change Dock to dock</comment>
   </data>
   <data name="HomePage.0" xml:space="preserve">
@@ -597,10 +597,10 @@
     <value>Provides quick access to conference controls. Toggling the\nkeys on/off will show or hide them on the keyboard while in\na Microsoft Teams or Zoom call.</value>
   </data>
   <data name="Collaboration.3" xml:space="preserve">
-    <value>Enable blink effect when there is a new chat message in conference\ncall</value>
+    <value>Enable blink effect when there is a new chat message in conference call</value>
   </data>
   <data name="Collaboration.4" xml:space="preserve">
-    <value>Activate icons on the keyboard by double tapping instead of single\ntapping</value>
+    <value>Activate icons on the keyboard by double tapping instead of single tapping</value>
   </data>
   <data name="Collaboration.5" xml:space="preserve">
     <value>To use Collaboration Keyboard with Microsoft Teams, ensure that you are signed into and using the latest version of Microsoft Teams, and that Third-party app API is enabled</value>
@@ -3559,5 +3559,11 @@
   </data>
   <data name="Incompatible" xml:space="preserve">
     <value>This device is not compatible with Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="WalkThroughPen_Sub.1_1" xml:space="preserve">
+    <value>Your pen is charged X%.\n\nTo charge your pen fully, make sure it is attached to your tablet screen. You will be notified once the pen is done charging.\n\nLow battery notifications will appear once the battery charge is below 10%. </value>
+  </data>
+  <data name="Update_Dock_Alert_2" xml:space="preserve">
+    <value>Note: peripherals connecting with this dock may not be available during the update process</value>
   </data>
 </root>

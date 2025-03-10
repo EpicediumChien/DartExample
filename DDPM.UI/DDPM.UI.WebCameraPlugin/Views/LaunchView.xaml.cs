@@ -54,6 +54,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.Linq.Expressions;
 using DDPM.SA.Common.Alert;
+using DDPM.UI.Common.UserControls;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -259,7 +260,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 CheckUSBtype();
 
                 //grdPreview.Visibility = _vm.WebcamGrid ? Visibility.Visible : Visibility.Hidden;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                _vm.VbarItemClickCommand = new RelayCommand<VbarItem1>(OnVbarItemClicked!);
                 BuildModuleGroups();
                 DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             }
@@ -504,15 +505,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             CheckTestCase();
             //CheckTestCase2();
 
-           
+
             print_debug("check_PresenceFunction() s22-20250102 14:43 update ver step");
 
             print_debug("check_PresenceFunction() end");
         }
         private void CheckTestCase()
         {
+            string model = _vm.CurrentDeviceInfo!.ModelNumber;
             noPresenceFunction = false;
-            if (is_camera_dell7 && !AllSupportedResolutions)
+            if ((is_camera_dell7 && model.ToUpper() != "U3223QZ") && !AllSupportedResolutions)
             {
                 print_debug("is_camera_dell7 && !AllSupportedResolutions");
                 noPresenceFunction = true;
@@ -691,7 +693,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return true;
 
             string model = WinVersion.GetComputerModel();
-            if (model != null && (model.Contains("Latitude 7350", StringComparison.OrdinalIgnoreCase) || model.Contains("XPS 9345", StringComparison.OrdinalIgnoreCase) || model.Contains("XPS 13 9345", StringComparison.OrdinalIgnoreCase)))
+            if (model != null && (model.Contains("Latitude 7350", StringComparison.OrdinalIgnoreCase) || model.Contains("XPS 9345", StringComparison.OrdinalIgnoreCase))) /*|| model.Contains("XPS 13 9345", StringComparison.OrdinalIgnoreCase)*/
             {
                 return true;
             }
@@ -1412,7 +1414,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 foreach (var property in _vm.allProperties)
                 {
                     string properties_temp = property.GetFriendlyName();
-                    if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase) && property.EncodingProperties.Subtype != "MJPG")
+                    if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) &&
+                        properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase) &&
+                        property.EncodingProperties.Subtype != "MJPG")
                     {
                         DdpmCommonHelper.WriteUILog($"properties_temp: {properties_temp}");
                         var encodingProperties = property.EncodingProperties;
@@ -1784,7 +1788,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         #region Vbar
 
-        private void OnVbarItemClicked(VbarItem newItem)
+        private void OnVbarItemClicked(VbarItem1 newItem)
         {
             if (newItem.Id == _vm!.VbarSelectedIndex)
             { return; }
@@ -2723,6 +2727,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 txbName.Text = "";
                 txbName.Focus();
                 _vm.TooltipVisibility = Visibility.Visible;
+
+                if (_vm!.VbarSelectedIndex == -1)
+                {
+                    OnVbarItemClicked(_vm.VbarItems[0]);
+                }
             }
             catch (Exception ex)
             {

@@ -595,10 +595,10 @@
     <value>Fornisce accesso rapido ai controlli della conferenza. Attivando/disattivando i\ntasti vengono visualizzati o nascosti sulla tastiera durante\nuna chiamata in Microsoft Teams o Zoom.</value>
   </data>
   <data name="Collaboration.3" xml:space="preserve">
-    <value>Attivare l'effetto di lampeggio quando è presente un nuovo messaggio di chat durante la conference\ncall</value>
+    <value>Attivare l'effetto di lampeggio quando è presente un nuovo messaggio di chat durante la conference call</value>
   </data>
   <data name="Collaboration.4" xml:space="preserve">
-    <value>Attivare le icone sulla tastiera toccando due volte invece di\nuna sola volta</value>
+    <value>Attivare le icone sulla tastiera toccando due volte invece di una sola volta</value>
   </data>
   <data name="Collaboration.5" xml:space="preserve">
     <value>Per utilizzare la tastiera per la collaborazione con Microsoft Teams, è necessario accedere all'account e utilizzare la versione più recente di Microsoft Teams. Inoltre, è necessario abilitare l'API delle app di terze parti.</value>
@@ -2296,13 +2296,13 @@
     <value>Aiutaci a migliorare</value>
   </data>
   <data name="Consent.2" xml:space="preserve">
-    <value>Contribuisci a migliorare i prodotti e i servizi Dell con l&apos;invio automatico dei dati di diagnostica e utilizzo. Ulteriori informazioni su </value>
+    <value>Contribuisci a migliorare i prodotti e i servizi Dell con l'invio automatico dei dati di diagnostica e utilizzo. Ulteriori informazioni su </value>
   </data>
   <data name="ImpExp_CheckBox.0" xml:space="preserve">
     <value>Non richiedere di nuovo per lo stesso modello</value>
   </data>
   <data name="ImpExp_Message.1" xml:space="preserve">
-    <value>Importare le impostazioni dell&apos;applicazione per praticità?</value>
+    <value>Importare le impostazioni dell'applicazione per praticità?</value>
   </data>
   <data name="ImpExp_Title.0" xml:space="preserve">
     <value>È stato rilevato un nuovo monitor %1.</value>
@@ -2332,7 +2332,7 @@
     <value>Salta</value>
   </data>
   <data name="WalkThrough.2" xml:space="preserve">
-    <value>Vai all&apos;app</value>
+    <value>Vai all'app</value>
   </data>
   <data name="HeadsetAudioSettings.29" xml:space="preserve">
     <value>Si applica quando è in corso una conference call</value>
@@ -2353,7 +2353,7 @@
     <value>Per modificare il livello di luminosità, premi il tasto F8</value>
   </data>
   <data name="Illumination.3" xml:space="preserve">
-    <value>Regola i livelli di luminosità della tastiera in base alla quantità di luce presente nell&apos;ambiente</value>
+    <value>Regola i livelli di luminosità della tastiera in base alla quantità di luce presente nell'ambiente</value>
   </data>
   <data name="Illumination.4" xml:space="preserve">
     <value>Regola manualmente la luminosità della tastiera</value>
@@ -2371,7 +2371,7 @@
     <value>La combinazione di scelta rapida configurata è un singolo tasto. Potrebbe interferire con il modo in cui si intende utilizzare tale tasto in altre applicazioni. Procedere?</value>
   </data>
   <data name="hotkey.9" xml:space="preserve">
-    <value>Questa combinazione di scelta rapida è utilizzata da un&apos;altra funzione del Dell Display and Peripheral Manager. Sostituirla?</value>
+    <value>Questa combinazione di scelta rapida è utilizzata da un'altra funzione del Dell Display and Peripheral Manager. Sostituirla?</value>
   </data>
   <data name="URL" xml:space="preserve">
     <value>URL</value>
@@ -2422,7 +2422,7 @@
     <value>Consente di fissare facilmente qualsiasi applicazione in un layout a schermo suddiviso trascinandola in una partizione</value>
   </data>
   <data name="EazyMemorySettings.3" xml:space="preserve">
-    <value>Consente all&apos;app di suddividere lo schermo in due parti senza spazi vuoti</value>
+    <value>Consente all'app di suddividere lo schermo in due parti senza spazi vuoti</value>
   </data>
   <data name="EazyMemorySettings.4" xml:space="preserve">
     <value>Consente il posizionamento delle zone solo quando si preme MAIUSC</value>
@@ -2437,7 +2437,7 @@
     <value>È possibile associare questo dispositivo a {0} host contemporaneamente</value>
   </data>
   <data name="EazyMemory.41" xml:space="preserve">
-    <value>Un altro profilo è stato configurato per l&apos;utilizzo allo stesso orario. Scegliere un altro orario.</value>
+    <value>Un altro profilo è stato configurato per l'utilizzo allo stesso orario. Scegliere un altro orario.</value>
   </data>
   <data name="Action.1" xml:space="preserve">
     <value>Immettere una combinazione di tasti per creare tasti di scelta rapida</value>
@@ -2449,7 +2449,7 @@
     <value>Cliccare sul pulsante "Sfoglia" per selezionare una cartella</value>
   </data>
   <data name="Action.4" xml:space="preserve">
-    <value>Digitare l&apos;URL della pagina web nella casella sottostante</value>
+    <value>Digitare l'URL della pagina web nella casella sottostante</value>
   </data>
   <data name="Action.5" xml:space="preserve">
     <value>Nome del file</value>
@@ -2470,16 +2470,16 @@
     <value>Questo nome è già stato utilizzato</value>
   </data>
   <data name="Camera.21" xml:space="preserve">
-    <value>Neutralizza l&apos;immagine della fotocamera e ripristinala alle impostazioni originali</value>
+    <value>Neutralizza l'immagine della fotocamera e ripristinala alle impostazioni originali</value>
   </data>
   <data name="Camera.22" xml:space="preserve">
-    <value>Ritocca e uniforma l&apos;aspetto</value>
+    <value>Ritocca e uniforma l'aspetto</value>
   </data>
   <data name="Camera.23" xml:space="preserve">
-    <value>Intensifica il colore e la vivacità dell&apos;immagine</value>
+    <value>Intensifica il colore e la vivacità dell'immagine</value>
   </data>
   <data name="Camera.24" xml:space="preserve">
-    <value>Migliora l&apos;aspetto con toni più caldi</value>
+    <value>Migliora l'aspetto con toni più caldi</value>
   </data>
   <data name="Collab.1" xml:space="preserve">
     <value>Collaborazione</value>
@@ -2491,7 +2491,7 @@
     <value>Per utilizzare la tastiera per la collaborazione con Zoom, è necessario installare la versione desktop più recente di Zoom</value>
   </data>
   <data name="Collab.12" xml:space="preserve">
-    <value>Per utilizzare la tastiera per la collaborazione con Microsoft Teams, è necessario accedere all&apos;account Microsoft Teams e utilizzare la versione più recente di Microsoft Teams. Inoltre, è necessario abilitare l&apos;API delle app di terze parti</value>
+    <value>Per utilizzare la tastiera per la collaborazione con Microsoft Teams, è necessario accedere all'account Microsoft Teams e utilizzare la versione più recente di Microsoft Teams. Inoltre, è necessario abilitare l'API delle app di terze parti</value>
   </data>
   <data name="Collab.13" xml:space="preserve">
     <value>Video</value>
@@ -2512,7 +2512,7 @@
     <value>Fornisce accesso rapido ai controlli della conferenza. Attivando/disattivando i\ntasti vengono visualizzati o nascosti sulla tastiera durante\nuna chiamata in Microsoft Teams o Zoom.</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
-    <value>Attivare l&apos;effetto di lampeggio quando è presente un nuovo messaggio di chat durante la conference call</value>
+    <value>Attivare l'effetto di lampeggio quando è presente un nuovo messaggio di chat durante la conference call</value>
   </data>
   <data name="Collab.4" xml:space="preserve">
     <value>Attivare le icone sulla tastiera toccando due volte invece di\nuna sola volta</value>
@@ -2521,7 +2521,7 @@
     <value>Ulteriori informazioni</value>
   </data>
   <data name="Collab.6" xml:space="preserve">
-    <value>Per utilizzare la tastiera per la collaborazione con Microsoft Teams:\r\n1. Aprire Teams e accedere alle impostazioni della privacy.\n\n2. Selezionare API delle app di terze parti e assicurarsi che Dell Display and Peripheral Manager non siano nell&apos;elenco dei bloccati.\n\n3. Associare Microsoft Teams a Dell Display and Peripheral Manager avviando una conference call su Microsoft Teams.</value>
+    <value>Per utilizzare la tastiera per la collaborazione con Microsoft Teams:\r\n1. Aprire Teams e accedere alle impostazioni della privacy.\n\n2. Selezionare API delle app di terze parti e assicurarsi che Dell Display and Peripheral Manager non siano nell'elenco dei bloccati.\n\n3. Associare Microsoft Teams a Dell Display and Peripheral Manager avviando una conference call su Microsoft Teams.</value>
   </data>
   <data name="Collab.7" xml:space="preserve">
     <value>Se i problemi persistono, contattare il reparto IT (se disponibile) in quanto potrebbero essere presenti policy che impediscono la connessione a Microsoft Teams con la tastiera per la collaborazione.</value>
@@ -2542,7 +2542,7 @@
     <value>Annulla</value>
   </data>
   <data name="Common.3" xml:space="preserve">
-    <value>Scegliere l&apos;app da un elenco di app</value>
+    <value>Scegliere l'app da un elenco di app</value>
   </data>
   <data name="Common.4" xml:space="preserve">
     <value>Selezionare un file</value>
@@ -2593,10 +2593,10 @@
     <value>Diminuisci rientro</value>
   </data>
   <data name="Excel.5" xml:space="preserve">
-    <value>Vai alla fine dell&apos;area dati</value>
+    <value>Vai alla fine dell'area dati</value>
   </data>
   <data name="Excel.6" xml:space="preserve">
-    <value>Vai all&apos;inizio dell&apos;area dati</value>
+    <value>Vai all'inizio dell'area dati</value>
   </data>
   <data name="Excel.7" xml:space="preserve">
     <value>Inserisci grafico</value>
@@ -2656,16 +2656,16 @@
     <value>Associare la penna al sistema?</value>
   </data>
   <data name="PairedInfo.2" xml:space="preserve">
-    <value>La disassociazione del mouse può limitare l&apos;uso del computer. Assicurarsi di avere una configurazione alternativa del mouse prima di procedere con la disassociazione.</value>
+    <value>La disassociazione del mouse può limitare l'uso del computer. Assicurarsi di avere una configurazione alternativa del mouse prima di procedere con la disassociazione.</value>
   </data>
   <data name="PairedInfo.3" xml:space="preserve">
-    <value>La disassociazione della tastiera può limitare l&apos;uso del computer. Assicurarsi di avere una configurazione alternativa della tastiera prima di procedere con la disassociazione.</value>
+    <value>La disassociazione della tastiera può limitare l'uso del computer. Assicurarsi di avere una configurazione alternativa della tastiera prima di procedere con la disassociazione.</value>
   </data>
   <data name="PairedInfo.4" xml:space="preserve">
-    <value>La disassociazione della penna può limitare l&apos;uso del computer. Assicurarsi di avere una configurazione alternativa della penna prima di procedere con la disassociazione.</value>
+    <value>La disassociazione della penna può limitare l'uso del computer. Assicurarsi di avere una configurazione alternativa della penna prima di procedere con la disassociazione.</value>
   </data>
   <data name="PairedInfo.5" xml:space="preserve">
-    <value>In questo modo le cuffie verranno disassociate dal ricevitore senza fili USB. È comunque possibile associare e utilizzare le cuffie su questo sistema tramite Bluetooth. Se necessario, è possibile associare nuovamente le cuffie al ricevitore senza fili tramite l&apos;icona + nella parte superiore destra della schermata iniziale di DDPM.</value>
+    <value>In questo modo le cuffie verranno disassociate dal ricevitore senza fili USB. È comunque possibile associare e utilizzare le cuffie su questo sistema tramite Bluetooth. Se necessario, è possibile associare nuovamente le cuffie al ricevitore senza fili tramite l'icona + nella parte superiore destra della schermata iniziale di DDPM.</value>
   </data>
   <data name="PairedInfo.6" xml:space="preserve">
     <value>Continua</value>
@@ -2674,7 +2674,7 @@
     <value>Questo dispositivo non è compatibile con</value>
   </data>
   <data name="PairedInfo.8" xml:space="preserve">
-    <value>Dispositivo già associato. Annullare l&apos;associazione del dispositivo se si desidera ristabilire l&apos;associazione.</value>
+    <value>Dispositivo già associato. Annullare l'associazione del dispositivo se si desidera ristabilire l'associazione.</value>
   </data>
   <data name="PairedInfo.9" xml:space="preserve">
     <value>Associa penna</value>
@@ -2830,7 +2830,7 @@
     <value>File danneggiato. Selezionare un altro file</value>
   </data>
   <data name="ImportFail" xml:space="preserve">
-    <value>Impossibile completare l&apos;azione</value>
+    <value>Impossibile completare l'azione</value>
   </data>
   <data name="ImportFailMsg" xml:space="preserve">
     <value>Impossibile importare un modello diverso</value>
@@ -2842,13 +2842,13 @@
     <value>Il livello della batteria sul dispositivo è basso. Sostituire/ricaricare la batteria per abilitare questo aggiornamento.</value>
   </data>
   <data name="Update_Dock_Alert" xml:space="preserve">
-    <value>Assicurarsi che al sistema sia collegato un solo dock. I dispositivi collegati al dock potrebbero non essere disponibili durante l&apos;aggiornamento.</value>
+    <value>Assicurarsi che al sistema sia collegato un solo dock. I dispositivi collegati al dock potrebbero non essere disponibili durante l'aggiornamento.</value>
   </data>
   <data name="Update_PCBatteryLow_Alert" xml:space="preserve">
-    <value>Collegare il PC alla sorgente di alimentazione e assicurarsi che la carica della batteria del PC sia superiore al 10% per proseguire con l&apos;aggiornamento</value>
+    <value>Collegare il PC alla sorgente di alimentazione e assicurarsi che la carica della batteria del PC sia superiore al 10% per proseguire con l'aggiornamento</value>
   </data>
   <data name="Update_Mouse_Alert" xml:space="preserve">
-    <value>Premere un pulsante o un tasto sul dispositivo per abilitare l&apos;aggiornamento</value>
+    <value>Premere un pulsante o un tasto sul dispositivo per abilitare l'aggiornamento</value>
   </data>
   <data name="Landscape" xml:space="preserve">
     <value>Orizzontale</value>
@@ -3458,5 +3458,8 @@
   </data>
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Ulteriori informazioni sul software</value>
+  </data>
+  <data name="Update_Dock_Alert_2" xml:space="preserve">
+	<value></value>
   </data>
 </root>

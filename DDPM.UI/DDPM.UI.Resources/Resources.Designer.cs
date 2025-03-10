@@ -205,7 +205,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect your display via HDMI/USB-C port on your system..
+        ///   Looks up a localized string similar to Connect your display via HDMI/USB-C port on your system.
         /// </summary>
         internal static string AddDevice_Display_1 {
             get {
@@ -223,7 +223,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect your dock via USB port on your system..
+        ///   Looks up a localized string similar to Connect your dock via USB port on your system.
         /// </summary>
         internal static string AddDevice_Dock_0 {
             get {
@@ -538,7 +538,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect your speaker or soundbar via USB port on your system..
+        ///   Looks up a localized string similar to Connect your speakerphone or soundbar via USB port on your system.
         /// </summary>
         internal static string AddDevice_Speaker_0 {
             get {
@@ -592,7 +592,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect your webcam via USB port on your system..
+        ///   Looks up a localized string similar to Connect your webcam via USB port on your system.
         /// </summary>
         internal static string AddDevice_Webcam_0 {
             get {
@@ -1699,7 +1699,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable blink effect when there is a new chat message in conference\ncall.
+        ///   Looks up a localized string similar to Enable blink effect when there is a new chat message in conference call.
         /// </summary>
         internal static string Collaboration_3 {
             get {
@@ -1708,7 +1708,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Activate icons on the keyboard by double tapping instead of single\ntapping.
+        ///   Looks up a localized string similar to Activate icons on the keyboard by double tapping instead of single tapping.
         /// </summary>
         internal static string Collaboration_4 {
             get {
@@ -8251,6 +8251,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Note: peripherals connecting with this dock may not be available during the update process.
+        /// </summary>
+        internal static string Update_Dock_Alert_2 {
+            get {
+                return ResourceManager.GetString("Update_Dock_Alert_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Firmware update of multiple USB wireless receivers of same kind is not supported. Keep one target USB wireless receiver connected..
         /// </summary>
         internal static string Update_Firmware_update_of_multiple_USB_wireless_receivers {
@@ -9237,6 +9246,15 @@ namespace DDPM.UI.Resources {
         internal static string WalkThroughPen_Sub_1 {
             get {
                 return ResourceManager.GetString("WalkThroughPen_Sub.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your pen is charged X%.\n\nTo charge your pen fully, make sure it is attached to your tablet screen. You will be notified once the pen is done charging.\n\nLow battery notifications will appear once the battery charge is below 10%. .
+        /// </summary>
+        internal static string WalkThroughPen_Sub_1_1 {
+            get {
+                return ResourceManager.GetString("WalkThroughPen_Sub.1_1", resourceCulture);
             }
         }
         

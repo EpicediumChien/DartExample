@@ -28,8 +28,6 @@ namespace GenDdpmSplashImages
         {
             InitializeComponent();
             DataContext = vm;
-            //Width = 4000;
-            //Height = 3000;
 
             LogWriter.LogPathName = App.GetAppDir(true) + "GenDdpmSplashImages.log";
             LogWriter.Enabled = true;
@@ -39,40 +37,50 @@ namespace GenDdpmSplashImages
             string solutionDir = di.FullName;
             LogWriter.LogLine($"AppDir=[{App.GetAppDir(false)}], SolutionDir=[{solutionDir}]");
 
-            //string solutionDir = App.SolutionDir;
-            //LogWriter.LogLine($"SolutionDir=[{App.GetAppDir(false)}], Build=[{vm.Build}], Version=[{vm.Version}], Year=[{vm.Year}]");
-
             ReadSharedAssemblyInfo(solutionDir);
 
             vm.Year = App.Year;
             vm.Build = App.Build;
-
-
-            //foreach(DictionaryEntry de in Environment.GetEnvironmentVariables())
-            //{
-            //    string key = de.Key.ToString();
-            //    string value = de.Value?.ToString();
-            //    nsLogWriter.LogWriter.LogLine($"{key}={value}");
-
-            //}
+            vm.Color = App.Color;
+            vm.Size = App.Size;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            LogWriter.LogLine($"Creating Images, with parameters: Build=[{vm.Build}], Version=[{vm.Version}], Year=[{vm.Year}]");
+            LogWriter.LogLine($"Creating Images, with parameters: Build=[{vm.Build}], Version=[{vm.Version}], Year=[{vm.Year}], Size=[{vm.Size}], Color=[{vm.Color}]");
 
-            BitmapSource image = CreateBitmapSource();
-            if (image != null)
+            Dispatcher.Invoke(() =>
             {
-                string pathName = App.GetAppDir() + "splash-round.png";
-                SaveBitmapSourceToPngFile(image, pathName);
-                LogWriter.LogLine($"Image=[{pathName}], Created OK.");
-            }
-            else
-            {
-                LogWriter.LogLine($"Image=[splash-round.png], Created FAILED.");
-            }
-
+                if (vm.Color.Equals("dark", StringComparison.OrdinalIgnoreCase))
+                {
+                    vm.ImageFilePath = "assets/splash4k-roundx4.png";
+                    vm.Dell_Sign_color = new SolidColorBrush(Colors.White);
+                    if (vm.Size.Equals("4k", StringComparison.OrdinalIgnoreCase))
+                    {                    
+                        vm.ChangeTo4KImage();
+                        //create_darkmode_image4k();
+                    }
+                    else //normal size
+                    {                        
+                        //create_darkmode_image();
+                    }
+                }
+                else //light mode
+                {
+                    vm.Dell_Sign_color = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0E0E0E"));
+                    vm.ImageFilePath = "assets/splash4k-roundx4_light.png";  
+                    Thread.Sleep(500);
+                    if (vm.Size.Equals("4k", StringComparison.OrdinalIgnoreCase))
+                    {
+                        vm.ChangeTo4KImage();
+                        //create_lightmode_image4k();
+                    }
+                    else //normal size
+                    {
+                        //create_lightmode_image();
+                    }
+                }
+            });
             BackgroundWorker bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
@@ -84,25 +92,102 @@ namespace GenDdpmSplashImages
             };
             bw.RunWorkerCompleted += delegate
             {
-                vm.ChangeTo4KImage();
-                image = CreateBitmapSource();
-                if (image != null)
+                Thread.Sleep(1000);
+                if (vm.Color.Equals("dark", StringComparison.OrdinalIgnoreCase))
                 {
-                    string pathName = App.GetAppDir() + "splash4k-round.png";
-                    SaveBitmapSourceToPngFile(image, pathName);
-                    LogWriter.LogLine($"Image=[{pathName}], Created OK.");
+                    if (vm.Size.Equals("4k", StringComparison.OrdinalIgnoreCase))
+                    {
+                        create_darkmode_image4k();
+                    }
+                    else //normal size
+                    {
+                        create_darkmode_image();
+                    }
                 }
-                else
-                    LogWriter.LogLine($"Image=[splash4k-round.png], Created FAILED.");
-
-                Thread.Sleep(500);
+                else //light mode
+                {
+                    if (vm.Size.Equals("4k", StringComparison.OrdinalIgnoreCase))
+                    {
+                        create_lightmode_image4k();
+                    }
+                    else //normal size
+                    {
+                        create_lightmode_image();
+                    }
+                }
                 Close();
             };
             bw.RunWorkerAsync();
-
-
-
         }
+
+        private void create_darkmode_image()
+        {
+            //
+            // Dark mode image normal
+            //
+            BitmapSource image = CreateBitmapSource();
+            if (image != null)
+            {
+                string pathName = App.GetAppDir() + "splash-round.png";
+                SaveBitmapSourceToPngFile(image, pathName);
+                LogWriter.LogLine($"Image=[{pathName}], Created OK.");
+            }
+            else
+            {
+                LogWriter.LogLine($"Image=[splash-round.png], Created FAILED.");
+            }
+        }
+
+        private void create_darkmode_image4k()
+        {
+            //
+            // Dark mode image 4k
+            //
+            BitmapSource image = CreateBitmapSource();
+            if (image != null)
+            {
+                string pathName = App.GetAppDir() + "splash4k-round.png";
+                SaveBitmapSourceToPngFile(image, pathName);
+                LogWriter.LogLine($"Image=[{pathName}], Created OK.");
+            }
+            else
+            {
+                LogWriter.LogLine($"Image=[splash4k-round.png], Created FAILED.");
+            }
+        }
+
+        private void create_lightmode_image()
+        { 
+            BitmapSource image = CreateBitmapSource();
+            if (image != null)
+            {
+                string pathName = App.GetAppDir() + "splash-round_light.png";
+                Thread.Sleep(100);
+                SaveBitmapSourceToPngFile(image, pathName);
+                LogWriter.LogLine($"Image=[{pathName}], Created OK.");
+            }
+            else
+            {
+                LogWriter.LogLine($"Image=[splash-round_light.png], Created FAILED.");
+            }
+        }
+
+        private void create_lightmode_image4k()
+        {             
+            BitmapSource image = CreateBitmapSource();
+            if (image != null)
+            {
+                string pathName = App.GetAppDir() + "splash4k-round_light.png";
+                Thread.Sleep(100);
+                SaveBitmapSourceToPngFile(image, pathName);
+                LogWriter.LogLine($"Image=[{pathName}], Created OK.");
+            }
+            else
+            {
+                LogWriter.LogLine($"Image=[splash4k-round_light.png], Created FAILED.");
+            }
+        }
+        
         /// <summary>
         /// To create a BitmatSouce from current SplitCtrl. The return BitmapSource can be used to
         /// 1) Display an Image on GUI, 2) Save as a .PNG file
@@ -125,6 +210,25 @@ namespace GenDdpmSplashImages
             rtb.Render(splash);
             return rtb;
         }
+
+        /*public BitmapSource CreateBitmapSource_light()
+        {           
+            double pxWidth = vm.ImageWidth;// splash.ActualWidth + 1;
+            double pxHeight = vm.ImageHeight;// splash.ActualHeight + 1;
+
+            if ((pxWidth <= 0) && (pxHeight <= 0))
+                return null;
+
+            splash.Measure(new Size(pxWidth, pxHeight));
+            splash.Arrange(new Rect(new Size(pxWidth, pxHeight)));
+
+            RenderTargetBitmap rtb = new RenderTargetBitmap((int)pxWidth, (int)pxHeight,
+                96d, 96d, System.Windows.Media.PixelFormats.Default);
+
+            rtb.Render(splash);
+            Thread.Sleep(500);
+            return rtb;
+        }*/
 
         private void SaveBitmapSourceToPngFile(BitmapSource image, string pathName)
         {

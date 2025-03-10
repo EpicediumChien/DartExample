@@ -84,6 +84,10 @@
             <Grid>
               <Grid>
                 <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="500" />
+                <Rectangle Name="RecT" Fill="Transparent" Width="500" VerticalAlignment="Top" MouseDown="Mainframe_MouseLeftButtonDown"/>
+                <Rectangle Name="RecB" Fill="Transparent" Width="500" VerticalAlignment="Bottom" MouseDown="Mainframe_MouseLeftButtonDown"/>
+                <Rectangle Name="RecL" Fill="Transparent" Height="500" HorizontalAlignment="Left" MouseDown="Mainframe_MouseLeftButtonDown"/>
+                <Rectangle Name="RecR" Fill="Transparent" Height="500" HorizontalAlignment="Right" MouseDown="Mainframe_MouseLeftButtonDown"/>
               </Grid>
               <Grid Name="SectionA" Margin="210,106,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <StackPanel Orientation="Horizontal">
@@ -221,7 +225,7 @@
       </Grid>
       <!-- Vbar -->
       <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
-        <ItemsControl Name="vbarList" Margin="0,10,0,0"
+        <ItemsControl Name="vbarList" Margin="0,5,10,0"
                                   HorizontalAlignment="Right" VerticalAlignment="Top"
                                   ItemsSource="{Binding VbarItems}">
           <ItemsControl.ItemTemplate>
@@ -240,7 +244,10 @@
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
               <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal" Margin="19,18,0,0">
+                  <!-- Robert_Lin PIMS-348226 [UI]Home Page - Dongle/Wireless Receiver icon is not left-aligned 
+                  Change Margin="19,18,0,0" to Margin="16,18,0,0"
+                  -->
+               <StackPanel Orientation="Horizontal" Margin="16,18,0,0">
                   <ContentControl Width="16" Height="16" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
                   <!-- <Image Margin="0" Width="16" Height="16" Source="/DDPM.UI.Resources;component/Resources/Images/Dongle.png" /> -->
                   <!-- Elsa 20250107 For PIMS [PIMS-334377] add Width="200" TextTrimming="CharacterEllipsis" -->

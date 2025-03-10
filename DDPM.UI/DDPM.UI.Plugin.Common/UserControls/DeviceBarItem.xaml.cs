@@ -42,8 +42,17 @@ namespace DDPM.UI.Common
         {
             if (bdRoot.Background == FocusFillBrush)
             { return; }
-            bdRoot.Background = (SolidColorBrush)FindResource("Vbar_BkBrush_Hover");
-            bdRoot.BorderBrush = (SolidColorBrush)FindResource("Vbar_BkBrush_Hover");
+
+            if (DdpmCommonHelper.isDarkMode())
+            {
+                bdRoot.Background = (SolidColorBrush)FindResource("Vbar_BdBrush_Hover");
+                bdRoot.BorderBrush = (SolidColorBrush)FindResource("Vbar_BdBrush_Hover");
+            }
+            else
+            {
+                //bdRoot.Background = (SolidColorBrush)FindResource("Vbar_BkBrush_Hover");
+                bdRoot.BorderBrush = (SolidColorBrush)FindResource("MainNav_BdBrush_Hover_Light");
+            }
         }
 
         private void rootGrid_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)

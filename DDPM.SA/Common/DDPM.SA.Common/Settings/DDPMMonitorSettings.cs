@@ -20,6 +20,7 @@ namespace DDPM.SA.Common.Settings
         public string strUSBKVMPCsList { get; set; } = string.Empty;
         public bool isOnUSBKVM { get; set; } = false;
         public bool isOnNKVM { get; set; } = false;
+        public bool isNoKVM { get; set; } = false;
     }
 
     public class VCPCode
