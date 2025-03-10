@@ -92,6 +92,7 @@ namespace DDPM.UI.Module.Kvm
             else
             {
                 _leftView = null;
+                DdpmCommonHelper.ModuleOwner.LoadLeftView();
             }
             vm.Invoke_RefreshData();
         }
