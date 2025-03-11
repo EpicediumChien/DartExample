@@ -38,7 +38,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
         private const string pluginName = "CLIProxyPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements CLI Proxy Plugin.";
-        private const string publisherCompany = "Dell Inc.";
+        private const string publisherCompany = "Dell Technologies";
         private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements CLI Proxy Plugin.";
 

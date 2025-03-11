@@ -55,7 +55,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         private const string pluginName = "SettingsManagerPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements Settings Manager Plugin.";
-        private const string publisherCompany = "Dell Inc.";
+        private const string publisherCompany = "Dell Technologies";
         private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements Settings Manager Plugin.";
         //private static string _settingsAccess = SettingsAccess.AppAccessInfo;
