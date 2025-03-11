@@ -2014,6 +2014,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
             if (IsDTPReady)
             {
+                _waitHeadsetReady = _deviceManager.GetIsReadyAsync(CurrentDeviceID.ToString()).Result;
                 if (!_waitHeadsetReady)
                 {
                     int tick = 0;
