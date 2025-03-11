@@ -38,17 +38,17 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
     {
         #region Private Members
 
-        private const string pluginName = "TelementrySchedulerPlugin";
+        private const string pluginName = "TelemetrySchedulerPlugin";
         private const string pluginVersion = "1.0.0";
-        private const string pluginDescription = "This plugin implements Telementry Scheduler Plugin.";
-        private const string publisherCompany = "Dell Inc.";
+        private const string pluginDescription = "This plugin implements Telemetry Scheduler Plugin.";
+        private const string publisherCompany = "Dell Technologies";
         private const string publisherWebsite = "https://www.dell.com";
-        private const string publisherSupport = "This plugin implements Telementry Scheduler Plugin.";
+        private const string publisherSupport = "This plugin implements Telemetry Scheduler Plugin.";
 
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
         private static Logs _logs;
         private IAgent _agent;
-        public const string PluginLogId = "TelementryScheduler";
+        public const string PluginLogId = "TelemetryScheduler";
         private IPlatinumSDKService _PlatinumSDKPlugin;
         private ISettingsManagerDev _SettingsPlugin;
         private IDisplayService _DisplayManagerPlugin;

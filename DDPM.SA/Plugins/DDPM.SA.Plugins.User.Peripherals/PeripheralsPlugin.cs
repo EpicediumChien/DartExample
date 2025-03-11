@@ -58,7 +58,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private const string pluginName = "PeripheralsPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements DDPM Peripherals Plugin.";
-        private const string publisherCompany = "Dell Inc.";
+        private const string publisherCompany = "Dell Technologies";
         private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements DDPM Peripherals Plugin.";
 

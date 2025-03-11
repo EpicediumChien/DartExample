@@ -31,7 +31,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         private const string pluginName = "DisplayPropertiesPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements Display Properties Plugin.";
-        private const string publisherCompany = "Dell Inc.";
+        private const string publisherCompany = "Dell Technologies";
         private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements Display Properties Plugin.";
 
