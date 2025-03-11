@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 using System.Runtime.CompilerServices;
 [assembly: System.Runtime.InteropServices.ComVisible(false)]
-[assembly: System.Reflection.AssemblyDescription("Shared assembly information for the project.")]
+[assembly: System.Reflection.AssemblyDescription("Dell Display and Peripheral Manager")]
 [assembly: System.Reflection.AssemblyProduct("Dell Display and Peripheral Manager")]
 [assembly: System.Reflection.AssemblyTitle("Dell Display and Peripheral Manager")]
 [assembly: System.Reflection.AssemblyInformationalVersion("2.0.1.12-61e493b4")]
