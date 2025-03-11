@@ -228,15 +228,6 @@
   <data name="ReturnToHomePage_Text" xml:space="preserve">
     <value>Retornar à home page</value>
   </data>
-  <data name="CriticalAlertsText" xml:space="preserve">
-    <value>Alertas essenciais</value>
-  </data>
-  <data name="NotificationsText" xml:space="preserve">
-    <value>Notificações</value>
-  </data>
-  <data name="PrivacyNoticeText" xml:space="preserve">
-    <value>Aviso de privacidade</value>
-  </data>
   <data name="Discovery_Notification_Button1" xml:space="preserve">
     <value>Saiba mais</value>
   </data>
@@ -252,20 +243,29 @@
   <data name="Inspiron" xml:space="preserve">
     <value>Inspiron</value>
   </data>
+  <data name="XPS" xml:space="preserve">
+    <value>XPS</value>
+  </data>
   <data name="Latitude" xml:space="preserve">
     <value>Latitude</value>
   </data>
-  <data name="Vostro" xml:space="preserve">
-    <value>Vostro</value>
+  <data name="CriticalAlertsText" xml:space="preserve">
+    <value>Alertas essenciais</value>
   </data>
-  <data name="XPS" xml:space="preserve">
-    <value>XPS</value>
+  <data name="NotificationsText" xml:space="preserve">
+    <value>Notificações</value>
+  </data>
+  <data name="PrivacyNoticeText" xml:space="preserve">
+    <value>Aviso de privacidade</value>
   </data>
   <data name="ProductRegistration_GearMenuItem" xml:space="preserve">
     <value>Registrar produto</value>
   </data>
   <data name="Url_DellProductRegistration" xml:space="preserve">
     <value>https://www.dell.com/support/retail-registration/</value>
+  </data>
+  <data name="Vostro" xml:space="preserve">
+    <value>Vostro</value>
   </data>
   <data name="Shutdown_MessageBoxText" xml:space="preserve">
     <value>Nenhum recurso está disponível no {0} no momento. O {0} será desligado agora.</value>
@@ -586,17 +586,17 @@ mso-bidi-theme-font:minor-latin;mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;/o
 
 &lt;/html&gt;</value>
   </data>
-  <data name="Consent_Button" xml:space="preserve">
-    <value>Sim, dou meu consentimento</value>
-  </data>
-  <data name="DontConsent_Button" xml:space="preserve">
-    <value>Não, não dou meu consentimento</value>
-  </data>
   <data name="ConnectionIssue" xml:space="preserve">
     <value>Ocorreu um problema ao conectar-se ao host. Tente novamente.</value>
   </data>
+  <data name="Consent_Button" xml:space="preserve">
+    <value>Sim, dou meu consentimento</value>
+  </data>
   <data name="Done_Button" xml:space="preserve">
     <value>Concluído</value>
+  </data>
+  <data name="DontConsent_Button" xml:space="preserve">
+    <value>Não, não dou meu consentimento</value>
   </data>
   <data name="TelemetryConsent_Part1_Text" xml:space="preserve">
     <value>Ao clicar em Sim, você confirma que leu nossa</value>
@@ -667,5 +667,14 @@ mso-bidi-theme-font:minor-latin;mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;/o
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="SystrayIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\SystrayIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>Firmware compatível</value>
+  </data>
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>Para acessar os recursos do Microsoft Presence Sensing, acesse as Configurações do Windows</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>Para acessar os recursos de detecção de presença, use o link abaixo para fazer o download do firmware da webcam compatível</value>
   </data>
 </root>

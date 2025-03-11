@@ -140,11 +140,11 @@ namespace DDPM.UI.Plugin.MousePlugin
                     }
                 }
                 Unloaded += LaunchView_Unloaded;
-                if (DdpmCommonHelper.DeviceManagerSA != null)
-                {
-                    DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
-                    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
-                }
+                //if (DdpmCommonHelper.DeviceManagerSA != null)
+                //{
+                //    DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
+                //    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+                //}
             }
             catch (Exception ex)
             {
@@ -160,6 +160,11 @@ namespace DDPM.UI.Plugin.MousePlugin
         private void LaunchView_Loaded(object sender, RoutedEventArgs e)
         {
             DdpmCommonHelper.WriteUILog($"Mouse UI Loaded timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+            }
         }
 
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)

@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Échec de l’ouverture de l’application</value>
   </data>
-    <data name="will_be_updated_to" xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>sera mis à jour vers </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -435,7 +435,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>Verrouillage des majuscules activé</value>
   </data>
-    <data name="Caps Lock Off" xml:space="preserve">
+  <data name="Caps Lock Off" xml:space="preserve">
     <value>Verrouillage des majuscules désactivé</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -477,7 +477,7 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Verrouillage par éloignement</value>
   </data>
-    <data name="Caps_Lock_Off" xml:space="preserve">
+  <data name="Caps_Lock_Off" xml:space="preserve">
     <value>Verrouillage des majuscules désactivé</value>
   </data>
   <data name="App_Name" xml:space="preserve">
@@ -538,12 +538,15 @@
     <value>Utilise l’analyse de scène intelligente et le suivi des visages pour zoomer et effectuer un panoramique de la vue lorsque vous vous déplacez</value>
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
-    <value />
+    <value>Plusieurs stations d’accueil sont détectées. N’en connectez qu’une seule pour éviter de les endommager.</value>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value />
+    <value>s</value>
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
-    <value />
+    <value>Plusieurs stations d’accueil détectées. Ne connectez qu’une seule station d’accueil à la fois pour éviter tout dommage. Redémarrez le PC, puis connectez une seule station d’accueil.</value>
+  </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>Ne mettez pas le système hors tension tant que les mises à jour ne sont pas terminées</value>
   </data>
 </root>

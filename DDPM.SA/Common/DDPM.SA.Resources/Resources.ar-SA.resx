@@ -538,12 +538,15 @@
     <value>يستخدم التحليل الذكي للمشهد وتتبع الوجه للتكبير/التصغير وتحريك المنظر عند التنقل</value>
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
-    <value />
+    <value>تم اكتشاف وحدات إرساء متعددة. أبقِ وحدة إرساء واحدة فقط متصلة لمنع تلف وحدة (وحدات) الإرساء.</value>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value />
+    <value>s</value>
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
-    <value />
+    <value>تم اكتشاف وحدات إرساء متعددة. أبقِ وحدة إرساء واحدة فقط متصلة لمنع تلف وحدات الإرساء. أعد تشغيل الكمبيوتر الشخصي ثم قم بتوصيل وحدة إرساء واحدة فقط.</value>
+  </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>تجنب إيقاف تشغيل النظام حتى تكتمل التحديثات</value>
   </data>
 </root>

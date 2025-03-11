@@ -658,4 +658,13 @@ mso-bidi-theme-font:minor-latin;mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;/o
   <data name="SystrayIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\SystrayIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>호환되는 펌웨어</value>
+  </data>
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>Microsoft 존재 감지 기능을 사용하려면 Windows 설정으로 이동하십시오.</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>존재 감지 기능을 사용하려면 아래 링크를 사용하여 호환되는 웹캠 펌웨어를 다운로드하십시오.</value>
+  </data>
 </root>

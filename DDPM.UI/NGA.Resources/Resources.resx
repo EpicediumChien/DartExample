@@ -668,4 +668,13 @@ mso-bidi-theme-font:minor-latin;mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;/o
   <data name="SystrayIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\SystrayIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>Compatible Firmware</value>
+  </data>
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>To access Microsoft Presence Sensing features, visit Windows Settings</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>To access presence sensing features, use the link below to download compitible webcam firmware</value>
+  </data>
 </root>

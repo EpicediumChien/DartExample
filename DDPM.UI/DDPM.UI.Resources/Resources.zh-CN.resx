@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+	<!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,3407 +59,3431 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="About" xml:space="preserve">
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="About" xml:space="preserve">
     <value>关于</value>
   </data>
-  <data name="AdaptiveLight" xml:space="preserve">
+	<data name="AdaptiveLight" xml:space="preserve">
     <value>自适应灯</value>
   </data>
-  <data name="Display" xml:space="preserve">
+	<data name="Display" xml:space="preserve">
     <value>显示</value>
   </data>
-  <data name="DisplaySettings" xml:space="preserve">
+	<data name="DisplaySettings" xml:space="preserve">
     <value>显示器设置</value>
   </data>
-  <data name="EasyArrange" xml:space="preserve">
+	<data name="EasyArrange" xml:space="preserve">
     <value>Easy Arrange</value>
   </data>
-  <data name="FirmwareVersion" xml:space="preserve">
+	<data name="FirmwareVersion" xml:space="preserve">
     <value>固件版本</value>
   </data>
-  <data name="Gaming" xml:space="preserve">
+	<data name="Gaming" xml:space="preserve">
     <value>游戏</value>
   </data>
-  <data name="InputSource" xml:space="preserve">
+	<data name="InputSource" xml:space="preserve">
     <value>输入源</value>
   </data>
-  <data name="KVM" xml:space="preserve">
+	<data name="KVM" xml:space="preserve">
     <value>KVM</value>
   </data>
-  <data name="Manual" xml:space="preserve">
+	<data name="Manual" xml:space="preserve">
     <value>手动</value>
   </data>
-  <data name="ManufactureMonth" xml:space="preserve">
+	<data name="ManufactureMonth" xml:space="preserve">
     <value>生产</value>
   </data>
-  <data name="Off" xml:space="preserve">
+	<data name="Off" xml:space="preserve">
     <value>关闭</value>
   </data>
-  <data name="On" xml:space="preserve">
+	<data name="On" xml:space="preserve">
     <value>开启</value>
   </data>
-  <data name="RestoreToDefault" xml:space="preserve">
+	<data name="RestoreToDefault" xml:space="preserve">
     <value>还原至默认设置</value>
   </data>
-  <data name="ServiceTag" xml:space="preserve">
+	<data name="ServiceTag" xml:space="preserve">
     <value>服务编号</value>
   </data>
-  <data name="Unpair" xml:space="preserve">
+	<data name="Unpair" xml:space="preserve">
     <value>取消配对</value>
   </data>
-  <data name="VbarText_DisplayOthers" xml:space="preserve">
+	<data name="VbarText_DisplayOthers" xml:space="preserve">
     <value>其他</value>
   </data>
-  <data name="QuickSettings" xml:space="preserve">
+	<data name="QuickSettings" xml:space="preserve">
     <value>快速设置</value>
   </data>
-  <data name="Analytics" xml:space="preserve">
+	<data name="Analytics" xml:space="preserve">
     <value>分析</value>
   </data>
-  <data name="Updates" xml:space="preserve">
+	<data name="Updates" xml:space="preserve">
     <value>更新</value>
   </data>
-  <data name="General" xml:space="preserve">
+	<data name="General" xml:space="preserve">
     <value>常规</value>
   </data>
-  <data name="Settings" xml:space="preserve">
+	<data name="Settings" xml:space="preserve">
     <value>设置</value>
   </data>
-  <data name="Updates.0" xml:space="preserve">
+	<data name="Updates.0" xml:space="preserve">
     <value>可用的更新</value>
   </data>
-  <data name="Updates.1" xml:space="preserve">
+	<data name="Updates.1" xml:space="preserve">
     <value>更新完成后，Dell Display and Peripheral Manager 将关闭并重新打开。更新一旦开始，将无法取消。</value>
   </data>
-  <data name="Updates.2" xml:space="preserve">
+	<data name="Updates.2" xml:space="preserve">
     <value>检查是否有更新</value>
   </data>
-  <data name="Updates.3" xml:space="preserve">
+	<data name="Updates.3" xml:space="preserve">
     <value>目前没有可用的更新。</value>
   </data>
-  <data name="Updates.4" xml:space="preserve">
+	<data name="Updates.4" xml:space="preserve">
     <value>网络错误。请重试。</value>
   </data>
-  <data name="Updates.5" xml:space="preserve">
+	<data name="Updates.5" xml:space="preserve">
     <value>下载并安装</value>
   </data>
-  <data name="Updates.6" xml:space="preserve">
+	<data name="Updates.6" xml:space="preserve">
     <value>正在准备更新。请稍候...</value>
   </data>
-  <data name="Analytics.0" xml:space="preserve">
+	<data name="Analytics.0" xml:space="preserve">
     <value>分析</value>
   </data>
-  <data name="Analytics.1" xml:space="preserve">
+	<data name="Analytics.1" xml:space="preserve">
     <value>自动发送诊断和使用情况数据，帮助戴尔改进产品和服务。</value>
   </data>
-  <data name="Analytics.2" xml:space="preserve">
+	<data name="Analytics.2" xml:space="preserve">
     <value>戴尔隐私政策</value>
   </data>
-  <data name="Analytics.3" xml:space="preserve">
+	<data name="Analytics.3" xml:space="preserve">
     <value>帮助戴尔自动改进其产品和服务</value>
   </data>
-  <data name="AddDevice" xml:space="preserve">
+	<data name="AddDevice" xml:space="preserve">
     <value>添加设备</value>
   </data>
-  <data name="AddDevice.Display" xml:space="preserve">
+	<data name="AddDevice.Display" xml:space="preserve">
     <value>显示</value>
   </data>
-  <data name="AddDevice.Webcam" xml:space="preserve">
+	<data name="AddDevice.Webcam" xml:space="preserve">
     <value>网络摄像头</value>
   </data>
-  <data name="AddDevice.KnM" xml:space="preserve">
+	<data name="AddDevice.KnM" xml:space="preserve">
     <value>键盘\n和鼠标</value>
   </data>
-  <data name="AddDevice.Pen" xml:space="preserve">
+	<data name="AddDevice.Pen" xml:space="preserve">
     <value>触控笔</value>
   </data>
-  <data name="AddDevice.Headset" xml:space="preserve">
+	<data name="AddDevice.Headset" xml:space="preserve">
     <value>耳机</value>
   </data>
-  <data name="AddDevice.Speaker" xml:space="preserve">
+	<data name="AddDevice.Speaker" xml:space="preserve">
     <value>扬声器\n和音棒</value>
   </data>
-  <data name="AddDevice.Dock" xml:space="preserve">
+	<data name="AddDevice.Dock" xml:space="preserve">
     <value>坞站</value>
   </data>
-  <data name="AddDevice.Type.Bluetooth" xml:space="preserve">
+	<data name="AddDevice.Type.Bluetooth" xml:space="preserve">
     <value>Bluetooth</value>
   </data>
-  <data name="AddDevice.Type.Wireless" xml:space="preserve">
+	<data name="AddDevice.Type.Wireless" xml:space="preserve">
     <value>Wireless receiver</value>
   </data>
-  <data name="AddDevice.Type.Wired" xml:space="preserve">
+	<data name="AddDevice.Type.Wired" xml:space="preserve">
     <value>Wired</value>
   </data>
-  <data name="AddDevice.Type.Other" xml:space="preserve">
+	<data name="AddDevice.Type.Other" xml:space="preserve">
     <value>Other</value>
   </data>
-  <data name="AddDevice.Msg.CancelBtn" xml:space="preserve">
+	<data name="AddDevice.Msg.CancelBtn" xml:space="preserve">
     <value>取消</value>
   </data>
-  <data name="AddDevice.Msg.WaitingCap" xml:space="preserve">
+	<data name="AddDevice.Msg.WaitingCap" xml:space="preserve">
     <value>正在添加设备，请稍候...</value>
   </data>
-  <data name="AddDevice.Msg.WaitingMsg" xml:space="preserve">
+	<data name="AddDevice.Msg.WaitingMsg" xml:space="preserve">
     <value>正在配对</value>
   </data>
-  <data name="AddDevice.Msg.WaitingAlert" xml:space="preserve">
+	<data name="AddDevice.Msg.WaitingAlert" xml:space="preserve">
     <value>配对可能需要一些时间。请勿断开设备连接</value>
   </data>
-  <data name="AddDevice.Display.1" xml:space="preserve">
+	<data name="AddDevice.Display.1" xml:space="preserve">
     <value>通过系统上的 HDMI/USB-C 端口连接显示器</value>
   </data>
-  <data name="AddDevice.Webcam.0" xml:space="preserve">
+	<data name="AddDevice.Webcam.0" xml:space="preserve">
     <value>通过系统上的 USB 端口连接网络摄像头</value>
   </data>
-  <data name="AddDevice.KnM.0" xml:space="preserve">
+	<data name="AddDevice.KnM.0" xml:space="preserve">
     <value>蓝牙连接</value>
   </data>
-  <data name="AddDevice.KnM.1" xml:space="preserve">
+	<data name="AddDevice.KnM.1" xml:space="preserve">
     <value>通过 Windows 设置进行配对来添加蓝牙设备</value>
   </data>
-  <data name="AddDevice.KnM.2" xml:space="preserve">
+	<data name="AddDevice.KnM.2" xml:space="preserve">
     <value>将电源开关滑块拨至“开”</value>
   </data>
-  <data name="AddDevice.KnM.3" xml:space="preserve">
+	<data name="AddDevice.KnM.3" xml:space="preserve">
     <value>选择蓝牙通道，然后按住 3 秒钟以使设备可被发现</value>
   </data>
-  <data name="AddDevice.KnM.4" xml:space="preserve">
+	<data name="AddDevice.KnM.4" xml:space="preserve">
     <value>允许设备配对，或启动 Windows 设置，并在发现设备后选择相应的设备</value>
   </data>
-  <data name="AddDevice.KnM.6" xml:space="preserve">
+	<data name="AddDevice.KnM.6" xml:space="preserve">
     <value>将 USB 无线接收器连接到系统</value>
   </data>
-  <data name="AddDevice.KnM.7" xml:space="preserve">
+	<data name="AddDevice.KnM.7" xml:space="preserve">
     <value>将电源开关拨至“关”。</value>
   </data>
-  <data name="AddDevice.KnM.8" xml:space="preserve">
+	<data name="AddDevice.KnM.8" xml:space="preserve">
     <value>按住任意键/按钮，并将电源开关拨至“开”</value>
   </data>
-  <data name="AddDevice.KnM.9" xml:space="preserve">
+	<data name="AddDevice.KnM.9" xml:space="preserve">
     <value>使此窗口保持打开状态。配对将在几秒钟后开始。如果没有，请重复步骤 2 和 3 以重试。</value>
   </data>
-  <data name="AddDevice.KnM.10" xml:space="preserve">
+	<data name="AddDevice.KnM.10" xml:space="preserve">
     <value>检测到多个无线接收器。请拔下用于键盘和鼠标的所有戴尔无线接收器。插入要配对的接收器。</value>
   </data>
-  <data name="AddDevice.KnM.11" xml:space="preserve">
+	<data name="AddDevice.KnM.11" xml:space="preserve">
     <value>未连接 USB 无线接收器。请连接您的 USB 无线接收器，并配对最多六台兼容设备。</value>
   </data>
-  <data name="AddDevice.KnM.12" xml:space="preserve">
+	<data name="AddDevice.KnM.12" xml:space="preserve">
     <value>未连接 USB 无线接收器。请连接 USB 无线接收器以获得更好的 UC 兼容性、更低的延迟和更稳定的连接。</value>
   </data>
-  <data name="AddDevice.KnM.13" xml:space="preserve">
+	<data name="AddDevice.KnM.13" xml:space="preserve">
     <value>通过系统上的 USB 端口连接键盘和鼠标</value>
   </data>
-  <data name="AddDevice.Pen.0" xml:space="preserve">
+	<data name="AddDevice.Pen.0" xml:space="preserve">
     <value>连接触控笔</value>
   </data>
-  <data name="AddDevice.Pen.1" xml:space="preserve">
+	<data name="AddDevice.Pen.1" xml:space="preserve">
     <value>用笔尖触碰 Dell Display and Peripheral Manager 屏幕</value>
   </data>
-  <data name="AddDevice.Pen.2" xml:space="preserve">
+	<data name="AddDevice.Pen.2" xml:space="preserve">
     <value>按住顶部按钮 3 秒钟。等待 Windows 发现设备。</value>
   </data>
-  <data name="AddDevice.Pen.3" xml:space="preserve">
+	<data name="AddDevice.Pen.3" xml:space="preserve">
     <value>允许设备配对，或启动 Windows 设置，并在发现设备后选择相应的设备。</value>
   </data>
-  <data name="AddDevice.Pen.4" xml:space="preserve">
+	<data name="AddDevice.Pen.4" xml:space="preserve">
     <value>在提示框中选择“是”以确认配对</value>
   </data>
-  <data name="AddDevice.Headset.0" xml:space="preserve">
+	<data name="AddDevice.Headset.0" xml:space="preserve">
     <value>无需 USB 无线接收器，随时随地连接</value>
   </data>
-  <data name="AddDevice.Headset.1" xml:space="preserve">
+	<data name="AddDevice.Headset.1" xml:space="preserve">
     <value>将耳机开机</value>
   </data>
-  <data name="AddDevice.Headset.2" xml:space="preserve">
+	<data name="AddDevice.Headset.2" xml:space="preserve">
     <value>按住电源按钮 3 秒钟，使耳机可被蓝牙发现</value>
   </data>
-  <data name="AddDevice.Headset.3" xml:space="preserve">
+	<data name="AddDevice.Headset.3" xml:space="preserve">
     <value>允许设备配对，或启动 Windows 设置，并在发现设备后选择相应的设备。</value>
   </data>
-  <data name="AddDevice.Headset.4" xml:space="preserve">
+	<data name="AddDevice.Headset.4" xml:space="preserve">
     <value>将耳机关机。按住麦克风静音按钮，并再次开机。</value>
   </data>
-  <data name="AddDevice.Headset.5" xml:space="preserve">
+	<data name="AddDevice.Headset.5" xml:space="preserve">
     <value>配对将在几秒钟后自动开始</value>
   </data>
-  <data name="AddDevice.Headset.6" xml:space="preserve">
+	<data name="AddDevice.Headset.6" xml:space="preserve">
     <value>通过系统上的 USB 端口连接耳机。</value>
   </data>
-  <data name="AddDevice.Speaker.0" xml:space="preserve">
+	<data name="AddDevice.Speaker.0" xml:space="preserve">
     <value>通过系统上的 USB 端口连接扬声器或音棒。</value>
   </data>
-  <data name="AddDevice.Dock.0" xml:space="preserve">
+	<data name="AddDevice.Dock.0" xml:space="preserve">
     <value>通过系统上的 USB 端口连接坞站</value>
   </data>
-  <data name="HomePage.0" xml:space="preserve">
+	<data name="HomePage.0" xml:space="preserve">
     <value>请稍候...</value>
   </data>
-  <data name="UpdateFirmware" xml:space="preserve">
+	<data name="UpdateFirmware" xml:space="preserve">
     <value>更新固件</value>
   </data>
-  <data name="Dock.0" xml:space="preserve">
+	<data name="Dock.0" xml:space="preserve">
     <value>{0} 个插槽可用，共 {1} 个插槽</value>
   </data>
-  <data name="Dock.1" xml:space="preserve">
+	<data name="Dock.1" xml:space="preserve">
     <value>转换器 {0}</value>
   </data>
-  <data name="Keyboard.2" xml:space="preserve">
+	<data name="Keyboard.2" xml:space="preserve">
     <value>键自定义</value>
   </data>
-  <data name="Keyboard.3" xml:space="preserve">
+	<data name="Keyboard.3" xml:space="preserve">
     <value>协作</value>
   </data>
-  <data name="Keyboard.4" xml:space="preserve">
+	<data name="Keyboard.4" xml:space="preserve">
     <value>照明</value>
   </data>
-  <data name="Mouse.0" xml:space="preserve">
+	<data name="Mouse.0" xml:space="preserve">
     <value>分配操作</value>
   </data>
-  <data name="Mouse.1" xml:space="preserve">
+	<data name="Mouse.1" xml:space="preserve">
     <value>所有应用程序</value>
   </data>
-  <data name="Mouse.2" xml:space="preserve">
+	<data name="Mouse.2" xml:space="preserve">
     <value>Microsoft Word</value>
   </data>
-  <data name="Mouse.3" xml:space="preserve">
+	<data name="Mouse.3" xml:space="preserve">
     <value>Microsoft Excel</value>
   </data>
-  <data name="Mouse.4" xml:space="preserve">
+	<data name="Mouse.4" xml:space="preserve">
     <value>Microsoft PowerPoint</value>
   </data>
-  <data name="Mouse.5" xml:space="preserve">
+	<data name="Mouse.5" xml:space="preserve">
     <value>Microsoft Outlook</value>
   </data>
-  <data name="EOL.0" xml:space="preserve">
+	<data name="EOL.0" xml:space="preserve">
     <value>此设备上没有高级功能</value>
   </data>
-  <data name="Mouse.6" xml:space="preserve">
+	<data name="Mouse.6" xml:space="preserve">
     <value>鼠标设置</value>
   </data>
-  <data name="Mouse.7" xml:space="preserve">
+	<data name="Mouse.7" xml:space="preserve">
     <value>按钮\n自定义</value>
   </data>
-  <data name="Pen.0" xml:space="preserve">
+	<data name="Pen.0" xml:space="preserve">
     <value>触控笔设置</value>
   </data>
-  <data name="Soundbar.0" xml:space="preserve">
+	<data name="Soundbar.0" xml:space="preserve">
     <value>音频预设</value>
   </data>
-  <data name="Soundbar.1" xml:space="preserve">
+	<data name="Soundbar.1" xml:space="preserve">
     <value>交互</value>
   </data>
-  <data name="Camera.0" xml:space="preserve">
+	<data name="Camera.0" xml:space="preserve">
     <value>摄像头控制</value>
   </data>
-  <data name="Camera.1" xml:space="preserve">
+	<data name="Camera.1" xml:space="preserve">
     <value>颜色和图像</value>
   </data>
-  <data name="Camera.2" xml:space="preserve">
+	<data name="Camera.2" xml:space="preserve">
     <value>用户检测</value>
   </data>
-  <data name="Camera.3" xml:space="preserve">
+	<data name="Camera.3" xml:space="preserve">
     <value>拍摄</value>
   </data>
-  <data name="Camera.4" xml:space="preserve">
+	<data name="Camera.4" xml:space="preserve">
     <value>麦克风</value>
   </data>
-  <data name="WiredConnection" xml:space="preserve">
+	<data name="WiredConnection" xml:space="preserve">
     <value>有线连接</value>
   </data>
-  <data name="Error" xml:space="preserve">
+	<data name="Error" xml:space="preserve">
     <value>错误</value>
   </data>
-  <data name="Brightness.0" xml:space="preserve">
+	<data name="Brightness.0" xml:space="preserve">
     <value>请检查您的设置，确保预设开始时间和过渡长度不重叠</value>
   </data>
-  <data name="Brightness.1" xml:space="preserve">
+	<data name="Brightness.1" xml:space="preserve">
     <value>在以下情况下亮度/对比度不可用 </value>
   </data>
-  <data name="Brightness.2" xml:space="preserve">
+	<data name="Brightness.2" xml:space="preserve">
     <value>智能 HDR </value>
   </data>
-  <data name="Brightness.3" xml:space="preserve">
+	<data name="Brightness.3" xml:space="preserve">
     <value>已启用</value>
   </data>
-  <data name="Brightness" xml:space="preserve">
+	<data name="Brightness" xml:space="preserve">
     <value>亮度</value>
   </data>
-  <data name="Contrast" xml:space="preserve">
+	<data name="Contrast" xml:space="preserve">
     <value>对比度</value>
   </data>
-  <data name="Brightness.4" xml:space="preserve">
+	<data name="Brightness.4" xml:space="preserve">
     <value>在显示器之间同步</value>
   </data>
-  <data name="Brightness.5" xml:space="preserve">
+	<data name="Brightness.5" xml:space="preserve">
     <value>应用上述亮度/辉度、对比度和颜色&amp;#x000A；为连接的显示器预设控制功能。</value>
   </data>
-  <data name="Luminance" xml:space="preserve">
+	<data name="Luminance" xml:space="preserve">
     <value>辉度</value>
   </data>
-  <data name="Auto" xml:space="preserve">
+	<data name="Auto" xml:space="preserve">
     <value>自动</value>
   </data>
-  <data name="Brightness.6" xml:space="preserve">
+	<data name="Brightness.6" xml:space="preserve">
     <value>自动亮度  </value>
   </data>
-  <data name="Brightness.7" xml:space="preserve">
+	<data name="Brightness.7" xml:space="preserve">
     <value>根据周围空间的照明情况调整显示器的亮度</value>
   </data>
-  <data name="Brightness.8" xml:space="preserve">
+	<data name="Brightness.8" xml:space="preserve">
     <value>自动亮度范围级别  </value>
   </data>
-  <data name="Brightness.9" xml:space="preserve">
+	<data name="Brightness.9" xml:space="preserve">
     <value>根据周围空间的照明情况提供 3 级亮度范围（高/中/低）</value>
   </data>
-  <data name="Brightness.10" xml:space="preserve">
+	<data name="Brightness.10" xml:space="preserve">
     <value>自动色温  </value>
   </data>
-  <data name="Brightness.11" xml:space="preserve">
+	<data name="Brightness.11" xml:space="preserve">
     <value>自动调整显示器的色温，以匹配周围空间的光线。</value>
   </data>
-  <data name="Brightness.12" xml:space="preserve">
+	<data name="Brightness.12" xml:space="preserve">
     <value>用于同步的主显示器  </value>
   </data>
-  <data name="Brightness.13" xml:space="preserve">
+	<data name="Brightness.13" xml:space="preserve">
     <value>将主显示器的亮度、对比度、色彩预设和色温同步到其他 ALS 显示器</value>
   </data>
-  <data name="Scheduled" xml:space="preserve">
+	<data name="Scheduled" xml:space="preserve">
     <value>计划</value>
   </data>
-  <data name="Brightness.14" xml:space="preserve">
+	<data name="Brightness.14" xml:space="preserve">
     <value>预设 1 名称</value>
   </data>
-  <data name="Brightness.15" xml:space="preserve">
+	<data name="Brightness.15" xml:space="preserve">
     <value>开始时间</value>
   </data>
-  <data name="AM" xml:space="preserve">
+	<data name="AM" xml:space="preserve">
     <value>AM</value>
   </data>
-  <data name="Brightness.16" xml:space="preserve">
+	<data name="Brightness.16" xml:space="preserve">
     <value>过渡长度</value>
   </data>
-  <data name="Brightness.17" xml:space="preserve">
+	<data name="Brightness.17" xml:space="preserve">
     <value>测试。</value>
   </data>
-  <data name="Min" xml:space="preserve">
+	<data name="Min" xml:space="preserve">
     <value>分钟</value>
   </data>
-  <data name="Brightness.18" xml:space="preserve">
+	<data name="Brightness.18" xml:space="preserve">
     <value>预设 2 名称</value>
   </data>
-  <data name="PM" xml:space="preserve">
+	<data name="PM" xml:space="preserve">
     <value>PM</value>
   </data>
-  <data name="Hotkeys" xml:space="preserve">
+	<data name="Hotkeys" xml:space="preserve">
     <value>热键</value>
   </data>
-  <data name="Reset" xml:space="preserve">
+	<data name="Reset" xml:space="preserve">
     <value>重置</value>
   </data>
-  <data name="Hotkey.0" xml:space="preserve">
+	<data name="Hotkey.0" xml:space="preserve">
     <value>亮度 -</value>
   </data>
-  <data name="Hotkey.1" xml:space="preserve">
+	<data name="Hotkey.1" xml:space="preserve">
     <value>亮度 +</value>
   </data>
-  <data name="Hotkey.2" xml:space="preserve">
+	<data name="Hotkey.2" xml:space="preserve">
     <value>对比度 -</value>
   </data>
-  <data name="Hotkey.3" xml:space="preserve">
+	<data name="Hotkey.3" xml:space="preserve">
     <value>对比度 +</value>
   </data>
-  <data name="Hotkey.4" xml:space="preserve">
+	<data name="Hotkey.4" xml:space="preserve">
     <value>辉度 -</value>
   </data>
-  <data name="Hotkey.5" xml:space="preserve">
+	<data name="Hotkey.5" xml:space="preserve">
     <value>辉度 +</value>
   </data>
-  <data name="Hotkey.6" xml:space="preserve">
+	<data name="Hotkey.6" xml:space="preserve">
     <value>示例：“Alt + P”“Shift + F”“Ctrl + Shift + F”。\n请注意，对于多个显示器，鼠标光标应位于目标显示器屏幕上以触发热键功能。</value>
   </data>
-  <data name="ButtonSettings.0" xml:space="preserve">
+	<data name="ButtonSettings.0" xml:space="preserve">
     <value>滚轮单击</value>
   </data>
-  <data name="ButtonSettings.1" xml:space="preserve">
+	<data name="ButtonSettings.1" xml:space="preserve">
     <value>向左倾斜滚动</value>
   </data>
-  <data name="ButtonSettings.2" xml:space="preserve">
+	<data name="ButtonSettings.2" xml:space="preserve">
     <value>向右倾斜滚动</value>
   </data>
-  <data name="ButtonSettings.3" xml:space="preserve">
+	<data name="ButtonSettings.3" xml:space="preserve">
     <value>侧面按钮向前</value>
   </data>
-  <data name="ButtonSettings.4" xml:space="preserve">
+	<data name="ButtonSettings.4" xml:space="preserve">
     <value>侧面按钮向后</value>
   </data>
-  <data name="ButtonSettings.5" xml:space="preserve">
+	<data name="ButtonSettings.5" xml:space="preserve">
     <value>要进行自定义，请单击左侧图像中显示的相应部分</value>
   </data>
-  <data name="ButtonSettings.6" xml:space="preserve">
+	<data name="ButtonSettings.6" xml:space="preserve">
     <value>恢复到所有应用程序</value>
   </data>
-  <data name="ButtonSettings.7" xml:space="preserve">
+	<data name="ButtonSettings.7" xml:space="preserve">
     <value>建议的操作</value>
   </data>
-  <data name="ButtonSettings.8" xml:space="preserve">
+	<data name="ButtonSettings.8" xml:space="preserve">
     <value>生产力操作</value>
   </data>
-  <data name="ButtonSettings.9" xml:space="preserve">
+	<data name="ButtonSettings.9" xml:space="preserve">
     <value>Windows 操作</value>
   </data>
-  <data name="ButtonSettings.10" xml:space="preserve">
+	<data name="ButtonSettings.10" xml:space="preserve">
     <value>多媒体操作</value>
   </data>
-  <data name="ButtonSettings.11" xml:space="preserve">
+	<data name="ButtonSettings.11" xml:space="preserve">
     <value>高级操作</value>
   </data>
-  <data name="ButtonSettings.12" xml:space="preserve">
+	<data name="ButtonSettings.12" xml:space="preserve">
     <value>搜索结果</value>
   </data>
-  <data name="ButtonSettings.13" xml:space="preserve">
+	<data name="ButtonSettings.13" xml:space="preserve">
     <value>按钮自定义</value>
   </data>
-  <data name="Customize" xml:space="preserve">
+	<data name="Customize" xml:space="preserve">
     <value>自定义</value>
   </data>
-  <data name="Edit" xml:space="preserve">
+	<data name="Edit" xml:space="preserve">
     <value>编辑</value>
   </data>
-  <data name="Remove" xml:space="preserve">
+	<data name="Remove" xml:space="preserve">
     <value>移除(R)</value>
   </data>
-  <data name="Collaboration.0" xml:space="preserve">
+	<data name="Collaboration.0" xml:space="preserve">
     <value>协作图标</value>
   </data>
-  <data name="Collaboration.1" xml:space="preserve">
+	<data name="Collaboration.1" xml:space="preserve">
     <value>快速访问会议控件。\n在 Microsoft Teams 或 Zoom 通话中，\n打开/关闭按键将在键盘上显示或隐藏它们。</value>
   </data>
-  <data name="Collaboration.3" xml:space="preserve">
+	<data name="Collaboration.3" xml:space="preserve">
     <value>在电话会议中出现新的聊天消息时启用闪烁效果</value>
   </data>
-  <data name="Collaboration.4" xml:space="preserve">
+	<data name="Collaboration.4" xml:space="preserve">
     <value>通过双击而不是单击来激活键盘上的图标</value>
   </data>
-  <data name="Collaboration.5" xml:space="preserve">
+	<data name="Collaboration.5" xml:space="preserve">
     <value>若要将协作式键盘与 Microsoft Teams 配合使用，请确保已登录并使用全新版本的 Microsoft Teams，并且已启用第三方应用 API。</value>
   </data>
-  <data name="LearnMore" xml:space="preserve">
+	<data name="LearnMore" xml:space="preserve">
     <value>了解更多</value>
   </data>
-  <data name="Video" xml:space="preserve">
+	<data name="Video" xml:space="preserve">
     <value>视频</value>
   </data>
-  <data name="Share" xml:space="preserve">
+	<data name="Share" xml:space="preserve">
     <value>共享</value>
   </data>
-  <data name="Chat" xml:space="preserve">
+	<data name="Chat" xml:space="preserve">
     <value>聊天</value>
   </data>
-  <data name="Mic" xml:space="preserve">
+	<data name="Mic" xml:space="preserve">
     <value>麦克风</value>
   </data>
-  <data name="OK" xml:space="preserve">
+	<data name="OK" xml:space="preserve">
     <value>确定</value>
   </data>
-  <data name="Collaboration" xml:space="preserve">
+	<data name="Collaboration" xml:space="preserve">
     <value>协作</value>
   </data>
-  <data name="Confirm" xml:space="preserve">
+	<data name="Confirm" xml:space="preserve">
     <value>确认</value>
   </data>
-  <data name="Color.0" xml:space="preserve">
+	<data name="Color.0" xml:space="preserve">
     <value>添加应用程序</value>
   </data>
-  <data name="Search" xml:space="preserve">
+	<data name="Search" xml:space="preserve">
     <value>搜索</value>
   </data>
-  <data name="Color.1" xml:space="preserve">
+	<data name="Color.1" xml:space="preserve">
     <value>按名称排序</value>
   </data>
-  <data name="Color.2" xml:space="preserve">
+	<data name="Color.2" xml:space="preserve">
     <value>按日期排序</value>
   </data>
-  <data name="Color.3" xml:space="preserve">
+	<data name="Color.3" xml:space="preserve">
     <value>根据色彩预设自动调整 ICC 色彩配置文件</value>
   </data>
-  <data name="WindowsSettings" xml:space="preserve">
+	<data name="WindowsSettings" xml:space="preserve">
     <value>Windows 设置</value>
   </data>
-  <data name="Color.4" xml:space="preserve">
+	<data name="Color.4" xml:space="preserve">
     <value>根据以下项自动调整颜色预设：</value>
   </data>
-  <data name="Color.5" xml:space="preserve">
+	<data name="Color.5" xml:space="preserve">
     <value>ICC 配置文件</value>
   </data>
-  <data name="Color.6" xml:space="preserve">
+	<data name="Color.6" xml:space="preserve">
     <value>颜色配置文件</value>
   </data>
-  <data name="Color.7" xml:space="preserve">
+	<data name="Color.7" xml:space="preserve">
     <value>特定于应用程序的颜色预设</value>
   </data>
-  <data name="Color.8" xml:space="preserve">
+	<data name="Color.8" xml:space="preserve">
     <value>夜灯 </value>
   </data>
-  <data name="Color.9" xml:space="preserve">
+	<data name="Color.9" xml:space="preserve">
     <value>显示暖色调颜色，助您晚上安然入睡</value>
   </data>
-  <data name="Color.11" xml:space="preserve">
+	<data name="Color.11" xml:space="preserve">
     <value>色彩管理</value>
   </data>
-  <data name="Color.12" xml:space="preserve">
+	<data name="Color.12" xml:space="preserve">
     <value>自动将 ICC 配置文件与显示器的色彩预设同步。</value>
   </data>
-  <data name="Color.13" xml:space="preserve">
+	<data name="Color.13" xml:space="preserve">
     <value>建议使用 Dell Color Management 应用程序进行高级色彩管理。</value>
   </data>
-  <data name="DisplayHotkeys.0" xml:space="preserve">
+	<data name="DisplayHotkeys.0" xml:space="preserve">
     <value>输入源</value>
   </data>
-  <data name="DisplayHotkeys.1" xml:space="preserve">
+	<data name="DisplayHotkeys.1" xml:space="preserve">
     <value>切换至下一个输入源</value>
   </data>
-  <data name="DisplayHotkeys.2" xml:space="preserve">
+	<data name="DisplayHotkeys.2" xml:space="preserve">
     <value>最喜爱的输入</value>
   </data>
-  <data name="DisplayHotkeys.3" xml:space="preserve">
+	<data name="DisplayHotkeys.3" xml:space="preserve">
     <value>在 2 个输入源之间切换</value>
   </data>
-  <data name="VideoSwap" xml:space="preserve">
+	<data name="VideoSwap" xml:space="preserve">
     <value>视频交换</value>
   </data>
-  <data name="PIPorPBP" xml:space="preserve">
+	<data name="PIPorPBP" xml:space="preserve">
     <value>PIP/PBP</value>
   </data>
-  <data name="DisplayHotkeys.4" xml:space="preserve">
+	<data name="DisplayHotkeys.4" xml:space="preserve">
     <value>交换 PIP/PBP 窗口的 2 个输入</value>
   </data>
-  <data name="DisplayHotkeys.5" xml:space="preserve">
+	<data name="DisplayHotkeys.5" xml:space="preserve">
     <value>更改 PIP 位置</value>
   </data>
-  <data name="DisplayOthers.0" xml:space="preserve">
+	<data name="DisplayOthers.0" xml:space="preserve">
     <value>降低亮度</value>
   </data>
-  <data name="DisplayOthers.1" xml:space="preserve">
+	<data name="DisplayOthers.1" xml:space="preserve">
     <value>使显示器进入睡眠状态</value>
   </data>
-  <data name="Import" xml:space="preserve">
+	<data name="Import" xml:space="preserve">
     <value>导入</value>
   </data>
-  <data name="Export" xml:space="preserve">
+	<data name="Export" xml:space="preserve">
     <value>导出</value>
   </data>
-  <data name="DisplayOthers.2" xml:space="preserve">
+	<data name="DisplayOthers.2" xml:space="preserve">
     <value>检测到相同型号时自动应用设置</value>
   </data>
-  <data name="PowerNap" xml:space="preserve">
+	<data name="PowerNap" xml:space="preserve">
     <value>PowerNap</value>
   </data>
-  <data name="DisplayOthers.3" xml:space="preserve">
+	<data name="DisplayOthers.3" xml:space="preserve">
     <value>PowerNap 可在屏幕保护程序激活时帮助节省电量</value>
   </data>
-  <data name="DisplayOthers.4" xml:space="preserve">
+	<data name="DisplayOthers.4" xml:space="preserve">
     <value>当屏幕保护程序激活时（选择一项）：</value>
   </data>
-  <data name="DisplayOthers.5" xml:space="preserve">
+	<data name="DisplayOthers.5" xml:space="preserve">
     <value>配置屏幕保护程序设置 </value>
   </data>
-  <data name="DisplayOthers.6" xml:space="preserve">
+	<data name="DisplayOthers.6" xml:space="preserve">
     <value>应用程序设置</value>
   </data>
-  <data name="DisplayOthers.7" xml:space="preserve">
+	<data name="DisplayOthers.7" xml:space="preserve">
     <value>将配置和重要信息导出到另一台同一型号的显示器</value>
   </data>
-  <data name="DisplayProperties.0" xml:space="preserve">
-    <value>高数据速度</value>
-  </data>
-  <data name="DisplayProperties.1" xml:space="preserve">
-    <value>高分辨率</value>
-  </data>
-  <data name="DisplayProperties.2" xml:space="preserve">
-    <value>分辨率和刷新率</value>
-  </data>
-  <data name="Orientation" xml:space="preserve">
-    <value>方向</value>
-  </data>
-  <data name="SmartHDR" xml:space="preserve">
-    <value>智能 HDR</value>
-  </data>
-  <data name="DisplayProperties.3" xml:space="preserve">
-    <value>更改文本、应用程序和其他项目的大小</value>
-  </data>
-  <data name="AdvancedSettings" xml:space="preserve">
-    <value>高级设置</value>
-  </data>
-  <data name="DisplayProperties.4" xml:space="preserve">
-    <value>USB-C 优先级 </value>
-  </data>
-  <data name="DisplayProperties.5" xml:space="preserve">
-    <value>数据和网络速度优先级高于屏幕性能。</value>
-  </data>
-  <data name="DisplayProperties.6" xml:space="preserve">
-    <value>屏幕性能优先级高于数据和网络速度。</value>
-  </data>
-  <data name="Windows" xml:space="preserve">
-    <value>Windows</value>
-  </data>
-  <data name="Custom" xml:space="preserve">
-    <value>自定义</value>
-  </data>
-  <data name="EzArrange.1" xml:space="preserve">
-    <value>Windows 或其他</value>
-  </data>
-  <data name="Recent" xml:space="preserve">
-    <value>最近</value>
-  </data>
-  <data name="AudioSettings" xml:space="preserve">
-    <value>音频设置</value>
-  </data>
-  <data name="HeadsetAudioSettings.0" xml:space="preserve">
-    <value>控制我听到的噪音</value>
-  </data>
-  <data name="HeadsetAudioSettings.1" xml:space="preserve">
-    <value>主动降噪</value>
-  </data>
-  <data name="HeadsetAudioSettings.2" xml:space="preserve">
-    <value>透明模式</value>
-  </data>
-  <data name="HeadsetAudioSettings.3" xml:space="preserve">
-    <value>关闭</value>
-  </data>
-  <data name="HeadsetAudioSettings.4" xml:space="preserve">
-    <value>透明度级别</value>
-  </data>
-  <data name="HeadsetAudioSettings.5" xml:space="preserve">
-    <value>配置我的音频模式</value>
-  </data>
-  <data name="Multimedia" xml:space="preserve">
-    <value>多媒体</value>
-  </data>
-  <data name="HeadsetAudioSettings.6" xml:space="preserve">
-    <value>音频输出预设</value>
-  </data>
-  <data name="Default" xml:space="preserve">
-    <value>默认</value>
-  </data>
-  <data name="HeadsetAudioSettings.7" xml:space="preserve">
-    <value>低音增强</value>
-  </data>
-  <data name="HeadsetAudioSettings.8" xml:space="preserve">
-    <value>语音增强</value>
-  </data>
-  <data name="HeadsetAudioSettings.9" xml:space="preserve">
-    <value>高音增强</value>
-  </data>
-  <data name="HeadsetAudioSettings.10" xml:space="preserve">
-    <value>音频均衡器</value>
-  </data>
-  <data name="HeadsetAudioSettings.11" xml:space="preserve">
-    <value>调整您听到的声音的音频范围</value>
-  </data>
-  <data name="HeadsetAudioSettings.12" xml:space="preserve">
-    <value>分贝</value>
-  </data>
-  <data name="HeadsetAudioSettings.13" xml:space="preserve">
-    <value>低音</value>
-  </data>
-  <data name="HeadsetAudioSettings.14" xml:space="preserve">
-    <value>中音</value>
-  </data>
-  <data name="HeadsetAudioSettings.15" xml:space="preserve">
-    <value>高音</value>
-  </data>
-  <data name="HeadsetAudioSettings.16" xml:space="preserve">
-    <value>麦克风降噪</value>
-  </data>
-  <data name="HeadsetAudioSettings.17" xml:space="preserve">
-    <value>传出音频</value>
-  </data>
-  <data name="HeadsetAudioSettings.18" xml:space="preserve">
-    <value>传入音频</value>
-  </data>
-  <data name="HeadsetAudioSettings.19" xml:space="preserve">
-    <value>侧音</value>
-  </data>
-  <data name="AutomatedActions" xml:space="preserve">
-    <value>自动操作</value>
-  </data>
-  <data name="HeadsetAutomatedActions.0" xml:space="preserve">
-    <value>佩戴检测</value>
-  </data>
-  <data name="HeadsetAutomatedActions.1" xml:space="preserve">
-    <value>敏感度</value>
-  </data>
-  <data name="HeadsetAutomatedActions.2" xml:space="preserve">
-    <value>低</value>
-  </data>
-  <data name="HeadsetAutomatedActions.3" xml:space="preserve">
-    <value>普通</value>
-  </data>
-  <data name="HeadsetAutomatedActions.4" xml:space="preserve">
-    <value>摘下耳机时：</value>
-  </data>
-  <data name="HeadsetAutomatedActions.5" xml:space="preserve">
-    <value>暂停音乐</value>
-  </data>
-  <data name="HeadsetAutomatedActions.6" xml:space="preserve">
-    <value>麦克风静音</value>
-  </data>
-  <data name="HeadsetAutomatedActions.7" xml:space="preserve">
-    <value>快速暂停</value>
-  </data>
-  <data name="HeadsetAutomatedActions.8" xml:space="preserve">
-    <value>接听电话</value>
-  </data>
-  <data name="DeviceSettings" xml:space="preserve">
-    <value>设备设置</value>
-  </data>
-  <data name="HeadsetDeviceSettings.0" xml:space="preserve">
-    <value>繁忙指示灯</value>
-  </data>
-  <data name="HeadsetDeviceSettings.1" xml:space="preserve">
-    <value>语音指导</value>
-  </data>
-  <data name="HeadsetDeviceSettings.2" xml:space="preserve">
-    <value>必要</value>
-  </data>
-  <data name="HeadsetDeviceSettings.3" xml:space="preserve">
-    <value>全部</value>
-  </data>
-  <data name="HeadsetDeviceSettings.4" xml:space="preserve">
-    <value>下载 Dell Audio</value>
-  </data>
-  <data name="HeadsetDeviceSettings.5" xml:space="preserve">
-    <value>立即下载 Dell Audio，并方便地使用 iPhone 或 Android 设备优化和个性化您的耳机设置。</value>
-  </data>
-  <data name="HeadsetDeviceSettings.6" xml:space="preserve">
-    <value>了解详情</value>
-  </data>
-  <data name="Illumination.0" xml:space="preserve">
-    <value>照明控制</value>
-  </data>
-  <data name="Illumination.1" xml:space="preserve">
-    <value>照明</value>
-  </data>
-  <data name="InputSource.0" xml:space="preserve">
-    <value>当前输入源</value>
-  </data>
-  <data name="InputSource.1" xml:space="preserve">
-    <value>重命名输入源并分配 USB 连接</value>
-  </data>
-  <data name="InputSource.2" xml:space="preserve">
-    <value>输入</value>
-  </data>
-  <data name="InputSource.3" xml:space="preserve">
-    <value>输入名称</value>
-  </data>
-  <data name="InputSource.4" xml:space="preserve">
-    <value>USB 上行</value>
-  </data>
-  <data name="KeyCustomization.0" xml:space="preserve">
-    <value>要自定义按键，请单击左侧图像中显示的相应按键</value>
-  </data>
-  <data name="KeyCustomization.1" xml:space="preserve">
-    <value>将所有操作恢复为默认设置</value>
-  </data>
-  <data name="KeyCustomization.2" xml:space="preserve">
-    <value>键自定义</value>
-  </data>
-  <data name="Kvm.0" xml:space="preserve">
-    <value>PC</value>
-  </data>
-  <data name="Kvm.1" xml:space="preserve">
-    <value>下一步</value>
-  </data>
-  <data name="Kvm.2" xml:space="preserve">
-    <value>USB KVM 设置</value>
-  </data>
-  <data name="Kvm.3" xml:space="preserve">
-    <value>连接鼠标和键盘</value>
-  </data>
-  <data name="Kvm.4" xml:space="preserve">
-    <value>鼠标和键盘请连接到显示器背面 (USB-A)。\n 提醒：您还可以连接其他 USB 外围设备，例如\n 网络摄像头。</value>
-  </data>
-  <data name="Kvm.5" xml:space="preserve">
-    <value>USB-A</value>
-  </data>
-  <data name="Close" xml:space="preserve">
-    <value>关闭</value>
-  </data>
-  <data name="Save" xml:space="preserve">
-    <value>保存</value>
-  </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>取消</value>
-  </data>
-  <data name="USB" xml:space="preserve">
-    <value>USB</value>
-  </data>
-  <data name="Kvm.6" xml:space="preserve">
-    <value>连接到您的设备</value>
-  </data>
-  <data name="Kvm.7" xml:space="preserve">
-    <value>请将每台 PC 之间的视频线缆和 USB 线缆连接到\n显示器。您最多可以连接 4 台 PC（计算机、游戏机\n等）。\r\n\r\n请选择线缆类型并为每个源分配名称。</value>
-  </data>
-  <data name="Kvm.8" xml:space="preserve">
-    <value>在 PC 之间切换</value>
-  </data>
-  <data name="Kvm.9" xml:space="preserve">
-    <value>切换键盘和鼠标</value>
-  </data>
-  <data name="Kvm.10" xml:space="preserve">
-    <value>更改 PIP 位置</value>
-  </data>
-  <data name="Kvm.11" xml:space="preserve">
-    <value>在 PBP 并排模式下自动切换 USB 上行端口</value>
-  </data>
-  <data name="Kvm.12" xml:space="preserve">
-    <value>输入源热键</value>
-  </data>
-  <data name="Kvm.13" xml:space="preserve">
-    <value>编辑输入源</value>
-  </data>
-  <data name="Kvm.14" xml:space="preserve">
-    <value>编辑 PIP/PBP</value>
-  </data>
-  <data name="Kvm.15" xml:space="preserve">
-    <value>在位置之间切换</value>
-  </data>
-  <data name="Finish" xml:space="preserve">
-    <value>完成</value>
-  </data>
-  <data name="Kvm.16" xml:space="preserve">
-    <value>PIP/PBP 设置</value>
-  </data>
-  <data name="Kvm.17" xml:space="preserve">
-    <value>为您的显示器设置 PIP/PBP</value>
-  </data>
-  <data name="Kvm.18" xml:space="preserve">
-    <value>您的显示器可以一次显示一台 PC 或一个源（全屏），\n或者在源之间分区（画中画/画旁画）。</value>
-  </data>
-  <data name="Kvm.19" xml:space="preserve">
-    <value>无 KVM</value>
-  </data>
-  <data name="Kvm.20" xml:space="preserve">
-    <value>USB KVM</value>
-  </data>
-  <data name="Kvm.21" xml:space="preserve">
-    <value>设置 USB KVM</value>
-  </data>
-  <data name="Kvm.22" xml:space="preserve">
-    <value>启动新的 USB KVM</value>
-  </data>
-  <data name="Kvm.23" xml:space="preserve">
-    <value>网络 KVM</value>
-  </data>
-  <data name="Kvm.24" xml:space="preserve">
-    <value>选择 KVM 设置类型</value>
-  </data>
-  <data name="Kvm.25" xml:space="preserve">
-    <value>适合单显示器设置</value>
-  </data>
-  <data name="Kvm.26" xml:space="preserve">
-    <value>通过显示器 USB 端口设置</value>
-  </data>
-  <data name="Kvm.27" xml:space="preserve">
-    <value>热键 - 在 PC 之间切换：无</value>
-  </data>
-  <data name="Kvm.28" xml:space="preserve">
-    <value>适合多显示器设置</value>
-  </data>
-  <data name="Kvm.29" xml:space="preserve">
-    <value>通过网络设置</value>
-  </data>
-  <data name="Kvm.30" xml:space="preserve">
-    <value>在 PC（Mac 和 Windows）之间安全地轻松共享文件</value>
-  </data>
-  <data name="Kvm.31" xml:space="preserve">
-    <value>打开网络 KVM</value>
-  </data>
-  <data name="Kvm.32" xml:space="preserve">
-    <value>打开另一个窗口以设置或编辑网络 KVM</value>
-  </data>
-  <data name="MouseSettings.0" xml:space="preserve">
-    <value>移动鼠标以完成对 DPI 值的更改</value>
-  </data>
-  <data name="MouseSettings.1" xml:space="preserve">
-    <value>提高轮询速率可能会影响鼠标的电池续航时间。</value>
-  </data>
-  <data name="Medium" xml:space="preserve">
-    <value>中</value>
-  </data>
-  <data name="Slow" xml:space="preserve">
-    <value>慢</value>
-  </data>
-  <data name="High" xml:space="preserve">
-    <value>高</value>
-  </data>
-  <data name="PenButtonSettings.0" xml:space="preserve">
-    <value>顶部按钮</value>
-  </data>
-  <data name="PenButtonSettings.1" xml:space="preserve">
-    <value>顶部筒状按钮</value>
-  </data>
-  <data name="PenButtonSettings.2" xml:space="preserve">
-    <value>底部筒状按钮</value>
-  </data>
-  <data name="PenButtonSettings.3" xml:space="preserve">
-    <value>单击一次</value>
-  </data>
-  <data name="PenButtonSettings.4" xml:space="preserve">
-    <value>双击</value>
-  </data>
-  <data name="PenButtonSettings.5" xml:space="preserve">
-    <value>按住</value>
-  </data>
-  <data name="PenButtonSettings.6" xml:space="preserve">
-    <value>悬停单击</value>
-  </data>
-  <data name="PenButtonSettings.7" xml:space="preserve">
-    <value>要自定义按钮，请单击左侧图像中显示的相应按钮</value>
-  </data>
-  <data name="PenButtonSettings.8" xml:space="preserve">
-    <value>恢复到默认操作</value>
-  </data>
-  <data name="PenSettings.0" xml:space="preserve">
-    <value>触控笔设置</value>
-  </data>
-  <data name="PenSettings.1" xml:space="preserve">
-    <value>笔尖灵敏度</value>
-  </data>
-  <data name="PenSettings.2" xml:space="preserve">
-    <value>将滑块向右移动将逐渐\n降低压力敏感度，您需要\n向触控笔施加更大的压力</value>
-  </data>
-  <data name="PenSettings.3" xml:space="preserve">
-    <value>倾斜灵敏度</value>
-  </data>
-  <data name="PenSettings.4" xml:space="preserve">
-    <value>将滑块向右移动将逐渐\n增加倾斜效果，您需要\n应用更小的倾斜角度</value>
-  </data>
-  <data name="PenSettings.5" xml:space="preserve">
-    <value>与 Tile 配对</value>
-  </data>
-  <data name="PenSettings.6" xml:space="preserve">
-    <value>使用 Tile 应用程序将触控笔与\n移动设备配对</value>
-  </data>
-  <data name="PenSettings.7" xml:space="preserve">
-    <value>开始使用</value>
-  </data>
-  <data name="Fullscreen" xml:space="preserve">
-    <value>全屏</value>
-  </data>
-  <data name="PipPbp.0" xml:space="preserve">
-    <value>PIP</value>
-  </data>
-  <data name="PipPbp.1" xml:space="preserve">
-    <value>PBP</value>
-  </data>
-  <data name="PipPbp.2" xml:space="preserve">
-    <value>输入 1（主）</value>
-  </data>
-  <data name="PipPbp.3" xml:space="preserve">
-    <value>输入 2（子）</value>
-  </data>
-  <data name="PipPbp.4" xml:space="preserve">
-    <value>输入 3（子）</value>
-  </data>
-  <data name="PipPbp.5" xml:space="preserve">
-    <value>输入 4（子）</value>
-  </data>
-  <data name="PipPbp.6" xml:space="preserve">
-    <value>USB 开关</value>
-  </data>
-  <data name="PipPbp.7" xml:space="preserve">
-    <value>在位置之间切换</value>
-  </data>
-  <data name="SpeakerAudioPreset.0" xml:space="preserve">
-    <value>音频预设</value>
-  </data>
-  <data name="SpeakerAudioPreset.1" xml:space="preserve">
-    <value>这些设置仅适用于多媒体</value>
-  </data>
-  <data name="SpeakerAudioPreset.2" xml:space="preserve">
-    <value>语音</value>
-  </data>
-  <data name="SpeakerAudioPreset.3" xml:space="preserve">
-    <value>根据您的喜好调整音频范围。这些设置仅适用于多媒体音频。</value>
-  </data>
-  <data name="SpeakerAudioSettings.0" xml:space="preserve">
-    <value>智能麦克风降噪</value>
-  </data>
-  <data name="SpeakerAudioSettings.1" xml:space="preserve">
-    <value>静音通知</value>
-  </data>
-  <data name="SpeakerAudioSettings.2" xml:space="preserve">
-    <value>音量调节音调</value>
-  </data>
-  <data name="SpeakerAudioSettings.3" xml:space="preserve">
-    <value>每个级别</value>
-  </data>
-  <data name="SpeakerAudioSettings.4" xml:space="preserve">
-    <value>仅最小值和最大值</value>
-  </data>
-  <data name="SpeakerInteractions.0" xml:space="preserve">
-    <value>交互</value>
-  </data>
-  <data name="SpeakerInteractions.1" xml:space="preserve">
-    <value>将光标悬停在下面的应用程序名称上可查看可用的扬声器按钮（以绿色表示）</value>
-  </data>
-  <data name="SpeakerInteractions.2" xml:space="preserve">
-    <value>Microsoft Teams</value>
-  </data>
-  <data name="SpeakerInteractions.3" xml:space="preserve">
-    <value>Zoom</value>
-  </data>
-  <data name="SpeakerInteractions.4" xml:space="preserve">
-    <value>Google Meet</value>
-  </data>
-  <data name="SpeakerInteractions.5" xml:space="preserve">
-    <value>Skype for Business</value>
-  </data>
-  <data name="WebCameraCapture.0" xml:space="preserve">
-    <value>3-2-1 倒计时</value>
-  </data>
-  <data name="WebCameraCapture.1" xml:space="preserve">
-    <value>取景网格</value>
-  </data>
-  <data name="WebCameraCapture.2" xml:space="preserve">
-    <value>打开</value>
-  </data>
-  <data name="WebCameraCapture.3" xml:space="preserve">
-    <value>更改</value>
-  </data>
-  <data name="WebCameraCapture.4" xml:space="preserve">
-    <value>分辨率</value>
-  </data>
-  <data name="WebCameraCapture.5" xml:space="preserve">
-    <value>4K UHD</value>
-  </data>
-  <data name="WebCameraCapture.6" xml:space="preserve">
-    <value>全高清</value>
-  </data>
-  <data name="WebCameraCapture.7" xml:space="preserve">
-    <value>HD</value>
-  </data>
-  <data name="WebCameraCapture.8" xml:space="preserve">
-    <value>FPS</value>
-  </data>
-  <data name="WebCameraCapture.9" xml:space="preserve">
-    <value>通过调整每秒捕获的图像数量来控制视频清晰度和风格。</value>
-  </data>
-  <data name="WebCameraCapture.10" xml:space="preserve">
-    <value>媒体文件位置</value>
-  </data>
-  <data name="WebCameraColorImage.0" xml:space="preserve">
-    <value>HDR</value>
-  </data>
-  <data name="WebCameraColorImage.1" xml:space="preserve">
-    <value>高动态范围可在各种光照条件下自动校正，以获得最佳图像质量</value>
-  </data>
-  <data name="WebCameraColorImage.2" xml:space="preserve">
-    <value>自动白平衡</value>
-  </data>
-  <data name="WebCameraColorImage.3" xml:space="preserve">
-    <value>亮度</value>
-  </data>
-  <data name="WebCameraColorImage.4" xml:space="preserve">
-    <value>锐度</value>
-  </data>
-  <data name="WebCameraColorImage.5" xml:space="preserve">
-    <value>对比度</value>
-  </data>
-  <data name="WebCameraColorImage.6" xml:space="preserve">
-    <value>饱和度</value>
-  </data>
-  <data name="WebCameraColorImage.7" xml:space="preserve">
-    <value>防闪烁</value>
-  </data>
-  <data name="WebCameraColorImage.8" xml:space="preserve">
-    <value>在人工照明下录制时减少闪烁</value>
-  </data>
-  <data name="WebCameraColorImage.9" xml:space="preserve">
-    <value>Hz</value>
-  </data>
-  <data name="WebCameraMicrophone.0" xml:space="preserve">
-    <value>麦克风</value>
-  </data>
-  <data name="WebCameraMicrophone.1" xml:space="preserve">
-    <value>摄像头麦克风</value>
-  </data>
-  <data name="WebCameraMicrophone.2" xml:space="preserve">
-    <value>注意：此麦克风未经 Microsoft Teams 认证。要获得最佳的 Microsoft Teams 通话体验，请使用戴尔的 Microsoft Teams 认证音频设备。</value>
-  </data>
-  <data name="WebCameraPresenceDetection.0" xml:space="preserve">
-    <value>用户检测</value>
-  </data>
-  <data name="WebCameraPresenceDetection.1" xml:space="preserve">
-    <value>接近传感器</value>
-  </data>
-  <data name="WebCameraPresenceDetection.2" xml:space="preserve">
-    <value>当您处于视野范围内时，检测您的存在</value>
-  </data>
-  <data name="WebCameraPresenceDetection.3" xml:space="preserve">
-    <value>接近时唤醒</value>
-  </data>
-  <data name="WebCameraPresenceDetection.4" xml:space="preserve">
-    <value>当您接近时，系统将唤醒 PC</value>
-  </data>
-  <data name="WebCameraPresenceDetection.5" xml:space="preserve">
-    <value>离开锁定</value>
-  </data>
-  <data name="WebCameraPresenceDetection.6" xml:space="preserve">
-    <value>当您离开时锁定 PC 并关闭显示器</value>
-  </data>
-  <data name="WebCameraPresenceDetection.7" xml:space="preserve">
-    <value>延迟</value>
-  </data>
-  <data name="WebCameraPresenceDetection.8" xml:space="preserve">
-    <value>暂停</value>
-  </data>
-  <data name="WebCameraPresenceDetection.9" xml:space="preserve">
-    <value>暂停长度</value>
-  </data>
-  <data name="WebCameraPresenceDetection.10" xml:space="preserve">
-    <value>Windows Hello</value>
-  </data>
-  <data name="WebCameraPresenceDetection.11" xml:space="preserve">
-    <value>使用面部识别进行登录。此链接会将您转至 Windows 设置。</value>
-  </data>
-  <data name="WebCameraSettings.0" xml:space="preserve">
-    <value>摄像头控制</value>
-  </data>
-  <data name="WebCameraSettings.1" xml:space="preserve">
-    <value>AI 自动取景</value>
-  </data>
-  <data name="WebCameraSettings.2" xml:space="preserve">
-    <value>利用智能场景分析和面部跟踪，在您移动时缩放和平移视图</value>
-  </data>
-  <data name="WebCameraSettings.3" xml:space="preserve">
-    <value>摄像头过渡</value>
-  </data>
-  <data name="WebCameraSettings.4" xml:space="preserve">
-    <value>当摄像头重新调整您在画面中的位置时，通过平移和缩放实现平滑过渡</value>
-  </data>
-  <data name="WebCameraSettings.5" xml:space="preserve">
-    <value>跟踪灵敏度</value>
-  </data>
-  <data name="WebCameraSettings.6" xml:space="preserve">
-    <value>调整摄像头对移动的响应速度，并重新调整您在画面中的位置</value>
-  </data>
-  <data name="WebCameraSettings.7" xml:space="preserve">
-    <value>普通</value>
-  </data>
-  <data name="WebCameraSettings.8" xml:space="preserve">
-    <value>快速</value>
-  </data>
-  <data name="WebCameraSettings.9" xml:space="preserve">
-    <value>帧大小</value>
-  </data>
-  <data name="WebCameraSettings.10" xml:space="preserve">
-    <value>窄</value>
-  </data>
-  <data name="WebCameraSettings.11" xml:space="preserve">
-    <value>标准</value>
-  </data>
-  <data name="WebCameraSettings.12" xml:space="preserve">
-    <value>视场</value>
-  </data>
-  <data name="WebCameraSettings.13" xml:space="preserve">
-    <value>缩小或拓宽摄像头视场的角度</value>
-  </data>
-  <data name="WebCameraSettings.14" xml:space="preserve">
-    <value>°</value>
-  </data>
-  <data name="WebCameraSettings.15" xml:space="preserve">
-    <value>Zoom</value>
-  </data>
-  <data name="WebCameraSettings.16" xml:space="preserve">
-    <value>自动对焦</value>
-  </data>
-  <data name="WebCameraSettings.17" xml:space="preserve">
-    <value>智能调整摄像头镜头以获得对焦清晰的画面</value>
-  </data>
-  <data name="WebCameraSettings.18" xml:space="preserve">
-    <value>优先级</value>
-  </data>
-  <data name="WebCameraSettings.19" xml:space="preserve">
-    <value>FPS 视频的平滑度或曝光度优先，以保持理想的光线水平</value>
-  </data>
-  <data name="WebCameraSettings.20" xml:space="preserve">
-    <value>曝光</value>
-  </data>
-  <data name="WebCameraSettings.21" xml:space="preserve">
-    <value>帧速</value>
-  </data>
-  <data name="WebCameraSettings.22" xml:space="preserve">
-    <value>HDR 开启时，帧速/曝光将不起作用。\r单击 </value>
-  </data>
-  <data name="WebCameraSettings.23" xml:space="preserve">
-    <value>此处 </value>
-  </data>
-  <data name="WebCameraSettings.24" xml:space="preserve">
-    <value>更改 HDR 设置。</value>
-  </data>
-  <data name="WebCameraSettings.25" xml:space="preserve">
-    <value>外部网络摄像头优先</value>
-  </data>
-  <data name="WebCameraSettings.26" xml:space="preserve">
-    <value>在 Dell UltraSharp 网络摄像头和其他网络摄像头（集成和外部）之间自动切换。Windows Hello 将使用活动网络摄像头进行面部识别。\n\n提醒：一次只能启用和访问一个摄像头。</value>
-  </data>
-  <data name="Mouse.8" xml:space="preserve">
-    <value>触控滚动灵敏度</value>
-  </data>
-  <data name="Mouse.9" xml:space="preserve">
-    <value>调整滚动速度</value>
-  </data>
-  <data name="Mouse.10" xml:space="preserve">
-    <value>鼠标主键</value>
-  </data>
-  <data name="Mouse.11" xml:space="preserve">
-    <value>DPI 设置</value>
-  </data>
-  <data name="Mouse.12" xml:space="preserve">
-    <value>轮询速率</value>
-  </data>
-  <data name="Mouse.13" xml:space="preserve">
-    <value>每秒向系统报告鼠标位置的次数</value>
-  </data>
-  <data name="Wired" xml:space="preserve">
-    <value>有线</value>
-  </data>
-  <data name="Tooltip.0" xml:space="preserve">
-    <value>您已连接同一型号的多个设备。操作将在每个设备的上重复</value>
-  </data>
-  <data name="Tooltip.1" xml:space="preserve">
-    <value>未找到设备。请确保您的无线设备已充电并打开。</value>
-  </data>
-  <data name="Tooltip.2" xml:space="preserve">
-    <value>此设备已配对。如果您想要再次配对，请先将此设备取消配对。</value>
-  </data>
-  <data name="Tooltip.3" xml:space="preserve">
-    <value>连接的 USB 无线接收器不支持您要配对的设备。请使用设备随附的接收器。</value>
-  </data>
-  <data name="Tooltip.4" xml:space="preserve">
-    <value>此 USB 无线接收器上的可用插槽已满。要使用，请单击设备设置页面中的“取消配对”按钮，取消设备与其的配对。</value>
-  </data>
-  <data name="Mouse.14" xml:space="preserve">
-    <value>单击以分配操作</value>
-  </data>
-  <data name="Mouse.15" xml:space="preserve">
-    <value>从右侧的列表中\n选择一项操作</value>
-  </data>
-  <data name="USBWirelessReceiver" xml:space="preserve">
-    <value>USB 无线接收器</value>
-  </data>
-  <data name="ReceiverFirmwareVersion" xml:space="preserve">
-    <value>接收器固件版本</value>
-  </data>
-  <data name="ReadyToBePaired" xml:space="preserve">
-    <value>准备好配对</value>
-  </data>
-  <data name="BrightnessOrContrast" xml:space="preserve">
-    <value>亮度/对比度</value>
-  </data>
-  <data name="DisplayProperties" xml:space="preserve">
-    <value>属性</value>
-  </data>
-  <data name="Layout" xml:space="preserve">
-    <value>布局</value>
-  </data>
-  <data name="EasyMemory" xml:space="preserve">
-    <value>Easy Memory</value>
-  </data>
-  <data name="VisionEngine" xml:space="preserve">
-    <value>Vision Engine</value>
-  </data>
-  <data name="None" xml:space="preserve">
-    <value>无</value>
-  </data>
-  <data name="Copilot" xml:space="preserve">
-    <value>Copilot</value>
-  </data>
-  <data name="Devices" xml:space="preserve">
-    <value>设备</value>
-  </data>
-  <data name="Lock" xml:space="preserve">
-    <value>锁定</value>
-  </data>
-  <data name="NotificationCenter" xml:space="preserve">
-    <value>通知中心</value>
-  </data>
-  <data name="ScreenSnip" xml:space="preserve">
-    <value>屏幕剪裁</value>
-  </data>
-  <data name="ShowHideDesktop" xml:space="preserve">
-    <value>显示/隐藏桌面</value>
-  </data>
-  <data name="Shutdown" xml:space="preserve">
-    <value>关机</value>
-  </data>
-  <data name="SignOut" xml:space="preserve">
-    <value>注销</value>
-  </data>
-  <data name="Sleep" xml:space="preserve">
-    <value>睡眠</value>
-  </data>
-  <data name="SwitchApplications" xml:space="preserve">
-    <value>切换应用程序</value>
-  </data>
-  <data name="TaskView" xml:space="preserve">
-    <value>任务视图</value>
-  </data>
-  <data name="BarrelButton" xml:space="preserve">
-    <value>筒状按钮</value>
-  </data>
-  <data name="DefineBySystem" xml:space="preserve">
-    <value>由系统定义</value>
-  </data>
-  <data name="EMail" xml:space="preserve">
-    <value>电子邮件</value>
-  </data>
-  <data name="OneNote" xml:space="preserve">
-    <value>One Note</value>
-  </data>
-  <data name="PenMenu" xml:space="preserve">
-    <value>触控笔菜单</value>
-  </data>
-  <data name="QuickNote" xml:space="preserve">
-    <value>快速备注</value>
-  </data>
-  <data name="ScreenSnipping" xml:space="preserve">
-    <value>屏幕剪裁</value>
-  </data>
-  <data name="StickyNotes" xml:space="preserve">
-    <value>便笺</value>
-  </data>
-  <data name="Widgets" xml:space="preserve">
-    <value>小组件</value>
-  </data>
-  <data name="WindowsSearch" xml:space="preserve">
-    <value>Windows 搜索</value>
-  </data>
-  <data name="SwitchApplication" xml:space="preserve">
-    <value>切换应用程序</value>
-  </data>
-  <data name="AssignKeystroke" xml:space="preserve">
-    <value>设定击键</value>
-  </data>
-  <data name="Color" xml:space="preserve">
-    <value>颜色</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>上一步</value>
-  </data>
-  <data name="Calculator" xml:space="preserve">
-    <value>计算器</value>
-  </data>
-  <data name="CloseWindow" xml:space="preserve">
-    <value>关闭窗口</value>
-  </data>
-  <data name="Copy" xml:space="preserve">
-    <value>复制</value>
-  </data>
-  <data name="Cut" xml:space="preserve">
-    <value>剪切</value>
-  </data>
-  <data name="Documents" xml:space="preserve">
-    <value>文档</value>
-  </data>
-  <data name="Forward" xml:space="preserve">
-    <value>向前</value>
-  </data>
-  <data name="MaximizeWindow" xml:space="preserve">
-    <value>最大化窗口</value>
-  </data>
-  <data name="MinimizeWindow" xml:space="preserve">
-    <value>最小化窗口</value>
-  </data>
-  <data name="MyHome" xml:space="preserve">
-    <value>我的主页</value>
-  </data>
-  <data name="OpenFile" xml:space="preserve">
-    <value>打开文件</value>
-  </data>
-  <data name="OpenFolder" xml:space="preserve">
-    <value>打开文件夹</value>
-  </data>
-  <data name="OpenNewBrowserTab" xml:space="preserve">
-    <value>打开新的浏览器选项卡</value>
-  </data>
-  <data name="OpenWebPage" xml:space="preserve">
-    <value>打开网页</value>
-  </data>
-  <data name="Paste" xml:space="preserve">
-    <value>粘贴</value>
-  </data>
-  <data name="ZoomIn" xml:space="preserve">
-    <value>放大</value>
-  </data>
-  <data name="ZoomOut" xml:space="preserve">
-    <value>缩小</value>
-  </data>
-  <data name="ZoomReset" xml:space="preserve">
-    <value>缩放重置</value>
-  </data>
-  <data name="4thClick" xml:space="preserve">
-    <value>第 4 次单击</value>
-  </data>
-  <data name="5thClick" xml:space="preserve">
-    <value>第 5 次单击</value>
-  </data>
-  <data name="Erase" xml:space="preserve">
-    <value>擦除</value>
-  </data>
-  <data name="LeftClick" xml:space="preserve">
-    <value>左键单击</value>
-  </data>
-  <data name="MiddleClick" xml:space="preserve">
-    <value>中键单击</value>
-  </data>
-  <data name="OpenRun" xml:space="preserve">
-    <value>打开/运行</value>
-  </data>
-  <data name="OpenRun2" xml:space="preserve">
-    <value>打开运行</value>
-  </data>
-  <data name="PenPageDown" xml:space="preserve">
-    <value>向下翻页</value>
-  </data>
-  <data name="PenPageUp" xml:space="preserve">
-    <value>向上翻页</value>
-  </data>
-  <data name="RadialMenu" xml:space="preserve">
-    <value>圆盘菜单</value>
-  </data>
-  <data name="Redo" xml:space="preserve">
-    <value>重做</value>
-  </data>
-  <data name="RightClick" xml:space="preserve">
-    <value>右键单击</value>
-  </data>
-  <data name="Undo" xml:space="preserve">
-    <value>撤消</value>
-  </data>
-  <data name="Tooltip.5" xml:space="preserve">
-    <value>带有 Copilot 键的键盘布局可能会在不同时间推出，具体取决于语言和地区。</value>
-  </data>
-  <data name="ITLockToolTip.0" xml:space="preserve">
-    <value>此设置已被 IT 管理员锁定。</value>
-  </data>
-  <data name="WebCameraMicrophone.3" xml:space="preserve">
-    <value>启用摄像头的麦克风。打开/关闭此功能时，摄像头将快速重新启动。</value>
-  </data>
-  <data name="Camera.6" xml:space="preserve">
-    <value>选择一个选项</value>
-  </data>
-  <data name="Camera.5" xml:space="preserve">
-    <value>添加新预设</value>
-  </data>
-  <data name="Camera.Alert.1" xml:space="preserve">
-    <value>我们正在应用更改，请稍候</value>
-  </data>
-  <data name="Camera.Alert.2" xml:space="preserve">
-    <value>另一个应用程序正在使用您的摄像头</value>
-  </data>
-  <data name="Camera.Alert.3" xml:space="preserve">
-    <value>请拔下摄像头再插入，然后重试</value>
-  </data>
-  <data name="Camera.Alert.4" xml:space="preserve">
-    <value>我们正在移除您的摄像头，请稍候</value>
-  </data>
-  <data name="Camera.10" xml:space="preserve">
-    <value>恢复录制</value>
-  </data>
-  <data name="Camera.11" xml:space="preserve">
-    <value>停止录制</value>
-  </data>
-  <data name="Camera.7" xml:space="preserve">
-    <value>打开媒体文件夹</value>
-  </data>
-  <data name="Camera.8" xml:space="preserve">
-    <value>开始录制</value>
-  </data>
-  <data name="Camera.9" xml:space="preserve">
-    <value>暂停录制</value>
-  </data>
-  <data name="WebCameraSettings.27" xml:space="preserve">
-    <value>调整帧大小</value>
-  </data>
-  <data name="EazyMemory.0" xml:space="preserve">
-    <value>自动启动：</value>
-  </data>
-  <data name="EazyMemory.1" xml:space="preserve">
-    <value>按时间启动：</value>
-  </data>
-  <data name="EazyMemory.2" xml:space="preserve">
-    <value>应用程序/文档：</value>
-  </data>
-  <data name="EazyMemory.3" xml:space="preserve">
-    <value>应用</value>
-  </data>
-  <data name="EazyMemory.4" xml:space="preserve">
-    <value>不适用</value>
-  </data>
-  <data name="EazyMemory.5" xml:space="preserve">
-    <value>错误</value>
-  </data>
-  <data name="EazyMemory.6" xml:space="preserve">
-    <value>配置文件</value>
-  </data>
-  <data name="EazyMemory.7" xml:space="preserve">
-    <value>警告</value>
-  </data>
-  <data name="EazyMemory.8" xml:space="preserve">
-    <value>您最多只能保存 9 个配置文件。请删除现有配置文件或在主菜单中进行编辑。</value>
-  </data>
-  <data name="EazyMemory.9" xml:space="preserve">
-    <value>条目重复。为 Easy Memory 配置文件输入不同的文档或应用程序。</value>
-  </data>
-  <data name="EazyMemory.10" xml:space="preserve">
-    <value>您可以在屏幕上排列窗口，然后单击 + 图标。\r\n或者，选择下面的现有布局，然后单击铅笔图标以编辑布局。</value>
-  </data>
-  <data name="EazyMemory.11" xml:space="preserve">
-    <value>另一个配置文件设置为在 PC 启动期间启动。是否要将其替换为此配置文件？</value>
-  </data>
-  <data name="EazyMemory.12" xml:space="preserve">
-    <value>选择启动选项</value>
-  </data>
-  <data name="EazyMemory.13" xml:space="preserve">
-    <value>在 PC 启动期间启动</value>
-  </data>
-  <data name="EazyMemory.14" xml:space="preserve">
-    <value>手动选择所创建的配置文件</value>
-  </data>
-  <data name="EazyMemory.15" xml:space="preserve">
-    <value>按时间自动启动</value>
-  </data>
-  <data name="EazyMemory.16" xml:space="preserve">
-    <value>完成</value>
-  </data>
-  <data name="EazyMemory.17" xml:space="preserve">
-    <value>取消</value>
-  </data>
-  <data name="EazyMemory.18" xml:space="preserve">
-    <value>为配置文件命名</value>
-  </data>
-  <data name="EazyMemory.19" xml:space="preserve">
-    <value>选择布局</value>
-  </data>
-  <data name="EazyMemory.20" xml:space="preserve">
-    <value>窗口 0</value>
-  </data>
-  <data name="EazyMemory.21" xml:space="preserve">
-    <value>窗口 1</value>
-  </data>
-  <data name="EazyMemory.22" xml:space="preserve">
-    <value>窗口 2</value>
-  </data>
-  <data name="EazyMemory.23" xml:space="preserve">
-    <value>窗口 3</value>
-  </data>
-  <data name="EazyMemory.24" xml:space="preserve">
-    <value>窗口 4</value>
-  </data>
-  <data name="EazyMemory.25" xml:space="preserve">
-    <value>窗口 5</value>
-  </data>
-  <data name="EazyMemory.26" xml:space="preserve">
-    <value>窗口 6</value>
-  </data>
-  <data name="EazyMemory.27" xml:space="preserve">
-    <value>窗口 7</value>
-  </data>
-  <data name="EazyMemory.28" xml:space="preserve">
-    <value>窗口 8</value>
-  </data>
-  <data name="EazyMemory.29" xml:space="preserve">
-    <value>窗口 9</value>
-  </data>
-  <data name="EazyMemory.30" xml:space="preserve">
-    <value>窗口 10</value>
-  </data>
-  <data name="EazyMemory.31" xml:space="preserve">
-    <value>窗口 11</value>
-  </data>
-  <data name="EazyMemory.32" xml:space="preserve">
-    <value>窗口 12</value>
-  </data>
-  <data name="EazyMemory.33" xml:space="preserve">
-    <value>从文件夹中选择</value>
-  </data>
-  <data name="WalkThroughDisplay_Main.0" xml:space="preserve">
-    <value>自定义视图</value>
-  </data>
-  <data name="WalkThroughDisplay_Main.1" xml:space="preserve">
-    <value>Easy Arrange</value>
-  </data>
-  <data name="WalkThroughDisplay_Main.2" xml:space="preserve">
-    <value>管理您的输入</value>
-  </data>
-  <data name="WalkThroughMouse_Main.0" xml:space="preserve">
-    <value>触控滚动速度</value>
-  </data>
-  <data name="WalkThroughMouse_Main.1" xml:space="preserve">
-    <value>主按钮</value>
-  </data>
-  <data name="WalkThroughKB_Main.0" xml:space="preserve">
-    <value>可自定义的按键</value>
-  </data>
-  <data name="WalkThroughKB_Main.1" xml:space="preserve">
-    <value>便捷的会议控制</value>
-  </data>
-  <data name="WalkThroughKB_Main.2" xml:space="preserve">
-    <value>照明设置</value>
-  </data>
-  <data name="WalkThroughHeadsetWL3024_Main.0" xml:space="preserve">
-    <value>使用吊杆式麦克风静音/取消静音</value>
-  </data>
-  <data name="WalkThroughHeadsetWL5024_Main.0" xml:space="preserve">
-    <value>使用吊杆式麦克风静音/取消静音</value>
-  </data>
-  <data name="WalkThroughHeadsetWL5024_Main.1" xml:space="preserve">
-    <value>便捷的按钮</value>
-  </data>
-  <data name="WalkThroughHeadsetWL5024_Main.2" xml:space="preserve">
-    <value>主动降噪</value>
-  </data>
-  <data name="WalkThroughWebCam_Main.0" xml:space="preserve">
-    <value>Zoom 中的快速设置</value>
-  </data>
-  <data name="WalkThroughWebCam_Main.1" xml:space="preserve">
-    <value>轻松预设</value>
-  </data>
-  <data name="WalkThroughWebCam_Main.2" xml:space="preserve">
-    <value>AI 自动取景</value>
-  </data>
-  <data name="WalkThroughWebCam_Main.3" xml:space="preserve">
-    <value>高动态范围</value>
-  </data>
-  <data name="WalkThroughWebCam_Main.4" xml:space="preserve">
-    <value>安全功能</value>
-  </data>
-  <data name="WalkThroughDDPM_Main.0" xml:space="preserve">
-    <value>欢迎使用\r\nDell Display and Peripheral Manager</value>
-  </data>
-  <data name="WalkThroughDDPM_Sub.2" xml:space="preserve">
-    <value>查看您的设备、其连接方式及电池电量（如果是无线设备）</value>
-  </data>
-  <data name="WalkThroughDDPM_Sub.3" xml:space="preserve">
-    <value>将鼠标指针悬停在无线设备的连接磁贴上以了解更多详细信息</value>
-  </data>
-  <data name="WalkThroughDDPM_Sub.4" xml:space="preserve">
-    <value>单击您的设备以调整其设置</value>
-  </data>
-  <data name="WalkThroughDDPM_Sub.5" xml:space="preserve">
-    <value>单击齿轮图标以访问应用程序设置以及软件和固件更新</value>
-  </data>
-  <data name="WalkThroughDDPM_Main.1" xml:space="preserve">
-    <value>添加设备</value>
-  </data>
-  <data name="WalkThroughDDPM_Main.2" xml:space="preserve">
-    <value>查看您的设备</value>
-  </data>
-  <data name="WalkThroughDDPM_Main.3" xml:space="preserve">
-    <value>连接磁贴</value>
-  </data>
-  <data name="WalkThroughDDPM_Main.4" xml:space="preserve">
-    <value>设备设置</value>
-  </data>
-  <data name="WalkThroughDDPM_Main.5" xml:space="preserve">
-    <value>应用程序设置</value>
-  </data>
-  <data name="WalkThroughDDPM_Sub.0" xml:space="preserve">
-    <value>在一个位置即可查看所有受支持的戴尔显示屏和外围设备、进行个性化设置并及时更新固件</value>
-  </data>
-  <data name="WalkThroughDDPM_Sub.1" xml:space="preserve">
-    <value>单击 + 图标以查找有关如何连接受支持的戴尔设备的说明</value>
-  </data>
-  <data name="WalkThroughDisplay_Sub.0" xml:space="preserve">
-    <value>通过调整亮度/对比度级别、颜色配置文件等，打造个性化的观看体验</value>
-  </data>
-  <data name="WalkThroughDisplay_Sub.1" xml:space="preserve">
-    <value>减少调整多个窗口大小所花费的时间。选择“Easy Arrange”布局，然后单击窗口并将其拖动到位。如果您想重复使用这种特定的窗口排列方式，请使用“Easy Memory”进行保存</value>
-  </data>
-  <data name="WalkThroughDisplay_Sub.2" xml:space="preserve">
-    <value>通过输入源或 USB/网络 KVM 设置，轻松将您的显示器与多台 PC 配合使用。此外，可以通过 USB 将鼠标、键盘和配件连接到显示器，以便将它们与多台 PC 配合使用</value>
-  </data>
-  <data name="WalkThroughKB_Sub.0" xml:space="preserve">
-    <value>您可以通过指定操作来自定义键盘上的按键。</value>
-  </data>
-  <data name="WalkThroughKB_Sub.1" xml:space="preserve">
-    <value>在 Zoom 和 Teams 中使用快捷键来简化会议。</value>
-  </data>
-  <data name="WalkThroughKB_Sub.2" xml:space="preserve">
-    <value>通过手动调整或将其设置为根据周围光线进行调整来设置键盘的照明级别。</value>
-  </data>
-  <data name="WalkThroughKB525C_Main.0" xml:space="preserve">
-    <value>便捷的会议控制</value>
-  </data>
-  <data name="WalkThroughKB525C_Main.1" xml:space="preserve">
-    <value>可自定义的按键</value>
-  </data>
-  <data name="WalkThroughKB525C_Sub.0" xml:space="preserve">
-    <value>在 Zoom 和 Teams 中使用快捷键来简化会议。</value>
-  </data>
-  <data name="WalkThroughKB525C_Sub.1" xml:space="preserve">
-    <value>您可以通过指定操作来自定义键盘上的按键。</value>
-  </data>
-  <data name="WalkThroughMouse_Sub.0" xml:space="preserve">
-    <value>更改应用程序中突出显示区域的触控滚动速度</value>
-  </data>
-  <data name="WalkThroughMouse_Sub.1" xml:space="preserve">
-    <value>选择您希望主按钮在应用程序中是左按钮还是右按钮</value>
-  </data>
-  <data name="WalkThroughMouseMS355_Main.0" xml:space="preserve">
-    <value>轮询速率</value>
-  </data>
-  <data name="WalkThroughMouseMS355_Main.1" xml:space="preserve">
-    <value>自定义滚轮单击</value>
-  </data>
-  <data name="WalkThroughMouseMS355_Main.2" xml:space="preserve">
-    <value>特定于应用程序的操作</value>
-  </data>
-  <data name="WalkThroughMouseMS355_Sub.0" xml:space="preserve">
-    <value>通过提高鼠标在应用程序中的轮询速率来提高鼠标的速度和精度</value>
-  </data>
-  <data name="WalkThroughMouseMS355_Sub.1" xml:space="preserve">
-    <value>指定单击滚动按钮时您喜欢的操作</value>
-  </data>
-  <data name="WalkThroughMouseMS355_Sub.2" xml:space="preserve">
-    <value>指定使用某些应用程序时滚轮单击的自定义操作</value>
-  </data>
-  <data name="WalkThroughMouseMS900_Main.0" xml:space="preserve">
-    <value>自定义按钮</value>
-  </data>
-  <data name="WalkThroughMouseMS900_Main.2" xml:space="preserve">
-    <value>特定于应用程序的操作</value>
-  </data>
-  <data name="WalkThroughMouseMS900_Sub.0" xml:space="preserve">
-    <value>将您喜欢的操作指定给应用程序中列出的按钮</value>
-  </data>
-  <data name="WalkThroughMouseMS900_Sub.1" xml:space="preserve">
-    <value>指定使用某些应用程序时鼠标按钮的自定义操作</value>
-  </data>
-  <data name="WalkThroughPen_Main.0" xml:space="preserve">
-    <value>使用 Tile 查找触控笔</value>
-  </data>
-  <data name="WalkThroughPen_Main.1" xml:space="preserve">
-    <value>为触控笔电池充电</value>
-  </data>
-  <data name="WalkThroughPen_Main.2" xml:space="preserve">
-    <value>自定义触控笔的行为</value>
-  </data>
-  <data name="WalkThroughPen_Sub.0" xml:space="preserve">
-    <value>要将触控笔与 Tile 配对，请执行以下操作：\n1. 在移动设备上启用蓝牙。\n2. 扫描二维码将 Tile 下载到您的移动设备。\n3. 按住触控笔侧面的两个按钮 3 秒钟，将其与 Tile 配对。</value>
-  </data>
-  <data name="WalkThroughPen_Sub.1" xml:space="preserve">
-    <value>您的触控笔已充电 X%。\n\n要将触控笔充满电，请确保触控笔已连接到平板电脑屏幕。触控笔充电完毕后，您将收到通知。\n\n一旦电池电量低于 10%，系统就会显示低电量通知。</value>
-  </data>
-  <data name="WalkThroughPen_Sub.2" xml:space="preserve">
-    <value>在应用程序中，您可以自定义触控笔按钮的操作，并设置笔尖和倾斜灵敏度\r\n</value>
-  </data>
-  <data name="WalkThroughWebCam_Sub.0" xml:space="preserve">
-    <value>借助我们全新的快速设置小组件，可以在 Zoom 通话期间轻松管理摄像头的关键设置</value>
-  </data>
-  <data name="WalkThroughWebCam_Sub.1" xml:space="preserve">
-    <value>选择一个预设来反映您希望在摄像头上呈现的样子，或者创建您自己的预设</value>
-  </data>
-  <data name="WalkThroughWebCam_Sub.2" xml:space="preserve">
-    <value>启用 AI 自动取景功能，让您的面部在您移动时始终处于画面中央</value>
-  </data>
-  <data name="WalkThroughWebCam_Sub.3" xml:space="preserve">
-    <value>启用高动态范围以增强图像质量，尤其是在极端照明条件下</value>
-  </data>
-  <data name="WalkThroughWebCam_Sub.4" xml:space="preserve">
-    <value>打开“用户感应”功能，让摄像头在您靠近时唤醒屏幕并在您走开时锁定屏幕</value>
-  </data>
-  <data name="WalkThroughWebCamWB3023_Main.0" xml:space="preserve">
-    <value>Zoom 中的快速设置</value>
-  </data>
-  <data name="WalkThroughWebCamWB3023_Main.1" xml:space="preserve">
-    <value>轻松预设</value>
-  </data>
-  <data name="WalkThroughWebCamWB3023_Main.2" xml:space="preserve">
-    <value>高动态范围</value>
-  </data>
-  <data name="WalkThroughWebCamWB3023_Sub.0" xml:space="preserve">
-    <value>借助我们全新的快速设置小组件，可以在 Zoom 通话期间轻松管理摄像头的关键设置</value>
-  </data>
-  <data name="WalkThroughWebCamWB3023_Sub.1" xml:space="preserve">
-    <value>选择一个预设来反映您希望在摄像头上呈现的样子，或者创建您自己的预设</value>
-  </data>
-  <data name="WalkThroughWebCamWB3023_Sub.2" xml:space="preserve">
-    <value>P2424HEB</value>
-  </data>
-  <data name="WalkThroughHeadsetWL3024_Main.1" xml:space="preserve">
-    <value>便捷的按钮</value>
-  </data>
-  <data name="WalkThroughHeadsetWL3024_Sub.0" xml:space="preserve">
-    <value>向上折叠麦克风可静音，将其展开可取消静音。\r\n\r\n如果需要，请打开应用程序中的一项功能，以便在展开吊杆式麦克风时接听来电。</value>
-  </data>
-  <data name="WalkThroughHeadsetWL3024_Sub.1" xml:space="preserve">
-    <value>只需按一下按钮，即可管理 Microsoft Teams 和您的静音状态。使用其他便捷按钮可调整音频音量和更多功能。</value>
-  </data>
-  <data name="WalkThroughHeadsetWH3024_Main.0" xml:space="preserve">
-    <value>便捷的按钮</value>
-  </data>
-  <data name="WalkThroughHeadsetWH3024_Main.1" xml:space="preserve">
-    <value>使用吊杆式麦克风静音/取消静音</value>
-  </data>
-  <data name="WalkThroughHeadsetWH3024_Sub.0" xml:space="preserve">
-    <value>使用耳机内嵌控件上的便捷按钮可管理您的通话、静音状态和音频音量</value>
-  </data>
-  <data name="WalkThroughHeadsetWH3024_Sub.1" xml:space="preserve">
-    <value>向上折叠麦克风可静音，将其展开可取消静音。\r\n\r\n如果需要，请打开应用程序中的一项功能，以便在展开吊杆式麦克风时接听来电。</value>
-  </data>
-  <data name="WalkThroughHeadsetWL5024_Sub.0" xml:space="preserve">
-    <value>向上折叠麦克风可静音，将其展开可取消静音。\r\n\r\n如果需要，请打开应用程序中的一项功能，以便在展开吊杆式麦克风时接听来电。</value>
-  </data>
-  <data name="WalkThroughHeadsetWL5024_Sub.1" xml:space="preserve">
-    <value>只需按一下按钮，即可管理 Microsoft Teams 和您的静音状态。使用其他便捷按钮可调整音频音量和更多功能。</value>
-  </data>
-  <data name="WalkThroughHeadsetWL5024_Sub.2" xml:space="preserve">
-    <value>按下耳机上的 ANC 按钮或从应用程序的选项中进行选择，以管理您听到的外界噪音量。\r\n\r\n如果选择“透明模式”，请使用应用程序中的滑块来自定义噪音级别。</value>
-  </data>
-  <data name="WalkThroughHeadsetWH5024_Main.0" xml:space="preserve">
-    <value>便捷的按钮</value>
-  </data>
-  <data name="WalkThroughHeadsetWH5024_Main.1" xml:space="preserve">
-    <value>使用吊杆式麦克风静音/取消静音</value>
-  </data>
-  <data name="WalkThroughHeadsetWH5024_Main.2" xml:space="preserve">
-    <value>主动降噪</value>
-  </data>
-  <data name="WalkThroughHeadsetWH5024_Sub.0" xml:space="preserve">
-    <value>使用耳机内嵌控件上的便捷按钮可管理您的通话、静音状态和音频音量。使用侧面的 ANC 按钮可调整您听到的外界噪音量。 </value>
-  </data>
-  <data name="WalkThroughHeadsetWH5024_Sub.1" xml:space="preserve">
-    <value>向上折叠麦克风可静音，将其展开可取消静音。\r\n\r\n如果需要，请打开应用程序中的一项功能，以便在展开吊杆式麦克风时接听来电。</value>
-  </data>
-  <data name="WalkThroughHeadsetWH5024_Sub.2" xml:space="preserve">
-    <value>按下耳机上的 ANC 按钮或从应用程序的选项中进行选择，以管理您听到的外界噪音量。\r\n\r\n如果选择“透明模式”，请使用应用程序中的滑块来自定义噪音级别。</value>
-  </data>
-  <data name="WalkThroughHeadsetWL7024_Sub.0" xml:space="preserve">
-    <value>上下滑动可管理您的音量；双击可接听和挂断电话；等等。</value>
-  </data>
-  <data name="WalkThroughHeadsetWL7024_Sub.1" xml:space="preserve">
-    <value>使用耳机上的便捷按钮可管理静音状态、主动降噪 (ANC) 和 Microsoft Teams</value>
-  </data>
-  <data name="WalkThroughHeadsetWL7024_Sub.2" xml:space="preserve">
-    <value>按下耳机上的 ANC 按钮或从应用程序的选项中进行选择，以管理您听到的外界噪音量。\r\n\r\n如果选择“透明模式”，请使用应用程序中的滑块来自定义噪音级别。</value>
-  </data>
-  <data name="WalkThroughHeadsetWL7024_Sub.3" xml:space="preserve">
-    <value>将耳机放在充电坞站上或使用随附的 USB 线缆将其连接到 PC 进行充电</value>
-  </data>
-  <data name="WalkThroughHeadsetWL7024_Main.0" xml:space="preserve">
-    <value>滑动并点按以控制功能</value>
-  </data>
-  <data name="WalkThroughHeadsetWL7024_Main.1" xml:space="preserve">
-    <value>便捷的按钮</value>
-  </data>
-  <data name="WalkThroughHeadsetWL7024_Main.2" xml:space="preserve">
-    <value>主动降噪</value>
-  </data>
-  <data name="WalkThroughHeadsetWL7024_Main.3" xml:space="preserve">
-    <value>充电简单</value>
-  </data>
-  <data name="EazyMemory.34" xml:space="preserve">
-    <value>分配程序</value>
-  </data>
-  <data name="EazyMemory.35" xml:space="preserve">
-    <value>启动选项</value>
-  </data>
-  <data name="EazyMemory.36" xml:space="preserve">
-    <value>保存不同的配置文件，并按计划时间或在系统启动时手动还原它们。\r\n\r\n首先为您的 Easy Memory 配置文件指定名称并选择布局。</value>
-  </data>
-  <data name="EazyMemory.37" xml:space="preserve">
-    <value>将应用程序/文档分配给窗口或将应用程序图标拖动到相应的分区。\r\n\r\n提醒：Easy Arrange Memory 的可用性可能因应用程序类型和启动行为而异。</value>
-  </data>
-  <data name="EazyMemory.38" xml:space="preserve">
-    <value>选择启动类型</value>
-  </data>
-  <data name="EazyMemory.39" xml:space="preserve">
-    <value>EASY MEMORY 设置</value>
-  </data>
-  <data name="WalkThrough.0" xml:space="preserve">
-    <value>功能亮点</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>是</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>否</value>
-  </data>
-  <data name="Camera.12" xml:space="preserve">
-    <value>添加预设时不可用</value>
-  </data>
-  <data name="Camera.13" xml:space="preserve">
-    <value>添加预设时并非所有功能都可用</value>
-  </data>
-  <data name="HeadsetAudioSettings.20" xml:space="preserve">
-    <value>控制您听到的外部声音量</value>
-  </data>
-  <data name="HeadsetAudioSettings.21" xml:space="preserve">
-    <value>消除周围噪音</value>
-  </data>
-  <data name="HeadsetAudioSettings.22" xml:space="preserve">
-    <value>允许听到环境声。调整听到的环境声的音量级别。</value>
-  </data>
-  <data name="HeadsetAudioSettings.23" xml:space="preserve">
-    <value>关闭降噪功能</value>
-  </data>
-  <data name="HeadsetAudioSettings.24" xml:space="preserve">
-    <value>限制近端麦克风噪音，为他人创造更好的音频体验</value>
-  </data>
-  <data name="HeadsetAudioSettings.25" xml:space="preserve">
-    <value>限制远端麦克风噪音，为您创造更好的音频体验</value>
-  </data>
-  <data name="HeadsetAudioSettings.26" xml:space="preserve">
-    <value>均衡器会根据所选预设进行调整</value>
-  </data>
-  <data name="HeadsetAudioSettings.27" xml:space="preserve">
-    <value>调整通话时您能听到自己声音的程度。（在“透明模式”下不可用）</value>
-  </data>
-  <data name="HeadsetAudioSettings.28" xml:space="preserve">
-    <value>消除背景噪音，让您的声音清晰可辨</value>
-  </data>
-  <data name="HeadsetAutomatedActions.9" xml:space="preserve">
-    <value>摘下耳机时的自动操作</value>
-  </data>
-  <data name="HeadsetAutomatedActions.10" xml:space="preserve">
-    <value>摘下耳机时自动暂停音乐播放。戴上耳机后，音乐将自动恢复播放。</value>
-  </data>
-  <data name="HeadsetAutomatedActions.11" xml:space="preserve">
-    <value>摘下耳机时自动将麦克风静音</value>
-  </data>
-  <data name="HeadsetAutomatedActions.12" xml:space="preserve">
-    <value>将吊杆式麦克风向下拉即可接听来电</value>
-  </data>
-  <data name="HeadsetAutomatedActions.13" xml:space="preserve">
-    <value>将耳罩从耳朵上移开时的自动操作</value>
-  </data>
-  <data name="HeadsetDeviceSettings.7" xml:space="preserve">
-    <value>通话时指示灯</value>
-  </data>
-  <data name="HeadsetDeviceSettings.8" xml:space="preserve">
-    <value>音频提示和设备功能声明</value>
-  </data>
-  <data name="SpeakerToolTip.0" xml:space="preserve">
-    <value>消除背景噪音，让您的声音清晰可辨</value>
-  </data>
-  <data name="SpeakerToolTip.1" xml:space="preserve">
-    <value>设备静音时播放声音</value>
-  </data>
-  <data name="SpeakerToolTip.2" xml:space="preserve">
-    <value>调整音量时播放声音</value>
-  </data>
-  <data name="Continue" xml:space="preserve">
-    <value>继续</value>
-  </data>
-  <data name="ImpExp_RestartMsg.0" xml:space="preserve">
-    <value>设置已更改。Dell Display and Peripheral Manager 将重新启动。</value>
-  </data>
-  <data name="ImpExp_SuccessMsg.0" xml:space="preserve">
-    <value>应用程序设置导出成功</value>
-  </data>
-  <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
-    <value>应用程序设置已成功应用于 %1。畅享使用显示器的乐趣吧。</value>
-  </data>
-  <data name="ImpExp_SuccessMsg.2" xml:space="preserve">
-    <value>应用程序设置已成功应用于 %1。畅享使用显示器的乐趣吧。</value>
-  </data>
-  <data name="ImpExp_WarningMsg.0" xml:space="preserve">
-    <value>这不是您的主显示器。是否要继续并将其设置为用于同步的主显示器？</value>
-  </data>
-  <data name="ImpExp_WarningMsg.1" xml:space="preserve">
-    <value>e 与当前布局相关联。是否要覆盖它？</value>
-  </data>
-  <data name="RestartNeeded" xml:space="preserve">
-    <value>需要重新启动</value>
-  </data>
-  <data name="Success" xml:space="preserve">
-    <value>成功</value>
-  </data>
-  <data name="Warning" xml:space="preserve">
-    <value>警告</value>
-  </data>
-  <data name="ImpExp_Message.0" xml:space="preserve">
-    <value>检测到相同型号时自动应用设置</value>
-  </data>
-  <data name="DisplayDefault.0" xml:space="preserve">
-    <value>是否要立即将显示器重置为出厂设置？</value>
-  </data>
-  <data name="RestoreToDefaultActions" xml:space="preserve">
-    <value>恢复到默认操作</value>
-  </data>
-  <data name="Game_Enhance_Mode" xml:space="preserve">
-    <value>游戏增强模式</value>
-  </data>
-  <data name="Response_Time" xml:space="preserve">
-    <value>响应时间</value>
-  </data>
-  <data name="Dark_Stabilizer" xml:space="preserve">
-    <value>深色稳定器</value>
-  </data>
-  <data name="Dark_Stabilizer_Toggle" xml:space="preserve">
-    <value>深色稳定器切换</value>
-  </data>
-  <data name="Dual_Resolution" xml:space="preserve">
-    <value>双重分辨率</value>
-  </data>
-  <data name="Dual_Resolution_Toggle" xml:space="preserve">
-    <value>双重分辨率切换</value>
-  </data>
-  <data name="Resolution_and_Refresh_Rate" xml:space="preserve">
-    <value>分辨率和刷新率</value>
-  </data>
-  <data name="Toggle_Vision_Engine" xml:space="preserve">
-    <value>切换 Vision Engine</value>
-  </data>
-  <data name="Third_Party_Licenses" xml:space="preserve">
-    <value>第三方许可</value>
-  </data>
-  <data name="Help" xml:space="preserve">
-    <value>帮助</value>
-  </data>
-  <data name="Need_help" xml:space="preserve">
-    <value>需要帮助吗？有关此软件的更多信息，请单击下面的按钮。</value>
-  </data>
-  <data name="Learn_more" xml:space="preserve">
-    <value>了解更多</value>
-  </data>
-  <data name="On_screen_notifications" xml:space="preserve">
-    <value>屏幕上通知</value>
-  </data>
-  <data name="All_Devices" xml:space="preserve">
-    <value>所有设备</value>
-  </data>
-  <data name="Low_battery_level" xml:space="preserve">
-    <value>电池电量低</value>
-  </data>
-  <data name="Device_specific" xml:space="preserve">
-    <value>特定于设备</value>
-  </data>
-  <data name="Keyboard_lock_key" xml:space="preserve">
-    <value>键盘锁定键</value>
-  </data>
-  <data name="Webcam_WB7022_Presence_Detection_sensor_cover_state" xml:space="preserve">
-    <value>网络摄像头 WB7022 用户检测传感器保护盖状态</value>
-  </data>
-  <data name="Headset_speakerphone_and_soundbar_mute_unmute" xml:space="preserve">
-    <value>耳机、扬声器和音棒静音/取消静音</value>
-  </data>
-  <data name="Display_Color_Preset_and_Easy_Memory" xml:space="preserve">
-    <value>显示色彩预设和 Easy Memory</value>
-  </data>
-  <data name="Reports" xml:space="preserve">
-    <value>报告</value>
-  </data>
-  <data name="Save_diagnostic_report" xml:space="preserve">
-    <value>保存诊断报告</value>
-  </data>
-  <data name="Save_monitor_asset_report" xml:space="preserve">
-    <value>保存显示器资产报告</value>
-  </data>
-  <data name="Widget_Settings" xml:space="preserve">
-    <value>小组件设置</value>
-  </data>
-  <data name="Activate_Quick_Access_widget_during_Zoom_conference_calls" xml:space="preserve">
-    <value>在 Zoom 电话会议期间激活“快速访问”小组件</value>
-  </data>
-  <data name="Widget_will_automatically_appear_when_meeting_begins" xml:space="preserve">
-    <value>当会议开始时，将自动显示小组件，以自定义受支持的网络摄像头的设置</value>
-  </data>
-  <data name="Enable_shortcut_reminder_for_Quick_Accesswidget" xml:space="preserve">
-    <value>启用“快速访问”小组件的快捷方式提醒</value>
-  </data>
-  <data name="Critical" xml:space="preserve">
-    <value>关键</value>
-  </data>
-  <data name="Recommended" xml:space="preserve">
-    <value>推荐</value>
-  </data>
-  <data name="Optional" xml:space="preserve">
-    <value>可选</value>
-  </data>
-  <data name="VisionEngine_Night" xml:space="preserve">
-    <value>夜间</value>
-  </data>
-  <data name="VisionEngine_Clear" xml:space="preserve">
-    <value>清晰度</value>
-  </data>
-  <data name="VisionEngine_Bino" xml:space="preserve">
-    <value>Bino</value>
-  </data>
-  <data name="VisionEngine_Chroma" xml:space="preserve">
-    <value>色度</value>
-  </data>
-  <data name="VisionEngine_Crosshair" xml:space="preserve">
-    <value>十字准星</value>
-  </data>
-  <data name="Software_version" xml:space="preserve">
-    <value>软件版本</value>
-  </data>
-  <data name="Driver_version" xml:space="preserve">
-    <value>驱动程序版本</value>
-  </data>
-  <data name="Preview_Changes" xml:space="preserve">
-    <value>预览更改</value>
-  </data>
-  <data name="Stop_Preview" xml:space="preserve">
-    <value>停止预览</value>
-  </data>
-  <data name="Tooltips_Schedule" xml:space="preserve">
-    <value>此功能使我们的眼睛能够适应所需的设置。</value>
-  </data>
-  <data name="DisplayOthers.8" xml:space="preserve">
+	<data name="DisplayOthers.8" xml:space="preserve">
     <value>您可以从此处导出您喜欢的配置，并轻松导入同一型号的另一台显示器中。</value>
   </data>
-  <data name="InputSource.5" xml:space="preserve">
+	<data name="DisplayProperties.0" xml:space="preserve">
+    <value>高数据速度</value>
+  </data>
+	<data name="DisplayProperties.1" xml:space="preserve">
+    <value>高分辨率</value>
+  </data>
+	<data name="DisplayProperties.2" xml:space="preserve">
+    <value>分辨率和刷新率</value>
+  </data>
+	<data name="Orientation" xml:space="preserve">
+    <value>方向</value>
+  </data>
+	<data name="SmartHDR" xml:space="preserve">
+    <value>智能 HDR</value>
+  </data>
+	<data name="DisplayProperties.3" xml:space="preserve">
+    <value>更改文本、应用程序和其他项目的大小</value>
+  </data>
+	<data name="AdvancedSettings" xml:space="preserve">
+    <value>高级设置</value>
+  </data>
+	<data name="DisplayProperties.4" xml:space="preserve">
+    <value>USB-C 优先级 </value>
+  </data>
+	<data name="DisplayProperties.5" xml:space="preserve">
+    <value>数据和网络速度优先级高于屏幕性能。</value>
+  </data>
+	<data name="DisplayProperties.6" xml:space="preserve">
+    <value>屏幕性能优先级高于数据和网络速度。</value>
+  </data>
+	<data name="Windows" xml:space="preserve">
+    <value>Windows</value>
+  </data>
+	<data name="Custom" xml:space="preserve">
+    <value>自定义</value>
+  </data>
+	<data name="EzArrange.1" xml:space="preserve">
+    <value>Windows 或其他</value>
+  </data>
+	<data name="Recent" xml:space="preserve">
+    <value>最近</value>
+  </data>
+	<data name="AudioSettings" xml:space="preserve">
+    <value>音频设置</value>
+  </data>
+	<data name="HeadsetAudioSettings.0" xml:space="preserve">
+    <value>控制我听到的噪音</value>
+  </data>
+	<data name="HeadsetAudioSettings.1" xml:space="preserve">
+    <value>主动降噪</value>
+  </data>
+	<data name="HeadsetAudioSettings.2" xml:space="preserve">
+    <value>透明模式</value>
+  </data>
+	<data name="HeadsetAudioSettings.3" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+	<data name="HeadsetAudioSettings.4" xml:space="preserve">
+    <value>透明度级别</value>
+  </data>
+	<data name="HeadsetAudioSettings.5" xml:space="preserve">
+    <value>配置我的音频模式</value>
+  </data>
+	<data name="Multimedia" xml:space="preserve">
+    <value>多媒体</value>
+  </data>
+	<data name="HeadsetAudioSettings.6" xml:space="preserve">
+    <value>音频输出预设</value>
+  </data>
+	<data name="Default" xml:space="preserve">
+    <value>默认</value>
+  </data>
+	<data name="HeadsetAudioSettings.7" xml:space="preserve">
+    <value>低音增强</value>
+  </data>
+	<data name="HeadsetAudioSettings.8" xml:space="preserve">
+    <value>语音增强</value>
+  </data>
+	<data name="HeadsetAudioSettings.9" xml:space="preserve">
+    <value>高音增强</value>
+  </data>
+	<data name="HeadsetAudioSettings.10" xml:space="preserve">
+    <value>音频均衡器</value>
+  </data>
+	<data name="HeadsetAudioSettings.11" xml:space="preserve">
+    <value>调整您听到的声音的音频范围</value>
+  </data>
+	<data name="HeadsetAudioSettings.12" xml:space="preserve">
+    <value>分贝</value>
+  </data>
+	<data name="HeadsetAudioSettings.13" xml:space="preserve">
+    <value>低音</value>
+  </data>
+	<data name="HeadsetAudioSettings.14" xml:space="preserve">
+    <value>中音</value>
+  </data>
+	<data name="HeadsetAudioSettings.15" xml:space="preserve">
+    <value>高音</value>
+  </data>
+	<data name="HeadsetAudioSettings.16" xml:space="preserve">
+    <value>麦克风降噪</value>
+  </data>
+	<data name="HeadsetAudioSettings.17" xml:space="preserve">
+    <value>传出音频</value>
+  </data>
+	<data name="HeadsetAudioSettings.18" xml:space="preserve">
+    <value>传入音频</value>
+  </data>
+	<data name="HeadsetAudioSettings.19" xml:space="preserve">
+    <value>侧音</value>
+  </data>
+	<data name="AutomatedActions" xml:space="preserve">
+    <value>自动操作</value>
+  </data>
+	<data name="HeadsetAutomatedActions.0" xml:space="preserve">
+    <value>佩戴检测</value>
+  </data>
+	<data name="HeadsetAutomatedActions.1" xml:space="preserve">
+    <value>敏感度</value>
+  </data>
+	<data name="HeadsetAutomatedActions.2" xml:space="preserve">
+    <value>低</value>
+  </data>
+	<data name="HeadsetAutomatedActions.3" xml:space="preserve">
+    <value>普通</value>
+  </data>
+	<data name="HeadsetAutomatedActions.4" xml:space="preserve">
+    <value>摘下耳机时：</value>
+  </data>
+	<data name="HeadsetAutomatedActions.5" xml:space="preserve">
+    <value>暂停音乐</value>
+  </data>
+	<data name="HeadsetAutomatedActions.6" xml:space="preserve">
+    <value>麦克风静音</value>
+  </data>
+	<data name="HeadsetAutomatedActions.7" xml:space="preserve">
+    <value>快速暂停</value>
+  </data>
+	<data name="HeadsetAutomatedActions.8" xml:space="preserve">
+    <value>接听电话</value>
+  </data>
+	<data name="DeviceSettings" xml:space="preserve">
+    <value>设备设置</value>
+  </data>
+	<data name="HeadsetDeviceSettings.0" xml:space="preserve">
+    <value>繁忙指示灯</value>
+  </data>
+	<data name="HeadsetDeviceSettings.1" xml:space="preserve">
+    <value>语音指导</value>
+  </data>
+	<data name="HeadsetDeviceSettings.2" xml:space="preserve">
+    <value>必要</value>
+  </data>
+	<data name="HeadsetDeviceSettings.3" xml:space="preserve">
+    <value>全部</value>
+  </data>
+	<data name="HeadsetDeviceSettings.4" xml:space="preserve">
+    <value>下载 Dell Audio</value>
+  </data>
+	<data name="HeadsetDeviceSettings.5" xml:space="preserve">
+    <value>立即下载 Dell Audio，并方便地使用 iPhone 或 Android 设备优化和个性化您的耳机设置。</value>
+  </data>
+	<data name="HeadsetDeviceSettings.6" xml:space="preserve">
+    <value>了解详情</value>
+  </data>
+	<data name="Illumination.0" xml:space="preserve">
+    <value>照明控制</value>
+  </data>
+	<data name="Illumination.1" xml:space="preserve">
+    <value>照明</value>
+  </data>
+	<data name="InputSource.0" xml:space="preserve">
+    <value>当前输入源</value>
+  </data>
+	<data name="InputSource.1" xml:space="preserve">
+    <value>重命名输入源并分配 USB 连接</value>
+  </data>
+	<data name="InputSource.2" xml:space="preserve">
+    <value>输入</value>
+  </data>
+	<data name="InputSource.3" xml:space="preserve">
+    <value>输入名称</value>
+  </data>
+	<data name="InputSource.4" xml:space="preserve">
+    <value>USB 上行</value>
+  </data>
+	<data name="InputSource.5" xml:space="preserve">
     <value>重命名输入源</value>
   </data>
-  <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
+	<data name="KeyCustomization.0" xml:space="preserve">
+    <value>要自定义按键，请单击左侧图像中显示的相应按键</value>
+  </data>
+	<data name="KeyCustomization.1" xml:space="preserve">
+    <value>将所有操作恢复为默认设置</value>
+  </data>
+	<data name="KeyCustomization.2" xml:space="preserve">
+    <value>键自定义</value>
+  </data>
+	<data name="Kvm.0" xml:space="preserve">
+    <value>PC</value>
+  </data>
+	<data name="Kvm.1" xml:space="preserve">
+    <value>下一步</value>
+  </data>
+	<data name="Kvm.2" xml:space="preserve">
+    <value>USB KVM 设置</value>
+  </data>
+	<data name="Kvm.3" xml:space="preserve">
+    <value>连接鼠标和键盘</value>
+  </data>
+	<data name="Kvm.4" xml:space="preserve">
+    <value>鼠标和键盘请连接到显示器背面 (USB-A)。\n 提醒：您还可以连接其他 USB 外围设备，例如\n 网络摄像头。</value>
+  </data>
+	<data name="Kvm.5" xml:space="preserve">
+    <value>USB-A</value>
+  </data>
+	<data name="Close" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+	<data name="Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+	<data name="Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+	<data name="USB" xml:space="preserve">
+    <value>USB</value>
+  </data>
+	<data name="Kvm.6" xml:space="preserve">
+    <value>连接到您的设备</value>
+  </data>
+	<data name="Kvm.7" xml:space="preserve">
+    <value>请将每台 PC 之间的视频线缆和 USB 线缆连接到\n显示器。您最多可以连接 4 台 PC（计算机、游戏机\n等）。\r\n\r\n请选择线缆类型并为每个源分配名称。</value>
+  </data>
+	<data name="Kvm.8" xml:space="preserve">
+    <value>在 PC 之间切换</value>
+  </data>
+	<data name="Kvm.9" xml:space="preserve">
+    <value>切换键盘和鼠标</value>
+  </data>
+	<data name="Kvm.10" xml:space="preserve">
+    <value>更改 PIP 位置</value>
+  </data>
+	<data name="Kvm.11" xml:space="preserve">
+    <value>在 PBP 并排模式下自动切换 USB 上行端口</value>
+  </data>
+	<data name="Kvm.12" xml:space="preserve">
+    <value>输入源热键</value>
+  </data>
+	<data name="Kvm.13" xml:space="preserve">
+    <value>编辑输入源</value>
+  </data>
+	<data name="Kvm.14" xml:space="preserve">
+    <value>编辑 PIP/PBP</value>
+  </data>
+	<data name="Kvm.15" xml:space="preserve">
+    <value>在位置之间切换</value>
+  </data>
+	<data name="Finish" xml:space="preserve">
+    <value>完成</value>
+  </data>
+	<data name="Kvm.16" xml:space="preserve">
+    <value>PIP/PBP 设置</value>
+  </data>
+	<data name="Kvm.17" xml:space="preserve">
+    <value>为您的显示器设置 PIP/PBP</value>
+  </data>
+	<data name="Kvm.18" xml:space="preserve">
+    <value>您的显示器可以一次显示一台 PC 或一个源（全屏），\n或者在源之间分区（画中画/画旁画）。</value>
+  </data>
+	<data name="Kvm.19" xml:space="preserve">
+    <value>无 KVM</value>
+  </data>
+	<data name="Kvm.20" xml:space="preserve">
+    <value>USB KVM</value>
+  </data>
+	<data name="Kvm.21" xml:space="preserve">
+    <value>设置 USB KVM</value>
+  </data>
+	<data name="Kvm.22" xml:space="preserve">
+    <value>启动新的 USB KVM</value>
+  </data>
+	<data name="Kvm.23" xml:space="preserve">
+    <value>网络 KVM</value>
+  </data>
+	<data name="Kvm.24" xml:space="preserve">
+    <value>选择 KVM 设置类型</value>
+  </data>
+	<data name="Kvm.25" xml:space="preserve">
+    <value>适合单显示器设置</value>
+  </data>
+	<data name="Kvm.26" xml:space="preserve">
+    <value>通过显示器 USB 端口设置</value>
+  </data>
+	<data name="Kvm.27" xml:space="preserve">
+    <value>热键 - 在 PC 之间切换：无</value>
+  </data>
+	<data name="Kvm.28" xml:space="preserve">
+    <value>适合多显示器设置</value>
+  </data>
+	<data name="Kvm.29" xml:space="preserve">
+    <value>通过网络设置</value>
+  </data>
+	<data name="Kvm.30" xml:space="preserve">
+    <value>在 PC（Mac 和 Windows）之间安全地轻松共享文件</value>
+  </data>
+	<data name="Kvm.31" xml:space="preserve">
+    <value>打开网络 KVM</value>
+  </data>
+	<data name="Kvm.32" xml:space="preserve">
+    <value>打开另一个窗口以设置或编辑网络 KVM</value>
+  </data>
+	<data name="MouseSettings.0" xml:space="preserve">
+    <value>移动鼠标以完成对 DPI 值的更改</value>
+  </data>
+	<data name="MouseSettings.1" xml:space="preserve">
+    <value>提高轮询速率可能会影响鼠标的电池续航时间。</value>
+  </data>
+	<data name="Medium" xml:space="preserve">
+    <value>中</value>
+  </data>
+	<data name="Slow" xml:space="preserve">
+    <value>慢</value>
+  </data>
+	<data name="High" xml:space="preserve">
+    <value>高</value>
+  </data>
+	<data name="PenButtonSettings.0" xml:space="preserve">
+    <value>顶部按钮</value>
+  </data>
+	<data name="PenButtonSettings.1" xml:space="preserve">
+    <value>顶部筒状按钮</value>
+  </data>
+	<data name="PenButtonSettings.2" xml:space="preserve">
+    <value>底部筒状按钮</value>
+  </data>
+	<data name="PenButtonSettings.3" xml:space="preserve">
+    <value>单击一次</value>
+  </data>
+	<data name="PenButtonSettings.4" xml:space="preserve">
+    <value>双击</value>
+  </data>
+	<data name="PenButtonSettings.5" xml:space="preserve">
+    <value>按住</value>
+  </data>
+	<data name="PenButtonSettings.6" xml:space="preserve">
+    <value>悬停单击</value>
+  </data>
+	<data name="PenButtonSettings.7" xml:space="preserve">
+    <value>要自定义按钮，请单击左侧图像中显示的相应按钮</value>
+  </data>
+	<data name="PenButtonSettings.8" xml:space="preserve">
+    <value>恢复到默认操作</value>
+  </data>
+	<data name="PenSettings.0" xml:space="preserve">
+    <value>触控笔设置</value>
+  </data>
+	<data name="PenSettings.1" xml:space="preserve">
+    <value>笔尖灵敏度</value>
+  </data>
+	<data name="PenSettings.2" xml:space="preserve">
+    <value>将滑块向右移动将逐渐\n降低压力敏感度，您需要\n向触控笔施加更大的压力</value>
+  </data>
+	<data name="PenSettings.3" xml:space="preserve">
+    <value>倾斜灵敏度</value>
+  </data>
+	<data name="PenSettings.4" xml:space="preserve">
+    <value>将滑块向右移动将逐渐\n增加倾斜效果，您需要\n应用更小的倾斜角度</value>
+  </data>
+	<data name="PenSettings.5" xml:space="preserve">
+    <value>与 Tile 配对</value>
+  </data>
+	<data name="PenSettings.6" xml:space="preserve">
+    <value>使用 Tile 应用程序将触控笔与\n移动设备配对</value>
+  </data>
+	<data name="PenSettings.7" xml:space="preserve">
+    <value>开始使用</value>
+  </data>
+	<data name="Fullscreen" xml:space="preserve">
+    <value>全屏</value>
+  </data>
+	<data name="PipPbp.0" xml:space="preserve">
+    <value>PIP</value>
+  </data>
+	<data name="PipPbp.1" xml:space="preserve">
+    <value>PBP</value>
+  </data>
+	<data name="PipPbp.2" xml:space="preserve">
+    <value>输入 1（主）</value>
+  </data>
+	<data name="PipPbp.3" xml:space="preserve">
+    <value>输入 2（子）</value>
+  </data>
+	<data name="PipPbp.4" xml:space="preserve">
+    <value>输入 3（子）</value>
+  </data>
+	<data name="PipPbp.5" xml:space="preserve">
+    <value>输入 4（子）</value>
+  </data>
+	<data name="PipPbp.6" xml:space="preserve">
+    <value>USB 开关</value>
+  </data>
+	<data name="PipPbp.7" xml:space="preserve">
+    <value>在位置之间切换</value>
+  </data>
+	<data name="SpeakerAudioPreset.0" xml:space="preserve">
+    <value>音频预设</value>
+  </data>
+	<data name="SpeakerAudioPreset.1" xml:space="preserve">
+    <value>这些设置仅适用于多媒体</value>
+  </data>
+	<data name="SpeakerAudioPreset.2" xml:space="preserve">
+    <value>语音</value>
+  </data>
+	<data name="SpeakerAudioPreset.3" xml:space="preserve">
+    <value>根据您的喜好调整音频范围。这些设置仅适用于多媒体音频。</value>
+  </data>
+	<data name="SpeakerAudioSettings.0" xml:space="preserve">
+    <value>智能麦克风降噪</value>
+  </data>
+	<data name="SpeakerAudioSettings.1" xml:space="preserve">
+    <value>静音通知</value>
+  </data>
+	<data name="SpeakerAudioSettings.2" xml:space="preserve">
+    <value>音量调节音调</value>
+  </data>
+	<data name="SpeakerAudioSettings.3" xml:space="preserve">
+    <value>每个级别</value>
+  </data>
+	<data name="SpeakerAudioSettings.4" xml:space="preserve">
+    <value>仅最小值和最大值</value>
+  </data>
+	<data name="SpeakerInteractions.0" xml:space="preserve">
+    <value>交互</value>
+  </data>
+	<data name="SpeakerInteractions.1" xml:space="preserve">
+    <value>将光标悬停在下面的应用程序名称上可查看可用的扬声器按钮（以绿色表示）</value>
+  </data>
+	<data name="SpeakerInteractions.2" xml:space="preserve">
+    <value>Microsoft Teams</value>
+  </data>
+	<data name="SpeakerInteractions.3" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+	<data name="SpeakerInteractions.4" xml:space="preserve">
+    <value>Google Meet</value>
+  </data>
+	<data name="SpeakerInteractions.5" xml:space="preserve">
+    <value>Skype for Business</value>
+  </data>
+	<data name="WebCameraCapture.0" xml:space="preserve">
+    <value>3-2-1 倒计时</value>
+  </data>
+	<data name="WebCameraCapture.1" xml:space="preserve">
+    <value>取景网格</value>
+  </data>
+	<data name="WebCameraCapture.2" xml:space="preserve">
+    <value>打开</value>
+  </data>
+	<data name="WebCameraCapture.3" xml:space="preserve">
+    <value>更改</value>
+  </data>
+	<data name="WebCameraCapture.4" xml:space="preserve">
+    <value>分辨率</value>
+  </data>
+	<data name="WebCameraCapture.5" xml:space="preserve">
+    <value>4K UHD</value>
+  </data>
+	<data name="WebCameraCapture.6" xml:space="preserve">
+    <value>全高清</value>
+  </data>
+	<data name="WebCameraCapture.7" xml:space="preserve">
+    <value>HD</value>
+  </data>
+	<data name="WebCameraCapture.8" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+	<data name="WebCameraCapture.9" xml:space="preserve">
+    <value>通过调整每秒捕获的图像数量来控制视频清晰度和风格。</value>
+  </data>
+	<data name="WebCameraCapture.10" xml:space="preserve">
+    <value>媒体文件位置</value>
+  </data>
+	<data name="WebCameraColorImage.0" xml:space="preserve">
+    <value>HDR</value>
+  </data>
+	<data name="WebCameraColorImage.1" xml:space="preserve">
+    <value>高动态范围可在各种光照条件下自动校正，以获得最佳图像质量</value>
+  </data>
+	<data name="WebCameraColorImage.2" xml:space="preserve">
+    <value>自动白平衡</value>
+  </data>
+	<data name="WebCameraColorImage.3" xml:space="preserve">
+    <value>亮度</value>
+  </data>
+	<data name="WebCameraColorImage.4" xml:space="preserve">
+    <value>锐度</value>
+  </data>
+	<data name="WebCameraColorImage.5" xml:space="preserve">
+    <value>对比度</value>
+  </data>
+	<data name="WebCameraColorImage.6" xml:space="preserve">
+    <value>饱和度</value>
+  </data>
+	<data name="WebCameraColorImage.7" xml:space="preserve">
+    <value>防闪烁</value>
+  </data>
+	<data name="WebCameraColorImage.8" xml:space="preserve">
+    <value>在人工照明下录制时减少闪烁</value>
+  </data>
+	<data name="WebCameraColorImage.9" xml:space="preserve">
+    <value>Hz</value>
+  </data>
+	<data name="WebCameraMicrophone.0" xml:space="preserve">
+    <value>麦克风</value>
+  </data>
+	<data name="WebCameraMicrophone.1" xml:space="preserve">
+    <value>摄像头麦克风</value>
+  </data>
+	<data name="WebCameraMicrophone.2" xml:space="preserve">
+    <value>注意：此麦克风未经 Microsoft Teams 认证。要获得最佳的 Microsoft Teams 通话体验，请使用戴尔的 Microsoft Teams 认证音频设备。</value>
+  </data>
+	<data name="WebCameraPresenceDetection.0" xml:space="preserve">
+    <value>用户检测</value>
+  </data>
+	<data name="WebCameraPresenceDetection.1" xml:space="preserve">
+    <value>接近传感器</value>
+  </data>
+	<data name="WebCameraPresenceDetection.2" xml:space="preserve">
+    <value>当您处于视野范围内时，检测您的存在</value>
+  </data>
+	<data name="WebCameraPresenceDetection.3" xml:space="preserve">
+    <value>接近时唤醒</value>
+  </data>
+	<data name="WebCameraPresenceDetection.4" xml:space="preserve">
+    <value>当您接近时，系统将唤醒 PC</value>
+  </data>
+	<data name="WebCameraPresenceDetection.5" xml:space="preserve">
+    <value>离开锁定</value>
+  </data>
+	<data name="WebCameraPresenceDetection.6" xml:space="preserve">
+    <value>当您离开时锁定 PC 并关闭显示器</value>
+  </data>
+	<data name="WebCameraPresenceDetection.7" xml:space="preserve">
+    <value>延迟</value>
+  </data>
+	<data name="WebCameraPresenceDetection.8" xml:space="preserve">
+    <value>暂停</value>
+  </data>
+	<data name="WebCameraPresenceDetection.9" xml:space="preserve">
+    <value>暂停长度</value>
+  </data>
+	<data name="WebCameraPresenceDetection.10" xml:space="preserve">
+    <value>Windows Hello</value>
+  </data>
+	<data name="WebCameraPresenceDetection.11" xml:space="preserve">
+    <value>使用面部识别进行登录。此链接会将您转至 Windows 设置。</value>
+  </data>
+	<data name="WebCameraSettings.0" xml:space="preserve">
+    <value>摄像头控制</value>
+  </data>
+	<data name="WebCameraSettings.1" xml:space="preserve">
+    <value>AI 自动取景</value>
+  </data>
+	<data name="WebCameraSettings.2" xml:space="preserve">
+    <value>利用智能场景分析和面部跟踪，在您移动时缩放和平移视图</value>
+  </data>
+	<data name="WebCameraSettings.3" xml:space="preserve">
+    <value>摄像头过渡</value>
+  </data>
+	<data name="WebCameraSettings.4" xml:space="preserve">
+    <value>当摄像头重新调整您在画面中的位置时，通过平移和缩放实现平滑过渡</value>
+  </data>
+	<data name="WebCameraSettings.5" xml:space="preserve">
+    <value>跟踪灵敏度</value>
+  </data>
+	<data name="WebCameraSettings.6" xml:space="preserve">
+    <value>调整摄像头对移动的响应速度，并重新调整您在画面中的位置</value>
+  </data>
+	<data name="WebCameraSettings.7" xml:space="preserve">
+    <value>普通</value>
+  </data>
+	<data name="WebCameraSettings.8" xml:space="preserve">
+    <value>快速</value>
+  </data>
+	<data name="WebCameraSettings.9" xml:space="preserve">
+    <value>帧大小</value>
+  </data>
+	<data name="WebCameraSettings.10" xml:space="preserve">
+    <value>窄</value>
+  </data>
+	<data name="WebCameraSettings.11" xml:space="preserve">
+    <value>标准</value>
+  </data>
+	<data name="WebCameraSettings.12" xml:space="preserve">
+    <value>视场</value>
+  </data>
+	<data name="WebCameraSettings.13" xml:space="preserve">
+    <value>缩小或拓宽摄像头视场的角度</value>
+  </data>
+	<data name="WebCameraSettings.14" xml:space="preserve">
+    <value>°</value>
+  </data>
+	<data name="WebCameraSettings.15" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+	<data name="WebCameraSettings.16" xml:space="preserve">
+    <value>自动对焦</value>
+  </data>
+	<data name="WebCameraSettings.17" xml:space="preserve">
+    <value>智能调整摄像头镜头以获得对焦清晰的画面</value>
+  </data>
+	<data name="WebCameraSettings.18" xml:space="preserve">
+    <value>优先级</value>
+  </data>
+	<data name="WebCameraSettings.19" xml:space="preserve">
+    <value>FPS 视频的平滑度或曝光度优先，以保持理想的光线水平</value>
+  </data>
+	<data name="WebCameraSettings.20" xml:space="preserve">
+    <value>曝光</value>
+  </data>
+	<data name="WebCameraSettings.21" xml:space="preserve">
+    <value>帧速</value>
+  </data>
+	<data name="WebCameraSettings.22" xml:space="preserve">
+    <value>HDR 开启时，帧速/曝光将不起作用。\r单击 </value>
+  </data>
+	<data name="WebCameraSettings.23" xml:space="preserve">
+    <value>此处 </value>
+  </data>
+	<data name="WebCameraSettings.24" xml:space="preserve">
+    <value>更改 HDR 设置。</value>
+  </data>
+	<data name="WebCameraSettings.25" xml:space="preserve">
+    <value>外部网络摄像头优先</value>
+  </data>
+	<data name="WebCameraSettings.26" xml:space="preserve">
+    <value>在 Dell UltraSharp 网络摄像头和其他网络摄像头（集成和外部）之间自动切换。Windows Hello 将使用活动网络摄像头进行面部识别。\n\n提醒：一次只能启用和访问一个摄像头。</value>
+  </data>
+	<data name="Mouse.8" xml:space="preserve">
+    <value>触控滚动灵敏度</value>
+  </data>
+	<data name="Mouse.9" xml:space="preserve">
+    <value>调整滚动速度</value>
+  </data>
+	<data name="Mouse.10" xml:space="preserve">
+    <value>鼠标主键</value>
+  </data>
+	<data name="Mouse.11" xml:space="preserve">
+    <value>DPI 设置</value>
+  </data>
+	<data name="Mouse.12" xml:space="preserve">
+    <value>轮询速率</value>
+  </data>
+	<data name="Mouse.13" xml:space="preserve">
+    <value>每秒向系统报告鼠标位置的次数</value>
+  </data>
+	<data name="Wired" xml:space="preserve">
+    <value>有线</value>
+  </data>
+	<data name="Tooltip.0" xml:space="preserve">
+    <value>您已连接同一型号的多个设备。操作将在每个设备的上重复</value>
+  </data>
+	<data name="Tooltip.1" xml:space="preserve">
+    <value>未找到设备。请确保您的无线设备已充电并打开。</value>
+  </data>
+	<data name="Tooltip.2" xml:space="preserve">
+    <value>此设备已配对。如果您想要再次配对，请先将此设备取消配对。</value>
+  </data>
+	<data name="Tooltip.3" xml:space="preserve">
+    <value>连接的 USB 无线接收器不支持您要配对的设备。请使用设备随附的接收器。</value>
+  </data>
+	<data name="Tooltip.4" xml:space="preserve">
+    <value>此 USB 无线接收器上的可用插槽已满。要使用，请单击设备设置页面中的“取消配对”按钮，取消设备与其的配对。</value>
+  </data>
+	<data name="Mouse.14" xml:space="preserve">
+    <value>单击以分配操作</value>
+  </data>
+	<data name="Mouse.15" xml:space="preserve">
+    <value>从右侧的列表中\n选择一项操作</value>
+  </data>
+	<data name="USBWirelessReceiver" xml:space="preserve">
+    <value>USB 无线接收器</value>
+  </data>
+	<data name="ReceiverFirmwareVersion" xml:space="preserve">
+    <value>接收器固件版本</value>
+  </data>
+	<data name="ReadyToBePaired" xml:space="preserve">
+    <value>准备好配对</value>
+  </data>
+	<data name="BrightnessOrContrast" xml:space="preserve">
+    <value>亮度/对比度</value>
+  </data>
+	<data name="DisplayProperties" xml:space="preserve">
+    <value>属性</value>
+  </data>
+	<data name="Layout" xml:space="preserve">
+    <value>布局</value>
+  </data>
+	<data name="EasyMemory" xml:space="preserve">
+    <value>Easy Memory</value>
+  </data>
+	<data name="VisionEngine" xml:space="preserve">
+    <value>Vision Engine</value>
+  </data>
+	<data name="None" xml:space="preserve">
+    <value>无</value>
+  </data>
+	<data name="Copilot" xml:space="preserve">
+    <value>Copilot</value>
+  </data>
+	<data name="Devices" xml:space="preserve">
+    <value>设备</value>
+  </data>
+	<data name="Lock" xml:space="preserve">
+    <value>锁定</value>
+  </data>
+	<data name="NotificationCenter" xml:space="preserve">
+    <value>通知中心</value>
+  </data>
+	<data name="ScreenSnip" xml:space="preserve">
+    <value>屏幕剪裁</value>
+  </data>
+	<data name="ShowHideDesktop" xml:space="preserve">
+    <value>显示/隐藏桌面</value>
+  </data>
+	<data name="Shutdown" xml:space="preserve">
+    <value>关机</value>
+  </data>
+	<data name="SignOut" xml:space="preserve">
+    <value>注销</value>
+  </data>
+	<data name="Sleep" xml:space="preserve">
+    <value>睡眠</value>
+  </data>
+	<data name="SwitchApplications" xml:space="preserve">
+    <value>切换应用程序</value>
+  </data>
+	<data name="TaskView" xml:space="preserve">
+    <value>任务视图</value>
+  </data>
+	<data name="BarrelButton" xml:space="preserve">
+    <value>筒状按钮</value>
+  </data>
+	<data name="DefineBySystem" xml:space="preserve">
+    <value>由系统定义</value>
+  </data>
+	<data name="EMail" xml:space="preserve">
+    <value>电子邮件</value>
+  </data>
+	<data name="OneNote" xml:space="preserve">
+    <value>One Note</value>
+  </data>
+	<data name="PenMenu" xml:space="preserve">
+    <value>触控笔菜单</value>
+  </data>
+	<data name="QuickNote" xml:space="preserve">
+    <value>快速备注</value>
+  </data>
+	<data name="ScreenSnipping" xml:space="preserve">
+    <value>屏幕剪裁</value>
+  </data>
+	<data name="StickyNotes" xml:space="preserve">
+    <value>便笺</value>
+  </data>
+	<data name="Widgets" xml:space="preserve">
+    <value>小组件</value>
+  </data>
+	<data name="WindowsSearch" xml:space="preserve">
+    <value>Windows 搜索</value>
+  </data>
+	<data name="SwitchApplication" xml:space="preserve">
+    <value>切换应用程序</value>
+  </data>
+	<data name="AssignKeystroke" xml:space="preserve">
+    <value>设定击键</value>
+  </data>
+	<data name="Color" xml:space="preserve">
+    <value>颜色</value>
+  </data>
+	<data name="Back" xml:space="preserve">
+    <value>上一步</value>
+  </data>
+	<data name="Calculator" xml:space="preserve">
+    <value>计算器</value>
+  </data>
+	<data name="CloseWindow" xml:space="preserve">
+    <value>关闭窗口</value>
+  </data>
+	<data name="Copy" xml:space="preserve">
+    <value>复制</value>
+  </data>
+	<data name="Cut" xml:space="preserve">
+    <value>剪切</value>
+  </data>
+	<data name="Documents" xml:space="preserve">
+    <value>文档</value>
+  </data>
+	<data name="Forward" xml:space="preserve">
+    <value>向前</value>
+  </data>
+	<data name="MaximizeWindow" xml:space="preserve">
+    <value>最大化窗口</value>
+  </data>
+	<data name="MinimizeWindow" xml:space="preserve">
+    <value>最小化窗口</value>
+  </data>
+	<data name="MyHome" xml:space="preserve">
+    <value>我的主页</value>
+  </data>
+	<data name="OpenFile" xml:space="preserve">
+    <value>打开文件</value>
+  </data>
+	<data name="OpenFolder" xml:space="preserve">
+    <value>打开文件夹</value>
+  </data>
+	<data name="OpenNewBrowserTab" xml:space="preserve">
+    <value>打开新的浏览器选项卡</value>
+  </data>
+	<data name="OpenWebPage" xml:space="preserve">
+    <value>打开网页</value>
+  </data>
+	<data name="Paste" xml:space="preserve">
+    <value>粘贴</value>
+  </data>
+	<data name="ZoomIn" xml:space="preserve">
+    <value>放大</value>
+  </data>
+	<data name="ZoomOut" xml:space="preserve">
+    <value>缩小</value>
+  </data>
+	<data name="ZoomReset" xml:space="preserve">
+    <value>缩放重置</value>
+  </data>
+	<data name="4thClick" xml:space="preserve">
+    <value>第 4 次单击</value>
+  </data>
+	<data name="5thClick" xml:space="preserve">
+    <value>第 5 次单击</value>
+  </data>
+	<data name="Erase" xml:space="preserve">
+    <value>擦除</value>
+  </data>
+	<data name="LeftClick" xml:space="preserve">
+    <value>左键单击</value>
+  </data>
+	<data name="MiddleClick" xml:space="preserve">
+    <value>中键单击</value>
+  </data>
+	<data name="OpenRun" xml:space="preserve">
+    <value>打开/运行</value>
+  </data>
+	<data name="OpenRun2" xml:space="preserve">
+    <value>打开运行</value>
+  </data>
+	<data name="PenPageDown" xml:space="preserve">
+    <value>向下翻页</value>
+  </data>
+	<data name="PenPageUp" xml:space="preserve">
+    <value>向上翻页</value>
+  </data>
+	<data name="RadialMenu" xml:space="preserve">
+    <value>圆盘菜单</value>
+  </data>
+	<data name="Redo" xml:space="preserve">
+    <value>重做</value>
+  </data>
+	<data name="RightClick" xml:space="preserve">
+    <value>右键单击</value>
+  </data>
+	<data name="Undo" xml:space="preserve">
+    <value>撤消</value>
+  </data>
+	<data name="Tooltip.5" xml:space="preserve">
+    <value>带有 Copilot 键的键盘布局可能会在不同时间推出，具体取决于语言和地区。</value>
+  </data>
+	<data name="ITLockToolTip.0" xml:space="preserve">
+    <value>此设置已被 IT 管理员锁定。</value>
+  </data>
+	<data name="WebCameraMicrophone.3" xml:space="preserve">
+    <value>启用摄像头的麦克风。打开/关闭此功能时，摄像头将快速重新启动。</value>
+  </data>
+	<data name="Camera.6" xml:space="preserve">
+    <value>选择一个选项</value>
+  </data>
+	<data name="Camera.5" xml:space="preserve">
+    <value>添加新预设</value>
+  </data>
+	<data name="Camera.Alert.1" xml:space="preserve">
+    <value>我们正在应用更改，请稍候</value>
+  </data>
+	<data name="Camera.Alert.2" xml:space="preserve">
+    <value>另一个应用程序正在使用您的摄像头</value>
+  </data>
+	<data name="Camera.Alert.3" xml:space="preserve">
+    <value>请拔下摄像头再插入，然后重试</value>
+  </data>
+	<data name="Camera.Alert.4" xml:space="preserve">
+    <value>我们正在移除您的摄像头，请稍候</value>
+  </data>
+	<data name="Camera.10" xml:space="preserve">
+    <value>恢复录制</value>
+  </data>
+	<data name="Camera.11" xml:space="preserve">
+    <value>停止录制</value>
+  </data>
+	<data name="Camera.7" xml:space="preserve">
+    <value>打开媒体文件夹</value>
+  </data>
+	<data name="Camera.8" xml:space="preserve">
+    <value>开始录制</value>
+  </data>
+	<data name="Camera.9" xml:space="preserve">
+    <value>暂停录制</value>
+  </data>
+	<data name="WebCameraSettings.27" xml:space="preserve">
+    <value>调整帧大小</value>
+  </data>
+	<data name="EazyMemory.0" xml:space="preserve">
+    <value>自动启动：</value>
+  </data>
+	<data name="EazyMemory.1" xml:space="preserve">
+    <value>按时间启动：</value>
+  </data>
+	<data name="EazyMemory.2" xml:space="preserve">
+    <value>应用程序/文档：</value>
+  </data>
+	<data name="EazyMemory.3" xml:space="preserve">
+    <value>应用</value>
+  </data>
+	<data name="EazyMemory.4" xml:space="preserve">
+    <value>不适用</value>
+  </data>
+	<data name="EazyMemory.5" xml:space="preserve">
+    <value>错误</value>
+  </data>
+	<data name="EazyMemory.6" xml:space="preserve">
+    <value>配置文件</value>
+  </data>
+	<data name="EazyMemory.7" xml:space="preserve">
+    <value>警告</value>
+  </data>
+	<data name="EazyMemory.8" xml:space="preserve">
+    <value>您最多只能保存 9 个配置文件。请删除现有配置文件或在主菜单中进行编辑。</value>
+  </data>
+	<data name="EazyMemory.9" xml:space="preserve">
+    <value>条目重复。为 Easy Memory 配置文件输入不同的文档或应用程序。</value>
+  </data>
+	<data name="EazyMemory.10" xml:space="preserve">
+    <value>您可以在屏幕上排列窗口，然后单击 + 图标。\r\n或者，选择下面的现有布局，然后单击铅笔图标以编辑布局。</value>
+  </data>
+	<data name="EazyMemory.11" xml:space="preserve">
+    <value>另一个配置文件设置为在 PC 启动期间启动。是否要将其替换为此配置文件？</value>
+  </data>
+	<data name="EazyMemory.12" xml:space="preserve">
+    <value>选择启动选项</value>
+  </data>
+	<data name="EazyMemory.13" xml:space="preserve">
+    <value>在 PC 启动期间启动</value>
+  </data>
+	<data name="EazyMemory.14" xml:space="preserve">
+    <value>手动选择所创建的配置文件</value>
+  </data>
+	<data name="EazyMemory.15" xml:space="preserve">
+    <value>按时间自动启动</value>
+  </data>
+	<data name="EazyMemory.16" xml:space="preserve">
+    <value>完成</value>
+  </data>
+	<data name="EazyMemory.17" xml:space="preserve">
+    <value>取消</value>
+  </data>
+	<data name="EazyMemory.18" xml:space="preserve">
+    <value>为配置文件命名</value>
+  </data>
+	<data name="EazyMemory.19" xml:space="preserve">
+    <value>选择布局</value>
+  </data>
+	<data name="EazyMemory.20" xml:space="preserve">
+    <value>窗口 0</value>
+  </data>
+	<data name="EazyMemory.21" xml:space="preserve">
+    <value>窗口 1</value>
+  </data>
+	<data name="EazyMemory.22" xml:space="preserve">
+    <value>窗口 2</value>
+  </data>
+	<data name="EazyMemory.23" xml:space="preserve">
+    <value>窗口 3</value>
+  </data>
+	<data name="EazyMemory.24" xml:space="preserve">
+    <value>窗口 4</value>
+  </data>
+	<data name="EazyMemory.25" xml:space="preserve">
+    <value>窗口 5</value>
+  </data>
+	<data name="EazyMemory.26" xml:space="preserve">
+    <value>窗口 6</value>
+  </data>
+	<data name="EazyMemory.27" xml:space="preserve">
+    <value>窗口 7</value>
+  </data>
+	<data name="EazyMemory.28" xml:space="preserve">
+    <value>窗口 8</value>
+  </data>
+	<data name="EazyMemory.29" xml:space="preserve">
+    <value>窗口 9</value>
+  </data>
+	<data name="EazyMemory.30" xml:space="preserve">
+    <value>窗口 10</value>
+  </data>
+	<data name="EazyMemory.31" xml:space="preserve">
+    <value>窗口 11</value>
+  </data>
+	<data name="EazyMemory.32" xml:space="preserve">
+    <value>窗口 12</value>
+  </data>
+	<data name="EazyMemory.33" xml:space="preserve">
+    <value>从文件夹中选择</value>
+  </data>
+	<data name="WalkThroughDisplay_Main.0" xml:space="preserve">
+    <value>自定义视图</value>
+  </data>
+	<data name="WalkThroughDisplay_Main.1" xml:space="preserve">
+    <value>Easy Arrange</value>
+  </data>
+	<data name="WalkThroughDisplay_Main.2" xml:space="preserve">
+    <value>管理您的输入</value>
+  </data>
+	<data name="WalkThroughMouse_Main.0" xml:space="preserve">
+    <value>触控滚动速度</value>
+  </data>
+	<data name="WalkThroughMouse_Main.1" xml:space="preserve">
+    <value>主按钮</value>
+  </data>
+	<data name="WalkThroughKB_Main.0" xml:space="preserve">
+    <value>可自定义的按键</value>
+  </data>
+	<data name="WalkThroughKB_Main.1" xml:space="preserve">
+    <value>便捷的会议控制</value>
+  </data>
+	<data name="WalkThroughKB_Main.2" xml:space="preserve">
+    <value>照明设置</value>
+  </data>
+	<data name="WalkThroughHeadsetWL3024_Main.0" xml:space="preserve">
+    <value>使用吊杆式麦克风静音/取消静音</value>
+  </data>
+	<data name="WalkThroughHeadsetWL5024_Main.0" xml:space="preserve">
+    <value>使用吊杆式麦克风静音/取消静音</value>
+  </data>
+	<data name="WalkThroughHeadsetWL5024_Main.1" xml:space="preserve">
+    <value>便捷的按钮</value>
+  </data>
+	<data name="WalkThroughHeadsetWL5024_Main.2" xml:space="preserve">
+    <value>主动降噪</value>
+  </data>
+	<data name="WalkThroughWebCam_Main.0" xml:space="preserve">
+    <value>Zoom 中的快速设置</value>
+  </data>
+	<data name="WalkThroughWebCam_Main.1" xml:space="preserve">
+    <value>轻松预设</value>
+  </data>
+	<data name="WalkThroughWebCam_Main.2" xml:space="preserve">
+    <value>AI 自动取景</value>
+  </data>
+	<data name="WalkThroughWebCam_Main.3" xml:space="preserve">
+    <value>高动态范围</value>
+  </data>
+	<data name="WalkThroughWebCam_Main.4" xml:space="preserve">
+    <value>安全功能</value>
+  </data>
+	<data name="WalkThroughDDPM_Main.0" xml:space="preserve">
+    <value>欢迎使用\r\nDell Display and Peripheral Manager</value>
+  </data>
+	<data name="WalkThroughDDPM_Sub.2" xml:space="preserve">
+    <value>查看您的设备、其连接方式及电池电量（如果是无线设备）</value>
+  </data>
+	<data name="WalkThroughDDPM_Sub.3" xml:space="preserve">
+    <value>将鼠标指针悬停在无线设备的连接磁贴上以了解更多详细信息</value>
+  </data>
+	<data name="WalkThroughDDPM_Sub.4" xml:space="preserve">
+    <value>单击您的设备以调整其设置</value>
+  </data>
+	<data name="WalkThroughDDPM_Sub.5" xml:space="preserve">
+    <value>单击齿轮图标以访问应用程序设置以及软件和固件更新</value>
+  </data>
+	<data name="WalkThroughDDPM_Main.1" xml:space="preserve">
+    <value>添加设备</value>
+  </data>
+	<data name="WalkThroughDDPM_Main.2" xml:space="preserve">
+    <value>查看您的设备</value>
+  </data>
+	<data name="WalkThroughDDPM_Main.3" xml:space="preserve">
+    <value>连接磁贴</value>
+  </data>
+	<data name="WalkThroughDDPM_Main.4" xml:space="preserve">
+    <value>设备设置</value>
+  </data>
+	<data name="WalkThroughDDPM_Main.5" xml:space="preserve">
+    <value>应用程序设置</value>
+  </data>
+	<data name="WalkThroughDDPM_Sub.0" xml:space="preserve">
+    <value>在一个位置即可查看所有受支持的戴尔显示屏和外围设备、进行个性化设置并及时更新固件</value>
+  </data>
+	<data name="WalkThroughDDPM_Sub.1" xml:space="preserve">
+    <value>单击 + 图标以查找有关如何连接受支持的戴尔设备的说明</value>
+  </data>
+	<data name="WalkThroughDisplay_Sub.0" xml:space="preserve">
+    <value>通过调整亮度/对比度级别、颜色配置文件等，打造个性化的观看体验</value>
+  </data>
+	<data name="WalkThroughDisplay_Sub.1" xml:space="preserve">
+    <value>减少调整多个窗口大小所花费的时间。选择“Easy Arrange”布局，然后单击窗口并将其拖动到位。如果您想重复使用这种特定的窗口排列方式，请使用“Easy Memory”进行保存</value>
+  </data>
+	<data name="WalkThroughDisplay_Sub.2" xml:space="preserve">
+    <value>通过输入源或 USB/网络 KVM 设置，轻松将您的显示器与多台 PC 配合使用。此外，可以通过 USB 将鼠标、键盘和配件连接到显示器，以便将它们与多台 PC 配合使用</value>
+  </data>
+	<data name="WalkThroughKB_Sub.0" xml:space="preserve">
+    <value>您可以通过指定操作来自定义键盘上的按键。</value>
+  </data>
+	<data name="WalkThroughKB_Sub.1" xml:space="preserve">
+    <value>在 Zoom 和 Teams 中使用快捷键来简化会议。</value>
+  </data>
+	<data name="WalkThroughKB_Sub.2" xml:space="preserve">
+    <value>通过手动调整或将其设置为根据周围光线进行调整来设置键盘的照明级别。</value>
+  </data>
+	<data name="WalkThroughKB525C_Main.0" xml:space="preserve">
+    <value>便捷的会议控制</value>
+  </data>
+	<data name="WalkThroughKB525C_Main.1" xml:space="preserve">
+    <value>可自定义的按键</value>
+  </data>
+	<data name="WalkThroughKB525C_Sub.0" xml:space="preserve">
+    <value>在 Zoom 和 Teams 中使用快捷键来简化会议。</value>
+  </data>
+	<data name="WalkThroughKB525C_Sub.1" xml:space="preserve">
+    <value>您可以通过指定操作来自定义键盘上的按键。</value>
+  </data>
+	<data name="WalkThroughMouse_Sub.0" xml:space="preserve">
+    <value>更改应用程序中突出显示区域的触控滚动速度</value>
+  </data>
+	<data name="WalkThroughMouse_Sub.1" xml:space="preserve">
+    <value>选择您希望主按钮在应用程序中是左按钮还是右按钮</value>
+  </data>
+	<data name="WalkThroughMouseMS355_Main.0" xml:space="preserve">
+    <value>轮询速率</value>
+  </data>
+	<data name="WalkThroughMouseMS355_Main.1" xml:space="preserve">
+    <value>自定义滚轮单击</value>
+  </data>
+	<data name="WalkThroughMouseMS355_Main.2" xml:space="preserve">
+    <value>特定于应用程序的操作</value>
+  </data>
+	<data name="WalkThroughMouseMS355_Sub.0" xml:space="preserve">
+    <value>通过提高鼠标在应用程序中的轮询速率来提高鼠标的速度和精度</value>
+  </data>
+	<data name="WalkThroughMouseMS355_Sub.1" xml:space="preserve">
+    <value>指定单击滚动按钮时您喜欢的操作</value>
+  </data>
+	<data name="WalkThroughMouseMS355_Sub.2" xml:space="preserve">
+    <value>指定使用某些应用程序时滚轮单击的自定义操作</value>
+  </data>
+	<data name="WalkThroughMouseMS900_Main.0" xml:space="preserve">
+    <value>自定义按钮</value>
+  </data>
+	<data name="WalkThroughMouseMS900_Main.2" xml:space="preserve">
+    <value>特定于应用程序的操作</value>
+  </data>
+	<data name="WalkThroughMouseMS900_Sub.0" xml:space="preserve">
+    <value>将您喜欢的操作指定给应用程序中列出的按钮</value>
+  </data>
+	<data name="WalkThroughMouseMS900_Sub.1" xml:space="preserve">
+    <value>指定使用某些应用程序时鼠标按钮的自定义操作</value>
+  </data>
+	<data name="WalkThroughPen_Main.0" xml:space="preserve">
+    <value>使用 Tile 查找触控笔</value>
+  </data>
+	<data name="WalkThroughPen_Main.1" xml:space="preserve">
+    <value>为触控笔电池充电</value>
+  </data>
+	<data name="WalkThroughPen_Main.2" xml:space="preserve">
+    <value>自定义触控笔的行为</value>
+  </data>
+	<data name="WalkThroughPen_Sub.0" xml:space="preserve">
+    <value>要将触控笔与 Tile 配对，请执行以下操作：\n1. 在移动设备上启用蓝牙。\n2. 扫描二维码将 Tile 下载到您的移动设备。\n3. 按住触控笔侧面的两个按钮 3 秒钟，将其与 Tile 配对。</value>
+  </data>
+	<data name="WalkThroughPen_Sub.1" xml:space="preserve">
+    <value>您的触控笔已充电 X%。\n\n要将触控笔充满电，请确保触控笔已连接到平板电脑屏幕。触控笔充电完毕后，您将收到通知。\n\n一旦电池电量低于 10%，系统就会显示低电量通知。</value>
+  </data>
+	<data name="WalkThroughPen_Sub.2" xml:space="preserve">
+    <value>在应用程序中，您可以自定义触控笔按钮的操作，并设置笔尖和倾斜灵敏度\r\n</value>
+  </data>
+	<data name="WalkThroughWebCam_Sub.0" xml:space="preserve">
+    <value>借助我们全新的快速设置小组件，可以在 Zoom 通话期间轻松管理摄像头的关键设置</value>
+  </data>
+	<data name="WalkThroughWebCam_Sub.1" xml:space="preserve">
+    <value>选择一个预设来反映您希望在摄像头上呈现的样子，或者创建您自己的预设</value>
+  </data>
+	<data name="WalkThroughWebCam_Sub.2" xml:space="preserve">
+    <value>启用 AI 自动取景功能，让您的面部在您移动时始终处于画面中央</value>
+  </data>
+	<data name="WalkThroughWebCam_Sub.3" xml:space="preserve">
+    <value>启用高动态范围以增强图像质量，尤其是在极端照明条件下</value>
+  </data>
+	<data name="WalkThroughWebCam_Sub.4" xml:space="preserve">
+    <value>打开“用户感应”功能，让摄像头在您靠近时唤醒屏幕并在您走开时锁定屏幕</value>
+  </data>
+	<data name="WalkThroughWebCamWB3023_Main.0" xml:space="preserve">
+    <value>Zoom 中的快速设置</value>
+  </data>
+	<data name="WalkThroughWebCamWB3023_Main.1" xml:space="preserve">
+    <value>轻松预设</value>
+  </data>
+	<data name="WalkThroughWebCamWB3023_Main.2" xml:space="preserve">
+    <value>高动态范围</value>
+  </data>
+	<data name="WalkThroughWebCamWB3023_Sub.0" xml:space="preserve">
+    <value>借助我们全新的快速设置小组件，可以在 Zoom 通话期间轻松管理摄像头的关键设置</value>
+  </data>
+	<data name="WalkThroughWebCamWB3023_Sub.1" xml:space="preserve">
+    <value>选择一个预设来反映您希望在摄像头上呈现的样子，或者创建您自己的预设</value>
+  </data>
+	<data name="WalkThroughWebCamWB3023_Sub.2" xml:space="preserve">
+    <value>P2424HEB</value>
+  </data>
+	<data name="WalkThroughHeadsetWL3024_Main.1" xml:space="preserve">
+    <value>便捷的按钮</value>
+  </data>
+	<data name="WalkThroughHeadsetWL3024_Sub.0" xml:space="preserve">
+    <value>向上折叠麦克风可静音，将其展开可取消静音。\r\n\r\n如果需要，请打开应用程序中的一项功能，以便在展开吊杆式麦克风时接听来电。</value>
+  </data>
+	<data name="WalkThroughHeadsetWL3024_Sub.1" xml:space="preserve">
+    <value>只需按一下按钮，即可管理 Microsoft Teams 和您的静音状态。使用其他便捷按钮可调整音频音量和更多功能。</value>
+  </data>
+	<data name="WalkThroughHeadsetWH3024_Main.0" xml:space="preserve">
+    <value>便捷的按钮</value>
+  </data>
+	<data name="WalkThroughHeadsetWH3024_Main.1" xml:space="preserve">
+    <value>使用吊杆式麦克风静音/取消静音</value>
+  </data>
+	<data name="WalkThroughHeadsetWH3024_Sub.0" xml:space="preserve">
+    <value>使用耳机内嵌控件上的便捷按钮可管理您的通话、静音状态和音频音量</value>
+  </data>
+	<data name="WalkThroughHeadsetWH3024_Sub.1" xml:space="preserve">
+    <value>向上折叠麦克风可静音，将其展开可取消静音。\r\n\r\n如果需要，请打开应用程序中的一项功能，以便在展开吊杆式麦克风时接听来电。</value>
+  </data>
+	<data name="WalkThroughHeadsetWL5024_Sub.0" xml:space="preserve">
+    <value>向上折叠麦克风可静音，将其展开可取消静音。\r\n\r\n如果需要，请打开应用程序中的一项功能，以便在展开吊杆式麦克风时接听来电。</value>
+  </data>
+	<data name="WalkThroughHeadsetWL5024_Sub.1" xml:space="preserve">
+    <value>只需按一下按钮，即可管理 Microsoft Teams 和您的静音状态。使用其他便捷按钮可调整音频音量和更多功能。</value>
+  </data>
+	<data name="WalkThroughHeadsetWL5024_Sub.2" xml:space="preserve">
+    <value>按下耳机上的 ANC 按钮或从应用程序的选项中进行选择，以管理您听到的外界噪音量。\r\n\r\n如果选择“透明模式”，请使用应用程序中的滑块来自定义噪音级别。</value>
+  </data>
+	<data name="WalkThroughHeadsetWH5024_Main.0" xml:space="preserve">
+    <value>便捷的按钮</value>
+  </data>
+	<data name="WalkThroughHeadsetWH5024_Main.1" xml:space="preserve">
+    <value>使用吊杆式麦克风静音/取消静音</value>
+  </data>
+	<data name="WalkThroughHeadsetWH5024_Main.2" xml:space="preserve">
+    <value>主动降噪</value>
+  </data>
+	<data name="WalkThroughHeadsetWH5024_Sub.0" xml:space="preserve">
+    <value>使用耳机内嵌控件上的便捷按钮可管理您的通话、静音状态和音频音量。使用侧面的 ANC 按钮可调整您听到的外界噪音量。 </value>
+  </data>
+	<data name="WalkThroughHeadsetWH5024_Sub.1" xml:space="preserve">
+    <value>向上折叠麦克风可静音，将其展开可取消静音。\r\n\r\n如果需要，请打开应用程序中的一项功能，以便在展开吊杆式麦克风时接听来电。</value>
+  </data>
+	<data name="WalkThroughHeadsetWH5024_Sub.2" xml:space="preserve">
+    <value>按下耳机上的 ANC 按钮或从应用程序的选项中进行选择，以管理您听到的外界噪音量。\r\n\r\n如果选择“透明模式”，请使用应用程序中的滑块来自定义噪音级别。</value>
+  </data>
+	<data name="WalkThroughHeadsetWL7024_Sub.0" xml:space="preserve">
+    <value>上下滑动可管理您的音量；双击可接听和挂断电话；等等。</value>
+  </data>
+	<data name="WalkThroughHeadsetWL7024_Sub.1" xml:space="preserve">
+    <value>使用耳机上的便捷按钮可管理静音状态、主动降噪 (ANC) 和 Microsoft Teams</value>
+  </data>
+	<data name="WalkThroughHeadsetWL7024_Sub.2" xml:space="preserve">
+    <value>按下耳机上的 ANC 按钮或从应用程序的选项中进行选择，以管理您听到的外界噪音量。\r\n\r\n如果选择“透明模式”，请使用应用程序中的滑块来自定义噪音级别。</value>
+  </data>
+	<data name="WalkThroughHeadsetWL7024_Sub.3" xml:space="preserve">
+    <value>将耳机放在充电坞站上或使用随附的 USB 线缆将其连接到 PC 进行充电</value>
+  </data>
+	<data name="WalkThroughHeadsetWL7024_Main.0" xml:space="preserve">
+    <value>滑动并点按以控制功能</value>
+  </data>
+	<data name="WalkThroughHeadsetWL7024_Main.1" xml:space="preserve">
+    <value>便捷的按钮</value>
+  </data>
+	<data name="WalkThroughHeadsetWL7024_Main.2" xml:space="preserve">
+    <value>主动降噪</value>
+  </data>
+	<data name="WalkThroughHeadsetWL7024_Main.3" xml:space="preserve">
+    <value>充电简单</value>
+  </data>
+	<data name="EazyMemory.34" xml:space="preserve">
+    <value>分配程序</value>
+  </data>
+	<data name="EazyMemory.35" xml:space="preserve">
+    <value>启动选项</value>
+  </data>
+	<data name="EazyMemory.36" xml:space="preserve">
+    <value>保存不同的配置文件，并按计划时间或在系统启动时手动还原它们。\r\n\r\n首先为您的 Easy Memory 配置文件指定名称并选择布局。</value>
+  </data>
+	<data name="EazyMemory.37" xml:space="preserve">
+    <value>将应用程序/文档分配给窗口或将应用程序图标拖动到相应的分区。\r\n\r\n提醒：Easy Arrange Memory 的可用性可能因应用程序类型和启动行为而异。</value>
+  </data>
+	<data name="EazyMemory.38" xml:space="preserve">
+    <value>选择启动类型</value>
+  </data>
+	<data name="EazyMemory.39" xml:space="preserve">
+    <value>EASY MEMORY 设置</value>
+  </data>
+	<data name="WalkThrough.0" xml:space="preserve">
+    <value>功能亮点</value>
+  </data>
+	<data name="Yes" xml:space="preserve">
+    <value>是</value>
+  </data>
+	<data name="No" xml:space="preserve">
+    <value>否</value>
+  </data>
+	<data name="Camera.12" xml:space="preserve">
+    <value>添加预设时不可用</value>
+  </data>
+	<data name="Camera.13" xml:space="preserve">
+    <value>添加预设时并非所有功能都可用</value>
+  </data>
+	<data name="HeadsetAudioSettings.20" xml:space="preserve">
+    <value>控制您听到的外部声音量</value>
+  </data>
+	<data name="HeadsetAudioSettings.21" xml:space="preserve">
+    <value>消除周围噪音</value>
+  </data>
+	<data name="HeadsetAudioSettings.22" xml:space="preserve">
+    <value>允许听到环境声。调整听到的环境声的音量级别。</value>
+  </data>
+	<data name="HeadsetAudioSettings.23" xml:space="preserve">
+    <value>关闭降噪功能</value>
+  </data>
+	<data name="HeadsetAudioSettings.24" xml:space="preserve">
+    <value>限制近端麦克风噪音，为他人创造更好的音频体验</value>
+  </data>
+	<data name="HeadsetAudioSettings.25" xml:space="preserve">
+    <value>限制远端麦克风噪音，为您创造更好的音频体验</value>
+  </data>
+	<data name="HeadsetAudioSettings.26" xml:space="preserve">
+    <value>均衡器会根据所选预设进行调整</value>
+  </data>
+	<data name="HeadsetAudioSettings.27" xml:space="preserve">
+    <value>调整通话时您能听到自己声音的程度。（在“透明模式”下不可用）</value>
+  </data>
+	<data name="HeadsetAudioSettings.28" xml:space="preserve">
+    <value>消除背景噪音，让您的声音清晰可辨</value>
+  </data>
+	<data name="HeadsetAutomatedActions.9" xml:space="preserve">
+    <value>摘下耳机时的自动操作</value>
+  </data>
+	<data name="HeadsetAutomatedActions.10" xml:space="preserve">
+    <value>摘下耳机时自动暂停音乐播放。戴上耳机后，音乐将自动恢复播放。</value>
+  </data>
+	<data name="HeadsetAutomatedActions.11" xml:space="preserve">
+    <value>摘下耳机时自动将麦克风静音</value>
+  </data>
+	<data name="HeadsetAutomatedActions.12" xml:space="preserve">
+    <value>将吊杆式麦克风向下拉即可接听来电</value>
+  </data>
+	<data name="HeadsetAutomatedActions.13" xml:space="preserve">
+    <value>将耳罩从耳朵上移开时的自动操作</value>
+  </data>
+	<data name="HeadsetDeviceSettings.7" xml:space="preserve">
+    <value>通话时指示灯</value>
+  </data>
+	<data name="HeadsetDeviceSettings.8" xml:space="preserve">
+    <value>音频提示和设备功能声明</value>
+  </data>
+	<data name="SpeakerToolTip.0" xml:space="preserve">
+    <value>消除背景噪音，让您的声音清晰可辨</value>
+  </data>
+	<data name="SpeakerToolTip.1" xml:space="preserve">
+    <value>设备静音时播放声音</value>
+  </data>
+	<data name="SpeakerToolTip.2" xml:space="preserve">
+    <value>调整音量时播放声音</value>
+  </data>
+	<data name="Continue" xml:space="preserve">
+    <value>继续</value>
+  </data>
+	<data name="ImpExp_RestartMsg.0" xml:space="preserve">
+    <value>设置已更改。Dell Display and Peripheral Manager 将重新启动。</value>
+  </data>
+	<data name="ImpExp_SuccessMsg.0" xml:space="preserve">
+    <value>应用程序设置导出成功</value>
+  </data>
+	<data name="ImpExp_SuccessMsg.1" xml:space="preserve">
+    <value>应用程序设置已成功应用于 %1。畅享使用显示器的乐趣吧。</value>
+  </data>
+	<data name="ImpExp_SuccessMsg.2" xml:space="preserve">
+    <value>应用程序设置已成功应用于 %1。畅享使用显示器的乐趣吧。</value>
+  </data>
+	<data name="ImpExp_WarningMsg.0" xml:space="preserve">
+    <value>这不是您的主显示器。是否要继续并将其设置为用于同步的主显示器？</value>
+  </data>
+	<data name="ImpExp_WarningMsg.1" xml:space="preserve">
+    <value>e 与当前布局相关联。是否要覆盖它？</value>
+  </data>
+	<data name="RestartNeeded" xml:space="preserve">
+    <value>需要重新启动</value>
+  </data>
+	<data name="Success" xml:space="preserve">
+    <value>成功</value>
+  </data>
+	<data name="Warning" xml:space="preserve">
+    <value>警告</value>
+  </data>
+	<data name="ImpExp_Message.0" xml:space="preserve">
+    <value>检测到相同型号时自动应用设置</value>
+  </data>
+	<data name="DisplayDefault.0" xml:space="preserve">
+    <value>是否要立即将显示器重置为出厂设置？</value>
+  </data>
+	<data name="RestoreToDefaultActions" xml:space="preserve">
+    <value>恢复到默认操作</value>
+  </data>
+	<data name="Game_Enhance_Mode" xml:space="preserve">
+    <value>游戏增强模式</value>
+  </data>
+	<data name="Response_Time" xml:space="preserve">
+    <value>响应时间</value>
+  </data>
+	<data name="Dark_Stabilizer" xml:space="preserve">
+    <value>深色稳定器</value>
+  </data>
+	<data name="Dark_Stabilizer_Toggle" xml:space="preserve">
+    <value>深色稳定器切换</value>
+  </data>
+	<data name="Dual_Resolution" xml:space="preserve">
+    <value>双重分辨率</value>
+  </data>
+	<data name="Dual_Resolution_Toggle" xml:space="preserve">
+    <value>双重分辨率切换</value>
+  </data>
+	<data name="Resolution_and_Refresh_Rate" xml:space="preserve">
+    <value>分辨率和刷新率</value>
+  </data>
+	<data name="Toggle_Vision_Engine" xml:space="preserve">
+    <value>切换 Vision Engine</value>
+  </data>
+	<data name="Third_Party_Licenses" xml:space="preserve">
+    <value>第三方许可</value>
+  </data>
+	<data name="Help" xml:space="preserve">
+    <value>帮助</value>
+  </data>
+	<data name="Need_help" xml:space="preserve">
+    <value>需要帮助吗？有关此软件的更多信息，请单击下面的按钮。</value>
+  </data>
+	<data name="Learn_more" xml:space="preserve">
+    <value>了解更多</value>
+  </data>
+	<data name="On_screen_notifications" xml:space="preserve">
+    <value>屏幕上通知</value>
+  </data>
+	<data name="All_Devices" xml:space="preserve">
+    <value>所有设备</value>
+  </data>
+	<data name="Low_battery_level" xml:space="preserve">
+    <value>电池电量低</value>
+  </data>
+	<data name="Device_specific" xml:space="preserve">
+    <value>特定于设备</value>
+  </data>
+	<data name="Keyboard_lock_key" xml:space="preserve">
+    <value>键盘锁定键</value>
+  </data>
+	<data name="Webcam_WB7022_Presence_Detection_sensor_cover_state" xml:space="preserve">
+    <value>网络摄像头 WB7022 用户检测传感器保护盖状态</value>
+  </data>
+	<data name="Headset_speakerphone_and_soundbar_mute_unmute" xml:space="preserve">
+    <value>耳机、扬声器和音棒静音/取消静音</value>
+  </data>
+	<data name="Display_Color_Preset_and_Easy_Memory" xml:space="preserve">
+    <value>显示色彩预设和 Easy Memory</value>
+  </data>
+	<data name="Reports" xml:space="preserve">
+    <value>报告</value>
+  </data>
+	<data name="Save_diagnostic_report" xml:space="preserve">
+    <value>保存诊断报告</value>
+  </data>
+	<data name="Save_monitor_asset_report" xml:space="preserve">
+    <value>保存显示器资产报告</value>
+  </data>
+	<data name="Widget_Settings" xml:space="preserve">
+    <value>小组件设置</value>
+  </data>
+	<data name="Activate_Quick_Access_widget_during_Zoom_conference_calls" xml:space="preserve">
+    <value>在 Zoom 电话会议期间激活“快速访问”小组件</value>
+  </data>
+	<data name="Widget_will_automatically_appear_when_meeting_begins" xml:space="preserve">
+    <value>当会议开始时，将自动显示小组件，以自定义受支持的网络摄像头的设置</value>
+  </data>
+	<data name="Enable_shortcut_reminder_for_Quick_Accesswidget" xml:space="preserve">
+    <value>启用“快速访问”小组件的快捷方式提醒</value>
+  </data>
+	<data name="Critical" xml:space="preserve">
+    <value>关键</value>
+  </data>
+	<data name="Recommended" xml:space="preserve">
+    <value>推荐</value>
+  </data>
+	<data name="Optional" xml:space="preserve">
+    <value>可选</value>
+  </data>
+	<data name="VisionEngine_Night" xml:space="preserve">
+    <value>夜间</value>
+  </data>
+	<data name="VisionEngine_Clear" xml:space="preserve">
+    <value>清晰度</value>
+  </data>
+	<data name="VisionEngine_Bino" xml:space="preserve">
+    <value>Bino</value>
+  </data>
+	<data name="VisionEngine_Chroma" xml:space="preserve">
+    <value>色度</value>
+  </data>
+	<data name="VisionEngine_Crosshair" xml:space="preserve">
+    <value>十字准星</value>
+  </data>
+	<data name="Software_version" xml:space="preserve">
+    <value>软件版本</value>
+  </data>
+	<data name="Driver_version" xml:space="preserve">
+    <value>驱动程序版本</value>
+  </data>
+	<data name="Preview_Changes" xml:space="preserve">
+    <value>预览更改</value>
+  </data>
+	<data name="Stop_Preview" xml:space="preserve">
+    <value>停止预览</value>
+  </data>
+	<data name="Tooltips_Schedule" xml:space="preserve">
+    <value>此功能使我们的眼睛能够适应所需的设置。</value>
+  </data>
+	<data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
     <value>断开所有 USB 存储设备与显示器的连接。</value>
   </data>
-  <data name="AddDevice.KnM.14" xml:space="preserve">
+	<data name="AddDevice.KnM.14" xml:space="preserve">
     <value>无线接收器连接</value>
   </data>
-  <data name="ConsentNo" xml:space="preserve">
+	<data name="ConsentNo" xml:space="preserve">
     <value>不，我不同意</value>
   </data>
-  <data name="ConsentYes" xml:space="preserve">
+	<data name="ConsentYes" xml:space="preserve">
     <value>是的，我同意</value>
   </data>
-  <data name="AppName" xml:space="preserve">
+	<data name="AppName" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>
   </data>
-  <data name="Consent.1" xml:space="preserve">
+	<data name="Consent.1" xml:space="preserve">
     <value>帮助我们改进</value>
   </data>
-  <data name="Consent.2" xml:space="preserve">
+	<data name="Consent.2" xml:space="preserve">
     <value>自动发送诊断和使用情况数据，帮助戴尔改进产品和服务。了解有关以下对象的详细信息： </value>
   </data>
-  <data name="ImpExp_CheckBox.0" xml:space="preserve">
+	<data name="ImpExp_CheckBox.0" xml:space="preserve">
     <value>对于同一型号不再提示</value>
   </data>
-  <data name="ImpExp_Message.1" xml:space="preserve">
+	<data name="ImpExp_Message.1" xml:space="preserve">
     <value>是否要导入应用程序设置以方便使用？</value>
   </data>
-  <data name="ImpExp_Title.0" xml:space="preserve">
+	<data name="ImpExp_Title.0" xml:space="preserve">
     <value>检测到新的显示器 %1。</value>
   </data>
-  <data name="Wait_DevMgr" xml:space="preserve">
+	<data name="Wait_DevMgr" xml:space="preserve">
     <value>正在连接到 DDPM 子代理程序...</value>
     <comment>Robert_1218 Changed</comment>
   </data>
-  <data name="Wait_DTH" xml:space="preserve">
+	<data name="Wait_DTH" xml:space="preserve">
     <value>正在连接到 Dell.TechHub...</value>
     <comment>Robert_1218 Changed</comment>
   </data>
-  <data name="Wait_NoDevice" xml:space="preserve">
+	<data name="Wait_NoDevice" xml:space="preserve">
     <value>正在检测设备...</value>
     <comment>Robert_1218 Changed</comment>
   </data>
-  <data name="InvalidURL" xml:space="preserve">
+	<data name="InvalidURL" xml:space="preserve">
     <value>URL 无效</value>
   </data>
-  <data name="Left" xml:space="preserve">
+	<data name="Left" xml:space="preserve">
     <value>左</value>
   </data>
-  <data name="Right" xml:space="preserve">
+	<data name="Right" xml:space="preserve">
     <value>右</value>
   </data>
-  <data name="WalkThrough.1" xml:space="preserve">
+	<data name="WalkThrough.1" xml:space="preserve">
     <value>跳过</value>
   </data>
-  <data name="WalkThrough.2" xml:space="preserve">
+	<data name="WalkThrough.2" xml:space="preserve">
     <value>转至应用程序</value>
   </data>
-  <data name="HeadsetAudioSettings.29" xml:space="preserve">
+	<data name="HeadsetAudioSettings.29" xml:space="preserve">
     <value>适用于进行电话会议的情况</value>
   </data>
-  <data name="HeadsetAudioSettings.30" xml:space="preserve">
+	<data name="HeadsetAudioSettings.30" xml:space="preserve">
     <value>适用于收听多媒体（如音乐或播客）的情况</value>
   </data>
-  <data name="Brightness.19" xml:space="preserve">
+	<data name="Brightness.19" xml:space="preserve">
     <value>自动亮度调节功能当前已启用。是否要覆盖它？</value>
   </data>
-  <data name="Brightness.20" xml:space="preserve">
+	<data name="Brightness.20" xml:space="preserve">
     <value>这不是您的主显示器。是否要继续执行更改并将其设置为用于同步的主显示器？</value>
   </data>
-  <data name="ThirdPartyLicense.Title" xml:space="preserve">
+	<data name="ThirdPartyLicense.Title" xml:space="preserve">
     <value>第三方许可证</value>
   </data>
-  <data name="Illumination.2" xml:space="preserve">
+	<data name="Illumination.2" xml:space="preserve">
     <value>要更改亮度级别，请按 F8 键</value>
   </data>
-  <data name="Illumination.3" xml:space="preserve">
+	<data name="Illumination.3" xml:space="preserve">
     <value>根据环境的光线强度调整键盘的亮度级别</value>
   </data>
-  <data name="Illumination.4" xml:space="preserve">
+	<data name="Illumination.4" xml:space="preserve">
     <value>手动调整键盘的亮度</value>
   </data>
-  <data name="Off2" xml:space="preserve">
+	<data name="Off2" xml:space="preserve">
     <value>关闭</value>
   </data>
-  <data name="EazyMemory.40" xml:space="preserve">
+	<data name="EazyMemory.40" xml:space="preserve">
     <value>请输入配置文件名称。</value>
   </data>
-  <data name="hotkey.7" xml:space="preserve">
+	<data name="hotkey.7" xml:space="preserve">
     <value>热键警告</value>
   </data>
-  <data name="hotkey.8" xml:space="preserve">
+	<data name="hotkey.8" xml:space="preserve">
     <value>您配置的热键是单键。它可能会干扰您希望该按键在其他应用程序中的使用方式。是否确定要继续？</value>
   </data>
-  <data name="hotkey.9" xml:space="preserve">
+	<data name="hotkey.9" xml:space="preserve">
     <value>此热键由另一项 Dell Display and Peripheral Manager 功能使用。是否要更换它？</value>
   </data>
-  <data name="URL" xml:space="preserve">
+	<data name="URL" xml:space="preserve">
     <value>URL</value>
   </data>
-  <data name="Update_Available_Version" xml:space="preserve">
+	<data name="Update_Available_Version" xml:space="preserve">
     <value>更新可用版本</value>
   </data>
-  <data name="New_Supported_Devices" xml:space="preserve">
+	<data name="New_Supported_Devices" xml:space="preserve">
     <value>新支持的设备</value>
   </data>
-  <data name="New_Features" xml:space="preserve">
+	<data name="New_Features" xml:space="preserve">
     <value>新功能</value>
   </data>
-  <data name="Bug_Fixes" xml:space="preserve">
+	<data name="Bug_Fixes" xml:space="preserve">
     <value>错误修正</value>
   </data>
-  <data name="Update" xml:space="preserve">
+	<data name="Update" xml:space="preserve">
     <value>更新</value>
   </data>
-  <data name="UI_Orientation.0" xml:space="preserve">
+	<data name="UI_Orientation.0" xml:space="preserve">
     <value>横向</value>
   </data>
-  <data name="UI_Orientation.1" xml:space="preserve">
+	<data name="UI_Orientation.1" xml:space="preserve">
     <value>纵向</value>
   </data>
-  <data name="UI_Orientation.2" xml:space="preserve">
+	<data name="UI_Orientation.2" xml:space="preserve">
     <value>横向（翻转）</value>
   </data>
-  <data name="UI_Orientation.3" xml:space="preserve">
+	<data name="UI_Orientation.3" xml:space="preserve">
     <value>纵向（翻转）</value>
   </data>
-  <data name="AutoBrightnessRangeLevel.0" xml:space="preserve">
+	<data name="AutoBrightnessRangeLevel.0" xml:space="preserve">
     <value>低</value>
   </data>
-  <data name="AutoBrightnessRangeLevel.1" xml:space="preserve">
+	<data name="AutoBrightnessRangeLevel.1" xml:space="preserve">
     <value>中</value>
   </data>
-  <data name="AutoBrightnessRangeLevel.2" xml:space="preserve">
+	<data name="AutoBrightnessRangeLevel.2" xml:space="preserve">
     <value>高</value>
   </data>
-  <data name="EazyMemorySettings.0" xml:space="preserve">
+	<data name="EazyMemorySettings.0" xml:space="preserve">
     <value>热键：最近</value>
   </data>
-  <data name="EazyMemorySettings.1" xml:space="preserve">
+	<data name="EazyMemorySettings.1" xml:space="preserve">
     <value>示例：“Alt + P”、“Shift + F”、“Ctrl + Shift + F”。</value>
   </data>
-  <data name="EazyMemorySettings.2" xml:space="preserve">
+	<data name="EazyMemorySettings.2" xml:space="preserve">
     <value>通过拖动到分区中，可轻松地将任何应用程序贴靠到分屏布局中</value>
   </data>
-  <data name="EazyMemorySettings.3" xml:space="preserve">
+	<data name="EazyMemorySettings.3" xml:space="preserve">
     <value>允许应用程序无间隙并排拆分</value>
   </data>
-  <data name="EazyMemorySettings.4" xml:space="preserve">
+	<data name="EazyMemorySettings.4" xml:space="preserve">
     <value>仅在按下 SHIFT 时允许区域定位</value>
   </data>
-  <data name="EazyMemorySettings.5" xml:space="preserve">
+	<data name="EazyMemorySettings.5" xml:space="preserve">
     <value>跨多个显示器贴靠</value>
   </data>
-  <data name="EazyMemorySettings.6" xml:space="preserve">
+	<data name="EazyMemorySettings.6" xml:space="preserve">
     <value>应用程序窗口贴靠</value>
   </data>
-  <data name="PairedInfo.0" xml:space="preserve">
+	<data name="PairedInfo.0" xml:space="preserve">
     <value>此设备可同时与 {0} 个主机配对</value>
   </data>
-  <data name="EazyMemory.41" xml:space="preserve">
+	<data name="EazyMemory.41" xml:space="preserve">
     <value>另一个配置文件已配置为使用相同时间。请改用其他时间。</value>
   </data>
-  <data name="Action.1" xml:space="preserve">
+	<data name="Action.1" xml:space="preserve">
     <value>输入按键组合以创建快捷方式</value>
   </data>
-  <data name="Action.2" xml:space="preserve">
+	<data name="Action.2" xml:space="preserve">
     <value>单击浏览按钮以选择文件</value>
   </data>
-  <data name="Action.3" xml:space="preserve">
+	<data name="Action.3" xml:space="preserve">
     <value>单击“浏览”按钮以选择文件夹</value>
   </data>
-  <data name="Action.4" xml:space="preserve">
+	<data name="Action.4" xml:space="preserve">
     <value>在下面的框中键入网页的 URL</value>
   </data>
-  <data name="Action.5" xml:space="preserve">
+	<data name="Action.5" xml:space="preserve">
     <value>文件名</value>
   </data>
-  <data name="Action.6" xml:space="preserve">
+	<data name="Action.6" xml:space="preserve">
     <value>文件夹名称</value>
   </data>
-  <data name="Camera.14" xml:space="preserve">
+	<data name="Camera.14" xml:space="preserve">
     <value>预设</value>
   </data>
-  <data name="Camera.15" xml:space="preserve">
+	<data name="Camera.15" xml:space="preserve">
     <value>编辑预设</value>
   </data>
-  <data name="Camera.19" xml:space="preserve">
+	<data name="Camera.19" xml:space="preserve">
     <value>名称</value>
   </data>
-  <data name="Camera.20" xml:space="preserve">
+	<data name="Camera.20" xml:space="preserve">
     <value>此名称已被使用</value>
   </data>
-  <data name="Camera.21" xml:space="preserve">
+	<data name="Camera.21" xml:space="preserve">
     <value>撤消对摄像头图像的所有更改并将其还原为原始设置</value>
   </data>
-  <data name="Camera.22" xml:space="preserve">
+	<data name="Camera.22" xml:space="preserve">
     <value>润饰并柔化您的外观</value>
   </data>
-  <data name="Camera.23" xml:space="preserve">
+	<data name="Camera.23" xml:space="preserve">
     <value>增强图像的色彩和自然饱和度</value>
   </data>
-  <data name="Camera.24" xml:space="preserve">
+	<data name="Camera.24" xml:space="preserve">
     <value>使用暖色调改善您的外观</value>
   </data>
-  <data name="Collab.1" xml:space="preserve">
+	<data name="Collab.1" xml:space="preserve">
     <value>协作</value>
   </data>
-  <data name="Collab.10" xml:space="preserve">
+	<data name="Collab.10" xml:space="preserve">
     <value>协作键盘无法连接到 Microsoft Teams，因为您阻止了该请求。要将 Microsoft Teams 与协作键盘配合使用，请单击“了解更多”，以获取有关如何重新连接的说明。</value>
   </data>
-  <data name="Collab.11" xml:space="preserve">
+	<data name="Collab.11" xml:space="preserve">
     <value>要将协作键盘与 Zoom 配合使用，请安装 Zoom 的最新桌面版本</value>
   </data>
-  <data name="Collab.12" xml:space="preserve">
+	<data name="Collab.12" xml:space="preserve">
     <value>要将协作键盘与 Microsoft Teams 配合使用，请确保已登录并使用最新版本的 Microsoft Teams，而且已启用第三方应用程序 API</value>
   </data>
-  <data name="Collab.13" xml:space="preserve">
+	<data name="Collab.13" xml:space="preserve">
     <value>视频</value>
   </data>
-  <data name="Collab.14" xml:space="preserve">
+	<data name="Collab.14" xml:space="preserve">
     <value>共享</value>
   </data>
-  <data name="Collab.15" xml:space="preserve">
+	<data name="Collab.15" xml:space="preserve">
     <value>聊天</value>
   </data>
-  <data name="Collab.16" xml:space="preserve">
+	<data name="Collab.16" xml:space="preserve">
     <value>麦克风</value>
   </data>
-  <data name="Collab.17" xml:space="preserve">
+	<data name="Collab.17" xml:space="preserve">
     <value>确定</value>
   </data>
-  <data name="Collab.2" xml:space="preserve">
+	<data name="Collab.2" xml:space="preserve">
     <value>快速访问会议控件。\n在 Microsoft Teams 或 Zoom 通话中，\n打开/关闭按键将在键盘上显示或隐藏它们。</value>
   </data>
-  <data name="Collab.3" xml:space="preserve">
+	<data name="Collab.3" xml:space="preserve">
     <value>在电话会议中出现新的聊天消息时启用闪烁\n效果</value>
   </data>
-  <data name="Collab.4" xml:space="preserve">
+	<data name="Collab.4" xml:space="preserve">
     <value>通过双击而不是单击来激活键盘上的\n图标</value>
   </data>
-  <data name="Collab.5" xml:space="preserve">
+	<data name="Collab.5" xml:space="preserve">
     <value>了解更多</value>
   </data>
-  <data name="Collab.6" xml:space="preserve">
+	<data name="Collab.6" xml:space="preserve">
     <value>要将协作键盘与 Microsoft Teams 配合使用，请执行以下操作：\r\n1. 打开 Teams 并转到隐私设置。\n\n2. 选择第三方应用程序 API，并确保 Dell Display and Peripheral Manager 不在屏蔽名单中。\n\n3. 发起 Microsoft Teams 电话会议，将 Microsoft Teams 与 Dell Display and Peripheral Manager 进行配对。</value>
   </data>
-  <data name="Collab.7" xml:space="preserve">
+	<data name="Collab.7" xml:space="preserve">
     <value>如果仍有问题，请联系您的 IT 部门（如适用），他们可能实施了禁止协作键盘连接到 Microsoft Teams 的策略。</value>
   </data>
-  <data name="Collab.8" xml:space="preserve">
+	<data name="Collab.8" xml:space="preserve">
     <value>要使用协作键盘，您需要最新版本的 Zoom 或 Microsoft Teams</value>
   </data>
-  <data name="Collab.9" xml:space="preserve">
+	<data name="Collab.9" xml:space="preserve">
     <value>启动电话会议并接受连接请求，将协作键盘与 Microsoft Teams 相连接</value>
   </data>
-  <data name="Common.0" xml:space="preserve">
+	<data name="Common.0" xml:space="preserve">
     <value>浏览</value>
   </data>
-  <data name="Common.1" xml:space="preserve">
+	<data name="Common.1" xml:space="preserve">
     <value>清晰度</value>
   </data>
-  <data name="Common.2" xml:space="preserve">
+	<data name="Common.2" xml:space="preserve">
     <value>取消</value>
   </data>
-  <data name="Common.3" xml:space="preserve">
+	<data name="Common.3" xml:space="preserve">
     <value>从应用程序列表中选择应用程序</value>
   </data>
-  <data name="Common.4" xml:space="preserve">
+	<data name="Common.4" xml:space="preserve">
     <value>选择文件</value>
   </data>
-  <data name="Common.5" xml:space="preserve">
+	<data name="Common.5" xml:space="preserve">
     <value>所选文件</value>
   </data>
-  <data name="DisplayDefault.1" xml:space="preserve">
+	<data name="DisplayDefault.1" xml:space="preserve">
     <value>是否确定要还原设备上的所有默认设置？</value>
   </data>
-  <data name="Dock.2" xml:space="preserve">
+	<data name="Dock.2" xml:space="preserve">
     <value>USB-C (DP 1.4)</value>
   </data>
-  <data name="Dock.3" xml:space="preserve">
+	<data name="Dock.3" xml:space="preserve">
     <value>双 USB-C (DP 1.4)</value>
   </data>
-  <data name="Dock.4" xml:space="preserve">
+	<data name="Dock.4" xml:space="preserve">
     <value>USB-C (TB 4)</value>
   </data>
-  <data name="Dock.5" xml:space="preserve">
+	<data name="Dock.5" xml:space="preserve">
     <value>USB-C (TB 5)</value>
   </data>
-  <data name="Excel.1" xml:space="preserve">
+	<data name="Excel.1" xml:space="preserve">
     <value>居中对齐</value>
   </data>
-  <data name="Excel.10" xml:space="preserve">
+	<data name="Excel.10" xml:space="preserve">
     <value>仅粘贴格式</value>
   </data>
-  <data name="Excel.11" xml:space="preserve">
+	<data name="Excel.11" xml:space="preserve">
     <value>粘贴公式</value>
   </data>
-  <data name="Excel.12" xml:space="preserve">
+	<data name="Excel.12" xml:space="preserve">
     <value>仅粘贴值</value>
   </data>
-  <data name="Excel.13" xml:space="preserve">
+	<data name="Excel.13" xml:space="preserve">
     <value>上一张表</value>
   </data>
-  <data name="Excel.14" xml:space="preserve">
+	<data name="Excel.14" xml:space="preserve">
     <value>按 A 到 Z 排序</value>
   </data>
-  <data name="Excel.2" xml:space="preserve">
+	<data name="Excel.2" xml:space="preserve">
     <value>向左对齐</value>
   </data>
-  <data name="Excel.3" xml:space="preserve">
+	<data name="Excel.3" xml:space="preserve">
     <value>向右对齐</value>
   </data>
-  <data name="Excel.4" xml:space="preserve">
+	<data name="Excel.4" xml:space="preserve">
     <value>减少缩进</value>
   </data>
-  <data name="Excel.5" xml:space="preserve">
+	<data name="Excel.5" xml:space="preserve">
     <value>转至数据区域底部</value>
   </data>
-  <data name="Excel.6" xml:space="preserve">
+	<data name="Excel.6" xml:space="preserve">
     <value>转至数据区域顶部</value>
   </data>
-  <data name="Excel.7" xml:space="preserve">
+	<data name="Excel.7" xml:space="preserve">
     <value>插入图表</value>
   </data>
-  <data name="Excel.8" xml:space="preserve">
+	<data name="Excel.8" xml:space="preserve">
     <value>在上方插入行</value>
   </data>
-  <data name="Excel.9" xml:space="preserve">
+	<data name="Excel.9" xml:space="preserve">
     <value>平移（按住并移动鼠标）</value>
   </data>
-  <data name="Multimedia.1" xml:space="preserve">
+	<data name="Multimedia.1" xml:space="preserve">
     <value>媒体下一曲目</value>
   </data>
-  <data name="Multimedia.2" xml:space="preserve">
+	<data name="Multimedia.2" xml:space="preserve">
     <value>媒体播放/暂停</value>
   </data>
-  <data name="Multimedia.3" xml:space="preserve">
+	<data name="Multimedia.3" xml:space="preserve">
     <value>媒体上一曲目</value>
   </data>
-  <data name="Multimedia.4" xml:space="preserve">
+	<data name="Multimedia.4" xml:space="preserve">
     <value>音乐</value>
   </data>
-  <data name="Multimedia.5" xml:space="preserve">
+	<data name="Multimedia.5" xml:space="preserve">
     <value>图片</value>
   </data>
-  <data name="Multimedia.6" xml:space="preserve">
+	<data name="Multimedia.6" xml:space="preserve">
     <value>音量调低</value>
   </data>
-  <data name="Multimedia.7" xml:space="preserve">
+	<data name="Multimedia.7" xml:space="preserve">
     <value>静音</value>
   </data>
-  <data name="Multimedia.8" xml:space="preserve">
+	<data name="Multimedia.8" xml:space="preserve">
     <value>音量调高</value>
   </data>
-  <data name="Outlook.1" xml:space="preserve">
+	<data name="Outlook.1" xml:space="preserve">
     <value>附加文件</value>
   </data>
-  <data name="Outlook.2" xml:space="preserve">
+	<data name="Outlook.2" xml:space="preserve">
     <value>转发电子邮件</value>
   </data>
-  <data name="Outlook.3" xml:space="preserve">
+	<data name="Outlook.3" xml:space="preserve">
     <value>新电子邮件</value>
   </data>
-  <data name="Outlook.4" xml:space="preserve">
+	<data name="Outlook.4" xml:space="preserve">
     <value>新会议</value>
   </data>
-  <data name="Outlook.5" xml:space="preserve">
+	<data name="Outlook.5" xml:space="preserve">
     <value>回复</value>
   </data>
-  <data name="Outlook.6" xml:space="preserve">
+	<data name="Outlook.6" xml:space="preserve">
     <value>全部回复</value>
   </data>
-  <data name="PairedInfo.1" xml:space="preserve">
+	<data name="PairedInfo.1" xml:space="preserve">
     <value>是否确定？</value>
   </data>
-  <data name="PairedInfo.10" xml:space="preserve">
+	<data name="PairedInfo.10" xml:space="preserve">
     <value>是否要将手写笔与系统配对？</value>
   </data>
-  <data name="PairedInfo.2" xml:space="preserve">
+	<data name="PairedInfo.2" xml:space="preserve">
     <value>将鼠标取消配对可能会导致您无法正常使用此计算机。在取消配对之前，请确保您有备用鼠标设置。</value>
   </data>
-  <data name="PairedInfo.3" xml:space="preserve">
+	<data name="PairedInfo.3" xml:space="preserve">
     <value>将键盘取消配对可能会导致您无法正常使用此计算机。在取消配对之前，请确保您有备用键盘设置。</value>
   </data>
-  <data name="PairedInfo.4" xml:space="preserve">
+	<data name="PairedInfo.4" xml:space="preserve">
     <value>将手写笔取消配对可能会导致您无法正常使用此计算机。在取消配对之前，请确保您有备用手写笔设置。</value>
   </data>
-  <data name="PairedInfo.5" xml:space="preserve">
+	<data name="PairedInfo.5" xml:space="preserve">
     <value>这将取消耳机与 USB 无线接收器的配对。您仍然可以通过蓝牙在此系统上配对和使用耳机。如果需要，您可以通过 DDPM 主屏幕右上角的 + 图标将耳机重新与无线接收器配对。</value>
   </data>
-  <data name="PairedInfo.6" xml:space="preserve">
+	<data name="PairedInfo.6" xml:space="preserve">
     <value>继续</value>
   </data>
-  <data name="PairedInfo.7" xml:space="preserve">
+	<data name="PairedInfo.7" xml:space="preserve">
     <value>此设备与以下对象不兼容：</value>
   </data>
-  <data name="PairedInfo.8" xml:space="preserve">
+	<data name="PairedInfo.8" xml:space="preserve">
     <value>此设备已配对。如果您想要再次配对，请先将此设备取消配对。</value>
   </data>
-  <data name="PairedInfo.9" xml:space="preserve">
+	<data name="PairedInfo.9" xml:space="preserve">
     <value>配对手写笔</value>
   </data>
-  <data name="PenSettings.10" xml:space="preserve">
+	<data name="PenSettings.10" xml:space="preserve">
     <value>按住手写笔侧面的两个按钮 3 秒钟，以将其与 Tile 配对。</value>
   </data>
-  <data name="PenSettings.11" xml:space="preserve">
+	<data name="PenSettings.11" xml:space="preserve">
     <value>下载 Tile</value>
   </data>
-  <data name="PenSettings.8" xml:space="preserve">
+	<data name="PenSettings.8" xml:space="preserve">
     <value>在您的设备上启用蓝牙。</value>
   </data>
-  <data name="PenSettings.9" xml:space="preserve">
+	<data name="PenSettings.9" xml:space="preserve">
     <value>扫描二维码以将 Tile 下载到您的移动设备。</value>
   </data>
-  <data name="PowerPoint.1" xml:space="preserve">
+	<data name="PowerPoint.1" xml:space="preserve">
     <value>排列居中对齐</value>
   </data>
-  <data name="PowerPoint.10" xml:space="preserve">
+	<data name="PowerPoint.10" xml:space="preserve">
     <value>发送到背面</value>
   </data>
-  <data name="PowerPoint.2" xml:space="preserve">
+	<data name="PowerPoint.2" xml:space="preserve">
     <value>排列向左对齐</value>
   </data>
-  <data name="PowerPoint.3" xml:space="preserve">
+	<data name="PowerPoint.3" xml:space="preserve">
     <value>排列向右对齐</value>
   </data>
-  <data name="PowerPoint.4" xml:space="preserve">
+	<data name="PowerPoint.4" xml:space="preserve">
     <value>放在前面</value>
   </data>
-  <data name="PowerPoint.5" xml:space="preserve">
+	<data name="PowerPoint.5" xml:space="preserve">
     <value>降低列表级别</value>
   </data>
-  <data name="PowerPoint.6" xml:space="preserve">
+	<data name="PowerPoint.6" xml:space="preserve">
     <value>复制所选幻灯片</value>
   </data>
-  <data name="PowerPoint.7" xml:space="preserve">
+	<data name="PowerPoint.7" xml:space="preserve">
     <value>提高列表级别</value>
   </data>
-  <data name="PowerPoint.8" xml:space="preserve">
+	<data name="PowerPoint.8" xml:space="preserve">
     <value>从当前幻灯片播放</value>
   </data>
-  <data name="PowerPoint.9" xml:space="preserve">
+	<data name="PowerPoint.9" xml:space="preserve">
     <value>上一张幻灯片</value>
   </data>
-  <data name="RadialMenu.1" xml:space="preserve">
+	<data name="RadialMenu.1" xml:space="preserve">
     <value>已禁用</value>
   </data>
-  <data name="RadialMenu.2" xml:space="preserve">
+	<data name="RadialMenu.2" xml:space="preserve">
     <value>返回</value>
   </data>
-  <data name="RadialMenu.3" xml:space="preserve">
+	<data name="RadialMenu.3" xml:space="preserve">
     <value>前进</value>
   </data>
-  <data name="RadialMenu.4" xml:space="preserve">
+	<data name="RadialMenu.4" xml:space="preserve">
     <value>播放/暂停</value>
   </data>
-  <data name="RadialMenu.5" xml:space="preserve">
+	<data name="RadialMenu.5" xml:space="preserve">
     <value>上一个曲目</value>
   </data>
-  <data name="RadialMenu.6" xml:space="preserve">
+	<data name="RadialMenu.6" xml:space="preserve">
     <value>静音</value>
   </data>
-  <data name="RadialMenu.7" xml:space="preserve">
+	<data name="RadialMenu.7" xml:space="preserve">
     <value>所选圆盘菜单选项的功能</value>
   </data>
-  <data name="RadialMenu.8" xml:space="preserve">
+	<data name="RadialMenu.8" xml:space="preserve">
     <value>所选圆盘菜单选项的标签</value>
   </data>
-  <data name="RadialMenu.9" xml:space="preserve">
+	<data name="RadialMenu.9" xml:space="preserve">
     <value>使用中心模拟右键单击</value>
   </data>
-  <data name="Smooth" xml:space="preserve">
+	<data name="Smooth" xml:space="preserve">
     <value>光滑</value>
   </data>
-  <data name="Vibrant" xml:space="preserve">
+	<data name="Vibrant" xml:space="preserve">
     <value>鲜艳</value>
   </data>
-  <data name="Warm" xml:space="preserve">
+	<data name="Warm" xml:space="preserve">
     <value>暖色调</value>
   </data>
-  <data name="Word.1" xml:space="preserve">
+	<data name="Word.1" xml:space="preserve">
     <value>自动滚动</value>
   </data>
-  <data name="Word.10" xml:space="preserve">
+	<data name="Word.10" xml:space="preserve">
     <value>粘贴并匹配格式</value>
   </data>
-  <data name="Word.11" xml:space="preserve">
+	<data name="Word.11" xml:space="preserve">
     <value>上一更改</value>
   </data>
-  <data name="Word.12" xml:space="preserve">
+	<data name="Word.12" xml:space="preserve">
     <value>上一批注</value>
   </data>
-  <data name="Word.13" xml:space="preserve">
+	<data name="Word.13" xml:space="preserve">
     <value>打印</value>
   </data>
-  <data name="Word.14" xml:space="preserve">
+	<data name="Word.14" xml:space="preserve">
     <value>保存</value>
   </data>
-  <data name="Word.15" xml:space="preserve">
+	<data name="Word.15" xml:space="preserve">
     <value>删除线</value>
   </data>
-  <data name="Word.16" xml:space="preserve">
+	<data name="Word.16" xml:space="preserve">
     <value>文字大小 -</value>
   </data>
-  <data name="Word.17" xml:space="preserve">
+	<data name="Word.17" xml:space="preserve">
     <value>文字大小 +</value>
   </data>
-  <data name="Word.18" xml:space="preserve">
+	<data name="Word.18" xml:space="preserve">
     <value>翻译所选文本</value>
   </data>
-  <data name="Word.19" xml:space="preserve">
+	<data name="Word.19" xml:space="preserve">
     <value>查看一页</value>
   </data>
-  <data name="Word.2" xml:space="preserve">
+	<data name="Word.2" xml:space="preserve">
     <value>查找</value>
   </data>
-  <data name="Word.20" xml:space="preserve">
+	<data name="Word.20" xml:space="preserve">
     <value>查看页面宽度</value>
   </data>
-  <data name="Word.3" xml:space="preserve">
+	<data name="Word.3" xml:space="preserve">
     <value>增加缩进量</value>
   </data>
-  <data name="Word.4" xml:space="preserve">
+	<data name="Word.4" xml:space="preserve">
     <value>插入批注</value>
   </data>
-  <data name="Word.5" xml:space="preserve">
+	<data name="Word.5" xml:space="preserve">
     <value>下一更改</value>
   </data>
-  <data name="Word.6" xml:space="preserve">
+	<data name="Word.6" xml:space="preserve">
     <value>下一批注</value>
   </data>
-  <data name="Word.7" xml:space="preserve">
+	<data name="Word.7" xml:space="preserve">
     <value>粘贴并保留源格式</value>
   </data>
-  <data name="Word.8" xml:space="preserve">
+	<data name="Word.8" xml:space="preserve">
     <value>仅粘贴并保留文本</value>
   </data>
-  <data name="Word.9" xml:space="preserve">
+	<data name="Word.9" xml:space="preserve">
     <value>粘贴并合并格式</value>
   </data>
-  <data name="Camera.25" xml:space="preserve">
+	<data name="Camera.25" xml:space="preserve">
     <value>通过 USB 3.0 连接显示器，然后在“USB-C 优先级”下选择“高数据速度”以启用 4K UHD 分辨率。</value>
   </data>
-  <data name="HeadsetAutomatedActions.14" xml:space="preserve">
+	<data name="HeadsetAutomatedActions.14" xml:space="preserve">
     <value>敏感度</value>
   </data>
-  <data name="File_corrupted" xml:space="preserve">
+	<data name="File_corrupted" xml:space="preserve">
     <value>文件损坏</value>
   </data>
-  <data name="File_corruptedMsg" xml:space="preserve">
+	<data name="File_corruptedMsg" xml:space="preserve">
     <value>文件已损坏。请选择另一个文件</value>
   </data>
-  <data name="ImportFail" xml:space="preserve">
+	<data name="ImportFail" xml:space="preserve">
     <value>失败</value>
   </data>
-  <data name="ImportFailMsg" xml:space="preserve">
+	<data name="ImportFailMsg" xml:space="preserve">
     <value>无法导入其他型号</value>
   </data>
-  <data name="Update_Webcam_Alert" xml:space="preserve">
+	<data name="Update_Webcam_Alert" xml:space="preserve">
     <value>此更新将通过以下系统中的 Windows 设置来启用用户感应控制：Win 11 22H2 或更高版本，并且操作系统版本为\r\n22621 或更高版本</value>
   </data>
-  <data name="Update_BatteryLow_Alert" xml:space="preserve">
+	<data name="Update_BatteryLow_Alert" xml:space="preserve">
     <value>设备上的电池电量低。更换电池/对电池充电以启用此更新。</value>
   </data>
-  <data name="Update_Dock_Alert" xml:space="preserve">
+	<data name="Update_Dock_Alert" xml:space="preserve">
     <value>确保仅将一个坞站连接到您的系统。更新期间，连接到坞站的设备可能不可用。</value>
   </data>
-  <data name="Update_PCBatteryLow_Alert" xml:space="preserve">
+	<data name="Update_PCBatteryLow_Alert" xml:space="preserve">
     <value>将 PC 连接到电源，并且在继续更新前，应确保 PC 电池电量高于 10%</value>
   </data>
-  <data name="Update_Mouse_Alert" xml:space="preserve">
+	<data name="Update_Mouse_Alert" xml:space="preserve">
     <value>按下设备上的按钮或按键以启用此更新</value>
   </data>
-  <data name="Landscape" xml:space="preserve">
+	<data name="Landscape" xml:space="preserve">
     <value>横向</value>
   </data>
-  <data name="Portrait" xml:space="preserve">
+	<data name="Portrait" xml:space="preserve">
     <value>纵向</value>
   </data>
-  <data name="Landscape_flipped" xml:space="preserve">
+	<data name="Landscape_flipped" xml:space="preserve">
     <value>横向（翻转）</value>
   </data>
-  <data name="Portrait_flipped" xml:space="preserve">
+	<data name="Portrait_flipped" xml:space="preserve">
     <value>纵向（翻转）</value>
   </data>
-  <data name="Frame_Rate" xml:space="preserve">
+	<data name="Frame_Rate" xml:space="preserve">
     <value>帧速</value>
   </data>
-  <data name="Display_Alignment" xml:space="preserve">
+	<data name="Display_Alignment" xml:space="preserve">
     <value>显示屏对齐</value>
   </data>
-  <data name="Timer__30min" xml:space="preserve">
+	<data name="Timer__30min" xml:space="preserve">
     <value>计时器/30 分钟</value>
   </data>
-  <data name="Timer__40min" xml:space="preserve">
+	<data name="Timer__40min" xml:space="preserve">
     <value>计时器/40 分钟</value>
   </data>
-  <data name="Timer__50min" xml:space="preserve">
+	<data name="Timer__50min" xml:space="preserve">
     <value>计时器/50 分钟</value>
   </data>
-  <data name="Timer__60min" xml:space="preserve">
+	<data name="Timer__60min" xml:space="preserve">
     <value>计时器/60 分钟</value>
   </data>
-  <data name="Timer__90min" xml:space="preserve">
+	<data name="Timer__90min" xml:space="preserve">
     <value>计时器/90 分钟</value>
   </data>
-  <data name="Disable" xml:space="preserve">
+	<data name="Disable" xml:space="preserve">
     <value>禁用</value>
   </data>
-  <data name="Extreme" xml:space="preserve">
+	<data name="Extreme" xml:space="preserve">
     <value>极快</value>
   </data>
-  <data name="Super_Fast" xml:space="preserve">
+	<data name="Super_Fast" xml:space="preserve">
     <value>超快</value>
   </data>
-  <data name="Fast" xml:space="preserve">
+	<data name="Fast" xml:space="preserve">
     <value>快速</value>
   </data>
-  <data name="Normal" xml:space="preserve">
+	<data name="Normal" xml:space="preserve">
     <value>普通</value>
   </data>
-  <data name="Level_0" xml:space="preserve">
+	<data name="Level_0" xml:space="preserve">
     <value>级别 0</value>
   </data>
-  <data name="Level_1" xml:space="preserve">
+	<data name="Level_1" xml:space="preserve">
     <value>级别 1</value>
   </data>
-  <data name="Level_2" xml:space="preserve">
+	<data name="Level_2" xml:space="preserve">
     <value>级别 2</value>
   </data>
-  <data name="Level_3" xml:space="preserve">
+	<data name="Level_3" xml:space="preserve">
     <value>级别 3</value>
   </data>
-  <data name="Desktop" xml:space="preserve">
+	<data name="Desktop" xml:space="preserve">
     <value>桌面</value>
   </data>
-  <data name="Movie_HDR" xml:space="preserve">
+	<data name="Movie_HDR" xml:space="preserve">
     <value>电影 HDR</value>
   </data>
-  <data name="Game_HDR" xml:space="preserve">
+	<data name="Game_HDR" xml:space="preserve">
     <value>游戏 HDR</value>
   </data>
-  <data name="Display_HDR" xml:space="preserve">
+	<data name="Display_HDR" xml:space="preserve">
     <value>显示屏 HDR</value>
   </data>
-  <data name="Custom_Color_HDR" xml:space="preserve">
+	<data name="Custom_Color_HDR" xml:space="preserve">
     <value>自定义颜色 HDR</value>
   </data>
-  <data name="HDRPeak1000" xml:space="preserve">
+	<data name="HDRPeak1000" xml:space="preserve">
     <value>HDRPeak1000</value>
   </data>
-  <data name="_4K" xml:space="preserve">
+	<data name="_4K" xml:space="preserve">
     <value>4K</value>
   </data>
-  <data name="_FHD" xml:space="preserve">
+	<data name="_FHD" xml:space="preserve">
     <value>FHD</value>
   </data>
-  <data name="Steady_Vision" xml:space="preserve">
+	<data name="Steady_Vision" xml:space="preserve">
     <value>稳定的视野</value>
   </data>
-  <data name="VisionEngine_Steady" xml:space="preserve">
+	<data name="VisionEngine_Steady" xml:space="preserve">
     <value>稳定的视野</value>
   </data>
-  <data name="Software_update" xml:space="preserve">
+	<data name="Software_update" xml:space="preserve">
     <value>软件更新</value>
   </data>
-  <data name="Firmware_update" xml:space="preserve">
+	<data name="Firmware_update" xml:space="preserve">
     <value>固件更新</value>
   </data>
-  <data name="Color.10" xml:space="preserve">
+	<data name="Color.10" xml:space="preserve">
     <value>自动色温功能当前已启用。是否要覆盖它？</value>
   </data>
-  <data name="Mouse.16" xml:space="preserve">
+	<data name="Mouse.16" xml:space="preserve">
     <value>每秒向系统报告鼠标位置的次数。通过 USB 连接以获得更高的轮询速率。</value>
   </data>
-  <data name="EATooltip_00" xml:space="preserve">
+	<data name="EATooltip_00" xml:space="preserve">
     <value>空布局</value>
   </data>
-  <data name="EATooltip_21H" xml:space="preserve">
+	<data name="EATooltip_21H" xml:space="preserve">
     <value>选项 2.1：2 列，平均拆分。</value>
   </data>
-  <data name="EATooltip_21V" xml:space="preserve">
+	<data name="EATooltip_21V" xml:space="preserve">
     <value>选项 2.1：2 行，平均拆分。</value>
   </data>
-  <data name="EATooltip_22H" xml:space="preserve">
+	<data name="EATooltip_22H" xml:space="preserve">
     <value>选项 2.2：2 行，平均拆分。</value>
   </data>
-  <data name="EATooltip_22V" xml:space="preserve">
+	<data name="EATooltip_22V" xml:space="preserve">
     <value>选项 2.2：2 列，平均拆分。</value>
   </data>
-  <data name="EATooltip_23H" xml:space="preserve">
+	<data name="EATooltip_23H" xml:space="preserve">
     <value>选项 2.3：2 列，按 70/30% 比例拆分。</value>
   </data>
-  <data name="EATooltip_23V" xml:space="preserve">
+	<data name="EATooltip_23V" xml:space="preserve">
     <value>选项 2.3：2 行，按 30/70% 比例拆分。</value>
   </data>
-  <data name="EATooltip_24H" xml:space="preserve">
+	<data name="EATooltip_24H" xml:space="preserve">
     <value>选项 2.4：2 列，按 30/70% 比例拆分。</value>
   </data>
-  <data name="EATooltip_24V" xml:space="preserve">
+	<data name="EATooltip_24V" xml:space="preserve">
     <value>选项 2.4：2 行，按 70/30% 比例拆分。</value>
   </data>
-  <data name="EATooltip_31H" xml:space="preserve">
+	<data name="EATooltip_31H" xml:space="preserve">
     <value>选项 3.1：3 行，平均拆分。</value>
   </data>
-  <data name="EATooltip_31V" xml:space="preserve">
+	<data name="EATooltip_31V" xml:space="preserve">
     <value>选项 3.1：3 列，平均拆分。</value>
   </data>
-  <data name="EATooltip_32H" xml:space="preserve">
+	<data name="EATooltip_32H" xml:space="preserve">
     <value>选项 3.2：3 列，平均拆分。</value>
   </data>
-  <data name="EATooltip_32V" xml:space="preserve">
+	<data name="EATooltip_32V" xml:space="preserve">
     <value>选项 3.2：3 行，平均拆分。</value>
   </data>
-  <data name="EATooltip_33H" xml:space="preserve">
+	<data name="EATooltip_33H" xml:space="preserve">
     <value>选项 3.3：3 列，按 30/40/30% 比例拆分。</value>
   </data>
-  <data name="EATooltip_33V" xml:space="preserve">
+	<data name="EATooltip_33V" xml:space="preserve">
     <value>选项 3.3：3 行，按 30/40/30% 比例拆分。</value>
   </data>
-  <data name="EATooltip_34H" xml:space="preserve">
+	<data name="EATooltip_34H" xml:space="preserve">
     <value>选项 3.4：2 行，平均拆分。第 2 列，不拆分。</value>
   </data>
-  <data name="EATooltip_34V" xml:space="preserve">
+	<data name="EATooltip_34V" xml:space="preserve">
     <value>选项 3.4：2 行，平均拆分。第 1 行，不拆分。第 2 行，平均拆分。</value>
   </data>
-  <data name="EATooltip_35H" xml:space="preserve">
+	<data name="EATooltip_35H" xml:space="preserve">
     <value>选项 3.5：2 行，平均拆分。第 1 列，不拆分。第 2 列，平均拆分。</value>
   </data>
-  <data name="EATooltip_35V" xml:space="preserve">
+	<data name="EATooltip_35V" xml:space="preserve">
     <value>选项 3.5：2 行，平均拆分。第 1 行，平均拆分。第 2 行，不拆分。</value>
   </data>
-  <data name="EATooltip_36H" xml:space="preserve">
+	<data name="EATooltip_36H" xml:space="preserve">
     <value>选项 3.6：2 行，平均拆分。第 1 列，按 30/70% 比例拆分。第 2 列，不拆分。</value>
   </data>
-  <data name="EATooltip_36V" xml:space="preserve">
+	<data name="EATooltip_36V" xml:space="preserve">
     <value>选项 3.6：2 行，按 70/30% 比例拆分。第 1 行，不拆分。第 2 行，平均拆分。</value>
   </data>
-  <data name="EATooltip_37H" xml:space="preserve">
+	<data name="EATooltip_37H" xml:space="preserve">
     <value>选项 3.7：2 行，平均拆分。第 1 列，按 70/30% 比例拆分。第 2 列，不拆分。</value>
   </data>
-  <data name="EATooltip_37V" xml:space="preserve">
+	<data name="EATooltip_37V" xml:space="preserve">
     <value>选项 3.7：2 行，按 30/70% 比例拆分。第 1 行，平均拆分。第 2 行，不拆分。</value>
   </data>
-  <data name="EATooltip_38H" xml:space="preserve">
+	<data name="EATooltip_38H" xml:space="preserve">
     <value>选项 3.8：2 行，平均拆分。第 1 行，不拆分。第 2 行，平均拆分。</value>
   </data>
-  <data name="EATooltip_38V" xml:space="preserve">
+	<data name="EATooltip_38V" xml:space="preserve">
     <value>选项 3.8：2 列，平均拆分。第 1 列，不拆分。第 2 列，平均拆分。</value>
   </data>
-  <data name="EATooltip_39H" xml:space="preserve">
+	<data name="EATooltip_39H" xml:space="preserve">
     <value>选项 3.9：2 行，平均拆分。第 1 行，平均拆分。第 2 行，不拆分。</value>
   </data>
-  <data name="EATooltip_39V" xml:space="preserve">
+	<data name="EATooltip_39V" xml:space="preserve">
     <value>选项 3.9：2 列，平均拆分。第 1 列，平均拆分。第 2 列，不拆分。</value>
   </data>
-  <data name="EATooltip_41H" xml:space="preserve">
+	<data name="EATooltip_41H" xml:space="preserve">
     <value>选项 4.1：拆分为 4 个象限。</value>
   </data>
-  <data name="EATooltip_41V" xml:space="preserve">
+	<data name="EATooltip_41V" xml:space="preserve">
     <value>选项 4.1：拆分为 4 个象限。</value>
   </data>
-  <data name="EATooltip_42H" xml:space="preserve">
+	<data name="EATooltip_42H" xml:space="preserve">
     <value>选项 4.2：2 列，平均拆分。第 1 列，平均拆分为 3 个部分。第 2 列，不拆分。</value>
   </data>
-  <data name="EATooltip_42V" xml:space="preserve">
+	<data name="EATooltip_42V" xml:space="preserve">
     <value>选项 4.2：2 行，平均拆分。第 1 行，不拆分。第 2 行，平均拆分。</value>
   </data>
-  <data name="EATooltip_43H" xml:space="preserve">
+	<data name="EATooltip_43H" xml:space="preserve">
     <value>选项 4.3：2 列，平均拆分。第 1 列，不拆分。第 2 列，平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_43V" xml:space="preserve">
+	<data name="EATooltip_43V" xml:space="preserve">
     <value>选项 4.3：2 行，平均拆分。第 1 行，平均拆分为 3 个部分。第 2 列，不拆分。</value>
   </data>
-  <data name="EATooltip_44H" xml:space="preserve">
+	<data name="EATooltip_44H" xml:space="preserve">
     <value>选项 4.4：4 列，平均拆分。</value>
   </data>
-  <data name="EATooltip_44V" xml:space="preserve">
+	<data name="EATooltip_44V" xml:space="preserve">
     <value>选项 4.4：4 行，平均拆分。</value>
   </data>
-  <data name="EATooltip_45H" xml:space="preserve">
+	<data name="EATooltip_45H" xml:space="preserve">
     <value>选项 4.5：3 列，平均拆分。第 1 列，平均拆分。第 2 列和第 3 列，不拆分。</value>
   </data>
-  <data name="EATooltip_45V" xml:space="preserve">
+	<data name="EATooltip_45V" xml:space="preserve">
     <value>选项 4.5：3 行，平均拆分。第 1 行和第 2 行，不拆分。第 3 行，平均拆分。</value>
   </data>
-  <data name="EATooltip_46H" xml:space="preserve">
+	<data name="EATooltip_46H" xml:space="preserve">
     <value>选项 4.6：3 列，平均拆分。第 1 列和第 2 列，不拆分。第 3 列，平均拆分。</value>
   </data>
-  <data name="EATooltip_46V" xml:space="preserve">
+	<data name="EATooltip_46V" xml:space="preserve">
     <value>选项 4.6：3 行，平均拆分。第 1 行，平均拆分。第 2 行和第 3 行，不拆分。</value>
   </data>
-  <data name="EATooltip_51H" xml:space="preserve">
+	<data name="EATooltip_51H" xml:space="preserve">
     <value>选项 5.1：2 行，平均拆分。第 1 行，平均拆分为 3 个部分。第 2 行，平均拆分。</value>
   </data>
-  <data name="EATooltip_51V" xml:space="preserve">
+	<data name="EATooltip_51V" xml:space="preserve">
     <value>选项 5.1：2 列，平均拆分。第 1 列，平均拆分为 3 个部分。第 2 列，平均拆分。</value>
   </data>
-  <data name="EATooltip_52H" xml:space="preserve">
+	<data name="EATooltip_52H" xml:space="preserve">
     <value>选项 5.2：2 行，平均拆分。第 1 行，平均拆分。第 2 行，平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_52V" xml:space="preserve">
+	<data name="EATooltip_52V" xml:space="preserve">
     <value>选项 5.2：2 列，平均拆分。第 1 列，平均拆分。第 2 列，平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_53H" xml:space="preserve">
+	<data name="EATooltip_53H" xml:space="preserve">
     <value>选项 5.3：2 行，按 30/70% 比例拆分。第 1 行，平均拆分为 3 个部分。第 2 行，平均拆分。</value>
   </data>
-  <data name="EATooltip_53V" xml:space="preserve">
+	<data name="EATooltip_53V" xml:space="preserve">
     <value>选项 5.3：2 列，按 30/70% 比例拆分。第 1 行，平均拆分为 3 个部分。第 2 行，平均拆分。</value>
   </data>
-  <data name="EATooltip_54H" xml:space="preserve">
+	<data name="EATooltip_54H" xml:space="preserve">
     <value>选项 5.4：2 行，按 70/30% 比例拆分。第 1 行，平均拆分。第 2 行，平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_54V" xml:space="preserve">
+	<data name="EATooltip_54V" xml:space="preserve">
     <value>选项 5.4：2 列，按 70/30% 比例拆分。第 1 行，平均拆分。第 2 行，平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_55H" xml:space="preserve">
+	<data name="EATooltip_55H" xml:space="preserve">
     <value>选项 5.5：2 行，按 30/70% 比例拆分。第 1 行和第 2 行，分别平均拆分。第 1 列，不拆分。第 2 列，平均拆分。</value>
   </data>
-  <data name="EATooltip_55V" xml:space="preserve">
+	<data name="EATooltip_55V" xml:space="preserve">
     <value>选项 5.5：2 行，平均拆分。第 1 行，平均拆分为 3 个部分。第 2 行，按 30/70% 比例拆分。</value>
   </data>
-  <data name="EATooltip_56H" xml:space="preserve">
+	<data name="EATooltip_56H" xml:space="preserve">
     <value>选项 5.6：2 列，平均拆分。第 1 列，平均拆分为 3 个部分。第 2 列，按 30/70% 比例拆分。</value>
   </data>
-  <data name="EATooltip_56V" xml:space="preserve">
+	<data name="EATooltip_56V" xml:space="preserve">
     <value>选项 5.6：2 行，平均拆分。第 1 行，按 30/70% 比例拆分。第 2 行，平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_57H" xml:space="preserve">
+	<data name="EATooltip_57H" xml:space="preserve">
     <value>选项 5.7：3 列，平均拆分。第 1 列和第 3 列，分别平均拆分。第 2 列，不拆分。</value>
   </data>
-  <data name="EATooltip_57V" xml:space="preserve">
+	<data name="EATooltip_57V" xml:space="preserve">
     <value>选项 5.7：3 行，平均拆分。第 1 行和第 3 行，分别平均拆分。第 2 行，不拆分。</value>
   </data>
-  <data name="EATooltip_58H" xml:space="preserve">
+	<data name="EATooltip_58H" xml:space="preserve">
     <value>选项 5.8：2 行，按 70/30% 比例拆分。第 1 行，按 70/30% 比例拆分。第 2 行，平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_58V" xml:space="preserve">
+	<data name="EATooltip_58V" xml:space="preserve">
     <value>选项 5.8：2 列，按 30/70% 比例拆分。第 1 列，按 70/30% 比例拆分。第 2 列，平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_59H" xml:space="preserve">
+	<data name="EATooltip_59H" xml:space="preserve">
     <value>选项 5.9：2 行，按 70/30% 比例拆分。第 1 行，按 70/30% 比例拆分。第 2 行，平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_59V" xml:space="preserve">
+	<data name="EATooltip_59V" xml:space="preserve">
     <value>选项 5.9：2 列，按 70/30% 比例拆分。第 1 列，按 70/30% 比例拆分。第 2 列，平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_61H" xml:space="preserve">
+	<data name="EATooltip_61H" xml:space="preserve">
     <value>选项 6.1：3 列，平均拆分。第 1、2 和 3 列，分别平均拆分。</value>
   </data>
-  <data name="EATooltip_61V" xml:space="preserve">
+	<data name="EATooltip_61V" xml:space="preserve">
     <value>选项 6.1：2 列，平均拆分。第 1 列和第 2 列，分别平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_62H" xml:space="preserve">
+	<data name="EATooltip_62H" xml:space="preserve">
     <value>选项 6.2：2 行，按 70/30% 比例拆分。第 1 行，按 70/30% 比例拆分。第 2 行，平均拆分为 3 个部分。第 1 列，不拆分。第 2 列，平均拆分。</value>
   </data>
-  <data name="EATooltip_62V" xml:space="preserve">
+	<data name="EATooltip_62V" xml:space="preserve">
     <value>选项 6.2：2 行，按 30/70% 比例拆分。第 1 行，平均拆分为 3 个部分。第 2 行，按 30/70% 比例拆分。第 1 列，不拆分。第 2 列，平均拆分。</value>
   </data>
-  <data name="EATooltip_63H" xml:space="preserve">
+	<data name="EATooltip_63H" xml:space="preserve">
     <value>选项 6.3：2 行，按 30/70% 比例拆分。第 1 行，平均拆分为 4 个部分。第 2 行，平均拆分。</value>
   </data>
-  <data name="EATooltip_63V" xml:space="preserve">
+	<data name="EATooltip_63V" xml:space="preserve">
     <value>选项 6.3：2 列，按 30/70% 比例拆分。第 1 列，平均拆分为 4 个部分。第 2 列，平均拆分。</value>
   </data>
-  <data name="EATooltip_64H" xml:space="preserve">
+	<data name="EATooltip_64H" xml:space="preserve">
     <value>选项 6.4：2 行，按 30/70% 比例拆分。第 1 行，平均拆分为 3 个部分。第 2 行，按 70/30% 比例拆分。第 1 列，不拆分。第 2 列，平均拆分。</value>
   </data>
-  <data name="EATooltip_64V" xml:space="preserve">
+	<data name="EATooltip_64V" xml:space="preserve">
     <value>选项 6.4：2 列，按 30/70% 比例拆分。第 1 行，平均拆分为 3 个部分。第 2 行，按 30/70% 比例拆分。第 1 列，平均拆分。第 2 列，不拆分。</value>
   </data>
-  <data name="EATooltip_65H" xml:space="preserve">
+	<data name="EATooltip_65H" xml:space="preserve">
     <value>选项 6.5：2 行，按 30/70% 比例拆分。第 1 行，平均拆分为 3 个部分。第 2 行，按 30/70% 比例拆分。第 1 列，平均拆分。第 2 列，不拆分。</value>
   </data>
-  <data name="EATooltip_65V" xml:space="preserve">
+	<data name="EATooltip_65V" xml:space="preserve">
     <value>选项 6.5：2 列，按 30/70% 比例拆分。第 1 行，按 30/70% 比例拆分。第 2 行，平均拆分为 3 个部分。第 1 列，平均拆分。第 2 列，不拆分。</value>
   </data>
-  <data name="EATooltip_66H" xml:space="preserve">
+	<data name="EATooltip_66H" xml:space="preserve">
     <value>选项 6.6：2 行，按 30/70% 比例拆分。第 1 行，按 30/70% 比例拆分。第 1 列，平均拆分。第 2 列，不拆分。第 1 行，平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_66V" xml:space="preserve">
+	<data name="EATooltip_66V" xml:space="preserve">
     <value>选项 6.6：2 行，按 30/70% 比例拆分。第 1 行，按 30/70% 比例拆分。第 2 行，平均拆分为 3 个部分。第 1 列，不拆分。第 2 列，平均拆分。</value>
   </data>
-  <data name="EATooltip_67H" xml:space="preserve">
+	<data name="EATooltip_67H" xml:space="preserve">
     <value>选项 6.7：2 列，平均拆分。第 1、2 和 3 行，平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_67V" xml:space="preserve">
+	<data name="EATooltip_67V" xml:space="preserve">
     <value>选项 6.7：3 列，平均拆分。第 1、2 和 3 列，分别平均拆分。</value>
   </data>
-  <data name="EATooltip_68H" xml:space="preserve">
+	<data name="EATooltip_68H" xml:space="preserve">
     <value>选项 6.8：4 列，平均拆分。第 1 行和第 4 行，平均拆分。第 2 行和第 3 行，不拆分。</value>
   </data>
-  <data name="EATooltip_68V" xml:space="preserve">
+	<data name="EATooltip_68V" xml:space="preserve">
     <value>选项 6.8：4 行，平均拆分。第 1 行和第 4 行，平均拆分。第 2 行和第 3 行，不拆分。</value>
   </data>
-  <data name="EATooltip_69H" xml:space="preserve">
+	<data name="EATooltip_69H" xml:space="preserve">
     <value>选项 6.9：2 行，按 70/30% 比例拆分。第 1 行，平均拆分。第 2 行，平均拆分为 4 个部分。</value>
   </data>
-  <data name="EATooltip_69V" xml:space="preserve">
+	<data name="EATooltip_69V" xml:space="preserve">
     <value>选项 6.9：2 行，平均拆分。第 1 行，按 70/30% 比例拆分。第 1 列，不拆分。第 2 列，平均拆分。第 2 行，按 70/30% 比例拆分。</value>
   </data>
-  <data name="EATooltip_6AH" xml:space="preserve">
+	<data name="EATooltip_6AH" xml:space="preserve">
     <value>选项 6.10：2 列，按 70/30% 比例拆分。第 1、2 和 3 列，分别平均拆分。</value>
   </data>
-  <data name="EATooltip_6AV" xml:space="preserve">
+	<data name="EATooltip_6AV" xml:space="preserve">
     <value>选项 6.10：2 行，按 70/30% 比例拆分。第 1 行和第 2 行，分别平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_71H" xml:space="preserve">
+	<data name="EATooltip_71H" xml:space="preserve">
     <value>选项 7.1：2 行，按 30/70% 比例拆分。第 1 行，平均拆分为 3 个部分。第 2 行，按 30/70% 比例拆分。第 1 列，平均拆分。第 2 列和第 3 列，不拆分。</value>
   </data>
-  <data name="EATooltip_71V" xml:space="preserve">
+	<data name="EATooltip_71V" xml:space="preserve">
     <value>选项 7.1：3 行，平均拆分。第 1 行和第 2 行，分别按 30/70% 比例拆分。第 3 行，拆分为 3 个相等的部分。</value>
   </data>
-  <data name="EATooltip_72H" xml:space="preserve">
+	<data name="EATooltip_72H" xml:space="preserve">
     <value>选项 7.2：2 行，按 30/70% 比例拆分。第 1 行和第 2 行，分别平均拆分为 3 个部分。第 1 列和第 2 列，不拆分。第 3 列，平均拆分。</value>
   </data>
-  <data name="EATooltip_72V" xml:space="preserve">
+	<data name="EATooltip_72V" xml:space="preserve">
     <value>选项 7.2：3 行，平均拆分。第 1 行和第 3 行，分别平均拆分为 3 个部分。第 2 行，按 30/70% 比例拆分。</value>
   </data>
-  <data name="EATooltip_73H" xml:space="preserve">
+	<data name="EATooltip_73H" xml:space="preserve">
     <value>选项 7.3：2 行，平均拆分。第 1 行，平均拆分为 4 个部分。第 2 行，平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_73V" xml:space="preserve">
+	<data name="EATooltip_73V" xml:space="preserve">
     <value>选项 7.3：2 列，平均拆分。第 1 列，平均拆分为 4 个部分。第 2 列，平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_74H" xml:space="preserve">
+	<data name="EATooltip_74H" xml:space="preserve">
     <value>选项 7.4：2 行，平均拆分。第 1 行和第 3 行，分别平均拆分。第 2 行，平均拆分为 4 个部分。</value>
   </data>
-  <data name="EATooltip_74V" xml:space="preserve">
+	<data name="EATooltip_74V" xml:space="preserve">
     <value>选项 7.4：2 列，平均拆分。第 1 列，平均拆分为 3 个部分。第 2 列，平均拆分为 4 个部分。</value>
   </data>
-  <data name="EATooltip_75H" xml:space="preserve">
+	<data name="EATooltip_75H" xml:space="preserve">
     <value>选项 7.5：2 行，平均拆分。第 1 行，平均拆分为 4 个部分。第 2 行，按 25/50/25% 比例拆分。第 1 列和第 3 列，分别平均拆分。第 2 列，不拆分。</value>
   </data>
-  <data name="EATooltip_75V" xml:space="preserve">
+	<data name="EATooltip_75V" xml:space="preserve">
     <value>选项 7.5：3 行，按 25/50/25% 比例拆分。第 1 行，平均拆分为 3 个部分。第 2 行，按 30/70% 比例拆分。第 1 列，平均拆分。第 2 列，不拆分。第 3 行，拆分为 3 个相等的部分。</value>
   </data>
-  <data name="EATooltip_76H" xml:space="preserve">
+	<data name="EATooltip_76H" xml:space="preserve">
     <value>选项 7.6：2 行，按 30/70% 比例拆分。第 1 行，按 25/50/25% 比例拆分。第 1 列和第 3 列，分别平均拆分。第 2 列，不拆分。第 2 行，平均拆分为 4 个部分。</value>
   </data>
-  <data name="EATooltip_76V" xml:space="preserve">
+	<data name="EATooltip_76V" xml:space="preserve">
     <value>选项 7.6：3 行，按 25/50/25% 比例拆分。第 1 行，平均拆分为 3 个部分。第 2 行，按 70/30% 比例拆分。第 3 行，平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_77H" xml:space="preserve">
+	<data name="EATooltip_77H" xml:space="preserve">
     <value>选项 7.7：2 行，按 30/70% 比例拆分。第 1 行，平均拆分为 4 个部分。第 2 行，按 50/25/25% 比例拆分。第 1 列，不拆分。第 2 列和第 3 列，分别平均拆分。</value>
   </data>
-  <data name="EATooltip_77V" xml:space="preserve">
+	<data name="EATooltip_77V" xml:space="preserve">
     <value>选项 7.7：3 行，按 25/25/50% 比例拆分。第 1 行和第 2 行，分别平均拆分为 3 个部分。第 3 行，按 30/70% 比例拆分。第 1 列，平均拆分。第 2 列，不拆分。</value>
   </data>
-  <data name="EATooltip_78H" xml:space="preserve">
+	<data name="EATooltip_78H" xml:space="preserve">
     <value>选项 7.8：2 行，按 30/70% 比例拆分。第 1 行和第 4 行，分别平均拆分。第 2 行，按 25/25/50% 比例拆分。第 1 列和第 2 列，分别平均拆分。第 3 列，不拆分。</value>
   </data>
-  <data name="EATooltip_78V" xml:space="preserve">
+	<data name="EATooltip_78V" xml:space="preserve">
     <value>选项 7.8：3 行，按 30/70% 比例拆分。第 1 行，按 30/70% 比例拆分。第 1 列，平均拆分。第 2 列，不拆分。第 2 行和第 3 行，分别平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_79H" xml:space="preserve">
+	<data name="EATooltip_79H" xml:space="preserve">
     <value>选项 7.9：4 列，平均拆分。第 1、2、3 和 4 列，分别平均拆分。</value>
   </data>
-  <data name="EATooltip_79V" xml:space="preserve">
+	<data name="EATooltip_79V" xml:space="preserve">
     <value>选项 7.9：4 列，平均拆分。第 1、2、3 和 4 行，分别平均拆分。</value>
   </data>
-  <data name="EATooltip_7AH" xml:space="preserve">
+	<data name="EATooltip_7AH" xml:space="preserve">
     <value>选项 7.10：4 列，平均拆分。第 1、2、3 和 4 列，分别平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_7AV" xml:space="preserve">
+	<data name="EATooltip_7AV" xml:space="preserve">
     <value>选项 7.10：4 列，平均拆分。第 1、2、3 和 4 列，分别平均拆分为 3 个部分。</value>
   </data>
-  <data name="EATooltip_7BH" xml:space="preserve">
+	<data name="EATooltip_7BH" xml:space="preserve">
     <value>选项 7.11：2 行，按 30/70% 比例拆分。第 1 行和第 2 行，分别按 25/50/25% 比例拆分。第 1 列和第 3 列，分别平均拆分。第 2 列，不拆分。</value>
   </data>
-  <data name="EATooltip_7BV" xml:space="preserve">
+	<data name="EATooltip_7BV" xml:space="preserve">
     <value>选项 7.11：3 列，按 30/70% 比例拆分。第 1、2 和 3 列，按 25/50/25% 比例拆分。第 1 行和第 3 行，平均拆分。第 2 行，不拆分。</value>
   </data>
-  <data name="EazyMemory.42" xml:space="preserve">
+	<data name="EazyMemory.42" xml:space="preserve">
     <value>相应的 Easy Memory 配置文件也将被删除。是否要继续？</value>
   </data>
-  <data name="DiagnosticReport_SaveFail" xml:space="preserve">
+	<data name="DiagnosticReport_SaveFail" xml:space="preserve">
     <value>诊断报告保存失败</value>
   </data>
-  <data name="MonitorAssetReport_SaveFail" xml:space="preserve">
+	<data name="MonitorAssetReport_SaveFail" xml:space="preserve">
     <value>显示器资产报告保存失败</value>
   </data>
-  <data name="USBKVM.Tips" xml:space="preserve">
+	<data name="USBKVM.Tips" xml:space="preserve">
     <value>示例：“Alt + P”、“Shift + F”、“Ctrl + Shift + F”。\n提醒：对于多个显示器，鼠标光标应位于目标显示器屏幕上以触发热键功能。</value>
   </data>
-  <data name="BrightnessLevel" xml:space="preserve">
+	<data name="BrightnessLevel" xml:space="preserve">
     <value>亮度级别</value>
   </data>
-  <data name="USBKVM" xml:space="preserve">
+	<data name="USBKVM" xml:space="preserve">
     <value>USB KVM</value>
   </data>
-  <data name="Mouse" xml:space="preserve">
+	<data name="Mouse" xml:space="preserve">
     <value>鼠标</value>
   </data>
-  <data name="Keyboard" xml:space="preserve">
+	<data name="Keyboard" xml:space="preserve">
     <value>键盘</value>
   </data>
-  <data name="Calendar" xml:space="preserve">
+	<data name="Calendar" xml:space="preserve">
     <value>日历</value>
   </data>
-  <data name="Camera" xml:space="preserve">
+	<data name="Camera" xml:space="preserve">
     <value>摄像头</value>
   </data>
-  <data name="Clock" xml:space="preserve">
+	<data name="Clock" xml:space="preserve">
     <value>时钟</value>
   </data>
-  <data name="Cortana" xml:space="preserve">
+	<data name="Cortana" xml:space="preserve">
     <value>Cortana</value>
   </data>
-  <data name="DellCommandUpdate" xml:space="preserve">
+	<data name="DellCommandUpdate" xml:space="preserve">
     <value>Dell Command Update</value>
   </data>
-  <data name="DellDigitalDelivery" xml:space="preserve">
+	<data name="DellDigitalDelivery" xml:space="preserve">
     <value>Dell Digital Delivery</value>
   </data>
-  <data name="DellOptimizer" xml:space="preserve">
+	<data name="DellOptimizer" xml:space="preserve">
     <value>Dell Optimizer 戴尔智能调优软件</value>
   </data>
-  <data name="Family" xml:space="preserve">
+	<data name="Family" xml:space="preserve">
     <value>家庭</value>
   </data>
-  <data name="FeedbackHub" xml:space="preserve">
+	<data name="FeedbackHub" xml:space="preserve">
     <value>反馈中心</value>
   </data>
-  <data name="GameBar" xml:space="preserve">
+	<data name="GameBar" xml:space="preserve">
     <value>Game Bar</value>
   </data>
-  <data name="GetHelp" xml:space="preserve">
+	<data name="GetHelp" xml:space="preserve">
     <value>获取帮助</value>
   </data>
-  <data name="GetStarted" xml:space="preserve">
+	<data name="GetStarted" xml:space="preserve">
     <value>开始使用</value>
   </data>
-  <data name="IntelManagementAndSecurityStatus" xml:space="preserve">
+	<data name="IntelManagementAndSecurityStatus" xml:space="preserve">
     <value>英特尔 (R) 管理和安全状态</value>
   </data>
-  <data name="IntelGraphicsCommandCenter" xml:space="preserve">
+	<data name="IntelGraphicsCommandCenter" xml:space="preserve">
     <value>英特尔® 显卡控制中心</value>
   </data>
-  <data name="IntelOptaneMemoryAndStorageManagement" xml:space="preserve">
+	<data name="IntelOptaneMemoryAndStorageManagement" xml:space="preserve">
     <value>英特尔® 傲腾™ 内存和存储管理</value>
   </data>
-  <data name="Mail" xml:space="preserve">
+	<data name="Mail" xml:space="preserve">
     <value>邮件</value>
   </data>
-  <data name="Maps" xml:space="preserve">
+	<data name="Maps" xml:space="preserve">
     <value>地图</value>
   </data>
-  <data name="MediaPlayer" xml:space="preserve">
+	<data name="MediaPlayer" xml:space="preserve">
     <value>媒体播放器</value>
   </data>
-  <data name="Microsoft365Office" xml:space="preserve">
+	<data name="Microsoft365Office" xml:space="preserve">
     <value>Microsoft 365 (Office)</value>
   </data>
-  <data name="MicrosoftClipchamp" xml:space="preserve">
+	<data name="MicrosoftClipchamp" xml:space="preserve">
     <value>Microsoft Clipchamp</value>
   </data>
-  <data name="MicrosoftDefender" xml:space="preserve">
+	<data name="MicrosoftDefender" xml:space="preserve">
     <value>Microsoft Defender</value>
   </data>
-  <data name="MicrosoftStore" xml:space="preserve">
+	<data name="MicrosoftStore" xml:space="preserve">
     <value>Microsoft Store</value>
   </data>
-  <data name="MicrosoftTeams" xml:space="preserve">
+	<data name="MicrosoftTeams" xml:space="preserve">
     <value>Microsoft Teams</value>
   </data>
-  <data name="MicrosoftTeamsWorkSchool" xml:space="preserve">
+	<data name="MicrosoftTeamsWorkSchool" xml:space="preserve">
     <value>Microsoft Teams（工作或学校）</value>
   </data>
-  <data name="MicrosoftToDo" xml:space="preserve">
+	<data name="MicrosoftToDo" xml:space="preserve">
     <value>Microsoft To Do</value>
   </data>
-  <data name="MoviesTV" xml:space="preserve">
+	<data name="MoviesTV" xml:space="preserve">
     <value>电影和电视</value>
   </data>
-  <data name="News" xml:space="preserve">
+	<data name="News" xml:space="preserve">
     <value>资讯</value>
   </data>
-  <data name="Notepad" xml:space="preserve">
+	<data name="Notepad" xml:space="preserve">
     <value>记事本</value>
   </data>
-  <data name="Paint" xml:space="preserve">
+	<data name="Paint" xml:space="preserve">
     <value>画图</value>
   </data>
-  <data name="PhoneLink" xml:space="preserve">
+	<data name="PhoneLink" xml:space="preserve">
     <value>手机连接</value>
   </data>
-  <data name="Photos" xml:space="preserve">
+	<data name="Photos" xml:space="preserve">
     <value>相册</value>
   </data>
-  <data name="PowerAutomate" xml:space="preserve">
+	<data name="PowerAutomate" xml:space="preserve">
     <value>Power Automate</value>
   </data>
-  <data name="SnippingTool" xml:space="preserve">
+	<data name="SnippingTool" xml:space="preserve">
     <value>截图工具</value>
   </data>
-  <data name="SolitaireCasualGames" xml:space="preserve">
+	<data name="SolitaireCasualGames" xml:space="preserve">
     <value>Solitaire &amp; Casual Games</value>
   </data>
-  <data name="SoundRecorder" xml:space="preserve">
+	<data name="SoundRecorder" xml:space="preserve">
     <value>录音机</value>
   </data>
-  <data name="Spotify" xml:space="preserve">
+	<data name="Spotify" xml:space="preserve">
     <value>Spotify</value>
   </data>
-  <data name="SupportAssist" xml:space="preserve">
+	<data name="SupportAssist" xml:space="preserve">
     <value>SupportAssist</value>
   </data>
-  <data name="Terminal" xml:space="preserve">
+	<data name="Terminal" xml:space="preserve">
     <value>终端</value>
   </data>
-  <data name="Tips" xml:space="preserve">
+	<data name="Tips" xml:space="preserve">
     <value>使用技巧</value>
   </data>
-  <data name="Weather" xml:space="preserve">
+	<data name="Weather" xml:space="preserve">
     <value>天气</value>
   </data>
-  <data name="WindowsBackup" xml:space="preserve">
+	<data name="WindowsBackup" xml:space="preserve">
     <value>Windows 备份</value>
   </data>
-  <data name="WindowsSecurity" xml:space="preserve">
+	<data name="WindowsSecurity" xml:space="preserve">
     <value>Windows 安全中心</value>
   </data>
-  <data name="Xbox" xml:space="preserve">
+	<data name="Xbox" xml:space="preserve">
     <value>Xbox</value>
   </data>
-  <data name="NextTrack" xml:space="preserve">
+	<data name="NextTrack" xml:space="preserve">
     <value>下一个曲目</value>
   </data>
-  <data name="PrtSc" xml:space="preserve">
+	<data name="PrtSc" xml:space="preserve">
     <value>打印屏幕</value>
   </data>
-  <data name="ScrollLock" xml:space="preserve">
+	<data name="ScrollLock" xml:space="preserve">
     <value>Scroll Lock</value>
   </data>
-  <data name="PauseBreak" xml:space="preserve">
+	<data name="PauseBreak" xml:space="preserve">
     <value>Pause Break</value>
   </data>
-  <data name="Home" xml:space="preserve">
+	<data name="Home" xml:space="preserve">
     <value>主页</value>
   </data>
-  <data name="End" xml:space="preserve">
+	<data name="End" xml:space="preserve">
     <value>末尾</value>
   </data>
-  <data name="PageDown" xml:space="preserve">
+	<data name="PageDown" xml:space="preserve">
     <value>向下翻页</value>
   </data>
-  <data name="PageUp" xml:space="preserve">
+	<data name="PageUp" xml:space="preserve">
     <value>向上翻页</value>
   </data>
-  <data name="WebBrowser" xml:space="preserve">
+	<data name="WebBrowser" xml:space="preserve">
     <value>Web 浏览器</value>
   </data>
-  <data name="DTPUnavailable" xml:space="preserve">
+	<data name="DTPUnavailable" xml:space="preserve">
     <value>DTP 服务不可用！</value>
   </data>
-  <data name="NoName" xml:space="preserve">
+	<data name="NoName" xml:space="preserve">
     <value>（无名）</value>
   </data>
-  <data name="Keyboard.20" xml:space="preserve">
+	<data name="Keyboard.20" xml:space="preserve">
     <value>Dell Premier 无线键盘</value>
   </data>
-  <data name="Keyboard.21" xml:space="preserve">
+	<data name="Keyboard.21" xml:space="preserve">
     <value>Dell {0} 无线鼠标</value>
   </data>
-  <data name="EzArrange.10" xml:space="preserve">
+	<data name="EzArrange.10" xml:space="preserve">
     <value>选择文件夹</value>
   </data>
-  <data name="Fullscreen.1" xml:space="preserve">
+	<data name="Fullscreen.1" xml:space="preserve">
     <value>全屏</value>
   </data>
-  <data name="PIPSmall" xml:space="preserve">
+	<data name="PIPSmall" xml:space="preserve">
     <value>PIP Small</value>
   </data>
-  <data name="PIPLarge" xml:space="preserve">
+	<data name="PIPLarge" xml:space="preserve">
     <value>PIP Large</value>
   </data>
-  <data name="Learn_more_for_firmware" xml:space="preserve">
+	<data name="Learn_more_for_firmware" xml:space="preserve">
     <value>了解有关固件的更多信息</value>
   </data>
-  <data name="Learn_more_for_software" xml:space="preserve">
+	<data name="Learn_more_for_software" xml:space="preserve">
     <value>了解有关软件的更多信息</value>
   </data>
-  <data name="Update_Dock_Alert_2" xml:space="preserve">
-    <value />
+	<data name="WebcamMPS.0" xml:space="preserve">
+    <value>要访问 Microsoft 用户感应功能，请访问 Windows 设置</value>
+  </data>
+	<data name="CompatibleFirmware" xml:space="preserve">
+    <value>兼容固件</value>
+  </data>
+	<data name="ColorMsg.1" xml:space="preserve">
+    <value>要访问用户感应功能，请通过下方链接下载兼容的网络摄像头固件</value>
+	  </data>
+	<data name="Bootloader" xml:space="preserve">
+    <value>启动加载程序</value>
+  </data>
+	<data name="Bootloader.0" xml:space="preserve">
+    <value>您的设备不可用。</value>
+  </data>
+	<data name="Bootloader.1" xml:space="preserve">
+    <value>请单击</value>
+  </data>
+	<data name="Bootloader.2" xml:space="preserve">
+    <value>此处</value>
+  </data>
+	<data name="Bootloader.3" xml:space="preserve">
+    <value>更新固件，以恢复功能。</value>
+  </data>
+	<data name="Update_Dock_Alert_2" xml:space="preserve">
+    <value>注意：在更新期间，连接到此坞站的外围设备可能不可用</value>
   </data>
 </root>

@@ -20,6 +20,6 @@ namespace VcpCore.Plugins
         "U2419HS", "U2419HX", "U2719D", "U2719DC", "U2719DS", "U2719DX"
         };
 
-        public static readonly List<string> HideFWModel = new List<string>() { "P2319H", "P2419H", "E1715S", "P2219H", "S2319H", "P2720DC" };
+        public static readonly List<string> HideFWModel = new List<string>() { "S2721NX", "P2421DC", "S2319HN", "S2419H", "S2419HGF", "S2419HN", "S2719DGF", "S2719H", "S2719HN", "S3219D", "S3220DGF", "P2319H", "P2419H", "E1715S", "P2219H", "S2319H", "P2720DC" };
     }
 }

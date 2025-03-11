@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Impossibile aprire l'applicazione</value>
   </data>
-    <data name="will_be_updated_to" xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>sarà aggiornato a </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -435,7 +435,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>BLOC MAIUSC attivato</value>
   </data>
-    <data name="Caps Lock Off" xml:space="preserve">
+  <data name="Caps Lock Off" xml:space="preserve">
     <value>BLOC MAIUSC disattivato</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -477,7 +477,7 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Blocco in assenza</value>
   </data>
-    <data name="Caps_Lock_Off" xml:space="preserve">
+  <data name="Caps_Lock_Off" xml:space="preserve">
     <value>BLOC MAIUSC disattivato</value>
   </data>
   <data name="App_Name" xml:space="preserve">
@@ -490,7 +490,7 @@
     <value>Aggiornamento firmware interrotto. Assicurarsi che al sistema sia collegato un solo dispositivo dello stesso modello.</value>
   </data>
   <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
-    <value>Il firmware del ricevitore senza fili USB non supporta l&apos;aggiornamento del firmware del dispositivo</value>
+    <value>Il firmware del ricevitore senza fili USB non supporta l'aggiornamento del firmware del dispositivo</value>
   </data>
   <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
     <value>Aggiornamento firmware in corso. Impossibile interrompere il processo.</value>
@@ -538,12 +538,15 @@
     <value>Utilizza l'analisi intelligente della scena e il tracciamento del volto per eseguire lo zoom avanti e indietro della vista quando ci si sposta</value>
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
-    <value />
+    <value>Sono stati rilevati più dock. Tenere collegato un solo dock per evitare di danneggiarli.</value>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value />
+    <value>s</value>
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
-    <value />
+    <value>Più dock rilevati. Mantenere collegato un solo dock per evitare danni ai dock. Riavviare il PC, quindi collegare un solo dock.</value>
+  </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>Non spegnere il sistema fino al completamento degli aggiornamenti</value>
   </data>
 </root>

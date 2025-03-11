@@ -204,7 +204,7 @@
   <data name="Failed_to_open_application" xml:space="preserve">
     <value>Öffnen der Anwendung ist fehlgeschlagen</value>
   </data>
-    <data name="will_be_updated_to" xml:space="preserve">
+  <data name="will_be_updated_to" xml:space="preserve">
     <value>wird aktualisiert auf </value>
   </data>
   <data name="can_be_updated_to" xml:space="preserve">
@@ -435,7 +435,7 @@
   <data name="Caps_Lock_On" xml:space="preserve">
     <value>Feststelltaste an</value>
   </data>
-    <data name="Caps Lock Off" xml:space="preserve">
+  <data name="Caps Lock Off" xml:space="preserve">
     <value>Feststelltaste aus</value>
   </data>
   <data name="Easy_Memory" xml:space="preserve">
@@ -477,7 +477,7 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Sperre bei Abwesenheit</value>
   </data>
-    <data name="Caps_Lock_Off" xml:space="preserve">
+  <data name="Caps_Lock_Off" xml:space="preserve">
     <value>Feststelltaste aus</value>
   </data>
   <data name="App_Name" xml:space="preserve">
@@ -538,12 +538,15 @@
     <value>Nutzt intelligente Szenenanalyse und Gesichtsverfolgung, um die Ansicht beim Bewegen zu vergrößern und zu schwenken.</value>
   </data>
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
-    <value />
+    <value>Es wurden mehrere Dockingstationen erkannt. Lassen Sie nur eine Dockingstation angeschlossen, um Schäden an Ihren Dockingstationen zu vermeiden.</value>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value />
+    <value>s</value>
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
-    <value />
+    <value>Mehrere Dockingstationen wurden erkannt. Verbinden Sie nur eine Dockingstation, um Schäden an Ihren Dockingstationen zu verhindern. Starten Sie den PC neu und verbinden Sie nur eine Dockingstation.</value>
+  </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>Schalten Sie das System erst aus, wenn die Updates abgeschlossen sind</value>
   </data>
 </root>

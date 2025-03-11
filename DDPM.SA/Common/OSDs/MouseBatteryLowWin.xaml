@@ -108,6 +108,7 @@
                                 FontSize="14"
                                 FontWeight="Medium"
                                 Foreground="{DynamicResource Default_SA_OSD_PathColor}"
+                                TextWrapping="Wrap" TextAlignment="Center"
                                 Text="" />
 
                             <TextBlock
