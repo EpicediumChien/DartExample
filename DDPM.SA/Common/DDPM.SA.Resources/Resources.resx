@@ -555,4 +555,7 @@
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
     <value>Multiple docks detected. Keep only one dock connected to prevent damage to your docks. Restart the PC, then connect only one dock.</value>
   </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>Update may take an estimated 10 to 30 minutes to complete, depending on your monitor model and setup (for example, type of connection). It may take longer if you are updating multiple monitors of the same model. Don’t power off your display or disconnect cables while the update is downloading.</value>
+  </data>
 </root>

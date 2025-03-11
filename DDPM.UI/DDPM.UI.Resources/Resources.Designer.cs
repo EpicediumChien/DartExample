@@ -7531,6 +7531,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save dock asset report.
+        /// </summary>
+        internal static string Save_dock_asset_report {
+            get {
+                return ResourceManager.GetString("Save_dock_asset_report", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save monitor asset report.
         /// </summary>
         internal static string Save_monitor_asset_report {
@@ -8242,6 +8251,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Update_Display_Alert {
+            get {
+                return ResourceManager.GetString("Update_Display_Alert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ensure only one dock is connected to your system. Devices connected to dock may not be available during update..
         /// </summary>
         internal static string Update_Dock_Alert {
@@ -8265,6 +8283,15 @@ namespace DDPM.UI.Resources {
         internal static string Update_Firmware_update_of_multiple_USB_wireless_receivers {
             get {
                 return ResourceManager.GetString("Update_Firmware_update_of_multiple_USB_wireless_receivers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update for multiple USB wireless receivers of same kind is not supported. Keep one target USB wireless receiver connected..
+        /// </summary>
+        internal static string Update_Firmware_update_of_multiple_USB_wireless_receivers2 {
+            get {
+                return ResourceManager.GetString("Update_Firmware_update_of_multiple_USB_wireless_receivers2", resourceCulture);
             }
         }
         

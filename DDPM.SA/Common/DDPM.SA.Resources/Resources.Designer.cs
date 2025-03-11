@@ -1105,6 +1105,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update may take an estimated 10 to 30 minutes to complete, depending on your monitor model and setup (for example, type of connection). It may take longer if you are updating multiple monitors of the same model. Don’t power off your display or disconnect cables while the update is downloading..
+        /// </summary>
+        internal static string Update_Display_Alert {
+            get {
+                return ResourceManager.GetString("Update_Display_Alert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to update download cancel, because PC battery too low..
         /// </summary>
         internal static string update_download_cancel {
