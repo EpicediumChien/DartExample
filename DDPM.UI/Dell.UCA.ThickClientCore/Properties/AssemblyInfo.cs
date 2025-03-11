@@ -10,8 +10,8 @@
 
 using System.Runtime.CompilerServices;
 
-[assembly: System.Reflection.AssemblyProduct("Dell.UCA.ThickClientCore")]
-[assembly: System.Reflection.AssemblyTitle("Dell.UCA.ThickClientCore")]
+//[assembly: System.Reflection.AssemblyProduct("Dell.UCA.ThickClientCore")]
+//[assembly: System.Reflection.AssemblyTitle("Dell.UCA.ThickClientCore")]
 
 // Use the following VS command line utility to get the key: sn -Tp <assemblyPath>
 [assembly: InternalsVisibleTo("Dell.UCA.ThickClientCore.Tests, PublicKey=" +
