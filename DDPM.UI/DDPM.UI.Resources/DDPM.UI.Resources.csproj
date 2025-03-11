@@ -370,6 +370,7 @@
 		<None Remove="Resources\Monitors\s2421hsx.png" />
 		<None Remove="Resources\Monitors\s2422hz.png" />
 		<None Remove="Resources\Monitors\s2721nx.png" />
+		<None Remove="Resources\Monitors\s2725h.png" />
 		<None Remove="Resources\Monitors\s2725hs.png" />
 		<None Remove="Resources\Monitors\s2725qc.png" />
 		<None Remove="Resources\Monitors\s2725qs.png" />
@@ -920,6 +921,7 @@
 		<Resource Include="Resources\Monitors\s2421hsx.png" />
 		<Resource Include="Resources\Monitors\s2422hz.png" />
 		<Resource Include="Resources\Monitors\s2721nx.png" />
+		<Resource Include="Resources\Monitors\s2725h.png" />
 		<Resource Include="Resources\Monitors\s2725hs.png" />
 		<Resource Include="Resources\Monitors\s2725qc.png" />
 		<Resource Include="Resources\Monitors\s2725qs.png" />
