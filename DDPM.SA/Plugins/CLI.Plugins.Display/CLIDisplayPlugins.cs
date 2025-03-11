@@ -11466,56 +11466,6 @@ namespace DDPM.CLI.Plugins.Display
                             break;
                         case "KEYBOARD":
                             writelog("KEYBOARD set entry");
-                            foreach (var device in _deviceinfo)
-                            {
-                                if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
-                                {
-                                    foreach (var property in jsonObject.Properties())
-                                    {
-                                        writelog($"Key: {property.Name}, Value: {property.Value}");
-
-                                        switch (property.Name.ToString())
-                                        {
-                                            case "COLLABSCREENSHARE":
-                                                writelog("COLLABSCREENSHARE entry");
-                                                writelog("device.IsCollaborationScreenShareEnable entry");
-                                                if (device.IsCollabsKeysSupported)
-                                                {
-                                                    if (property.Value.ToString() == "ON")
-                                                    {
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable entry");
-                                                        _devMgr.SetCollaborationScreenShareEnable(true, device.ID);
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable exit");
-                                                    }
-                                                    else if (property.Value.ToString() == "OFF")
-                                                    {
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable entry");
-                                                        _devMgr.SetCollaborationScreenShareEnable(false, device.ID);
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable exit");
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("COLLABSCREENSHARE is wrong value");
-                                                        ispass = false;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    resultMessages.Add("COLLABSCREENSHARE not support");
-                                                }
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                    }
-                                    index++;
-                                    var response = GetDeviceDataPeripheralResponse(index, device);
-                                    output += "\n" + response.ToJson();
-                                }
-                            }
-                            break;
-                        case "WEBCAM"://202503010 Elsa add for Deviceconfiguration support guid&model
-                            writelog("WEBCAM set entry");
                             if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
                                 foreach (var propertys in jsonObject.Properties())
@@ -11524,161 +11474,13 @@ namespace DDPM.CLI.Plugins.Display
                                     Debug.WriteLine(commandLineInput.GuidString[0].ToString().ToUpper());
                                     if (propertys.Name.ToString().ToUpper() == "ID" && propertys.Value.ToString().ToUpper() == commandLineInput.GuidString[0].ToString().ToUpper())
                                     {
-                                        foreach (var dev in _deviceinfo)
-                                        {
-                                            Debug.WriteLine("devname:" + dev.Name + " devid:" + dev.ID);
-                                        }
                                         var match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
                                         if (match != null)
                                         {
                                             recode_find = true;
                                             if (match.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                             {
-                                                foreach (var property in jsonObject.Properties())
-                                                {
-                                                    writelog($"Key: {propertys.Name}, Value: {propertys.Value}");
-
-                                                    switch (property.Name.ToString())
-                                                    {
-                                                        case "HDR":
-                                                            writelog("HDR entry");
-                                                            writelog("_devMgr.GetIsPropertyHDRSupported entry");
-                                                            if (_devMgr.GetIsPropertyHDRSupported(match.ID.ToString()).Result)
-                                                            {
-                                                                if (property.Value.ToString() == "ON")
-                                                                {
-                                                                    writelog("_devMgr.SetIsHDROn entry");
-                                                                    _devMgr.SetIsHDROn(match.ID.ToString(), true);
-                                                                    writelog("_devMgr.SetIsHDROn exit");
-                                                                }
-                                                                else if (property.Value.ToString() == "OFF")
-                                                                {
-                                                                    writelog("_devMgr.SetIsHDROn entry");
-                                                                    _devMgr.SetIsHDROn(match.ID.ToString(), false);
-                                                                    writelog("_devMgr.SetIsHDROn exit");
-                                                                }
-                                                                else
-                                                                {
-                                                                    resultMessages.Add("HDR is wrong value");
-                                                                    ispass = false;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                resultMessages.Add("HDR not support");
-                                                            }
-                                                            break;
-                                                        case "ANTIFLICKER":
-                                                            writelog("ANTIFLICKER entry");
-                                                            writelog("_devMgr.GetIsPropertyAntiFlickerSupported entry");
-                                                            if (_devMgr.GetIsPropertyAntiFlickerSupported(match.ID.ToString()).Result)
-                                                            {
-                                                                if (property.Value.ToString() == "50" || property.Value.ToString() == "60")
-                                                                {
-                                                                    var antiflickerValue = property.Value.ToString() == "50" ? 1 : 2;
-                                                                    writelog("_devMgr.SetAntiFlicker entry");
-                                                                    _devMgr.SetAntiFlicker(match.ID.ToString(), antiflickerValue);
-                                                                    writelog("_devMgr.SetAntiFlicker exit");
-                                                                }
-                                                                else
-                                                                {
-                                                                    resultMessages.Add("ANTIFLICKER is wrong value");
-                                                                    ispass = false;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                resultMessages.Add("ANTIFLICKER not support");
-                                                            }
-                                                            break;
-                                                        case "MICSWITCH":
-                                                            writelog("MICSWITCH entry");
-                                                            writelog("device.IsMicEnumerationSupported entry");
-                                                            if (match.IsMicEnumerationSupported)
-                                                            {
-                                                                if (property.Value.ToString() == "ON")
-                                                                {
-                                                                    writelog("_devMgr.SetIsMicEnumerationOn entry");
-                                                                    _devMgr.SetIsMicEnumerationOn(true, match.ID);
-                                                                    writelog("_devMgr.SetIsMicEnumerationOn exit");
-                                                                }
-                                                                else if (property.Value.ToString() == "OFF")
-                                                                {
-                                                                    writelog("_devMgr.SetIsMicEnumerationOn entry");
-                                                                    _devMgr.SetIsMicEnumerationOn(false, match.ID);
-                                                                    writelog("_devMgr.SetIsMicEnumerationOn exit");
-                                                                }
-                                                                else
-                                                                {
-                                                                    resultMessages.Add("MICSWITCH is wrong value");
-                                                                    ispass = false;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                resultMessages.Add("MICSWITCH not support");
-                                                            }
-                                                            break;
-                                                        case "AIAUTOFRAMING":
-                                                            writelog("AIAUTOFRAMING entry");
-                                                            writelog("_devMgr.GetIsPropertyAutoFramingSupported entry");
-                                                            if (_devMgr.GetIsPropertyAutoFramingSupported(match.ID.ToString()).Result)
-                                                            {
-                                                                if (property.Value.ToString() == "ON")
-                                                                {
-                                                                    writelog("_devMgr.SetIsAutoFramingOn entry");
-                                                                    _devMgr.SetIsAutoFramingOn(match.ID.ToString(), true);
-                                                                    writelog("_devMgr.SetIsAutoFramingOn exit");
-                                                                }
-                                                                else if (property.Value.ToString() == "OFF")
-                                                                {
-                                                                    writelog("_devMgr.SetIsAutoFramingOn entry");
-                                                                    _devMgr.SetIsAutoFramingOn(match.ID.ToString(), false);
-                                                                    writelog("_devMgr.SetIsAutoFramingOn exit");
-                                                                }
-                                                                else
-                                                                {
-                                                                    resultMessages.Add("AIAUTOFRAMING is wrong value");
-                                                                    ispass = false;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                resultMessages.Add("AIAUTOFRAMING not support");
-                                                            }
-                                                            break;
-                                                        case "PRESENCEDETECTION":
-                                                            writelog("PRESENCEDETECTION entry");
-                                                            writelog("device.IsESISupported entry");
-                                                            if (match.IsESISupported)
-                                                            {
-                                                                if (property.Value.ToString() == "ON")
-                                                                {
-                                                                    writelog("_devMgr.SetIsProximitySensorEnable entry");
-                                                                    _devMgr.SetIsProximitySensorEnable(match.ID.ToString(), true);
-                                                                    writelog("_devMgr.SetIsProximitySensorEnable exit");
-                                                                }
-                                                                else if (property.Value.ToString() == "OFF")
-                                                                {
-                                                                    writelog("_devMgr.SetIsProximitySensorEnable entry");
-                                                                    _devMgr.SetIsProximitySensorEnable(match.ID.ToString(), false);
-                                                                    writelog("_devMgr.SetIsProximitySensorEnable exit");
-                                                                }
-                                                                else
-                                                                {
-                                                                    resultMessages.Add("PRESENCEDETECTION is wrong value");
-                                                                    ispass = false;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                resultMessages.Add("PRESENCEDETECTION not support");
-                                                            }
-                                                            break;
-                                                        default:
-                                                            break;
-                                                    }
-                                                }
+                                                ispass = DeviceconfigurationSetKeyboard(jsonObject, true, resultMessages, match);
                                             }
                                             var response = GetDeviceDataPeripheralResponse(0, match);
                                             output += "\n" + response.ToJson();
@@ -11689,7 +11491,8 @@ namespace DDPM.CLI.Plugins.Display
                                 if (!recode_find)
                                 {
                                     ispass = false;
-                                    output += "\n" + "Invalid guid.";
+                                    resultMessages.Add("Invalid guid.");
+                                    output += "\n" + "Fail";
                                 }
                             }
                             else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
@@ -11708,156 +11511,11 @@ namespace DDPM.CLI.Plugins.Display
                                             {
                                                 if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                                 {
-                                                    foreach (var property in jsonObject.Properties())
-                                                    {
-                                                    writelog($"Key: {propertys.Name}, Value: {propertys.Value}");
-
-                                                        switch (property.Name.ToString())
-                                                        {
-                                                            case "HDR":
-                                                                writelog("HDR entry");
-                                                                writelog("_devMgr.GetIsPropertyHDRSupported entry");
-                                                                if (_devMgr.GetIsPropertyHDRSupported(device.ID.ToString()).Result)
-                                                                {
-                                                                    if (property.Value.ToString() == "ON")
-                                                                    {
-                                                                        writelog("_devMgr.SetIsHDROn entry");
-                                                                        _devMgr.SetIsHDROn(device.ID.ToString(), true);
-                                                                        writelog("_devMgr.SetIsHDROn exit");
-                                                                    }
-                                                                    else if (property.Value.ToString() == "OFF")
-                                                                    {
-                                                                        writelog("_devMgr.SetIsHDROn entry");
-                                                                        _devMgr.SetIsHDROn(device.ID.ToString(), false);
-                                                                        writelog("_devMgr.SetIsHDROn exit");
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        resultMessages.Add("HDR is wrong value");
-                                                                        ispass = false;
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    resultMessages.Add("HDR not support");
-                                                                }
-                                                                break;
-                                                            case "ANTIFLICKER":
-                                                                writelog("ANTIFLICKER entry");
-                                                                writelog("_devMgr.GetIsPropertyAntiFlickerSupported entry");
-                                                                if (_devMgr.GetIsPropertyAntiFlickerSupported(device.ID.ToString()).Result)
-                                                                {
-                                                                    if (property.Value.ToString() == "50" || property.Value.ToString() == "60")
-                                                                    {
-                                                                        var antiflickerValue = property.Value.ToString() == "50" ? 1 : 2;
-                                                                        writelog("_devMgr.SetAntiFlicker entry");
-                                                                        _devMgr.SetAntiFlicker(device.ID.ToString(), antiflickerValue);
-                                                                        writelog("_devMgr.SetAntiFlicker exit");
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        resultMessages.Add("ANTIFLICKER is wrong value");
-                                                                        ispass = false;
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    resultMessages.Add("ANTIFLICKER not support");
-                                                                }
-                                                                break;
-                                                            case "MICSWITCH":
-                                                                writelog("MICSWITCH entry");
-                                                                writelog("device.IsMicEnumerationSupported entry");
-                                                                if (device.IsMicEnumerationSupported)
-                                                                {
-                                                                    if (property.Value.ToString() == "ON")
-                                                                    {
-                                                                        writelog("_devMgr.SetIsMicEnumerationOn entry");
-                                                                        _devMgr.SetIsMicEnumerationOn(true, device.ID);
-                                                                        writelog("_devMgr.SetIsMicEnumerationOn exit");
-                                                                    }
-                                                                    else if (property.Value.ToString() == "OFF")
-                                                                    {
-                                                                        writelog("_devMgr.SetIsMicEnumerationOn entry");
-                                                                        _devMgr.SetIsMicEnumerationOn(false, device.ID);
-                                                                        writelog("_devMgr.SetIsMicEnumerationOn exit");
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        resultMessages.Add("MICSWITCH is wrong value");
-                                                                        ispass = false;
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    resultMessages.Add("MICSWITCH not support");
-                                                                }
-                                                                break;
-                                                            case "AIAUTOFRAMING":
-                                                                writelog("AIAUTOFRAMING entry");
-                                                                writelog("_devMgr.GetIsPropertyAutoFramingSupported entry");
-                                                                if (_devMgr.GetIsPropertyAutoFramingSupported(device.ID.ToString()).Result)
-                                                                {
-                                                                    if (property.Value.ToString() == "ON")
-                                                                    {
-                                                                        writelog("_devMgr.SetIsAutoFramingOn entry");
-                                                                        _devMgr.SetIsAutoFramingOn(device.ID.ToString(), true);
-                                                                        writelog("_devMgr.SetIsAutoFramingOn exit");
-                                                                    }
-                                                                    else if (property.Value.ToString() == "OFF")
-                                                                    {
-                                                                        writelog("_devMgr.SetIsAutoFramingOn entry");
-                                                                        _devMgr.SetIsAutoFramingOn(device.ID.ToString(), false);
-                                                                        writelog("_devMgr.SetIsAutoFramingOn exit");
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        resultMessages.Add("AIAUTOFRAMING is wrong value");
-                                                                        ispass = false;
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    resultMessages.Add("AIAUTOFRAMING not support");
-                                                                }
-                                                                break;
-                                                            case "PRESENCEDETECTION":
-                                                                writelog("PRESENCEDETECTION entry");
-                                                                writelog("device.IsESISupported entry");
-                                                                if (device.IsESISupported)
-                                                                {
-                                                                    if (property.Value.ToString() == "ON")
-                                                                    {
-                                                                        writelog("_devMgr.SetIsProximitySensorEnable entry");
-                                                                        _devMgr.SetIsProximitySensorEnable(device.ID.ToString(), true);
-                                                                        writelog("_devMgr.SetIsProximitySensorEnable exit");
-                                                                    }
-                                                                    else if (property.Value.ToString() == "OFF")
-                                                                    {
-                                                                        writelog("_devMgr.SetIsProximitySensorEnable entry");
-                                                                        _devMgr.SetIsProximitySensorEnable(device.ID.ToString(), false);
-                                                                        writelog("_devMgr.SetIsProximitySensorEnable exit");
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        resultMessages.Add("PRESENCEDETECTION is wrong value");
-                                                                        ispass = false;
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    resultMessages.Add("PRESENCEDETECTION not support");
-                                                                }
-                                                                break;
-                                                            default:
-                                                                break;
-                                                        }   
-                                                    }
+                                                    ispass = DeviceconfigurationSetKeyboard(jsonObject, ispass, resultMessages, device);
+                                                    var response = GetDeviceDataPeripheralResponse(index, match[index]);
+                                                    output += "\n" + response.ToJson();
+                                                    index++;
                                                 }
-
-                                                var response = GetDeviceDataPeripheralResponse(index, match[index]);
-                                                output += "\n" + response.ToJson();
-                                                index++;
                                             }
                                         }
                                     }
@@ -11865,7 +11523,8 @@ namespace DDPM.CLI.Plugins.Display
                                 if (!recode_find)
                                 {
                                     ispass = false;
-                                    output += "\n" + "Invalid model.";
+                                    resultMessages.Add("Invalid model.");
+                                    output += "\n" + "Fail";
                                 }
                             }
                             else
@@ -11874,151 +11533,84 @@ namespace DDPM.CLI.Plugins.Display
                                 {
                                     if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                     {
-                                        foreach (var property in jsonObject.Properties())
+                                        ispass = DeviceconfigurationSetKeyboard(jsonObject, ispass, resultMessages, device);
+                                        index++;
+                                        var response = GetDeviceDataPeripheralResponse(index, device);
+                                        output += "\n" + response.ToJson();
+                                    }
+                                }
+                            }
+                            break;
+                        case "WEBCAM"://202503010 Elsa add for Deviceconfiguration support guid&model
+                            writelog("WEBCAM set entry");
+                            if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
+                            {
+                                foreach (var propertys in jsonObject.Properties())
+                                {
+                                    Debug.WriteLine($"Key: {propertys.Name}, Value: {propertys.Value}");
+                                    Debug.WriteLine(commandLineInput.GuidString[0].ToString().ToUpper());
+                                    if (propertys.Name.ToString().ToUpper() == "ID" && propertys.Value.ToString().ToUpper() == commandLineInput.GuidString[0].ToString().ToUpper())
+                                    {
+                                        var match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                        if (match != null)
                                         {
-                                            writelog($"Key: {property.Name}, Value: {property.Value}");
-
-                                            switch (property.Name.ToString())
+                                            recode_find = true;
+                                            if (match.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                             {
-                                                case "HDR":
-                                                    writelog("HDR entry");
-                                                    writelog("_devMgr.GetIsPropertyHDRSupported entry");
-                                                    if (_devMgr.GetIsPropertyHDRSupported(device.ID.ToString()).Result)
-                                                    {
-                                                        if (property.Value.ToString() == "ON")
-                                                        {
-                                                            writelog("_devMgr.SetIsHDROn entry");
-                                                            _devMgr.SetIsHDROn(device.ID.ToString(), true);
-                                                            writelog("_devMgr.SetIsHDROn exit");
-                                                        }
-                                                        else if (property.Value.ToString() == "OFF")
-                                                        {
-                                                            writelog("_devMgr.SetIsHDROn entry");
-                                                            _devMgr.SetIsHDROn(device.ID.ToString(), false);
-                                                            writelog("_devMgr.SetIsHDROn exit");
-                                                        }
-                                                        else
-                                                        {
-                                                            resultMessages.Add("HDR is wrong value");
-                                                            ispass = false;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("HDR not support");
-                                                    }
-                                                    break;
-                                                case "ANTIFLICKER":
-                                                    writelog("ANTIFLICKER entry");
-                                                    writelog("_devMgr.GetIsPropertyAntiFlickerSupported entry");
-                                                    if (_devMgr.GetIsPropertyAntiFlickerSupported(device.ID.ToString()).Result)
-                                                    {
-                                                        if (property.Value.ToString() == "50" || property.Value.ToString() == "60")
-                                                        {
-                                                            var antiflickerValue = property.Value.ToString() == "50" ? 1 : 2;
-                                                            writelog("_devMgr.SetAntiFlicker entry");
-                                                            _devMgr.SetAntiFlicker(device.ID.ToString(), antiflickerValue);
-                                                            writelog("_devMgr.SetAntiFlicker exit");
-                                                        }
-                                                        else
-                                                        {
-                                                            resultMessages.Add("ANTIFLICKER is wrong value");
-                                                            ispass = false;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("ANTIFLICKER not support");
-                                                    }
-                                                    break;
-                                                case "MICSWITCH":
-                                                    writelog("MICSWITCH entry");
-                                                    writelog("device.IsMicEnumerationSupported entry");
-                                                    if (device.IsMicEnumerationSupported)
-                                                    {
-                                                        if (property.Value.ToString() == "ON")
-                                                        {
-                                                            writelog("_devMgr.SetIsMicEnumerationOn entry");
-                                                            _devMgr.SetIsMicEnumerationOn(true, device.ID);
-                                                            writelog("_devMgr.SetIsMicEnumerationOn exit");
-                                                        }
-                                                        else if (property.Value.ToString() == "OFF")
-                                                        {
-                                                            writelog("_devMgr.SetIsMicEnumerationOn entry");
-                                                            _devMgr.SetIsMicEnumerationOn(false, device.ID);
-                                                            writelog("_devMgr.SetIsMicEnumerationOn exit");
-                                                        }
-                                                        else
-                                                        {
-                                                            resultMessages.Add("MICSWITCH is wrong value");
-                                                            ispass = false;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("MICSWITCH not support");
-                                                    }
-                                                    break;
-                                                case "AIAUTOFRAMING":
-                                                    writelog("AIAUTOFRAMING entry");
-                                                    writelog("_devMgr.GetIsPropertyAutoFramingSupported entry");
-                                                    if (_devMgr.GetIsPropertyAutoFramingSupported(device.ID.ToString()).Result)
-                                                    {
-                                                        if (property.Value.ToString() == "ON")
-                                                        {
-                                                            writelog("_devMgr.SetIsAutoFramingOn entry");
-                                                            _devMgr.SetIsAutoFramingOn(device.ID.ToString(), true);
-                                                            writelog("_devMgr.SetIsAutoFramingOn exit");
-                                                        }
-                                                        else if (property.Value.ToString() == "OFF")
-                                                        {
-                                                            writelog("_devMgr.SetIsAutoFramingOn entry");
-                                                            _devMgr.SetIsAutoFramingOn(device.ID.ToString(), false);
-                                                            writelog("_devMgr.SetIsAutoFramingOn exit");
-                                                        }
-                                                        else
-                                                        {
-                                                            resultMessages.Add("AIAUTOFRAMING is wrong value");
-                                                            ispass = false;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("AIAUTOFRAMING not support");
-                                                    }
-                                                    break;
-                                                case "PRESENCEDETECTION":
-                                                    writelog("PRESENCEDETECTION entry");
-                                                    writelog("device.IsESISupported entry");
-                                                    if (device.IsESISupported)
-                                                    {
-                                                        if (property.Value.ToString() == "ON")
-                                                        {
-                                                            writelog("_devMgr.SetIsProximitySensorEnable entry");
-                                                            _devMgr.SetIsProximitySensorEnable(device.ID.ToString(), true);
-                                                            writelog("_devMgr.SetIsProximitySensorEnable exit");
-                                                        }
-                                                        else if (property.Value.ToString() == "OFF")
-                                                        {
-                                                            writelog("_devMgr.SetIsProximitySensorEnable entry");
-                                                            _devMgr.SetIsProximitySensorEnable(device.ID.ToString(), false);
-                                                            writelog("_devMgr.SetIsProximitySensorEnable exit");
-                                                        }
-                                                        else
-                                                        {
-                                                            resultMessages.Add("PRESENCEDETECTION is wrong value");
-                                                            ispass = false;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("PRESENCEDETECTION not support");
-                                                    }
-                                                    break;
-                                                default:
-                                                    break;
+                                                ispass = DeviceconfigurationSetWebcam(jsonObject, true, resultMessages, match);
+                                            }
+                                            var response = GetDeviceDataPeripheralResponse(0, match);
+                                            output += "\n" + response.ToJson();
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (!recode_find)
+                                {
+                                    ispass = false;
+                                    resultMessages.Add("Invalid guid.");
+                                    output += "\n" + "Fail";
+                                }
+                            }
+                            else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
+                            {
+                                foreach (var propertys in jsonObject.Properties())
+                                {
+                                    Debug.WriteLine($"Key: {propertys.Name}, Value: {propertys.Value}");
+                                    if (propertys.Name.ToString().ToUpper() == "MODEL" && propertys.Value.ToString().ToUpper() == commandLineInput.Model[0].ToString().ToUpper())
+                                    {
+                                        var match = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                        if (match.Count > 0)
+                                        {
+                                            recode_find = true;
+                                            index = 0;
+                                            foreach (var device in match)
+                                            {
+                                                if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    ispass = DeviceconfigurationSetWebcam(jsonObject, ispass, resultMessages, device);
+                                                    var response = GetDeviceDataPeripheralResponse(index, match[index]);
+                                                    output += "\n" + response.ToJson();
+                                                    index++;
+                                                }
                                             }
                                         }
+                                    }
+                                }
+                                if (!recode_find)
+                                {
+                                    ispass = false;
+                                    resultMessages.Add("Invalid model.");
+                                    output += "\n" + "Fail";
+                                }
+                            }
+                            else
+                            {
+                                foreach (var device in _deviceinfo)
+                                {
+                                    if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        ispass = DeviceconfigurationSetWebcam(jsonObject, ispass, resultMessages, device);
                                         index++;
                                         var response = GetDeviceDataPeripheralResponse(index, device);
                                         output += "\n" + response.ToJson();
@@ -12030,138 +11622,153 @@ namespace DDPM.CLI.Plugins.Display
                         case "HEADSET":
                         case "AUDIO":
                             writelog("AUDIO set entry");
-                            foreach (var device in _deviceinfo)
+                            if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
-                                if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase) || device.LogicalDeviceType.Contains("HEADSET", StringComparison.OrdinalIgnoreCase))
+                                foreach (var propertys in jsonObject.Properties())
                                 {
-                                    foreach (var property in jsonObject.Properties())
+                                    Debug.WriteLine($"Key: {propertys.Name}, Value: {propertys.Value}");
+                                    Debug.WriteLine(commandLineInput.GuidString[0].ToString().ToUpper());
+                                    if (propertys.Name.ToString().ToUpper() == "ID" && propertys.Value.ToString().ToUpper() == commandLineInput.GuidString[0].ToString().ToUpper())
                                     {
-                                        writelog($"Key: {property.Name}, Value: {property.Value}");
-
-                                        switch (property.Name.ToString())
+                                        var match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                        if (match != null)
                                         {
-                                            case "ANCMODE":
-                                                writelog("ANCMODE entry");
-                                                writelog("_devMgr.GetIsANCSupportedAsync entry");
-                                                if (_devMgr.GetIsANCSupportedAsync(device.ID.ToString()).Result)
-                                                {
-                                                    if (property.Value.ToString() == "ON")
-                                                    {
-                                                        writelog("_devMgr.SetAncMode entry");
-                                                        _devMgr.SetAncMode(1, device.ID);
-                                                        writelog("_devMgr.SetAncMode exit");
-                                                    }
-                                                    else if (property.Value.ToString() == "OFF")
-                                                    {
-                                                        writelog("_devMgr.SetAncMode entry");
-                                                        _devMgr.SetAncMode(0, device.ID);
-                                                        writelog("_devMgr.SetAncMode exit");
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("ANCMODE is wrong value");
-                                                        ispass = false;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    resultMessages.Add("ANCMODE not support");
-                                                }
-                                                break;
-                                            case "MICNOISECANCELLATION":
-                                                writelog("MICNOISECANCELLATION entry");
-                                                writelog("_devMgr.GetIsMicNoiseCancellationSupportedAsync entry");
-                                                if (_devMgr.GetIsMicNoiseCancellationSupportedAsync(device.ID.ToString()).Result)
-                                                {
-                                                    if (property.Value.ToString() == "ON")
-                                                    {
-                                                        if (device.ModelNumber == "WL7024")
-                                                        {
-                                                            writelog("_devMgr.SetMicNoiseCancellationForMito entry");
-                                                            _devMgr.SetMicNoiseCancellationForMito(true, device.ID);
-                                                            writelog("_devMgr.SetMicNoiseCancellationForMito exit");
-                                                        }
-                                                        else
-                                                        {
-                                                            writelog("_devMgr.SetMicNoiseCancellation entry");
-                                                            _devMgr.SetMicNoiseCancellation(true, device.ID);
-                                                            writelog("_devMgr.SetMicNoiseCancellation exit");
-                                                        }
-                                                    }
-                                                    else if (property.Value.ToString() == "OFF")
-                                                    {
-                                                        if (device.ModelNumber == "WL7024")
-                                                        {
-                                                            writelog("_devMgr.SetMicNoiseCancellationForMito entry");
-                                                            _devMgr.SetMicNoiseCancellationForMito(false, device.ID);
-                                                            writelog("_devMgr.SetMicNoiseCancellationForMito exit");
-                                                        }
-                                                        else
-                                                        {
-                                                            writelog("_devMgr.SetMicNoiseCancellation entry");
-                                                            _devMgr.SetMicNoiseCancellation(false, device.ID);
-                                                            writelog("_devMgr.SetMicNoiseCancellation exit");
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("MICNOISECANCELLATION is wrong value");
-                                                        ispass = false;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    resultMessages.Add("MICNOISECANCELLATION not support");
-                                                }
-                                                break;
-                                            case "WEARDETECTION":
-                                                writelog("WEARDETECTION entry");
-                                                writelog("_devMgr.GetIsWearDetectionSupportedAsync entry");
-                                                if (_devMgr.GetIsWearDetectionSupportedAsync(device.ID.ToString()).Result)
-                                                {
-                                                    if (property.Value.ToString() == "ON")
-                                                    {
-                                                        writelog("_devMgr.SetWearDetectionForCLI entry");
-                                                        _devMgr.SetWearDetectionForCLI(1, device.ID);
-                                                        writelog("_devMgr.SetWearDetectionForCLI exit");
-                                                    }
-                                                    else if (property.Value.ToString() == "OFF")
-                                                    {
-                                                        writelog("_devMgr.SetWearDetectionForCLI entry");
-                                                        _devMgr.SetWearDetectionForCLI(0, device.ID);
-                                                        writelog("_devMgr.SetWearDetectionForCLI exit");
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("WEARDETECTION is wrong value");
-                                                        ispass = false;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    resultMessages.Add("WEARDETECTION not support");
-                                                }
-                                                break;
-                                            default:
-                                                break;
+                                            recode_find = true;
+                                            if (match.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                ispass = DeviceconfigurationSetAudio(jsonObject, true, resultMessages, match);
+                                            }
+                                            var response = GetDeviceDataPeripheralResponse(0, match);
+                                            output += "\n" + response.ToJson();
+                                            break;
                                         }
                                     }
-                                    index++;
-                                    var response = GetDeviceDataPeripheralResponse(index, device);
-                                    output += "\n" + response.ToJson();
+                                }
+                                if (!recode_find)
+                                {
+                                    ispass = false;
+                                    resultMessages.Add("Invalid guid.");
+                                    output += "\n" + "Fail";
+                                }
+                            }
+                            else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
+                            {
+                                foreach (var propertys in jsonObject.Properties())
+                                {
+                                    Debug.WriteLine($"Key: {propertys.Name}, Value: {propertys.Value}");
+                                    if (propertys.Name.ToString().ToUpper() == "MODEL" && propertys.Value.ToString().ToUpper() == commandLineInput.Model[0].ToString().ToUpper())
+                                    {
+                                        var match = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                        if (match.Count > 0)
+                                        {
+                                            recode_find = true;
+                                            index = 0;
+                                            foreach (var device in match)
+                                            {
+                                                if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    ispass = DeviceconfigurationSetAudio(jsonObject, ispass, resultMessages, device);
+                                                    var response = GetDeviceDataPeripheralResponse(index, match[index]);
+                                                    output += "\n" + response.ToJson();
+                                                    index++;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if (!recode_find)
+                                {
+                                    ispass = false;
+                                    resultMessages.Add("Invalid model.");
+                                    output += "\n" + "Fail";
+                                }
+                            }
+                            else
+                            {
+                                foreach (var device in _deviceinfo)
+                                {
+                                    if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase) || device.LogicalDeviceType.Contains("HEADSET", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        ispass = DeviceconfigurationSetAudio(jsonObject, ispass, resultMessages, device);
+                                        index++;
+                                        var response = GetDeviceDataPeripheralResponse(index, device);
+                                        output += "\n" + response.ToJson();
+                                    }
                                 }
                             }
                             break;
                         case "MOUSE":
                         case "PEN":
                         case "DOCK":
-                            foreach (var device in _deviceinfo)
+                            if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
-                                if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                foreach (var propertys in jsonObject.Properties())
                                 {
-                                    index++;
-                                    var response = GetDeviceDataPeripheralResponse(index, device);
-                                    output += "\n" + response.ToJson();
+                                    Debug.WriteLine($"Key: {propertys.Name}, Value: {propertys.Value}");
+                                    Debug.WriteLine(commandLineInput.GuidString[0].ToString().ToUpper());
+                                    if (propertys.Name.ToString().ToUpper() == "ID" && propertys.Value.ToString().ToUpper() == commandLineInput.GuidString[0].ToString().ToUpper())
+                                    {
+                                        var match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                        if (match != null)
+                                        {
+                                            recode_find = true;
+                                            if (match.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                var response = GetDeviceDataPeripheralResponse(0, match);
+                                                output += "\n" + response.ToJson();
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (!recode_find)
+                                {
+                                    ispass = false;
+                                    resultMessages.Add("Invalid guid.");
+                                    output += "\n" + "Fail";
+                                }
+                            }
+                            else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
+                            {
+                                foreach (var propertys in jsonObject.Properties())
+                                {
+                                    Debug.WriteLine($"Key: {propertys.Name}, Value: {propertys.Value}");
+                                    if (propertys.Name.ToString().ToUpper() == "MODEL" && propertys.Value.ToString().ToUpper() == commandLineInput.Model[0].ToString().ToUpper())
+                                    {
+                                        var match = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                        if (match.Count > 0)
+                                        {
+                                            recode_find = true;
+                                            index = 0;
+                                            foreach (var device in match)
+                                            {
+                                                if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    var response = GetDeviceDataPeripheralResponse(index, match[index]);
+                                                    output += "\n" + response.ToJson();
+                                                    index++;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if (!recode_find)
+                                {
+                                    ispass = false;
+                                    resultMessages.Add("Invalid model.");
+                                    output += "\n" + "Fail";
+                                }
+                            }
+                            else
+                            {
+                                foreach (var device in _deviceinfo)
+                                {
+                                    if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        index++;
+                                        var response = GetDeviceDataPeripheralResponse(index, device);
+                                        output += "\n" + response.ToJson();
+                                    }
                                 }
                             }
                             break;
@@ -12211,6 +11818,319 @@ namespace DDPM.CLI.Plugins.Display
             cli_Response.Message = "Invalid command line syntax or missing -value=file.json";
             return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
 
+        }
+
+        private bool DeviceconfigurationSetAudio(JObject jsonObject, bool ispass, List<string> resultMessages, DeviceInfo device)
+        {
+            foreach (var property in jsonObject.Properties())
+            {
+                writelog($"Key: {property.Name}, Value: {property.Value}");
+
+                switch (property.Name.ToString())
+                {
+                    case "ANCMODE":
+                        writelog("ANCMODE entry");
+                        writelog("_devMgr.GetIsANCSupportedAsync entry");
+                        if (_devMgr.GetIsANCSupportedAsync(device.ID.ToString()).Result)
+                        {
+                            if (property.Value.ToString() == "ON")
+                            {
+                                writelog("_devMgr.SetAncMode entry");
+                                _devMgr.SetAncMode(1, device.ID);
+                                writelog("_devMgr.SetAncMode exit");
+                            }
+                            else if (property.Value.ToString() == "OFF")
+                            {
+                                writelog("_devMgr.SetAncMode entry");
+                                _devMgr.SetAncMode(0, device.ID);
+                                writelog("_devMgr.SetAncMode exit");
+                            }
+                            else
+                            {
+                                resultMessages.Add("ANCMODE is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("ANCMODE not support");
+                        }
+                        break;
+                    case "MICNOISECANCELLATION":
+                        writelog("MICNOISECANCELLATION entry");
+                        writelog("_devMgr.GetIsMicNoiseCancellationSupportedAsync entry");
+                        if (_devMgr.GetIsMicNoiseCancellationSupportedAsync(device.ID.ToString()).Result)
+                        {
+                            if (property.Value.ToString() == "ON")
+                            {
+                                if (device.ModelNumber == "WL7024")
+                                {
+                                    writelog("_devMgr.SetMicNoiseCancellationForMito entry");
+                                    _devMgr.SetMicNoiseCancellationForMito(true, device.ID);
+                                    writelog("_devMgr.SetMicNoiseCancellationForMito exit");
+                                }
+                                else
+                                {
+                                    writelog("_devMgr.SetMicNoiseCancellation entry");
+                                    _devMgr.SetMicNoiseCancellation(true, device.ID);
+                                    writelog("_devMgr.SetMicNoiseCancellation exit");
+                                }
+                            }
+                            else if (property.Value.ToString() == "OFF")
+                            {
+                                if (device.ModelNumber == "WL7024")
+                                {
+                                    writelog("_devMgr.SetMicNoiseCancellationForMito entry");
+                                    _devMgr.SetMicNoiseCancellationForMito(false, device.ID);
+                                    writelog("_devMgr.SetMicNoiseCancellationForMito exit");
+                                }
+                                else
+                                {
+                                    writelog("_devMgr.SetMicNoiseCancellation entry");
+                                    _devMgr.SetMicNoiseCancellation(false, device.ID);
+                                    writelog("_devMgr.SetMicNoiseCancellation exit");
+                                }
+                            }
+                            else
+                            {
+                                resultMessages.Add("MICNOISECANCELLATION is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("MICNOISECANCELLATION not support");
+                        }
+                        break;
+                    case "WEARDETECTION":
+                        writelog("WEARDETECTION entry");
+                        writelog("_devMgr.GetIsWearDetectionSupportedAsync entry");
+                        if (_devMgr.GetIsWearDetectionSupportedAsync(device.ID.ToString()).Result)
+                        {
+                            if (property.Value.ToString() == "ON")
+                            {
+                                writelog("_devMgr.SetWearDetectionForCLI entry");
+                                _devMgr.SetWearDetectionForCLI(1, device.ID);
+                                writelog("_devMgr.SetWearDetectionForCLI exit");
+                            }
+                            else if (property.Value.ToString() == "OFF")
+                            {
+                                writelog("_devMgr.SetWearDetectionForCLI entry");
+                                _devMgr.SetWearDetectionForCLI(0, device.ID);
+                                writelog("_devMgr.SetWearDetectionForCLI exit");
+                            }
+                            else
+                            {
+                                resultMessages.Add("WEARDETECTION is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("WEARDETECTION not support");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return ispass;
+        }
+
+        private bool DeviceconfigurationSetKeyboard(JObject jsonObject, bool ispass, List<string> resultMessages, DeviceInfo device)
+        {
+            foreach (var property in jsonObject.Properties())
+            {
+                writelog($"Key: {property.Name}, Value: {property.Value}");
+
+                switch (property.Name.ToString())
+                {
+                    case "COLLABSCREENSHARE":
+                        writelog("COLLABSCREENSHARE entry");
+                        writelog("device.IsCollaborationScreenShareEnable entry");
+                        if (device.IsCollabsKeysSupported)
+                        {
+                            if (property.Value.ToString() == "ON")
+                            {
+                                writelog("_devMgr.SetCollaborationScreenShareEnable entry");
+                                _devMgr.SetCollaborationScreenShareEnable(true, device.ID);
+                                writelog("_devMgr.SetCollaborationScreenShareEnable exit");
+                            }
+                            else if (property.Value.ToString() == "OFF")
+                            {
+                                writelog("_devMgr.SetCollaborationScreenShareEnable entry");
+                                _devMgr.SetCollaborationScreenShareEnable(false, device.ID);
+                                writelog("_devMgr.SetCollaborationScreenShareEnable exit");
+                            }
+                            else
+                            {
+                                resultMessages.Add("COLLABSCREENSHARE is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("COLLABSCREENSHARE not support");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return ispass;
+        }
+
+        private bool DeviceconfigurationSetWebcam(JObject jsonObject, bool ispass, List<string> resultMessages, DeviceInfo device)
+        {
+            foreach (var property in jsonObject.Properties())
+            {
+                writelog($"Key: {property.Name}, Value: {property.Value}");
+
+                switch (property.Name.ToString())
+                {
+                    case "HDR":
+                        writelog("HDR entry");
+                        writelog("_devMgr.GetIsPropertyHDRSupported entry");
+                        if (_devMgr.GetIsPropertyHDRSupported(device.ID.ToString()).Result)
+                        {
+                            if (property.Value.ToString() == "ON")
+                            {
+                                writelog("_devMgr.SetIsHDROn entry");
+                                _devMgr.SetIsHDROn(device.ID.ToString(), true);
+                                writelog("_devMgr.SetIsHDROn exit");
+                            }
+                            else if (property.Value.ToString() == "OFF")
+                            {
+                                writelog("_devMgr.SetIsHDROn entry");
+                                _devMgr.SetIsHDROn(device.ID.ToString(), false);
+                                writelog("_devMgr.SetIsHDROn exit");
+                            }
+                            else
+                            {
+                                resultMessages.Add("HDR is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("HDR not support");
+                        }
+                        break;
+                    case "ANTIFLICKER":
+                        writelog("ANTIFLICKER entry");
+                        writelog("_devMgr.GetIsPropertyAntiFlickerSupported entry");
+                        if (_devMgr.GetIsPropertyAntiFlickerSupported(device.ID.ToString()).Result)
+                        {
+                            if (property.Value.ToString() == "50" || property.Value.ToString() == "60")
+                            {
+                                var antiflickerValue = property.Value.ToString() == "50" ? 1 : 2;
+                                writelog("_devMgr.SetAntiFlicker entry");
+                                _devMgr.SetAntiFlicker(device.ID.ToString(), antiflickerValue);
+                                writelog("_devMgr.SetAntiFlicker exit");
+                            }
+                            else
+                            {
+                                resultMessages.Add("ANTIFLICKER is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("ANTIFLICKER not support");
+                        }
+                        break;
+                    case "MICSWITCH":
+                        writelog("MICSWITCH entry");
+                        writelog("device.IsMicEnumerationSupported entry");
+                        if (device.IsMicEnumerationSupported)
+                        {
+                            if (property.Value.ToString() == "ON")
+                            {
+                                writelog("_devMgr.SetIsMicEnumerationOn entry");
+                                _devMgr.SetIsMicEnumerationOn(true, device.ID);
+                                writelog("_devMgr.SetIsMicEnumerationOn exit");
+                            }
+                            else if (property.Value.ToString() == "OFF")
+                            {
+                                writelog("_devMgr.SetIsMicEnumerationOn entry");
+                                _devMgr.SetIsMicEnumerationOn(false, device.ID);
+                                writelog("_devMgr.SetIsMicEnumerationOn exit");
+                            }
+                            else
+                            {
+                                resultMessages.Add("MICSWITCH is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("MICSWITCH not support");
+                        }
+                        break;
+                    case "AIAUTOFRAMING":
+                        writelog("AIAUTOFRAMING entry");
+                        writelog("_devMgr.GetIsPropertyAutoFramingSupported entry");
+                        if (_devMgr.GetIsPropertyAutoFramingSupported(device.ID.ToString()).Result)
+                        {
+                            if (property.Value.ToString() == "ON")
+                            {
+                                writelog("_devMgr.SetIsAutoFramingOn entry");
+                                _devMgr.SetIsAutoFramingOn(device.ID.ToString(), true);
+                                writelog("_devMgr.SetIsAutoFramingOn exit");
+                            }
+                            else if (property.Value.ToString() == "OFF")
+                            {
+                                writelog("_devMgr.SetIsAutoFramingOn entry");
+                                _devMgr.SetIsAutoFramingOn(device.ID.ToString(), false);
+                                writelog("_devMgr.SetIsAutoFramingOn exit");
+                            }
+                            else
+                            {
+                                resultMessages.Add("AIAUTOFRAMING is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("AIAUTOFRAMING not support");
+                        }
+                        break;
+                    case "PRESENCEDETECTION":
+                        writelog("PRESENCEDETECTION entry");
+                        writelog("device.IsESISupported entry");
+                        if (device.IsESISupported)
+                        {
+                            if (property.Value.ToString() == "ON")
+                            {
+                                writelog("_devMgr.SetIsProximitySensorEnable entry");
+                                _devMgr.SetIsProximitySensorEnable(device.ID.ToString(), true);
+                                writelog("_devMgr.SetIsProximitySensorEnable exit");
+                            }
+                            else if (property.Value.ToString() == "OFF")
+                            {
+                                writelog("_devMgr.SetIsProximitySensorEnable entry");
+                                _devMgr.SetIsProximitySensorEnable(device.ID.ToString(), false);
+                                writelog("_devMgr.SetIsProximitySensorEnable exit");
+                            }
+                            else
+                            {
+                                resultMessages.Add("PRESENCEDETECTION is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("PRESENCEDETECTION not support");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return ispass;
         }
 
         private static string get_ScreenOrientation_code(string Orientation)
