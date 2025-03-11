@@ -93,7 +93,7 @@ namespace CLI.Subagent
                 //new Guid(IDs.CLI_Plugin_Display), new Guid(IDs.CLI_Plugin_Peripherals),
                 //},
                 AllowUnelevatedExecution = true,
-                MultiSessionAgent = true,
+                MultiSessionAgent = false,
                 LogDirectory = LogLocation
 #if RELEASE
                 ,
