@@ -52,7 +52,7 @@
     </ResourceDictionary>
   </UserControl.Resources>
   <Grid Margin="0,0,0,15">
-    <Border Name="ParentBorder" Background="{DynamicResource MouseSettingMenu_BgColor99}" CornerRadius="13" Width="320" Margin="0,10,0,0">
+    <Border Name="ParentBorder" Style="{StaticResource RightMenuBgStyle}" CornerRadius="13" Width="320" Margin="0,10,0,0">
       <Border.Height>
         <MultiBinding Converter="{StaticResource HeightConverter}">
           <Binding Path="Height" RelativeSource="{RelativeSource AncestorType=Grid}" />
@@ -109,7 +109,7 @@
             </Grid>
           </Border>
           <StackPanel Name="Behaviors">
-            <Border Name="bdrClickOnce" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="Behavior_MouseLeftButtonDown" Cursor="Hand">
+            <Border Name="bdrClickOnce" MouseLeftButtonDown="Behavior_MouseLeftButtonDown" Cursor="Hand" Background="Transparent">
               <!-- Robert_Lin 2025-1-16 PIMS-332086 L10N: i18N: DDPM 2.0: GUI: TP1: pt-BR: StringID: PenButtonSettings.5 overlaps with icon.
                             Issue found at Prss and Hold, but we will fix it in all 3 actions. Text requirements: Single line, Trimming end with "..."
                             The same solution with PIMS-334240
@@ -125,7 +125,7 @@
                 </Image>
               </Grid>
             </Border>
-            <Border Name="bdrDoubleClick" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="Behavior_MouseLeftButtonDown" Cursor="Hand">
+            <Border Name="bdrDoubleClick" MouseLeftButtonDown="Behavior_MouseLeftButtonDown" Cursor="Hand" Background="Transparent">
               <Grid HorizontalAlignment="Left" Width="288" Height="45">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="*"/>
@@ -137,7 +137,7 @@
                 </Image>
               </Grid>
             </Border>
-            <Border Name="bdrPressAndHold" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="Behavior_MouseLeftButtonDown" Cursor="Hand">
+            <Border Name="bdrPressAndHold"  MouseLeftButtonDown="Behavior_MouseLeftButtonDown" Cursor="Hand" Background="Transparent">
               <Grid HorizontalAlignment="Left" Width="288" Height="45">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="*"/>
@@ -172,7 +172,7 @@
                                   </Style>
                                 </UXControls:UXRadioButton.Resources>
                               </UXControls:UXRadioButton>
-                              <StackPanel Orientation="Horizontal" Margin="58,4,0,4" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
+                              <StackPanel Orientation="Horizontal" Margin="58,3,0,4" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
                                 <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
                                 <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
                               </StackPanel>
@@ -211,7 +211,7 @@
                                     </Style>
                                   </UXControls:UXRadioButton.Resources>
                                 </UXControls:UXRadioButton>
-                                <StackPanel Orientation="Horizontal" Margin="58,4,0,4" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
+                                <StackPanel Orientation="Horizontal" Margin="58,3,0,4" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
                                   <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
                                   <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
                                 </StackPanel>
@@ -245,7 +245,7 @@
                                     </Style>
                                   </UXControls:UXRadioButton.Resources>
                                 </UXControls:UXRadioButton>
-                                <StackPanel Orientation="Horizontal" Margin="58,4,0,4" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
+                                <StackPanel Orientation="Horizontal" Margin="58,3,0,4" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
                                   <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
                                   <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
                                 </StackPanel>
@@ -279,7 +279,7 @@
                                     </Style>
                                   </UXControls:UXRadioButton.Resources>
                                 </UXControls:UXRadioButton>
-                                <StackPanel Orientation="Horizontal" Margin="58,10,0,3.5" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
+                                <StackPanel Orientation="Horizontal" Margin="58,3,0,4" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
                                   <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
                                   <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
                                 </StackPanel>

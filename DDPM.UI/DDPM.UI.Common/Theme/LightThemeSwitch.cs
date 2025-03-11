@@ -71,7 +71,7 @@ namespace DDPM.UI.Common
                 UpdateFreezable("txtCaption_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
                 UpdateFreezable("ActionsTextBlock_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
                 UpdateFreezable("ActionsBorder_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#f6f9fc"));
-                UpdateFreezable("ActionsRadio_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#f4f7f9"));
+                UpdateFreezable("ActionsRadio_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F0F3FA"));
                 UpdateFreezable("ActionsRadio_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#f4f7f9"));
                 UpdateFreezable("ActionsRadio_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
                 UpdateFreezable("SearchBoxBorder_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#f4f7f9"));
@@ -125,7 +125,7 @@ namespace DDPM.UI.Common
 
                 UpdateFreezable("ActionParameterModalDialogTextBoxBorderColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0672CB"));
 
-                UpdateFreezable("ActionsBorderBorderBrush", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E5ECF9"));
+                UpdateFreezable("ActionsBorderBorderBrush", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
 
                 UpdateFreezable("Border1BorderBrush", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E5ECF9"));
 
@@ -171,12 +171,12 @@ namespace DDPM.UI.Common
                 #endregion
 
                 #region keyboard
-                UpdateFreezable("RightMenuBg_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#f4f7f9"));
+                //UpdateFreezable("RightMenuBg_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#f4f7f9"));
                 UpdateFreezable("txtCaption_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
                 UpdateFreezable("ActionsTextBlock_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
                 UpdateFreezable("ActionsGrid_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#f7fafc"));
 
-                UpdateFreezable("ActionsBorder_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#f7fafc"));
+                //UpdateFreezable("ActionsBorder_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#f7fafc"));
 
                 UpdateFreezable("SearchBoxBorder_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#f4f7f9"));
 
