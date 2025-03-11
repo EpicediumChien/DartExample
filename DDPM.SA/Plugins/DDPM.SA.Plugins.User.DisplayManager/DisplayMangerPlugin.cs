@@ -3052,7 +3052,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 GetUSBCPrioritization(_VCPchangedEventArgs.monitor);
             }
             GetHDRStatus(_VCPchangedEventArgs.monitor, true).Wait();
-            ComparisonResolutionAndUpdateDisplayData(_VCPchangedEventArgs.monitor);
         }
 
         private void PeocessALSTriggerEvent(VCPchangedEventArgs e)
@@ -3940,7 +3939,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation done");
             return (ret.ToArray());
         }
-        private void ComparisonResolutionAndUpdateDisplayData(MonitorInfo monitor)
+        private void UpdateDisplayPropertiesInfoInDisplayData(MonitorInfo monitor)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData start");
             if (_displayDataManger != null)
@@ -3949,6 +3948,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitor, out DisplayPropertiesInfo displayPropertiesInfo))
                 {
                     _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData _displayDataManger is get properties from display data");
+                    _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData displayPropertiesInfo.DisplayName : {displayPropertiesInfo.DisplayName}");
+                    _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData monitor.DisplayName : {monitor.DisplayName}");
                     _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData monitor.DisplayName != displayPropertiesInfo.DisplayName : {monitor.DisplayName != displayPropertiesInfo.DisplayName}");
                     if (monitor.DisplayName != displayPropertiesInfo.DisplayName)
                     {
