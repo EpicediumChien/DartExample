@@ -2012,6 +2012,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (_deviceManager.GetIsReadyAsync(CurrentDeviceID.ToString()).Result)
                 {
                     _waitHeadsetReady_DTP = true;
+                    IsDTPReady = _deviceManager.GetDTPProxyPluginReady().Result; // update again
                     _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetIsReadyAsync, true ... {tick} sec, success ...");
                     break;
                 }
