@@ -167,21 +167,21 @@
     <Setter Property="HorizontalAlignment" Value="Left" />
     <Setter Property="Margin" Value="15,16,0,0" />
   </Style>-->
-  <Style x:Key="ActionArrowStyle" TargetType="Image">
+  <!--<Style x:Key="ActionArrowStyle" TargetType="Image">
     <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
     <Setter Property="Width" Value="16" />
     <Setter Property="Height" Value="16" />
     <Setter Property="Stretch" Value="Uniform" />
     <Setter Property="Cursor" Value="Hand" />
-  </Style>
-  <Style x:Key="EditActionBorderStyle" TargetType="Border">
+  </Style>-->
+  <!--<Style x:Key="EditActionBorderStyle" TargetType="Border">
     <Setter Property="Background" Value="#00000000" />
     <Setter Property="CornerRadius" Value="2" />
     <Setter Property="Width" Value="102.5" />
     <Setter Property="Height" Value="40" />
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="BorderBrush" Value="#F5F6F7" />
-  </Style>
+  </Style>-->
   <!--<SolidColorBrush x:Key="VbarItem_BkColor" Color="#132F54" />
     <SolidColorBrush x:Key="VbarItem_TextColor" Color="White" />
     <LinearGradientBrush x:Key="VbarItem_HiBkColor" StartPoint="0,0" EndPoint="1,1">
@@ -194,7 +194,7 @@
     <GradientStop Offset="1" Color="#FF6E69CF" />
     </LinearGradientBrush>-->
 
-  <Style x:Key="KeyToolTipTextStyle" TargetType="TextBlock">
+  <!--<Style x:Key="KeyToolTipTextStyle" TargetType="TextBlock">
     <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
     <Setter Property="Background" Value="#1D2C3B" />
     <Setter Property="FontFamily" Value="Roboto" />
@@ -204,7 +204,7 @@
     <Setter Property="LineHeight" Value="20" />
     <Setter Property="VerticalAlignment" Value="center" />
     <Setter Property="HorizontalAlignment" Value="center" />
-  </Style>
+  </Style>-->
   <SolidColorBrush x:Key="VbarItem_BkColor" Color="#132F54" />
   <SolidColorBrush x:Key="VbarItem_TextColor" Color="White" />
 
