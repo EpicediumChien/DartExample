@@ -924,12 +924,21 @@ namespace DDPM.SA.Plugins.CMAManager
 
         public Task<RemoteManagementResult> Info(RemoteRequestArgs request)
         {
-
             Guid uniqueAgentGuid = Guid.NewGuid();
 
             //Assign request ID per call
             RemoteManagementResult result = new RemoteManagementResult();
             result.cma_request_id = uniqueAgentGuid;
+
+            // add @ 20250311 stephen : disable queue with multi-tasks
+            if (taskInfoQueue.Count > 0) {
+                result.message = "A command is running.";
+                result.output_result = "FAIL";
+
+                sendErrorNotify(uniqueAgentGuid.ToString(), request.remote_request);
+
+                return Task.FromResult(result);
+            }
 
             if (request == null)
             {
@@ -1419,6 +1428,17 @@ namespace DDPM.SA.Plugins.CMAManager
 
             NotifyArgs args = new NotifyArgs();
             args.eventType = Params.EventType.DEFER.ToString();
+            args.notification = "{\"sid\": \"" + cmd.sid + "\",\"gid\": \"" + guid + "\",\"response\": [" + command + "]}";
+            OnEventNotify(args);
+        }
+
+        // add @ 20250311 stephen
+        private void sendErrorNotify(string guid, string command)
+        {
+            CmaCommand cmd = new CmaCommand(guid, command);
+
+            NotifyArgs args = new NotifyArgs();
+            args.eventType = Params.EventType.ANOTHER_COMMAND_EXECUTE.ToString();
             args.notification = "{\"sid\": \"" + cmd.sid + "\",\"gid\": \"" + guid + "\",\"response\": [" + command + "]}";
             OnEventNotify(args);
         }
