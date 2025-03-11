@@ -2513,7 +2513,9 @@ namespace DDPM.UI.Module.Kvm
                                 CurrentInputChange();
                             }
                         }
-                        if (pcsList["PC2"] != original_pcsList["PC2"] || pcsList["PC3"] != original_pcsList["PC3"] || pcsList["PC4"] != original_pcsList["PC4"])
+                        if (pcsList["PC2"] != original_pcsList["PC2"] ||
+                            (pcsList.ContainsKey("PC3") && pcsList["PC3"] != original_pcsList["PC3"]) ||
+                            (pcsList.ContainsKey("PC4") && pcsList["PC4"] != original_pcsList["PC4"]))
                         {
                             InputSourceObj pc1input = new InputSourceObj((UInt16)pcsList["PC1"].Code, pcsList["PC1"].InputType);
                             InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
