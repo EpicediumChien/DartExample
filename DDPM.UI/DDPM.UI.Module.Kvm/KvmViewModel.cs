@@ -2513,7 +2513,7 @@ namespace DDPM.UI.Module.Kvm
                                 CurrentInputChange();
                             }
                         }
-                        if (pcsList["PC2"] != original_pcsList["PC2"] ||
+                        if ((pcsList.ContainsKey("PC2") && pcsList["PC2"] != original_pcsList["PC2"]) ||
                             (pcsList.ContainsKey("PC3") && pcsList["PC3"] != original_pcsList["PC3"]) ||
                             (pcsList.ContainsKey("PC4") && pcsList["PC4"] != original_pcsList["PC4"]))
                         {
