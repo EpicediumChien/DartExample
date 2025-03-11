@@ -421,6 +421,13 @@ namespace DDPM.UI.Common
                 });
                 #endregion
 
+
+                #region SettingsPlugin.UpdatePage.GroupBorder -->
+                UpdateFreezable("UpdateGroup_BdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#00000000"));
+                UpdateFreezable("UpdateGroup_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99132F54"));
+                #endregion SettingsPlugin.UpdatePage.GroupBorder -->
+
+
                 UpdateBitmapImage("InterruptScreen_Image", new Uri($"pack://application:,,,/DDPM.UI.Common;component/Resources/Background_InterruptScreen.png", UriKind.RelativeOrAbsolute));
                 UpdateFreezable("InterruptScreen_Backgroung", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#132F54"));
 

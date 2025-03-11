@@ -475,9 +475,17 @@ namespace DDPM.UI.Common.UserControls
                 _layoutID = value;
             }
         }
+
         #endregion For EzMemory
 
-
+        private void root_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                if (ClickCommand != null)
+                    ClickCommand.Execute(this);
+            }
+        }
     }
 
 }

@@ -13,7 +13,7 @@
              KeyboardNavigation.TabNavigation="Continue"
              AutomationProperties.Name="{Binding ToolTipText}"
              
-             Name="root">
+             Name="root" PreviewKeyDown="root_PreviewKeyDown">
     <!-- 
              Focusable="True"
              IsTabStop="True"

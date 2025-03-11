@@ -64,15 +64,20 @@
                             <!-- PipPbpSectionHeader -->
                             <!-- Robert_lin, 2024-11-30, LightMode, Remove all Foreground settings, will apply to App Resource Defaults -->
                             <UXControls:UXTextBlock Text="{Binding [PIPorPBP], Source={x:Static lang:LangHelper.Instance}}"
+                                                    Focusable="True" KeyboardNavigation.TabIndex="101"
                                                     FontSize="20" />
 
                             <!-- FullScreen divTitle-->
                             <!-- Robert_lin, 2024-11-30, LightMode, Remove all Foreground settings, will apply to App Resource Defaults -->
                             <UXControls:UXTextBlock Text="{Binding [Fullscreen], Source={x:Static lang:LangHelper.Instance}}" Margin="0,12"
+                                                    Focusable="True" Name="labelFullscreen" KeyboardNavigation.TabIndex="102"
                                                     FontSize="14" />
                             <!-- Fullscreen SplitItem List -->
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <!-- AutomationProperties.Name="{Binding Desciption, ElementName=pipOff}"
+                                -->
                                 <commonCtrl:SplitItem Name="pipOff" Width="88" Height="68"
+                                                      KeyboardNavigation.TabIndex="103" 
                                                       ClickCommand="{Binding FullScreenClickCommand}"/>
                              </StackPanel>
 
@@ -85,16 +90,19 @@
 
                                 <!-- Robert_lin, 2024-11-30, LightMode, Remove all Foreground settings, will apply to App Resource Defaults -->
                                 <UXControls:UXTextBlock Text="{Binding [PipPbp.0], Source={x:Static lang:LangHelper.Instance}}" Margin="0,12"
-                                                    FontSize="14" />
+                                                        Focusable="True" KeyboardNavigation.TabIndex="104"
+                                                        FontSize="14" />
                                 <!-- PIP SplitItem List -->
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                     <commonCtrl:SplitItem Width="88" Height="68" Name="pipSmall"
+                                                          KeyboardNavigation.TabIndex="105"
                                                           ClickCommand="{Binding PipSmallClickCommand}"
                                                           Visibility="{Binding DataContext.HasCapability_PipSmall, Converter={StaticResource BoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
 
 
                                     <commonCtrl:SplitItem Width="88" Height="68" Margin="8,0" Name="pipLarge"
-                                                          ClickCommand="{Binding PipLargeClickCommand}"
+                                                           KeyboardNavigation.TabIndex="106"
+                                                         ClickCommand="{Binding PipLargeClickCommand}"
                                                           Visibility="{Binding DataContext.HasCapability_PipLarge, Converter={StaticResource BoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
 
                                     <!-- Toggle between positions button 
@@ -106,6 +114,7 @@
                                     <!-- Using Custom WPF buton, defined in ButtonStyle.xaml -->
                                     <Button Style="{StaticResource SecondaryButtonStyle}"
                                             Content="{Binding [PipPbp.7], Source={x:Static lang:LangHelper.Instance}}"
+                                            KeyboardNavigation.TabIndex="107"
                                             Height="40" Margin="4,0" IsEnabled="{Binding IsPipItemSelected}"
                                             Command="{Binding PipTogglePositionClickCommand}" 
                                             Visibility="{Binding HasCapability_PipTogglePosition, Converter={StaticResource BoolToVisibilityConverter}}"/>
@@ -115,9 +124,11 @@
                             <!-- PBP divTitle-->
                             <!-- Robert_lin, 2024-11-30, LightMode, Remove all Foreground settings, will apply to App Resource Defaults -->
                             <UXControls:UXTextBlock Text="{Binding [PipPbp.1], Source={x:Static lang:LangHelper.Instance}}" Margin="0,12"
+                                                    Focusable="True" KeyboardNavigation.TabIndex="108"
                                                     FontSize="14" />
                             <!-- PBP SplitItem List -->
                             <commonCtrl:SplitListView Name="spliListView_Pbp" Margin="0,4"
+                                                      KeyboardNavigation.TabIndex="109" KeyboardNavigation.TabNavigation="Continue"
                                                       ItemClickCommand="{Binding PbpItemClickCommand}" />
                         </StackPanel>
                     </Border>
@@ -137,7 +148,8 @@
                                 </Style>
                             </StackPanel.Resources>
 
-                            <UXControls:UXTextBlock Text="{Binding [VideoSwap], Source={x:Static lang:LangHelper.Instance}}" FontSize="20" Margin="4,16,0,20" />
+                            <UXControls:UXTextBlock Text="{Binding [VideoSwap], Source={x:Static lang:LangHelper.Instance}}" FontSize="20" Margin="4,16,0,20"
+                                                    Focusable="True" KeyboardNavigation.TabIndex="151"/>
 
                             <!-- Main Input -->
                             <Grid Height="50">
@@ -147,14 +159,24 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Text="{Binding [PipPbp.2], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
+                                <UXControls:UXTextBlock Text="{Binding [PipPbp.2], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="152" Name="labelInput1"/>
                                 <!-- Robert_Lin, 2024-11-13 PIMS-319966, Change InputSurce
                                 -->
                                 <ComboBox Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
                                           Width="184" Margin="0" VerticalAlignment="Center"
+                                          KeyboardNavigation.TabIndex="153" AutomationProperties.LabeledBy="{Binding ElementName=labelInput1}"
+                                          KeyboardNavigation.TabNavigation="Continue"
                                           DisplayMemberPath="DisplayName"
                                           ItemsSource="{Binding VideoSwapItems}"
-                                          SelectedItem="{Binding MainInputSource, Mode=TwoWay}" />
+                                          SelectedItem="{Binding MainInputSource, Mode=TwoWay}" >
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource DdpmComboBoxItemContainerStyle}">
+                                            <Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}"/>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+
+                                </ComboBox>
                             </Grid>
 
                             <!-- Sub1 Input, visible only when have Sub1 -->
@@ -178,12 +200,22 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Text="{Binding [PipPbp.3], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
+                                <UXControls:UXTextBlock Text="{Binding [PipPbp.3], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0"
+                                                        Focusable="True" KeyboardNavigation.TabIndex="154" Name="labelInput2"/>
                                 <ComboBox Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
                                           Width="184" Margin="0" VerticalAlignment="Center"
+                                            KeyboardNavigation.TabIndex="155" AutomationProperties.LabeledBy="{Binding ElementName=labelInput2}"
+                                          KeyboardNavigation.TabNavigation="Continue"
                                           DisplayMemberPath="DisplayName"
                                           ItemsSource="{Binding VideoSwapItems}"
-                                          SelectedItem="{Binding Sub1InputSource, Mode=TwoWay}" />
+                                          SelectedItem="{Binding Sub1InputSource, Mode=TwoWay}" >
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource DdpmComboBoxItemContainerStyle}">
+                                            <Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}"/>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+
+                                </ComboBox>
                             </Grid>
 
                             <!-- Sub2 Input, visible only when have Sub2 -->
@@ -207,12 +239,22 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Text="{Binding [PipPbp.4], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
+                                <UXControls:UXTextBlock Text="{Binding [PipPbp.4], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" 
+                                                         Focusable="True" KeyboardNavigation.TabIndex="156" Name="labelInput3"/>
                                 <ComboBox Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
-                                          Width="184" Margin="0" VerticalAlignment="Center"
+                                          KeyboardNavigation.TabIndex="157" AutomationProperties.LabeledBy="{Binding ElementName=labelInput3}"
+                                         Width="184" Margin="0" VerticalAlignment="Center"
+                                          KeyboardNavigation.TabNavigation="Continue"
                                           DisplayMemberPath="DisplayName"
                                           ItemsSource="{Binding VideoSwapItems}"
-                                          SelectedItem="{Binding Sub2InputSource, Mode=TwoWay}" />
+                                          SelectedItem="{Binding Sub2InputSource, Mode=TwoWay}" >
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource DdpmComboBoxItemContainerStyle}">
+                                            <Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}"/>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+
+                                </ComboBox>
                             </Grid>
 
                             <!-- Sub3 Input, visible only when have Sub2 -->
@@ -234,9 +276,12 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Text="{Binding [PipPbp.5], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
+                                <UXControls:UXTextBlock Text="{Binding [PipPbp.5], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" 
+                                                         Focusable="True" KeyboardNavigation.TabIndex="158" Name="labelInput4"/>
                                 <ComboBox Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
-                                          Width="184"  Margin="0" VerticalAlignment="Center"
+                                           KeyboardNavigation.TabIndex="159" AutomationProperties.LabeledBy="{Binding ElementName=labelInput4}"
+                                          KeyboardNavigation.TabNavigation="Continue"
+                                         Width="184"  Margin="0" VerticalAlignment="Center"
                                           DisplayMemberPath="DisplayName"
                                           ItemsSource="{Binding VideoSwapItems}"
                                           SelectedItem="{Binding Sub3InputSource, Mode=TwoWay}" />
@@ -271,6 +316,7 @@
                         -->
                         <Button Style="{StaticResource SecondaryButtonStyle}"
                                 Content="{Binding [VideoSwap], Source={x:Static lang:LangHelper.Instance}}"
+                                KeyboardNavigation.TabIndex="161"
                                 Margin="0,0,4,0"
                                 IsEnabled="{Binding IsVideoSwapButtonEnabled, Mode=OneWay}"
                                 Visibility="{Binding IsVideoSwapButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}" 
@@ -293,6 +339,7 @@
                         <!-- Using Custom WPF button, defined in ButtonStyle.xaml -->
                         <Button Style="{StaticResource SecondaryButtonStyle}"
                                 Content="{Binding [PipPbp.6], Source={x:Static lang:LangHelper.Instance}}"
+                                KeyboardNavigation.TabIndex="162"
                                 Margin="4,0,0,0"
                                 IsEnabled="{Binding IsUsbSwitchButtonEnabled, Mode=OneWay}"
                                 Visibility="{Binding IsUsbSwitchButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}"
