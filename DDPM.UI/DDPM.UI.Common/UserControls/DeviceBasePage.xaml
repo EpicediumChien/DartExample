@@ -287,12 +287,29 @@
                                 <!-- #endregion ComboBox of Models for multiple monitors -->
 
                                 <!-- #region DeviceInfoIcon -->
-                                <!-- NEW: Using Paths to draw -->
-                                <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="8,0,0,0" VerticalAlignment="Center">
+                                <!-- Robert_Lin 2025-3-11 Change it to Button to support Narrator and the tooltip text binding to  HomeDevice.DeviceInfoToolTipText -->
+                                <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center" Margin="8,0,0,0"
+                                        KeyboardNavigation.TabIndex="14"
+                                        AutomationProperties.Name="{Binding SelectedHomeDevice.DeviceInfoToolTipText}">
+                                    <!-- The (i) icon 16x16 -->
+                                    <ContentControl Template="{StaticResource icon_Info}"/>
+                                    
+                                    <!-- ToolTip -->
+                                    <Button.ToolTip>
+                                        <ToolTip BorderThickness="0" Background="Transparent" 
+                                                 Placement="Top" HorizontalOffset="0" VerticalOffset="12">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <TextBlock Text="{Binding SelectedHomeDevice.DeviceInfoToolTipText}"
+                                                           Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>
+                                            </Border>
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                </Button>
+                                <!-- OLD: Using Paths to draw -->
+                                <Viewbox Width="16" Height="16" Stretch="Uniform" Margin="8,0,0,0" VerticalAlignment="Center" Visibility="Collapsed">
                                     <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
                                         <Grid.Resources>
                                             <Style TargetType="Path">
-                                                <!--<Setter Property="Fill" Value="#FFB6B6B6"/>-->
                                                 <Setter Property="Fill" Value="{DynamicResource InfoIconColor}"/>
                                             </Style>
                                         </Grid.Resources>

@@ -1,10 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
 using DDPM.UI.Common.ViewModels;
+using DDPM.UI.Resources;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
+using System;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.Net;
@@ -196,6 +198,9 @@ namespace DDPM.UI.Common.Models
             {
                 if (MonitorInfo != null)
                 {
+                    //Robert_Lin 2025-3-11 to prvent null or empty
+                    if (string.IsNullOrEmpty(MonitorInfo.FwVersion))
+                        return "";
                     return MonitorInfo.FwVersion;
                 }
                 else
@@ -228,8 +233,10 @@ namespace DDPM.UI.Common.Models
             {
                 if (MonitorInfo != null)
                 {
+                    //Robert_Lin 2025-3-11 make the string with DDPM mapped culture info.
+                    CultureInfo culture = DdpmCultureMap.MappedCultureInfo;
                     DateTime dtMfg = new DateTime(MonitorInfo.edid.Year, MonitorInfo.edid.Month, 1);
-                    string mfgDate = dtMfg.ToString("MMM yyyy");
+                    string mfgDate = dtMfg.ToString("MMM yyyy", culture);
                     return mfgDate;
                 }
                 else
@@ -237,6 +244,55 @@ namespace DDPM.UI.Common.Models
                     return "(N/A)";
                 }
             }
+        }
+
+        //Robert_Lin 2025-3-11
+        //1. For Narrator, when keyboard focus on DeviceInfoIcon (i) button, it will read the tooltip info
+        //   "Firmware Version: 1.2.3, Service Tag: ABCDEF, Manufacture Date: Jan 2024" 
+        //   So we need a property to combine these info into a signle string.
+        //2. For PIMS-342214 [S3220DGF]The DDPM display firmware does not meet the DUT actual FW version.
+        //   and PIMS-341291 [S2721NX] The DDPM display firmware does not meet the DUT actual FW version.
+        //   For some monitor models which firmware version are not available to show (not Dell standard)
+        //   DDPM will show "Service Tag: ABCDEF, Manufacture Date: Jan 2024"
+        //   That is, don't show "Firmware Version" and its value.
+        //3. To support requirements above. 
+        //3.1 In UI (XAML) remove 3x2=6 TextBlocks, and use a single TextBlock to show the info.
+        //    For each row will be separated by "\n"
+        //3.2 In ViewModel, add a new property to combine the info.
+        //    string DeviceInfoToolTipText;
+        public string DeviceInfoToolTipText
+        {
+            get
+            {
+                try
+                {
+                    string text = "";
+                    //If FirmwareVersion is available, then add it to the text
+                    if (IsFwVerAvailable)
+                    {
+                        text += LangHelper.Instance["FirmwareVersion"]; // "Firmware Version"
+                        text += " " + FwVer + "\n";                     // "Firmware Version 1.2.3\n"
+                    }
+                    text += LangHelper.Instance["ServiceTag"];          // "Service Tag"
+                    text += " " + ServiceTag + "\n";                    // "Service Tag 123456\n"
+
+                    text += LangHelper.Instance["ManufactureMonth"];    // "Manufactured"
+                    text += " " + MfgDate;                              // "Manufactured Jan 2024"
+                    return text;
+                }
+                catch (Exception)
+                {
+
+                    return "";
+                }
+            }
+        }
+
+        //For those monitors that firmware version format is non-Dell standard, we call it "Not Available"
+        //The value in MonitorInfo.FwVersion will be start with "\n".
+        public bool IsFwVerAvailable
+        {
+            get => !FwVer.StartsWith("\n");
         }
 
         /// <summary>
