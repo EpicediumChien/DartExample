@@ -36,6 +36,7 @@ using System.Security.Policy;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
@@ -3210,20 +3211,25 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties start");
-            DisplaySupportedProperties rc = null;
+            DisplayPropertiesInfo rc = null;
             if (_DisplayPropertiesPlugin != null)
             {
                 _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties _DisplayPropertiesPlugin.GetDisplaySupportedProperties go");
                 rc = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfo).Result;
-                bool? supported_OSD_Orientation = IsSupportWriteOSDOrientation(monitorInfo.CapabilityString);
-                if (supported_OSD_Orientation == true &&
-                    rc != null)
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplaySupportedProperties rc.CurrentOrientation : {rc.CurrentOrientation}");
+                if (_displayDataManger != null)
                 {
-                    rc.OSD_Orientations = IsSupportOSDOrientation(monitorInfo.CapabilityString);
+                    _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties find display data go");
+                    if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfo, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
+                    {
+                        _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties update display data go");
+                        ret_DisplayPropertiesInfo.SupportedProperties = rc.SupportedProperties;
+                        ret_DisplayPropertiesInfo.CurrentOrientation = rc.CurrentOrientation;
+                    }
                 }
             }
             _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties done");
-            return Task.FromResult(rc);
+            return Task.FromResult(rc.SupportedProperties);
         }
 
         public Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos)
@@ -3358,24 +3364,34 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
                         {
                             bool cleanCurrentFlae = false, setCurrentFlae = false;
-                            foreach (Properties tempProperties in ret_DisplayPropertiesInfo.SupportedProperties.Properties)
+                            if (ret_DisplayPropertiesInfo.CurrentOrientation != orientation)
                             {
-                                if (tempProperties.isCurrent && !cleanCurrentFlae)
+                                ret_DisplayPropertiesInfo.CurrentOrientation = orientation;
+                                ret_DisplayPropertiesInfo.SupportedProperties = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfos).Result.SupportedProperties;
+                            }
+                            else
+                            {
+                                foreach (Properties tempProperties in ret_DisplayPropertiesInfo.SupportedProperties.Properties)
                                 {
-                                    tempProperties.isCurrent = false;
-                                    cleanCurrentFlae = true;
-                                }
-                                if (tempProperties == properties && !setCurrentFlae)
-                                {
-                                    tempProperties.isCurrent = true;
-                                    setCurrentFlae = true;
-                                }
-                                if (cleanCurrentFlae && setCurrentFlae)
-                                {
-                                    break;
+                                    if (tempProperties.isCurrent && !cleanCurrentFlae)
+                                    {
+                                        tempProperties.isCurrent = false;
+                                        cleanCurrentFlae = true;
+                                    }
+                                    if (tempProperties.Resolutions_Width == properties.Resolutions_Width &&
+                                        tempProperties.Resolutions_High == properties.Resolutions_High &&
+                                        tempProperties.Frequency == properties.Frequency &&
+                                        !setCurrentFlae)
+                                    {
+                                        tempProperties.isCurrent = true;
+                                        setCurrentFlae = true;
+                                    }
+                                    if (cleanCurrentFlae && setCurrentFlae)
+                                    {
+                                        break;
+                                    }
                                 }
                             }
-                            ret_DisplayPropertiesInfo.CurrentOrientation = orientation;
                         }
                     }
                 }
@@ -3453,6 +3469,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             ret_DisplayPropertiesInfo.SupportedProperties.Properties.Count > 0)
                         {
                             ret_DisplayPropertiesInfo.CurrentOrientation = orientation;
+                            ret_DisplayPropertiesInfo.SupportedProperties = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfos).Result.SupportedProperties;
                         }
                     }
                 }
@@ -3939,27 +3956,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation done");
             return (ret.ToArray());
         }
-        private void UpdateDisplayPropertiesInfoInDisplayData(MonitorInfo monitor)
-        {
-            _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData start");
-            if (_displayDataManger != null)
-            {
-                _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData _displayDataManger is not null");
-                if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitor, out DisplayPropertiesInfo displayPropertiesInfo))
-                {
-                    _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData _displayDataManger is get properties from display data");
-                    _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData displayPropertiesInfo.DisplayName : {displayPropertiesInfo.DisplayName}");
-                    _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData monitor.DisplayName : {monitor.DisplayName}");
-                    _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData monitor.DisplayName != displayPropertiesInfo.DisplayName : {monitor.DisplayName != displayPropertiesInfo.DisplayName}");
-                    if (monitor.DisplayName != displayPropertiesInfo.DisplayName)
-                    {
-                        _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData GetDisplayPropertiesInfo go");
-                        displayPropertiesInfo = GetDisplayPropertiesInfo(monitor).Result;
-                    }
-                }
-            }
-            _logs.DebugMsg($"[DisplayMangerPlugin] ComparisonResolutionAndUpdateDisplayData done");
-        }
 
         public Task<string> GetMonitorCurrentResolution(MonitorInfo monitor)
         {
@@ -3984,7 +3980,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 var r = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitor).Result;
                 if (r != null)
                 {
-                    foreach (Properties tmp in r.Properties)
+                    foreach (Properties tmp in r.SupportedProperties.Properties)
                     {
                         if (tmp.isCurrent)
                         {
@@ -4020,7 +4016,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 var r = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitor).Result;
                 if (r != null)
                 {
-                    foreach (Properties tmp in r.Properties)
+                    foreach (Properties tmp in r.SupportedProperties.Properties)
                     {
                         if (tmp.isRecommended)
                         {
@@ -4056,7 +4052,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 var r = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitor).Result;
                 if (r != null)
                 {
-                    foreach (Properties tmp in r.Properties)
+                    foreach (Properties tmp in r.SupportedProperties.Properties)
                     {
                         if (tmp.isCurrent)
                         {
@@ -4939,7 +4935,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
             }
             gamingDisplayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
-            gamingDisplayPropertiesInfo.SupportedProperties = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfo).Result;
+            gamingDisplayPropertiesInfo.SupportedProperties = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfo).Result.SupportedProperties;
 
             string[] ss = monitorInfo.CapabilityString.Split("F4(");
             if (ss.Length == 2)

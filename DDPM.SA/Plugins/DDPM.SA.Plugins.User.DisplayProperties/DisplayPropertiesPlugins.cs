@@ -76,18 +76,18 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         /// </summary>
         /// <param name="monitorInfo">螢幕資訊</param>
         /// <returns>支援的解析度列表</returns>
-        public Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo)
+        public Task<DisplayPropertiesInfo> GetDisplaySupportedProperties(MonitorInfo monitorInfo)
         {
             try
             {
-                _logs?.DebugMsg_1(nameof(GetDisplaySupportedProperties) + " start");
+                _logs?.DebugMsg_1($"{nameof(GetDisplaySupportedProperties)} start");
                 DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo();
                 HDRSetting hDRSetting = new HDRSetting();
                 Properties currentProperties = new Properties();
                 displayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
                 if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation))
                 {
-                    return Task.FromResult(new DisplaySupportedProperties());
+                    return Task.FromResult(new DisplayPropertiesInfo());
                 }
                 if (JudgmentList.AutoRotateOSMonitorList.Contains(monitorInfo.modelName))
                 {
@@ -99,12 +99,13 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     DisplayOrientation.Angle0,DisplayOrientation.Angle90,DisplayOrientation.Angle180,DisplayOrientation.Angle270
                 };
                 _displayPropertiesInfo = (displayPropertiesInfo);
-                _logs?.DebugMsg_1(nameof(GetDisplaySupportedProperties) + " done");
-                return Task.FromResult(_displayPropertiesInfo.SupportedProperties);
+                _logs?.DebugMsg_1($"{nameof(GetDisplaySupportedProperties)} done");
+                return Task.FromResult(_displayPropertiesInfo);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Task.FromResult(new DisplaySupportedProperties());
+                _logs?.DebugMsg_1($"{nameof(GetDisplaySupportedProperties)} error : {ex.Message}");
+                return Task.FromResult(new DisplayPropertiesInfo());
             }
         }
 

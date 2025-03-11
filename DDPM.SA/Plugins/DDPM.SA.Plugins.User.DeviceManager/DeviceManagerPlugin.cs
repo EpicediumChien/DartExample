@@ -11877,6 +11877,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 writelog("[DeviceMangerPlugin] NKVM UpdateMonitorInfo ...");
                                 _NKVMPlugin.UpdateMonitorInfo(NewMonitors, token);
                             }
+                            //Update display properties in display data
+                            if (_DisplayManagerPlugin != null)
+                            {
+                                for (int i = 0; i < NewMonitors.Count; i++)
+                                {
+                                    writelog("[DeviceMangerPlugin]  GetDisplaySupportedProperties ...");
+                                    _DisplayManagerPlugin.GetDisplaySupportedProperties(NewMonitors[i]).Wait();
+                                }
+                            }
 
                             token.ThrowIfCancellationRequested();
                             //review monitor list to check duplicated data
