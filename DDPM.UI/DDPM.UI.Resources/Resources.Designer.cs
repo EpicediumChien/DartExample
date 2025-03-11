@@ -8251,7 +8251,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Battery level on this device is low. Replace/recharge battery to enable this update..
+        /// </summary>
+        internal static string Update_BatteryLow_Alert2 {
+            get {
+                return ResourceManager.GetString("Update_BatteryLow_Alert2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update may take an estimated 10 to 30 minutes to complete, depending on your monitor model and setup (for example, type of connection). It may take longer if you are updating multiple monitors of the same model. Don’t power off your display or disconnect cables while the update is downloading..
         /// </summary>
         internal static string Update_Display_Alert {
             get {
@@ -8305,6 +8314,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Press a button or key on this device to enable this update.
+        /// </summary>
+        internal static string Update_Mouse_Alert2 {
+            get {
+                return ResourceManager.GetString("Update_Mouse_Alert2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connect PC to power source and ensure PC battery charge is above 10% to continue with update.
         /// </summary>
         internal static string Update_PCBatteryLow_Alert {
@@ -8319,6 +8337,15 @@ namespace DDPM.UI.Resources {
         internal static string Update_Webcam_Alert {
             get {
                 return ResourceManager.GetString("Update_Webcam_Alert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Update_Webcam_Alert2 {
+            get {
+                return ResourceManager.GetString("Update_Webcam_Alert2", resourceCulture);
             }
         }
         

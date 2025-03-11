@@ -3575,4 +3575,14 @@
   <data name="Update_Display_Alert" xml:space="preserve">
     <value>Update may take an estimated 10 to 30 minutes to complete, depending on your monitor model and setup (for example, type of connection). It may take longer if you are updating multiple monitors of the same model. Don’t power off your display or disconnect cables while the update is downloading.</value>
   </data>
+  <data name="Update_Mouse_Alert2" xml:space="preserve">
+    <value>Press a button or key on this device to enable this update</value>
+  </data>
+  <data name="Update_BatteryLow_Alert2" xml:space="preserve">
+    <value>Battery level on this device is low. Replace/recharge battery to enable this update.</value>
+  </data>
+  <data name="Update_Webcam_Alert2" xml:space="preserve">
+    <value>This update will enable presence sensing controls through Microsoft settings in systems: Win 11 22H2 or higher, and with OS build
+22621 or higher</value>
+  </data>
 </root>
