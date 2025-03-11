@@ -3486,4 +3486,16 @@
   <data name="Update_Dock_Alert_2" xml:space="preserve">
     <value>ملاحظة: قد لا تتوفر الأجهزة الطرفية المتصلة بوحدة الإرساء هذه أثناء عملية التحديث</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>لم يتم اكتشاف على أي جهاز</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>أضف جهازك الأول</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>الاتصال</value>
+  </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>إجراءات البحث</value>
+  </data>
 </root>
