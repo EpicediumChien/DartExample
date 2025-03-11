@@ -23,7 +23,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
         private const string pluginName = "HotkeyPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements Hotkey Plugin.";
-        private const string publisherCompany = "Dell Inc.";
+        private const string publisherCompany = "Dell Technologies";
         private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements Hotkey Plugin.";
 

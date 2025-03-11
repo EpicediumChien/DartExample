@@ -60,7 +60,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private const string pluginName = "DisplayManagerPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements Display Manager Plugin.";
-        private const string publisherCompany = "Dell Inc.";
+        private const string publisherCompany = "Dell Technologies";
         private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements Display Manager Plugin.";
 
