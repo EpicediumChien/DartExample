@@ -13,9 +13,9 @@
              d:DesignHeight="680" d:DesignWidth="320" VerticalAlignment="Top" HorizontalAlignment="Left">
   <UserControl.Resources>
     <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
+      <!--<ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-      </ResourceDictionary.MergedDictionaries>
+      </ResourceDictionary.MergedDictionaries>-->
       <!--<PluginCommon:EqualityConverter x:Key="EqualityConverter" />-->
       <PluginCommon:HeightConverter x:Key="HeightConverter" />
     </ResourceDictionary>
