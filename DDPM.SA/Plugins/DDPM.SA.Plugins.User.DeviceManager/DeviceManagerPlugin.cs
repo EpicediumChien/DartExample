@@ -12465,7 +12465,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 }
                                 catch (Exception ex)
                                 {
-                                    ;
+                                    writelog($"[show_displays]SetUSBKVMPCsList Exception {ex.Message.ToString()}");
                                 }
                             }
                             else
