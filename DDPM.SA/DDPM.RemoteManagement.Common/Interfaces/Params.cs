@@ -20,6 +20,9 @@
 
             public const int DEFER = 51; // add @ 20241219 stephen
 
+            public const int COMMAND_ERROR = 90;    // add @ 20250311 stephen
+            public const int ANOTHER_COMMAND_EXECUTE = 91;  // add @ 20250311 stephen
+
             public const int UNKNOWN_ERROR = 99;
         }
 
