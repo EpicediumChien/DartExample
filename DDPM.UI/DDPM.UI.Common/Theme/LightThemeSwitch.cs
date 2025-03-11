@@ -20,20 +20,26 @@ namespace DDPM.UI.Common
             try
             {
                 #region Background Color
-                UpdateFreezable("DDPMBackground", (ref LinearGradientBrush brush) => {
+                UpdateFreezable("DDPMBackground", (ref LinearGradientBrush brush) =>
+                {
                     brush.StartPoint = new System.Windows.Point(0.913, 0.407);
                     brush.EndPoint = new System.Windows.Point(0.0, 1.0);
                     brush.Opacity = 0.05;
-                    GradientStop ? gs1 = brush.GradientStops.FirstOrDefault(gs => gs.Offset == 0.0537);
-                    if (gs1 != null) gs1.Color = (Color)ColorConverter.ConvertFromString("#80306CC7");
+                    GradientStop? gs1 = brush.GradientStops.FirstOrDefault(gs => gs.Offset == 0.0537);
+                    if (gs1 != null)
+                        gs1.Color = (Color)ColorConverter.ConvertFromString("#80306CC7");
                     GradientStop? gs2 = brush.GradientStops.FirstOrDefault(gs => gs.Offset == 0.2371);
-                    if (gs2 != null) gs2.Color = (Color)ColorConverter.ConvertFromString("#800063B8");
+                    if (gs2 != null)
+                        gs2.Color = (Color)ColorConverter.ConvertFromString("#800063B8");
                     GradientStop? gs3 = brush.GradientStops.FirstOrDefault(gs => gs.Offset == 0.504);
-                    if (gs3 != null) gs3.Color = (Color)ColorConverter.ConvertFromString("#E0003ACE");
+                    if (gs3 != null)
+                        gs3.Color = (Color)ColorConverter.ConvertFromString("#E0003ACE");
                     GradientStop? gs4 = brush.GradientStops.FirstOrDefault(gs => gs.Offset == 0.7923);
-                    if (gs4 != null) gs4.Color = (Color)ColorConverter.ConvertFromString("#80674AB8");
+                    if (gs4 != null)
+                        gs4.Color = (Color)ColorConverter.ConvertFromString("#80674AB8");
                     GradientStop? gs5 = brush.GradientStops.FirstOrDefault(gs => gs.Offset == 0.9724);
-                    if (gs5 != null) gs5.Color = (Color)ColorConverter.ConvertFromString("#800063B8");
+                    if (gs5 != null)
+                        gs5.Color = (Color)ColorConverter.ConvertFromString("#800063B8");
                 });
                 #endregion
 
@@ -94,6 +100,7 @@ namespace DDPM.UI.Common
                 UpdateFreezable("txtMessage_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
                 UpdateFreezable("MouseSettingMenu_BgColor99", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99f5f8f9"));
                 UpdateFreezable("MouseSettingMenu_BgColor60", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#60f5f8f9"));
+                UpdateFreezable("MenuSeperatorColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E1E6EF"));
 
                 UpdateFreezable("AddDeviceTxtCaption_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
                 UpdateFreezable("AddDeviceBorder1_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99f5f8f9"));
@@ -177,8 +184,9 @@ namespace DDPM.UI.Common
 
                 #region Main Window Background
                 SplashPath = "Resources/Images/splash{0}-round_Light.png";
-                UpdateFreezable("mainWindowBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFECF3F9")); 
-                UpdateFreezable("bkImage", (ref ImageBrush brush) => {
+                UpdateFreezable("mainWindowBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFECF3F9"));
+                UpdateFreezable("bkImage", (ref ImageBrush brush) =>
+                {
                     brush.Stretch = Stretch.Fill;
                     brush.ImageSource = GetImageSourceFromCommonResource("Resources/Images/Background_Light.png", "DDPM");
                 });
@@ -434,7 +442,8 @@ namespace DDPM.UI.Common
                 #endregion
 
                 #region EzArrange
-                UpdateFreezable("EzArrange_ShadowEffect", (ref DropShadowEffect shadow) => {
+                UpdateFreezable("EzArrange_ShadowEffect", (ref DropShadowEffect shadow) =>
+                {
                     shadow.Color = (Color)ColorConverter.ConvertFromString("#0A000000");
                     shadow.ShadowDepth = 4;
                     shadow.BlurRadius = 10;

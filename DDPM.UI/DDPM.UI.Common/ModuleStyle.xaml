@@ -2015,6 +2015,7 @@
   <SolidColorBrush x:Key="txtMessage_TxtColor" Color="#ffffff"/>
   <SolidColorBrush x:Key="MouseSettingMenu_BgColor99" Color="#99132F54"/>
   <SolidColorBrush x:Key="MouseSettingMenu_BgColor60" Color="#60132F54"/>
+  <SolidColorBrush x:Key="MenuSeperatorColor" Color="#1E3F6C"/>
 
   <SolidColorBrush x:Key="bdrAlert_BgColor" Color="#364861"/>
   <SolidColorBrush x:Key="bdrAlert_FgColor" Color="#F5F6F7"/>

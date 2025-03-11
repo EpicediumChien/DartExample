@@ -12,9 +12,9 @@
              d:DesignHeight="675" d:DesignWidth="320" VerticalAlignment="Top" HorizontalAlignment="Left">
   <UserControl.Resources>
     <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
+      <!--<ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-      </ResourceDictionary.MergedDictionaries>
+      </ResourceDictionary.MergedDictionaries>-->
       <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
       <PluginCommon:HeightConverter x:Key="HeightConverter" />
     </ResourceDictionary>
@@ -36,7 +36,7 @@
           <UXControls:UXTextBlock Name="txtCaption" FontSize="20" Style="{StaticResource txtCaptionStyle}" FontFamily="Roboto" Width="260" TextTrimming="CharacterEllipsis"
                                             VerticalAlignment="Center" HorizontalAlignment="Left" Focusable="True" />
         </StackPanel>
-        <Line X1="0" Y1="17" X2="288" Y2="17" Stroke="#1E3F6C" StrokeThickness="1" />
+        <Line X1="0" Y1="17" X2="288" Y2="17" Stroke="{DynamicResource MenuSeperatorColor}" StrokeThickness="1" />
         <StackPanel Orientation="Vertical" x:Name="Section1" Margin="0,0,0,2000" Visibility="Collapsed">
           <UXControls:UXTextBlock Name="txtMessage" FontSize="16" Foreground="{DynamicResource txtMessage_TxtColor}"  FontFamily="Roboto" FontWeight="Medium" TextWrapping="Wrap"
                                             Margin="0,18,0,0" Width="288" LineHeight="24" VerticalAlignment="Top" HorizontalAlignment="Left" />
