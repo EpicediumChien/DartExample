@@ -52,7 +52,7 @@ namespace DDPM.SA.Common
 
         event EventHandler<MonitorinfoUpdateEventArgs> MonitorinfoUpdated;
 
-        #region Bruce display properties
+        #region Display properties
 
         /// <summary>
         /// HDR變更事件，回傳HDR狀態
