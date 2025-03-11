@@ -12,12 +12,23 @@ if %errorlevel% neq 0 (
 cd /d %~dp0
 
 reg import DDPM.SA.USER_STOP.reg
+echo Stopped User SA.
+
 reg import DDPM.SA_STOP.reg
+echo Stopped System SA.
+
 reg import DTP_STOP.reg
+echo Stopped DTP SA.
+
 
 echo Waiting start
 pause
 
 reg import DDPM.SA.USER_Start.reg
+echo Started User SA.
+
 reg import DDPM.SA_Start.reg
+echo Started System SA.
+
 reg import DTP_Start.reg
+echo Started DTP SA.
