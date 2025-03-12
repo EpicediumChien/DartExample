@@ -19,7 +19,7 @@ namespace DDPM.OSDs
         public static readonly DependencyProperty HorizontalContentAlignmentProperty =
             DependencyProperty.Register("HorizontalContentAlignment", typeof(HorizontalAlignment), typeof(AlignableWrapPanel), new FrameworkPropertyMetadata(HorizontalAlignment.Left, FrameworkPropertyMetadataOptions.AffectsArrange));
 
-        protected override Size MeasureOverride(Size constraint)
+        protected override Size MeasureOverride(Size availableSize)
         {
             Size curLineSize = new Size();
             Size panelSize = new Size();
@@ -31,16 +31,16 @@ namespace DDPM.OSDs
                 UIElement child = children[i] as UIElement;
 
                 // Flow passes its own constraint to children
-                child.Measure(constraint);
+                child.Measure(availableSize);
                 Size sz = child.DesiredSize;
 
-                if (curLineSize.Width + sz.Width > constraint.Width) //need to switch to another line
+                if (curLineSize.Width + sz.Width > availableSize.Width) //need to switch to another line
                 {
                     panelSize.Width = Math.Max(curLineSize.Width, panelSize.Width);
                     panelSize.Height += curLineSize.Height;
                     curLineSize = sz;
 
-                    if (sz.Width > constraint.Width) // if the element is wider then the constraint - give it a separate line                    
+                    if (sz.Width > availableSize.Width) // if the element is wider then the constraint - give it a separate line                    
                     {
                         panelSize.Width = Math.Max(sz.Width, panelSize.Width);
                         panelSize.Height += sz.Height;
