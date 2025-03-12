@@ -11860,7 +11860,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             writelog($"[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() get monitor count {NewMonitors.Count} ...");
 
-                            Task.Run(() => InitMonitorSettings(_AllInfoMonitors)).ConfigureAwait(false);
+                            InitMonitorSettings(_AllInfoMonitors);
+
+                            Task.Run(() => InitAllDisplayData(_AllInfoMonitors)).ConfigureAwait(false);
 
                             // add @ 20250303 stephen
                             // modified @ 20250305 stephen : set count = -1 as a flag to avoid trigger ui reflash
@@ -12510,9 +12512,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             OnMonitorinfoUpdatechanged(_EventArgss);
         }
 
-        private void InitMonitorSettings(List<MonitorInfo> AllMonitors)
+        private void InitAllDisplayData(List<MonitorInfo> AllMonitors)
         {
-            InitMonitorSettings();
+            //InitMonitorSettings();
             _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait();
             for (int i = 0; i < AllMonitors.Count; i++)
             {
@@ -12546,7 +12548,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             writelog($"monitor count {e.monitors.Count} ...");
 
-            Task.Run(() => InitMonitorSettings(_AllInfoMonitors)).ConfigureAwait(false);
+            InitMonitorSettings(_AllInfoMonitors);
+
+            Task.Run(() => InitAllDisplayData(_AllInfoMonitors)).ConfigureAwait(false);
 
             DisplaychangedEventArgs _displaychangedEventArgs = new DisplaychangedEventArgs();
             _displaychangedEventArgs.count = e.count;
@@ -16714,12 +16718,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        private void InitMonitorSettings()
+        private void InitMonitorSettings(List<MonitorInfo> AllInfoMonitors)
         {
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
-            if (_AllInfoMonitors != null && _SettingsPlugin != null)
+            if (AllInfoMonitors != null && _SettingsPlugin != null)
             {
-                foreach (MonitorInfo m in _AllInfoMonitors.ToList())
+                foreach (MonitorInfo m in AllInfoMonitors.ToList())
                 {
                     monitorSettingsList = _SettingsPlugin.InitDDPMMonitorConfigFile(m.modelName, out isInitMonitorSettings).Result;
                     if (isInitMonitorSettings)
