@@ -16396,14 +16396,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(read);
         }
 
-        public Task<bool> WriteHotkeySettings(List<HotkeySettings> inputHotkeySettings)
+        public Task<bool> WriteHotkeySettings(List<HotkeySettings> hotkeySettings)
         {
             bool r = false;
 
             //if (r)
             //{
             //data process
-            var tmp = inputHotkeySettings;
+            var tmp = hotkeySettings;
             //write back to settings
             r = _SettingsPlugin.WriteHotkeySettings(tmp).Result;
             Thread.Sleep(100);
