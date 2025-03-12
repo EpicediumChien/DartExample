@@ -107,7 +107,10 @@ namespace DDPM.SA.Common.Method
             }
             finally
             {
-                DownloadFileStream.Close();
+                if(DownloadFileStream != null)
+                    DownloadFileStream.Close();
+                else
+                    _logs?.DebugMsg_1("[DownloadFile] [Finally] DownloadFileStream is null.");
                 DownloadFileSize = null;
                 DownloadFileStream = null;
             }
