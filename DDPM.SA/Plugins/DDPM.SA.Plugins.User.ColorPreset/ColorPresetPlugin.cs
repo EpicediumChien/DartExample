@@ -28,31 +28,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Security;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using VcpCore.Common;
-//using WinCopies.Util;
-using DdmLibrary;
-using DdmLibrary.Utility;
-using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
-using System.Windows.Media.Animation;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Common.Security;
-using static VcpCore.Common.User32;
-using Microsoft.VisualBasic.Logging;
-using System.Xml.Linq;
 using DDPM.SA.Resources.Helper;
 using Microsoft.Toolkit.Uwp.Notifications;
-//using DDPM.SA.Common.Settings;
 
 namespace ColorPreset.Plugins
 {
@@ -78,14 +63,27 @@ namespace ColorPreset.Plugins
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private List<string> _supported_preset = new List<string>();
 
-        List<string> HDR_ColorPresetNameList = new List<string>() { "Standard HDR", "Movie HDR", "Game HDR", "Vivid HDR", "Desktop", "Reference", "Multiscreen Match", "DisplayHDR", "HDR10", "HLG", "Custom Color HDR", "HDR Peak 1000" };
+        private List<string> HDR_ColorPresetNameList = new List<string>() { 
+            "Standard HDR", 
+            "Movie HDR", 
+            "Game HDR", 
+            "Vivid HDR", 
+            "Desktop", 
+            "Reference", 
+            "Multiscreen Match", 
+            "DisplayHDR", 
+            "HDR10", 
+            "HLG", 
+            "Custom Color HDR", 
+            "HDR Peak 1000" 
+        };
         private List<string> ColorPresetSupportList = new List<string>();
         private List<string> ColorPresetSupportList_ = new List<string>();
 
         //20240829 Jim move to here 20240829
         private ISettingsManagerDev _SettingsPlugin_internal;
 
-        private MainWindow? MonitorBorkerWin = null; //Dean 0626 fix SAST issue, remove static
+        private MainWindow? MonitorBorkerWin = null;
         private Thread newWindowThread_AutoSetColorPresetForMonitorConfig = null;
 
         //20240830 Jim add
@@ -118,7 +116,8 @@ namespace ColorPreset.Plugins
             error
         }
 
-        public event EventHandler<VCPchangedEventArgs> VCPchanged;
+        //Dean 20250312
+        //public event EventHandler<VCPchangedEventArgs> VCPchanged;
 
         private static ShowOSDWin OsdWin = null;
         private string iconFolderPath = string.Empty;
