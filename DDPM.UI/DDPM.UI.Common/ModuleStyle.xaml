@@ -245,7 +245,8 @@
 
   <!-- Icon Info -->
   <ControlTemplate x:Key="icon_Info" TargetType="ContentControl">
-    <Canvas Tag="{DynamicResource InfoIconColor}" Width="16" Height="16">
+      <!-- Robret_Lin 2025-3-11 add FakeTransparent to avoid the issue of the tooltip not showing up when hovering -->
+        <Canvas Tag="{DynamicResource InfoIconColor}" Width="16" Height="16" Background="{StaticResource FakeTransparent}">
       <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"
                   Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
       <Path Data="M8.75 6.4502H7.25V12.6502H8.75V6.4502Z"
