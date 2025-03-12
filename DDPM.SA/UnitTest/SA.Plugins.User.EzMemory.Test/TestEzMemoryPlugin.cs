@@ -95,7 +95,7 @@ namespace DDPM.SA.Plugins.User.EzMemory.Test
         [Test]
         public void TestStopEzMemoryManger()
         {
-            var StopEzMemoryManger_result = ezMemoryPlugin.StopEzMemoryManger();
+            var StopEzMemoryManger_result = ezMemoryPlugin.StopEzMemoryMangerAsync();
             Assert.IsTrue(StopEzMemoryManger_result.IsCompletedSuccessfully);
         }
 
@@ -103,14 +103,14 @@ namespace DDPM.SA.Plugins.User.EzMemory.Test
         public void TestStartEzMemoryManger()
         {
             int millisecond = 2000;
-            var StartEzMemoryManger_result = ezMemoryPlugin.StartEzMemoryManger(millisecond);
+            var StartEzMemoryManger_result = ezMemoryPlugin.StartEzMemoryMangerAsync(millisecond);
             Assert.IsTrue(StartEzMemoryManger_result.IsCompletedSuccessfully);
         }
 
         [Test]
         public void TestDisposeEzMemoryManger()
         {
-            var DisposeEzMemoryManger_result = ezMemoryPlugin.DisposeEzMemoryManger();
+            var DisposeEzMemoryManger_result = ezMemoryPlugin.DisposeEzMemoryMangerAsync();
             Assert.IsTrue(DisposeEzMemoryManger_result.IsCompletedSuccessfully);
         }
 

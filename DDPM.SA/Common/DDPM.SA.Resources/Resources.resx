@@ -445,7 +445,7 @@
     <value>is muted</value>
   </data>
   <data name="is_Unmuted" xml:space="preserve">
-    <value>is Unmuted</value>
+    <value>is unmuted</value>
   </data>
   <data name="Num_Lock_Off" xml:space="preserve">
     <value>Num Lock Off</value>
