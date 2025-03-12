@@ -531,7 +531,7 @@ namespace DDPM.SA.Common
                                 // 複製指定的 log 文件到選擇的資料夾
                                 if (!method.CopyLogFolder(sourceFile, savePath))
                                 {
-                                    fail_info += "[NKVM/install.log] : Fail, ";
+                                    fail_info += "[NKVM/install.log] : Path = " + sourceFile + "; Fail, ";
                                     log.Info("SaveLogFile - NKVM/install.log : Fail ");
                                     ret = false;
                                 }
@@ -543,7 +543,7 @@ namespace DDPM.SA.Common
                             }
                             else
                             {
-                                fail_info += "[NKVM/install.log] : No Log File, ";
+                                fail_info += "[NKVM/install.log] : PATH = " + sourceFile + " : No Log File, ";
                                 log.Info("SaveLogFile - NKVM/install.log : No Log File ");
                             }
                             // Wayn add Dell registry record file
@@ -588,9 +588,9 @@ namespace DDPM.SA.Common
                         // Dell registry record end
 
                         // Write SaveLogFile log
+                        string resultInfoFile = Path.Combine(saveFolderPath, "SaveLogInfo.txt");
                         try
                         {
-                            string resultInfoFile = Path.Combine(saveFolderPath, "SaveLogInfo.txt");
                             using (var writer = new StreamWriter(resultInfoFile, false))
                             {
                                 // Success
@@ -629,16 +629,21 @@ namespace DDPM.SA.Common
                         }
                         catch (Exception ex)
                         {
-                            fail_info += "[SaveLogInfo] : Exception Fail, ";
+                            fail_info += "[SaveLogInfo] : " + resultInfoFile + " ; Exception Fail, ";
                             log.Error($"SaveLogFile - SaveLogInfo : {ex.Message}");
                         }
 
                         // zip
+                        string zipFilePath = saveFolderPath + ".zip";
                         try
                         {
-                            string zipFilePath = saveFolderPath + ".zip";
                             if (!method.CreateZipFile(saveFolderPath, zipFilePath))// 壓縮資料夾
+                            {
                                 fail_info += "[Compression]";
+                                log.Info("SaveLogFile - CreateZipFile fail.");
+                            }
+                            else
+
 
                             if (DDPMFileSecurity.ValidateFilePath(saveFolderPath, out string info))
                                 Directory.Delete(saveFolderPath, true);
@@ -647,7 +652,7 @@ namespace DDPM.SA.Common
                         }
                         catch (Exception ex)
                         {
-                            fail_info += "[Compression] : Exception Fail, ";
+                            fail_info += "[Compression] : " + zipFilePath + "; Exception Fail, ";
                             log.Error($"SaveLogFile - Compression : {ex.Message}");
                         }
 

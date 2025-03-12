@@ -472,6 +472,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
                 if (disposing)
                 {
                     _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
+                    _EzMemoryTimer.Dispose();
                     _agent = null;
                 }
 
