@@ -279,7 +279,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
         #region Imprement EzMemoryManager
 
-        public Task StopEzMemoryMangerAsync()
+        public Task StopEzMemoryManger()
         {
             _logs.DebugMsg_1("[EzMemoryManagerPlugin] StopEzMemoryManger requested ...");
 
@@ -289,7 +289,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
             return Task.FromResult(Task.CompletedTask);
         }
 
-        public Task StartEzMemoryMangerAsync(int millisecond)
+        public Task StartEzMemoryManger(int millisecond)
         {
             _logs.DebugMsg_1("[EzMemoryManagerPlugin] StartEzMemoryManger: " + millisecond.ToString() + " requested ...");
 
@@ -298,11 +298,13 @@ namespace DDPM.SA.Plugins.User.EzMemory
             return Task.FromResult(Task.CompletedTask);
         }
 
-        public async Task DisposeEzMemoryMangerAsync()
+        public Task DisposeEzMemoryManger()
         {
             _logs.DebugMsg_1("[EzMemoryManagerPlugin] DisposeEzMemoryManger ...");
 
-            await _EzMemoryTimer.DisposeAsync();
+            _EzMemoryTimer.Dispose();
+
+            return Task.FromResult(Task.CompletedTask);
         }
 
         #endregion
