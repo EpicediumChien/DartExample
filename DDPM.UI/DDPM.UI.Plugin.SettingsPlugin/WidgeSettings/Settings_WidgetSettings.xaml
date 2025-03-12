@@ -79,6 +79,10 @@
                                 <!-- OLD:   <Grid Height="40" Margin="0,9">-->
                                 <Grid Height="40"
                                       Margin="0,16,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <!-- 定义一行 and Add VerticalAlignment="Center" chewlin Fix PIMS-348202 20250312-->                                       
+                                    </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="auto" />
@@ -91,6 +95,7 @@
                                                             FontFamily="Roboto"
                                                             TextBlockType="Caption"
                                                             TextWrapping="WrapWithOverflow"
+                                                            VerticalAlignment="Center"
                                                             Foreground="{DynamicResource DefaultTheme_TxtColor}" />
                                     <UXControls:UXToggleSwitch Grid.Column="1"
                                                                FontSize="14"
