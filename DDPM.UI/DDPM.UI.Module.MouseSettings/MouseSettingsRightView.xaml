@@ -51,7 +51,7 @@
                   <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     <UXControls:UXTextBlock Text="{Binding TouchScrollCaption}" FontFamily="Roboto" FontSize="16" FontWeight="Normal"
                                             Focusable="True" KeyboardNavigation.TabIndex="202"
-                                                                Margin="18,24,0,0" Foreground="White"
+                                                                Margin="18,24,0,0" 
                                                                 VerticalAlignment="Top" HorizontalAlignment="Left" />
                     <Image Margin="10,26,0,0" Source="/DDPM.UI.Common;component/Resources/Info.png" Stretch="Fill"
                                                Width="16" Height="16" VerticalAlignment="Top">
