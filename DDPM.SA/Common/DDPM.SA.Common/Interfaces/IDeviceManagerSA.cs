@@ -901,7 +901,7 @@ namespace DDPM.SA.Common
 
         #region public for SW Update
 
-        Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify, bool reScan);
+        Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify, bool reScan = true);
 
         Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUITrigger = false, string installPath = "");
 
