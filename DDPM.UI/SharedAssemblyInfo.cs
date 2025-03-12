@@ -9,6 +9,9 @@
 //------------------------------------------------------------------------------
 using System.Runtime.CompilerServices;
 [assembly: System.Runtime.InteropServices.ComVisible(false)]
+[assembly: System.Reflection.AssemblyDescription("Dell Display and Peripheral Manager")]
+[assembly: System.Reflection.AssemblyProduct("Dell Display and Peripheral Manager")]
+[assembly: System.Reflection.AssemblyTitle("Dell Display and Peripheral Manager")]
 [assembly: System.Reflection.AssemblyInformationalVersion("2.0.1.12-61e493b4")]
 [assembly: System.Reflection.AssemblyCompany("Dell Technologies")]
 [assembly: System.Reflection.AssemblyCopyright("© 2025 Dell Technologies. All Rights Reserved")]
@@ -34,5 +37,3 @@ using System.Runtime.CompilerServices;
                               "14fd43e9d02540323f7bbec78c29f854af3ead4643908af773efe044dee7ae6936bdc810ea9aa9" +
                               "14f661783ce7a2c2f230fd27383c0a992c150cb82db28d4f9a939727c5be7cb12a155e95ef037a" +
                               "e9ca2467673307c477d69f79c788924229cd225e0a30d321096a50d704ab3f855de141f506c236973838d2")]
-
-

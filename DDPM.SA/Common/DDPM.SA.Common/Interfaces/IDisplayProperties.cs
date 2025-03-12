@@ -14,7 +14,7 @@ namespace DDPM.SA.Common
 
         Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfo, string s, bool isSupportedHDR, bool isHDREnable, bool isSupportUSBCPrioritization, USBCPrioritizationType USBCPrioritizationType);
 
-        Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo);
+        Task<DisplayPropertiesInfo> GetDisplaySupportedProperties(MonitorInfo monitorInfo);
 
         Task<DisplayOrientation> GetCurrentDisplayOrientation(string DisplayName);
 

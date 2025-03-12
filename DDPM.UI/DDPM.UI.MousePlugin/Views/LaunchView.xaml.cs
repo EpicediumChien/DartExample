@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
@@ -914,6 +915,44 @@ namespace DDPM.UI.Plugin.MousePlugin
             {
                 double scalingFactor = LeftBorder.ActualWidth / leftBorderDefaultWidth;
                 AppCaptionArea.LayoutTransform = new ScaleTransform(scalingFactor, scalingFactor);
+            }
+        }
+
+        //Robert_Lin 2025-3-7 added to handle [Enter] key press event on backArrow image
+        private void backArrow_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                e.Handled = true;
+                // Ensure DataContext is of the correct type
+                if (_vm != null)
+                {
+                    // Check if the command can be executed
+                    if (_vm.GoBackClickedCommand.CanExecute(null))
+                    {
+                        // Execute the command
+                        _vm.GoBackClickedCommand.Execute(null);
+                    }
+                }
+            }
+        }
+
+        //Robert_Lin 2025-3-8 added for Narrator, press [Enter] key on SectionA,B images
+        private void ButtonPreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            //Re-route the key event to ButtonClicked method with MouseLeftButtonDown event
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                e.Handled = true;
+                var mouseDevice = InputManager.Current.PrimaryMouseDevice;
+                if (mouseDevice != null)
+                {
+                    MouseButtonEventArgs mouseButtonEventArgs = new(mouseDevice, 0, MouseButton.Left)
+                    {
+                        RoutedEvent = UIElement.MouseLeftButtonDownEvent
+                    };
+                    ButtonClicked(sender, mouseButtonEventArgs);
+                }
             }
         }
     }

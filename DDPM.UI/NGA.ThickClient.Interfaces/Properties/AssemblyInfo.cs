@@ -8,5 +8,5 @@
 
 #endregion
 
-[assembly: System.Reflection.AssemblyProduct("Dell.UCA.ThickClient.Interfaces")]
-[assembly: System.Reflection.AssemblyTitle("Dell.UCA.ThickClient.Interfaces")]
+//[assembly: System.Reflection.AssemblyProduct("Dell.UCA.ThickClient.Interfaces")]
+//[assembly: System.Reflection.AssemblyTitle("Dell.UCA.ThickClient.Interfaces")]

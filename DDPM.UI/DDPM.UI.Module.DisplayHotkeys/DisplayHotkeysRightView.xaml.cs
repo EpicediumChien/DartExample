@@ -1,4 +1,6 @@
-﻿using DDPM.SA.Common.Display;
+﻿//#define NARRATOR_TAB
+
+using DDPM.SA.Common.Display;
 using DDPM.UI.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Newtonsoft.Json.Linq;
@@ -37,8 +39,16 @@ namespace DDPM.UI.Module.DisplayHotkeys
             DataContext = vm;
         }
 
+        //Robert_Lin, 2025-3-7 for Narrator, When keyboard navigation into this textbox, should not handle it [Tab] key.
+        //And exit from this TextBox with [Tab] key. This event handler should not handle it [Tab] key
+        //Not to handle meand do not set e.Handled to true if the key is [Tab]
         private void tbToggleInputSource_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+#if NARRATOR_TAB
+            //Robert_Lin, 2025-3-7 for Narrator, When keyboard navigation into this textbox, should not handle it [Tab] key.
+            if (e.Key == Key.Tab)
+                return;
+#endif
             KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
@@ -68,8 +78,17 @@ namespace DDPM.UI.Module.DisplayHotkeys
             }
 
         }
+        //Robert_Lin, 2025-3-7 for Narrator, When keyboard navigation into this textbox,
+        //And exit from this TextBox with [Tab] key. This event handler should not handle it [Tab] key
+        //Not to handle meand do not set e.Handled to true if the key is [Tab]
         private void tbToggleInputSource_PreviewKeyUp(object sender, KeyEventArgs e)
         {
+#if NARRATOR_TAB
+            //Robert_Lin, 2025-3-7 for Narrator, When keyboard navigation into this textbox, should not handle it [Tab] key.
+            if (e.Key == Key.Tab)
+                return;
+#endif
+
             e.Handled = true;
             HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.ToggleInputSource);
             if (hotkeyInfo.Hotkey != null && hotkeyInfo.Hotkey.Count > 0)
@@ -112,11 +131,21 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
         private void tbFavoriteInputSource_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            //Robert_Lin, 2025-3-7 for Narrator, When keyboard navigation into this textbox, should not handle it [Tab] key.
+            if (e.Key == Key.Tab)
+                return;
+
             KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
         private void tbFavoriteInputSource_PreviewKeyUp(object sender, KeyEventArgs e)
         {
+#if NARRATOR_TAB
+            //Robert_Lin, 2025-3-7 for Narrator, When keyboard navigation into this textbox, should not handle it [Tab] key.
+            if (e.Key == Key.Tab)
+                return;
+#endif
+
             /*string swHortcutText = string.Empty;
             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref FavoriteInputSourceNewKeys);
             vm.FavoriteInputSourceKey = swHortcutText;*/
@@ -182,11 +211,21 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
         private void tbSwitchInputSource_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+#if NARRATOR_TAB
+            //Robert_Lin, 2025-3-7 for Narrator, When keyboard navigation into this textbox, should not handle it [Tab] key.
+            if (e.Key == Key.Tab)
+                return;
+#endif
+
             KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
         private void tbSwitchInputSource_PreviewKeyUp(object sender, KeyEventArgs e)
         {
+            //Robert_Lin, 2025-3-7 for Narrator, When keyboard navigation into this textbox, should not handle it [Tab] key.
+            if (e.Key == Key.Tab)
+                return;
+
             /* string swHortcutText = string.Empty;
              KeysHelper.ReSetHotKeyText(ref swHortcutText, ref SwitchInputSourceNewKeys);
              vm.SwitchInputSourceKey = swHortcutText;*/
@@ -257,11 +296,23 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
         private void tbSwapPIPPBPInputSource_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+#if NARRATOR_TAB
+            //Robert_Lin, 2025-3-7 for Narrator, When keyboard navigation into this textbox, should not handle it [Tab] key.
+            if (e.Key == Key.Tab)
+                return;
+#endif
+
             KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
         private void tbSwapPIPPBPInputSource_PreviewKeyUp(object sender, KeyEventArgs e)
         {
+#if NARRATOR_TAB
+            //Robert_Lin, 2025-3-7 for Narrator, When keyboard navigation into this textbox, should not handle it [Tab] key.
+            if (e.Key == Key.Tab)
+                return;
+#endif
+
             /*string swHortcutText = string.Empty;
             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref SwapPIPPBPInputSourceNewKeys);
             vm.SwapPIPPBPInputSourceKey = swHortcutText;*/
@@ -307,11 +358,23 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
         private void tbChangePIPPosition_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+#if NARRATOR_TAB
+            //Robert_Lin, 2025-3-7 for Narrator, When keyboard navigation into this textbox, should not handle it [Tab] key.
+            if (e.Key == Key.Tab)
+                return;
+#endif
+
             KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
         private void tbChangePIPPosition_PreviewKeyUp(object sender, KeyEventArgs e)
         {
+#if NARRATOR_TAB
+            //Robert_Lin, 2025-3-7 for Narrator, When keyboard navigation into this textbox, should not handle it [Tab] key.
+            if (e.Key == Key.Tab)
+                return;
+#endif
+
             /*string swHortcutText = string.Empty;
             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref ChangePIPPositionNewKeys);
             vm.ChangePIPPositionKey = swHortcutText;*/

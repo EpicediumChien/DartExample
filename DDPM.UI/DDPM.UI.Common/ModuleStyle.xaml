@@ -1922,10 +1922,17 @@
     <Setter Property="Foreground" Value="{DynamicResource ActionsTextBlock_TxtColor}" />
     <Setter Property="FontFamily" Value="Roboto" />
     <Setter Property="FontSize" Value="16" />
-    <Setter Property="FontWeight" Value="Normal" />
+    <Setter Property="FontWeight" Value="Medium" />
     <Setter Property="VerticalAlignment" Value="Top" />
     <Setter Property="HorizontalAlignment" Value="Left" />
     <Setter Property="Margin" Value="15,16,0,0" />
+  </Style>
+  <Style x:Key="ActionArrowStyle" TargetType="Image">
+    <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+    <Setter Property="Width" Value="16" />
+    <Setter Property="Height" Value="16" />
+    <Setter Property="Stretch" Value="Uniform" />
+    <Setter Property="Cursor" Value="Hand" />
   </Style>
 
   <SolidColorBrush x:Key="ActionsGrid_BgColor" Color="#354e6e" />
@@ -2009,6 +2016,7 @@
   <SolidColorBrush x:Key="txtMessage_TxtColor" Color="#ffffff"/>
   <SolidColorBrush x:Key="MouseSettingMenu_BgColor99" Color="#99132F54"/>
   <SolidColorBrush x:Key="MouseSettingMenu_BgColor60" Color="#60132F54"/>
+  <SolidColorBrush x:Key="MenuSeperatorColor" Color="#1E3F6C"/>
 
   <SolidColorBrush x:Key="bdrAlert_BgColor" Color="#364861"/>
   <SolidColorBrush x:Key="bdrAlert_FgColor" Color="#F5F6F7"/>
@@ -2364,4 +2372,10 @@
     </Setter>
   </Style>
   <!-- #endregion BackArrowButton -->
+    
+    <!-- #region SettingsPlugin.UpdatePage.GroupBorder -->
+    <SolidColorBrush x:Key="UpdateGroup_BdColor" Color="Transparent"/>
+    <SolidColorBrush x:Key="UpdateGroup_BkColor" Color="#99132F54"/>
+    <!-- #endregion SettingsPlugin.UpdatePage.GroupBorder -->
+
 </ResourceDictionary>

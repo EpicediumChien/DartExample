@@ -55,6 +55,14 @@
       </Style>
     </ResourceDictionary>
   </UserControl.Resources>
+    <!-- Robert_Lin 2025-3-7 Add Narrator support:
+    1 Add KeyboardNavigation.TabIndex to each stops with predefine order.
+    2 All TextBlock add Focusabled="True"
+    3 ListControl/ListBox/ListView... add KeyboardNavigation.TabNavigation="Continue"
+    4 If the controls is clickable, may change to Button.
+    5 For some clickable controls add PreviewKeyDwon event handler.
+    6 For thoese controls without text, add AutomationProperties.Name and bind to the text to be read.
+    -->
   <Grid>
     <Grid>
       <Grid.ColumnDefinitions>
@@ -85,14 +93,16 @@
               <Grid>
                 <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="500" />
                 <Rectangle Name="RecT" Fill="Transparent" Width="500" VerticalAlignment="Top" MouseDown="Mainframe_MouseLeftButtonDown"/>
-                <Rectangle Name="RecB" Fill="Transparent" Width="500" VerticalAlignment="Bottom" MouseDown="Mainframe_MouseLeftButtonDown"/>
+                <Rectangle Name="RecB" Fill="Transparent" Width="500" VerticalAlignment="Bottom" MouseDown="Mainframe_MouseLeftButtonDown"/> 
                 <Rectangle Name="RecL" Fill="Transparent" Height="500" HorizontalAlignment="Left" MouseDown="Mainframe_MouseLeftButtonDown"/>
                 <Rectangle Name="RecR" Fill="Transparent" Height="500" HorizontalAlignment="Right" MouseDown="Mainframe_MouseLeftButtonDown"/>
               </Grid>
-              <Grid Name="SectionA" Margin="210,106,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
+              <Grid Name="SectionA" Margin="210,106,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" >
                 <StackPanel Orientation="Horizontal">
                   <Image x:Name="ScrollTiltLeft" Source="{Binding ScrollTiltLeftImageFile}" Style="{StaticResource B1Style}"
-                                           MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsScrollTiltLeftVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
+                         Focusable="True" KeyboardNavigation.TabIndex="21" AutomationProperties.Name="{Binding ScrollTiltLeftTooltip}"
+                         PreviewKeyDown="ButtonPreviewKeyDown"
+                         MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsScrollTiltLeftVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource ButtonToolTipStyle}">
                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
@@ -106,8 +116,9 @@
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
-                  <Image x:Name="ScrollWheelClick" Source="{Binding ScrollWheelClickImageFile}" Style="{StaticResource B2Style}" Margin="-2,0,0,0"
-                                           MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsScrollWheelClickVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
+                  <Image x:Name="ScrollWheelClick" Source="{Binding ScrollWheelClickImageFile}" Style="{StaticResource B2Style}" Margin="-2,0,0,0" 
+                         Focusable="True" KeyboardNavigation.TabIndex="22" AutomationProperties.Name="{Binding ScrollWheelClickTooltip}"
+                                           MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsScrollWheelClickVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut" PreviewKeyDown="ButtonPreviewKeyDown">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource ButtonToolTipStyle}">
                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
@@ -122,7 +133,9 @@
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="ScrollTiltRight" Source="{Binding ScrollTiltRightImageFile}"  Style="{StaticResource B1Style}" Margin="-2,0,0,0"
-                                           MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsScrollTiltRightVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
+                         Focusable="True" KeyboardNavigation.TabIndex="23" AutomationProperties.Name="{Binding ScrollTiltRightTooltip}"
+                         PreviewKeyDown="ButtonPreviewKeyDown"
+                         MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsScrollTiltRightVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource ButtonToolTipStyle}">
                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
@@ -141,7 +154,9 @@
               <Grid Name="SectionB" Margin="140,173,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <StackPanel Orientation="Vertical">
                   <Image x:Name="SideButtonForward" Source="{Binding SideButtonForwardImageFile}" Style="{StaticResource B3Style}"
-                                           MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsSideButtonForwardVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
+                         Focusable="True" KeyboardNavigation.TabIndex="28" AutomationProperties.Name="{Binding SideButtonForwardTooltip}"
+                         PreviewKeyDown="ButtonPreviewKeyDown"
+                         MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsSideButtonForwardVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource ButtonToolTipStyle}">
                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
@@ -154,7 +169,9 @@
                     </Image.ToolTip>
                   </Image>
                   <Image x:Name="SideButtonBack" Source="{Binding SideButtonBackImageFile}" Style="{StaticResource B4Style}"
-                                           MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsSideButtonBackVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
+                         Focusable="True" KeyboardNavigation.TabIndex="29" AutomationProperties.Name="{Binding SideButtonBackTooltip}"
+                         PreviewKeyDown="ButtonPreviewKeyDown"
+                         MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsSideButtonBackVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                     <Image.ToolTip>
                       <ToolTip Style="{StaticResource ButtonToolTipStyle}">
                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
@@ -178,20 +195,24 @@
       </Grid>
       <!--Name & Model-->
       <Grid VerticalAlignment="Top" Height="130">
-        <Border Background="Transparent" MouseDown="PushBack"></Border>
+        <Border Background="Transparent" MouseDown="PushBack"></Border> 
         <StackPanel Orientation="Vertical">
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" x:Name="devNameStackPanel">
             <Image Margin="64,21,0,0" Source="{DynamicResource mouse_setting_title_back}" Stretch="Fill"
-                               VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24">
+                   KeyboardNavigation.TabIndex="10" Focusable="True"
+                   AutomationProperties.Name="{Binding [Back], Source={x:Static lang:LangHelper.Instance}}" 
+                               VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" PreviewKeyDown="backArrow_PreviewKeyDown">
               <Image.InputBindings>
                 <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
               </Image.InputBindings>
             </Image>
             <UXControls:UXTextBlock Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
+                                    Focusable="True" KeyboardNavigation.TabIndex="11"
                                                 x:Name="devName" Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
           </StackPanel>
           <StackPanel Orientation="Horizontal">
             <UXControls:UXTextBlock Text="{Binding Model2}" Margin="101,18,0,0" HorizontalAlignment="Left"
+                                    Focusable="True" KeyboardNavigation.TabIndex="12"
                                                 Style="{StaticResource ModelNumberTextStyle}" />
             <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
                                VerticalAlignment="Top" Cursor="" Width="16" Height="16">
@@ -220,14 +241,16 @@
               </Image.ToolTip>
             </Image>
           </StackPanel>
-          <UXControls:UXTextBlock Name="txtEOL" Margin="101,18,0,0" HorizontalAlignment="Left" Style="{StaticResource ModelNumberTextStyle}" Visibility="Collapsed" Text="{Binding [EOL.0], Source={x:Static lang:LangHelper.Instance}}"/>
+          <UXControls:UXTextBlock Name="txtEOL" Margin="101,18,0,0" HorizontalAlignment="Left" Style="{StaticResource ModelNumberTextStyle}" Visibility="Collapsed" Text="{Binding [EOL.0], Source={x:Static lang:LangHelper.Instance}}"
+                                  Focusable="True" KeyboardNavigation.TabIndex="15"/>
         </StackPanel>
       </Grid>
       <!-- Vbar -->
       <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
         <ItemsControl Name="vbarList" Margin="0,5,10,0"
-                                  HorizontalAlignment="Right" VerticalAlignment="Top"
-                                  ItemsSource="{Binding VbarItems}">
+                      Focusable="False" KeyboardNavigation.TabNavigation="Continue" KeyboardNavigation.TabIndex="130"
+                      HorizontalAlignment="Right" VerticalAlignment="Top"
+                      ItemsSource="{Binding VbarItems}">
           <ItemsControl.ItemTemplate>
             <DataTemplate>
               <Grid>

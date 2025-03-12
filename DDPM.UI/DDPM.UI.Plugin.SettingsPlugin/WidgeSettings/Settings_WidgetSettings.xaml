@@ -22,30 +22,40 @@
     </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer>
+            <!-- Robert_Lin 2025-3-6 PIMS-348208 S-348208 Multiple Instances of Incorrect Padding (too much space) in Settings 
+            Fix Margins of UI elements 
+            -->
             <Border Style="{StaticResource GroupBorderStyle}"
                     CornerRadius="13">
                 <StackPanel>
-                    <Grid Margin="20,20,8,8">
+                    <!-- OLD:  <Grid Margin="20,20,8,8">
+                    NEW: Add to UXTextBlock: VerticalAlignment="Center"
+                    -->
+                    <Grid Margin="0,0,0,0" Height="28">
                         <UXControls:UXTextBlock Text="{Binding [Widget_Settings], Source={x:Static lang:LangHelper.Instance}}"
-                                                FontSize="20" Focusable="True"
+                                                FontSize="20" Focusable="True" VerticalAlignment="Center"
                                                 TextBlockType="Header1"
                                                 TextWrapping="WrapWithOverflow"
                                                 Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
                     </Grid>
-                    <Grid Margin="20,20,8,8">
+                    <!-- OLD: <Grid Margin="20,20,8,8"> -->
+                    <Grid Margin="0,24,0,0">
                         <Border Style="{StaticResource PartBorderStyle}" BorderThickness="0" x:Name="borderContent"
                                 CornerRadius="6">
-                            <StackPanel Orientation="Vertical"
-                                        Margin="15,0,0,0">
+                            <!-- OLD:
+                            <StackPanel Orientation="Vertical" Margin="15,0,0,0">
+                            -->
+                            <StackPanel Orientation="Vertical">
                                 <Grid Margin="0,8">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="2*" />
                                         <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
-                                    
+
+                                    <!-- Robert_Lin 2025-3-6 Add  HorizontalAlignment="Left"  FontWeight="Medium" -->
                                     <UXControls:UXTextBlock Grid.Column="0" x:Name="activateTextBlock" Focusable="True"
                                                             Text="{Binding [Activate_Quick_Access_widget_during_Zoom_conference_calls], Source={x:Static lang:LangHelper.Instance}}"
-                                                            FontSize="16"
+                                                            FontSize="16" HorizontalAlignment="Left" FontWeight="Medium"
                                                             FontFamily="Roboto"
                                                             TextBlockType="Caption"
                                                             TextWrapping="WrapWithOverflow"
@@ -66,16 +76,19 @@
                                                         TextBlockType="Caption"
                                                         TextWrapping="WrapWithOverflow"
                                                         Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
+                                <!-- OLD:   <Grid Height="40" Margin="0,9">-->
                                 <Grid Height="40"
-                                      Margin="0,9">
+                                      Margin="0,16,0,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
+                                    <!-- Robert_Lin 2025-3-6 Add  HorizontalAlignment="Left"  FontWeight="Medium" FontFamily="Roboto" -->
                                     <UXControls:UXTextBlock Grid.Column="0" Focusable="True"
                                                             x:Name="enableShortcutTextBlock"
                                                             Text="{Binding [Enable_shortcut_reminder_for_Quick_Accesswidget], Source={x:Static lang:LangHelper.Instance}}"
-                                                            FontSize="16"
+                                                            FontSize="16"  HorizontalAlignment="Left" FontWeight="Medium"              
+                                                            FontFamily="Roboto"
                                                             TextBlockType="Caption"
                                                             TextWrapping="WrapWithOverflow"
                                                             Foreground="{DynamicResource DefaultTheme_TxtColor}" />
