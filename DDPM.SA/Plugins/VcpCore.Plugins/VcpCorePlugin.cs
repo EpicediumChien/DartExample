@@ -216,6 +216,8 @@ namespace VcpCore.Plugins
 
                 while (!_TaskQueue.IsEmpty())
                 {
+                    if (IsDisposed) break;
+
                     if (_TaskQueueExecutor.IsBusy) _TaskQueueExecutor.CancelAsync();
                     else
                     {
@@ -310,6 +312,8 @@ namespace VcpCore.Plugins
 
                 for (int i = 0; i < _multiCommands.Count; i++)
                 {
+                    if (IsDisposed) break;
+
                     var command = _multiCommands[i];
                     tasksList[i] = CommandRun(command);
                 }
@@ -317,7 +321,11 @@ namespace VcpCore.Plugins
                 await Task.WhenAll(tasksList);
 
                 for (int i = 0; i < _multiCommands.Count; i++)
+                {
+                    if (IsDisposed) break;
+
                     _multiCommands[i].Result = (await tasksList[i]).Result;
+                }
 
                 return _multiCommands;
             }
@@ -400,6 +408,8 @@ namespace VcpCore.Plugins
 
                 foreach (var moX in _AllInfoMonitors_Mix)
                 {
+                    if (IsDisposed) break;
+
                     if (monitorInfo.Equals(moX.Item2))
                     {
                         if (moX.Item2.DDCisON)
@@ -458,6 +468,8 @@ namespace VcpCore.Plugins
 
                 foreach (var moX in _AllInfoMonitors_Mix)
                 {
+                    if (IsDisposed) break;
+
                     if (monitorInfo.Equals(moX.Item2))
                     {
                         if (moX.Item2.DDCisON)
@@ -518,6 +530,8 @@ namespace VcpCore.Plugins
 
                 foreach (var moX in _AllInfoMonitors_Mix)
                 {
+                    if (IsDisposed) break;
+
                     if (monitorInfo.Equals(moX.Item2))
                     {
                         if (moX.Item2.DDCisON)
@@ -586,6 +600,8 @@ namespace VcpCore.Plugins
 
                 foreach (var moX in _AllInfoMonitors_Mix)
                 {
+                    if (IsDisposed) break;
+
                     if (monitorInfo.Equals(moX.Item2))
                     {
                         if (moX.Item2.DDCisON)
@@ -646,6 +662,8 @@ namespace VcpCore.Plugins
 
                 foreach (var moX in _AllInfoMonitors_Mix)
                 {
+                    if (IsDisposed) break;
+
                     if (monitorInfo.Equals(moX.Item2))
                     {
                         if (moX.Item2.DDCisON)
@@ -707,6 +725,8 @@ namespace VcpCore.Plugins
 
                 foreach (var moX in _AllInfoMonitors_Mix)
                 {
+                    if (IsDisposed) break;
+
                     if (monitorInfo.Equals(moX.Item2))
                     {
                         if (moX.Item2.DDCisON)
@@ -754,6 +774,8 @@ namespace VcpCore.Plugins
             var canI_All = CancellationTokenSource.CreateLinkedTokenSource(can_Time.Token, token);
             while (!IsFinishedAlready)
             {
+                if (IsDisposed) break;
+
                 if (canI_All.Token.IsCancellationRequested)
                 {
                     _logs.DebugMsg("[VcpCorePlugin] Re_GetMonitors() IsCancellationRequested is True");
@@ -908,7 +930,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        private static object GetQueueResult_(Guid guid, CancellationToken c_token)
+        private object GetQueueResult_(Guid guid, CancellationToken c_token)
         {
             try
             {
@@ -919,6 +941,8 @@ namespace VcpCore.Plugins
 
                 while (_TaskQueueExecutor.IsBusy)
                 {
+                    if (IsDisposed) break;
+
                     c_token.ThrowIfCancellationRequested();
 
                     _logs.DebugMsg("[VcpCorePlugin] GetQueueResult _TaskQueueExecutor [" + guid.ToString() + "] is still Running ...");
@@ -984,6 +1008,8 @@ namespace VcpCore.Plugins
 
                 while (!_TaskQueue.IsEmpty())
                 {
+                    if (IsDisposed) break;
+
                     _logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork _TaskQueue SIZE : " + _TaskQueue.Count().ToString());
 
                     if (_TaskQueueExecutor.CancellationPending)
@@ -1270,7 +1296,11 @@ namespace VcpCore.Plugins
                                 rcString += "ColorPreset\n";
 
                                 foreach (string colorPreset in monitorInfoX.ColorPresetSupportList)
+                                {
+                                    if (IsDisposed) break;
+
                                     rcString += "\t" + colorPreset + "\n";
+                                }
 
                                 //---------------------------------------------
 
@@ -1278,6 +1308,8 @@ namespace VcpCore.Plugins
                                 string[] Split_rcString = rcString.Trim().Split('\n');
                                 for (int x = 0; x < Split_rcString.Length; x++)
                                 {
+                                    if (IsDisposed) break;
+
                                     if (!Split_rcString[x].Contains('\t'))
                                     {
                                         if (x == (Split_rcString.Length - 1))
@@ -1292,6 +1324,8 @@ namespace VcpCore.Plugins
 
                                                 for (int y = (x + 1); y < Split_rcString.Length; y++)
                                                 {
+                                                    if (IsDisposed) break;
+
                                                     if (y == (Split_rcString.Length - 1))
                                                     {
                                                         if (Split_rcString[y].Contains('\t'))
@@ -1349,10 +1383,14 @@ namespace VcpCore.Plugins
                                         bool rc = false;
                                         for (int i = 0; i < input.Count; i++)
                                         {
+                                            if (IsDisposed) break;
+
                                             T_strI = System.Text.RegularExpressions.Regex.Replace(input[i].ToString(), @"\d", string.Empty);
 
                                             for (int j = 0; j < input.Count; j++)
                                             {
+                                                if (IsDisposed) break;
+
                                                 if (i != j)
                                                 {
                                                     T_strII = System.Text.RegularExpressions.Regex.Replace(input[j].ToString(), @"\d", string.Empty);
@@ -1513,6 +1551,8 @@ namespace VcpCore.Plugins
                                                 List<InputSourceObject> list = new List<InputSourceObject>();
                                                 foreach (var input in inputs)
                                                 {
+                                                    if (IsDisposed) break;
+
                                                     R_ = input.ToString();
                                                     var val_ = System.Text.RegularExpressions.Regex.Replace((R_.Substring(R_.Length - 1)), @"\d", string.Empty);
                                                     if (!string.IsNullOrWhiteSpace(val_))
@@ -1754,6 +1794,8 @@ namespace VcpCore.Plugins
                                                     var IsExist = false;
                                                     foreach (var input in inputsourcelist_)
                                                     {
+                                                        if (IsDisposed) break;
+
                                                         if (input.Name.Equals(val, StringComparison.OrdinalIgnoreCase))
                                                         {
                                                             IsExist = true;
@@ -1766,6 +1808,8 @@ namespace VcpCore.Plugins
                                                         val = System.Text.RegularExpressions.Regex.Replace(val, @"\d", string.Empty);
                                                         foreach (var input in inputsourcelist_)
                                                         {
+                                                            if (IsDisposed) break;
+
                                                             if (input.Name.Equals(val, StringComparison.OrdinalIgnoreCase))
                                                             {
                                                                 val = input.Name;
@@ -1779,6 +1823,8 @@ namespace VcpCore.Plugins
 
                                                 foreach ((MonitorInfo_complex x, MonitorInfo o) in _AllInfoMonitors_Mix)
                                                 {
+                                                    if (IsDisposed) break;
+
                                                     if (x.Equals(monitorInfoX))
                                                     {
                                                         x.inputSource = val;
@@ -1862,6 +1908,8 @@ namespace VcpCore.Plugins
 
                     for (int i = 0; ((i < _AllInfoMonitors_Mix.Count) && IsOutInitialize); i++)  //foreach (MonitorInfo_complex monitorInfoX in _AllInfoMonitors)
                     {
+                        if (IsDisposed) break;
+
                         var monitorInfoX = _AllInfoMonitors_Mix[i].Item1;
 
                         if (monitorInfoX.DDCisON)
@@ -1873,6 +1921,8 @@ namespace VcpCore.Plugins
                             var FailTimes = 0;
                             while ((object_0x02 != null) && (((uint)object_0x02) != 1) && (FailTimes < 5) && IsOutInitialize)
                             {
+                                if (IsDisposed) break;
+
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin VCP 0x02 is " + ((uint)object_0x02).ToString("X"));
 
                                 rc = Set_VCPCapability(monitorInfoX, 0x02, 0x01, IsOutInitialize);
@@ -1911,6 +1961,8 @@ namespace VcpCore.Plugins
 
                     for (int count = 0; ((count < _AllInfoMonitors_Mix.Count) && IsOutInitialize); count++)
                     {
+                        if (IsDisposed) break;
+
                         var monitor = _AllInfoMonitors_Mix[count];
 
                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck " + monitor.Item1.AliasDeviceName);
@@ -2030,6 +2082,8 @@ namespace VcpCore.Plugins
 
                     for (int count = 0; ((count < _AllInfoMonitors_Mix.Count) && IsOutInitialize); count++)    //foreach (var monitor in _AllInfoMonitors_Mix)
                     {
+                        if (IsDisposed) break;
+
                         var monitor = _AllInfoMonitors_Mix[count];
 
                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin " + monitor.Item1.AliasDeviceName + " Watching 0x52");
@@ -2047,6 +2101,8 @@ namespace VcpCore.Plugins
                                 var FailTimes = 0;
                                 while ((object_0x02 != null) && (((uint)object_0x02) != 1) && (FailTimes < 5) && IsOutInitialize)
                                 {
+                                    if (IsDisposed) break;
+
                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin VCP 0x02 is " + ((uint)object_0x02).ToString("X"));
 
                                     object_0x52 = Get_VCPCapability(monitor.Item1, 0x52, 0, IsOutInitialize);
@@ -2103,6 +2159,8 @@ namespace VcpCore.Plugins
                                                     {
                                                         foreach (InputSourceObject t in r)
                                                         {
+                                                            if (IsDisposed) break;
+
                                                             if (n.Equals(t.Name))
                                                             {
                                                                 rv = true;
@@ -2290,6 +2348,8 @@ namespace VcpCore.Plugins
 
                     while (!_TaskQueue.IsEmpty())
                     {
+                        if (IsDisposed) break;
+
                         if (_TaskQueueExecutor.IsBusy) _TaskQueueExecutor.CancelAsync();
                         else
                         {
@@ -2480,6 +2540,8 @@ namespace VcpCore.Plugins
                     int count = 0;
                     while (count < 10 && (!TokenNew.IsCancellationRequested))
                     {
+                        if (IsDisposed) break;
+
                         Thread.Sleep(1500);
 
                         TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
@@ -2517,6 +2579,8 @@ namespace VcpCore.Plugins
 
                             while (!_TaskQueue.IsEmpty() && (!TokenNew.IsCancellationRequested))
                             {
+                                if (IsDisposed) break;
+
                                 if (_TaskQueueExecutor.IsBusy) _TaskQueueExecutor.CancelAsync();
                                 else
                                 {
@@ -2612,6 +2676,8 @@ namespace VcpCore.Plugins
 
                     for (int i = 0; (i < _AllInfoMonitors.Count && (!token.IsCancellationRequested)); i++)
                     {
+                        if (IsDisposed) break;
+
                         var MonitorInfoX = _AllInfoMonitors[i];
 
                         MonitorInfo monitorInfo = new MonitorInfo()
@@ -2646,6 +2712,8 @@ namespace VcpCore.Plugins
 
                     foreach (var Monitor in _AllInfoMonitors_Mix)
                     {
+                        if (IsDisposed) break;
+
                         if (token.IsCancellationRequested)
                             return;
 
@@ -2732,6 +2800,8 @@ namespace VcpCore.Plugins
 
                 do
                 {
+                    if (IsDisposed) break;
+
                     bool r = Set_VCPCapability(monitor, ctr, checkMask, false, false);
 
                     if (r)
@@ -2934,6 +3004,8 @@ namespace VcpCore.Plugins
                         int realindex = -1;
                         for (uint jj = 0u; _EnumDisplayDevices(DeviceName, jj, ref dd, 0); jj++)
                         {
+                            if (IsDisposed) break;
+
                             token.ThrowIfCancellationRequested();  //*****EXTRA CHECK*****//
 
                             if ((dd.StateFlags & DisplayDeviceStateFlags.AttachedToDesktop) == 0)   //EnumDisplaySettings can also be used to obtain the StateFlags member of the DISPLAY_DEVICE structure & the flag bit DISPLAY_DEVICE_ATTACHED_TO_DESKTOP to determine whether it is a valid desktop environment.
@@ -2972,6 +3044,8 @@ namespace VcpCore.Plugins
                             int nCount = 0;
                             while (nCount < 2)
                             {
+                                if (IsDisposed) break;
+
                                 token.ThrowIfCancellationRequested();  //*****EXTRA CHECK*****//
 
                                 Thread thread = new Thread(() =>
@@ -3079,6 +3153,8 @@ namespace VcpCore.Plugins
                                 int nRetryCount = 0;
                                 do
                                 {
+                                    if (IsDisposed) break;
+
                                     token.ThrowIfCancellationRequested();  //*****EXTRA CHECK*****//
 
                                     var ro = _CacheTable.GetFromCacheTable(new MonitorInfo_complex() { edid = _TargetMonitor.edid, AliasDeviceName = _TargetMonitor.AliasDeviceName }, "CapibilityString".ToLower(CultureInfo.InvariantCulture));
@@ -3107,8 +3183,13 @@ namespace VcpCore.Plugins
                                     if (!string.IsNullOrWhiteSpace(_TargetMonitor.CapabilityString) && (node.Nodes.Count() > 0))
                                     {
                                         var modelNode = node.Nodes.RecursiveSelect(n => n.Nodes).Single(n => n.Value == "model");
+
                                         foreach (var _node in modelNode.Nodes)
+                                        {
+                                            if (IsDisposed) break;
+
                                             _TargetMonitor.modelName = _node.Value;
+                                        }
                                     }
 
                                     IsSupportDisplay = CheckIsSupportDisplay(ref _TargetMonitor);
@@ -3125,6 +3206,8 @@ namespace VcpCore.Plugins
                                 double dpiX = (double)varX / (double)96;
                                 foreach (Screen screen in screenList)
                                 {
+                                    if (IsDisposed) break;
+
                                     token.ThrowIfCancellationRequested();  //*****EXTRA CHECK*****//
 
                                     if (screen.DeviceName.ToUpper(CultureInfo.InvariantCulture).Equals(DeviceName.ToUpper(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase))
@@ -3144,6 +3227,8 @@ namespace VcpCore.Plugins
                                     int nRetryCount2 = 0;
                                     while (true)
                                     {
+                                        if (IsDisposed) break;
+
                                         token.ThrowIfCancellationRequested();  //*****EXTRA CHECK*****//
 
                                         if (GetAllCapabilityData(_TargetMonitor.CapabilityString, ref _TargetMonitor.CapabilityDic))
@@ -3201,6 +3286,8 @@ namespace VcpCore.Plugins
                                                     {
                                                         foreach (string tmpkey1 in vcp14.Keys)
                                                         {
+                                                            if (IsDisposed) break;
+
                                                             token.ThrowIfCancellationRequested();  //*****EXTRA CHECK*****//
 
                                                             _TargetMonitor.ColorPresetSupportList.Add(tmpkey1);
@@ -3219,6 +3306,8 @@ namespace VcpCore.Plugins
                                                     {
                                                         foreach (string tmpkey1 in vcp14.Keys)
                                                         {
+                                                            if (IsDisposed) break;
+
                                                             token.ThrowIfCancellationRequested();  //*****EXTRA CHECK*****//
 
                                                             _TargetMonitor.ColorPresetSupportList.Add(tmpkey1);
@@ -3304,6 +3393,8 @@ namespace VcpCore.Plugins
 
                 foreach (var item in CapDic["E2"])
                 {
+                    if (IsDisposed) break;
+
                     blResult = true;
                     string strHex = $"0x{item}";
 
@@ -3317,6 +3408,8 @@ namespace VcpCore.Plugins
                         {
                             foreach (var s in getData)
                             {
+                                if (IsDisposed) break;
+
                                 if (!string.IsNullOrWhiteSpace(s))
                                     e2List.Add(s);
                             }
@@ -3345,6 +3438,8 @@ namespace VcpCore.Plugins
 
                 foreach (var item in CapDic["F4"])
                 {
+                    if (IsDisposed) break;
+
                     string strHex = $"0x{item}";
                     int hex;
 
@@ -3356,6 +3451,8 @@ namespace VcpCore.Plugins
                         {
                             foreach (var s in getData)
                             {
+                                if (IsDisposed) break;
+
                                 if (!string.IsNullOrWhiteSpace(s))
                                     Newlist.Add(s);
                             }
@@ -3381,6 +3478,8 @@ namespace VcpCore.Plugins
                 int count = 0;
                 do
                 {
+                    if (IsDisposed) break;
+
                     var value = Get_VCPCapability(monitorInfo_, 0x60, 0, IsOutInitialize);
 
                     if (value != null)
@@ -3411,6 +3510,8 @@ namespace VcpCore.Plugins
                             {
                                 foreach (InputSourceObject t in r)
                                 {
+                                    if (IsDisposed) break;
+
                                     if (n_H.Equals(t.Name))
                                         rv_H = true;
 
@@ -3458,6 +3559,8 @@ namespace VcpCore.Plugins
 
                     do
                     {
+                        if (IsDisposed) break;
+
                         bool rc = _SetVCPFeature(monitorInfoX.hPhysicalMonitor, code, val);
 
                         if (rc)
@@ -3514,6 +3617,8 @@ namespace VcpCore.Plugins
 
                     do
                     {
+                        if (IsDisposed) break;
+
                         bool rc = _GetVCPFeatureAndVCPFeatureReply(monitorInfoX.hPhysicalMonitor, code, IntPtr.Zero, out uint currentValue, out uint maxValue); /*monitor[0].hPhysicalMonitor*/
                         if (rc)
                         {
@@ -3544,7 +3649,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        private static bool GetColorPresetVcpCode(Dictionary<string, Dictionary<string, string>> ColorPresetHash, string presetName, ref ColorPreset outColorPreset)
+        private bool GetColorPresetVcpCode(Dictionary<string, Dictionary<string, string>> ColorPresetHash, string presetName, ref ColorPreset outColorPreset)
         {
             try
             {
@@ -3556,6 +3661,8 @@ namespace VcpCore.Plugins
                     sortedDict.Remove("E2");
                 foreach (string ResourceName in sortedDict.Keys)
                 {
+                    if (IsDisposed) break;
+
                     Dictionary<string, string> myresources = new Dictionary<string, string>();
                     bool TF_Boolean = ColorPresetHash.TryGetValue(ResourceName, out myresources);
                     if (TF_Boolean)
@@ -3652,6 +3759,8 @@ namespace VcpCore.Plugins
                 int count = 0;
                 do
                 {
+                    if (IsDisposed) break;
+
                     value = Get_VCPCapability(monitor, 0xE2, 0, IsOutInitialize);
 
                     if (value != null)
@@ -3737,6 +3846,8 @@ namespace VcpCore.Plugins
 
                 do
                 {
+                    if (IsDisposed) break;
+
                     token.ThrowIfCancellationRequested();
 
                     bool capabilitiesStringLength = false;
@@ -3744,6 +3855,8 @@ namespace VcpCore.Plugins
                     uint length = 0;
                     do
                     {
+                        if (IsDisposed) break;
+
                         token.ThrowIfCancellationRequested();
 
                         capabilitiesStringLength = _GetCapabilitiesStringLength(monitorx.hPhysicalMonitor, out length);
@@ -3762,6 +3875,8 @@ namespace VcpCore.Plugins
                         var sb = new StringBuilder((int)length);
                         while (!_CapabilitiesRequestAndCapabilitiesReply(monitorx.hPhysicalMonitor, sb, (uint)sb.Capacity) && num > 0 && CheckStatus())
                         {
+                            if (IsDisposed) break;
+
                             token.ThrowIfCancellationRequested();
 
                             _logs.DebugMsg($"[VcpCorePlugin] CapabilitiesRequestAndCapabilitiesReply error ({_GetLastError()})");
@@ -3817,8 +3932,14 @@ namespace VcpCore.Plugins
             }
 
             if (node.Nodes != null && node.Nodes.Any())
+            {
                 foreach (var childNode in node.Nodes)
+                {
+                    if (IsDisposed) break;
+
                     StringWrite(childNode, ref rcString, (i + 1));
+                }
+            }
 
             return rcString;
         }
@@ -3834,6 +3955,8 @@ namespace VcpCore.Plugins
                     {
                         foreach (string tmp in devicedescription.ToUpper(CultureInfo.InvariantCulture).Split(' '))
                         {
+                            if (IsDisposed) break;
+
                             if (tmp.StartsWith("AW"))
                             {
                                 AliasDeviceName = "Alienware " + tmp;
@@ -3885,6 +4008,8 @@ namespace VcpCore.Plugins
                     CapabilityDic.Add(key, null);
                     while (true)
                     {
+                        if (IsDisposed) break;
+
                         num++;
                         if (num == array2.Length || array2[num].Contains("mccs_ver") || array2[num].Contains("mswhql") || array2[num].Contains("asset_eep"))
                             break;
@@ -3899,6 +4024,8 @@ namespace VcpCore.Plugins
 
                             while (!array2[++num].Contains(")"))
                             {
+                                if (IsDisposed) break;
+
                                 if (array2[num].Length > 0)
                                     list.Add(array2[num]);
                             }
@@ -3922,12 +4049,18 @@ namespace VcpCore.Plugins
                 else
                 {
                     while (!array2[num].Contains("vcp"))
+                    {
+                        if (IsDisposed) break;
+
                         num++;
+                    }
 
                     string key = array2[num].Substring(array2[num].IndexOf("vcp(") + "vcp(".Length);
                     CapabilityDic.Add(key, null);
                     while (true)
                     {
+                        if (IsDisposed) break;
+
                         num++;
                         if (num == array2.Length || array2[num].Contains("mccs_ver") || array2[num].Contains("mswhql") || array2[num].Contains("asset_eep"))
                             break;
@@ -3940,6 +4073,8 @@ namespace VcpCore.Plugins
                                 list.Add(text);
                             while (!array2[++num].Contains(")"))
                             {
+                                if (IsDisposed) break;
+
                                 if (array2[num].Length > 0)
                                     list.Add(array2[num]);
                             }
@@ -4155,12 +4290,16 @@ namespace VcpCore.Plugins
 
                 foreach (string strCmd in cmdList)
                 {
+                    if (IsDisposed) break;
+
                     List<string> value;
                     if (!CapDic.TryGetValue(strCmd, out value))
                         continue;
 
                     foreach (var item in CapDic[strCmd])
                     {
+                        if (IsDisposed) break;
+
                         string strHex = $"0x{item}";
 
                         int hex;
@@ -4198,11 +4337,10 @@ namespace VcpCore.Plugins
                             {
                                 foreach (var s in getData)
                                 {
-                                    if (!string.IsNullOrWhiteSpace(s) &&
-                                        E2List.Contains(s))
-                                    {
+                                    if (IsDisposed) break;
+
+                                    if (!string.IsNullOrWhiteSpace(s) && E2List.Contains(s))
                                         Newlist.Add(s);
-                                    }
                                 }
                             }
                         }
@@ -4231,6 +4369,8 @@ namespace VcpCore.Plugins
                     UnDefinedColorPresets = new List<string>();
                     foreach (string keyword in KeywordList)
                     {
+                        if (IsDisposed) break;
+
                         /*blRet = */
                         GetColorPreset(CablitityString, keyword, ref SupportColorPresets, ref UnDefinedColorPresets);
                     }
@@ -4277,6 +4417,8 @@ namespace VcpCore.Plugins
 
                 foreach (string presetvaluevalue in presetsstring.Split(' '))
                 {
+                    if (IsDisposed) break;
+
                     if (string.IsNullOrWhiteSpace(presetvaluevalue)) continue;
 
                     hasrestult = true;
@@ -4285,7 +4427,11 @@ namespace VcpCore.Plugins
                     if (tempdescription.Count > 0)
                     {
                         foreach (var data in tempdescription)
+                        {
+                            if (IsDisposed) break;
+
                             Resourcepreset.Add(data, presetvaluevalue);
+                        }
 
                         // ColorPresetsDescription.Add(tempdescription);
                     }
@@ -4322,6 +4468,8 @@ namespace VcpCore.Plugins
                     {
                         foreach (string mPresetsDescription in mPresets.Keys)
                         {
+                            if (IsDisposed) break;
+
                             if (mPresets[mPresetsDescription].ToString() == ColorPresetValue)
                             {
                                 ColorPresetDescriptions.Add(mPresetsDescription);
@@ -4357,6 +4505,8 @@ namespace VcpCore.Plugins
                     int nRetryCount = 0;
                     do
                     {
+                        if (IsDisposed) break;
+
                         var ro = _CacheTable.GetFromCacheTable(_TargetMonitorx, "CapibilityString".ToLower(CultureInfo.InvariantCulture));
                         if (ro != null)
                         {
@@ -4380,6 +4530,8 @@ namespace VcpCore.Plugins
                     double dpiX = (double)varX / (double)96;
                     foreach (Screen screen in screenList)
                     {
+                        if (IsDisposed) break;
+
                         if (screen.DeviceName.ToUpper(CultureInfo.InvariantCulture).Equals(_TargetMonitorx.DisplayName.ToUpper(CultureInfo.InvariantCulture), StringComparison.OrdinalIgnoreCase))
                             _TargetMonitorx.scalingFactor = dpiX * Decimal.ToDouble(Math.Round(Decimal.Divide(_TargetMonitorx.pDevmode.dmPelsWidth, screen.Bounds.Width), 2));
                     }
@@ -4396,6 +4548,8 @@ namespace VcpCore.Plugins
                         int nRetryCount2 = 0;
                         while (true)
                         {
+                            if (IsDisposed) break;
+
                             if (GetAllCapabilityData(_TargetMonitorx.CapabilityString, ref _TargetMonitorx.CapabilityDic))
                             {
                                 if (_TargetMonitorx.IsDellMonitor)
@@ -4451,7 +4605,11 @@ namespace VcpCore.Plugins
                                         if (TF_boolean)
                                         {
                                             foreach (string tmpkey1 in vcp14.Keys)
+                                            {
+                                                if (IsDisposed) break;
+
                                                 _TargetMonitorx.ColorPresetSupportList.Add(tmpkey1);
+                                            }
                                         }
                                     }
                                 }
@@ -4465,7 +4623,11 @@ namespace VcpCore.Plugins
                                         if (TF_boolean)
                                         {
                                             foreach (string tmpkey1 in vcp14.Keys)
+                                            {
+                                                if (IsDisposed) break;
+
                                                 _TargetMonitorx.ColorPresetSupportList.Add(tmpkey1);
+                                            }
                                         }
                                     }
                                 }
@@ -4577,8 +4739,12 @@ namespace VcpCore.Plugins
                     _TargetMonitor.series = string.Empty;
                     foreach (KeyValuePair<string, List<modelinfos>> kv in _SupportDictionary)
                     {
+                        if (IsDisposed) break;
+
                         foreach (var tx in kv.Value)
                         {
+                            if (IsDisposed) break;
+
                             if (tx.ModelName.Equals(_TargetMonitor.modelName, StringComparison.OrdinalIgnoreCase))
                             {
                                 _TargetMonitor.series = kv.Key;
@@ -4620,6 +4786,8 @@ namespace VcpCore.Plugins
                 object F1supportBit = null;
                 do
                 {
+                    if (IsDisposed) break;
+
                     if (F1supportBit == null)
                         F1supportBit = Get_VCPCapability(monitorx, 0xF1, 0, IsOutInitialize);
 
@@ -4745,6 +4913,8 @@ namespace VcpCore.Plugins
             object OEMID = null;
             do
             {
+                if (IsDisposed) break;
+
                 if (token.IsCancellationRequested)
                     return (string.Empty, string.Empty, string.Empty);
 
@@ -4947,6 +5117,8 @@ namespace VcpCore.Plugins
             string text2 = @string;
             for (int i = 0; i < text2.Length; i++)
             {
+                if (IsDisposed) break;
+
                 char c = text2[i];
                 if (Convert.ToInt32(c) >= 48)
                     text += c;
@@ -5117,15 +5289,43 @@ namespace VcpCore.Plugins
         {
             if (!IsDisposed)
             {
+                _logs.DebugMsg("[VcpCorePlugin] into Dispose ～～～～～～～～～～～～～～～～～！！！！！！！");
+
+                IsDisposed = true;
+
                 if (disposing)
                 {
+                    DisposeAction();
+
                     _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
                     _agent = null;
                 }
-
-                IsDisposed = true;
             }
+
             base.Dispose(disposing);
+        }
+
+        private void DisposeAction()
+        {
+            if (_CacheTimer.Enabled) _CacheTimer.Stop();
+            if (_StatusTimer.Enabled) _StatusTimer.Stop();
+
+            _AllInfoMonitors = new List<MonitorInfo_complex>();
+            _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+
+            while (!_TaskQueue.IsEmpty())
+            {
+                if (_TaskQueueExecutor.IsBusy) _TaskQueueExecutor.CancelAsync();
+                else
+                {
+                    _TaskQueue = new TaskLockQueue<ParameterType>();
+                    _TaskQueueResult = new ResultLockPool();
+                }
+                _CancelhashSet.Clear();
+            }
+
+            _AddSignalfor0X52 = 0;
+            _AddSignalforStatusCheck = 0;
         }
 
         #endregion
