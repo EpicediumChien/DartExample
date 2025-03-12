@@ -14,24 +14,40 @@
     <Grid Opacity="{Binding AnalyticsPageUI_Opacity}">
         <Border Style="{StaticResource GroupBorderStyle}" CornerRadius="13">
             <Grid>
+                <!-- Robert_Lin 2025-3-6 PIMS-348208 S-348208 Multiple Instances of Incorrect Padding (too much space) in Settings -->
+                <!-- OLD: 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="150" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <UXControls:UXTextBlock Text="{Binding [Analytics.0], Source={x:Static lang:LangHelper.Instance}}"
+                -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="150" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <!-- Robert_Lin 2025-3-6 Move UXTextBlock into a new added Grid -->
+                <Grid Grid.Row="0" Height="28">
+                    <!-- OLD: Margin="20,20,8,8" Add: VerticalAlignment="Center" -->
+                    <UXControls:UXTextBlock Text="{Binding [Analytics.0], Source={x:Static lang:LangHelper.Instance}}"
                                         Foreground="{DynamicResource DefaultTheme_TxtColor}" Focusable="True" TextBlockType="Header1"
-                                        FontSize="20" Grid.Row="0" Margin="20,20,8,8"/>
+                                        FontSize="20" Grid.Row="0" Margin="0,0,0,0" VerticalAlignment="Center"/>
+                </Grid>
+                <!-- OLD:
                 <Border Style="{StaticResource PartBorderStyle}" BorderThickness="0" CornerRadius="13" Grid.Row="1" Margin="20,0,20,0" >
+                -->
+                <Border Style="{StaticResource PartBorderStyle}" BorderThickness="0" CornerRadius="13" Grid.Row="1" Margin="0,24,0,0" >
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*"
                                            x:Name="privacy_policy_height" />
                         </Grid.RowDefinitions>
+                        <!-- OLD: Margin="20,14,0,0" -->
                         <UXControls:UXCheckBox Name="chk_analytics" Content="{Binding [Analytics.1], Source={x:Static lang:LangHelper.Instance}}"
                                                Grid.Row="0"
-                                               Margin="20,14,0,0"
+                                               Margin="0,0,0,0"
                                                Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                                Background="{DynamicResource DefaultTheme_RbBkColor}"
                                                FontSize="16"
@@ -39,10 +55,11 @@
                                                IsTabStop="{Binding isTabStoppable}"
                                                IsChecked="{Binding isConsentChecked}" />
                         <!-- Derek for PIMS-333574 change Width="250" to  MinWidth="250" -->
+                        <!-- OLD: Margin="20,0,20,0" -->
                         <Button Name="url_btn"
                                 Height="40"
                                 Style="{DynamicResource Button_WhiteFrame}"
-                                Margin="20,0,20,0"
+                                Margin="0,0,0,0"
                                 FontSize="16"
                                 Grid.Row="1"
                                 MinWidth="250"

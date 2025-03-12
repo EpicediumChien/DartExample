@@ -23,9 +23,11 @@ namespace DDPM.UI.Common
             try
             {
                 #region Background Color
-                UpdateFreezable("DDPMBackground", (ref LinearGradientBrush brush) => {
+                UpdateFreezable("DDPMBackground", (ref LinearGradientBrush brush) =>
+                {
                     GradientStop? gs4 = brush.GradientStops.FirstOrDefault(gs => gs.Offset == 0.7923);
-                    if (gs4 != null) gs4.Color = (Color)ColorConverter.ConvertFromString("#7F674AB8");
+                    if (gs4 != null)
+                        gs4.Color = (Color)ColorConverter.ConvertFromString("#7F674AB8");
                 });
                 #endregion
 
@@ -86,6 +88,7 @@ namespace DDPM.UI.Common
                 UpdateFreezable("txtMessage_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#ffffff"));
                 UpdateFreezable("MouseSettingMenu_BgColor99", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99132F54"));
                 UpdateFreezable("MouseSettingMenu_BgColor60", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#60132F54"));
+                UpdateFreezable("MenuSeperatorColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#1E3F6C"));
 
                 UpdateFreezable("AddDeviceTxtCaption_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
                 UpdateFreezable("AddDeviceBorder1_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99132F54"));
@@ -162,10 +165,11 @@ namespace DDPM.UI.Common
                 #region Main Window Background
                 SplashPath = "Resources/Images/splash{0}-round_Dark.png";
                 UpdateFreezable("mainWindowBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0D121A"));
-                UpdateFreezable("bkImage", (ref ImageBrush brush) => {
+                UpdateFreezable("bkImage", (ref ImageBrush brush) =>
+                {
                     brush.Stretch = Stretch.Fill;
                     brush.ImageSource = GetImageSourceFromCommonResource("Resources/Images/Background.png", "DDPM");
-                    });
+                });
                 UpdateFreezable("SpinnerWaitTxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
                 UpdateFreezable("SpinnerBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0D121A"));
                 #endregion
@@ -412,7 +416,8 @@ namespace DDPM.UI.Common
                 #endregion
 
                 #region EzArrange
-                UpdateFreezable("EzArrange_ShadowEffect", (ref DropShadowEffect shadow) => { 
+                UpdateFreezable("EzArrange_ShadowEffect", (ref DropShadowEffect shadow) =>
+                {
                     shadow.Color = (Color)ColorConverter.ConvertFromString("#7F000000");
                     shadow.ShadowDepth = 0;
                     shadow.BlurRadius = 12;
@@ -420,6 +425,13 @@ namespace DDPM.UI.Common
                     shadow.Direction = 0;
                 });
                 #endregion
+
+
+                #region SettingsPlugin.UpdatePage.GroupBorder -->
+                UpdateFreezable("UpdateGroup_BdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#00000000"));
+                UpdateFreezable("UpdateGroup_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99132F54"));
+                #endregion SettingsPlugin.UpdatePage.GroupBorder -->
+
 
                 UpdateBitmapImage("InterruptScreen_Image", new Uri($"pack://application:,,,/DDPM.UI.Common;component/Resources/Background_InterruptScreen.png", UriKind.RelativeOrAbsolute));
                 UpdateFreezable("InterruptScreen_Backgroung", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#132F54"));

@@ -7,11 +7,14 @@
              xmlns:local="clr-namespace:DDPM.UI.Plugin.SettingsPlugin"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
-             Margin="5,4,0,29"
+            
              d:DesignHeight="450"
              d:DesignWidth="800"
              SizeChanged="UserControl_SizeChanged">
-    
+    <!-- Robert_Lin 2025-3-6 PIMS-348208 S-348208 Multiple Instances of Incorrect Padding (too much space) in Settings
+     1 Remove Margin from UserControl, Margin="5,4,0,29"
+    -->
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -25,7 +28,14 @@
             <Border Style="{StaticResource GroupBorderStyle}"
                     CornerRadius="13">
                 <StackPanel>
-                    <StackPanel Margin="20,20,8,8"
+                    <!-- Robert_Lin 2025-3-6 PIMS-348208 S-348208 Multiple Instances of Incorrect Padding (too much space) in Settings
+                     1 Problem: The Margin.Left of each Region below should be 16 (original 20)
+                       Upper Boder, Style=GroudpBorderStyle has set Padding=16, need to be considered.
+                       So we should change all Rregion's Margin.Left to 0.
+                    -->
+                    <!-- #region 1 [TitleText][LockIcon] -->
+                    <!-- Margin="20,20,8,8" -> "0" -->
+                    <StackPanel Margin="0"
                                 Orientation="Horizontal">
                         <UXControls:UXTextBlock Text="{Binding [On_screen_notifications], Source={x:Static lang:LangHelper.Instance}}"
                                                 FontSize="20" Focusable="True"
@@ -52,21 +62,37 @@
                             </Path>
                         </Grid>
                     </StackPanel>
+                    <!-- #endregion 1 [TitleText][LockIcon] -->
+                    <!-- #region 2 All Devices -->
+                    <!-- OLD:
                     <Grid Margin="20,20,8,8" Opacity="{Binding GeneralPageLock_Opacity}">
+                    
+                    -->
+                    <Grid Margin="0,24,0,0" Opacity="{Binding GeneralPageLock_Opacity}">
+                        <!-- Robert_Lin, PartBorderStyle has Padding=16,16,16,0 -->
                         <Border Style="{StaticResource PartBorderStyle}"
                                 BorderThickness="0" CornerRadius="6">
+                            <!-- OLD:
+                            <StackPanel Orientation="Vertical" Margin="15,0,0,0">
+                            -->
                             <StackPanel Orientation="Vertical"
-                                        Margin="15,0,0,0">
+                                        Margin="0,0,0,0">
+                                <!-- OLD:
                                 <UXControls:UXTextBlock Margin="0,20,0,0" Focusable="True"
+                                -->
+                                <UXControls:UXTextBlock Margin="0,0,0,0" Focusable="True"
                                                         Text="{Binding [All_Devices], Source={x:Static lang:LangHelper.Instance}}"
                                                         FontSize="16"
                                                         Foreground="{DynamicResource DefaultTheme_TxtColor}" />
+                                <!-- OLD:
                                 <UXControls:UXCheckBox Margin="0,20,0,15"
+                                -->
+                                <UXControls:UXCheckBox Margin="0,20,0,0"
                                                        HorizontalAlignment="Left"
                                                        VerticalAlignment="Center"
                                                        Content="{Binding [Low_battery_level], Source={x:Static lang:LangHelper.Instance}}"
                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"
-                                                       FontSize="16"
+                                                       FontSize="16" FontWeight="Medium"
                                                        Background="{DynamicResource DefaultTheme_RbBkColor}"
                                                        IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Low_Battery_Level}"
                                                        Click="LowBatteryLevel_Click"
@@ -78,50 +104,78 @@
                                 CornerRadius="13"
                                 Visibility="{Binding GeneralUI_LockTooltip}" />
                     </Grid>
+                    <!-- #endregion 2 All Devices -->
+                    <!-- #region 3 Device-specific -->
+                    <!-- OLD:
                     <Grid Margin="20,20,8,8" Opacity="{Binding GeneralPageLock_Opacity}">
+                    -->
+                    <Grid Margin="0,24,0,0" Opacity="{Binding GeneralPageLock_Opacity}">
+                        <!-- Robert_Lin, PartBorderStyle has Padding=16,16,16,0 -->
                         <Border Style="{StaticResource PartBorderStyle}"
                                 BorderThickness="0" CornerRadius="6">
+                            <!-- OLD:
+                             <StackPanel Orientation="Vertical" Margin="15,0,0,0">
+                           -->
                             <StackPanel Orientation="Vertical"
-                                        Margin="15,0,0,0">
+                                        Margin="0,0,0,0">
+                                <!-- OLD:
                                 <UXControls:UXTextBlock Margin="0,20,0,0" Focusable="True"
+                                -->
+                                <UXControls:UXTextBlock Margin="0,0,0,0" Focusable="True"
                                                         Text="{Binding [Device_specific], Source={x:Static lang:LangHelper.Instance}}"
                                                         FontSize="16"
                                                         Foreground="{DynamicResource DefaultTheme_TxtColor}" />
+                                <!-- OLD:
                                 <UXControls:UXCheckBox Margin="0,20,0,15"
+                                Add FontWeight="Medium"
+                                -->
+                                <UXControls:UXCheckBox Margin="0,16,0,0"
                                                        Height="{Binding checkBoxHeight}"
                                                        Content="{Binding [Keyboard_lock_key], Source={x:Static lang:LangHelper.Instance}}"
                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"
-                                                       FontSize="16"
+                                                       FontSize="16" FontWeight="Medium"
                                                        Background="{DynamicResource DefaultTheme_RbBkColor}"
                                                        IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key}"
                                                        Click="KeyboardLockKey_Click"
                                                        IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
+                                <!-- OLD:
                                 <UXControls:UXCheckBox Margin="0,0,0,15"
+                                Add FontWeight="Medium"
+                                -->
+                                <UXControls:UXCheckBox Margin="0,16,0,0"
                                                        Height="{Binding checkBoxHeight}"
                                                        HorizontalAlignment="Left"
                                                        Content="{Binding [Webcam_WB7022_Presence_Detection_sensor_cover_state], Source={x:Static lang:LangHelper.Instance}}"
                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"
-                                                       FontSize="16"
+                                                       FontSize="16" FontWeight="Medium"
                                                        Background="{DynamicResource DefaultTheme_RbBkColor}"
                                                        IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State}"
                                                        Click="WB7022CoverState_Click"
                                                        IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
+                                <!-- OLD:
                                 <UXControls:UXCheckBox Margin="0,0,0,15"
+                                Add FontWeight="Medium"
+                                -->
+                                <UXControls:UXCheckBox Margin="0,16,0,0"
                                                        Height="{Binding checkBoxHeight}"
                                                        HorizontalAlignment="Left"
                                                        Content="{Binding [Headset_speakerphone_and_soundbar_mute_unmute], Source={x:Static lang:LangHelper.Instance}}"
                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"
-                                                       FontSize="16"
+                                                       FontSize="16" FontWeight="Medium"
                                                        Background="{DynamicResource DefaultTheme_RbBkColor}"
                                                        IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Display_MuteState}"
                                                        Click="MuteState_Click"
                                                        IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
+                                <!-- OLD:
                                 <UXControls:UXCheckBox Margin="0,0,0,15"
+                                Add FontWeight="Medium"
+                                -->
+                                <UXControls:UXCheckBox Margin="0,16,0,0"
                                                        Height="{Binding checkBoxHeight}"
                                                        HorizontalAlignment="Left"
                                                        Content="{Binding [Display_Color_Preset_and_Easy_Memory], Source={x:Static lang:LangHelper.Instance}}"
                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"
-                                                       FontSize="16"
+                                                       FontSize="16" FontWeight="Medium"
                                                        Background="{DynamicResource DefaultTheme_RbBkColor}"
                                                        IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory}"
                                                        Click="DisplayCPAndEM_Click"
@@ -133,19 +187,41 @@
                                 CornerRadius="13"
                                 Visibility="{Binding GeneralUI_LockTooltip}" />
                     </Grid>
+                    <!-- #endregion 3 Device-specific -->
+                    <!-- #region 4 Reports -->
+                    <!-- OLD:
                     <Grid Margin="20,20,8,8">
                         <UXControls:UXTextBlock Text="{Binding [Reports], Source={x:Static lang:LangHelper.Instance}}"
                                                 FontSize="20" Focusable="True"
                                                 TextBlockType="Header1"
                                                 Foreground="{DynamicResource DefaultTheme_TxtColor}" />
                     </Grid>
+                    -->
+                    <Grid Margin="0,24,0,24" Height="28">
+                        <UXControls:UXTextBlock Text="{Binding [Reports], Source={x:Static lang:LangHelper.Instance}}"
+                                                FontSize="20" Focusable="True"
+                                                TextBlockType="Header1" VerticalAlignment="Center"
+                                                Foreground="{DynamicResource DefaultTheme_TxtColor}" />
+                    </Grid>
+                    <!-- #endregion 4 Reports -->
+                    <!-- #region 4 Reports Buttons -->
+                    <!-- OLD:
                     <Grid Margin="20,20,8,8">
-                        <Border x:Name="reportsBorder" Style="{StaticResource PartBorderStyle}"
+                    -->
+                    <Grid Margin="0,0,0,0">
+                        <Border Style="{StaticResource PartBorderStyle}" x:Name="reportsBorder"
                                 BorderThickness="0" CornerRadius="6">
+                            <!-- OLD:
                             <StackPanel Orientation="Horizontal" x:Name="reportsStackPanel"
                                         Margin="15,0,0,0">
+                            -->
+                            <StackPanel Orientation="Horizontal" x:Name="reportsStackPanel"
+                                        Margin="0,0,0,0">
                                 <!-- Derek for PIMS-334386 change Width="176" to MinWidth="176"
                                     and move Content to Button.Content
+                                -->
+                                <!-- OLD:
+                                        Margin="8,15,5,15"
                                 -->
                                 <Button Style="{DynamicResource Button_WhiteFrame}"
                                         MinWidth="176"
@@ -153,7 +229,7 @@
                                         Click="SaveDiagnosticReport_Click"
                                         x:Name="btnSaveDiagnosticReport"
                                         Cursor="Hand"
-                                        Margin="8,15,5,15"
+                                        Margin="0,0,0,0"
                                         Visibility="Visible"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
@@ -166,13 +242,16 @@
                                 <!-- Derek for PIMS-334386 change Width="176" to MinWidth="176"
                                     and move Content to Button.Content
                                 -->
+                                <!-- OLD:
+                                        Margin="8,15,5,15"
+                                -->
                                 <Button Style="{StaticResource Button_WhiteFrame}"
                                         MinWidth="176"
                                         Height="40"
                                         Click="SaveMonitorAssetReport_Click"
                                         x:Name="btnSaveMonitorAssetReport"
                                         Cursor="Hand"
-                                        Margin="8,15,5,15"
+                                        Margin="16,0,0,0"
                                         Visibility="Visible"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
@@ -185,6 +264,7 @@
                             </StackPanel>
                         </Border>
                     </Grid>
+                    <!-- #endregion 4 Reports Buttons -->
                 </StackPanel>
             </Border>
         </UXControls:UXScrollViewer>

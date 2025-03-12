@@ -8,5 +8,5 @@
 
 #endregion
 
-[assembly: System.Reflection.AssemblyProduct("Dell.UCA.BaseClientCore")]
-[assembly: System.Reflection.AssemblyTitle("Dell.UCA.BaseClientCore")]
+//[assembly: System.Reflection.AssemblyProduct("Dell.UCA.BaseClientCore")]
+//[assembly: System.Reflection.AssemblyTitle("Dell.UCA.BaseClientCore")]

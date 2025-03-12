@@ -7531,6 +7531,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save dock asset report.
+        /// </summary>
+        internal static string Save_dock_asset_report {
+            get {
+                return ResourceManager.GetString("Save_dock_asset_report", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save monitor asset report.
         /// </summary>
         internal static string Save_monitor_asset_report {
@@ -8242,6 +8251,24 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Battery level on this device is low. Replace/recharge battery to enable this update..
+        /// </summary>
+        internal static string Update_BatteryLow_Alert2 {
+            get {
+                return ResourceManager.GetString("Update_BatteryLow_Alert2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update may take an estimated 10 to 30 minutes to complete, depending on your monitor model and setup (for example, type of connection). It may take longer if you are updating multiple monitors of the same model. Don’t power off your display or disconnect cables while the update is downloading..
+        /// </summary>
+        internal static string Update_Display_Alert {
+            get {
+                return ResourceManager.GetString("Update_Display_Alert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ensure only one dock is connected to your system. Devices connected to dock may not be available during update..
         /// </summary>
         internal static string Update_Dock_Alert {
@@ -8269,11 +8296,29 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update for multiple USB wireless receivers of same kind is not supported. Keep one target USB wireless receiver connected..
+        /// </summary>
+        internal static string Update_Firmware_update_of_multiple_USB_wireless_receivers2 {
+            get {
+                return ResourceManager.GetString("Update_Firmware_update_of_multiple_USB_wireless_receivers2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Press a button or a key on the device to enable this update.
         /// </summary>
         internal static string Update_Mouse_Alert {
             get {
                 return ResourceManager.GetString("Update_Mouse_Alert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press a button or key on this device to enable this update.
+        /// </summary>
+        internal static string Update_Mouse_Alert2 {
+            get {
+                return ResourceManager.GetString("Update_Mouse_Alert2", resourceCulture);
             }
         }
         
@@ -8292,6 +8337,15 @@ namespace DDPM.UI.Resources {
         internal static string Update_Webcam_Alert {
             get {
                 return ResourceManager.GetString("Update_Webcam_Alert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Update_Webcam_Alert2 {
+            get {
+                return ResourceManager.GetString("Update_Webcam_Alert2", resourceCulture);
             }
         }
         

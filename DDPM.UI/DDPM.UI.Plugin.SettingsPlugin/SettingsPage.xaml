@@ -471,10 +471,22 @@
                     </Border>
                     <!-- #region About -->
                 </Grid>
+
+                <!--- Robert_Lin 2025-3-6 PIMS-348208 S-348208 Multiple Instances of Incorrect Padding (too much space) in Settings
+                Move from bottom of this file.
+                -->
+                <Grid Grid.Column="1" Margin="4,0,0,0"  >
+                    <ContentControl Content="{Binding FullView}"  />
+                </Grid>
+
             </Grid>
+            <!--- Robert_Lin 2025-3-6 PIMS-348208 S-348208 Multiple Instances of Incorrect Padding (too much space) in Settings
+            Move blow Grid into upper Grid Column 1
+            OLD:
             <Grid Grid.Column="1" Margin="222,0,0,0"  >
                 <ContentControl Content="{Binding FullView}"  />
             </Grid>
+            -->
         </Grid>
     </Grid>
 </UserControl>

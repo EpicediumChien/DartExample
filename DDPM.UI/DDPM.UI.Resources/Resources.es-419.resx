@@ -3474,4 +3474,16 @@
   <data name="Update_Dock_Alert_2" xml:space="preserve">
     <value>Nota: Es posible que los periféricos conectados a esta docking station no estén disponibles durante el proceso de actualización</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>NO SE DETECTARON DISPOSITIVOS</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>Agregue su primer dispositivo</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Conectar</value>
+  </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>Acciones de búsqueda</value>
+  </data>
 </root>
