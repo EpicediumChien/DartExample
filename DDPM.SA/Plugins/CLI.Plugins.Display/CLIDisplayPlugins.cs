@@ -11464,14 +11464,12 @@ namespace DDPM.CLI.Plugins.Display
                                 output += "\n" + JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented);
                             }
                             break;
-                        case "KEYBOARD":
+                        case "KEYBOARD"://202503012 Elsa add for Deviceconfiguration support guid&model
                             writelog("KEYBOARD set entry");
                             if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
                                 foreach (var propertys in jsonObject.Properties())
                                 {
-                                    Debug.WriteLine($"Key: {propertys.Name}, Value: {propertys.Value}");
-                                    Debug.WriteLine(commandLineInput.GuidString[0].ToString().ToUpper());
                                     if (propertys.Name.ToString().ToUpper() == "ID" && propertys.Value.ToString().ToUpper() == commandLineInput.GuidString[0].ToString().ToUpper())
                                     {
                                         var match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
@@ -11499,7 +11497,6 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 foreach (var propertys in jsonObject.Properties())
                                 {
-                                    Debug.WriteLine($"Key: {propertys.Name}, Value: {propertys.Value}");
                                     if (propertys.Name.ToString().ToUpper() == "MODEL" && propertys.Value.ToString().ToUpper() == commandLineInput.Model[0].ToString().ToUpper())
                                     {
                                         var match = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
@@ -11547,8 +11544,6 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 foreach (var propertys in jsonObject.Properties())
                                 {
-                                    Debug.WriteLine($"Key: {propertys.Name}, Value: {propertys.Value}");
-                                    Debug.WriteLine(commandLineInput.GuidString[0].ToString().ToUpper());
                                     if (propertys.Name.ToString().ToUpper() == "ID" && propertys.Value.ToString().ToUpper() == commandLineInput.GuidString[0].ToString().ToUpper())
                                     {
                                         var match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
@@ -11576,7 +11571,6 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 foreach (var propertys in jsonObject.Properties())
                                 {
-                                    Debug.WriteLine($"Key: {propertys.Name}, Value: {propertys.Value}");
                                     if (propertys.Name.ToString().ToUpper() == "MODEL" && propertys.Value.ToString().ToUpper() == commandLineInput.Model[0].ToString().ToUpper())
                                     {
                                         var match = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
@@ -11626,8 +11620,6 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 foreach (var propertys in jsonObject.Properties())
                                 {
-                                    Debug.WriteLine($"Key: {propertys.Name}, Value: {propertys.Value}");
-                                    Debug.WriteLine(commandLineInput.GuidString[0].ToString().ToUpper());
                                     if (propertys.Name.ToString().ToUpper() == "ID" && propertys.Value.ToString().ToUpper() == commandLineInput.GuidString[0].ToString().ToUpper())
                                     {
                                         var match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
@@ -11655,7 +11647,6 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 foreach (var propertys in jsonObject.Properties())
                                 {
-                                    Debug.WriteLine($"Key: {propertys.Name}, Value: {propertys.Value}");
                                     if (propertys.Name.ToString().ToUpper() == "MODEL" && propertys.Value.ToString().ToUpper() == commandLineInput.Model[0].ToString().ToUpper())
                                     {
                                         var match = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
@@ -11699,13 +11690,11 @@ namespace DDPM.CLI.Plugins.Display
                             break;
                         case "MOUSE":
                         case "PEN":
-                        case "DOCK":
+                        case "DOCK"://202503012 Elsa add for Deviceconfiguration support guid&ServiceTag&model
                             if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
                                 foreach (var propertys in jsonObject.Properties())
                                 {
-                                    Debug.WriteLine($"Key: {propertys.Name}, Value: {propertys.Value}");
-                                    Debug.WriteLine(commandLineInput.GuidString[0].ToString().ToUpper());
                                     if (propertys.Name.ToString().ToUpper() == "ID" && propertys.Value.ToString().ToUpper() == commandLineInput.GuidString[0].ToString().ToUpper())
                                     {
                                         var match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
@@ -11728,11 +11717,36 @@ namespace DDPM.CLI.Plugins.Display
                                     output += "\n" + "Fail";
                                 }
                             }
+                            else if (commandLineInput.ServiceTag != null && commandLineInput.ServiceTag.Count > 0 && !string.IsNullOrEmpty(commandLineInput.ServiceTag[0].ToString()))
+                            {
+                                foreach (var propertys in jsonObject.Properties())
+                                {
+                                    if (propertys.Name.ToString().ToUpper() == "SERVICETAG" && propertys.Value.ToString().ToUpper() == commandLineInput.ServiceTag[0].ToString().ToUpper())
+                                    {
+                                        var match = _deviceinfo.SingleOrDefault(x => x.DockServiceTag.ToString().Equals(commandLineInput.ServiceTag[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                        if (match != null)
+                                        {
+                                            recode_find = true;
+                                            if (match.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                var response = GetDeviceDataPeripheralResponse(0, match);
+                                                output += "\n" + response.ToJson();
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (!recode_find)
+                                {
+                                    ispass = false;
+                                    resultMessages.Add("Invalid ServiceTag.");
+                                    output += "\n" + "Fail";
+                                }
+                            }
                             else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
                             {
                                 foreach (var propertys in jsonObject.Properties())
                                 {
-                                    Debug.WriteLine($"Key: {propertys.Name}, Value: {propertys.Value}");
                                     if (propertys.Name.ToString().ToUpper() == "MODEL" && propertys.Value.ToString().ToUpper() == commandLineInput.Model[0].ToString().ToUpper())
                                     {
                                         var match = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
