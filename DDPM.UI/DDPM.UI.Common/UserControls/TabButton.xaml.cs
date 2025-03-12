@@ -220,10 +220,6 @@ namespace DDPM.UI.Common
 
         private void UpdateTooltipOffsetH()
         {
-            if (Caption == LangHelper.Instance["Off2"])
-                toolTip.HorizontalOffset = TooltipOffsetH;
-            else
-                toolTip.HorizontalOffset = txtToolTip.ActualWidth;
         }
 
         private void TabCaption_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)

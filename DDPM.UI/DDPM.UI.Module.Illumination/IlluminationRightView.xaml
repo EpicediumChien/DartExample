@@ -44,15 +44,15 @@
               <common:TabButton Name="TabOff" Margin="0" HasInfoIcon="true"
                                               Width="147" Height="58" Focused="{Binding TabOffFocused}"
                                               Caption="{Binding TabOffCaption}" Command="{Binding TabOffClickedCommand}"
-                                              TabInfo="{Binding TabOffInfoTip}"  TooltipOffsetH="2"/>
+                                              TabInfo="{Binding TabOffInfoTip}" TooltipOffsetH="2"/>
               <common:TabButton Name="TabAdaptiveLight" Margin="5,0,0,0" HasInfoIcon="true"
                                               Width="147" Height="58" Focused="{Binding TabAdaptiveLightFocused}"
                                               Caption="{Binding TabAdaptiveLightCaption}" Command="{Binding TabAdaptiveLightClickedCommand}"
-                                              TabInfo="{Binding TabAdaptiveLightInfoTip}"  TooltipOffsetH="2"/>
+                                              TabInfo="{Binding TabAdaptiveLightInfoTip}" />
               <common:TabButton Name="TabManual" Margin="5,0,0,0" HasInfoIcon="true"
                                               Width="147" Height="58"  Focused="{Binding TabManualFocused}"
                                               Caption="{Binding TabManualCaption}" Command="{Binding TabManualClickedCommand}"
-                                              TabInfo="{Binding TabManualInfoTip}"  TooltipOffsetH="2"/>
+                                              TabInfo="{Binding TabManualInfoTip}" />
             </StackPanel>
           </Grid>
           <Grid Height="40" VerticalAlignment="top" Grid.Row="1" Margin="0,12,0,0" Visibility="{Binding IsSliderVisible, Converter={StaticResource BoolToVisibilityConverter}}">
