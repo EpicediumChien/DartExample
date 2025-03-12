@@ -10355,9 +10355,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(_DTPProxyPlugin.GetFirmwareVersionForDock(guid).Result);
         }
 
-        public Task<string> GetDockServiceTagForDock(string guid)
+        public Task<string> GetDockServiceTagForDock(string Guid)
         {
-            return Task.FromResult(_DTPProxyPlugin.GetDockServiceTagForDock(guid).Result);
+            return Task.FromResult(_DTPProxyPlugin.GetDockServiceTagForDock(Guid).Result);
         }
 
         #endregion
