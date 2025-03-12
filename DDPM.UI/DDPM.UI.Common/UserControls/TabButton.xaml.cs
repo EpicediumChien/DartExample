@@ -1,8 +1,12 @@
-﻿using Dell.Client.Framework.UX.WPF.Controls;
+﻿using DDPM.UI.Resources.Helper;
+using Dell.Client.Framework.UX.WPF.Controls;
+using Newtonsoft.Json.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using Windows.UI.Popups;
 using Color = System.Windows.Media.Color;
 using Point = System.Windows.Point;
 using UserControl = System.Windows.Controls.UserControl;
@@ -216,7 +220,41 @@ namespace DDPM.UI.Common
 
         private void UpdateTooltipOffsetH()
         {
-            toolTip.HorizontalOffset = TooltipOffsetH;
+            if (Caption == LangHelper.Instance["Off2"])
+                toolTip.HorizontalOffset = TooltipOffsetH;
+            else
+                toolTip.HorizontalOffset = txtToolTip.ActualWidth;
+        }
+
+        private void TabCaption_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (Caption == LangHelper.Instance["Off2"])
+                toolTip.HorizontalOffset = TooltipOffsetH;
+            else
+            {
+                var offset = GetTextWidth(txtToolTip.Text, 12);
+                if (offset > 328)
+                    offset = -350;
+                else
+                    offset = -24 - offset;
+                toolTip.HorizontalOffset = offset;
+            }
+        }
+
+        private double GetTextWidth(string text, double fontSize, string fontFamily = "Roboto")
+        {
+            var typeface = new Typeface(new System.Windows.Media.FontFamily(fontFamily), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+
+            var formattedText = new FormattedText(
+                text,
+                System.Globalization.CultureInfo.CurrentUICulture,
+                System.Windows.FlowDirection.LeftToRight,
+                typeface,
+                fontSize,
+                System.Windows.Media.Brushes.Black,
+                new NumberSubstitution(),
+                1.0);
+            return formattedText.Width;
         }
     }
 }
