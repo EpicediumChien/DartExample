@@ -827,13 +827,16 @@
   <!--  DdpmCD_BkColor=(41,59,77,1): The background color of the DdpmComboBox  -->
   <SolidColorBrush x:Key="DdpmCB_BkColor" Color="#FF2F3B4D" />
   <!--  DdpmCB_FgColor=(255,255,255,1): The foreground color of the DdpmComboBox  -->
-  <SolidColorBrush x:Key="DdpmCB_FgColor" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="DdpmCB_FgColor" Color="#F5F6F7" />
   <!--  DdpmCB_SelTextColor=(49,162,227,1): The selected item color of Text in Dropdown list  -->
-  <SolidColorBrush x:Key="DdpmCB_SelTextColor" Color="#FF31A2E3" />
+  <SolidColorBrush x:Key="DdpmCB_SelTextColor" Color="#8BCBEF" />
   <!--  DdpmCB_HoverItemBkColor=(49,162,227,1): The selected item color of Text in Dropdown list  -->
-  <SolidColorBrush x:Key="DdpmCB_HoverItemBkColor" Color="#FF232D36" />
+  <SolidColorBrush x:Key="DdpmCB_HoverItemBkColor" Color="#213242" />
+    <!-- Robert_Lin 20250312: new added colors -->
+    <SolidColorBrush x:Key="DdpmCB_BdColor_Checked" Color="#31A2E3" />
+    <SolidColorBrush x:Key="DdpmCB_FgColor_Disabled" Color="#596067" />
 
-  <!--  ToogleButton PART of DdpmComboBox  -->
+    <!--  ToogleButton PART of DdpmComboBox  -->
   <!--
     [1] Draw the arrow down by default.
     [2] When the toggle is Checked, change the arrow to 'up'.
@@ -844,6 +847,8 @@
 
     <Grid x:Name="toggleBtnRoot" Background="#01000000">
       <!--  [1]  -->
+        <!-- OLD: before Robert_Lin 20250312
+        
       <Viewbox
                 Grid.Column="1"
                 Width="16"
@@ -858,11 +863,22 @@
                         Data="M1,0 L0,1 L10,11 L20,1 L19,0 L10,9 z" />
         </Grid>
       </Viewbox>
+        
+        -->
+        <!-- Robert_Lin 20250312:
+        
+        -->
+            <Grid Width="24" Height="24" Margin="0,0,12,0"
+                  HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Path Name="Arrow" Fill="{TemplateBinding Foreground}"
+                      Data="M5.5502 10.3498L6.60019 9.2998L12.0002 14.7748L17.4002 9.2998L18.4502 10.4248L12.0002 16.8748L5.5502 10.3498Z"/>
+            </Grid>
     </Grid>
     <ControlTemplate.Triggers>
       <!--  [2]  -->
       <Trigger Property="IsChecked" Value="True">
-        <Setter TargetName="Arrow" Property="Data" Value="M1,11 L0,10 L10,0 L20,10 L19,11 L10,2 z" />
+            <Setter TargetName="Arrow" Property="Data" 
+                    Value="M18.4498 13.6502L17.3998 14.7002L11.9998 9.22519L6.5998 14.7002L5.5498 13.5752L11.9998 7.12519L18.4498 13.6502Z" />
       </Trigger>
       <!--  [3]  -->
       <Trigger Property="IsMouseOver" Value="True">
@@ -913,9 +929,9 @@
               <Setter TargetName="Border" Property="Background" Value="{DynamicResource DdpmCB_HoverItemBkColor}" />
 
             </Trigger>
-            <Trigger Property="IsEnabled" Value="false">
+            <!--<Trigger Property="IsEnabled" Value="false">
               <Setter Property="Foreground" Value="#888888" />
-            </Trigger>
+            </Trigger>-->
             <Trigger Property="IsSelected" Value="True">
               <Setter Property="Foreground" Value="{DynamicResource DdpmCB_SelTextColor}" />
             </Trigger>
@@ -932,6 +948,9 @@
     [3] The scrollbar is hidden in Popup => it's based on the design in Figma.
     [4] Color and border style of ComboBox itself.
     [5] ToggleButton is arranged to entire ComboBox area, templateRoot.Row[0]
+    -->
+    <!-- Robert_Lin 20250312 PIMS-348385 Arrow is not centered in the dropdown
+         Relayout the ComboBox ControlTemplate to fix the issue.
     -->
   <ControlTemplate x:Key="DdpmComboBoxControlTemplate" TargetType="ComboBox">
     <Grid x:Name="templateRoot">
@@ -990,17 +1009,19 @@
         </Border>
       </Popup>
 
-      <!--  [4]  -->
-      <Border
+      <!--  [4] ToggleButton & ContentPresenter -->
+      <Border x:Name="bdContent"
                 Background="{DynamicResource DdpmCB_BkColor}"
                 BorderBrush="{DynamicResource DdpmCB_BdColor}"
                 BorderThickness="1"
                 CornerRadius="4">
         <Grid>
-          <!--  Reserved Column 1 space for the up/down arrow  -->
+          <!--  Reserved Column 1 space for the up/down arrow  
+            Robert_Lin 20250312: Change Column[1].Width from 32 to 36.
+            -->
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="32" />
+            <ColumnDefinition Width="36" />
           </Grid.ColumnDefinitions>
           <!--  [5] toggleButton  -->
           <ToggleButton
@@ -1009,13 +1030,14 @@
                         HorizontalAlignment="Stretch"
                         ClickMode="Press"
                         Focusable="True"
+                        Foreground="{TemplateBinding Foreground}"
                         IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                         Template="{StaticResource DdpmComboBoxToggleButtonTemplate}" />
-
+            <!-- Robert_Lin 20250312: Change Margin.Left from 8 to 12 -->
           <ContentPresenter
                         x:Name="contentPresenter"
                         Grid.Column="0"
-                        Margin="8,0,0,0"
+                        Margin="12,0,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Content="{TemplateBinding SelectionBoxItem}"
@@ -1025,7 +1047,7 @@
                         IsHitTestVisible="False">
             <ContentPresenter.Resources>
               <Style TargetType="TextBlock">
-                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                <!--<Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />-->
                 <Setter Property="TextTrimming" Value="CharacterEllipsis"></Setter>
               </Style>
             </ContentPresenter.Resources>
@@ -1036,8 +1058,11 @@
 
     <ControlTemplate.Triggers>
       <Trigger Property="IsEnabled" Value="false">
-        <Setter Property="Foreground" Value="#888888" />
+                <Setter Property="Foreground" Value="{DynamicResource DdpmCB_FgColor_Disabled}" />
       </Trigger>
+            <Trigger Property="IsDropDownOpen" Value="True">
+                <Setter Property="BorderBrush" TargetName="bdContent" Value="{DynamicResource DdpmCB_BdColor_Checked}"/>
+            </Trigger>
     </ControlTemplate.Triggers>
     <!-- Currently no need
         <ControlTemplate.Triggers>
