@@ -510,18 +510,18 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <UXControls:UXTextBlock x:Name="AnswerCallsText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Margin="20,20,0,20">
-                                <UXControls:UXTextBlock.Foreground>
-                                    <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
-                                        <Binding Path="SupportedAnswerCalls" />
-                                        <Binding Path="IsDarkTheme" />
-                                    </MultiBinding>
-                                </UXControls:UXTextBlock.Foreground>
+                            <UXControls:UXTextBlock x:Name="AnswerCallsText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Margin="20,20,0,20" Foreground="{DynamicResource TextBlock_ForegroundColor}">
                                 <UXControls:UXTextBlock.Text>
                                     <Binding Path="[HeadsetAutomatedActions.8]" Source="{x:Static lang:LangHelper.Instance}" />
                                 </UXControls:UXTextBlock.Text>
                             </UXControls:UXTextBlock>
-
+                            <Image ToolTipService.HorizontalOffset="-250" x:Name="AnswerCallsImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                                <Image.ToolTip>
+                                    <ToolTip x:Name="AnswerCallsToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                        <TextBlock x:Name="AnswerCallsToolTipText" Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding AnswerCallsToolTip}" />
+                                    </ToolTip>
+                                </Image.ToolTip>
+                            </Image>
                             <UXControls:UXToggleSwitch x:Name="AnswerCallsToggleSwitch" FontSize="16" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="20" IsChecked="{Binding Path=AnswerCallsStatus}" IsEnabled="{Binding Path=SupportedAnswerCalls}">
                                 <UXControls:UXToggleSwitch.Foreground>
                                     <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">

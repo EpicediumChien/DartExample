@@ -113,8 +113,15 @@
                                 <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
                             </Image.InputBindings>
                             <Image.ToolTip>
-                                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
-                                    <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
+                                <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <Border.Resources>
+                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                        </Border.Resources>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding FirmwareVersion2}" />
+                                        </StackPanel>
+                                    </Border>
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>
