@@ -1591,7 +1591,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                     }
-                    else if(_updateErrorCode == FWUErrorCode.Service_not_running_Try_again)
+                    else if (_updateErrorCode == FWUErrorCode.Service_not_running_Try_again)
                     {
                         _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
                     }
@@ -1628,9 +1628,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         if (!_IsSkipSHA)
                         {
+                            _updateErrorCode = FWUErrorCode.NamedPipeServerIsNoSafe;
                             _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                             _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " Named Pipe Server Is No Safe.");
-                            return FWUErrorCode.NamedPipeServerIsNoSafe;
                         }
                         else
                         {
@@ -1792,14 +1792,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             if (_namedPipeServer != null && _namedPipeServer.IsNamedPipeServerIsNoSafe &&
                 !_IsSkipSHA)
             {
+                _updateErrorCode = FWUErrorCode.NamedPipeServerIsNoSafe;
+                _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                _logs.DebugMsg_1($"_timerTimeOut_Tick Named Pipe Server Is No Safe");
                 resetState();
             }
             if (_timeOutCount == 0)
             {
-                resetState();
                 _updateErrorCode = FWUErrorCode.FirmwareUpdateTimeout;
                 _notificationStr = LangHelper.Instance["Timeout_error"];
                 _logs.DebugMsg_1("Get E7:Firmware update timeout");
+                resetState();
             }
         }
 
