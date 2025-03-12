@@ -19,8 +19,10 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Dell.TechHub.Sdk.Common.Utilities.Extensions;
+using Dell.UnifiedAgent.DellTechHubSettings;
 using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
+using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Shell.Interop;
@@ -49,7 +51,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
     [Descriptor(Description = pluginDescription)]
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(IDPeMPlugin) })]
-    public class PeripheralsPlugin : BaseAgentPlugin, IDPeMPlugin
+    public class PeripheralsPlugin : BaseAgentPlugin, IDPeMPlugin, IDisposableObservable
     {
         private object _PeripheralLock = new object();
 
@@ -62,7 +64,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements DDPM Peripherals Plugin.";
 
-        private readonly IAgent _agent;
+        private IAgent _agent;
         public const string PluginLogId = "Peripherals";
 
         private DeviceHelper _deviceHelper;
@@ -4173,5 +4175,35 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _deviceHelper.deviceInfo.RemoveAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
             }
         }
+
+        #region IDisposableObservable Support
+
+        /// <summary>
+        /// To detect redundant calls
+        /// </summary>
+        public bool IsDisposed { get; private set; }
+
+        /// <summary>
+        /// Override for Dispose
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
+        {
+            writelog($"Dispose: {disposing}");
+            if (!IsDisposed)
+            {
+                if (disposing)
+                {
+                    _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
+                    _agent = null;
+
+                }
+
+                IsDisposed = true;
+            }
+            base.Dispose(disposing);
+        }
+
+        #endregion
     }
 }

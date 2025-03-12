@@ -2,6 +2,7 @@
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
+using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -109,7 +110,9 @@ namespace DDPM.UI.Common
             {
                 vm.SelectedIndex = value;
                 SetValue(SelectedIndexProperty, vm.SelectedIndex);
-                SelectionChanged!(this, new RoutedEventArgs());
+                //SelectionChanged!(this, new RoutedEventArgs());
+                if (value >= 0)
+                    ((Border)FindName($"header{value}Border")).Background = (SolidColorBrush)FindResource("SubNav_Selected_BkBrush_Default");
             }
         }
 

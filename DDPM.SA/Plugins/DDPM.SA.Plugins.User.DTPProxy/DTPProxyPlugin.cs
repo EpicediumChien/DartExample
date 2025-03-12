@@ -41,6 +41,7 @@ using MS.WindowsAPICodePack.Internal;
 using DDPM.SA.Common.Settings;
 using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 using Task = System.Threading.Tasks.Task;
+using Microsoft;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -49,7 +50,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
     [Descriptor(Description = pluginDescription)]
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(IDTPProxyPlugin) })]
-    public class DTPProxyPlugin : BaseAgentPlugin, IDTPProxyPlugin
+    public class DTPProxyPlugin : BaseAgentPlugin, IDTPProxyPlugin, IDisposableObservable
     {
         private object _PeripheralLock = new object();
 
@@ -62,7 +63,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements DTP Proxy Plugin.";
 
-        private readonly IAgent _agent;
+        private IAgent _agent;
         private ICommodityClientSdk _commSdk;
 
         //private ClientAppId appId = new ClientAppId("{675f1370-b7ce-4113-8d6e-a128ee3bb74b}");
@@ -16209,5 +16210,36 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
         #endregion AirAudio Event
+
+
+        #region IDisposableObservable Support
+
+        /// <summary>
+        /// To detect redundant calls
+        /// </summary>
+        public bool IsDisposed { get; private set; }
+
+        /// <summary>
+        /// Override for Dispose
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
+        {
+            writelog($"Dispose: {disposing}");
+            if (!IsDisposed)
+            {
+                if (disposing)
+                {
+                    _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
+                    _agent = null;
+
+                }
+
+                IsDisposed = true;
+            }
+            base.Dispose(disposing);
+        }
+
+        #endregion
     }
 }
