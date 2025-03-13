@@ -987,22 +987,20 @@ namespace DDPM.SA.Plugins.CMAManager
                 // moved and modify @ 20250114 stephen
                 // add @ 20241210 stephen: check is defer
                 //_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, uniqueAgentGuid.ToString(), request.remote_request);
-                if (request.remote_request.ToLower().Contains("defer"))
+                if (request.remote_request.ToLower().Contains("defer") && 
+                    _CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, uniqueAgentGuid.ToString(), request.remote_request).Result)
                 {
-                    if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, uniqueAgentGuid.ToString(), request.remote_request).Result)
-                    {
-                        WriteLog($"[CMA] _CliManagerPlugin.checkDefer = true, do not run command");
+                    WriteLog($"[CMA] _CliManagerPlugin.checkDefer = true, do not run command");
 
-                        taskInfoQueue.Dequeue();    // add @ 20250124 stephen: bug fix
+                    taskInfoQueue.Dequeue();    // add @ 20250124 stephen: bug fix
 
-                        // feedback event to show in defer status
-                        sendDeferNotify(uniqueAgentGuid.ToString(), request.remote_request);
+                    // feedback event to show in defer status
+                    sendDeferNotify(uniqueAgentGuid.ToString(), request.remote_request);
 
-                        result.message = "tasks defer";
-                        result.output_result = "DeferSchedule";
+                    result.message = "tasks defer";
+                    result.output_result = "DeferSchedule";
 
-                        return Task.FromResult(result);
-                    }
+                    return Task.FromResult(result);
                 }
 
 
