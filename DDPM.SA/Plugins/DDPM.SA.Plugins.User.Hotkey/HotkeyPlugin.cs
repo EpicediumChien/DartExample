@@ -197,13 +197,15 @@ namespace DDPM.SA.Plugins.User.Hotkey
         {
             if (!IsDisposed)
             {
+                IsDisposed = true;
                 if (disposing)
                 {
+                    unhook();
+                    _hookThread.Interrupt();
                     _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
                     _agent = null;
+                    writelog($"[HotkeyPlugin Dispose] ===============");
                 }
-
-                IsDisposed = true;
             }
             base.Dispose(disposing);
         }
@@ -300,21 +302,28 @@ namespace DDPM.SA.Plugins.User.Hotkey
         {
             bool ok = false;
             // ThreadPool.QueueUserWorkItem
-            _hookThread = new Thread(() =>
-             {
-                 ok = hook();
-                 Debug.WriteLine("Hook(); Start--------");
-                 // 啟動消息循環
-                 System.Windows.Threading.Dispatcher.Run();
-                 Debug.WriteLine("System.Windows.Threading.Dispatcher.Run(); end--------");
-                 writelog("Hook()...");
-             });
+            try
+            {
+                _hookThread = new Thread(() =>
+                {
+                    ok = hook();
+                    Debug.WriteLine("Hook(); Start--------");
+                    // 啟動消息循環
+                    System.Windows.Threading.Dispatcher.Run();
+                    Debug.WriteLine("System.Windows.Threading.Dispatcher.Run(); end--------");
+                    writelog("Hook()...");
+                });
 
-            // 設定為單線程單元（STA），WPF需要STA模式
-            _hookThread.SetApartmentState(ApartmentState.STA);
+                // 設定為單線程單元（STA），WPF需要STA模式
+                _hookThread.SetApartmentState(ApartmentState.STA);
 
-            // 啟動執行緒
-            _hookThread.Start();
+                // 啟動執行緒
+                _hookThread.Start();
+            }
+            catch (Exception ex)
+            {
+                writelog($"[HotkeyPlugin]Hook() Exception :{ex.Message}");
+            }
             return ok;
         }
 
