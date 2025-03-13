@@ -241,12 +241,13 @@ namespace DDPM.CLI.Plugins.Display
                 return result;
             }
 
-            if (commandLineInput.Options.Count > 0)
+            if (commandLineInput.Options.Count > 0 && 
+                commandLineInput.Options[0].Option_Value.Equals("Display", StringComparison.OrdinalIgnoreCase) && 
+                !input_param_validation(devMgr, commandLineInput, ref result))
             {
-                if (commandLineInput.Options[0].Option_Value.Equals("Display", StringComparison.OrdinalIgnoreCase) && !input_param_validation(devMgr, commandLineInput, ref result))
-                    return result;
+                return result;
             }
-            
+
             switch (commandLineInput.TargetFeature)
             {
                 case "CONNECTEDDEVICES":

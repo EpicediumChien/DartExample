@@ -7013,12 +7013,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (settings != null)
             {
                 DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (monitorSetting != null)
+                if (monitorSetting != null && 
+                    monitorSetting.KVM.isNoKVM != null)
                 {
-                    if (monitorSetting.KVM.isNoKVM != null)
-                    {
-                        return Task.FromResult(monitorSetting.KVM.isNoKVM);
-                    }
+                    return Task.FromResult(monitorSetting.KVM.isNoKVM);
                 }
             }
             return Task.FromResult(false);
@@ -8957,12 +8955,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         bool bgdr = SetGaming_DualResolutionType(monitorInfo, gaming.Current_DualResolutionType).Result;
                                     }
-                                    if (gaming.IsEnable_VisionEngineType != null)
+                                    if (gaming.IsEnable_VisionEngineType != null && gaming.IsEnable_VisionEngineType.Length > 0)
                                     {
-                                        if (gaming.IsEnable_VisionEngineType.Length > 0)
-                                        {
-                                            bool bgv = SetGaming_VisionEngineEnableType(monitorInfo, gaming.IsEnable_VisionEngineType).Result;
-                                        }
+                                        bool bgv = SetGaming_VisionEngineEnableType(monitorInfo, gaming.IsEnable_VisionEngineType).Result;
                                     }
                                 }
                                 writelog("[DisplayImportSettings]Import VCP");
@@ -14073,15 +14068,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Debug.WriteLine($"SaveHotkeySetting:GetInputSourceHotKeyDataAndSaveNewBack mo is null ");
                 }
             }
-            if (WriteHotkeySettings(saveList).Result)
+            if (WriteHotkeySettings(saveList).Result && 
+                _NKVMPlugin != null && info.Job != HotkeyType.NkvmConflict)
             {
-                if (_NKVMPlugin != null && info.Job != HotkeyType.NkvmConflict)
+                _NKVMPlugin.ToNKVM_HotkeySettings(saveList).Wait();
+                if (_NKVMPlugin.IsNamedpipeConnected().Result)
                 {
-                    _NKVMPlugin.ToNKVM_HotkeySettings(saveList).Wait();
-                    if (_NKVMPlugin.IsNamedpipeConnected().Result)
-                    {
-                        bool b = _NKVMPlugin.SetHotkey(info).Result;
-                    }
+                    bool b = _NKVMPlugin.SetHotkey(info).Result;
                 }
             }
             ReloadHotkeyConfigData();
@@ -19228,21 +19221,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             foreach (MonitorInfo info in _AllInfoMonitors)
             {
-                if (!hasModel)
+                if (!hasModel && info.edid.ModelName.ToLower().Equals(rule.model))
                 {
-                    if (info.edid.ModelName.ToLower().Equals(rule.model))
-                    {
-                        hasModel = true;
-                    }
+                    hasModel = true;
                 }
 
-                if (!hasServiceTag)
+                if (!hasServiceTag && info.edid.ServiceTag.ToLower().Equals(rule.servicetag))
                 {
-                    if (info.edid.ServiceTag.ToLower().Equals(rule.servicetag))
-                    {
-                        hasServiceTag = true;
-                        break;
-                    }
+                    hasServiceTag = true;
+                    break;
                 }
             }
 

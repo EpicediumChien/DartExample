@@ -1074,8 +1074,8 @@ namespace ColorPreset.Plugins
             }
 
             // If it has not been turned on nightlight settings, nightlight status is off by default
-            NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
-            return System.Threading.Tasks.Task.FromResult(true);
+            //NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
+            //return System.Threading.Tasks.Task.FromResult(true);
         }
 
         public Task<bool> SyncNightlightSchedulerStatus()
@@ -1396,9 +1396,9 @@ namespace ColorPreset.Plugins
                 int index = get_index_of_json_config_for_cur_monitor(m);
 
 
-                if (colorPresetRunType == (int)ColorPresetRunType.Manual)
+                if (index >= 0) 
                 {
-                    if (index >= 0)
+                    if (colorPresetRunType == (int)ColorPresetRunType.Manual)
                     {
                         var nColorVCPCoreValue = GetColorVCPCoreValue(ColorPreset_Name).Result;
 
@@ -1407,10 +1407,7 @@ namespace ColorPreset.Plugins
 
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = nColorVCPCoreValue;
                     }
-                }
-                else if (colorPresetRunType == (int)ColorPresetRunType.Auto)
-                {
-                    if (index >= 0)
+                    else if (colorPresetRunType == (int)ColorPresetRunType.Auto)
                     {
                         var nColorVCPCoreValue = GetColorVCPCoreValue(ColorPreset_Name).Result;
 
@@ -1419,7 +1416,6 @@ namespace ColorPreset.Plugins
 
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = nColorVCPCoreValue;
                     }
-
                 }
 
                 _SettingsPlugin.WriteColorPresetSettings(config);

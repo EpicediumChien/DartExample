@@ -355,16 +355,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
                                                      x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (mi != -1)
+                if (mi != -1 &&
+                    _displayData[mi].DisplayPropertiesInfo != null &&
+                    _displayData[mi].DisplayPropertiesInfo.SupportedProperties != null &&
+                    _displayData[mi].DisplayPropertiesInfo.SupportedProperties.Properties != null &&
+                    _displayData[mi].DisplayPropertiesInfo.SupportedProperties.Properties.Count > 0)
                 {
-                    if (_displayData[mi].DisplayPropertiesInfo != null &&
-                        _displayData[mi].DisplayPropertiesInfo.SupportedProperties != null &&
-                        _displayData[mi].DisplayPropertiesInfo.SupportedProperties.Properties != null &&
-                        _displayData[mi].DisplayPropertiesInfo.SupportedProperties.Properties.Count > 0)
-                    {
-                        displayPropertiesInfo = _displayData[mi].DisplayPropertiesInfo;
-                        return true;
-                    }
+                    displayPropertiesInfo = _displayData[mi].DisplayPropertiesInfo;
+                    return true;
                 }
             }
             else
@@ -410,16 +408,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
                                                      x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (mi != -1)
+                if (mi != -1 && 
+                    _displayData[mi].GamingDisplayPropertiesInfo != null &&
+                    _displayData[mi].GamingDisplayPropertiesInfo.SupportedProperties != null &&
+                    _displayData[mi].GamingDisplayPropertiesInfo.SupportedProperties.Properties != null &&
+                    _displayData[mi].GamingDisplayPropertiesInfo.SupportedProperties.Properties.Count > 0)
                 {
-                    if (_displayData[mi].GamingDisplayPropertiesInfo != null &&
-                        _displayData[mi].GamingDisplayPropertiesInfo.SupportedProperties != null &&
-                        _displayData[mi].GamingDisplayPropertiesInfo.SupportedProperties.Properties != null &&
-                        _displayData[mi].GamingDisplayPropertiesInfo.SupportedProperties.Properties.Count > 0)
-                    {
-                        gamingDisplayPropertiesInfo = _displayData[mi].GamingDisplayPropertiesInfo;
-                        return true;
-                    }
+                    gamingDisplayPropertiesInfo = _displayData[mi].GamingDisplayPropertiesInfo;
+                    return true;
                 }
             }
             else
