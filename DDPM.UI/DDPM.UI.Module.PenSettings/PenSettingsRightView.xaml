@@ -10,101 +10,101 @@
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              mc:Ignorable="d"
              d:DesignHeight="675" d:DesignWidth="520">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-            <!--<PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />-->
-            <PluginCommon:ThicknessConverter x:Key="MarginConverter" />
-            <PluginCommon:HeightConverter x:Key="HeightConverter" />
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <Grid Margin="0,0,0,15">
-        <Border Background="{DynamicResource MouseSettingMenu_BgColor99}" CornerRadius="13" Width="520" Margin="0,10,0,0" HorizontalAlignment="Left">
-            <!--
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+      <!--<PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />-->
+      <PluginCommon:ThicknessConverter x:Key="MarginConverter" />
+      <PluginCommon:HeightConverter x:Key="HeightConverter" />
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Grid Margin="0,0,0,15">
+    <Border Background="{DynamicResource MouseSettingMenu_BgColor99}" CornerRadius="13" Width="520" Margin="0,10,0,0" HorizontalAlignment="Left">
+      <!--
             <Border.Height>
                 <MultiBinding Converter="{StaticResource HeightConverter}">
                     <Binding Path="Height" RelativeSource="{RelativeSource AncestorType=Grid}" />
                 </MultiBinding>
             </Border.Height> -->
-            <StackPanel>
-                <Grid Margin="0,0,0,20">
-                    <UXControls:UXTextBlock Name="txtCaption" Margin="18,24" Style="{StaticResource ModuleCaptionStyle}" />
-                </Grid>
-                <Grid VerticalAlignment="top" Margin="0,0,0,20">
-                    <Border Background="{DynamicResource MouseSettingMenu_BgColor99}"  CornerRadius="6" Width="488" Height="190" VerticalAlignment="Top">
-                        <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="18,22,0,0">
-                                <UXControls:UXTextBlock Name="txtTipSensitivity" Style="{StaticResource ModuleItemStyle}" />
-                                <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
-                                    <Image.ToolTip>
-                                        <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                <Border.Resources>
-                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                                </Border.Resources>
-                                                <TextBlock Name="txtTipTooltip" />
-                                            </Border>
-                                        </ToolTip>
-                                    </Image.ToolTip>
-                                </Image>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,23,0,0">
-                                <UXControls:UXTextBlock Text="0" FontSize="14" Foreground="{DynamicResource txtCaption_TxtColor}" Margin="42,1,7,0" FontFamily="Roboto" />
-                                <UXControls:UXSlider x:Name="TipSlider" Ticks="12.5,25,50,62.5,75"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TipSensitivity}" AutoToolTipPlacement="TopLeft"  
+      <StackPanel>
+        <Grid Margin="0,0,0,20">
+          <UXControls:UXTextBlock Name="txtCaption" Margin="18,24" Style="{StaticResource ModuleCaptionStyle}" />
+        </Grid>
+        <Grid VerticalAlignment="top" Margin="0,0,0,20">
+          <Border Background="{DynamicResource MouseSettingMenu_BgColor99}"  CornerRadius="6" Width="488" Height="190" VerticalAlignment="Top">
+            <StackPanel Orientation="Vertical">
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="18,22,0,0">
+                <UXControls:UXTextBlock Name="txtTipSensitivity" Style="{StaticResource ModuleItemStyle}" />
+                <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
+                  <Image.ToolTip>
+                    <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                      <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                        <Border.Resources>
+                          <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                        </Border.Resources>
+                        <TextBlock Name="txtTipTooltip" />
+                      </Border>
+                    </ToolTip>
+                  </Image.ToolTip>
+                </Image>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,23,0,0">
+                <UXControls:UXTextBlock Text="0" FontSize="14" Foreground="{DynamicResource Slider_TxtColor}" Margin="42,1,7,0" FontFamily="Roboto" />
+                <UXControls:UXSlider x:Name="TipSlider" Ticks="12.5,25,50,62.5,75"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TipSensitivity}" AutoToolTipPlacement="TopLeft"  
                                          Minimum="0" Maximum="100" Width="375" Thumb.DragStarted="Slider_DragStarted" Thumb.DragCompleted="TipSlider_DragCompleted" AutoToolTipPrecision="1" />
-                                <UXControls:UXTextBlock Text="100" FontSize="14" Foreground="{DynamicResource txtCaption_TxtColor}" Margin="16,1,0,0" FontFamily="Roboto"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="18,25,0,0">
-                                <UXControls:UXTextBlock Name="txtTiltSensitivity" Style="{StaticResource ModuleItemStyle}" />
-                                <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
-                                    <Image.ToolTip>
-                                        <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                <Border.Resources>
-                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                                </Border.Resources>
-                                                <TextBlock Name="txtTiltTooltip"/>
-                                            </Border>
-                                        </ToolTip>
-                                    </Image.ToolTip>
-                                </Image>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,23,0,0">
-                                <UXControls:UXTextBlock Text="0" FontSize="14" Foreground="{DynamicResource txtCaption_TxtColor}" Margin="42,1,7,0" FontFamily="Roboto" />
-                                <UXControls:UXSlider x:Name="TiltSlider" TickFrequency="50"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TiltSensitivity}"  
+                <UXControls:UXTextBlock Text="100" FontSize="14" Foreground="{DynamicResource Slider_TxtColor}" Margin="16,1,0,0" FontFamily="Roboto"/>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="18,25,0,0">
+                <UXControls:UXTextBlock Name="txtTiltSensitivity" Style="{StaticResource ModuleItemStyle}" />
+                <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
+                  <Image.ToolTip>
+                    <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                      <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                        <Border.Resources>
+                          <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                        </Border.Resources>
+                        <TextBlock Name="txtTiltTooltip"/>
+                      </Border>
+                    </ToolTip>
+                  </Image.ToolTip>
+                </Image>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,23,0,0">
+                <UXControls:UXTextBlock Text="0" FontSize="14" Foreground="{DynamicResource Slider_TxtColor}" Margin="42,1,7,0" FontFamily="Roboto" />
+                <UXControls:UXSlider x:Name="TiltSlider" TickFrequency="50"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TiltSensitivity}"  
                                          Minimum="0" Maximum="100" Width="375" Thumb.DragStarted="Slider_DragStarted" Thumb.DragCompleted="TiltSlider_DragCompleted" AutoToolTipPlacement="TopLeft" />
-                                <UXControls:UXTextBlock Text="100" FontSize="14" Foreground="{DynamicResource txtCaption_TxtColor}" Margin="16,1,0,0" FontFamily="Roboto"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
-                </Grid>
-                <Grid>
-                    <Border Background="{DynamicResource MouseSettingMenu_BgColor99}" CornerRadius="6" Width="488" Height="120" VerticalAlignment="Top" Margin="0,0,0,20">
-                        <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="18,25,0,0">
-                                <UXControls:UXTextBlock Name="txtPairWithTile" Style="{StaticResource ModuleItemStyle}" />
-                                <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
-                                    <Image.ToolTip>
-                                        <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                <Border.Resources>
-                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                                </Border.Resources>
-                                                <TextBlock x:Name="txtPairTooltip" />
-                                            </Border>
-                                        </ToolTip>
-                                    </Image.ToolTip>
-                                </Image>
-                            </StackPanel>
-                            <UXControls:UXButton ButtonType="Primary" Name="btnGetStart" Click="btnGetStart_Click" Margin="18,20,0,0"
+                <UXControls:UXTextBlock Text="100" FontSize="14" Foreground="{DynamicResource Slider_TxtColor}" Margin="16,1,0,0" FontFamily="Roboto"/>
+              </StackPanel>
+            </StackPanel>
+          </Border>
+        </Grid>
+        <Grid>
+          <Border Background="{DynamicResource MouseSettingMenu_BgColor99}" CornerRadius="6" Width="488" Height="120" VerticalAlignment="Top" Margin="0,0,0,20">
+            <StackPanel Orientation="Vertical">
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="18,25,0,0">
+                <UXControls:UXTextBlock Name="txtPairWithTile" Style="{StaticResource ModuleItemStyle}" />
+                <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
+                  <Image.ToolTip>
+                    <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                      <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                        <Border.Resources>
+                          <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                        </Border.Resources>
+                        <TextBlock x:Name="txtPairTooltip" />
+                      </Border>
+                    </ToolTip>
+                  </Image.ToolTip>
+                </Image>
+              </StackPanel>
+              <UXControls:UXButton ButtonType="Primary" Name="btnGetStart" Click="btnGetStart_Click" Margin="18,20,0,0"
                                    HorizontalAlignment="Left" VerticalAlignment="Top" 
                                    FontSize="14" FontFamily="Roboto" FontWeight="Medium" CornerRadius="4" Width="134" Height="40"/>
-                        </StackPanel>
-                    </Border>
-                </Grid>
             </StackPanel>
-        </Border>
-    </Grid>
+          </Border>
+        </Grid>
+      </StackPanel>
+    </Border>
+  </Grid>
 </UserControl>
