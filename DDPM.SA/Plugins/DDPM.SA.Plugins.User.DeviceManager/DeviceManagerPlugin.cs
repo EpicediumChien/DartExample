@@ -6122,6 +6122,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("[DeviceMangerPlugin] DownloadAndInstall start");
             writelog($"[DeviceMangerPlugin] DownloadAndInstall isUITrigger : {isUITrigger}");
+            if (fwUpdateInfos == null)
+            {
+                writelog("[DeviceMangerPlugin] fwUpdateInfos is null");
+                return Task.FromResult(new List<FWUpdateInfo>());
+            }
             if (_FWUpdatePlugin == null)
             {
                 writelog("[DeviceMangerPlugin] _FWUpdatePlugin is null");
@@ -6135,13 +6140,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _FWUpdatePlugin.SetLang(LangHelper.GetLanguage());
             _UpdateProgress = null;
             _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
+            List<DeviceInfo> deviceInfo = _PeripheralsPlugin.GetDevices().Result.deviceInfo;
+            int ioDongleCount_Gen3Ago = _PeripheralsPlugin.GetIODongleCountGen3AgoCount().Result;
             if (isUITrigger)
             {
                 writelog($"[DeviceMangerPlugin] CallUpdateProgressUI() go");
                 CallUpdateProgressUI().Wait();
             }
             writelog($"[DeviceMangerPlugin] _FWUpdatePlugin.DownloadAndInstall go");
-            List<FWUpdateInfo> tmpFWUpdateInfos = _FWUpdatePlugin.DownloadAndInstall(fwUpdateInfos, _PeripheralsPlugin.GetDevices().Result.deviceInfo, _PeripheralsPlugin.GetIODongleCountGen3AgoCount().Result, isUITrigger, installPath).Result;
+            List<FWUpdateInfo> tmpFWUpdateInfos = _FWUpdatePlugin.DownloadAndInstall(fwUpdateInfos, deviceInfo, ioDongleCount_Gen3Ago, isUITrigger, installPath).Result;
             _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
             if (_UpdateProgress != null)
             {

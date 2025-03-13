@@ -650,6 +650,18 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             Method method = new Method(_logs);
             try
             {
+                if (fwUpdateInfos.Count > 0)
+                {
+                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                    {
+                        DeviceName = fwUpdateInfos[0].DeviceName,
+                        Model = fwUpdateInfos[0].Model,
+                        TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                        ProcessName = "Downloading",
+                        ProcessProgress = 0,
+                    };
+                    sendMessageToEvent(updateProgressInfo);
+                }
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " all start");
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " fwUpdateInfos.Count : " + fwUpdateInfos.Count);
                 List<FWUpdateInfo> temp_FWUpdateInfo = fwUpdateInfos.FindAll(o => o.IsDisplay);
