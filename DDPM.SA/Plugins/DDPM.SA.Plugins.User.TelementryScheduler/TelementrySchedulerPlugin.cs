@@ -213,6 +213,8 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
                         DisplayInformation_Function _dp = new DisplayInformation_Function();
                         foreach (var monitor in _Allmonitors)
                         {
+                            if (IsDisposed) break;
+
                             var Orientation = _DisplayManagerPlugin.GetCurrentDisplayOrientation(monitor.DisplayName).Result;
                             var RefreshRate = _DisplayManagerPlugin.GetMonitorRefreshRate(monitor).Result;
                             var HDRStatus = _DisplayManagerPlugin.GetHDRStatus(monitor).Result;
@@ -242,6 +244,8 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
                         List<string> Models = new List<string>();
                         foreach (var monitor in _Allmonitors)
                         {
+                            if (IsDisposed) break;
+
                             if (!string.IsNullOrWhiteSpace(monitor.modelName))
                                 Models.Add(monitor.modelName);
                             else
@@ -464,17 +468,35 @@ namespace DDPM.SA.Plugins.User.TelementryScheduler
         protected override void Dispose(bool disposing)
         {
             _logs.DebugMsg($"[TelementryScheduler] Dispose: {disposing}");
+
             if (!IsDisposed)
             {
+                IsDisposed = true;
+
                 if (disposing)
                 {
+                    DisposeAction();
+
                     _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
                     _agent = null;
                 }
-
-                IsDisposed = true;
             }
             base.Dispose(disposing);
+        }
+
+        private void DisposeAction()
+        {
+            try
+            {
+                _logs.DebugMsg("Dispose Action ...");
+
+                if (_SettingsPlugin is not null)
+                    _SettingsPlugin.SettingReadyEvent -= SettingsReady;
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg($"[TelementryScheduler] DisposeAction Exception: {ex.Message}");
+            }
         }
 
         #endregion
