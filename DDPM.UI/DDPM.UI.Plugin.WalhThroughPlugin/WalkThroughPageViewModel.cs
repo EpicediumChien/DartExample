@@ -305,6 +305,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             try
             {
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] WriteWalkThroughReg, Model : {Model} ... ");
                 string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin.UserId}";
                 string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{Model}";
                 if (Model == "MS700/7")
