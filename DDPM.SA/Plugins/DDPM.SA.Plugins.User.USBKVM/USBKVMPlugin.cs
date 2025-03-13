@@ -3,6 +3,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
+using Microsoft;
 using VcpCore.Common;
 using IDs = DDPM.SA.Common.IDs;
 
@@ -12,7 +13,7 @@ namespace DDPM.SA.Plugins.User.USBKVM
     [Descriptor(Description = pluginDescription)]
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(IUSBKVMService) })]
-    public class USBKVMPlugin : BaseAgentPlugin, IUSBKVMService
+    public class USBKVMPlugin : BaseAgentPlugin, IUSBKVMService, IDisposableObservable
     {
         #region Private Members
 
@@ -24,6 +25,7 @@ namespace DDPM.SA.Plugins.User.USBKVM
         private const string publisherSupport = "This plugin implements USBKVM Plugin.";
 
         private IAgent _agent;
+        private Logs _logs;
         public const string PluginLogId = "USBKVM";
 
         private IDeviceManagerSA _DeviceManagerPlugin;
@@ -51,7 +53,6 @@ namespace DDPM.SA.Plugins.User.USBKVM
         {
             PluginCondition = new PluginStartedCondition();
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
-            InitializeDeviceManagerPlugin();
         }
 
         #endregion Overriding methods
@@ -110,38 +111,44 @@ namespace DDPM.SA.Plugins.User.USBKVM
 
         #region Private Methods
 
-        private void InitializeDeviceManagerPlugin()
-        {
-            if (_DeviceManagerPlugin != null)
-                return;
-
-            _DeviceManagerPlugin = _agent.PluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
-            if (_DeviceManagerPlugin is IFrameworkPluginConditionNotification condition)
-            {
-                condition.PluginConditionChangeHandler += OnDeviceManagerPluginConditionChangeHandler;
-                GetCurrentDeviceManagerPluginCondition();
-            }
-        }
-
-        private void OnDeviceManagerPluginConditionChangeHandler(object sender, EventArgs e)
-        {
-            InitializeDeviceManagerPlugin();
-        }
-
-        private void GetCurrentDeviceManagerPluginCondition()
-        {
-            _ = Task.Run(async () =>
-            {
-                var pluginCondition = await (_DeviceManagerPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
-
-                lock (_pluginConditionLock)
-                {
-                    _DeviceManagerPluginCondition = pluginCondition;
-                }
-            });
-        }
-
         #endregion Private Methods
+
+        #region IDisposableObservable Support
+
+        /// <summary>
+        /// To detect redundant calls
+        /// </summary>
+        public bool IsDisposed { get; private set; }
+
+        /// <summary>
+        /// Override for Dispose
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
+        {
+            if (!IsDisposed)
+            {
+                _logs.DebugMsg("[USBKVM] into Dispose ～～～～～～～～～～～～～～～～～！！！！！！！");
+
+                IsDisposed = true;
+
+                if (disposing)
+                {
+                    DisposeAction();
+
+                    _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
+                    _agent = null;
+                }
+            }
+
+            base.Dispose(disposing);
+        }
+
+        private void DisposeAction()
+        {
+        }
+
+        #endregion
 
         #region Event Handler
 
@@ -162,11 +169,6 @@ namespace DDPM.SA.Plugins.User.USBKVM
                 return;
             if (e.ChangedPlugins.Any() == false)
                 return;
-
-            if (e.ChangedPlugins.OfType<IDeviceManagerSA>().Any())
-            {
-                InitializeDeviceManagerPlugin();
-            }
         }
 
         #endregion Event Handler

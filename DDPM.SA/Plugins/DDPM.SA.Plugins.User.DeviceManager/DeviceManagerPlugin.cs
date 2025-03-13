@@ -6967,6 +6967,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> GetOnUSBKVM(MonitorInfo monitorInfo)
         {
+            writelog("[GetNoKVM] GetOnUSBKVM");
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
             if (settings != null)
             {
@@ -6981,6 +6982,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> SetOnUSBKVM(MonitorInfo monitorInfo, bool isON)
         {
+            writelog("[SetOnUSBKVM] SetOnUSBKVM isON : " + isON.ToString());
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
             if (settings != null) //Robert_Lin 0731
             {
@@ -7006,6 +7008,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> GetNoKVM(MonitorInfo monitorInfo)
         {
+            writelog("[GetNoKVM] GetNoKVM");
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
             if (settings != null)
             {
@@ -7023,6 +7026,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> SetNoKVM(MonitorInfo monitorInfo, bool isON)
         {
+            writelog("[SetNoKVM] SetNoKVM isON : " + isON.ToString());
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
             if (settings != null) //Robert_Lin 0731
             {
