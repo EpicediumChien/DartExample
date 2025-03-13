@@ -55,7 +55,7 @@
       </Style>
     </ResourceDictionary>
   </UserControl.Resources>
-    <!-- Robert_Lin 2025-3-7 Add Narrator support:
+  <!-- Robert_Lin 2025-3-7 Add Narrator support:
     1 Add KeyboardNavigation.TabIndex to each stops with predefine order.
     2 All TextBlock add Focusabled="True"
     3 ListControl/ListBox/ListView... add KeyboardNavigation.TabNavigation="Continue"
@@ -93,7 +93,7 @@
               <Grid>
                 <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="500" />
                 <Rectangle Name="RecT" Fill="Transparent" Width="500" VerticalAlignment="Top" MouseDown="Mainframe_MouseLeftButtonDown"/>
-                <Rectangle Name="RecB" Fill="Transparent" Width="500" VerticalAlignment="Bottom" MouseDown="Mainframe_MouseLeftButtonDown"/> 
+                <Rectangle Name="RecB" Fill="Transparent" Width="500" VerticalAlignment="Bottom" MouseDown="Mainframe_MouseLeftButtonDown"/>
                 <Rectangle Name="RecL" Fill="Transparent" Height="500" HorizontalAlignment="Left" MouseDown="Mainframe_MouseLeftButtonDown"/>
                 <Rectangle Name="RecR" Fill="Transparent" Height="500" HorizontalAlignment="Right" MouseDown="Mainframe_MouseLeftButtonDown"/>
               </Grid>
@@ -195,7 +195,7 @@
       </Grid>
       <!--Name & Model-->
       <Grid VerticalAlignment="Top" Height="130">
-        <Border Background="Transparent" MouseDown="PushBack"></Border> 
+        <Border Background="Transparent" MouseDown="PushBack"></Border>
         <StackPanel Orientation="Vertical">
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" x:Name="devNameStackPanel">
             <Image Margin="64,21,0,0" Source="{DynamicResource mouse_setting_title_back}" Stretch="Fill"
@@ -235,8 +235,15 @@
             <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/MultiDevice.png" Stretch="Fill"
                                VerticalAlignment="Top" Width="16" Height="16" Visibility="{Binding MultiDevicesInfoVisibility}">
               <Image.ToolTip>
-                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
-                  <TextBlock Style="{StaticResource InfoToolTipTextStyle}" Text="{Binding MultiDeviceTooltip}" TextWrapping="Wrap" Width="350" />
+                <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                  <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                    <Border.Resources>
+                      <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                    </Border.Resources>
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="{Binding MultiDeviceTooltip}" />
+                    </StackPanel>
+                  </Border>
                 </ToolTip>
               </Image.ToolTip>
             </Image>
@@ -267,10 +274,10 @@
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
               <StackPanel Orientation="Vertical">
-                  <!-- Robert_Lin PIMS-348226 [UI]Home Page - Dongle/Wireless Receiver icon is not left-aligned 
+                <!-- Robert_Lin PIMS-348226 [UI]Home Page - Dongle/Wireless Receiver icon is not left-aligned 
                   Change Margin="19,18,0,0" to Margin="16,18,0,0"
                   -->
-               <StackPanel Orientation="Horizontal" Margin="16,18,0,0">
+                <StackPanel Orientation="Horizontal" Margin="16,18,0,0">
                   <ContentControl Width="16" Height="16" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
                   <!-- <Image Margin="0" Width="16" Height="16" Source="/DDPM.UI.Resources;component/Resources/Images/Dongle.png" /> -->
                   <!-- Elsa 20250107 For PIMS [PIMS-334377] add Width="200" TextTrimming="CharacterEllipsis" -->
