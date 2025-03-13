@@ -311,25 +311,6 @@ namespace DDPM.SA.Plugins.CMAManager
             }
 
             return command;
-
-            // check options
-
-            if (option.index != null && option.index.Length > 0)
-            {
-                command = command + (" index=" + option.index);
-            }
-
-            if (option.servicetag != null && option.servicetag.Length > 0)
-            {
-                command = command + (" servicetag=" + option.servicetag);
-            }
-
-            if (option.model != null && option.model.Length > 0)
-            {
-                command = command + (" model=" + option.model);
-            }
-
-            return command;
         }
 
         private string createCommandFw(CmaCommand.CmaTask task)

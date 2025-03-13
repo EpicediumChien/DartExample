@@ -1165,8 +1165,8 @@ namespace ColorPreset.Plugins
             }
 
             // If it has not been turned on nightlight settings, nightlight status is off by default
-            NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
-            return System.Threading.Tasks.Task.FromResult(true);
+            //NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
+            //return System.Threading.Tasks.Task.FromResult(true);
         }
 
         public Task<bool> SyncNightlightSchedulerStatus()
