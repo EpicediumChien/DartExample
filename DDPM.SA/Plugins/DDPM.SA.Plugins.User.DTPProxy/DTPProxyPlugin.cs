@@ -8224,6 +8224,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private bool UnregisterEventsForHeadset(HeadsetEventHandleObject obj)
         {
+            writelog($"[Headset] UnregisterEventsForHeadset in ... ");
             if (obj.headsetCommodity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
             {
                 _Headsetcom.FirmwareVersionChanged -= Headset_FirmwareVersionChanged;
@@ -8265,6 +8266,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private async Task<bool> UnregisterEventsForHeadsetAsync(string devcieID)
         {
+            writelog($"[Headset] UnregisterEventsForHeadsetAsync in ... "); 
             if (devcieID == null || devcieID == string.Empty || headsetList.Count == 0)
             {
                 writelog($"devcieID == string.Empty || devcieID == null || headsetList.Count == 0");
@@ -8304,15 +8306,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Headset_Disconnected(object sender, DisconnectedArgs e)
         {
+            writelog($"[Headset] Headset_Disconnected in ... ");
+
             Task<bool> result = UnregisterEventsForHeadsetAsync(e.DeviceId);
 
             SendDTPEventToUI(CreateHeadsetEventMsg("Headset", "Headset_Disconnected", e.DeviceId));
 
-            writelog($"Catch event _Headset_Disconnected, unregister events result is {result.Result}, current devCount is {headsetList.Count} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"[Headset] Catch event Headset_Disconnected, unregister events result is {result.Result}, current devCount is {headsetList.Count} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private async Task<bool> RegisterEventsForHeadsetAsync(string deviceID)
         {
+            writelog($"[Headset] RegisterEventsForHeadsetAsync in ... ");
             if (null == _comdityHeadset || deviceID == null || deviceID == string.Empty)
             {
                 writelog($"null == _comdityHeadset || deviceID == null || deviceID == string.Empty");
@@ -8324,14 +8329,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 if (_comdityHeadset is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _HeadsetComObj)
                 {
-                    writelog($"connected _HeadsetComObj.DeviceItems = {_HeadsetComObj.DeviceItems.Length}");
+                    writelog($"connected HeadsetComObj.DeviceItems = {_HeadsetComObj.DeviceItems.Length}");
 
                     int i = 0;
                     foreach (var item in _HeadsetComObj.DeviceItems)
                     {
-                        writelog($"connected _HeadsetComObj.DeviceItems[{i}] = {item}");
+                        writelog($"connected HeadsetComObj.DeviceItems[{i}] = {item}");
                         string jsonStr = _HeadsetComObj.DeviceItemsEx[i++].ToString();
-                        writelog($"connected _HeadsetComObj.DeviceItems = {jsonStr}");
+                        writelog($"connected HeadsetComObj.DeviceItems = {jsonStr}");
 
                         HeadsetEventHandleObject jsonObject = JsonSerializer.Deserialize<HeadsetEventHandleObject>(jsonStr)!;
 
@@ -8360,6 +8365,11 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                         }
                     }
                 }
+                else
+                {
+                    writelog($"_comdityHeadset is not Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity");
+                    return false;
+                }
             }
             catch (Exception e)
             {
@@ -8367,12 +8377,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 return false;
             }
-
+            writelog($"[Headset] RegisterEventsForHeadsetAsync return false ... ");
             return false;
         }
 
         private bool RegisterEventsForHeadset(ICommodity _comdityHeadset)
         {
+            writelog($"[Headset] RegisterEventsForHeadset in ... ");
             if (null == _comdityHeadset)
             {
                 writelog($"_comdityHeadset == null");
@@ -8432,11 +8443,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Headset_Connected(object sender, ConnectedArgs e)
         {
+            writelog($"[Headset] Headset_Connected in ... ");
+
             Task<bool> result = RegisterEventsForHeadsetAsync(e.DeviceId);
 
             SendDTPEventToUI(CreateHeadsetEventMsg("Headset", "Headset_Connected", e.DeviceId));
 
-            writelog($"Catch event _Headset_Connected, register events result is {result.Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"[Headset] Catch event Headset_Connected, register events result is {result.Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Headset_MuteStatusChanged(object sender, MuteStatusChangedArgs e)
