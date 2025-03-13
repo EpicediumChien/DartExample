@@ -1245,7 +1245,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         }
 
         public Task<bool> SetAllUSBUpstream(MonitorInfo monitorInfo, string input1, string usb1, string input2, string usb2,
-                                                                    string input3, string usb3, string input4, string usb4)
+                                                                     string input3, string usb3, string input4, string usb4)
         {
             int input_num = 0;
             ObjGetVCP objGetVCP = new ObjGetVCP();
