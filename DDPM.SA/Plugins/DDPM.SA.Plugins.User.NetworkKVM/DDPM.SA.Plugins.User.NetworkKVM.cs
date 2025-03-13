@@ -2573,7 +2573,7 @@ namespace NetworkKVM.Plugins
 
         public Task SetOnNKVM(MonitorInfo monitorInfo, bool ison, ISettingsManagerDev _SettingsPlugin)
         {
-            _logs.DebugMsg("[SetOnNKVM] SetOnNKVM");
+            _logs.DebugMsg("[SetOnNKVM] SetOnNKVM ison : " + ison.ToString());
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
             if (settings != null) //Robert_Lin 0731
             {
