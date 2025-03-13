@@ -135,8 +135,15 @@
                                 <UXControls:UXTextBlock x:Name="WearDetectionText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAutomatedActions.0], Source={x:Static lang:LangHelper.Instance}}" Margin="18,0,0,0" />
                                 <Image x:Name="WearDetectionImage" Grid.Column="1" Width="16" Height="16" Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                     <Image.ToolTip>
-                                        <ToolTip x:Name="WearDetectionToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Left" VerticalOffset="18" HorizontalOffset="6">
-                                            <TextBlock MaxWidth="350" TextWrapping="WrapWithOverflow" x:Name="WearDetectionToolTipText" Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding WearDetectionToolTip}" />
+                                        <ToolTip Placement="Top" VerticalOffset="18" HorizontalOffset="6">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <Border.Resources>
+                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                </Border.Resources>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding WearDetectionToolTip}" TextWrapping="WrapWithOverflow"/>
+                                                </StackPanel>
+                                            </Border>
                                         </ToolTip>
                                     </Image.ToolTip>
                                 </Image>
@@ -294,11 +301,15 @@
 
                                             <Image x:Name="PauseMusicImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
-                                                    <ToolTip Placement="Left" x:Name="PauseMusicToolTip" Style="{StaticResource InfoToolTipStyle}" VerticalOffset="8" HorizontalOffset="6">
-                                                        <TextBlock x:Name="PauseMusicToolTipText" 
-                                                                   Style="{StaticResource TabInfoToolTipTextStyle}" 
-                                                                   Text="{Binding PauseMusicToolTip}" 
-                                                                   MaxWidth="350" TextWrapping="WrapWithOverflow"/>
+                                                    <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                            <Border.Resources>
+                                                                <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                            </Border.Resources>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding PauseMusicToolTip}" MaxWidth="350" TextWrapping="WrapWithOverflow"/>
+                                                            </StackPanel>
+                                                        </Border>
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
@@ -333,10 +344,15 @@
                                             </UXControls:UXTextBlock>
                                             <Image ToolTipService.HorizontalOffset="-200" x:Name="MuteMicrophoneImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
-                                                    <ToolTip x:Name="MuteMicrophoneToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                        <!-- Derek_0106 for PIMS-335217 -->
-                                                        <TextBlock x:Name="MuteMicrophoneToolTipText" Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding MuteMicrophoneToolTip}" 
-                                                                   MaxWidth="350" TextWrapping="WrapWithOverflow"/>
+                                                    <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                            <Border.Resources>
+                                                                <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                            </Border.Resources>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding MuteMicrophoneToolTip}" MaxWidth="350" TextWrapping="WrapWithOverflow"/>
+                                                            </StackPanel>
+                                                        </Border>
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
@@ -373,8 +389,15 @@
                                             </UXControls:UXTextBlock>
                                             <Image ToolTipService.HorizontalOffset="-250" x:Name="QuickPauseImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
-                                                    <ToolTip x:Name="QuickPauseToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                        <TextBlock x:Name="QuickPauseToolTipText" Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding QuickPauseToolTip}" />
+                                                    <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                            <Border.Resources>
+                                                                <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                            </Border.Resources>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding QuickPauseToolTip}" TextWrapping="WrapWithOverflow"/>
+                                                            </StackPanel>
+                                                        </Border>
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
