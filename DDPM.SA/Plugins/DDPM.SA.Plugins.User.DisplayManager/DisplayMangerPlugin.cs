@@ -3255,13 +3255,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (supportedHDR)
             {
                 int count = 0;
-                ObjGetVCP ObjGetVCP;
+                ObjGetVCP ObjGetVCP = null;
                 do
                 {
+                    if (IsDisposed)
+                    {
+                        _logs?.DebugMsg_1($"GetDisplayPropertiesInfo IsDisposed");
+                        break;
+                    }
                     ObjGetVCP = GetVCPCapability(monitorInfos, 0xE2).Result;
                     count++;
                 } while (ObjGetVCP.result != true && count < 3);
-                if (ObjGetVCP.result == true)
+                if (ObjGetVCP != null && ObjGetVCP.result == true)
                 {
                     uint[] stand = new uint[] { 0x25, 0x23, 0x24, 0x26, 0x27, 0x3A, 0x3B, 0x3C };
                     foreach (uint hdrType in stand)
@@ -3324,13 +3329,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 if (supportedUSBC)
                 {
                     int count = 0;
-                    ObjGetVCP ObjGetVCP;
+                    ObjGetVCP ObjGetVCP = null;
                     do
                     {
+                        if (IsDisposed)
+                        {
+                            _logs?.DebugMsg_1($"GetCurrentDisplayProperties IsDisposed");
+                            break;
+                        }
                         ObjGetVCP = GetVCPCapability(monitorInfo, setParam).Result;
                         count++;
                     } while (ObjGetVCP.result != true && count < 3);
-                    if (ObjGetVCP.result == true)
+                    if (ObjGetVCP != null && ObjGetVCP.result == true)
                     {
                         PrioritizationType = ObjGetVCP.value.ToString() == "High Data Speed" ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
                         _logs.DebugMsg($"[DisplayMangerPlugin] GetCurrentDisplayProperties PrioritizationType:{PrioritizationType}");
