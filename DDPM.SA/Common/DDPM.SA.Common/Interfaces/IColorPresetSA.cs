@@ -17,7 +17,7 @@ namespace DDPM.SA.Common
     {
         #region public for  Color Preset Plugin
 
-        event EventHandler<VCPchangedEventArgs> VCPchanged;
+        //event EventHandler<VCPchangedEventArgs> VCPchanged;
 
         event EventHandler<string> Coloreset_manual_ChangeEvent;
 

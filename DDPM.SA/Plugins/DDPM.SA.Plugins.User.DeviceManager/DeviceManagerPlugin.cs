@@ -12587,7 +12587,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        private void show_colorpreset(object sender, VCPchangedEventArgs e)
+        /*private void show_colorpreset(object sender, VCPchangedEventArgs e)
         {
             writelog("Receive VcpChanged Event Notify from ColorPresetPlugin");
             writelog("Send out VcpChanged Event Notify from ColorPresetPlugin");
@@ -12598,7 +12598,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //0607 Bruce 因VCPChange事件需要取得螢幕資訊故請Jarvis新增這段變數 代為新增
             _VCPchangedEventArgs.monitor = e.monitor;
             OnVCPchanged(_VCPchangedEventArgs);
-        }
+        }*/
 
         private void show_peripheralsNotify(object sender, DeviceChangedEventArgs e)
         {
@@ -13025,7 +13025,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"{nameof(GetCurrentColorPresetCondition)} - ColorPreset Plugin is in a started/running condition");
                         //_ColorPresetPluginCondition = pluginCondition;
-                        _ColorPresetPlugin.VCPchanged += show_colorpreset;
+                        //_ColorPresetPlugin.VCPchanged += show_colorpreset;
 
                         _ColorPresetPlugin.Coloreset_manual_ChangeEvent += OnColoresetManualChangeHandler;
 
