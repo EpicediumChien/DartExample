@@ -6122,6 +6122,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("[DeviceMangerPlugin] DownloadAndInstall start");
             writelog($"[DeviceMangerPlugin] DownloadAndInstall isUITrigger : {isUITrigger}");
+            if (fwUpdateInfos == null)
+            {
+                writelog("[DeviceMangerPlugin] fwUpdateInfos is null");
+                return Task.FromResult(new List<FWUpdateInfo>());
+            }
             if (_FWUpdatePlugin == null)
             {
                 writelog("[DeviceMangerPlugin] _FWUpdatePlugin is null");

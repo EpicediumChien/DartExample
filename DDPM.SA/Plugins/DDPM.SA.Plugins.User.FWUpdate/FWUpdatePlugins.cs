@@ -760,6 +760,18 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             Method method = new Method(_logs);
             try
             {
+                if (fwUpdateInfos.Count > 0)
+                {
+                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                    {
+                        DeviceName = fwUpdateInfos[0].DeviceName,
+                        Model = fwUpdateInfos[0].Model,
+                        TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                        ProcessName = "Downloading",
+                        ProcessProgress = 0,
+                    };
+                    sendMessageToEvent(updateProgressInfo);
+                }
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " all start");
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " fwUpdateInfos.Count : " + fwUpdateInfos.Count);
                 List<FWUpdateInfo> temp_FWUpdateInfo = fwUpdateInfos.FindAll(o => o.IsDisplay);
@@ -1591,7 +1603,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                     }
-                    else if(_updateErrorCode == FWUErrorCode.Service_not_running_Try_again)
+                    else if (_updateErrorCode == FWUErrorCode.Service_not_running_Try_again)
                     {
                         _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
                     }
