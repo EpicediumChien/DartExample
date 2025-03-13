@@ -197,15 +197,15 @@ namespace DDPM.SA.Plugins.User.Hotkey
         {
             if (!IsDisposed)
             {
+                IsDisposed = true;
                 if (disposing)
                 {
+                    unhook();
+                    _hookThread.Interrupt();
                     _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
                     _agent = null;
-                    _hookThread.Interrupt();
                     writelog($"[HotkeyPlugin Dispose] ===============");
                 }
-
-                IsDisposed = true;
             }
             base.Dispose(disposing);
         }
