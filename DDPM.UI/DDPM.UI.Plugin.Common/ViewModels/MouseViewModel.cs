@@ -730,27 +730,44 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         private double[] GetDpiTextMargin(int value)
         {
-            switch (Model)
+            try
             {
-                case "MS300":
-                case "MS700":
-                case "MS3320W":
-                case "MS5120W":
-                case "MS5320W":
-                case "MS7421W":
-                    switch (value)
-                    {
-                        case 2:
-                            return new double[] { 169, 0, 0, 0 };
-                        case 3:
-                            return new double[] { 287, 0, 0, 0 };
-                        default:
-                            return new double[] { 0, 0, 0, 0 };
-                    }
-                default:
-                    var digit = (int)Math.Log10(value);
-                    return new double[] { (double)(value - DPIMin) / (double)(DPIMax - DPIMin) * 365.0 + 62 - (double)digit * 5, 0, 0, 1 };
+                DdpmCommonHelper.WriteUILog($"In GetDpiTextMargin:{Model}");
+                switch (Model)
+                {
+                    case "MS300":
+                    case "MS700":
+                    case "MS3320W":
+                    case "MS5120W":
+                    case "MS5320W":
+                    case "MS7421W":
+                        switch (value)
+                        {
+                            case 2:
+                                return new double[] { 169, 0, 0, 0 };
+                            case 3:
+                                return new double[] { 287, 0, 0, 0 };
+                            default:
+                                return new double[] { 0, 0, 0, 0 };
+                        }
+                    default:
+                        var digit = (int)Math.Log10(value);
+                        return new double[]
+                        {
+                            (double)(value - DPIMin) / (double)(DPIMax - DPIMin) * 365.0 + 62 - (double)digit * 5,
+                            0,
+                            0,
+                            1
+                        };
+                }
             }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"Error calculating DPI text margin. {ex.Message}");
+                // Return a default value or handle the error as needed
+                return new double[] { 0, 0, 0, 1 };
+            }
+
         }
         public string DPIValueText { get; set; } = "";
         public double[] DPITextMargin { get; set; } = { 0 };//SDL, change to use array
