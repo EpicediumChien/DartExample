@@ -16892,6 +16892,40 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Microsoft.Win32.SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
                     ToastNotificationManagerCompat.OnActivated -= CheckInput;//Bruce 0924 add Popup Event
                     //displayChange.DisplayChange_Event -= SystemEvents_DisplaySettingsChanged;
+                    if (_FWUpdatePlugin != null)
+                    {
+                        if (_UpdateProgress != null)
+                        {
+                            writelog($"[DeviceMangerPlugin] Dispose _UpdateProgress.CloseWindow go");
+                            ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                            _UpdateProgress.CloseWindow();
+                            _UpdateProgress = null;
+                        }
+                        _FWUpdatePlugin.CallSaveUODFWDeviceInfos -= show_fwUODUpdateInfo;
+                        _FWUpdatePlugin.CallCheckUODFWInfos -= show_CheckUODUpdateInfo;
+                        _FWUpdatePlugin.DownloadAndInstall_Result_Notify -= show_fwUpdateResultEvent;
+                        _FWUpdatePlugin.CallPopup -= CallPopup;
+                        _FWUpdatePlugin.CallOSD -= CallOSD;
+                        if (_checkUpdateScheduleTimer != null)
+                        {
+                            _checkUpdateScheduleTimer.Elapsed -= new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+                            _checkUpdateScheduleTimer.Stop();
+                        }
+                    }
+                    if (_SWUpdatePlugin != null)
+                    {
+                        _SWUpdatePlugin.CallPopup -= CallPopup;
+                        if (_checkUpdateScheduleTimer != null)
+                        {
+                            _checkUpdateScheduleTimer.Elapsed -= new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+                            _checkUpdateScheduleTimer.Stop();
+                        }
+                    }
+                    if (_checkICCProfileScheduleTimer != null)
+                    {
+                        _checkICCProfileScheduleTimer.Elapsed -= new ElapsedEventHandler(CheckICCProfileScheduleTimer_Elapsed);
+                        _checkICCProfileScheduleTimer.Stop();
+                    }
                     if (_SettingsPlugin != null)
                         _SettingsPlugin.ITSettingsActionEvent -= _SettingsPlugin_ITSettingsActionEvent;
                 }

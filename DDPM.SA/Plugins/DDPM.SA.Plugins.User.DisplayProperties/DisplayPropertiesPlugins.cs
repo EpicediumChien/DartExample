@@ -1,7 +1,9 @@
 ﻿using DDPM.SA.Common;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Interfaces;
+using Microsoft;
 using MS.WindowsAPICodePack.Internal;
 using System;
 using System.Collections.Generic;
@@ -12,6 +14,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using VcpCore.Common;
 using static VcpCore.Common.dxva2;
 using static VcpCore.Common.User32;
@@ -24,7 +27,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(IDisplayProperties) })]
     [DependencyKnownTypes(new[] { typeof(IDisplayProperties) })]
-    public class DisplayPropertiesPlugins : BaseAgentPlugin, IDisplayProperties
+    public class DisplayPropertiesPlugins : BaseAgentPlugin, IDisposableObservable, IDisplayProperties
     {
         #region Private Members
 
@@ -51,10 +54,58 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         public DisplayPropertiesPlugins(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
+            _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
             _logs = new Logs(Log, PluginLogId);
             _displayPropertiesInfo = new DisplayPropertiesInfo();
         }
+        #region IDisposableObservable Support
+        /// <summary>
+        /// To detect redundant calls
+        /// </summary>
+        public bool IsDisposed { get; private set; }
 
+        /// <summary>
+        /// Override for Dispose
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
+        {
+#if DEBUG
+            Console.WriteLine($"Dispose: {disposing}");
+#endif
+            if (!IsDisposed)
+            {
+                IsDisposed = true;
+                if (disposing)
+                {
+                    _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
+                    _agent = null;
+                }
+            }
+            base.Dispose(disposing);
+        }
+
+        #endregion IDisposableObservable Support
+        #region Event Handler
+
+        private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
+        {
+            if (e == null)
+                return;
+            if (e.ChangedPlugins == null)
+                return;
+            if (e.ChangedPlugins.Any() == false)
+                return;
+
+            if (e.ChangedPlugins.OfType<IDisplayProperties>().Any())
+            {
+#if DEBUG
+                Console.WriteLine("IDisplayProperties plugin started.");
+#endif
+            }
+        }
+
+        #endregion Event Handler
         /// <summary>
         /// 取得螢幕屬性(現在解析度、刷新率,螢幕所支援的解析度,HDR狀態, USBCPrioritization狀態)
         /// </summary>
@@ -165,6 +216,11 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     int retryCount = 1;
                     do
                     {
+                        if (IsDisposed)
+                        {
+                            _logs?.DebugMsg_1($"SetDisplayPropertiest IsDisposed");
+                            break;
+                        }
                         result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_TEST, IntPtr.Zero);
                         _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set devMode param: {DisplayName} :{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
                         _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set result:{result} try count:{retryCount}");
@@ -217,6 +273,11 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     int retryCount = 1;
                     do
                     {
+                        if (IsDisposed)
+                        {
+                            _logs?.DebugMsg_1($"SetResolutions IsDisposed");
+                            break;
+                        }
                         result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_TEST, IntPtr.Zero);
                         _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set devMode param: {DisplayName} :{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
                         _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set result:{result} try count:{retryCount}");
@@ -328,6 +389,11 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     int retryCount = 1;
                     do
                     {
+                        if (IsDisposed)
+                        {
+                            _logs?.DebugMsg_1($"SetOrientation IsDisposed");
+                            break;
+                        }
                         result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_TEST, IntPtr.Zero);
                         _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set devMode param: {DisplayName} :{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
                         _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set result:{result} try count:{retryCount}");
@@ -478,6 +544,11 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         int realindex = -1;
                         for (int jj = 0; _EnumDisplayDevices(DeviceName, (uint)jj, ref dd, 0); jj++)
                         {
+                            if (IsDisposed)
+                            {
+                                _logs?.DebugMsg_1($"_GetMonitors IsDisposed");
+                                break;
+                            }
                             if ((dd.StateFlags & DisplayDeviceStateFlags.AttachedToDesktop) == 0)
                                 continue;
 
@@ -602,6 +673,11 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             bool found_Current = false, found_Recommended = false;
             while (_EnumDisplaySettings(monitorInfo.DisplayName, i, ref devMode))
             {
+                if (IsDisposed)
+                {
+                    _logs?.DebugMsg_1($"GetSupportedResolutions IsDisposed");
+                    break;
+                }
                 Properties resolution = new Properties
                 {
                     Resolutions_Width = devMode.dmPelsWidth,
@@ -690,6 +766,11 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             DEVMODE deviceMode = new DEVMODE();
             for (int i = 0; _EnumDisplaySettings(deviceName, i, ref deviceMode) != false; i++)
             {
+                if (IsDisposed)
+                {
+                    _logs?.DebugMsg_1($"GetMaxRefreshRateByWidthAndHeight IsDisposed");
+                    break;
+                }
                 if (deviceMode.dmDisplayFrequency >= refreshRate &&
                     (deviceMode.dmPelsWidth == dispWidth && deviceMode.dmPelsHeight == dispHeight))
                 {
@@ -713,6 +794,11 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             List<(int Width, int Height)> resolutions = new List<(int Width, int Height)>();
             while (_EnumDisplaySettings(displayName, modeIndex, ref dm))
             {
+                if (IsDisposed)
+                {
+                    _logs?.DebugMsg_1($"GetBestResolution IsDisposed");
+                    break;
+                }
                 resolutions.Add((dm.dmPelsWidth, dm.dmPelsHeight));
                 modeIndex++;
             }
