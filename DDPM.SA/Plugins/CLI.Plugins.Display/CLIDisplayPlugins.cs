@@ -23,7 +23,6 @@ using System.Linq;
 using System.Runtime.Intrinsics.X86;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using VcpCore.Common;
 using Windows.Foundation.Collections;
 using static DDPM.RemoteManagement.Common.Interfaces.Params;
@@ -247,7 +246,7 @@ namespace DDPM.CLI.Plugins.Display
                 if (commandLineInput.Options[0].Option_Value.Equals("Display", StringComparison.OrdinalIgnoreCase) && !input_param_validation(devMgr, commandLineInput, ref result))
                     return result;
             }
-            
+
             switch (commandLineInput.TargetFeature)
             {
                 case "CONNECTEDDEVICES":
@@ -1056,7 +1055,7 @@ namespace DDPM.CLI.Plugins.Display
                     writelog("LogicalHeadset entry");
                     var audio = new DeviceDataAudioResponse(index, device);
                     writelog("_devMgr.GetHeadsetSerialNumber entry");
-                    audio.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(guid).Result ?? "N/A";                    
+                    audio.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(guid).Result ?? "N/A";
                     writelog("_devMgr.GetConnectionTypeAsync entry");
                     audio.Connectiontype = get_headsetconnection_type(_devMgr.GetConnectionTypeAsync(guid).Result);
                     writelog("_devMgr.GetIsANCSupportedAsync entry");
@@ -1091,7 +1090,7 @@ namespace DDPM.CLI.Plugins.Display
                     writelog("_devMgr.GetDockServiceTagForDock entry");
                     dock.ServiceTag = _devMgr.GetDockServiceTagForDock(guid).Result ?? "N/A";
                     return dock;
-                    //return new DeviceDataDockResponse(index, device);
+                //return new DeviceDataDockResponse(index, device);
                 default:
                     return new PeripheralResponse(index, device);
             }
@@ -1112,7 +1111,7 @@ namespace DDPM.CLI.Plugins.Display
             _AllInfoMonitors = await devMgr.GetMonitors();
 
             string output = string.Empty;
-
+            string output_2 = string.Empty;
             _deviceHelper = new DeviceHelper
             {
                 deviceInfo = new List<DeviceInfo>()
@@ -1301,19 +1300,83 @@ namespace DDPM.CLI.Plugins.Display
                         case "HEADSET":
                         case "PEN":
                         case "DOCK":
-                        case "AIRAUDIO":
-                            foreach (var g in _deviceinfo)
+                        case "AIRAUDIO"://20250313 Elsa add for ConnectedDevices support guid/servicetag/model
+                            if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
-                                if (g.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
+                                var match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (match != null)
                                 {
-                                    index_per++;
-                                    recode_per = true;
-                                    output = GetPeripheralResponse(index_per, output, g);
+                                    if (match.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        recode_per = true;
+                                        output = GetPeripheralResponse(0, output, match);
+                                    }
+                                }
+                                else
+                                {
+                                    return Invalidcommand(commandLineInput, output, ref output_2, "guid");
+                                }
+                            }
+                            else if (commandLineInput.ServiceTag != null && commandLineInput.ServiceTag.Count > 0 && !string.IsNullOrEmpty(commandLineInput.ServiceTag[0].ToString()))
+                            {
+                                var match = _deviceinfo.SingleOrDefault(x => x.DockServiceTag.ToString().Equals(commandLineInput.ServiceTag.ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (match != null)
+                                {
+                                    if (match.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        recode_per = true;
+                                        output = GetPeripheralResponse(0, output, match);
+                                    }
+                                }
+                                else
+                                {
+                                    return Invalidcommand(commandLineInput, output, ref output_2, "ServiceTag");
+                                }
+                            }
+                            else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
+                            {
+                                var match = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (match.Count > 0)
+                                {
+                                    foreach (var g in match)
+                                    {
+                                        if (g.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            index_per++;
+                                            recode_per = true;
+                                            output = GetPeripheralResponse(index_per, output, g);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    return Invalidcommand(commandLineInput, output, ref output_2, "Model");
+                                }
+                            }
+                            else
+                            {
+                                foreach (var g in _deviceinfo)
+                                {
+                                    if (g.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        index_per++;
+                                        recode_per = true;
+                                        output = GetPeripheralResponse(index_per, output, g);
+                                    }
                                 }
                             }
                             break;
                         default:
                             break;
+                    }
+                    if (string.IsNullOrEmpty(output))
+                    {
+                        output = new CLI_RESPONSE3
+                        {
+                            Command = commandLineInput.Command,
+                            TargetFeature = commandLineInput.TargetFeature,
+                            Message = "No device found"
+                        }.ToJson();
                     }
                     if (_deviceinfo == null || _deviceinfo.Count == 0)
                         return ((int)CLI_ExitCode.null_device_manager, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
@@ -1455,6 +1518,18 @@ namespace DDPM.CLI.Plugins.Display
                 G_ConnectedDevices_RESPONSE.Message = $"Un-supported command: {type}";
             }
             return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
+        }
+
+        private static (int code, string result) Invalidcommand(CommandLineInput commandLineInput, string output, ref string output_2, string commandin)
+        {
+            CLI_RESPONSE3 cli_Response = new CLI_RESPONSE3();
+            cli_Response.Command = commandLineInput.Command;
+            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+            cli_Response.Result = "FAIL";
+            cli_Response.Message = "Invalid " + commandin;
+            output_2 += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            output_2 += output;
+            return ((int)CLI_ExitCode.success, output_2);
         }
 
         private (int code, string result) ScreenNotificationx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
@@ -8861,13 +8936,14 @@ namespace DDPM.CLI.Plugins.Display
             };*/
 
             List<DeviceInfo> _deviceinfo = null;
+            DeviceInfo match = null;
             _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
 
             //if (_AllInfoMonitors == null)
             _AllInfoMonitors = await devMgr.GetMonitors();
             _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
             _deviceInfoFinal = GetDDeviceIndeies(commandLineInput, _deviceinfo);
-    
+
             int index = 0;
 
             if (commandLineInput.Options.Count > 0)
@@ -9135,19 +9211,15 @@ namespace DDPM.CLI.Plugins.Display
                         case "WIREDAUDIO":
                         case "HEADSET":
                         case "PEN":
-                        case "DOCK":
-                            if (!string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))//20250306Elsa add for DeviceData filter guid
+                        case "DOCK"://20250306Elsa add for DeviceData support guid
+                            if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
-                                var match= _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
                                 if (match != null)
-                                { 
-                                   recode_per = true;
-                                   output += "\n" + GetDeviceDataPeripheralResponse(0, match).ToJson(); 
-                                }
-                                else
                                 {
-                                   output += "\n" + "Invalid GUID.";
-                                }                                
+                                    recode_per = true;
+                                    output += "\n" + GetDeviceDataPeripheralResponse(0, match).ToJson();
+                                }
                             }
                             else
                             {
@@ -9160,7 +9232,7 @@ namespace DDPM.CLI.Plugins.Display
                                         output += "\n" + GetDeviceDataPeripheralResponse(index, device).ToJson();
                                     }
                                 }
-                            } 
+                            }
                             break;
                         default:
                             break;
@@ -9437,6 +9509,11 @@ namespace DDPM.CLI.Plugins.Display
             else if (_deviceinfo.Count == 0 && _monitorIndeies.Count == 0)
             {
                 cli_Response.Message = "No devices found";
+            }
+            else if (!recode_per && match == null)
+            {
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid guid";
             }
             else
             {
@@ -9796,7 +9873,7 @@ namespace DDPM.CLI.Plugins.Display
             writelog($"Energysaver return exit value{output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
-        
+
         private static List<int>? GetMonitorIndeies(CommandLineInput cmdLineInput, List<MonitorInfo> allMonitors)
         {
             if (allMonitors == null)
@@ -10935,8 +11012,8 @@ namespace DDPM.CLI.Plugins.Display
             ALSConfig param = new ALSConfig();
             string output = string.Empty;
             ObjGetVCP rc = new ObjGetVCP();
-            bool recode_find = false;
-
+            bool math_found = true;
+            List<DeviceInfo> mathdevs = new List<DeviceInfo>();
             List<DeviceInfo> _deviceinfo = null;
             _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
             if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
@@ -11468,60 +11545,47 @@ namespace DDPM.CLI.Plugins.Display
                             writelog("KEYBOARD set entry");
                             if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
-                                foreach (var propertys in jsonObject.Properties())
+                                var math = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math != null)
                                 {
-                                    if (propertys.Name.ToString().ToUpper() == "ID" && propertys.Value.ToString().ToUpper() == commandLineInput.GuidString[0].ToString().ToUpper())
+                                    mathdevs.Add(math);
+                                    if (mathdevs[0].LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                     {
-                                        var match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
-                                        if (match != null)
-                                        {
-                                            recode_find = true;
-                                            if (match.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
-                                            {
-                                                ispass = DeviceconfigurationSetKeyboard(jsonObject, true, resultMessages, match);
-                                            }
-                                            var response = GetDeviceDataPeripheralResponse(0, match);
-                                            output += "\n" + response.ToJson();
-                                            break;
-                                        }
+                                        ispass = DeviceconfigurationSetKeyboard(jsonObject, true, resultMessages, mathdevs[0]);
                                     }
+                                    var response = GetDeviceDataPeripheralResponse(0, mathdevs[0]);
+                                    output += "\n" + response.ToJson();
+                                    break;
                                 }
-                                if (!recode_find)
+                                else
                                 {
+                                    math_found = false;
                                     ispass = false;
                                     resultMessages.Add("Invalid guid.");
-                                    output += "\n" + "Fail";
                                 }
                             }
                             else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
                             {
-                                foreach (var propertys in jsonObject.Properties())
+                                var math = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math.Count != 0)
                                 {
-                                    if (propertys.Name.ToString().ToUpper() == "MODEL" && propertys.Value.ToString().ToUpper() == commandLineInput.Model[0].ToString().ToUpper())
+                                    mathdevs.AddRange(math);
+                                    foreach (var device in mathdevs)
                                     {
-                                        var match = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
-                                        if (match.Count > 0)
+                                        if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                         {
-                                            recode_find = true;
-                                            index = 0;
-                                            foreach (var device in match)
-                                            {
-                                                if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
-                                                {
-                                                    ispass = DeviceconfigurationSetKeyboard(jsonObject, ispass, resultMessages, device);
-                                                    var response = GetDeviceDataPeripheralResponse(index, match[index]);
-                                                    output += "\n" + response.ToJson();
-                                                    index++;
-                                                }
-                                            }
+                                            ispass = DeviceconfigurationSetKeyboard(jsonObject, ispass, resultMessages, device);
+                                            var response = GetDeviceDataPeripheralResponse(index, mathdevs[index]);
+                                            output += "\n" + response.ToJson();
+                                            index++;
                                         }
                                     }
                                 }
-                                if (!recode_find)
+                                else
                                 {
+                                    math_found = false;
                                     ispass = false;
                                     resultMessages.Add("Invalid model.");
-                                    output += "\n" + "Fail";
                                 }
                             }
                             else
@@ -11538,64 +11602,57 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                             }
                             break;
-                        case "WEBCAM"://202503010 Elsa add for Deviceconfiguration support guid&model
+                        case "WEBCAM"://202503012 Elsa add for Deviceconfiguration support guid&model
                             writelog("WEBCAM set entry");
                             if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
-                                foreach (var propertys in jsonObject.Properties())
+                                //foreach (var propertys in jsonObject.Properties())
+                                //{
+                                //if (propertys.Name.ToString().ToUpper() == "ID" && propertys.Value.ToString().ToUpper() == commandLineInput.GuidString[0].ToString().ToUpper())
+                                //{
+                                var math = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math != null)
                                 {
-                                    if (propertys.Name.ToString().ToUpper() == "ID" && propertys.Value.ToString().ToUpper() == commandLineInput.GuidString[0].ToString().ToUpper())
+                                    mathdevs.Add(math);
+                                    if (mathdevs[0].LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                     {
-                                        var match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
-                                        if (match != null)
-                                        {
-                                            recode_find = true;
-                                            if (match.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
-                                            {
-                                                ispass = DeviceconfigurationSetWebcam(jsonObject, true, resultMessages, match);
-                                            }
-                                            var response = GetDeviceDataPeripheralResponse(0, match);
-                                            output += "\n" + response.ToJson();
-                                            break;
-                                        }
+                                        ispass = DeviceconfigurationSetWebcam(jsonObject, true, resultMessages, mathdevs[0]);
                                     }
+                                    var response = GetDeviceDataPeripheralResponse(0, mathdevs[0]);
+                                    output += "\n" + response.ToJson();
+                                    break;
                                 }
-                                if (!recode_find)
+                                //}
+                                //}
+                                else
                                 {
+                                    math_found = false;
                                     ispass = false;
                                     resultMessages.Add("Invalid guid.");
-                                    output += "\n" + "Fail";
                                 }
                             }
                             else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
                             {
-                                foreach (var propertys in jsonObject.Properties())
+                                var math = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math.Count != 0)
                                 {
-                                    if (propertys.Name.ToString().ToUpper() == "MODEL" && propertys.Value.ToString().ToUpper() == commandLineInput.Model[0].ToString().ToUpper())
+                                    mathdevs.AddRange(math);
+                                    foreach (var device in mathdevs)
                                     {
-                                        var match = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
-                                        if (match.Count > 0)
+                                        if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                         {
-                                            recode_find = true;
-                                            index = 0;
-                                            foreach (var device in match)
-                                            {
-                                                if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
-                                                {
-                                                    ispass = DeviceconfigurationSetWebcam(jsonObject, ispass, resultMessages, device);
-                                                    var response = GetDeviceDataPeripheralResponse(index, match[index]);
-                                                    output += "\n" + response.ToJson();
-                                                    index++;
-                                                }
-                                            }
+                                            ispass = DeviceconfigurationSetWebcam(jsonObject, ispass, resultMessages, device);
+                                            var response = GetDeviceDataPeripheralResponse(index, mathdevs[index]);
+                                            output += "\n" + response.ToJson();
+                                            index++;
                                         }
                                     }
                                 }
-                                if (!recode_find)
+                                else
                                 {
+                                    math_found = false;
                                     ispass = false;
                                     resultMessages.Add("Invalid model.");
-                                    output += "\n" + "Fail";
                                 }
                             }
                             else
@@ -11614,64 +11671,51 @@ namespace DDPM.CLI.Plugins.Display
                             break;
                         case "WIREDAUDIO":
                         case "HEADSET":
-                        case "AUDIO":
+                        case "AUDIO"://202503012 Elsa add for Deviceconfiguration support guid&model
                             writelog("AUDIO set entry");
                             if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
-                                foreach (var propertys in jsonObject.Properties())
+                                var math = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math != null)
                                 {
-                                    if (propertys.Name.ToString().ToUpper() == "ID" && propertys.Value.ToString().ToUpper() == commandLineInput.GuidString[0].ToString().ToUpper())
+                                    mathdevs.Add(math);
+                                    if (mathdevs[0].LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                     {
-                                        var match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
-                                        if (match != null)
-                                        {
-                                            recode_find = true;
-                                            if (match.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
-                                            {
-                                                ispass = DeviceconfigurationSetAudio(jsonObject, true, resultMessages, match);
-                                            }
-                                            var response = GetDeviceDataPeripheralResponse(0, match);
-                                            output += "\n" + response.ToJson();
-                                            break;
-                                        }
+                                        ispass = DeviceconfigurationSetAudio(jsonObject, true, resultMessages, mathdevs[0]);
                                     }
+                                    var response = GetDeviceDataPeripheralResponse(0, mathdevs[0]);
+                                    output += "\n" + response.ToJson();
+                                    break;
                                 }
-                                if (!recode_find)
+                                else
                                 {
+                                    math_found = false;
                                     ispass = false;
                                     resultMessages.Add("Invalid guid.");
-                                    output += "\n" + "Fail";
                                 }
                             }
                             else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
                             {
-                                foreach (var propertys in jsonObject.Properties())
+                                var math = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math.Count != 0 )
                                 {
-                                    if (propertys.Name.ToString().ToUpper() == "MODEL" && propertys.Value.ToString().ToUpper() == commandLineInput.Model[0].ToString().ToUpper())
+                                    mathdevs.AddRange(math);
+                                    foreach (var device in mathdevs)
                                     {
-                                        var match = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
-                                        if (match.Count > 0)
+                                        if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                         {
-                                            recode_find = true;
-                                            index = 0;
-                                            foreach (var device in match)
-                                            {
-                                                if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
-                                                {
-                                                    ispass = DeviceconfigurationSetAudio(jsonObject, ispass, resultMessages, device);
-                                                    var response = GetDeviceDataPeripheralResponse(index, match[index]);
-                                                    output += "\n" + response.ToJson();
-                                                    index++;
-                                                }
-                                            }
+                                            ispass = DeviceconfigurationSetAudio(jsonObject, ispass, resultMessages, device);
+                                            var response = GetDeviceDataPeripheralResponse(index, mathdevs[index]);
+                                            output += "\n" + response.ToJson();
+                                            index++;
                                         }
                                     }
                                 }
-                                if (!recode_find)
+                                else
                                 {
+                                    math_found = false;
                                     ispass = false;
                                     resultMessages.Add("Invalid model.");
-                                    output += "\n" + "Fail";
                                 }
                             }
                             else
@@ -11693,84 +11737,65 @@ namespace DDPM.CLI.Plugins.Display
                         case "DOCK"://202503012 Elsa add for Deviceconfiguration support guid&ServiceTag&model
                             if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
-                                foreach (var propertys in jsonObject.Properties())
+                                var math = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math != null)
                                 {
-                                    if (propertys.Name.ToString().ToUpper() == "ID" && propertys.Value.ToString().ToUpper() == commandLineInput.GuidString[0].ToString().ToUpper())
+                                    mathdevs.Add(math);
+                                    if (mathdevs[0].LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                     {
-                                        var match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
-                                        if (match != null)
-                                        {
-                                            recode_find = true;
-                                            if (match.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
-                                            {
-                                                var response = GetDeviceDataPeripheralResponse(0, match);
-                                                output += "\n" + response.ToJson();
-                                                break;
-                                            }
-                                        }
+                                        var response = GetDeviceDataPeripheralResponse(0, mathdevs[0]);
+                                        output += "\n" + response.ToJson();
+                                        break;
                                     }
                                 }
-                                if (!recode_find)
+                                else
                                 {
+                                    math_found = false;
                                     ispass = false;
                                     resultMessages.Add("Invalid guid.");
-                                    output += "\n" + "Fail";
                                 }
                             }
                             else if (commandLineInput.ServiceTag != null && commandLineInput.ServiceTag.Count > 0 && !string.IsNullOrEmpty(commandLineInput.ServiceTag[0].ToString()))
                             {
-                                foreach (var propertys in jsonObject.Properties())
+                                var math = _deviceinfo.SingleOrDefault(x => x.DockServiceTag.ToString().Equals(commandLineInput.ServiceTag[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math != null)
                                 {
-                                    if (propertys.Name.ToString().ToUpper() == "SERVICETAG" && propertys.Value.ToString().ToUpper() == commandLineInput.ServiceTag[0].ToString().ToUpper())
+                                    mathdevs.Add(math);
+                                    if (mathdevs[0].LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                     {
-                                        var match = _deviceinfo.SingleOrDefault(x => x.DockServiceTag.ToString().Equals(commandLineInput.ServiceTag[0].ToString(), StringComparison.OrdinalIgnoreCase));
-                                        if (match != null)
-                                        {
-                                            recode_find = true;
-                                            if (match.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
-                                            {
-                                                var response = GetDeviceDataPeripheralResponse(0, match);
-                                                output += "\n" + response.ToJson();
-                                                break;
-                                            }
-                                        }
+                                        var response = GetDeviceDataPeripheralResponse(0, mathdevs[0]);
+                                        output += "\n" + response.ToJson();
+                                        break;
                                     }
                                 }
-                                if (!recode_find)
+                                else
                                 {
+                                    math_found = false;
                                     ispass = false;
                                     resultMessages.Add("Invalid ServiceTag.");
-                                    output += "\n" + "Fail";
                                 }
                             }
                             else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
                             {
-                                foreach (var propertys in jsonObject.Properties())
+                                var math = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math.Count != 0)
                                 {
-                                    if (propertys.Name.ToString().ToUpper() == "MODEL" && propertys.Value.ToString().ToUpper() == commandLineInput.Model[0].ToString().ToUpper())
+                                    mathdevs.AddRange(math);
+                                    foreach (var device in mathdevs)
                                     {
-                                        var match = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
-                                        if (match.Count > 0)
+                                        if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                         {
-                                            recode_find = true;
-                                            index = 0;
-                                            foreach (var device in match)
-                                            {
-                                                if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
-                                                {
-                                                    var response = GetDeviceDataPeripheralResponse(index, match[index]);
-                                                    output += "\n" + response.ToJson();
-                                                    index++;
-                                                }
-                                            }
+                                            var response = GetDeviceDataPeripheralResponse(index, mathdevs[index]);
+                                            output += "\n" + response.ToJson();
+                                            index++;
                                         }
                                     }
                                 }
-                                if (!recode_find)
+                                else
                                 {
+                                    math_found = false;
                                     ispass = false;
                                     resultMessages.Add("Invalid model.");
-                                    output += "\n" + "Fail";
                                 }
                             }
                             else
@@ -11794,7 +11819,7 @@ namespace DDPM.CLI.Plugins.Display
                             cli_Response__.Message = "Invalid command line syntax or missing -value=file.json";
                             return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response__.ToJson());
                     }
-                    if (string.IsNullOrWhiteSpace(output))
+                    if (string.IsNullOrWhiteSpace(output) && math_found == true)
                     {
                         output = new CLI_RESPONSE3
                         {
