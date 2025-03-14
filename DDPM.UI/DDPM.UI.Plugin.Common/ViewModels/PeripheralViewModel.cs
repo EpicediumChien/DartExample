@@ -102,8 +102,6 @@ namespace DDPM.UI.Plugin.ViewModels
                     CurrentVersion = 10;
                 }
             }
-            DdpmCommonHelper.BitmapImageUpdated -= OnVBarThemeChange;
-            DdpmCommonHelper.BitmapImageUpdated += OnVBarThemeChange;
         }
 
         public void Unpair()
@@ -114,6 +112,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public virtual void OnGoBackClicked()
         {
+            DdpmCommonHelper.BitmapImageUpdated -= OnVBarThemeChange;
             VbarSelectedIndex = -1;
             _console.ShowHomePage();
         }
@@ -1016,6 +1015,10 @@ namespace DDPM.UI.Plugin.ViewModels
         /// </summary>
         private void RebuildVbarItems()
         {
+            // Vbar animation dark\light mode
+            DdpmCommonHelper.BitmapImageUpdated -= OnVBarThemeChange;
+            DdpmCommonHelper.BitmapImageUpdated += OnVBarThemeChange;
+
             _vbarItems.Clear();
 
             int idx = 0;
@@ -1411,6 +1414,11 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 vbar.OnThemeChangeRefresh();
             }
+        }
+
+        ~PeripheralViewModel()
+        {
+            DdpmCommonHelper.BitmapImageUpdated -= OnVBarThemeChange;
         }
     }
 }

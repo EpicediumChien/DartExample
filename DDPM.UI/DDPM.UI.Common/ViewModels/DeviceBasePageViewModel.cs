@@ -176,6 +176,10 @@ namespace DDPM.UI.Common.ViewModels
 
         private void RebuildVbarItems()
         {
+            // Vbar animation dark\light mode
+            DdpmCommonHelper.BitmapImageUpdated -= OnVBarThemeChange;
+            DdpmCommonHelper.BitmapImageUpdated += OnVBarThemeChange;
+
             _vbarItems.Clear();
 
             int idx = 0;
@@ -1150,6 +1154,11 @@ namespace DDPM.UI.Common.ViewModels
             {
                 vbar.OnThemeChangeRefresh();
             }
+        }
+
+        public void UnloadEvents()
+        {
+            DdpmCommonHelper.BitmapImageUpdated -= OnVBarThemeChange;
         }
     }
 }
