@@ -81,6 +81,11 @@ namespace DDPM.SA.Common.Settings
         //User settings param
         public const string Filename_GlobalSetting_peruser = "GlobalSetting.json";
         public const string Filename_appsettings_peruser = "DDPM.Configs.json";
+        //DPeM service
+        public const string DPeMServiceName = "DPMService";
+        //Software installed name
+        public const string InstalledName_DPeM = "Dell Peripheral Core";
+        public const string InstalledName_NKVM = "DDPMW-NKVM";
     }
 
     public class InfoObject
