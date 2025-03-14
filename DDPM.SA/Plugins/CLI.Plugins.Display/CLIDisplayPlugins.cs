@@ -10932,6 +10932,7 @@ namespace DDPM.CLI.Plugins.Display
             ALSConfig param = new ALSConfig();
             string output = string.Empty;
             ObjGetVCP rc = new ObjGetVCP();
+            bool recode_find = false;
 
             List<DeviceInfo> _deviceinfo = null;
             _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
@@ -11048,416 +11049,1279 @@ namespace DDPM.CLI.Plugins.Display
                     switch (ss_1[0].ToUpper())
                     {
                         case "DISPLAY":
-                            foreach (int idx in _monitorIndeies)
+                            if (commandLineInput.ServiceTag != null && commandLineInput.ServiceTag.Count > 0 && !string.IsNullOrEmpty(commandLineInput.ServiceTag[0].ToString()))
                             {
-                                MonitorInfo monitor = _AllInfoMonitors[idx];
-                                Apply_Configuration ApplyConfiguration = new Apply_Configuration(monitor);
-                                ApplyConfiguration.Command = commandLineInput.Command;
-                                ApplyConfiguration.TargetFeature = commandLineInput.TargetFeature;
-                                //ApplyConfiguration.Model = monitor.modelName;
-                                //ApplyConfiguration.SerialNumber = monitor.edid.SerialNumber;
-                                //ApplyConfiguration.Index = change_0base_to_1base((monitor.Index).ToString());
-                                //ApplyConfiguration.ServiceTag = monitor.edid.ServiceTag;
-
-                                // malik
-                                bool retcode = false;
-                                displayPropertiesInfo = devMgr.GetDisplayPropertiesInfo(monitor).Result;
-
-                                foreach (var property in jsonObject.Properties())
+                                foreach (var propertys in jsonObject.Properties())
                                 {
-                                    Console.WriteLine($"Key: {property.Name}, Value: {property.Value}");
-
-                                    switch (property.Name.ToString())
+                                    Debug.WriteLine($"Key: {propertys.Name}, Value: {propertys.Value}");
+                                    if (propertys.Name.ToString().ToUpper() == "SERVICETAG" && propertys.Value.ToString().ToUpper() == commandLineInput.ServiceTag[0].ToString().ToUpper())
                                     {
-                                        case "SCREENORIENTATION":
-                                            writelog($"ScreenOrientation entry");
-                                            //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
-                                            //{
-                                            DisplayOrientation? displayOrientation = null;
-                                            switch (property.Value.ToString())
-                                            {
-                                                case "LANDSCAPE":
-                                                    displayOrientation = DisplayOrientation.Angle0;
-                                                    break;
+                                        var monitor = _AllInfoMonitors.SingleOrDefault(x => x.edid.ServiceTag.ToString().Equals(commandLineInput.ServiceTag[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                        if (monitor != null)
+                                        {
+                                            recode_find = true;
+                                            index = 0;
+                                            Apply_Configuration ApplyConfiguration = new Apply_Configuration(monitor);
+                                            ApplyConfiguration.Command = commandLineInput.Command;
+                                            ApplyConfiguration.TargetFeature = commandLineInput.TargetFeature;
 
-                                                case "PORTRAIT":
-                                                    displayOrientation = DisplayOrientation.Angle90;
-                                                    break;
+                                            bool retcode = false;
+                                            displayPropertiesInfo = devMgr.GetDisplayPropertiesInfo(monitor).Result;
 
-                                                case "LANDSCAPE_FLIPPED":
-                                                    displayOrientation = DisplayOrientation.Angle180;
-                                                    break;
+                                            foreach (var property in jsonObject.Properties())
+                                            {
+                                                Console.WriteLine($"Key: {property.Name}, Value: {property.Value}");
 
-                                                case "PORTRAIT_FLIPPED":
-                                                    displayOrientation = DisplayOrientation.Angle270;
-                                                    break;
-
-                                                default:
-                                                    retcode = false;
-                                                    break;
-                                            }
-                                            if (displayOrientation != null)
-                                            {
-                                                retcode = _devMgr.SetDisplayPropertiest(monitor, new Properties(), (DisplayOrientation)displayOrientation).Result;
-                                            }
-                                            if (!retcode) ispass = false;
-                                            else ApplyConfiguration.ScreenOrientation = property.Value.ToString();
-                                            writelog($"ScreenOrientation={ApplyConfiguration.ScreenOrientation}");
-                                            //}
-                                            //else
-                                            //{
-                                            //    writelog($"ScreenOrientation VCP not support");
-                                            //    output += $"\n  \"Result: \": \"ScreenOrientation VCP not support\"";
-                                            //}
-                                            break;
-
-                                        case "ACTIVEINPUTSOURCE":
-                                            writelog($"ActiveInputSource entry");
-                                            if (monitor.CapabilityDic.ContainsKey("60"))
-                                            {
-                                                retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(get_inputsource_type(property.Value.ToString().ToUpper()).ToString())).Result;
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.ActiveInputSource = property.Value.ToString();
-                                                writelog($"ActiveInputSource={ApplyConfiguration.ActiveInputSource}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"ActiveInputSource VCP not support");
-                                                //output += $"\n  \"Result: \": \"ActiveInputSource VCP not support\"";
-                                                resultMessages.Add("ActiveInputSource VCP not support");
-                                            }
-                                            break;
-
-                                        case "RESOLUTION":
-                                            writelog($"RESOLUTION entry");
-                                            //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
-                                            //{
-                                            string[] ss = property.Value.ToString().Split(" ");
-                                            displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[2]), Frequency = int.Parse(ss[4].Split(".00HZ")[0]) };
-                                            retcode = devMgr.SetDisplayPropertiest(monitor, displayProperties, displayPropertiesInfo.CurrentOrientation).Result;
-                                            if (!retcode) ispass = false;
-                                            else ApplyConfiguration.Resolution = property.Value.ToString();
-                                            writelog($"RESOLUTION={ApplyConfiguration.Resolution}");
-                                            //}
-                                            //else
-                                            //{
-                                            //    writelog($"RESOLUTION VCP not support");
-                                            //    output += $"\n  \"Result: \": \"RESOLUTION VCP not support\"";
-                                            //}
-                                            break;
-
-                                        //case "AspectRatio":
-
-                                        //    int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
-                                        //    ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
-                                        //    writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
-                                        //    break;
-
-                                        case "CONTRASTLEVEL":
-                                            writelog($"ContrastLevel entry");
-                                            if (monitor.CapabilityDic.ContainsKey("12"))
-                                            {
-                                                retcode = SetVCPCode(devMgr, monitor, "0x12", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.ContrastLevel = property.Value.ToString();
-                                                writelog($"ContrastLevel={ApplyConfiguration.ContrastLevel}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"ContrastLevel VCP not support");
-                                                //output += $"\n  \"Result: \": \"ContrastLevel VCP not support\"";
-                                                resultMessages.Add("ContrastLevel VCP not support");
-                                            }
-                                            break;
-
-                                        case "BRIGHTNESSLEVEL":
-                                            writelog($"BrightnessLevel entry");
-                                            if (monitor.CapabilityDic.ContainsKey("10"))
-                                            {
-                                                retcode = SetVCPCode(devMgr, monitor, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.BrightnessLevel = property.Value.ToString();
-                                                writelog($"BrightnessLevel={ApplyConfiguration.BrightnessLevel}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"BrightnessLevel VCP not support");
-                                                //output += $"\n  \"Result: \": \"BrightnessLevel VCP not support\"";
-                                                resultMessages.Add("BrightnessLevel VCP not support");
-                                            }
-                                            break;
-
-                                        case "LUMINANCELEVEL":
-                                            writelog($"LuminanceLevel entry");
-                                            if (!monitor.CapabilityDic.ContainsKey("10"))
-                                            {
-                                                retcode = SetVCPCode(devMgr, monitor, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.LuminanceLevel = property.Value.ToString();
-                                                writelog($"LuminanceLevel={ApplyConfiguration.LuminanceLevel}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"LuminanceLevel VCP not support");
-                                                //output += $"\n  \"Result: \": \"LuminanceLevel VCP not support\"";
-                                                resultMessages.Add("LuminanceLevel VCP not support");
-                                            }
-                                            break;
-
-                                        case "AUTOBRIGHTNESS":
-                                            writelog($"AutoBrightness entry");
-                                            if (monitor.CapabilityDic.ContainsKey("66"))
-                                            {
-                                                retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightness, property.Value.ToString().ToUpper());
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.AutoBrightness = property.Value.ToString();
-                                                writelog($"AutoBrightness={ApplyConfiguration.AutoBrightness}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"AutoBrightness VCP not support");
-                                                //output += $"\n  \"Result: \": \"AutoBrightness VCP not support\"";
-                                                resultMessages.Add("AutoBrightness VCP not support");
-                                            }
-                                            break;
-
-                                        case "AUTOBRIGHTNESSRANGELEVEL":
-                                            writelog($"AutoBrightnessRangeLevel entry");
-                                            if (monitor.CapabilityDic.ContainsKey("66"))
-                                            {
-                                                retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightnessRangeLevel, get_RangeLevel(property.Value.ToString().ToUpper()));
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.AutoBrightnessRangeLevel = property.Value.ToString();
-                                                writelog($"AutoBrightnessRangeLevel={ApplyConfiguration.AutoBrightnessRangeLevel}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"AutoBrightnessRangeLevel VCP not support");
-                                                //output += $"\n  \"Result: \": \"AutoBrightnessRangeLevel VCP not support\"";
-                                                resultMessages.Add("AutoBrightnessRangeLevel VCP not support");
-                                            }
-                                            break;
-
-                                        case "AUTOCOLORTEMP":
-                                            writelog($"AutoColorTemp entry");
-                                            if (monitor.CapabilityDic.ContainsKey("66"))
-                                            {
-                                                retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoColorTemperature, property.Value.ToString().ToUpper());
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.AutoColorTemp = property.Value.ToString();
-                                                writelog($"AutoColorTemp={ApplyConfiguration.AutoColorTemp}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"AutoColorTemp VCP not support");
-                                                //output += $"\n  \"Result: \": \"AutoColorTemp VCP not support\"";
-                                                resultMessages.Add("AutoColorTemp VCP not support");
-                                            }
-                                            break;
-
-                                        case "PRIMARYMONITORFORSYNC":
-                                            writelog($"PrimaryMonitorForSync entry");
-                                            if (monitor.CapabilityDic.ContainsKey("66"))
-                                            {
-                                                retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.PrimaryMonitorSync, property.Value.ToString().ToUpper());
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.PrimaryMonitorForSync = property.Value.ToString();
-                                                writelog($"PrimaryMonitorForSync={ApplyConfiguration.PrimaryMonitorForSync}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"PrimaryMonitorForSync VCP not support");
-                                                //output += $"\n  \"Result: \": \"PrimaryMonitorForSync VCP not support\"";
-                                                resultMessages.Add("PrimaryMonitorForSync VCP not support");
-                                            }
-                                            break;
-
-                                        case "USB_CPRIORITIZATION":
-                                            if (displayPropertiesInfo.SupportedUSBCPrioritization)
-                                            {
-                                                USBCPrioritizationType gettype = get_USBCPrioritization(property.Value.ToString());
-                                                if (gettype != USBCPrioritizationType.Unknow)
+                                                switch (property.Name.ToString())
                                                 {
-                                                    retcode = devMgr.SetUSBCPrioritizationType(monitor, gettype).Result;
-                                                    if (!retcode) ispass = false;
-                                                    else ApplyConfiguration.USB_CPrioritization = property.Value.ToString();
-                                                    writelog($"USB_CPrioritization={ApplyConfiguration.USB_CPrioritization}");
+                                                    case "SCREENORIENTATION":
+                                                        writelog($"ScreenOrientation entry");
+                                                        //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
+                                                        //{
+                                                        DisplayOrientation? displayOrientation = null;
+                                                        switch (property.Value.ToString())
+                                                        {
+                                                            case "LANDSCAPE":
+                                                                displayOrientation = DisplayOrientation.Angle0;
+                                                                break;
+
+                                                            case "PORTRAIT":
+                                                                displayOrientation = DisplayOrientation.Angle90;
+                                                                break;
+
+                                                            case "LANDSCAPE_FLIPPED":
+                                                                displayOrientation = DisplayOrientation.Angle180;
+                                                                break;
+
+                                                            case "PORTRAIT_FLIPPED":
+                                                                displayOrientation = DisplayOrientation.Angle270;
+                                                                break;
+
+                                                            default:
+                                                                retcode = false;
+                                                                break;
+                                                        }
+                                                        if (displayOrientation != null)
+                                                        {
+                                                            retcode = _devMgr.SetDisplayPropertiest(monitor, new Properties(), (DisplayOrientation)displayOrientation).Result;
+                                                        }
+                                                        if (!retcode) ispass = false;
+                                                        else ApplyConfiguration.ScreenOrientation = property.Value.ToString();
+                                                        writelog($"ScreenOrientation={ApplyConfiguration.ScreenOrientation}");
+                                                        //}
+                                                        //else
+                                                        //{
+                                                        //    writelog($"ScreenOrientation VCP not support");
+                                                        //    output += $"\n  \"Result: \": \"ScreenOrientation VCP not support\"";
+                                                        //}
+                                                        break;
+
+                                                    case "ACTIVEINPUTSOURCE":
+                                                        writelog($"ActiveInputSource entry");
+                                                        if (monitor.CapabilityDic.ContainsKey("60"))
+                                                        {
+                                                            retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(get_inputsource_type(property.Value.ToString().ToUpper()).ToString())).Result;
+                                                            if (!retcode) ispass = false;
+                                                            else ApplyConfiguration.ActiveInputSource = property.Value.ToString();
+                                                            writelog($"ActiveInputSource={ApplyConfiguration.ActiveInputSource}");
+                                                        }
+                                                        else
+                                                        {
+                                                            writelog($"ActiveInputSource VCP not support");
+                                                            //output += $"\n  \"Result: \": \"ActiveInputSource VCP not support\"";
+                                                            resultMessages.Add("ActiveInputSource VCP not support");
+                                                        }
+                                                        break;
+
+                                                    case "RESOLUTION":
+                                                        writelog($"RESOLUTION entry");
+                                                        //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
+                                                        //{
+                                                        string[] ss = property.Value.ToString().Split(" ");
+                                                        displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[2]), Frequency = int.Parse(ss[4].Split(".00HZ")[0]) };
+                                                        retcode = devMgr.SetDisplayPropertiest(monitor, displayProperties, displayPropertiesInfo.CurrentOrientation).Result;
+                                                        if (!retcode) ispass = false;
+                                                        else ApplyConfiguration.Resolution = property.Value.ToString();
+                                                        writelog($"RESOLUTION={ApplyConfiguration.Resolution}");
+                                                        //}
+                                                        //else
+                                                        //{
+                                                        //    writelog($"RESOLUTION VCP not support");
+                                                        //    output += $"\n  \"Result: \": \"RESOLUTION VCP not support\"";
+                                                        //}
+                                                        break;
+
+                                                    //case "AspectRatio":
+
+                                                    //    int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
+                                                    //    ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
+                                                    //    writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
+                                                    //    break;
+
+                                                    case "CONTRASTLEVEL":
+                                                        writelog($"ContrastLevel entry");
+                                                        if (monitor.CapabilityDic.ContainsKey("12"))
+                                                        {
+                                                            retcode = SetVCPCode(devMgr, monitor, "0x12", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                            if (!retcode) ispass = false;
+                                                            else ApplyConfiguration.ContrastLevel = property.Value.ToString();
+                                                            writelog($"ContrastLevel={ApplyConfiguration.ContrastLevel}");
+                                                        }
+                                                        else
+                                                        {
+                                                            writelog($"ContrastLevel VCP not support");
+                                                            //output += $"\n  \"Result: \": \"ContrastLevel VCP not support\"";
+                                                            resultMessages.Add("ContrastLevel VCP not support");
+                                                        }
+                                                        break;
+
+                                                    case "BRIGHTNESSLEVEL":
+                                                        writelog($"BrightnessLevel entry");
+                                                        if (monitor.CapabilityDic.ContainsKey("10"))
+                                                        {
+                                                            retcode = SetVCPCode(devMgr, monitor, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                            if (!retcode) ispass = false;
+                                                            else ApplyConfiguration.BrightnessLevel = property.Value.ToString();
+                                                            writelog($"BrightnessLevel={ApplyConfiguration.BrightnessLevel}");
+                                                        }
+                                                        else
+                                                        {
+                                                            writelog($"BrightnessLevel VCP not support");
+                                                            //output += $"\n  \"Result: \": \"BrightnessLevel VCP not support\"";
+                                                            resultMessages.Add("BrightnessLevel VCP not support");
+                                                        }
+                                                        break;
+
+                                                    case "LUMINANCELEVEL":
+                                                        writelog($"LuminanceLevel entry");
+                                                        if (!monitor.CapabilityDic.ContainsKey("10"))
+                                                        {
+                                                            retcode = SetVCPCode(devMgr, monitor, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                            if (!retcode) ispass = false;
+                                                            else ApplyConfiguration.LuminanceLevel = property.Value.ToString();
+                                                            writelog($"LuminanceLevel={ApplyConfiguration.LuminanceLevel}");
+                                                        }
+                                                        else
+                                                        {
+                                                            writelog($"LuminanceLevel VCP not support");
+                                                            //output += $"\n  \"Result: \": \"LuminanceLevel VCP not support\"";
+                                                            resultMessages.Add("LuminanceLevel VCP not support");
+                                                        }
+                                                        break;
+
+                                                    case "AUTOBRIGHTNESS":
+                                                        writelog($"AutoBrightness entry");
+                                                        if (monitor.CapabilityDic.ContainsKey("66"))
+                                                        {
+                                                            retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightness, property.Value.ToString().ToUpper());
+                                                            if (!retcode) ispass = false;
+                                                            else ApplyConfiguration.AutoBrightness = property.Value.ToString();
+                                                            writelog($"AutoBrightness={ApplyConfiguration.AutoBrightness}");
+                                                        }
+                                                        else
+                                                        {
+                                                            writelog($"AutoBrightness VCP not support");
+                                                            //output += $"\n  \"Result: \": \"AutoBrightness VCP not support\"";
+                                                            resultMessages.Add("AutoBrightness VCP not support");
+                                                        }
+                                                        break;
+
+                                                    case "AUTOBRIGHTNESSRANGELEVEL":
+                                                        writelog($"AutoBrightnessRangeLevel entry");
+                                                        if (monitor.CapabilityDic.ContainsKey("66"))
+                                                        {
+                                                            retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightnessRangeLevel, get_RangeLevel(property.Value.ToString().ToUpper()));
+                                                            if (!retcode) ispass = false;
+                                                            else ApplyConfiguration.AutoBrightnessRangeLevel = property.Value.ToString();
+                                                            writelog($"AutoBrightnessRangeLevel={ApplyConfiguration.AutoBrightnessRangeLevel}");
+                                                        }
+                                                        else
+                                                        {
+                                                            writelog($"AutoBrightnessRangeLevel VCP not support");
+                                                            //output += $"\n  \"Result: \": \"AutoBrightnessRangeLevel VCP not support\"";
+                                                            resultMessages.Add("AutoBrightnessRangeLevel VCP not support");
+                                                        }
+                                                        break;
+
+                                                    case "AUTOCOLORTEMP":
+                                                        writelog($"AutoColorTemp entry");
+                                                        if (monitor.CapabilityDic.ContainsKey("66"))
+                                                        {
+                                                            retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoColorTemperature, property.Value.ToString().ToUpper());
+                                                            if (!retcode) ispass = false;
+                                                            else ApplyConfiguration.AutoColorTemp = property.Value.ToString();
+                                                            writelog($"AutoColorTemp={ApplyConfiguration.AutoColorTemp}");
+                                                        }
+                                                        else
+                                                        {
+                                                            writelog($"AutoColorTemp VCP not support");
+                                                            //output += $"\n  \"Result: \": \"AutoColorTemp VCP not support\"";
+                                                            resultMessages.Add("AutoColorTemp VCP not support");
+                                                        }
+                                                        break;
+
+                                                    case "PRIMARYMONITORFORSYNC":
+                                                        writelog($"PrimaryMonitorForSync entry");
+                                                        if (monitor.CapabilityDic.ContainsKey("66"))
+                                                        {
+                                                            retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.PrimaryMonitorSync, property.Value.ToString().ToUpper());
+                                                            if (!retcode) ispass = false;
+                                                            else ApplyConfiguration.PrimaryMonitorForSync = property.Value.ToString();
+                                                            writelog($"PrimaryMonitorForSync={ApplyConfiguration.PrimaryMonitorForSync}");
+                                                        }
+                                                        else
+                                                        {
+                                                            writelog($"PrimaryMonitorForSync VCP not support");
+                                                            //output += $"\n  \"Result: \": \"PrimaryMonitorForSync VCP not support\"";
+                                                            resultMessages.Add("PrimaryMonitorForSync VCP not support");
+                                                        }
+                                                        break;
+
+                                                    case "USB_CPRIORITIZATION":
+                                                        if (displayPropertiesInfo.SupportedUSBCPrioritization)
+                                                        {
+                                                            USBCPrioritizationType gettype = get_USBCPrioritization(property.Value.ToString());
+                                                            if (gettype != USBCPrioritizationType.Unknow)
+                                                            {
+                                                                retcode = devMgr.SetUSBCPrioritizationType(monitor, gettype).Result;
+                                                                if (!retcode) ispass = false;
+                                                                else ApplyConfiguration.USB_CPrioritization = property.Value.ToString();
+                                                                writelog($"USB_CPrioritization={ApplyConfiguration.USB_CPrioritization}");
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            ApplyConfiguration.USB_CPrioritization = "NOT SUPPORT";
+                                                            //output += $"\n  \"Result: \": \"USB_CPrioritization not support\"";
+                                                            resultMessages.Add("USB_CPrioritization not support");
+                                                        }
+
+                                                        break;
+                                                    case "COLORMANAGEMENT":
+                                                        ColorManagementRunType colorManagementType = get_ColorManagement(property.Value.ToString());
+                                                        switch (colorManagementType)
+                                                        {
+                                                            case ColorManagementRunType.Off:
+                                                            case ColorManagementRunType.Byhost:
+                                                            case ColorManagementRunType.Bymonitor:
+                                                                writelog($"ColorManagement {colorManagementType.ToString()} entry");
+                                                                retcode = devMgr.AutoColorManagementForMonitorConfig(monitor, colorManagementType.ToString().ToUpper(), string.Empty, string.Empty).Result;
+                                                                if (!retcode) ispass = false;
+                                                                else ApplyConfiguration.ColorManagement = property.Value.ToString();
+                                                                writelog($"ColorManagement={ApplyConfiguration.ColorManagement}");
+                                                                break;
+                                                            default:
+                                                                writelog($"option value not support");
+                                                                ApplyConfiguration.ColorManagement = "NOT SUPPORT";
+                                                                //output += $"\n  \"Result: \": \"ColorManagement not support\"";
+                                                                resultMessages.Add("ColorManagement not support");
+                                                                break;
+                                                        }
+                                                        break;
+                                                    case "SPEAKERMICROPHONE":
+                                                        writelog($"SpeakerMicrophone entry");
+                                                        if (CheckSpeakerSupported(monitor, commandLineInput) && CheckMicrophoneSupported(monitor, commandLineInput))
+                                                        {
+                                                            rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                                            int getvalue = Convert.ToInt32(rc.value);
+                                                            retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(property.Value.ToString(), getvalue)).Result;
+
+                                                            //rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                                            //int getvalue2 = Convert.ToInt32(rc.value);
+                                                            //bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(property.Value.ToString(), getvalue2)).Result;
+
+                                                            if (!retcode) ispass = false;
+                                                            else ApplyConfiguration.SpeakerMicrophone = property.Value.ToString();
+                                                            writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
+                                                        }
+                                                        else
+                                                        {
+                                                            ApplyConfiguration.SpeakerMicrophone = "N/A";
+                                                            writelog($"SpeakerMicrophone VCP not support");
+                                                            //output += $"\n  \"Result: \": \"SpeakerMicrophone VCP not support\"";
+                                                            resultMessages.Add("SpeakerMicrophone VCP not support");
+                                                        }
+
+                                                        break;
+
+                                                    case "SPEAKERVOLUME":
+                                                        writelog($"SpeakerVolume entry");
+                                                        if (CheckSpeakerSupported(monitor, commandLineInput))
+                                                        {
+                                                            rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                                            int getvalue = Convert.ToInt32(rc.value);
+                                                            string setvalue = get_SpeakerVolume(property.Value.ToString(), getvalue);
+                                                            if (setvalue != "unknown_command")
+                                                                retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
+                                                            else
+                                                                retcode = SetVCPCode(devMgr, monitor, "0x62", property.Value.ToString()).Result;
+                                                            if (!retcode) ispass = false;
+                                                            else ApplyConfiguration.SpeakerVolume = property.Value.ToString();
+                                                            writelog($"SpeakerVolume={ApplyConfiguration.SpeakerVolume}");
+                                                        }
+                                                        else
+                                                        {
+                                                            ApplyConfiguration.SpeakerVolume = "N/A";
+                                                            writelog($"SpeakerVolume VCP not support");
+                                                            //output += $"\n  \"Result: \": \"SpeakerVolume VCP not support\"";
+                                                            resultMessages.Add("SpeakerVolume VCP not support");
+                                                        }
+
+                                                        break;
+
+                                                    case "MICROPHONECONTROL":
+                                                        writelog($"MicrophoneControl entry");
+                                                        if (CheckMicrophoneSupported(monitor, commandLineInput))
+                                                        {
+                                                            rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                                            int getvalue = Convert.ToInt32(rc.value);
+                                                            retcode = SetVCPCode(devMgr, monitor, "0x8D", get_MicrophoneControl(property.Value.ToString(), getvalue)).Result;
+                                                            if (!retcode) ispass = false;
+                                                            else ApplyConfiguration.MicrophoneControl = property.Value.ToString();
+                                                            writelog($"MicrophoneControl={ApplyConfiguration.MicrophoneControl}");
+                                                        }
+                                                        else
+                                                        {
+                                                            ApplyConfiguration.MicrophoneControl = "N/A";
+                                                            writelog($"MicrophoneControl VCP not support");
+                                                            //output += $"\n  \"Result: \": \"MicrophoneControl VCP not support\"";
+                                                            resultMessages.Add("MicrophoneControl VCP not support");
+                                                        }
+
+                                                        break;
+
+                                                    //case "UNIFORMITY":
+                                                    //    writelog($"Uniformity entry");
+                                                    //    if (monitor.CapabilityDic.ContainsKey("E4"))
+                                                    //    {
+                                                    //        retcode = SetVCPCode(devMgr, monitor, "0xE4", get_Uniformity(property.Value.ToString())).Result;
+                                                    //    if (!retcode) ispass = false;
+                                                    //        else ApplyConfiguration.Uniformity = property.Value.ToString();
+                                                    //        writelog($"Uniformity={ApplyConfiguration.Uniformity}");
+                                                    //    }
+                                                    //    else
+                                                    //    {
+                                                    //        ApplyConfiguration.Uniformity = "N/A";
+                                                    //        writelog($"Uniformity VCP not support");
+                                                    //        output += $"\n  \"Result: \": \"Uniformity VCP not support\"";
+                                                    //    }
+
+                                                    //    break;
+
+                                                    case "POWERNAP":
+                                                        writelog($"PowerNap entry");
+                                                        await SetPowerNapAsync(get_PowerNapType_code(property.Value.ToString()), devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
+                                                        //PowerNapSetting setting = new PowerNapSetting
+                                                        //{
+                                                        //    Status = false,
+                                                        //    ModelName = monitor.edid.ModelName,
+                                                        //    SerialNumber = monitor.edid.SerialNumber,
+                                                        //    RunType = get_PowerNapType_code(property.Value.ToString())
+                                                        //};
+                                                        //retcode = await devMgr.SavePowerNapSetting(setting);
+                                                        //UpdateUINotify off = new UpdateUINotify();
+                                                        //off.UI_Field_Name = "POWERNAP;"+ property.Value.ToString();
+                                                        //devMgr.OnUIUpdateNotify(off);
+                                                        if (!retcode) ispass = false;
+                                                        else ApplyConfiguration.PowerNap = property.Value.ToString();
+                                                        writelog($"PowerNap={ApplyConfiguration.PowerNap}");
+                                                        break;
+
+                                                    case "OSD_LANGUAGE":
+                                                        writelog($"OSD_language entry");
+                                                        if (monitor.CapabilityDic.ContainsKey("CC"))
+                                                        {
+                                                            retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(property.Value.ToString()).ToString()).Result;
+                                                            writelog($"OSD_language={GetOSDLanguage_index(property.Value.ToString()).ToString()}");
+                                                            if (!retcode) ispass = false;
+                                                            else ApplyConfiguration.OSD_language = property.Value.ToString();
+                                                            writelog($"OSD_language={ApplyConfiguration.OSD_language}");
+                                                        }
+                                                        else
+                                                        {
+                                                            writelog($"OSD_language VCP not support");
+                                                            //output += $"\n  \"Result: \": \"OSD_language VCP not support\"";
+                                                            resultMessages.Add("OSD_language VCP not support");
+                                                        }
+
+                                                        break;
+
+                                                    default:
+                                                        break;
                                                 }
                                             }
-                                            else
-                                            {
-                                                ApplyConfiguration.USB_CPrioritization = "NOT SUPPORT";
-                                                //output += $"\n  \"Result: \": \"USB_CPrioritization not support\"";
-                                                resultMessages.Add("USB_CPrioritization not support");
-                                            }
 
-                                            break;
-                                        case "COLORMANAGEMENT":
-                                            ColorManagementRunType colorManagementType = get_ColorManagement(property.Value.ToString());
-                                            switch (colorManagementType)
+                                            if (ispass)
                                             {
-                                                case ColorManagementRunType.Off:
-                                                case ColorManagementRunType.Byhost:
-                                                case ColorManagementRunType.Bymonitor:
-                                                    writelog($"ColorManagement {colorManagementType.ToString()} entry");
-                                                    retcode = devMgr.AutoColorManagementForMonitorConfig(monitor, colorManagementType.ToString().ToUpper(), string.Empty, string.Empty).Result;
-                                                    if (!retcode) ispass = false;
-                                                    else ApplyConfiguration.ColorManagement = property.Value.ToString();
-                                                    writelog($"ColorManagement={ApplyConfiguration.ColorManagement}");
-                                                    break;
-                                                default:
-                                                    writelog($"option value not support");
-                                                    ApplyConfiguration.ColorManagement = "NOT SUPPORT";
-                                                    //output += $"\n  \"Result: \": \"ColorManagement not support\"";
-                                                    resultMessages.Add("ColorManagement not support");
-                                                    break;
-                                            }
-                                            break;
-                                        case "SPEAKERMICROPHONE":
-                                            writelog($"SpeakerMicrophone entry");
-                                            if (CheckSpeakerSupported(monitor, commandLineInput) && CheckMicrophoneSupported(monitor, commandLineInput))
-                                            {
-                                                rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-                                                int getvalue = Convert.ToInt32(rc.value);
-                                                retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(property.Value.ToString(), getvalue)).Result;
-
-                                                //rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                                                //int getvalue2 = Convert.ToInt32(rc.value);
-                                                //bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(property.Value.ToString(), getvalue2)).Result;
-
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.SpeakerMicrophone = property.Value.ToString();
-                                                writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
+                                                ApplyConfiguration.Result = "PASS";
+                                                ApplyConfiguration.Message = "N/A";
                                             }
                                             else
                                             {
-                                                ApplyConfiguration.SpeakerMicrophone = "N/A";
-                                                writelog($"SpeakerMicrophone VCP not support");
-                                                //output += $"\n  \"Result: \": \"SpeakerMicrophone VCP not support\"";
-                                                resultMessages.Add("SpeakerMicrophone VCP not support");
+                                                ApplyConfiguration.Result = "FAIL";
+                                                ApplyConfiguration.Message = "N/A";
                                             }
+                                            System.Console.WriteLine(JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented));
+                                            output += "\n" + JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented);
 
-                                            break;
-
-                                        case "SPEAKERVOLUME":
-                                            writelog($"SpeakerVolume entry");
-                                            if (CheckSpeakerSupported(monitor, commandLineInput))
-                                            {
-                                                rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-                                                int getvalue = Convert.ToInt32(rc.value);
-                                                string setvalue = get_SpeakerVolume(property.Value.ToString(), getvalue);
-                                                if (setvalue != "unknown_command")
-                                                    retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
-                                                else
-                                                    retcode = SetVCPCode(devMgr, monitor, "0x62", property.Value.ToString()).Result;
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.SpeakerVolume = property.Value.ToString();
-                                                writelog($"SpeakerVolume={ApplyConfiguration.SpeakerVolume}");
-                                            }
-                                            else
-                                            {
-                                                ApplyConfiguration.SpeakerVolume = "N/A";
-                                                writelog($"SpeakerVolume VCP not support");
-                                                //output += $"\n  \"Result: \": \"SpeakerVolume VCP not support\"";
-                                                resultMessages.Add("SpeakerVolume VCP not support");
-                                            }
-
-                                            break;
-
-                                        case "MICROPHONECONTROL":
-                                            writelog($"MicrophoneControl entry");
-                                            if (CheckMicrophoneSupported(monitor, commandLineInput))
-                                            {
-                                                rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                                                int getvalue = Convert.ToInt32(rc.value);
-                                                retcode = SetVCPCode(devMgr, monitor, "0x8D", get_MicrophoneControl(property.Value.ToString(), getvalue)).Result;
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.MicrophoneControl = property.Value.ToString();
-                                                writelog($"MicrophoneControl={ApplyConfiguration.MicrophoneControl}");
-                                            }
-                                            else
-                                            {
-                                                ApplyConfiguration.MicrophoneControl = "N/A";
-                                                writelog($"MicrophoneControl VCP not support");
-                                                //output += $"\n  \"Result: \": \"MicrophoneControl VCP not support\"";
-                                                resultMessages.Add("MicrophoneControl VCP not support");
-                                            }
-
-                                            break;
-
-                                        //case "UNIFORMITY":
-                                        //    writelog($"Uniformity entry");
-                                        //    if (monitor.CapabilityDic.ContainsKey("E4"))
-                                        //    {
-                                        //        retcode = SetVCPCode(devMgr, monitor, "0xE4", get_Uniformity(property.Value.ToString())).Result;
-                                        //    if (!retcode) ispass = false;
-                                        //        else ApplyConfiguration.Uniformity = property.Value.ToString();
-                                        //        writelog($"Uniformity={ApplyConfiguration.Uniformity}");
-                                        //    }
-                                        //    else
-                                        //    {
-                                        //        ApplyConfiguration.Uniformity = "N/A";
-                                        //        writelog($"Uniformity VCP not support");
-                                        //        output += $"\n  \"Result: \": \"Uniformity VCP not support\"";
-                                        //    }
-
-                                        //    break;
-
-                                        case "POWERNAP":
-                                            writelog($"PowerNap entry");
-                                            await SetPowerNapAsync(get_PowerNapType_code(property.Value.ToString()), devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
-                                            //PowerNapSetting setting = new PowerNapSetting
-                                            //{
-                                            //    Status = false,
-                                            //    ModelName = monitor.edid.ModelName,
-                                            //    SerialNumber = monitor.edid.SerialNumber,
-                                            //    RunType = get_PowerNapType_code(property.Value.ToString())
-                                            //};
-                                            //retcode = await devMgr.SavePowerNapSetting(setting);
-                                            //UpdateUINotify off = new UpdateUINotify();
-                                            //off.UI_Field_Name = "POWERNAP;"+ property.Value.ToString();
-                                            //devMgr.OnUIUpdateNotify(off);
-                                            if (!retcode) ispass = false;
-                                            else ApplyConfiguration.PowerNap = property.Value.ToString();
-                                            writelog($"PowerNap={ApplyConfiguration.PowerNap}");
-                                            break;
-
-                                        case "OSD_LANGUAGE":
-                                            writelog($"OSD_language entry");
-                                            if (monitor.CapabilityDic.ContainsKey("CC"))
-                                            {
-                                                retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(property.Value.ToString()).ToString()).Result;
-                                                writelog($"OSD_language={GetOSDLanguage_index(property.Value.ToString()).ToString()}");
-                                                if (!retcode) ispass = false;
-                                                else ApplyConfiguration.OSD_language = property.Value.ToString();
-                                                writelog($"OSD_language={ApplyConfiguration.OSD_language}");
-                                            }
-                                            else
-                                            {
-                                                writelog($"OSD_language VCP not support");
-                                                //output += $"\n  \"Result: \": \"OSD_language VCP not support\"";
-                                                resultMessages.Add("OSD_language VCP not support");
-                                            }
-
-                                            break;
-
-                                        default:
-                                            break;
+                                        }
                                     }
                                 }
+                                if (!recode_find)
+                                {
+                                    CLI_RESPONSE3 cli_Response_ = new CLI_RESPONSE3();
+                                    cli_Response_.Command = commandLineInput.Command;
+                                    cli_Response_.TargetFeature = commandLineInput.TargetFeature;
+                                    cli_Response_.Result = "FAIL";
+                                    cli_Response_.Message = "Invalid SERVICETAG.";
+                                    return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response_.ToJson());
+                                }
+                            }
 
-                                if (ispass)
+                            else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
+                            {
+                                foreach (var propertys in jsonObject.Properties())
                                 {
-                                    ApplyConfiguration.Result = "PASS";
-                                    ApplyConfiguration.Message = "N/A";
+                                    Debug.WriteLine($"Key: {propertys.Name}, Value: {propertys.Value}");
+                                    if (propertys.Name.ToString().ToUpper() == "MODEL" && propertys.Value.ToString().ToUpper() == commandLineInput.Model[0].ToString().ToUpper())
+                                    {
+                                        var matchmonitor = _AllInfoMonitors.FindAll(x => x.modelName.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                        if (matchmonitor.Count > 0)
+                                        {
+                                            foreach (MonitorInfo monitor in matchmonitor)
+                                            {
+                                                recode_find = true;
+                                                index = 0;
+                                                Apply_Configuration ApplyConfiguration = new Apply_Configuration(monitor);
+                                                ApplyConfiguration.Command = commandLineInput.Command;
+                                                ApplyConfiguration.TargetFeature = commandLineInput.TargetFeature;
+
+                                                bool retcode = false;
+                                                displayPropertiesInfo = devMgr.GetDisplayPropertiesInfo(monitor).Result;
+
+                                                foreach (var property in jsonObject.Properties())
+                                                {
+                                                    Console.WriteLine($"Key: {property.Name}, Value: {property.Value}");
+
+                                                    switch (property.Name.ToString())
+                                                    {
+                                                        case "SCREENORIENTATION":
+                                                            writelog($"ScreenOrientation entry");
+                                                            //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
+                                                            //{
+                                                            DisplayOrientation? displayOrientation = null;
+                                                            switch (property.Value.ToString())
+                                                            {
+                                                                case "LANDSCAPE":
+                                                                    displayOrientation = DisplayOrientation.Angle0;
+                                                                    break;
+
+                                                                case "PORTRAIT":
+                                                                    displayOrientation = DisplayOrientation.Angle90;
+                                                                    break;
+
+                                                                case "LANDSCAPE_FLIPPED":
+                                                                    displayOrientation = DisplayOrientation.Angle180;
+                                                                    break;
+
+                                                                case "PORTRAIT_FLIPPED":
+                                                                    displayOrientation = DisplayOrientation.Angle270;
+                                                                    break;
+
+                                                                default:
+                                                                    retcode = false;
+                                                                    break;
+                                                            }
+                                                            if (displayOrientation != null)
+                                                            {
+                                                                retcode = _devMgr.SetDisplayPropertiest(monitor, new Properties(), (DisplayOrientation)displayOrientation).Result;
+                                                            }
+                                                            if (!retcode) ispass = false;
+                                                            else ApplyConfiguration.ScreenOrientation = property.Value.ToString();
+                                                            writelog($"ScreenOrientation={ApplyConfiguration.ScreenOrientation}");
+                                                            //}
+                                                            //else
+                                                            //{
+                                                            //    writelog($"ScreenOrientation VCP not support");
+                                                            //    output += $"\n  \"Result: \": \"ScreenOrientation VCP not support\"";
+                                                            //}
+                                                            break;
+
+                                                        case "ACTIVEINPUTSOURCE":
+                                                            writelog($"ActiveInputSource entry");
+                                                            if (monitor.CapabilityDic.ContainsKey("60"))
+                                                            {
+                                                                retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(get_inputsource_type(property.Value.ToString().ToUpper()).ToString())).Result;
+                                                                if (!retcode) ispass = false;
+                                                                else ApplyConfiguration.ActiveInputSource = property.Value.ToString();
+                                                                writelog($"ActiveInputSource={ApplyConfiguration.ActiveInputSource}");
+                                                            }
+                                                            else
+                                                            {
+                                                                writelog($"ActiveInputSource VCP not support");
+                                                                //output += $"\n  \"Result: \": \"ActiveInputSource VCP not support\"";
+                                                                resultMessages.Add("ActiveInputSource VCP not support");
+                                                            }
+                                                            break;
+
+                                                        case "RESOLUTION":
+                                                            writelog($"RESOLUTION entry");
+                                                            //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
+                                                            //{
+                                                            string[] ss = property.Value.ToString().Split(" ");
+                                                            displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[2]), Frequency = int.Parse(ss[4].Split(".00HZ")[0]) };
+                                                            retcode = devMgr.SetDisplayPropertiest(monitor, displayProperties, displayPropertiesInfo.CurrentOrientation).Result;
+                                                            if (!retcode) ispass = false;
+                                                            else ApplyConfiguration.Resolution = property.Value.ToString();
+                                                            writelog($"RESOLUTION={ApplyConfiguration.Resolution}");
+                                                            //}
+                                                            //else
+                                                            //{
+                                                            //    writelog($"RESOLUTION VCP not support");
+                                                            //    output += $"\n  \"Result: \": \"RESOLUTION VCP not support\"";
+                                                            //}
+                                                            break;
+
+                                                        //case "AspectRatio":
+
+                                                        //    int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
+                                                        //    ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
+                                                        //    writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
+                                                        //    break;
+
+                                                        case "CONTRASTLEVEL":
+                                                            writelog($"ContrastLevel entry");
+                                                            if (monitor.CapabilityDic.ContainsKey("12"))
+                                                            {
+                                                                retcode = SetVCPCode(devMgr, monitor, "0x12", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                                if (!retcode) ispass = false;
+                                                                else ApplyConfiguration.ContrastLevel = property.Value.ToString();
+                                                                writelog($"ContrastLevel={ApplyConfiguration.ContrastLevel}");
+                                                            }
+                                                            else
+                                                            {
+                                                                writelog($"ContrastLevel VCP not support");
+                                                                //output += $"\n  \"Result: \": \"ContrastLevel VCP not support\"";
+                                                                resultMessages.Add("ContrastLevel VCP not support");
+                                                            }
+                                                            break;
+
+                                                        case "BRIGHTNESSLEVEL":
+                                                            writelog($"BrightnessLevel entry");
+                                                            if (monitor.CapabilityDic.ContainsKey("10"))
+                                                            {
+                                                                retcode = SetVCPCode(devMgr, monitor, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                                if (!retcode) ispass = false;
+                                                                else ApplyConfiguration.BrightnessLevel = property.Value.ToString();
+                                                                writelog($"BrightnessLevel={ApplyConfiguration.BrightnessLevel}");
+                                                            }
+                                                            else
+                                                            {
+                                                                writelog($"BrightnessLevel VCP not support");
+                                                                //output += $"\n  \"Result: \": \"BrightnessLevel VCP not support\"";
+                                                                resultMessages.Add("BrightnessLevel VCP not support");
+                                                            }
+                                                            break;
+
+                                                        case "LUMINANCELEVEL":
+                                                            writelog($"LuminanceLevel entry");
+                                                            if (!monitor.CapabilityDic.ContainsKey("10"))
+                                                            {
+                                                                retcode = SetVCPCode(devMgr, monitor, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                                if (!retcode) ispass = false;
+                                                                else ApplyConfiguration.LuminanceLevel = property.Value.ToString();
+                                                                writelog($"LuminanceLevel={ApplyConfiguration.LuminanceLevel}");
+                                                            }
+                                                            else
+                                                            {
+                                                                writelog($"LuminanceLevel VCP not support");
+                                                                //output += $"\n  \"Result: \": \"LuminanceLevel VCP not support\"";
+                                                                resultMessages.Add("LuminanceLevel VCP not support");
+                                                            }
+                                                            break;
+
+                                                        case "AUTOBRIGHTNESS":
+                                                            writelog($"AutoBrightness entry");
+                                                            if (monitor.CapabilityDic.ContainsKey("66"))
+                                                            {
+                                                                retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightness, property.Value.ToString().ToUpper());
+                                                                if (!retcode) ispass = false;
+                                                                else ApplyConfiguration.AutoBrightness = property.Value.ToString();
+                                                                writelog($"AutoBrightness={ApplyConfiguration.AutoBrightness}");
+                                                            }
+                                                            else
+                                                            {
+                                                                writelog($"AutoBrightness VCP not support");
+                                                                //output += $"\n  \"Result: \": \"AutoBrightness VCP not support\"";
+                                                                resultMessages.Add("AutoBrightness VCP not support");
+                                                            }
+                                                            break;
+
+                                                        case "AUTOBRIGHTNESSRANGELEVEL":
+                                                            writelog($"AutoBrightnessRangeLevel entry");
+                                                            if (monitor.CapabilityDic.ContainsKey("66"))
+                                                            {
+                                                                retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightnessRangeLevel, get_RangeLevel(property.Value.ToString().ToUpper()));
+                                                                if (!retcode) ispass = false;
+                                                                else ApplyConfiguration.AutoBrightnessRangeLevel = property.Value.ToString();
+                                                                writelog($"AutoBrightnessRangeLevel={ApplyConfiguration.AutoBrightnessRangeLevel}");
+                                                            }
+                                                            else
+                                                            {
+                                                                writelog($"AutoBrightnessRangeLevel VCP not support");
+                                                                //output += $"\n  \"Result: \": \"AutoBrightnessRangeLevel VCP not support\"";
+                                                                resultMessages.Add("AutoBrightnessRangeLevel VCP not support");
+                                                            }
+                                                            break;
+
+                                                        case "AUTOCOLORTEMP":
+                                                            writelog($"AutoColorTemp entry");
+                                                            if (monitor.CapabilityDic.ContainsKey("66"))
+                                                            {
+                                                                retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoColorTemperature, property.Value.ToString().ToUpper());
+                                                                if (!retcode) ispass = false;
+                                                                else ApplyConfiguration.AutoColorTemp = property.Value.ToString();
+                                                                writelog($"AutoColorTemp={ApplyConfiguration.AutoColorTemp}");
+                                                            }
+                                                            else
+                                                            {
+                                                                writelog($"AutoColorTemp VCP not support");
+                                                                //output += $"\n  \"Result: \": \"AutoColorTemp VCP not support\"";
+                                                                resultMessages.Add("AutoColorTemp VCP not support");
+                                                            }
+                                                            break;
+
+                                                        case "PRIMARYMONITORFORSYNC":
+                                                            writelog($"PrimaryMonitorForSync entry");
+                                                            if (monitor.CapabilityDic.ContainsKey("66"))
+                                                            {
+                                                                retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.PrimaryMonitorSync, property.Value.ToString().ToUpper());
+                                                                if (!retcode) ispass = false;
+                                                                else ApplyConfiguration.PrimaryMonitorForSync = property.Value.ToString();
+                                                                writelog($"PrimaryMonitorForSync={ApplyConfiguration.PrimaryMonitorForSync}");
+                                                            }
+                                                            else
+                                                            {
+                                                                writelog($"PrimaryMonitorForSync VCP not support");
+                                                                //output += $"\n  \"Result: \": \"PrimaryMonitorForSync VCP not support\"";
+                                                                resultMessages.Add("PrimaryMonitorForSync VCP not support");
+                                                            }
+                                                            break;
+
+                                                        case "USB_CPRIORITIZATION":
+                                                            if (displayPropertiesInfo.SupportedUSBCPrioritization)
+                                                            {
+                                                                USBCPrioritizationType gettype = get_USBCPrioritization(property.Value.ToString());
+                                                                if (gettype != USBCPrioritizationType.Unknow)
+                                                                {
+                                                                    retcode = devMgr.SetUSBCPrioritizationType(monitor, gettype).Result;
+                                                                    if (!retcode) ispass = false;
+                                                                    else ApplyConfiguration.USB_CPrioritization = property.Value.ToString();
+                                                                    writelog($"USB_CPrioritization={ApplyConfiguration.USB_CPrioritization}");
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                ApplyConfiguration.USB_CPrioritization = "NOT SUPPORT";
+                                                                //output += $"\n  \"Result: \": \"USB_CPrioritization not support\"";
+                                                                resultMessages.Add("USB_CPrioritization not support");
+                                                            }
+
+                                                            break;
+                                                        case "COLORMANAGEMENT":
+                                                            ColorManagementRunType colorManagementType = get_ColorManagement(property.Value.ToString());
+                                                            switch (colorManagementType)
+                                                            {
+                                                                case ColorManagementRunType.Off:
+                                                                case ColorManagementRunType.Byhost:
+                                                                case ColorManagementRunType.Bymonitor:
+                                                                    writelog($"ColorManagement {colorManagementType.ToString()} entry");
+                                                                    retcode = devMgr.AutoColorManagementForMonitorConfig(monitor, colorManagementType.ToString().ToUpper(), string.Empty, string.Empty).Result;
+                                                                    if (!retcode) ispass = false;
+                                                                    else ApplyConfiguration.ColorManagement = property.Value.ToString();
+                                                                    writelog($"ColorManagement={ApplyConfiguration.ColorManagement}");
+                                                                    break;
+                                                                default:
+                                                                    writelog($"option value not support");
+                                                                    ApplyConfiguration.ColorManagement = "NOT SUPPORT";
+                                                                    //output += $"\n  \"Result: \": \"ColorManagement not support\"";
+                                                                    resultMessages.Add("ColorManagement not support");
+                                                                    break;
+                                                            }
+                                                            break;
+                                                        case "SPEAKERMICROPHONE":
+                                                            writelog($"SpeakerMicrophone entry");
+                                                            if (CheckSpeakerSupported(monitor, commandLineInput) && CheckMicrophoneSupported(monitor, commandLineInput))
+                                                            {
+                                                                rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                                                int getvalue = Convert.ToInt32(rc.value);
+                                                                retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(property.Value.ToString(), getvalue)).Result;
+
+                                                                //rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                                                //int getvalue2 = Convert.ToInt32(rc.value);
+                                                                //bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(property.Value.ToString(), getvalue2)).Result;
+
+                                                                if (!retcode) ispass = false;
+                                                                else ApplyConfiguration.SpeakerMicrophone = property.Value.ToString();
+                                                                writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
+                                                            }
+                                                            else
+                                                            {
+                                                                ApplyConfiguration.SpeakerMicrophone = "N/A";
+                                                                writelog($"SpeakerMicrophone VCP not support");
+                                                                //output += $"\n  \"Result: \": \"SpeakerMicrophone VCP not support\"";
+                                                                resultMessages.Add("SpeakerMicrophone VCP not support");
+                                                            }
+
+                                                            break;
+
+                                                        case "SPEAKERVOLUME":
+                                                            writelog($"SpeakerVolume entry");
+                                                            if (CheckSpeakerSupported(monitor, commandLineInput))
+                                                            {
+                                                                rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                                                int getvalue = Convert.ToInt32(rc.value);
+                                                                string setvalue = get_SpeakerVolume(property.Value.ToString(), getvalue);
+                                                                if (setvalue != "unknown_command")
+                                                                    retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
+                                                                else
+                                                                    retcode = SetVCPCode(devMgr, monitor, "0x62", property.Value.ToString()).Result;
+                                                                if (!retcode) ispass = false;
+                                                                else ApplyConfiguration.SpeakerVolume = property.Value.ToString();
+                                                                writelog($"SpeakerVolume={ApplyConfiguration.SpeakerVolume}");
+                                                            }
+                                                            else
+                                                            {
+                                                                ApplyConfiguration.SpeakerVolume = "N/A";
+                                                                writelog($"SpeakerVolume VCP not support");
+                                                                //output += $"\n  \"Result: \": \"SpeakerVolume VCP not support\"";
+                                                                resultMessages.Add("SpeakerVolume VCP not support");
+                                                            }
+
+                                                            break;
+
+                                                        case "MICROPHONECONTROL":
+                                                            writelog($"MicrophoneControl entry");
+                                                            if (CheckMicrophoneSupported(monitor, commandLineInput))
+                                                            {
+                                                                rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                                                int getvalue = Convert.ToInt32(rc.value);
+                                                                retcode = SetVCPCode(devMgr, monitor, "0x8D", get_MicrophoneControl(property.Value.ToString(), getvalue)).Result;
+                                                                if (!retcode) ispass = false;
+                                                                else ApplyConfiguration.MicrophoneControl = property.Value.ToString();
+                                                                writelog($"MicrophoneControl={ApplyConfiguration.MicrophoneControl}");
+                                                            }
+                                                            else
+                                                            {
+                                                                ApplyConfiguration.MicrophoneControl = "N/A";
+                                                                writelog($"MicrophoneControl VCP not support");
+                                                                //output += $"\n  \"Result: \": \"MicrophoneControl VCP not support\"";
+                                                                resultMessages.Add("MicrophoneControl VCP not support");
+                                                            }
+
+                                                            break;
+
+                                                        //case "UNIFORMITY":
+                                                        //    writelog($"Uniformity entry");
+                                                        //    if (monitor.CapabilityDic.ContainsKey("E4"))
+                                                        //    {
+                                                        //        retcode = SetVCPCode(devMgr, monitor, "0xE4", get_Uniformity(property.Value.ToString())).Result;
+                                                        //    if (!retcode) ispass = false;
+                                                        //        else ApplyConfiguration.Uniformity = property.Value.ToString();
+                                                        //        writelog($"Uniformity={ApplyConfiguration.Uniformity}");
+                                                        //    }
+                                                        //    else
+                                                        //    {
+                                                        //        ApplyConfiguration.Uniformity = "N/A";
+                                                        //        writelog($"Uniformity VCP not support");
+                                                        //        output += $"\n  \"Result: \": \"Uniformity VCP not support\"";
+                                                        //    }
+
+                                                        //    break;
+
+                                                        case "POWERNAP":
+                                                            writelog($"PowerNap entry");
+                                                            await SetPowerNapAsync(get_PowerNapType_code(property.Value.ToString()), devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
+                                                            //PowerNapSetting setting = new PowerNapSetting
+                                                            //{
+                                                            //    Status = false,
+                                                            //    ModelName = monitor.edid.ModelName,
+                                                            //    SerialNumber = monitor.edid.SerialNumber,
+                                                            //    RunType = get_PowerNapType_code(property.Value.ToString())
+                                                            //};
+                                                            //retcode = await devMgr.SavePowerNapSetting(setting);
+                                                            //UpdateUINotify off = new UpdateUINotify();
+                                                            //off.UI_Field_Name = "POWERNAP;"+ property.Value.ToString();
+                                                            //devMgr.OnUIUpdateNotify(off);
+                                                            if (!retcode) ispass = false;
+                                                            else ApplyConfiguration.PowerNap = property.Value.ToString();
+                                                            writelog($"PowerNap={ApplyConfiguration.PowerNap}");
+                                                            break;
+
+                                                        case "OSD_LANGUAGE":
+                                                            writelog($"OSD_language entry");
+                                                            if (monitor.CapabilityDic.ContainsKey("CC"))
+                                                            {
+                                                                retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(property.Value.ToString()).ToString()).Result;
+                                                                writelog($"OSD_language={GetOSDLanguage_index(property.Value.ToString()).ToString()}");
+                                                                if (!retcode) ispass = false;
+                                                                else ApplyConfiguration.OSD_language = property.Value.ToString();
+                                                                writelog($"OSD_language={ApplyConfiguration.OSD_language}");
+                                                            }
+                                                            else
+                                                            {
+                                                                writelog($"OSD_language VCP not support");
+                                                                //output += $"\n  \"Result: \": \"OSD_language VCP not support\"";
+                                                                resultMessages.Add("OSD_language VCP not support");
+                                                            }
+
+                                                            break;
+
+                                                        default:
+                                                            break;
+                                                    }
+                                                }
+
+                                                if (ispass)
+                                                {
+                                                    ApplyConfiguration.Result = "PASS";
+                                                    ApplyConfiguration.Message = "N/A";
+                                                }
+                                                else
+                                                {
+                                                    ApplyConfiguration.Result = "FAIL";
+                                                    ApplyConfiguration.Message = "N/A";
+                                                }
+                                                System.Console.WriteLine(JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented));
+                                                output += "\n" + JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented);
+                                                index++;
+                                            }
+                                        }
+                                    }
                                 }
-                                else
+                                if (!recode_find)
                                 {
-                                    ApplyConfiguration.Result = "FAIL";
-                                    ApplyConfiguration.Message = "N/A";
+                                    CLI_RESPONSE3 cli_Response_ = new CLI_RESPONSE3();
+                                    cli_Response_.Command = commandLineInput.Command;
+                                    cli_Response_.TargetFeature = commandLineInput.TargetFeature;
+                                    cli_Response_.Result = "FAIL";
+                                    cli_Response_.Message = "Invalid Model.";
+                                    return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response_.ToJson());
                                 }
-                                System.Console.WriteLine(JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented);
+                            }
+                            else
+                            {
+                                foreach (int idx in _monitorIndeies)
+                                {
+                                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                                    Apply_Configuration ApplyConfiguration = new Apply_Configuration(monitor);
+                                    ApplyConfiguration.Command = commandLineInput.Command;
+                                    ApplyConfiguration.TargetFeature = commandLineInput.TargetFeature;
+                                    //ApplyConfiguration.Model = monitor.modelName;
+                                    //ApplyConfiguration.SerialNumber = monitor.edid.SerialNumber;
+                                    //ApplyConfiguration.Index = change_0base_to_1base((monitor.Index).ToString());
+                                    //ApplyConfiguration.ServiceTag = monitor.edid.ServiceTag;
+
+                                    // malik
+                                    bool retcode = false;
+                                    displayPropertiesInfo = devMgr.GetDisplayPropertiesInfo(monitor).Result;
+
+                                    foreach (var property in jsonObject.Properties())
+                                    {
+                                        Console.WriteLine($"Key: {property.Name}, Value: {property.Value}");
+
+                                        switch (property.Name.ToString())
+                                        {
+                                            case "SCREENORIENTATION":
+                                                writelog($"ScreenOrientation entry");
+                                                //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
+                                                //{
+                                                DisplayOrientation? displayOrientation = null;
+                                                switch (property.Value.ToString())
+                                                {
+                                                    case "LANDSCAPE":
+                                                        displayOrientation = DisplayOrientation.Angle0;
+                                                        break;
+
+                                                    case "PORTRAIT":
+                                                        displayOrientation = DisplayOrientation.Angle90;
+                                                        break;
+
+                                                    case "LANDSCAPE_FLIPPED":
+                                                        displayOrientation = DisplayOrientation.Angle180;
+                                                        break;
+
+                                                    case "PORTRAIT_FLIPPED":
+                                                        displayOrientation = DisplayOrientation.Angle270;
+                                                        break;
+
+                                                    default:
+                                                        retcode = false;
+                                                        break;
+                                                }
+                                                if (displayOrientation != null)
+                                                {
+                                                    retcode = _devMgr.SetDisplayPropertiest(monitor, new Properties(), (DisplayOrientation)displayOrientation).Result;
+                                                }
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.ScreenOrientation = property.Value.ToString();
+                                                writelog($"ScreenOrientation={ApplyConfiguration.ScreenOrientation}");
+                                                //}
+                                                //else
+                                                //{
+                                                //    writelog($"ScreenOrientation VCP not support");
+                                                //    output += $"\n  \"Result: \": \"ScreenOrientation VCP not support\"";
+                                                //}
+                                                break;
+
+                                            case "ACTIVEINPUTSOURCE":
+                                                writelog($"ActiveInputSource entry");
+                                                if (monitor.CapabilityDic.ContainsKey("60"))
+                                                {
+                                                    retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(get_inputsource_type(property.Value.ToString().ToUpper()).ToString())).Result;
+                                                    if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.ActiveInputSource = property.Value.ToString();
+                                                    writelog($"ActiveInputSource={ApplyConfiguration.ActiveInputSource}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"ActiveInputSource VCP not support");
+                                                    //output += $"\n  \"Result: \": \"ActiveInputSource VCP not support\"";
+                                                    resultMessages.Add("ActiveInputSource VCP not support");
+                                                }
+                                                break;
+
+                                            case "RESOLUTION":
+                                                writelog($"RESOLUTION entry");
+                                                //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
+                                                //{
+                                                string[] ss = property.Value.ToString().Split(" ");
+                                                displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[2]), Frequency = int.Parse(ss[4].Split(".00HZ")[0]) };
+                                                retcode = devMgr.SetDisplayPropertiest(monitor, displayProperties, displayPropertiesInfo.CurrentOrientation).Result;
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.Resolution = property.Value.ToString();
+                                                writelog($"RESOLUTION={ApplyConfiguration.Resolution}");
+                                                //}
+                                                //else
+                                                //{
+                                                //    writelog($"RESOLUTION VCP not support");
+                                                //    output += $"\n  \"Result: \": \"RESOLUTION VCP not support\"";
+                                                //}
+                                                break;
+
+                                            //case "AspectRatio":
+
+                                            //    int gcd = (int)GCD((ulong)displayProperties.Resolutions_Width, (ulong)displayProperties.Resolutions_High);
+                                            //    ApplyConfiguration.AspectRatio = $"{displayProperties.Resolutions_Width / gcd}:{displayProperties.Resolutions_High / gcd}";
+                                            //    writelog($"AspectRatio={ApplyConfiguration.AspectRatio}");
+                                            //    break;
+
+                                            case "CONTRASTLEVEL":
+                                                writelog($"ContrastLevel entry");
+                                                if (monitor.CapabilityDic.ContainsKey("12"))
+                                                {
+                                                    retcode = SetVCPCode(devMgr, monitor, "0x12", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                    if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.ContrastLevel = property.Value.ToString();
+                                                    writelog($"ContrastLevel={ApplyConfiguration.ContrastLevel}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"ContrastLevel VCP not support");
+                                                    //output += $"\n  \"Result: \": \"ContrastLevel VCP not support\"";
+                                                    resultMessages.Add("ContrastLevel VCP not support");
+                                                }
+                                                break;
+
+                                            case "BRIGHTNESSLEVEL":
+                                                writelog($"BrightnessLevel entry");
+                                                if (monitor.CapabilityDic.ContainsKey("10"))
+                                                {
+                                                    retcode = SetVCPCode(devMgr, monitor, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                    if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.BrightnessLevel = property.Value.ToString();
+                                                    writelog($"BrightnessLevel={ApplyConfiguration.BrightnessLevel}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"BrightnessLevel VCP not support");
+                                                    //output += $"\n  \"Result: \": \"BrightnessLevel VCP not support\"";
+                                                    resultMessages.Add("BrightnessLevel VCP not support");
+                                                }
+                                                break;
+
+                                            case "LUMINANCELEVEL":
+                                                writelog($"LuminanceLevel entry");
+                                                if (!monitor.CapabilityDic.ContainsKey("10"))
+                                                {
+                                                    retcode = SetVCPCode(devMgr, monitor, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                    if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.LuminanceLevel = property.Value.ToString();
+                                                    writelog($"LuminanceLevel={ApplyConfiguration.LuminanceLevel}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"LuminanceLevel VCP not support");
+                                                    //output += $"\n  \"Result: \": \"LuminanceLevel VCP not support\"";
+                                                    resultMessages.Add("LuminanceLevel VCP not support");
+                                                }
+                                                break;
+
+                                            case "AUTOBRIGHTNESS":
+                                                writelog($"AutoBrightness entry");
+                                                if (monitor.CapabilityDic.ContainsKey("66"))
+                                                {
+                                                    retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightness, property.Value.ToString().ToUpper());
+                                                    if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.AutoBrightness = property.Value.ToString();
+                                                    writelog($"AutoBrightness={ApplyConfiguration.AutoBrightness}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"AutoBrightness VCP not support");
+                                                    //output += $"\n  \"Result: \": \"AutoBrightness VCP not support\"";
+                                                    resultMessages.Add("AutoBrightness VCP not support");
+                                                }
+                                                break;
+
+                                            case "AUTOBRIGHTNESSRANGELEVEL":
+                                                writelog($"AutoBrightnessRangeLevel entry");
+                                                if (monitor.CapabilityDic.ContainsKey("66"))
+                                                {
+                                                    retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightnessRangeLevel, get_RangeLevel(property.Value.ToString().ToUpper()));
+                                                    if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.AutoBrightnessRangeLevel = property.Value.ToString();
+                                                    writelog($"AutoBrightnessRangeLevel={ApplyConfiguration.AutoBrightnessRangeLevel}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"AutoBrightnessRangeLevel VCP not support");
+                                                    //output += $"\n  \"Result: \": \"AutoBrightnessRangeLevel VCP not support\"";
+                                                    resultMessages.Add("AutoBrightnessRangeLevel VCP not support");
+                                                }
+                                                break;
+
+                                            case "AUTOCOLORTEMP":
+                                                writelog($"AutoColorTemp entry");
+                                                if (monitor.CapabilityDic.ContainsKey("66"))
+                                                {
+                                                    retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoColorTemperature, property.Value.ToString().ToUpper());
+                                                    if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.AutoColorTemp = property.Value.ToString();
+                                                    writelog($"AutoColorTemp={ApplyConfiguration.AutoColorTemp}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"AutoColorTemp VCP not support");
+                                                    //output += $"\n  \"Result: \": \"AutoColorTemp VCP not support\"";
+                                                    resultMessages.Add("AutoColorTemp VCP not support");
+                                                }
+                                                break;
+
+                                            case "PRIMARYMONITORFORSYNC":
+                                                writelog($"PrimaryMonitorForSync entry");
+                                                if (monitor.CapabilityDic.ContainsKey("66"))
+                                                {
+                                                    retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.PrimaryMonitorSync, property.Value.ToString().ToUpper());
+                                                    if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.PrimaryMonitorForSync = property.Value.ToString();
+                                                    writelog($"PrimaryMonitorForSync={ApplyConfiguration.PrimaryMonitorForSync}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"PrimaryMonitorForSync VCP not support");
+                                                    //output += $"\n  \"Result: \": \"PrimaryMonitorForSync VCP not support\"";
+                                                    resultMessages.Add("PrimaryMonitorForSync VCP not support");
+                                                }
+                                                break;
+
+                                            case "USB_CPRIORITIZATION":
+                                                if (displayPropertiesInfo.SupportedUSBCPrioritization)
+                                                {
+                                                    USBCPrioritizationType gettype = get_USBCPrioritization(property.Value.ToString());
+                                                    if (gettype != USBCPrioritizationType.Unknow)
+                                                    {
+                                                        retcode = devMgr.SetUSBCPrioritizationType(monitor, gettype).Result;
+                                                        if (!retcode) ispass = false;
+                                                        else ApplyConfiguration.USB_CPrioritization = property.Value.ToString();
+                                                        writelog($"USB_CPrioritization={ApplyConfiguration.USB_CPrioritization}");
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    ApplyConfiguration.USB_CPrioritization = "NOT SUPPORT";
+                                                    //output += $"\n  \"Result: \": \"USB_CPrioritization not support\"";
+                                                    resultMessages.Add("USB_CPrioritization not support");
+                                                }
+
+                                                break;
+                                            case "COLORMANAGEMENT":
+                                                ColorManagementRunType colorManagementType = get_ColorManagement(property.Value.ToString());
+                                                switch (colorManagementType)
+                                                {
+                                                    case ColorManagementRunType.Off:
+                                                    case ColorManagementRunType.Byhost:
+                                                    case ColorManagementRunType.Bymonitor:
+                                                        writelog($"ColorManagement {colorManagementType.ToString()} entry");
+                                                        retcode = devMgr.AutoColorManagementForMonitorConfig(monitor, colorManagementType.ToString().ToUpper(), string.Empty, string.Empty).Result;
+                                                        if (!retcode) ispass = false;
+                                                        else ApplyConfiguration.ColorManagement = property.Value.ToString();
+                                                        writelog($"ColorManagement={ApplyConfiguration.ColorManagement}");
+                                                        break;
+                                                    default:
+                                                        writelog($"option value not support");
+                                                        ApplyConfiguration.ColorManagement = "NOT SUPPORT";
+                                                        //output += $"\n  \"Result: \": \"ColorManagement not support\"";
+                                                        resultMessages.Add("ColorManagement not support");
+                                                        break;
+                                                }
+                                                break;
+                                            case "SPEAKERMICROPHONE":
+                                                writelog($"SpeakerMicrophone entry");
+                                                if (CheckSpeakerSupported(monitor, commandLineInput) && CheckMicrophoneSupported(monitor, commandLineInput))
+                                                {
+                                                    rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                                    int getvalue = Convert.ToInt32(rc.value);
+                                                    retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(property.Value.ToString(), getvalue)).Result;
+
+                                                    //rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                                    //int getvalue2 = Convert.ToInt32(rc.value);
+                                                    //bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(property.Value.ToString(), getvalue2)).Result;
+
+                                                    if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.SpeakerMicrophone = property.Value.ToString();
+                                                    writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
+                                                }
+                                                else
+                                                {
+                                                    ApplyConfiguration.SpeakerMicrophone = "N/A";
+                                                    writelog($"SpeakerMicrophone VCP not support");
+                                                    //output += $"\n  \"Result: \": \"SpeakerMicrophone VCP not support\"";
+                                                    resultMessages.Add("SpeakerMicrophone VCP not support");
+                                                }
+
+                                                break;
+
+                                            case "SPEAKERVOLUME":
+                                                writelog($"SpeakerVolume entry");
+                                                if (CheckSpeakerSupported(monitor, commandLineInput))
+                                                {
+                                                    rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                                    int getvalue = Convert.ToInt32(rc.value);
+                                                    string setvalue = get_SpeakerVolume(property.Value.ToString(), getvalue);
+                                                    if (setvalue != "unknown_command")
+                                                        retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
+                                                    else
+                                                        retcode = SetVCPCode(devMgr, monitor, "0x62", property.Value.ToString()).Result;
+                                                    if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.SpeakerVolume = property.Value.ToString();
+                                                    writelog($"SpeakerVolume={ApplyConfiguration.SpeakerVolume}");
+                                                }
+                                                else
+                                                {
+                                                    ApplyConfiguration.SpeakerVolume = "N/A";
+                                                    writelog($"SpeakerVolume VCP not support");
+                                                    //output += $"\n  \"Result: \": \"SpeakerVolume VCP not support\"";
+                                                    resultMessages.Add("SpeakerVolume VCP not support");
+                                                }
+
+                                                break;
+
+                                            case "MICROPHONECONTROL":
+                                                writelog($"MicrophoneControl entry");
+                                                if (CheckMicrophoneSupported(monitor, commandLineInput))
+                                                {
+                                                    rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                                    int getvalue = Convert.ToInt32(rc.value);
+                                                    retcode = SetVCPCode(devMgr, monitor, "0x8D", get_MicrophoneControl(property.Value.ToString(), getvalue)).Result;
+                                                    if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.MicrophoneControl = property.Value.ToString();
+                                                    writelog($"MicrophoneControl={ApplyConfiguration.MicrophoneControl}");
+                                                }
+                                                else
+                                                {
+                                                    ApplyConfiguration.MicrophoneControl = "N/A";
+                                                    writelog($"MicrophoneControl VCP not support");
+                                                    //output += $"\n  \"Result: \": \"MicrophoneControl VCP not support\"";
+                                                    resultMessages.Add("MicrophoneControl VCP not support");
+                                                }
+
+                                                break;
+
+                                            //case "UNIFORMITY":
+                                            //    writelog($"Uniformity entry");
+                                            //    if (monitor.CapabilityDic.ContainsKey("E4"))
+                                            //    {
+                                            //        retcode = SetVCPCode(devMgr, monitor, "0xE4", get_Uniformity(property.Value.ToString())).Result;
+                                            //    if (!retcode) ispass = false;
+                                            //        else ApplyConfiguration.Uniformity = property.Value.ToString();
+                                            //        writelog($"Uniformity={ApplyConfiguration.Uniformity}");
+                                            //    }
+                                            //    else
+                                            //    {
+                                            //        ApplyConfiguration.Uniformity = "N/A";
+                                            //        writelog($"Uniformity VCP not support");
+                                            //        output += $"\n  \"Result: \": \"Uniformity VCP not support\"";
+                                            //    }
+
+                                            //    break;
+
+                                            case "POWERNAP":
+                                                writelog($"PowerNap entry");
+                                                await SetPowerNapAsync(get_PowerNapType_code(property.Value.ToString()), devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
+                                                //PowerNapSetting setting = new PowerNapSetting
+                                                //{
+                                                //    Status = false,
+                                                //    ModelName = monitor.edid.ModelName,
+                                                //    SerialNumber = monitor.edid.SerialNumber,
+                                                //    RunType = get_PowerNapType_code(property.Value.ToString())
+                                                //};
+                                                //retcode = await devMgr.SavePowerNapSetting(setting);
+                                                //UpdateUINotify off = new UpdateUINotify();
+                                                //off.UI_Field_Name = "POWERNAP;"+ property.Value.ToString();
+                                                //devMgr.OnUIUpdateNotify(off);
+                                                if (!retcode) ispass = false;
+                                                else ApplyConfiguration.PowerNap = property.Value.ToString();
+                                                writelog($"PowerNap={ApplyConfiguration.PowerNap}");
+                                                break;
+
+                                            case "OSD_LANGUAGE":
+                                                writelog($"OSD_language entry");
+                                                if (monitor.CapabilityDic.ContainsKey("CC"))
+                                                {
+                                                    retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(property.Value.ToString()).ToString()).Result;
+                                                    writelog($"OSD_language={GetOSDLanguage_index(property.Value.ToString()).ToString()}");
+                                                    if (!retcode) ispass = false;
+                                                    else ApplyConfiguration.OSD_language = property.Value.ToString();
+                                                    writelog($"OSD_language={ApplyConfiguration.OSD_language}");
+                                                }
+                                                else
+                                                {
+                                                    writelog($"OSD_language VCP not support");
+                                                    //output += $"\n  \"Result: \": \"OSD_language VCP not support\"";
+                                                    resultMessages.Add("OSD_language VCP not support");
+                                                }
+
+                                                break;
+
+                                            default:
+                                                break;
+                                        }
+                                    }
+
+                                    if (ispass)
+                                    {
+                                        ApplyConfiguration.Result = "PASS";
+                                        ApplyConfiguration.Message = "N/A";
+                                    }
+                                    else
+                                    {
+                                        ApplyConfiguration.Result = "FAIL";
+                                        ApplyConfiguration.Message = "N/A";
+                                    }
+                                    System.Console.WriteLine(JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented));
+                                    output += "\n" + JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented);
+                                }
                             }
                             break;
                         case "KEYBOARD":
