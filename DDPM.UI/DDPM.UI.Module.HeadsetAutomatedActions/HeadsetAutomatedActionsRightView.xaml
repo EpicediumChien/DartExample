@@ -214,6 +214,7 @@
                                                             <Trigger Property="IsChecked" Value="True">
                                                                 <Setter TargetName="LowButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                                 <Setter TargetName="LowButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                                <Setter TargetName="LowButtonTextBlock1" Property="Foreground" Value="White" />
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -254,7 +255,7 @@
                                                             <Trigger Property="IsChecked" Value="True">
                                                                 <Setter TargetName="Normal2ButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                                 <Setter TargetName="Normal2ButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                                                                <Setter TargetName="SensitiveButtonTextBlock" Property="Foreground" Value="White" />
+                                                                <Setter TargetName="Normal2ButtonTextBlock" Property="Foreground" Value="White" />
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -465,6 +466,7 @@
                                                                 <Trigger Property="IsChecked" Value="True">
                                                                     <Setter TargetName="NormalButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                                     <Setter TargetName="NormalButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                                    <Setter TargetName="NormalButtonTextBlock" Property="Foreground" Value="White" />
                                                                 </Trigger>
                                                             </ControlTemplate.Triggers>
                                                         </ControlTemplate>
