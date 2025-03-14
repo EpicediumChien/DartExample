@@ -1754,19 +1754,18 @@ namespace ColorPreset.Plugins
                     _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
                     _agent = null;
 
+                    //[Dispose] event
                     Coloreset_manual_ChangeEvent = null;
                     NightLightStatus_ChangeEvent = null;
 
-                    if (newWindowThread_AutoSetColorPresetForMonitorConfig != null)
+                    //[Dispose] Abort and stop all threads
+                    try
                     {
-                        try
-                        {
-                            newWindowThread_AutoSetColorPresetForMonitorConfig.Abort();
-                        }
-                        catch (Exception ex)
-                        {
-                            writelog($"[Dispose] newWindowThread_AutoSetColorPresetForMonitorConfig.Abort() error:{ex.Message}");
-                        }
+                        newWindowThread_AutoSetColorPresetForMonitorConfig?.Abort();
+                    }
+                    catch (Exception ex)
+                    {
+                        writelog($"[Dispose] newWindowThread_AutoSetColorPresetForMonitorConfig.Abort() error:{ex.Message}");
                     }
                     try
                     {
@@ -1796,12 +1795,30 @@ namespace ColorPreset.Plugins
                     }
                     registryMonitor_ICC = null;
 
+                    //[Dispose] function class
                     _certChecker = null;
-                    _supported_preset = null;
-                    _AllAppData = null;
-                    ColorPresetSupportList = null;
-                    ColorPresetSupportList_ = null;
-                    _SettingsPlugin_internal = null;
+                    _ICC_Metadata = null;
+                    download = null;
+                    Active_monitorInfo = null;
+
+                    //[Dispose] data object
+                    try
+                    {
+                        _supported_preset?.Clear();
+                        _supported_preset = null;
+                        _AllAppData?.Clear();
+                        _AllAppData = null;
+                        ColorPresetSupportList?.Clear();
+                        ColorPresetSupportList = null;
+                        ColorPresetSupportList_?.Clear();
+                        ColorPresetSupportList_ = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        writelog($"[Dispose] data object clear error:{ex.Message}");
+                    }
+
+                    //[Dispose] user control close or window close
                     try
                     {
                         MonitorBorkerWin?.Close();
@@ -1821,9 +1838,8 @@ namespace ColorPreset.Plugins
                     }
                     OsdWin = null;
 
-                    _ICC_Metadata = null;
-                    download = null;
-                    Active_monitorInfo = null;                    
+                    //[Dispose] plugin
+                    _SettingsPlugin_internal = null;
                     _DeviceManagerPlugin_SA = null;
                 }
                 IsDisposed = true;
