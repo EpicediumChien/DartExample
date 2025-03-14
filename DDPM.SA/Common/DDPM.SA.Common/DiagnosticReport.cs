@@ -10,6 +10,12 @@ namespace DDPM.SA.Common
         public static bool SaveLogFile(string saveFolderPath, ILog log)
         {
             log.Info($"{nameof(SaveLogFile)} start");
+
+            //Install software information
+            CommonFunctions.IsServiceRunning(GlobalDefinitions.DPeMServiceName, log);//add log before save
+            CommonFunctions.GetInstalledSoftwareVersion(GlobalDefinitions.InstalledName_DPeM, log);
+            CommonFunctions.GetInstalledSoftwareVersion(GlobalDefinitions.InstalledName_NKVM, log);
+
             bool ret = true;
             log.Info($"{nameof(SaveLogFile)} WTSFunction._WTSGetActiveConsoleSessionId() : {WTSFunction._WTSGetActiveConsoleSessionId()}");
             if (WTSFunction._WTSGetActiveConsoleSessionId() >= 1)
