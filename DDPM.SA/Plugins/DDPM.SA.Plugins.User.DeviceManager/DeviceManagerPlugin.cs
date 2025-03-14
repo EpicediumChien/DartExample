@@ -1147,11 +1147,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(blRet);
         }
 
-        public Task<string> ReadCurrentColorPreset(MonitorInfo m)
+        public Task<string> ReadCurrentColorPreset(MonitorInfo m, Guid guid = default, Priority priority = Priority.Low)
         {
             if (_DisplayManagerPlugin != null)
             {
-                var result = _DisplayManagerPlugin.GetVCPCapability(m, "colorpreset").Result;
+                var result = _DisplayManagerPlugin.GetVCPCapability(m, "colorpreset", guid, priority:priority).Result;
                 if (result.result)
                 {
                     //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
@@ -12530,19 +12530,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void InitAllDisplayData(List<MonitorInfo> AllMonitors)
         {
             //InitMonitorSettings();
-            _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait();
-            for (int i = 0; i < AllMonitors.Count; i++)
+            if (AllMonitors != null && AllMonitors.Count > 0)
             {
-                _DisplayManagerPlugin.GetVCPCapability(AllMonitors[i], 0xE9);
-                _DisplayManagerPlugin.GetDisplayPropertiesInfo(AllMonitors[i]);
-                if (AllMonitors[i].CapabilityString.Contains("F4"))
+                _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait();
+                for (int i = 0; i < AllMonitors.Count; i++)
                 {
-                    _DisplayManagerPlugin.GetGamingProperties_SupportedList(AllMonitors[i]);
+                    MonitorInfo info = AllMonitors[i];
+                    _DisplayManagerPlugin.GetVCPCapability(info, 0xE9);
+                    _DisplayManagerPlugin.GetDisplayPropertiesInfo(info);
+                    if (info.CapabilityString.Contains("F4"))
+                    {
+                        _DisplayManagerPlugin.GetGamingProperties_SupportedList(info);
+                    }
+                    _DisplayManagerPlugin.GetUSBUpstreamList(info).Wait();
+                    _DisplayManagerPlugin.GetAllUSBUpstream(info);
                 }
-                _DisplayManagerPlugin.GetUSBUpstreamList(AllMonitors[i]).Wait();
-                _DisplayManagerPlugin.GetAllUSBUpstream(AllMonitors[i]);
+                UpdateHotkeyInfo();
             }
-            UpdateHotkeyInfo();
         }
 
         private void show_displays_changed(object sender, DisplaychangedEventArgs e)
