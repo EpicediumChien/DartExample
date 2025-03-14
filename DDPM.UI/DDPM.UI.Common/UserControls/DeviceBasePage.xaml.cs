@@ -223,6 +223,7 @@ namespace DDPM.UI.Common.UserControls
         }
         private void leftArrow_Click(object sender, RoutedEventArgs e)
         {
+            ViewModel.UnloadEvents();
             if (LeftArrowClick != null)
                 LeftArrowClick(sender, e);
 
