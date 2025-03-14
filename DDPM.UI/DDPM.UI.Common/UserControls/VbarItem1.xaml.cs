@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Dell.Client.Framework.UX.WPF.Controls;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -21,11 +22,12 @@ namespace DDPM.UI.Common.UserControls
         {
             InitializeComponent();
             //DataContext = this;
+            DdpmCommonHelper.BitmapImageUpdated -= onThemeChange;
+            DdpmCommonHelper.BitmapImageUpdated += onThemeChange;
         }
 
-        public VbarItem1(int id, ImageSource icon, string text, Canvas? iconCanvas = null)
+        public VbarItem1(int id, ImageSource icon, string text, Canvas? iconCanvas = null) : this()
         {
-            InitializeComponent();
             vm.Id = id;
             vm.Icon = icon;
             this.Text = text;
@@ -339,5 +341,41 @@ namespace DDPM.UI.Common.UserControls
             this.IsLandingMode = isLandingMode;
         }
         #endregion
+
+        private void onThemeChange(OSThemeEnum oSThemeEnum)
+        {
+            var groups = VisualStateManager.GetVisualStateGroups(rootGrid);
+            #region Change Theme for vbar border
+            foreach (VisualStateGroup group in groups)
+            {
+                VisualState targetState = null;
+                foreach (VisualState state in group.States)
+                {
+                    if (state.Name == "LandingHover")
+                    {
+                        targetState = state;
+                        break;
+                    }
+                }
+
+                if (targetState != null && targetState.Storyboard != null)
+                {
+                    // Find the ColorAnimation in the Storyboard
+                    foreach (var child in targetState.Storyboard.Children)
+                    {
+                        if (child is ColorAnimation colorAnimation)
+                        {
+                            // Modify animation properties dynamically
+                            colorAnimation.To = (System.Windows.Media.Color)System.Windows.Application.Current.Resources["Vbar_BdColor_Hover"]; // Change to new color
+                            colorAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.3)); // Change duration
+
+
+                            Storyboard.SetTarget(colorAnimation, bdOuter);
+                        }
+                    }
+                }
+            }
+            #endregion
+        }
     }
 }
