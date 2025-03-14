@@ -3167,7 +3167,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     cli_FWU_RESPONSE.Model = g.ModelNumber;
                                     cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
                                     cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
                                     cli_FWU_RESPONSE.Result = "PASS";
                                 }
                                 else if (g.LogicalDeviceType == "LogicalKeyboard" && ss_1[0].ToUpper().Equals("KEYBOARD"))
@@ -3176,7 +3176,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     cli_FWU_RESPONSE.Model = g.ModelNumber;
                                     cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
                                     cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
                                     cli_FWU_RESPONSE.Result = "PASS";
                                 }
                                 else if (g.LogicalDeviceType == "LogicalHeadset" && ss_1[0].ToUpper().Equals("HEADSET"))
@@ -3185,7 +3185,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     cli_FWU_RESPONSE.Model = g.ModelNumber;
                                     cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
                                     cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
                                     cli_FWU_RESPONSE.Result = "PASS";
                                 }
                                 else if (g.LogicalDeviceType == "LogicalWebcam" && ss_1[0].ToUpper().Equals("WEBCAM"))
@@ -3194,7 +3194,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     cli_FWU_RESPONSE.Model = g.ModelNumber;
                                     cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
                                     cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
                                     cli_FWU_RESPONSE.Result = "PASS";
                                 }
                                 else if (g.LogicalDeviceType == "LogicalWiredAudio" && ss_1[0].ToUpper().Equals("SPEAKER"))
@@ -3203,7 +3203,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     cli_FWU_RESPONSE.Model = g.ModelNumber;
                                     cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
                                     cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
                                     cli_FWU_RESPONSE.Result = "PASS";
                                 }
                                 else if (g.LogicalDeviceType == "LogicalPen" && ss_1[0].ToUpper().Equals("PEN"))
@@ -3212,7 +3212,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     cli_FWU_RESPONSE.Model = g.ModelNumber;
                                     cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
                                     cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
                                     cli_FWU_RESPONSE.Result = "PASS";
                                 }
                                 else if (g.LogicalDeviceType == "LogicalDock" && ss_1[0].ToUpper().Equals("DOCK"))
@@ -3221,7 +3221,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     cli_FWU_RESPONSE.Model = g.ModelNumber;
                                     cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
                                     cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {g.DockServiceTag} Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
                                     cli_FWU_RESPONSE.Result = "PASS";
                                 }
                                 else if (ss_1[0].ToUpper().Equals("DONGLE"))
@@ -3233,7 +3233,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     cli_FWU_RESPONSE.Model = g.ModelNumber;
                                     cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
                                     cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
                                     cli_FWU_RESPONSE.Result = "PASS";
 
                                 }
