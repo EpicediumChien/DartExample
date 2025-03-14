@@ -169,6 +169,7 @@ namespace DDPM.UI.Plugin.Common.ViewModels
         //    OnPropertyChanged("VbarItems");
         //}
 
+        [Obsolete("Not calling")]
         private void RebuildVbarItems1()
         {
             _vbarItems1.Clear();

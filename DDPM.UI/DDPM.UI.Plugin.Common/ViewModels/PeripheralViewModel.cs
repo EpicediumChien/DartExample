@@ -10,6 +10,7 @@ using DDPM.UI.Common.Views;
 using DDPM.UI.Interfaces;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using Microsoft.Win32;
@@ -101,6 +102,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     CurrentVersion = 10;
                 }
             }
+            DdpmCommonHelper.BitmapImageUpdated -= OnVBarThemeChange;
+            DdpmCommonHelper.BitmapImageUpdated += OnVBarThemeChange;
         }
 
         public void Unpair()
@@ -1401,5 +1404,13 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         #endregion Handle Module Activated/Deactivated
+
+        private void OnVBarThemeChange(OSThemeEnum oSThemeEnum)
+        {
+            foreach (var vbar in _vbarItems)
+            {
+                vbar.OnThemeChangeRefresh();
+            }
+        }
     }
 }

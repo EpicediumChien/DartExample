@@ -22,8 +22,6 @@ namespace DDPM.UI.Common.UserControls
         {
             InitializeComponent();
             //DataContext = this;
-            DdpmCommonHelper.BitmapImageUpdated -= onThemeChange;
-            DdpmCommonHelper.BitmapImageUpdated += onThemeChange;
         }
 
         public VbarItem1(int id, ImageSource icon, string text, Canvas? iconCanvas = null) : this()
@@ -342,7 +340,7 @@ namespace DDPM.UI.Common.UserControls
         }
         #endregion
 
-        private void onThemeChange(OSThemeEnum oSThemeEnum)
+        public void OnThemeChangeRefresh()
         {
             var groups = VisualStateManager.GetVisualStateGroups(rootGrid);
             #region Change Theme for vbar border
@@ -360,19 +358,18 @@ namespace DDPM.UI.Common.UserControls
 
                 if (targetState != null && targetState.Storyboard != null)
                 {
-                    // Find the ColorAnimation in the Storyboard
-                    foreach (var child in targetState.Storyboard.Children)
+                    ColorAnimation colorAnimation = new ColorAnimation()
                     {
-                        if (child is ColorAnimation colorAnimation)
-                        {
-                            // Modify animation properties dynamically
-                            colorAnimation.To = (System.Windows.Media.Color)System.Windows.Application.Current.Resources["Vbar_BdColor_Hover"]; // Change to new color
-                            colorAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.3)); // Change duration
+                        To = (System.Windows.Media.Color)System.Windows.Application.Current.Resources["Vbar_BdColor_Hover"], // Change to new color
+                        Duration = new Duration(TimeSpan.FromSeconds(0.3)) // Change duration
+                    };
+                    // Find the ColorAnimation in the Storyboard
+                    targetState.Storyboard = new Storyboard();
+                    Storyboard.SetTarget(colorAnimation, bdOuter);
+                    Storyboard.SetTargetProperty(colorAnimation, new PropertyPath("BorderBrush.(SolidColorBrush.Color)"));
 
-
-                            Storyboard.SetTarget(colorAnimation, bdOuter);
-                        }
-                    }
+                    // Add the animation to the Storyboard
+                    targetState.Storyboard.Children.Add(colorAnimation);
                 }
             }
             #endregion
