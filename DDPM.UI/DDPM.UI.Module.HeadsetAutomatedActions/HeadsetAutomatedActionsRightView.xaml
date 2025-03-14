@@ -254,6 +254,7 @@
                                                             <Trigger Property="IsChecked" Value="True">
                                                                 <Setter TargetName="Normal2ButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                                 <Setter TargetName="Normal2ButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                                <Setter TargetName="SensitiveButtonTextBlock" Property="Foreground" Value="White" />
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -506,6 +507,7 @@
                                                                 <Trigger Property="IsChecked" Value="True">
                                                                     <Setter TargetName="SensitiveButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                                     <Setter TargetName="SensitiveButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                                    <Setter TargetName="SensitiveButtonTextBlock" Property="Foreground" Value="White" />
                                                                 </Trigger>
                                                             </ControlTemplate.Triggers>
                                                         </ControlTemplate>
