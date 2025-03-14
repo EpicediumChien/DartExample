@@ -59,6 +59,20 @@ namespace DDPM.SA.Plugins.User.FWUpdate
     [DependencyKnownTypes(new[] { typeof(IFWUpdateService), typeof(ISettingsManagerSA) })]
     public class FWUpdatePlugins : BaseAgentPlugin, IDisposableObservable, IFWUpdateService
     {
+        private static void WriteLog(ILog log, string message, bool isError = false)
+        {
+#if DEBUG
+            Console.WriteLine(message);
+#endif
+            if (log == null)
+                return;
+            if (!isError)
+                log.Info(message);
+            else
+                log.Error(message);
+        }
+
+
         public static readonly string[] ODM = new string[] { "Chicony", "Primax", "LiteON", "Darfon", "Wacom", "Luxshare", "Wistron", "Horn", "Tymphany", "Dell" };
         #region Private Members
 
@@ -564,7 +578,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         }
                         catch (Exception ex)
                         {
-                            _logs.Error($"updateHelper.UpdateItems[{i}] Error : {ex.Message}");
+                            //_logs.Error($"updateHelper.UpdateItems[{i}] Error : {ex.Message}");
+                            WriteLog(Log, $"updateHelper.UpdateItems[{i}] Error : {ex.Message}", true);
                         }
                     }
                 }
