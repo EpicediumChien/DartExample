@@ -562,7 +562,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
             catch (Exception ex)
             {
-                _logs.Error($"[EzMemoryManagerPlugin] CheckMonitorsAndLaunchApps Exception occurred: {ex.Message}");
+                //_logs.Error($"[EzMemoryManagerPlugin] CheckMonitorsAndLaunchApps Exception occurred: {ex.Message}");
+                WriteLog(Log, $"[EzMemoryManagerPlugin] CheckMonitorsAndLaunchApps Exception occurred: {ex.Message}", true);
             }
         }
 
@@ -650,7 +651,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
             catch (Exception ex)
             {
-                _logs.Error($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor Exception occurred: {ex.Message}");
+                //_logs.Error($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor Exception occurred: {ex.Message}");
+                WriteLog(Log, $"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor Exception occurred: {ex.Message}", true);
             }
         }
 
@@ -715,7 +717,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
             catch (Exception ex)
             {
-                _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeApps Exception occurred: {ex.Message}");
+                //_logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeApps Exception occurred: {ex.Message}");
+                WriteLog(Log, $"[EzMemoryManagerPlugin] DeleteEAID, Exception  Error: {ex.Message}", true);
             }
         }
         private bool IsStartupRecently(long startupTime)
@@ -970,7 +973,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
                 }
                 catch (Exception ex)
                 {
-                    _logs.Error($"[EzMemoryManagerPlugin] tmpAppListDictionary.AppInstallsList.Keys Exception occurred: {ex.Message}");
+                    //_logs.Error($"[EzMemoryManagerPlugin] tmpAppListDictionary.AppInstallsList.Keys Exception occurred: {ex.Message}");
+                    WriteLog(Log, $"[EzMemoryManagerPlugin] tmpAppListDictionary.AppInstallsList.Keys Exception occurred: {ex.Message}", true);
                 }
             }
             tmpAppListDictionary.SaveInstalledAppInfo_Thread();
