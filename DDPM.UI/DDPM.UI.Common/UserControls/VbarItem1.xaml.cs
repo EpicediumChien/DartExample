@@ -364,6 +364,21 @@ namespace DDPM.UI.Common.UserControls
 
                             // Add the animation to the Storyboard
                             state.Storyboard.Children.Add(colorAnimation);
+
+                            if (state.Name == "Hover")
+                            {
+                                DoubleAnimation doubleAnimation = new DoubleAnimation()
+                                {
+                                    To = 212, // Change to new color
+                                    Duration = new Duration(TimeSpan.FromSeconds(0.5)), // Change duration
+                                    FillBehavior = FillBehavior.HoldEnd
+                                };
+                                Storyboard.SetTarget(doubleAnimation, bdOuter);
+                                Storyboard.SetTargetProperty(doubleAnimation, new PropertyPath("Width"));
+
+                                // Add the animation to the Storyboard
+                                state.Storyboard.Children.Add(doubleAnimation);
+                            }
                         }
                     }
                 }
