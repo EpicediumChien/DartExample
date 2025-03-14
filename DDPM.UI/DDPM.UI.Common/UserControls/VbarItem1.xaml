@@ -12,28 +12,28 @@
              AutomationProperties.Name="{Binding Text, Mode=OneWay, RelativeSource={RelativeSource Self}}"
              KeyboardNavigation.TabNavigation="None"
              d:DesignHeight="74" d:DesignWidth="212" PreviewKeyDown="UserControl_PreviewKeyDown" Loaded="UserControl_Loaded">
-    <!-- UserControl Narrator: not read
+  <!-- UserControl Narrator: not read
              AutomationProperties.Name="{Binding Text, Mode=OneWay, RelativeSource={RelativeSource Self}}"
              AutomationProperties.Name="{Binding Text, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
               AutomationProperties.Name="{Binding Text, Mode=OneWay}"
    -->
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <Common:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-            
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <Common:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
 
-            <ControlTemplate x:Key="iconTemplate_DisplaySettings" TargetType="ContentControl">
-                <Grid>
-                    <Path Data="M24 16.125V2.625H0V16.125H9.375V19.845H5.625V21.435H18.375V19.845H14.625V16.125H24ZM13.02 16.125V19.83H10.98V16.125H13.02ZM1.605 4.125H22.395V14.52H1.605V4.125Z"
+
+      <ControlTemplate x:Key="iconTemplate_DisplaySettings" TargetType="ContentControl">
+        <Grid>
+          <Path Data="M24 16.125V2.625H0V16.125H9.375V19.845H5.625V21.435H18.375V19.845H14.625V16.125H24ZM13.02 16.125V19.83H10.98V16.125H13.02ZM1.605 4.125H22.395V14.52H1.605V4.125Z"
                           Fill="{TemplateBinding Foreground}" />
-                </Grid>
-            </ControlTemplate>
+        </Grid>
+      </ControlTemplate>
 
-        </ResourceDictionary>
+    </ResourceDictionary>
 
-    </UserControl.Resources>
+  </UserControl.Resources>
 
-    <!-- Robert_Lin, 2024-7-25, a new UserControl to replace VbarItem.
+  <!-- Robert_Lin, 2024-7-25, a new UserControl to replace VbarItem.
     1 Use a ControlTemplate as the content of Icon
     2 The Icon color can be changed with the {TemplateBinding Foreground} in the ControlTemplate
     3 Support Disabled state by changing the Foreground of the UserControl.
@@ -43,187 +43,187 @@
     and Disabled state.
     -->
 
-    <!-- Default: FgColor (Icon color and Text color) = White (Vbar_FgBrush_Default)
+  <!-- Default: FgColor (Icon color and Text color) = White (Vbar_FgBrush_Default)
     When the UserControl is Disabled, change to foreground to gray (Vbar_FgBrush_Disabled).
     -->
-    <UserControl.Style>
-        <Style TargetType="UserControl">
-            <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Default}" />
-            <Style.Triggers>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Disabled}" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Style>
+  <UserControl.Style>
+    <Style TargetType="UserControl">
+      <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Default}" />
+      <Style.Triggers>
+        <Trigger Property="IsEnabled" Value="False">
+          <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Disabled}" />
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+  </UserControl.Style>
 
-    <!-- rootGrid is used to handle hover and click events, and change its Width when in Hover state -->
-    <Grid Name="rootGrid" HorizontalAlignment="Right" Margin="0,5,0,5"
+  <!-- rootGrid is used to handle hover and click events, and change its Width when in Hover state -->
+  <Grid Name="rootGrid" HorizontalAlignment="Right" Margin="0,5,0,5"
           MouseEnter="rootGrid_MouseEnter" MouseLeave="rootGrid_MouseLeave"
           MouseLeftButtonDown="rootGrid_MouseLeftButtonDown">
 
-        <!-- Most of States are handled (with Triggers) in bdOuter or inside it.
+    <!-- Most of States are handled (with Triggers) in bdOuter or inside it.
         In this VisualStateManager, we just handle the rootGrid.Width change animation.
         -->
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="ItemStates">
-                <VisualState x:Name="Default" />
-                <VisualState x:Name="LandingDefault" />
-                <VisualState x:Name="LandingLock" />
+    <VisualStateManager.VisualStateGroups>
+      <VisualStateGroup x:Name="ItemStates">
+        <VisualState x:Name="Default" />
+        <VisualState x:Name="LandingDefault" />
+        <VisualState x:Name="LandingLock" />
 
-                <!-- In Landing mode, when hovering, show the Border color to (Vbar_BdColor_Hover) -->
-                <VisualState x:Name="LandingHover">
-                    <Storyboard>
-                        <ColorAnimation Storyboard.TargetName="bdOuter"
+        <!-- In Landing mode, when hovering, show the Border color to (Vbar_BdColor_Hover) -->
+        <VisualState x:Name="LandingHover">
+          <Storyboard>
+            <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"
                                         Duration="0:0:0.3" To="{DynamicResource Vbar_BdColor_Hover}" />
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="LandingLockHover">
-                    <Storyboard>
-                        <ColorAnimation Storyboard.TargetName="bdOuter"
+          </Storyboard>
+        </VisualState>
+        <VisualState x:Name="LandingLockHover">
+          <Storyboard>
+            <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"
                                         Duration="0:0:0.3" To="{DynamicResource Vbar_BdColor_LockHover}" />
-                        <!--
+            <!--
                         <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
                                         Duration="0:0:0.3" To="{StaticResource Vbar_BkColor_LockHover}" />
                         -->
-                    </Storyboard>
-                </VisualState>
-                <!-- In non-Landing mode (default mode), when hovering will change rootGrid.Wdith and BdColor
+          </Storyboard>
+        </VisualState>
+        <!-- In non-Landing mode (default mode), when hovering will change rootGrid.Wdith and BdColor
                 -->
-                <VisualState x:Name="Hover">
-                    <Storyboard>
-                        <DoubleAnimation Storyboard.TargetName="bdOuter"
+        <VisualState x:Name="Hover">
+          <Storyboard>
+            <DoubleAnimation Storyboard.TargetName="bdOuter"
                                          Storyboard.TargetProperty="Width"
                                          Duration="0:0:0.5" To="212" FillBehavior="HoldEnd" />
-                        <ColorAnimation Storyboard.TargetName="bdOuter"
+            <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"
                                         Duration="0:0:0.3" To="{DynamicResource Vbar_BdColor_Hover}" />
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="LockHover">
-                    <Storyboard>
-                        <DoubleAnimation Storyboard.TargetName="bdOuter"
+          </Storyboard>
+        </VisualState>
+        <VisualState x:Name="LockHover">
+          <Storyboard>
+            <DoubleAnimation Storyboard.TargetName="bdOuter"
                                          Storyboard.TargetProperty="Width"
                                          Duration="0:0:0.5" To="212" FillBehavior="HoldEnd" />
-                        <ColorAnimation Storyboard.TargetName="bdOuter"
+            <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
                                         Duration="0:0:0.3" To="{DynamicResource Vbar_BkColor_LockHover}" />
-                    </Storyboard>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
+          </Storyboard>
+        </VisualState>
+      </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
 
-        <!-- Robert_Lin, 2024-12-28, add below propery into bdOuter can see the design UI 
+    <!-- Robert_Lin, 2024-12-28, add below propery into bdOuter can see the design UI 
         d:Width="64"    -> Non-Landing mode VarItem
         d:Width="212"   -> Landing mode VarItem
         Focusable="False"
         -->
-        <Border x:Name="bdOuter" Height="64" BorderThickness="2" CornerRadius="13" d:Width="212"  
+    <Border x:Name="bdOuter" Height="64" BorderThickness="2" CornerRadius="13" d:Width="212" Margin="-9,-8,9,8"  
                 >
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Setter Property="Background" Value="{DynamicResource Vbar_BkBrush_Default}" />
-                    <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Default}" />
-                    <Setter Property="Width" Value="212" />
-                    <Style.Triggers>
-                        <!-- Selected state -->
-                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"  Value="True">
-                            <Setter Property="Background"  Value="{DynamicResource Brush_GradientButtonCyan}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource  Brush_GradientBorderCyan}" />
-                        </DataTrigger>
-                        <!-- Disabled state -->
-                        <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False">
-                            <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Disabled}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Disabled}" />
-                            <!--
+      <Border.Style>
+        <Style TargetType="Border">
+          <Setter Property="Background" Value="{DynamicResource Vbar_BkBrush_Default}" />
+          <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Default}" />
+          <Setter Property="Width" Value="212" />
+          <Style.Triggers>
+            <!-- Selected state -->
+            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"  Value="True">
+              <Setter Property="Background"  Value="{DynamicResource Brush_GradientButtonCyan}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource  Brush_GradientBorderCyan}" />
+            </DataTrigger>
+            <!-- Disabled state -->
+            <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False">
+              <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Disabled}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Disabled}" />
+              <!--
                             <Setter Property="Width" Value="64" />
                             -->
-                        </DataTrigger>
-                        <!-- KeyboardFocus state -->
-                        <Trigger Property="IsKeyboardFocused" Value="True">
-                            <Setter Property="BorderBrush" Value="{DynamicResource FocusDotBrush}" />
-                        </Trigger>
-                        <!-- Locked & Landing -->
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsLocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
-                                <Condition Binding="{Binding IsLandingMode, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Disabled}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Disabled}" />
-                        </MultiDataTrigger>
-                        <!-- Locked & NonLanding -->
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsLocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
-                                <Condition Binding="{Binding IsLandingMode, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Disabled}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Disabled}" />
-                        </MultiDataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
+            </DataTrigger>
+            <!-- KeyboardFocus state -->
+            <Trigger Property="IsKeyboardFocused" Value="True">
+              <Setter Property="BorderBrush" Value="{DynamicResource FocusDotBrush}" />
+            </Trigger>
+            <!-- Locked & Landing -->
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding IsLocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
+                <Condition Binding="{Binding IsLandingMode, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Disabled}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Disabled}" />
+            </MultiDataTrigger>
+            <!-- Locked & NonLanding -->
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding IsLocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
+                <Condition Binding="{Binding IsLandingMode, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False"/>
+              </MultiDataTrigger.Conditions>
+              <Setter Property="Background"  Value="{DynamicResource Vbar_BkBrush_Disabled}" />
+              <Setter Property="BorderBrush" Value="{DynamicResource Vbar_BdBrush_Disabled}" />
+            </MultiDataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Border.Style>
 
-            <!-- Content Grid -->
-            <!-- Robert_Lin 2025-1-13 for multilingual UI: the Text display requirements: 
+      <!-- Content Grid -->
+      <!-- Robert_Lin 2025-1-13 for multilingual UI: the Text display requirements: 
             The string should expand to 2 lines if 1 line is not enough. If exceeding 2 lines (edge case), shorten it with “...”
             Changes:
             1 Add Column2 fot LockIcon, width is auto
             2 Column1 (Text): 
             -->
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="64" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="64" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
 
-                <!-- #region Icon -->
-                <ContentControl Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"
+        <!-- #region Icon -->
+        <ContentControl Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"
                                 Template="{Binding VisualTemplate, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-                <Image Grid.Column="0" Width="24" Height="24" Visibility="{Binding NoCanvasIcon, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibilityConverter}}"
+        <Image Grid.Column="0" Width="24" Height="24" Visibility="{Binding NoCanvasIcon, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibilityConverter}}"
                        VerticalAlignment="Center" HorizontalAlignment="Center" Focusable="False"
                        Source="{Binding IconImage, RelativeSource={RelativeSource AncestorType=UserControl}}">
-                    <Image.Style>
-                        <Style TargetType="Image">
-                            <Setter Property="Opacity" Value="1" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+          <Image.Style>
+            <Style TargetType="Image">
+              <Setter Property="Opacity" Value="1" />
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                              Value="False">
-                                    <Setter Property="Opacity" Value="0.5" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Image.Style>
-                </Image>
-                <!-- Robert_Lin, 2024-12-28 add d:Template to view the design time UI -->
-                <!-- Robert_Lin, 2025-1-2, PIMS-331506 DDPM icon not centered 
+                  <Setter Property="Opacity" Value="0.5" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Image.Style>
+        </Image>
+        <!-- Robert_Lin, 2024-12-28 add d:Template to view the design time UI -->
+        <!-- Robert_Lin, 2025-1-2, PIMS-331506 DDPM icon not centered 
                      Add Margin=0,0,3.5.0  
                      NOTE. It looks not center in design time (shift left about 2~3 pixes, but in runtime it will be centered.
                 -->
-                <ContentControl x:Name="IconCanvasContent" Grid.Column="0"  HorizontalAlignment="Center" VerticalAlignment="Center"
+        <ContentControl x:Name="IconCanvasContent" Grid.Column="0"  HorizontalAlignment="Center" VerticalAlignment="Center"
                                 Margin="0,0,3.5,0"
                                 d:Template="{StaticResource iconTemplate_DisplaySettings}">
-                    <ContentControl.Style>
-                        <Style TargetType="ContentControl">
-                            <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"  Value="True">
-                                    <Setter Property="Foreground"  Value="#FFFFFF" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ContentControl.Style>
+          <ContentControl.Style>
+            <Style TargetType="ContentControl">
+              <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"  Value="True">
+                  <Setter Property="Foreground"  Value="#FFFFFF" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </ContentControl.Style>
 
-                </ContentControl>
-                <!-- #endregion Icon -->
+        </ContentControl>
+        <!-- #endregion Icon -->
 
-                <!-- #region Text -->
-                <!-- Robert_Lin 2025-1-13 for the Multilingual UI PIMS, VbarItem Text display follow the MarkeetName at DDPMW-2094 
+        <!-- #region Text -->
+        <!-- Robert_Lin 2025-1-13 for the Multilingual UI PIMS, VbarItem Text display follow the MarkeetName at DDPMW-2094 
                 OLD Code: 
                 <UXControls:UXTextBlock Grid.Column="1" FontSize="14" Focusable="False" Width="145" TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow"
                                         Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -243,49 +243,49 @@
                
                                          d:Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam"
                -->
-                <!-- Elsa 20250106 For PIMS [PIMS-334921] add Width="145" TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow"-->
-                <UXControls:UXTextBlock Grid.Column="1" FontSize="14" Focusable="False" 
+        <!-- Elsa 20250106 For PIMS [PIMS-334921] add Width="145" TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow"-->
+        <UXControls:UXTextBlock Grid.Column="1" FontSize="14" Focusable="False" 
                                         MaxHeight="54" Margin="0,8,8,8"
                                         Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                          d:Text="Personalização de teclas"
                                         VerticalAlignment="Center" HorizontalAlignment="Left">
-                    <UXControls:UXTextBlock.Style>
-                        <Style TargetType="UXControls:UXTextBlock">
-                            <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"  Value="True">
-                                    <Setter Property="Foreground"  Value="#FFFFFF" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Width, ElementName=bdOuter}"  Value="212">
-                                    <Setter Property="TextWrapping"  Value="WrapWithOverflow" />
-                                    <Setter Property="TextTrimming"  Value="CharacterEllipsis" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </UXControls:UXTextBlock.Style>
-                </UXControls:UXTextBlock>
-                <!-- #endregion Text -->
+          <UXControls:UXTextBlock.Style>
+            <Style TargetType="UXControls:UXTextBlock">
+              <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"  Value="True">
+                  <Setter Property="Foreground"  Value="#FFFFFF" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Width, ElementName=bdOuter}"  Value="212">
+                  <Setter Property="TextWrapping"  Value="WrapWithOverflow" />
+                  <Setter Property="TextTrimming"  Value="CharacterEllipsis" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </UXControls:UXTextBlock.Style>
+        </UXControls:UXTextBlock>
+        <!-- #endregion Text -->
 
-                <!-- #region LockIcon -->
-                <!-- 
+        <!-- #region LockIcon -->
+        <!-- 
                       Visibility="{Binding IsLocked, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibilityConverter}}"
                 
                 -->
-                <Grid Grid.Column="2" d:Visibility="Visible"
+        <Grid Grid.Column="2" d:Visibility="Visible"
                       Visibility="{Binding IsLocked, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibilityConverter}}"
                       VerticalAlignment="Center" HorizontalAlignment="Right" Width="16" Height="16"
                       Margin="0,0,12,0">
-                    <Path Data="M12.1 6.40012V4.00012C12.2 1.80012 10.5 0.100122 8.30005 0.00012207H8.10005C5.90005 0.00012207 4.10005 1.80012 4.10005 4.00012V6.40012H1.80005V16.0001H14.1V6.40012H12.1ZM5.30005 4.00012C5.20005 2.50012 6.40005 1.30012 7.80005 1.20012H8.20005C9.80005 1.20012 11 2.50012 11 4.00012V6.40012H5.30005V4.00012ZM13.1 14.9001H3.00005V7.50012H13.1V14.9001Z M7.60005 12.5001H8.60005V9.30012H6.80005V10.3001H7.60005V12.5001Z"
+          <Path Data="M12.1 6.40012V4.00012C12.2 1.80012 10.5 0.100122 8.30005 0.00012207H8.10005C5.90005 0.00012207 4.10005 1.80012 4.10005 4.00012V6.40012H1.80005V16.0001H14.1V6.40012H12.1ZM5.30005 4.00012C5.20005 2.50012 6.40005 1.30012 7.80005 1.20012H8.20005C9.80005 1.20012 11 2.50012 11 4.00012V6.40012H5.30005V4.00012ZM13.1 14.9001H3.00005V7.50012H13.1V14.9001Z M7.60005 12.5001H8.60005V9.30012H6.80005V10.3001H7.60005V12.5001Z"
                                      Fill="{DynamicResource DefaultTheme_PathColor}" />
-                </Grid>
-                <!-- #endregion LockIcon -->
+        </Grid>
+        <!-- #endregion LockIcon -->
 
-                <!-- Robert's Test: to draw a cross '+' in Design time to see if the icon is in center of VbarItem1 -->
-                <Grid Visibility="Collapsed" d:Visibility="Visible">
-                    <Rectangle Fill="DarkGoldenrod" Width="1"/>
-                    <Rectangle Fill="DarkGoldenrod" Height="1"/>
-                </Grid>
-            </Grid>
-        </Border>
-    </Grid>
+        <!-- Robert's Test: to draw a cross '+' in Design time to see if the icon is in center of VbarItem1 -->
+        <Grid Visibility="Collapsed" d:Visibility="Visible">
+          <Rectangle Fill="DarkGoldenrod" Width="1"/>
+          <Rectangle Fill="DarkGoldenrod" Height="1"/>
+        </Grid>
+      </Grid>
+    </Border>
+  </Grid>
 </UserControl>
