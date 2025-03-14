@@ -17,18 +17,11 @@ using System.Windows;
 using VcpCore.Common;
 using IDs = DDPM.SA.Common.IDs;
 using Microsoft.WindowsAPICodePack.Shell;
-using System.Windows.Input;
 using System.Runtime.InteropServices;
 using System.Text;
-using Microsoft.VisualBasic.Logging;
 using System.Diagnostics;
-using DPeMPublic.Common;
 using System.Threading;
-using static VcpCore.Common.User32;
-using DDPM.EABroker;
-using DDPM.SA.Common.Display;
 using System.Globalization;
-using Dell.Client.Framework.Common;
 
 
 namespace DDPM.SA.Plugins.User.EzMemory
