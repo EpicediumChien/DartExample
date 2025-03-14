@@ -80,7 +80,7 @@
             </StackPanel>
           </Border>
         </Grid>
-        <Grid>
+        <Grid Name="gdTile">
           <Border Background="{DynamicResource MouseSettingMenu_BgColor99}" CornerRadius="6" Width="488" Height="120" VerticalAlignment="Top" Margin="0,0,0,20">
             <StackPanel Orientation="Vertical">
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="18,25,0,0">
