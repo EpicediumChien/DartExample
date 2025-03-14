@@ -74,7 +74,8 @@
                 <!-- In Landing mode, when hovering, show the Border color to (Vbar_BdColor_Hover) -->
                 <VisualState x:Name="LandingHover">
                     <Storyboard>
-                        <ColorAnimation Storyboard.TargetName="bdOuter"
+                        <ColorAnimation x:Name="Vbar_LandingHover"
+                                        Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"
                                         Duration="0:0:0.3" To="{DynamicResource Vbar_BdColor_Hover}" />
                     </Storyboard>
