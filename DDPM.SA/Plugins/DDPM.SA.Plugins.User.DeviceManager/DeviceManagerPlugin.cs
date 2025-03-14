@@ -7020,7 +7020,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (settings != null)
             {
                 DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (monitorSetting != null && 
+                if (monitorSetting != null &&
                     monitorSetting.KVM.isNoKVM != null)
                 {
                     return Task.FromResult(monitorSetting.KVM.isNoKVM);
@@ -11158,7 +11158,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void CloseQAMOSD()
         {
-            _OSD_Controler.QAMHotKeyWin_CloseWindow();
+            _OSD_Controler.QAMHotKeyWin_CloseWindow(null, null);
         }
 
         private void HandleQAM()
@@ -14075,7 +14075,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Debug.WriteLine($"SaveHotkeySetting:GetInputSourceHotKeyDataAndSaveNewBack mo is null ");
                 }
             }
-            if (WriteHotkeySettings(saveList).Result && 
+            if (WriteHotkeySettings(saveList).Result &&
                 _NKVMPlugin != null && info.Job != HotkeyType.NkvmConflict)
             {
                 _NKVMPlugin.ToNKVM_HotkeySettings(saveList).Wait();
@@ -14421,10 +14421,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool _altPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
             bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
             bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
-            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.StartRecording);
-            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
-            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
-            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", false);
+            /*ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.StartRecording);
+            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
+            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", false);*/
             //test
             /*ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Headset, "Dell Multi-Device Headset - MS5320W");
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Mouse, "Dell Multi-Device Mouse - MS5320W");
@@ -18239,7 +18239,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         try
                                         {
-                                            _OSD_Controler.Mute_CloseWindow();
+                                            _OSD_Controler.Mute_CloseWindow(null, null);
                                             _OSD_Controler.Mute_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                         }
                                         catch (Exception ex)
@@ -18251,7 +18251,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         try
                                         {
-                                            _OSD_Controler.UnMute_CloseWindow();
+                                            _OSD_Controler.UnMute_CloseWindow(null, null);
                                             _OSD_Controler.UnMute_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                         }
                                         catch (Exception ex)
@@ -18347,7 +18347,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-                                        _OSD_Controler.StartRecording_CloseWindow();
+                                        _OSD_Controler.StartRecording_CloseWindow(null, null);
                                         _OSD_Controler.StartRecording_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                     }
                                     catch (Exception ex)
@@ -18361,7 +18361,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-                                        _OSD_Controler.DisplayChanged_CloseWindow();
+                                        _OSD_Controler.DisplayChanged_CloseWindow(null, null);
                                         _OSD_Controler.DisplayChanged_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                     }
                                     catch (Exception ex)
@@ -18375,7 +18375,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-                                        _OSD_Controler.WalkAwayLock_CloseWindow();
+                                        _OSD_Controler.WalkAwayLock_CloseWindow(null, null);
                                         _OSD_Controler.WalkAwayLock_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                     }
                                     catch (Exception ex)
@@ -18391,7 +18391,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         if (_OSD_Controler.ExistMultipleOSD())
                                         {
-                                            _OSD_Controler.CloseMultipleOSD();
+                                            _OSD_Controler.CloseMultipleOSD(null, null);
                                         }
                                         else
                                         {
@@ -18420,7 +18420,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         if (_OSD_Controler.ExistMultipleOSD())
                                         {
-                                            _OSD_Controler.CloseMultipleOSD();
+                                            _OSD_Controler.CloseMultipleOSD(null, null);
                                         }
                                         else
                                         {
@@ -18449,7 +18449,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         if (_OSD_Controler.ExistMultipleOSD())
                                         {
-                                            _OSD_Controler.CloseMultipleOSD();
+                                            _OSD_Controler.CloseMultipleOSD(null, null);
                                         }
                                         else
                                         {
@@ -18479,7 +18479,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-                                        _OSD_Controler.Fingerprint_CloseWindow();
+                                        _OSD_Controler.Fingerprint_CloseWindow(null, null);
                                         _OSD_Controler.Fingerprint_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                     }
                                     catch (Exception ex)
@@ -18493,7 +18493,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-                                        _OSD_Controler.EasyMemory_CloseWindow();
+                                        _OSD_Controler.EasyMemory_CloseWindow(null, null);
                                         _OSD_Controler.EasyMemory_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                     }
                                     catch (Exception ex)
@@ -18521,7 +18521,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     //{
                                     try
                                     {
-                                        _OSD_Controler.Error_CloseWindow();
+                                        _OSD_Controler.Error_CloseWindow(null, null);
                                         _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
                                     }
                                     catch (Exception ex)
