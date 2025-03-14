@@ -54,9 +54,10 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
         private static System.Timers.Timer _SchedulerCheckTimer = new System.Timers.Timer(60000);
         private static List<MonitorInfo> _AllInfoMonitors;
         private static scheduleInfo _ScheduleMap;
-        private static DDPMSettings _DDPMSettings;
-        private static readonly object _MoLock = new object();
         private bool _WaitTag = false;
+
+        //private static DDPMSettings _DDPMSettings;
+        //private static readonly object _MoLock = new object();
 
         #endregion
 
@@ -81,6 +82,7 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
             _SchedulerCheckTimer.AutoReset = true;
             _SchedulerCheckTimer.Enabled = true;
             _WaitTag = false;
+
             _logs.DebugMsg_1("SchedulerManagerPlugin constructor ...");
         }
 
@@ -171,7 +173,7 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
                 if (_AllInfoMonitors != null)
                     _AllInfoMonitors.Clear();
 
-                _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.GetMonitors().Result);
+                _AllInfoMonitors = (_DisplayManagerPlugin.GetMonitors().Result).ToList();
 
                 _logs.DebugMsg_1("_AllInfoMonitors count : " + _AllInfoMonitors.Count);
             }
@@ -186,9 +188,7 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
                 InitializeMonitorInfo();
 
                 if (_AllInfoMonitors.Count > 0)
-                {
                     CalculateNowValue();
-                }
                 else
                     _logs.DebugMsg_1("[OnSchedulerTimedRaise] No monitors to service");
             }
@@ -200,19 +200,22 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
 
             for (int i = 0; i < _AllInfoMonitors.Count; i++) //foreach (MonitorInfo monitor in _AllInfoMonitors)
             {
+                if (IsDisposed) break;
+
                 var monitor = _AllInfoMonitors[i];
                 var IssupportLuminance = (!(monitor.CapabilityDic.ContainsKey("12")));
                 InitializeScheduleInfo(monitor);
                 int countx = 0;
                 do
                 {
+                    if (IsDisposed) break;
                     countx++;
                     Thread.Sleep(250);
                 } while (_WaitTag && countx < 40);
 
                 _logs.DebugMsg_1("_WaitTag result " + _WaitTag.ToString());
 
-                if (_ScheduleMap != null && !_WaitTag && 
+                if (_ScheduleMap != null && !_WaitTag &&
                     _ScheduleMap.IsEnable &&
                     _ScheduleMap.Hours1 > -1 &&
                     _ScheduleMap.Hours2 > -1 &&
@@ -592,17 +595,41 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
         protected override void Dispose(bool disposing)
         {
             _logs.DebugMsg_1($"Dispose: {disposing}");
+
             if (!IsDisposed)
             {
+                _logs.DebugMsg_1("into Dispose ～～～～～～～～～～～～～～～～～！！！！！！！");
+
+                IsDisposed = true;
+
                 if (disposing)
                 {
+                    DisposeAction();
+
                     _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
                     _agent = null;
                 }
-
-                IsDisposed = true;
             }
             base.Dispose(disposing);
+        }
+
+        private void DisposeAction()
+        {
+            try
+            {
+                _logs.DebugMsg_1("Dispose Action ...");
+
+                if (_SchedulerCheckTimer is not null)
+                {
+                    if (_SchedulerCheckTimer.Enabled) _SchedulerCheckTimer.Stop();
+                    _SchedulerCheckTimer.Dispose();
+                    _SchedulerCheckTimer = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1("DisposeAction Exception: " + ex.Message);
+            }
         }
 
         #endregion

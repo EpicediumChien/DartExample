@@ -1712,6 +1712,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 }
             }
 
+            if (DevSettings.IsEABorkerRevoked())
+            {
+                WriteLog("EABroker_Start(): EABroker is revoked.");
+                return;
+            }
+
             Dmsg("EABroker Start = = = = = = = =");
             WriteLog("EABroker Start = = = = = = = =");
 

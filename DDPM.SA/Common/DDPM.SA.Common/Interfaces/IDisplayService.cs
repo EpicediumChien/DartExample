@@ -278,7 +278,9 @@ namespace DDPM.SA.Common
         #region DisplayData
 
         Task InitDisplayData(List<MonitorInfo> monitorInfos);
-        Task<bool> SetAllUSBUpstream(MonitorInfo monitorInfo, string input1, string usb1, string input2, string usb2, string input3 = null, string usb3 = null, string input4 = null, string usb4 = null);
+
+        //already declared in IInputSource
+        //Task<bool> SetAllUSBUpstream(MonitorInfo monitorInfo, string input1, string usb1, string input2, string usb2, string input3 = null, string usb3 = null, string input4 = null, string usb4 = null);
         Task SetVCPtoDisplayData(MonitorInfo monitorInfo, int vcpcode, int value);
 
         #endregion DisplayData

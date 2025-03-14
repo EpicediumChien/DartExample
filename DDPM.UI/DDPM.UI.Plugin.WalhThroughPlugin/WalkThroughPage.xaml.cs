@@ -46,6 +46,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             ViewModel.ControlIcon(true, true);
             Application.Current.MainWindow.MouseLeftButtonUp -= MouseDragEvent;
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPage] ~WalkThroughPage() ... ");
         }
 
         private void SkipBtn_Click(object sender, RoutedEventArgs e)
@@ -102,6 +103,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void MainNextBtn_Click(object sender, RoutedEventArgs e)
         {
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPage] MainNextBtn_Click in ... ");
             double scalingFactor = DdpmCommonHelper.GetScalingFactor(Application.Current.MainWindow);
             msgBox = new WalkThroughBox(ViewModel, Application.Current.MainWindow, scalingFactor);
             msgBox.WindowStartupLocation = WindowStartupLocation.Manual;
@@ -125,6 +127,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void OpenPrivacy(object sender, MouseButtonEventArgs e)
         {
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPage] OpenPrivacy in ... ");
             DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
                 null,
                 new ProcessStartInfo
@@ -137,10 +140,20 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         private void No_MouseLeftButtonDown(object sender, RoutedEventArgs e)
         {
             try
-            { 
-            _ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(false).Result;
-            //DialogResult = false;
-            Close();
+            {
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPage] No_MouseLeftButtonDown Set_GlobalSetting_EnableTelemetryConsent set false in ... ");
+                    //bool result = Task.Run(() => DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(false)).Result;
+                    //DdpmCommonHelper.WriteUILog($"[WalkThroughPage] No_MouseLeftButtonDown Set_GlobalSetting_EnableTelemetryConsent set false out : {result.ToString()} ... ");
+                    DdpmCommonHelper.Set_GlobalSettings(DdpmCommonHelper.GlobalSettingsType.Consent, false);
+                    //DialogResult = false;
+                    Close();
+                }
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPage] No_MouseLeftButtonDown Set_GlobalSetting_EnableTelemetryConsent DdpmCommonHelper.DeviceManagerSA null ... ");
+                }
             }
             catch (Exception ex)
             {
@@ -152,9 +165,18 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             try
             {
-                _ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(true).Result;
-                //DialogResult = true;
-                Close();
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPage] Yes_MouseLeftButtonDown Set_GlobalSetting_EnableTelemetryConsent set true in ... ");
+                    //bool result = Task.Run(() => DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(true)).Result;
+                    //DdpmCommonHelper.WriteUILog($"[WalkThroughPage] Yes_MouseLeftButtonDown Set_GlobalSetting_EnableTelemetryConsent set true out : {result.ToString()} ... ");
+                    DdpmCommonHelper.Set_GlobalSettings(DdpmCommonHelper.GlobalSettingsType.Consent, true);
+                    Close();
+                }
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPage] Yes_MouseLeftButtonDown Set_GlobalSetting_EnableTelemetryConsent DdpmCommonHelper.DeviceManagerSA null ... ");
+                }
             }
             catch (Exception ex)
             {
@@ -166,18 +188,21 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             try
             {
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPage] Close in ... ");
                 ViewModel.WriteWalkThroughReg("CONSENT_PAGE");
                 DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(new WalkThroughInfo("CONSENT_PAGE", "CONSENT_PAGE", null)); // Add DDPM to the end of the queue
                 DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAll(item => item.ModelName == "CONSENT_PAGE"); // Remove all DDPM from the queue
                 if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
                 {
                     ViewModel.SwitchToDDPMPage();
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPage] Close, SwitchToDDPMPage ... ");
                 }
                 else
                 {
                     ViewModel.IsConsentPageVisible = false;
                     ViewModel.IsPeripheralVisible = true;
                     skip_WalkThroughUnit();
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPage] Close, skip_WalkThroughUnit ... ");
                 }
             }
             catch (Exception ex)
@@ -197,12 +222,13 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             try
             {
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPage] skip_WalkThroughUnit, WalkThroughQueue.Count : {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count.ToString()} in ...");
                 if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
                 {
                     ViewModel.UpdateLastlogicalDeviceType();
                     ViewModel.WriteWalkThroughReg(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName);
                     DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0]);
-                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDeviceFromQueue RemoveAt {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName}");
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPage] InitializeDeviceFromQueue RemoveAt {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName}");
                     DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
                     if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
                     {

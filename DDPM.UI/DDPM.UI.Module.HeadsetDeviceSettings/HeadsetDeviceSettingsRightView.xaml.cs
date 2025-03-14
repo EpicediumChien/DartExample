@@ -29,10 +29,11 @@ namespace DDPM.UI.Module.HeadsetDeviceSettings
             {
                 _vm.DeviceSettingsDownloadDellAudioPageShow = false;
 
-                if (DdpmCommonHelper.DeviceManagerSA != null)
-                {
-                    DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, _vm.RegPath, _vm.RegKeyForQRCode, true);
-                }
+                //if (DdpmCommonHelper.DeviceManagerSA != null)
+                //{
+                //    DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, _vm.RegPath, _vm.RegKeyForQRCode, true);
+                //}
+                DdpmCommonHelper.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, _vm.RegPath, _vm.RegKeyForQRCode, true);
                 _vm._log.Info($"[HeadsetViewModel] CloseDescription ....... success");
             }
             catch (Exception ex)

@@ -706,9 +706,8 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 try
                 {
-                    var digit = (int)Math.Log10(value);
-                    DPITextMargin = new double[] { (double)(value - DPIMin) / (double)(DPIMax - DPIMin) * 365.0 + 62 - (double)digit * 5, 0, 0, 1 };//SDL, change to use new
                     DPIValueText = CurrentDeviceInfo!.IsDPIValueSupported ? value.ToString() : value < CurrentDeviceInfo.DpiLevelValues.Length ? CurrentDeviceInfo.DpiLevelValues[value - 1] : "";
+                    DPITextMargin = GetDpiTextMargin(value);
                     if (value == DPIMax || value == DPIMin || value == -1)
                     {
                         DPIValueText = "";
@@ -728,6 +727,47 @@ namespace DDPM.UI.Plugin.ViewModels
                     DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs DPIValue set ex:" + ex.Message);
                 }
             }
+        }
+        private double[] GetDpiTextMargin(int value)
+        {
+            try
+            {
+                DdpmCommonHelper.WriteUILog($"In GetDpiTextMargin:{Model}");
+                switch (Model)
+                {
+                    case "MS300":
+                    case "MS700":
+                    case "MS3320W":
+                    case "MS5120W":
+                    case "MS5320W":
+                    case "MS7421W":
+                        switch (value)
+                        {
+                            case 2:
+                                return new double[] { 169, 0, 0, 0 };
+                            case 3:
+                                return new double[] { 287, 0, 0, 0 };
+                            default:
+                                return new double[] { 0, 0, 0, 0 };
+                        }
+                    default:
+                        var digit = (int)Math.Log10(value);
+                        return new double[]
+                        {
+                            (double)(value - DPIMin) / (double)(DPIMax - DPIMin) * 365.0 + 62 - (double)digit * 5,
+                            0,
+                            0,
+                            1
+                        };
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"Error calculating DPI text margin. {ex.Message}");
+                // Return a default value or handle the error as needed
+                return new double[] { 0, 0, 0, 1 };
+            }
+
         }
         public string DPIValueText { get; set; } = "";
         public double[] DPITextMargin { get; set; } = { 0 };//SDL, change to use array

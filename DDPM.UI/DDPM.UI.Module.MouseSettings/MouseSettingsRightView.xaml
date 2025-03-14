@@ -72,17 +72,17 @@
                 </Grid>
                 <Grid Grid.Row="1">
                   <UXControls:UXTextBlock Text="{Binding [Medium], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="14" FontWeight="Bold" Opacity="{Binding IsMediumVisible}"
-                                          Focusable="True" KeyboardNavigation.TabIndex="204"
-                                                            Foreground="#A4B8CD" VerticalAlignment="Bottom" HorizontalAlignment="Center" />
+                                          Focusable="True" KeyboardNavigation.TabIndex="204" Margin="3,0,0,1"
+                                          Foreground="{DynamicResource Slider_ValueColor}" VerticalAlignment="Bottom" HorizontalAlignment="Center" />
                 </Grid>
                 <Grid VerticalAlignment="top" Grid.Row="2">
                   <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,7,0,0">
-                    <UXControls:UXTextBlock Text="{Binding [Slow], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="#A4B8CD" Margin="0,0,10,0" 
+                    <UXControls:UXTextBlock Text="{Binding [Slow], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource Slider_TxtColor}" Margin="0,0,10,0" 
                                             Focusable="True" KeyboardNavigation.TabIndex="205"/>
                     <UXControls:UXSlider TickFrequency="1" TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TouchScrollSensitivityLevel}" Minimum="1" Maximum="3" Width="360"
                                          KeyboardNavigation.TabIndex="206"
                                                              Thumb.DragStarted="TouchScrollSlider_DragStarted" Thumb.DragCompleted="TouchScrollSlider_DragCompleted" IsMoveToPointEnabled="True" />
-                    <UXControls:UXTextBlock Text="{Binding [High], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="#A4B8CD" Margin="10,0,0,0" 
+                    <UXControls:UXTextBlock Text="{Binding [High], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource Slider_TxtColor}" Margin="10,0,0,0" 
                                             Focusable="True" KeyboardNavigation.TabIndex="207"/>
                   </StackPanel>
                 </Grid>
@@ -121,7 +121,7 @@
               <StackPanel Margin="0,0,0,0">
                 <UXControls:UXTextBlock Text="{Binding DPIValueText}" FontFamily="Roboto" FontSize="14" FontWeight="Bold"
                                         Focusable="True" KeyboardNavigation.TabIndex="212"
-                                                        Foreground="#A4B8CD" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="{Binding DPITextMargin, Converter={StaticResource MarginConverter}}" />
+                                                        Foreground="{DynamicResource Slider_ValueColor}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="{Binding DPITextMargin, Converter={StaticResource MarginConverter}}" />
               </StackPanel>
               <Grid VerticalAlignment="top" Grid.Row="2" Margin="0,8,0,18">
                 <Grid.ColumnDefinitions>
@@ -130,7 +130,7 @@
                   <ColumnDefinition Width="61" />
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0" HorizontalAlignment="Right">
-                  <UXControls:UXTextBlock Text="{Binding DPIMinText}" FontSize="14" Foreground="#A4B8CD" Margin="22,2,8,0" FontFamily="Roboto" 
+                  <UXControls:UXTextBlock Text="{Binding DPIMinText}" FontSize="14" Foreground="{DynamicResource Slider_TxtColor}" Margin="22,2,8,0" FontFamily="Roboto" 
                                           Focusable="True" KeyboardNavigation.TabIndex="213"/>
                 </Grid>
                 <Grid Grid.Column="1">
@@ -139,7 +139,7 @@
                                        IsMoveToPointEnabled="True" Minimum="{Binding DPIMin}" Maximum="{Binding DPIMax}" Width="365" Thumb.DragStarted="DPISlider_DragStarted" Thumb.DragCompleted="DPISlider_DragCompleted" />
                 </Grid>
                 <Grid Grid.Column="2">
-                  <UXControls:UXTextBlock Text="{Binding DPIMaxText}" FontSize="14" Foreground="#A4B8CD" Margin="9,2,0,0" FontFamily="Roboto" 
+                  <UXControls:UXTextBlock Text="{Binding DPIMaxText}" FontSize="14" Foreground="{DynamicResource Slider_TxtColor}" Margin="9,2,0,0" FontFamily="Roboto" 
                                           Focusable="True" KeyboardNavigation.TabIndex="215"/>
                 </Grid>
               </Grid>

@@ -19,7 +19,7 @@ namespace DDPM.OSDs
         public static readonly DependencyProperty HorizontalContentAlignmentProperty =
             DependencyProperty.Register("HorizontalContentAlignment", typeof(HorizontalAlignment), typeof(AlignableWrapPanel), new FrameworkPropertyMetadata(HorizontalAlignment.Left, FrameworkPropertyMetadataOptions.AffectsArrange));
 
-        protected override Size MeasureOverride(Size constraint)
+        protected override Size MeasureOverride(Size availableSize)
         {
             Size curLineSize = new Size();
             Size panelSize = new Size();
@@ -31,16 +31,16 @@ namespace DDPM.OSDs
                 UIElement child = children[i] as UIElement;
 
                 // Flow passes its own constraint to children
-                child.Measure(constraint);
+                child.Measure(availableSize);
                 Size sz = child.DesiredSize;
 
-                if (curLineSize.Width + sz.Width > constraint.Width) //need to switch to another line
+                if (curLineSize.Width + sz.Width > availableSize.Width) //need to switch to another line
                 {
                     panelSize.Width = Math.Max(curLineSize.Width, panelSize.Width);
                     panelSize.Height += curLineSize.Height;
                     curLineSize = sz;
 
-                    if (sz.Width > constraint.Width) // if the element is wider then the constraint - give it a separate line                    
+                    if (sz.Width > availableSize.Width) // if the element is wider then the constraint - give it a separate line                    
                     {
                         panelSize.Width = Math.Max(sz.Width, panelSize.Width);
                         panelSize.Height += sz.Height;
@@ -61,7 +61,7 @@ namespace DDPM.OSDs
             return panelSize;
         }
 
-        protected override Size ArrangeOverride(Size arrangeBounds)
+        protected override Size ArrangeOverride(Size finalSize)
         {
             int firstInLine = 0;
             Size curLineSize = new Size();
@@ -72,16 +72,16 @@ namespace DDPM.OSDs
             {
                 Size sz = children[i].DesiredSize;
 
-                if (curLineSize.Width + sz.Width > arrangeBounds.Width) //need to switch to another line
+                if (curLineSize.Width + sz.Width > finalSize.Width) //need to switch to another line
                 {
-                    ArrangeLine(accumulatedHeight, curLineSize, arrangeBounds.Width, firstInLine, i);
+                    ArrangeLine(accumulatedHeight, curLineSize, finalSize.Width, firstInLine, i);
 
                     accumulatedHeight += curLineSize.Height;
                     curLineSize = sz;
 
-                    if (sz.Width > arrangeBounds.Width) //the element is wider then the constraint - give it a separate line                    
+                    if (sz.Width > finalSize.Width) //the element is wider then the constraint - give it a separate line                    
                     {
-                        ArrangeLine(accumulatedHeight, sz, arrangeBounds.Width, i, ++i);
+                        ArrangeLine(accumulatedHeight, sz, finalSize.Width, i, ++i);
                         accumulatedHeight += sz.Height;
                         curLineSize = new Size();
                     }
@@ -95,9 +95,9 @@ namespace DDPM.OSDs
             }
 
             if (firstInLine < children.Count)
-                ArrangeLine(accumulatedHeight, curLineSize, arrangeBounds.Width, firstInLine, children.Count);
+                ArrangeLine(accumulatedHeight, curLineSize, finalSize.Width, firstInLine, children.Count);
 
-            return arrangeBounds;
+            return finalSize;
         }
 
         private void ArrangeLine(double y, Size lineSize, double boundsWidth, int start, int end)

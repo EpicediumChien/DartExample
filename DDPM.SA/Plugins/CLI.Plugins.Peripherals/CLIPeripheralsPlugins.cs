@@ -1492,9 +1492,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                     });
                     writelog("SetPeripheralProperty: MICSWITCH" + (retcode ? "SUCCESS" : "FAIL"));
                     return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
-                    taskB = _devMgr.SetIsMicEnumerationOn;
-                    RunTaskD(bl);
-                    return (int)CLI_ExitCode.success;
+                    //taskB = _devMgr.SetIsMicEnumerationOn;
+                    //RunTaskD(bl);
+                    //return (int)CLI_ExitCode.success;
 
                 case "HDR":
                     writelog("SetPeripheralProperty: HDR Entry");

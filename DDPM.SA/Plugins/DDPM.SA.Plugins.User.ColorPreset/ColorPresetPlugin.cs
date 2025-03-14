@@ -28,31 +28,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Security;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using VcpCore.Common;
-//using WinCopies.Util;
-using DdmLibrary;
-using DdmLibrary.Utility;
-using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
-using System.Windows.Media.Animation;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Common.Security;
-using static VcpCore.Common.User32;
-using Microsoft.VisualBasic.Logging;
-using System.Xml.Linq;
 using DDPM.SA.Resources.Helper;
 using Microsoft.Toolkit.Uwp.Notifications;
-//using DDPM.SA.Common.Settings;
 
 namespace ColorPreset.Plugins
 {
@@ -78,14 +63,27 @@ namespace ColorPreset.Plugins
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private List<string> _supported_preset = new List<string>();
 
-        List<string> HDR_ColorPresetNameList = new List<string>() { "Standard HDR", "Movie HDR", "Game HDR", "Vivid HDR", "Desktop", "Reference", "Multiscreen Match", "DisplayHDR", "HDR10", "HLG", "Custom Color HDR", "HDR Peak 1000" };
+        private List<string> HDR_ColorPresetNameList = new List<string>() { 
+            "Standard HDR", 
+            "Movie HDR", 
+            "Game HDR", 
+            "Vivid HDR", 
+            "Desktop", 
+            "Reference", 
+            "Multiscreen Match", 
+            "DisplayHDR", 
+            "HDR10", 
+            "HLG", 
+            "Custom Color HDR", 
+            "HDR Peak 1000" 
+        };
         private List<string> ColorPresetSupportList = new List<string>();
         private List<string> ColorPresetSupportList_ = new List<string>();
 
         //20240829 Jim move to here 20240829
         private ISettingsManagerDev _SettingsPlugin_internal;
 
-        private MainWindow? MonitorBorkerWin = null; //Dean 0626 fix SAST issue, remove static
+        private MainWindow? MonitorBorkerWin = null;
         private Thread newWindowThread_AutoSetColorPresetForMonitorConfig = null;
 
         //20240830 Jim add
@@ -94,7 +92,7 @@ namespace ColorPreset.Plugins
         //private Logs _logs;
 
         //20240905 Jim add
-        MonitorInfo Active_monitorInfo = null;
+        private MonitorInfo Active_monitorInfo = null;
         public RegistryMonitor_NightLight registryMonitor_NightLight = null;
         public RegistryMonitor_NightLightScheduler registryMonitor_NightLight_Scheduler = null;
         public RegistryMonitor_ICC registryMonitor_ICC = null;
@@ -118,7 +116,8 @@ namespace ColorPreset.Plugins
             error
         }
 
-        public event EventHandler<VCPchangedEventArgs> VCPchanged;
+        //Dean 20250312
+        //public event EventHandler<VCPchangedEventArgs> VCPchanged;
 
         private static ShowOSDWin OsdWin = null;
         private string iconFolderPath = string.Empty;
@@ -184,9 +183,6 @@ namespace ColorPreset.Plugins
                     {
                         if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
                             return -1;
-
-                        //if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
-                        //    return -1;
                     }
                 }
 
@@ -213,10 +209,6 @@ namespace ColorPreset.Plugins
                                                x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
                                                x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
                 }
-
-                //int index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                //x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                //x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
             }
             return index;
         }
@@ -526,9 +518,7 @@ namespace ColorPreset.Plugins
                     // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
                     MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false, Is_Game_DeviceName, SmartHDR_ON, ColorPresetSupportList);
                 }
-
             }
-
             return System.Threading.Tasks.Task.FromResult(true);
         }
 
@@ -570,21 +560,6 @@ namespace ColorPreset.Plugins
                                 registryMonitor_ICC.Dispose();
                             registryMonitor_ICC = null;
                         }
-
-                        /*Bruce 02/23 
-                        int count = _ICC_Metadata._match_ICC_DeviceName.Count;
-
-                        for (int i = 0; i < count; i++)
-                        {
-                            try
-                            {
-                                MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
-                            }
-                            catch (Exception ex)
-                            {
-                                writelog($"IntsallMonitorProfile Exception {ex.Message.ToString()}");
-                            }
-                        }*/
                     }
                 }
                 else if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType == (int)ColorManagementRunType.Byhost)
@@ -592,21 +567,6 @@ namespace ColorPreset.Plugins
                     if (_ICC_Metadata.Is_Support_ICC_DeviceName &&
                         _ICC_Metadata._match_ICC_DeviceName != null)
                     {
-                        /*Bruce 02/23
-                        int count = _ICC_Metadata._match_ICC_DeviceName.Count;
-
-                        for (int i = 0; i < count; i++)
-                        {
-                            try
-                            {
-                                MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
-                            }
-                            catch (Exception ex)
-                            {
-                                writelog($"IntsallMonitorProfile Exception {ex.Message.ToString()}");
-                            }
-                        }*/
-
                         string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
 
                         if (registryMonitor_ICC == null)
@@ -790,27 +750,11 @@ namespace ColorPreset.Plugins
                 if (string.Equals(Key_Profile_Name, _ICC_Metadata._match_ICC_DeviceName[i].File, StringComparison.OrdinalIgnoreCase))
                 {
                     Trace.WriteLine($" _ICC_Metadata._match_ICC_DeviceName[i].File = {_ICC_Metadata._match_ICC_DeviceName[i].File}");
-
-                    // 20240619 jim modify
-
-                    //string strICC_ColorPreset = _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].ColorPreset;
-
                     string[] separators = { "," };
                     string[] strICC_ColorPresets = _ICC_Metadata._match_ICC_DeviceName[i].ColorPreset.Split(separators, StringSplitOptions.None);
 
                     if (strICC_ColorPresets.Length > 0)
                     {
-                        /*
-                        if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
-                            WriteColorPreset(Active_monitorInfo, "Standard");
-                        else if (string.Equals(strICC_ColorPresets[0], "Game", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Game1", StringComparison.OrdinalIgnoreCase))
-                            WriteColorPreset(Active_monitorInfo, "Game");
-                        else if (strICC_ColorPresets[0].Contains("Rec", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("BT.", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("709", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("2020", StringComparison.OrdinalIgnoreCase))
-                            WriteColorPreset(Active_monitorInfo, "Rec.709 / BT.709");
-                        else
-                            WriteColorPreset(Active_monitorInfo, strICC_ColorPresets[0]);
-                        */
-
                         Trace.WriteLine($" strICC_ColorPresets = {strICC_ColorPresets[0]}");
 
                         writelog($"ColorPresetPlugin OnRegChanged_ICC ColorPreset = {strICC_ColorPresets[0]}");
@@ -1038,12 +982,7 @@ namespace ColorPreset.Plugins
         public Task<bool> SyncNightlightStatus()
         {
             writelog("ColorPresetPlugin SyncNightlightStatus requested ...");
-
-            // 20240627 jim modify
-
             RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.CurrentUser, RegistryView.Registry64);
-
-            //using RegistryKey registryKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate");
 
             if (localKey64 != null)
             {
@@ -1063,14 +1002,6 @@ namespace ColorPreset.Plugins
 
                             if (ch == 0x15)
                             {
-                                //nightLightIsOn = true;
-
-                                // jim modify 20240604
-                                //MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-                                //{
-                                //    NightlightStatus = "On";
-                                //}));
-
                                 NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "On", System.Threading.CancellationToken.None);
 
                                 if (_DeviceManagerPlugin_SA != null && Active_monitorInfo != null)
@@ -1083,13 +1014,6 @@ namespace ColorPreset.Plugins
                             }
                             else if (ch == 0x13)
                             {
-                                //nightLightIsOn = false;
-
-                                // jim modify 20240604
-                                //MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-                                //{
-                                //    NightlightStatus = "Off";
-                                //}));
                                 NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
 
                                 if (_DeviceManagerPlugin_SA != null && Active_monitorInfo != null)
@@ -1104,11 +1028,6 @@ namespace ColorPreset.Plugins
                     }
                     else
                     {
-                        // jim add 20240711
-                        //MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-                        //{
-                        //    NightlightStatus = "Off";
-                        //}));
                         NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
 
                         if (_DeviceManagerPlugin_SA != null && Active_monitorInfo != null)
@@ -1124,11 +1043,6 @@ namespace ColorPreset.Plugins
                 }
                 else
                 {
-                    // jim add 20240711
-                    //MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-                    //{
-                    //    NightlightStatus = "Off";
-                    //}));
                     NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
 
                     if (_DeviceManagerPlugin_SA != null && Active_monitorInfo != null)
@@ -1146,11 +1060,6 @@ namespace ColorPreset.Plugins
             }
             else
             {
-                // jim add 20240711
-                //MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-                //{
-                //    NightlightStatus = "Off";
-                //}));
                 NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
 
                 if (_DeviceManagerPlugin_SA != null && Active_monitorInfo != null)
@@ -1165,19 +1074,14 @@ namespace ColorPreset.Plugins
             }
 
             // If it has not been turned on nightlight settings, nightlight status is off by default
-            NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
-            return System.Threading.Tasks.Task.FromResult(true);
+            //NightLightStatus_ChangeEvent?.AsyncFireAndForget(this, "Off", System.Threading.CancellationToken.None);
+            //return System.Threading.Tasks.Task.FromResult(true);
         }
 
         public Task<bool> SyncNightlightSchedulerStatus()
         {
             writelog("ColorPresetPlugin SyncNightlightSchedulerStatus requested ...");
-
-            // 20240627 jim modify
-
             RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.CurrentUser, RegistryView.Registry64);
-
-            //using RegistryKey registryKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate");
 
             if (localKey64 != null)
             {
@@ -1282,13 +1186,7 @@ namespace ColorPreset.Plugins
 
         public void ShowOSD_ColoPreset(MonitorInfo m, string strMsg, bool is_ShowUI = true, bool is_AUTO = false)
         {
-            //if (Log != null)
-            //{
-            //    Log.Info($"ShowOSD_ColoPreset requested ...");
-            //}
-
             MonitorInfo monitorInfo = m;
-
             writelog("ColorPresetPlugin ShowOSD_ColoPreset requested ...");
 
             Thread thread = new Thread(() =>
@@ -1317,29 +1215,18 @@ namespace ColorPreset.Plugins
                             OsdWin.Left = sreen.WorkingArea.Left / (double)dpiX;
 
                             double dbfactor = ((double)((double)40 / (double)96));
-
                             double dbscale = dbfactor * dpiX;
-
-                            //OsdWin.Height = (sreen.WorkingArea.Height * dbscale) / ((40 * dbscale));
-                            //OsdWin.Width = (sreen.WorkingArea.Width) / ((40 * dbfactor));
 
                             if (is_ShowUI)
                                 OsdWin.Show();
                         }
                         catch (Exception)
                         {
-                            //OsdWin.Top = s.WorkingArea.Top;
-                            //OsdWin.Left = s.WorkingArea.Left;
-
                             OsdWin.Top = sreen.WorkingArea.Top / (double)dpiX;
                             OsdWin.Left = sreen.WorkingArea.Left / (double)dpiX;
 
                             double dbfactor = ((double)((double)40 / (double)96));
-
                             double dbscale = dbfactor * dpiX;
-
-                            //OsdWin.Height = (sreen.WorkingArea.Height * dbscale) / ((40 * dbscale));
-                            //OsdWin.Width = (sreen.WorkingArea.Width) / ((40 * dbfactor));
 
                             if (is_ShowUI)
                                 OsdWin.Show();
@@ -1365,17 +1252,9 @@ namespace ColorPreset.Plugins
         {
             //20250122 Jim add for PIMS-314617
             Active_SmartHDR_ON = SmartHDR_ON;
-
             Trace.WriteLine($" [ReadColorPreset]  vcp_capbilities = {vcp_capbilities}");
 
-
             int index = -1;
-
-            //if (Log != null)
-            //{
-            //    Log.Info($"ReadColorPreset requested ...");
-            //}
-
             writelog("ColorPresetPlugin ReadColorPreset requested ...");
 
             if (string.IsNullOrEmpty(vcp_capbilities))
@@ -1384,10 +1263,6 @@ namespace ColorPreset.Plugins
                 return System.Threading.Tasks.Task.FromResult(ColorPresetSupportList_);
             }
 
-            //if (Log != null)
-            //{
-            //    Log.Info($"ReadColorPreset requested [vcp_capbilities] = {vcp_capbilities}");
-            //}
             // 20240619 jim add
             if (!string.IsNullOrEmpty(vcp_capbilities))
             {
@@ -1422,7 +1297,6 @@ namespace ColorPreset.Plugins
                                 {
                                     writelog($"[ReadColorPreset] collect colore presets from VCP E2 , message: {ex.Message}");
                                 }
-
                             }
                         }
                     }
@@ -1451,7 +1325,8 @@ namespace ColorPreset.Plugins
                             }
 
                             // PIMS-327395 jim 20241212 add
-                            if (string.Equals(m.modelName, "G2724D", StringComparison.OrdinalIgnoreCase) || string.Equals(m.modelName, "G3223D", StringComparison.OrdinalIgnoreCase))
+                            if (string.Equals(m.modelName, "G2724D", StringComparison.OrdinalIgnoreCase) || 
+                                string.Equals(m.modelName, "G3223D", StringComparison.OrdinalIgnoreCase))
                                 ColorPresetSupportList_.Add("sRGB");
                         }
                     }
@@ -1482,136 +1357,7 @@ namespace ColorPreset.Plugins
             }
             else
             {
-                ColorPresetSupportList_.RemoveAll(r => HDR_ColorPresetNameList.Any(a => a == r));
-                /*
-                // check Color Preset Strings Standard or Native
-
-                if (m.modelName.StartsWith("UP"))
-                {
-                    index = ColorPresetSupportList_.FindIndex(x => x == "Standard/Native");
-                    if (index >= 0)
-                        ColorPresetSupportList_[index] = "Native";
-                }
-                else
-                {
-                    index = ColorPresetSupportList_.FindIndex(x => x == "Standard/Native");
-                    if (index >= 0)
-                        ColorPresetSupportList_[index] = "Standard";
-                }
-
-                // check Color Preset Strings Custom 1/2/3 or User 1/2/3
-
-                if (m.modelName.StartsWith("UP3221Q"))
-                {
-                    index = ColorPresetSupportList_.FindIndex(x => x == "Custom 1 / User 1");
-                    if (index >= 0)
-                        ColorPresetSupportList_[index] = "User 1";
-
-                    index = ColorPresetSupportList_.FindIndex(x => x == "Custom 2 / User 2");
-                    if (index >= 0)
-                        ColorPresetSupportList_[index] = "User 2";
-
-                    index = ColorPresetSupportList_.FindIndex(x => x == "Custom 3 / User 3");
-                    if (index >= 0)
-                        ColorPresetSupportList_[index] = "User 3";
-                }
-                else
-                {
-                    index = ColorPresetSupportList_.FindIndex(x => x == "Custom 1 / User 1");
-                    if (index >= 0)
-                        ColorPresetSupportList_[index] = "Custom 1";
-
-                    index = ColorPresetSupportList_.FindIndex(x => x == "Custom 2 / User 2");
-                    if (index >= 0)
-                        ColorPresetSupportList_[index] = "Custom 2";
-
-                    index = ColorPresetSupportList_.FindIndex(x => x == "Custom 3 / User 3");
-                    if (index >= 0)
-                        ColorPresetSupportList_[index] = "Custom 3";
-                }
-
-                // check Color Preset Strings Game or Game1
-
-                index = ColorPresetSupportList_.FindIndex(x => x == "Game2");
-
-                if (index >= 0)
-                {
-                    index = ColorPresetSupportList_.FindIndex(x => x == "Game/Game1");
-                    if (index >= 0)
-                        ColorPresetSupportList_[index] = "Game1";
-                }
-                else
-                {
-
-                    index = ColorPresetSupportList_.FindIndex(x => x == "Game/Game1");
-                    if (index >= 0)
-                        ColorPresetSupportList_[index] = "Game";
-                }
-
-                // check Color Preset Strings Rec.709 or BT.709 / Rec.709 or BT.709
-
-                string strFY = string.Empty;
-
-                for (int i = 0; i < m.modelName.Length; i++) // loop over the complete modelName
-                {
-                    if (Char.IsDigit(m.modelName[i])) //check if the current char is digit
-                    {
-                        strFY = m.modelName.Substring(i + 2, 2);
-                        break;
-                    }
-
-                }
-
-                int numFY = 0;
-                try
-                {
-                    numFY = Int32.Parse(strFY);
-
-                    if (ColorPresetSupportList_.Contains("Rec.709 / BT.709"))
-                    {
-                        if (numFY <= 23)
-                        {
-                            index = ColorPresetSupportList_.FindIndex(x => x == "Rec.709 / BT.709");
-                            if (index >= 0)
-                                ColorPresetSupportList_[index] = "Rec.709";
-                        }
-                        else if (numFY >= 25)
-                        {
-                            index = ColorPresetSupportList_.FindIndex(x => x == "Rec.709 / BT.709");
-                            if (index >= 0)
-                                ColorPresetSupportList_[index] = "BT.709";
-                        }
-                    }
-                }
-                catch (FormatException e)
-                {
-                    Log?.Error("check Color Preset Strings Rec.709 or BT.709 / Rec.709 or BT.709..." + e.Message);
-                }
-
-                // check Color Preset Strings Rec.2020 or BT.2020 / Rec.2020 or BT.2020
-                try
-                {
-                    if (ColorPresetSupportList_.Contains("Rec.2020 / BT.2020"))
-                    {
-                        if (numFY <= 23)
-                        {
-                            index = ColorPresetSupportList_.FindIndex(x => x == "Rec.2020 / BT.2020");
-                            if (index >= 0)
-                                ColorPresetSupportList_[index] = "Rec.2020";
-                        }
-                        else if (numFY >= 25)
-                        {
-                            index = ColorPresetSupportList_.FindIndex(x => x == "Rec.2020 / BT.2020");
-                            if (index >= 0)
-                                ColorPresetSupportList_[index] = "BT.2020";
-                        }
-                    }
-                }
-                catch (FormatException e)
-                {
-                    Log?.Error("check Color Preset Strings Rec.2020 or BT.2020 / Rec.2020 or BT.2020..." + e.Message);
-                }
-                */
+                ColorPresetSupportList_.RemoveAll(r => HDR_ColorPresetNameList.Any(a => a == r));               
             }
 
             index = 0;
@@ -1637,11 +1383,6 @@ namespace ColorPreset.Plugins
 
         public Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, ISettingsManagerDev _SettingsPlugin = null, int colorPresetRunType = 0)
         {
-            //if (Log != null)
-            //{
-            //    Log.Info($"WriteColorPreset requested ...");
-            //}
-
             bool blRes = true;
 
             writelog("ColorPresetPlugin WriteColorPreset requested ...");
@@ -1655,9 +1396,9 @@ namespace ColorPreset.Plugins
                 int index = get_index_of_json_config_for_cur_monitor(m);
 
 
-                if (colorPresetRunType == (int)ColorPresetRunType.Manual)
+                if (index >= 0) 
                 {
-                    if (index >= 0)
+                    if (colorPresetRunType == (int)ColorPresetRunType.Manual)
                     {
                         var nColorVCPCoreValue = GetColorVCPCoreValue(ColorPreset_Name).Result;
 
@@ -1666,10 +1407,7 @@ namespace ColorPreset.Plugins
 
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = nColorVCPCoreValue;
                     }
-                }
-                else if (colorPresetRunType == (int)ColorPresetRunType.Auto)
-                {
-                    if (index >= 0)
+                    else if (colorPresetRunType == (int)ColorPresetRunType.Auto)
                     {
                         var nColorVCPCoreValue = GetColorVCPCoreValue(ColorPreset_Name).Result;
 
@@ -1678,7 +1416,6 @@ namespace ColorPreset.Plugins
 
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = nColorVCPCoreValue;
                     }
-
                 }
 
                 _SettingsPlugin.WriteColorPresetSettings(config);
@@ -1709,28 +1446,6 @@ namespace ColorPreset.Plugins
             //return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
         }
 
-        /*
-        public Task<List<ColorPresetSettings>> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, List<ColorPresetSettings> config)
-        {
-            if (Log != null)
-            {
-                Log.Info($"WriteColorPreset requested ...");
-            }
-
-            Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
-
-            int index = get_index_of_json_config_for_cur_monitor(m);
-
-            if (index >= 0)
-            {
-                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Manual;
-                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].PresetForManual = ColorPreset_Name;
-            }
-
-            return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
-        }
-        */
-
         public Task<List<ColorPresetSettings>> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name, List<ColorPresetSettings> config)
         {
             //if (Log != null)
@@ -1759,11 +1474,6 @@ namespace ColorPreset.Plugins
 
         public Task<string> GetColorPresetName(int Color_VCPCore_E2)
         {
-            //if (Log != null)
-            //{
-            //    Log.Info($"GetColorPresetName requested ...");
-            //}
-
             writelog("ColorPresetPlugin GetColorPresetName requested ...");
 
             // 判斷Key是否存在
@@ -1780,11 +1490,6 @@ namespace ColorPreset.Plugins
 
         public Task<int> GetColorVCPCoreValue(string ColorPreset_Name)
         {
-            //if (Log != null)
-            //{
-            //    Log.Info($"GetColorVCPCoreValue requested ...");
-            //}
-
             writelog("ColorPresetPlugin GetColorVCPCoreValue requested ...");
 
             // 判斷Key是否存在
@@ -1801,11 +1506,6 @@ namespace ColorPreset.Plugins
 
         public Task<string> Sync_ColorPresetName(MonitorInfo monitorInfo, string ColorPreset_Name)
         {
-            //if (Log != null)
-            //{
-            //    Log.Info($"Sync_ColorPresetName requested ...");
-            //}
-
             writelog("ColorPresetPlugin Sync_ColorPresetName requested ...");
             Trace.WriteLine($" ColorPreset_Name = {ColorPreset_Name}");
 
@@ -1843,7 +1543,6 @@ namespace ColorPreset.Plugins
             if (!string.IsNullOrEmpty(monitorInfo.modelName))
             {
                 // check Color Preset Strings Standard or Native
-
                 if (monitorInfo.modelName.StartsWith("UP"))
                 {
                     Trace.WriteLine($" ColorPreset_Name = {ColorPreset_Name}");
@@ -1861,7 +1560,6 @@ namespace ColorPreset.Plugins
                 }
 
                 // check Color Preset Strings Custom 1/2/3 or User 1/2/3
-
                 if (monitorInfo.modelName.StartsWith("UP3221Q") || (monitorInfo.modelName.StartsWith("UP32") && !monitorInfo.modelName.Contains("UP3218K")))
                 {
                     if (ColorPreset_Name == "Custom 1 / User 1")
@@ -1882,9 +1580,7 @@ namespace ColorPreset.Plugins
                 }
             }
 
-
             // check Color Preset Strings Game or Game1
-
             if (ColorPresetSupportList_.Count > 0)
                 index = ColorPresetSupportList_.FindIndex(x => x == "Game2");
 
@@ -1900,7 +1596,6 @@ namespace ColorPreset.Plugins
             }
 
             // check Color Preset Strings Rec.709 or BT.709 / Rec.709 or BT.709
-
             string strFY = string.Empty;
 
             if (!string.IsNullOrEmpty(monitorInfo.modelName))
@@ -1939,7 +1634,6 @@ namespace ColorPreset.Plugins
                     if (ColorPreset_Name == "Rec.2020 / BT.2020")
                         strSync_ColorPreset_Name = "BT.2020";
                 }
-
             }
             catch (FormatException e)
             {
@@ -1953,24 +1647,6 @@ namespace ColorPreset.Plugins
                 {
                     strSync_ColorPreset_Name = presetValue;
                 }
-
-                /*
-                if (ColorPreset_Name == "AdobeRGB1")
-                    strSync_ColorPreset_Name = "Adobe RGB D65 G2.2 L160";
-
-                if (ColorPreset_Name == "AdobeRGB2")
-                    strSync_ColorPreset_Name = "Adobe RGB D50 G2.2 L160";
-
-                if (ColorPreset_Name == "Rec.709 / BT.709")
-                    strSync_ColorPreset_Name = "BT.709 D65 BT1886 L100";
-
-                if (ColorPreset_Name == "Rec.2020 / BT.2020")
-                    strSync_ColorPreset_Name = "BT.2020 D65 BT1886 L100";
-
-                if (ColorPreset_Name == "sRGB")
-                    strSync_ColorPreset_Name = "sRGB D65 sRGB L120";
-                */
-
             }
             else if (monitorInfo.modelName.StartsWith("UP27"))
             {
@@ -1978,24 +1654,6 @@ namespace ColorPreset.Plugins
                 {
                     strSync_ColorPreset_Name = presetValue;
                 }
-
-                /*
-                if (ColorPreset_Name == "AdobeRGB1")
-                    strSync_ColorPreset_Name = "Adobe RGB D65 G2.2 L250";
-
-                if (ColorPreset_Name == "AdobeRGB2")
-                    strSync_ColorPreset_Name = "Adobe RGB D50 G2.2 L250";
-
-                if (ColorPreset_Name == "sRGB")
-                    strSync_ColorPreset_Name = "sRGB D65 sRGB L250";
-
-                if (ColorPreset_Name == "Rec.709 / BT.709")
-                    strSync_ColorPreset_Name = "BT.709 D65 BT1886 L100";
-
-                if (ColorPreset_Name == "Rec.2020 / BT.2020")
-                    strSync_ColorPreset_Name = "BT.2020 D65 BT1886 L100"; 
-                */
-
             }
 
             if (System.String.IsNullOrEmpty(strSync_ColorPreset_Name))
@@ -2049,11 +1707,7 @@ namespace ColorPreset.Plugins
                         toastContentBuilder.AddText(title);
                         toastContentBuilder.AddText(info);
                     }
-                    //if (_PopupBase != null && _PopupBase.Activate())
-                    //{
-                    //    _PopupBase.CloseWindow();
-                    //    _PopupBase = null;
-                    //}
+
                     toastContentBuilder.Show(); // 顯示Toast通知
                     writelog("[CallPopup], popup Show.");
                     Thread.Sleep(5000);
@@ -2099,8 +1753,79 @@ namespace ColorPreset.Plugins
                 {
                     _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
                     _agent = null;
-                }
 
+                    Coloreset_manual_ChangeEvent = null;
+                    NightLightStatus_ChangeEvent = null;
+
+                    if (newWindowThread_AutoSetColorPresetForMonitorConfig != null)
+                    {
+                        try
+                        {
+                            newWindowThread_AutoSetColorPresetForMonitorConfig.Abort();
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"[Dispose] newWindowThread_AutoSetColorPresetForMonitorConfig.Abort() error:{ex.Message}");
+                        }
+                    }
+                    try
+                    {
+                        registryMonitor_NightLight?.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        writelog($"[Dispose] registryMonitor_NightLight.Stop() error:{ex.Message}");
+                    }
+                    registryMonitor_NightLight = null;
+                    try
+                    {
+                        registryMonitor_NightLight_Scheduler.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        writelog($"[Dispose] registryMonitor_NightLight_Scheduler.Stop() error:{ex.Message}");
+                    }
+                    registryMonitor_NightLight_Scheduler = null;
+                    try
+                    {
+                        registryMonitor_ICC?.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        writelog($"[Dispose] registryMonitor_ICC.Stop() error:{ex.Message}");
+                    }
+                    registryMonitor_ICC = null;
+
+                    _certChecker = null;
+                    _supported_preset = null;
+                    _AllAppData = null;
+                    ColorPresetSupportList = null;
+                    ColorPresetSupportList_ = null;
+                    _SettingsPlugin_internal = null;
+                    try
+                    {
+                        MonitorBorkerWin?.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        writelog($"[Dispose] MonitorBorkerWin.Close() error:{ex.Message}");
+                    }
+                    MonitorBorkerWin = null;
+                    try
+                    {
+                        OsdWin?.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        writelog($"[Dispose] OsdWin.Close() error:{ex.Message}");
+                    }
+                    OsdWin = null;
+
+                    _ICC_Metadata = null;
+                    download = null;
+                    Active_monitorInfo = null;                    
+                    _DeviceManagerPlugin_SA = null;
+                }
                 IsDisposed = true;
             }
             base.Dispose(disposing);
@@ -2165,20 +1890,10 @@ namespace ColorPreset.Plugins
 
             try
             {
-                // 20240725 jim remove
-                //Dictionary<string, List<ICC_SupportDeviceName>> _temp = new Dictionary<string, List<ICC_SupportDeviceName>>() { };
-
                 retList._support_ICC_DeviceName = JsonConvert.DeserializeObject<Dictionary<string, List<ICC_SupportDeviceName>>>(value);
-
-                //retList._support_ICC_DeviceName = JsonConvert.DeserializeObject<List<Dictionary<string, List<ICC_SupportDeviceName>>>>(value);
-
-                //retList._supportDeviceName
-
-                //retList = JsonConvert.DeserializeObject<IIC_Metadata>(value);
             }
             catch (System.Exception ex)
             {
-                //Console.WriteLine("[DownloadICCData] RunDeserializeObject() error:" + ex.Message.ToString());
                 writelog("[DownloadICCData] RunDeserializeObject() error:" + ex.Message.ToString());
 
                 return retList;
@@ -2232,7 +1947,6 @@ namespace ColorPreset.Plugins
         public Task<IIC_Metadata> DownloadICCData(MonitorInfo m, ISettingsManagerDev _SettingsPlugin, bool blICCProfile = false, string savelPath = "", bool UpdateMetadata = false)
         {
             writelog("ColorPresetPlugin DownloadICCData requested ...");
-
             try
             {
                 if (_SettingsPlugin_internal == null)
@@ -2371,13 +2085,6 @@ namespace ColorPreset.Plugins
                     if (blICCProfile)
                     {
                         int count = _ICC_Metadata._match_ICC_DeviceName.Count;
-
-                        // 20240725 jim add
-                        //str_url_prefix = string.Empty;
-
-                        //str_url_prefix = GlobalDefinitions.major_url; //@"https://clientperipherals.dell.com/DDPM/";
-                        //str_url_prefix += str_IncludeTestPath;
-                        //str_url_prefix += @"/Windows/Display/ICC/";
                         str_url_prefix += m.modelName;
                         str_url_prefix += @"/";
 
@@ -2399,19 +2106,12 @@ namespace ColorPreset.Plugins
                                 writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i].File} icc profile is no exists go download");
                                 if (download.DownloadFile(url, strFilePath, out downloadInfo))
                                 {
-                                    //string txtSha256 = BytesToString(GetHashSha256(strFilePath));
-                                    //
-                                    //if (!string.Equals(txtSha256, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, StringComparison.OrdinalIgnoreCase))
                                     bool? rst = _certChecker?.CheckFile_SHA256(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, out info);
                                     if (rst == null || rst == false)
                                     {
                                         writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha256 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA256} mismatch!");
                                         continue;
                                     }
-
-                                    //string txtSha512 = BytesToString(GetHashSha512(strFilePath));
-                                    //
-                                    //if (!string.Equals(txtSha512, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, StringComparison.OrdinalIgnoreCase))
                                     rst = _certChecker?.CheckFile_SHA512(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, out info);
                                     if (rst == null || rst == false)
                                     {
@@ -2428,7 +2128,6 @@ namespace ColorPreset.Plugins
                         }
                     }
                 }
-                //}
 
                 writelog("ColorPresetPlugin DownloadICCData exit ...");
                 return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);

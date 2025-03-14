@@ -272,9 +272,8 @@ namespace DDPM.SA.Common.UpdateProgressPage
         }
         int GetSystemTheme()
         {
-            string key = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+            /*string key = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
             string value = "AppsUseLightTheme";
-            int ret = 0;
             try
             {
                 using (RegistryKey regKey = Registry.CurrentUser.OpenSubKey(key))
@@ -289,6 +288,16 @@ namespace DDPM.SA.Common.UpdateProgressPage
             catch (Exception ex)
             {
                 _Logs?.DebugMsg_1($"[UpdateProgress] Error reading registry: {ex.Message}");
+            }*/
+            object o = WTSFunction.ImpersonateUser_ReadRegistry_New(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme", null, _Logs);
+            int ret = 0;
+            if (o != null)
+            {
+                ret = (int)o;
+            }
+            else
+            {
+                _Logs?.DebugMsg_1("can not found AppsUseLightTheme");
             }
             _Logs?.DebugMsg_1($"[UpdateProgress] GetSystemTheme ret : {ret}");
             if (ret == 1)

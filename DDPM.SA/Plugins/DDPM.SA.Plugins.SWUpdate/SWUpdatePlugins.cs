@@ -11,6 +11,7 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
+using Microsoft;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using PInvoke;
@@ -40,7 +41,7 @@ namespace DDPM.SA.Plugins.SWUpdate
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(ISWUpdateService) })]
     [DependencyKnownTypes(new[] { typeof(ISWUpdateService), typeof(ISettingsManagerSA) })]
-    public class SWUpdatePlugins : BaseAgentPlugin, ISWUpdateService
+    public class SWUpdatePlugins : BaseAgentPlugin, IDisposableObservable, ISWUpdateService
     {
         #region Private Members
 
@@ -104,8 +105,8 @@ namespace DDPM.SA.Plugins.SWUpdate
         public SWUpdatePlugins(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
-            _logs ??= new Logs(Log, PluginLogId);
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
+            _logs ??= new Logs(Log, PluginLogId);
             InitializeSettingsPlugin();
             _SWUpdateInfoPackage = new SWUpdateInfoPackage();
             DdpmSACommonHelper.SAPluginReady(nameof(SWUpdatePlugins));
@@ -113,7 +114,7 @@ namespace DDPM.SA.Plugins.SWUpdate
         #region Overriding methods
 
         #region IDisposableObservable Support
-
+        private CancellationTokenSource _CancellationTokenSource;
         /// <summary>
         /// To detect redundant calls
         /// </summary>
@@ -130,13 +131,22 @@ namespace DDPM.SA.Plugins.SWUpdate
 #endif
             if (!IsDisposed)
             {
+                IsDisposed = true;
                 if (disposing)
                 {
+                    if (_CancellationTokenSource != null)
+                    {
+                        _CancellationTokenSource.Cancel();
+                    }
+                    if (_downloadTimer != null)
+                    {
+                        _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
+                        _downloadTimer.Stop();
+                        _downloadTimer = null;
+                    }
                     _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
                     _agent = null;
                 }
-
-                IsDisposed = true;
             }
             base.Dispose(disposing);
         }
@@ -218,6 +228,11 @@ namespace DDPM.SA.Plugins.SWUpdate
                     _logs.DebugMsg_1($"{nameof(CheckUpdate)} swUpdateHelper.Softwares.Count : {swUpdateHelper.Softwares.Count}");
                     for (int i = 0; i < swUpdateHelper.Softwares.Count; i++)
                     {
+                        if (IsDisposed)
+                        {
+                            _logs.DebugMsg_1($"CheckUpdate IsDisposed");
+                            break;
+                        }
                         bool needUpdate = SWUpdateSetting.CompareVersions(currentVersion, swUpdateHelper.Softwares[i].SoftwareVersion, _logs);
                         SWUpdateInfo SWUpdateInfo = new SWUpdateInfo()
                         {
@@ -308,6 +323,11 @@ namespace DDPM.SA.Plugins.SWUpdate
                 }
                 for (int i = 0; i < swUpdateInfos.Count; i++)
                 {
+                    if (IsDisposed)
+                    {
+                        _logs.DebugMsg_1($"DownloadAndInstall IsDisposed");
+                        break;
+                    }
                     _updateErrorCode = SWUErrorCode.Unknow;
                     swUpdateInfos[i].SWUErrorCode = _updateErrorCode;
                     _SWUpdateInfo = swUpdateInfos[i];
@@ -335,6 +355,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     string _installationFileStoragePath;
                     try
                     {
+                        _CancellationTokenSource = new CancellationTokenSource();
                         _downloadTimer = new Timer();
                         _downloadTimer.Interval = 1000;
                         _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
@@ -347,7 +368,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                             _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {GlobalDefinitions.GetLogPrintServerName(url)}");
                         }
                         _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
-                        bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA);
+                        bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA, _CancellationTokenSource);
                         _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
                         _downloadTimer.Stop();
                         UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
@@ -366,7 +387,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                                 method.DeleteFolder(savePath);
                             }
-                            else if (downloadInfo.Equals("Network fail"))
+                            else
                             {
                                 swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
                                 _notificationStr = LangHelper.Instance["Update_failed_due_to_network_error"];
