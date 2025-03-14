@@ -117,7 +117,7 @@ namespace DDPM.SA.Common
         Task<bool> WriteColorPresetByColorProfile(MonitorInfo m, string ColorProfile_Name);
 
         //Dean add 0612
-        public Task<string> ReadCurrentColorPreset(MonitorInfo m);
+        public Task<string> ReadCurrentColorPreset(MonitorInfo m, Guid guid = default, Priority priority = Priority.Low);
 
         //Jim add 0621
         Task<bool> Notify_refresh_app_list();

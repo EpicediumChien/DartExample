@@ -13,6 +13,7 @@
         Topmost="True"
         WindowStartupLocation="Manual"
         WindowStyle="None"
+        Closed="Window_Closed"
         mc:Ignorable="d">
     <Window.Resources>
         <Storyboard x:Key="FadeOut">

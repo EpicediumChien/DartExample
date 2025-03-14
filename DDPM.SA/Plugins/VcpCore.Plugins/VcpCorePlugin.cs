@@ -92,7 +92,9 @@ namespace VcpCore.Plugins
 
         private bool IsOutInitialize
         {
-            get => (_InitialThreadCounter < 1);
+            get => ((_InitialThreadCounter < 2) &&
+                    (((_InitialThreadCounter == 1) && (_CoWorkSignal == 1)) ||
+                     ((_InitialThreadCounter == 0) && (_CoWorkSignal == 0))));
         }
 
         #endregion
@@ -186,6 +188,8 @@ namespace VcpCore.Plugins
 
         public Task Reset0x52TimerTick(int millisecond)
         {
+            if (IsDisposed) return Task.CompletedTask;
+
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received Reset0x52TimerTick: " + millisecond.ToString() + " requested ...");
 
             var Orig = _CacheTimer.Enabled;
@@ -202,6 +206,8 @@ namespace VcpCore.Plugins
 
         public Task SetIsUserActive(bool IsUserActive)
         {
+            if (IsDisposed) return Task.CompletedTask;
+
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received SetIsUserActive: " + IsUserActive.ToString() + " requested ...");
 
             _IsUserActive = IsUserActive;
@@ -245,6 +251,8 @@ namespace VcpCore.Plugins
 
         public Task CancelVcpTask(Guid user_guid)
         {
+            if (IsDisposed) return Task.CompletedTask;
+
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received CancelVCPTask requested ...");
 
             _logs.DebugMsg($"[VcpCorePlugin] Before CancelhashSet Count : {_CancelhashSet.Count}");
@@ -259,6 +267,8 @@ namespace VcpCore.Plugins
 
         public Task<List<MonitorInfo>> GetMonitors()
         {
+            if (IsDisposed) return Task.FromResult(new List<MonitorInfo>());
+
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received Monitors List requested ...");
 
             List<MonitorInfo> _AllDisplays = _AllInfoMonitors_Mix.Select(M => M.Item2).ToList();
@@ -270,6 +280,8 @@ namespace VcpCore.Plugins
 
         public async Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken Token)
         {
+            if (IsDisposed) return (new List<MonitorInfo>());
+
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received Re-Get Monitors List requested ...");
 
             try
@@ -304,6 +316,8 @@ namespace VcpCore.Plugins
 
         public async Task<List<MultiCommandArch>> MultiCommandsRun(List<MultiCommandArch> _multiCommands)
         {
+            if (IsDisposed) return (new List<MultiCommandArch>());
+
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received MultiCommandRun requested ...");
 
             try
@@ -396,6 +410,8 @@ namespace VcpCore.Plugins
 
         public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
         {
+            if (IsDisposed) return Task.FromResult(string.Empty);
+
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetCapabilitiesString requested ...");
 
             _pauseEvent.WaitOne(Timeout.Infinite);
@@ -456,6 +472,8 @@ namespace VcpCore.Plugins
 
         public Task<string> GetVCPCapabilities(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
         {
+            if (IsDisposed) return Task.FromResult(string.Empty);
+
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapabilities requested ...");
 
             _pauseEvent.WaitOne(Timeout.Infinite);
@@ -516,6 +534,8 @@ namespace VcpCore.Plugins
 
         public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, Guid guid = default, int opt = 0, Priority priority = Priority.Low)
         {
+            if (IsDisposed) return Task.FromResult(new ObjGetVCP());
+
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapability requested ...");
 
             _pauseEvent.WaitOne(Timeout.Infinite);
@@ -586,6 +606,8 @@ namespace VcpCore.Plugins
 
         public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, Guid guid = default, int opt = 0, Priority priority = Priority.Low)
         {
+            if (IsDisposed) return Task.FromResult(new ObjGetVCP());
+
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapability requested ...");
 
             _pauseEvent.WaitOne(Timeout.Infinite);
@@ -648,6 +670,8 @@ namespace VcpCore.Plugins
 
         public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val, Guid guid = default, Priority priority = Priority.Low)
         {
+            if (IsDisposed) return Task.FromResult(false);
+
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received SetVCPCapability requested ...");
 
             _pauseEvent.WaitOne(Timeout.Infinite);
@@ -711,6 +735,8 @@ namespace VcpCore.Plugins
 
         public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, string FunctionName, string val, Guid guid = default, Priority priority = Priority.Low)
         {
+            if (IsDisposed) return Task.FromResult(false);
+
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received SetVCPCapability requested ...");
 
             _pauseEvent.WaitOne(Timeout.Infinite);
@@ -2494,7 +2520,7 @@ namespace VcpCore.Plugins
                                 OnDisplaychanged(_displaychangedEventArgss);
                             }
 
-                            if (_InitialThreadCounter < 1)
+                            if (IsOutInitialize)
                             {
                                 if (!(_pauseEvent.WaitOne(0)))
                                 {
@@ -2538,11 +2564,11 @@ namespace VcpCore.Plugins
                     var origan = monitors.ToList();
 
                     int count = 0;
-                    while (count < 10 && (!TokenNew.IsCancellationRequested))
+                    while (count < 7 && (!TokenNew.IsCancellationRequested))
                     {
                         if (IsDisposed) break;
 
-                        Thread.Sleep(1500);
+                        Thread.Sleep(2143);
 
                         TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
 
@@ -2563,6 +2589,8 @@ namespace VcpCore.Plugins
                                     continue;
                                 }
                             }
+
+                            _logs.DebugMsg($"[VcpCorePlugin] *** {Who} Have Except ...");
 
                             origan = mos.ToList();
 
@@ -2613,6 +2641,18 @@ namespace VcpCore.Plugins
                             //------------------------------------------------------------------------------------------------//
 
                             TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
+
+                            if (IsOutInitialize)
+                            {
+                                if (!(_pauseEvent.WaitOne(0)))
+                                {
+                                    _logs.DebugMsg($"[VcpCorePlugin] _pauseEvent.Set() when Task run in for 15sec check");
+                                    _pauseEvent.Set();
+                                }
+
+                                if (!_CacheTimer.Enabled) _CacheTimer.Start();
+                                if (!_StatusTimer.Enabled) _StatusTimer.Start();
+                            }
                         }
 
                         count++;
@@ -2643,7 +2683,7 @@ namespace VcpCore.Plugins
                     Interlocked.Add(ref _InitialThreadCounter, -1);
                     _logs.DebugMsg($"[VcpCorePlugin] _InitialThreadCounter count : ({_InitialThreadCounter}) when mos.Count {MathematicalSymbols} 0 and Task run in finally");
 
-                    if (_InitialThreadCounter < 1)
+                    if (IsOutInitialize)
                     {
                         if (!(_pauseEvent.WaitOne(0)))
                         {
@@ -5287,6 +5327,8 @@ namespace VcpCore.Plugins
         /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
+            _logs.DebugMsg($"[VcpCorePlugin] Dispose: {disposing}");
+
             if (!IsDisposed)
             {
                 _logs.DebugMsg("[VcpCorePlugin] into Dispose ～～～～～～～～～～～～～～～～～！！！！！！！");
@@ -5307,25 +5349,62 @@ namespace VcpCore.Plugins
 
         private void DisposeAction()
         {
-            if (_CacheTimer.Enabled) _CacheTimer.Stop();
-            if (_StatusTimer.Enabled) _StatusTimer.Stop();
+            _logs.DebugMsg("[VcpCorePlugin] Dispose Action ...");
 
-            _AllInfoMonitors = new List<MonitorInfo_complex>();
-            _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
-
-            while (!_TaskQueue.IsEmpty())
+            try
             {
-                if (_TaskQueueExecutor.IsBusy) _TaskQueueExecutor.CancelAsync();
-                else
-                {
-                    _TaskQueue = new TaskLockQueue<ParameterType>();
-                    _TaskQueueResult = new ResultLockPool();
-                }
-                _CancelhashSet.Clear();
-            }
+                _AllInfoMonitors = new List<MonitorInfo_complex>();
+                _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
 
-            _AddSignalfor0X52 = 0;
-            _AddSignalforStatusCheck = 0;
+                while (!_TaskQueue.IsEmpty())
+                {
+                    if (_TaskQueueExecutor.IsBusy) _TaskQueueExecutor.CancelAsync();
+                    else
+                    {
+                        _TaskQueue = new TaskLockQueue<ParameterType>();
+                        _TaskQueueResult = new ResultLockPool();
+                    }
+                    _CancelhashSet.Clear();
+                }
+
+                if (_CacheTimer is not null)
+                {
+                    if (_CacheTimer.Enabled) _CacheTimer.Stop();
+
+                    _CacheTimer.Dispose();
+                    _CacheTimer = null;
+                }
+
+                if (_StatusTimer is not null)
+                {
+                    if (_StatusTimer.Enabled) _StatusTimer.Stop();
+
+                    _StatusTimer.Dispose();
+                    _StatusTimer = null;
+                }
+
+                if (_pauseEvent is not null)
+                {
+                    _pauseEvent.Dispose();
+                    _pauseEvent = null;
+                }
+
+                if (_LockerSemaphoreSlim is not null)
+                {
+                    _LockerSemaphoreSlim.Dispose();
+                    _LockerSemaphoreSlim = null;
+                }
+
+                if (_TaskQueueExecutor is not null)
+                {
+                    _TaskQueueExecutor.Dispose();
+                    _TaskQueueExecutor = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] DisposeAction into catch: " + ex.Message);
+            }
         }
 
         #endregion

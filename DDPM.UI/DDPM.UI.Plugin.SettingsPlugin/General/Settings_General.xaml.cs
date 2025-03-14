@@ -52,27 +52,32 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
             Debug.WriteLine(vm.GlobalSettingParam.GlobalSetting_General.Low_Battery_Level);
-            DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_DisplayLowBatteryLevel(vm.GlobalSettingParam.GlobalSetting_General.Low_Battery_Level);
+            //DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_DisplayLowBatteryLevel(vm.GlobalSettingParam.GlobalSetting_General.Low_Battery_Level);
+            DdpmCommonHelper.Set_GlobalSettings(DdpmCommonHelper.GlobalSettingsType.BatteryLevel, vm.GlobalSettingParam.GlobalSetting_General.Low_Battery_Level);
         }
         private void KeyboardLockKey_Click(object sender, RoutedEventArgs e)
         {
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
-            DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_DisplayKeyboardLockKey(vm.GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key);
+            //DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_DisplayKeyboardLockKey(vm.GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key);
+            DdpmCommonHelper.Set_GlobalSettings(DdpmCommonHelper.GlobalSettingsType.KeyboardLockKey, vm.GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key);
         }
         private void WB7022CoverState_Click(object sender, RoutedEventArgs e)
         {
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
-            DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_DisplayWB7022CoverState(vm.GlobalSettingParam.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State);
+            //DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_DisplayWB7022CoverState(vm.GlobalSettingParam.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State);
+            DdpmCommonHelper.Set_GlobalSettings(DdpmCommonHelper.GlobalSettingsType.WB7022CoverState, vm.GlobalSettingParam.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State);
         }
         private void MuteState_Click(object sender, RoutedEventArgs e)
         {
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
-            DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_DisplayMuteState(vm.GlobalSettingParam.GlobalSetting_General.Display_MuteState);
+            //DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_DisplayMuteState(vm.GlobalSettingParam.GlobalSetting_General.Display_MuteState);
+            DdpmCommonHelper.Set_GlobalSettings(DdpmCommonHelper.GlobalSettingsType.MuteState, vm.GlobalSettingParam.GlobalSetting_General.Display_MuteState);
         }
         private void DisplayCPAndEM_Click(object sender, RoutedEventArgs e)
         {
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
-            DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_DisplayColorPresetAndEasyMemory(vm.GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory);
+            //DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_DisplayColorPresetAndEasyMemory(vm.GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory);
+            DdpmCommonHelper.Set_GlobalSettings(DdpmCommonHelper.GlobalSettingsType.DisplayCPAndEM, vm.GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory);
         }
         private void SaveDiagnosticReport_Click(object sender, RoutedEventArgs e)
         {

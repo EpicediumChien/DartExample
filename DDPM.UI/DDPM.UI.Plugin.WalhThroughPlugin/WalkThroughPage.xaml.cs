@@ -144,8 +144,9 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
                     DdpmCommonHelper.WriteUILog($"[WalkThroughPage] No_MouseLeftButtonDown Set_GlobalSetting_EnableTelemetryConsent set false in ... ");
-                    bool result = Task.Run(() => DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(false)).Result;
-                    DdpmCommonHelper.WriteUILog($"[WalkThroughPage] No_MouseLeftButtonDown Set_GlobalSetting_EnableTelemetryConsent set false out : {result.ToString()} ... ");
+                    //bool result = Task.Run(() => DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(false)).Result;
+                    //DdpmCommonHelper.WriteUILog($"[WalkThroughPage] No_MouseLeftButtonDown Set_GlobalSetting_EnableTelemetryConsent set false out : {result.ToString()} ... ");
+                    DdpmCommonHelper.Set_GlobalSettings(DdpmCommonHelper.GlobalSettingsType.Consent, false);
                     //DialogResult = false;
                     Close();
                 }
@@ -167,9 +168,9 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
                     DdpmCommonHelper.WriteUILog($"[WalkThroughPage] Yes_MouseLeftButtonDown Set_GlobalSetting_EnableTelemetryConsent set true in ... ");
-                    bool result = Task.Run(() => DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(true)).Result;
-                    DdpmCommonHelper.WriteUILog($"[WalkThroughPage] Yes_MouseLeftButtonDown Set_GlobalSetting_EnableTelemetryConsent set true out : {result.ToString()} ... ");
-                    //DialogResult = true;
+                    //bool result = Task.Run(() => DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(true)).Result;
+                    //DdpmCommonHelper.WriteUILog($"[WalkThroughPage] Yes_MouseLeftButtonDown Set_GlobalSetting_EnableTelemetryConsent set true out : {result.ToString()} ... ");
+                    DdpmCommonHelper.Set_GlobalSettings(DdpmCommonHelper.GlobalSettingsType.Consent, true);
                     Close();
                 }
                 else
