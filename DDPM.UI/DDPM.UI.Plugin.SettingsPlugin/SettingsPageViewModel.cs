@@ -370,8 +370,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             Log?.Info($"SaveDiagnosticReport_Dowork start");
             //Install software information
             CommonFunctions.IsServiceRunning(GlobalDefinitions.DPeMServiceName, Log);//add log before save
-            CommonFunctions.GetInstalledSoftwareVersion(GlobalDefinitions.InstalledName_DPeM, Log);
-            CommonFunctions.GetInstalledSoftwareVersion(GlobalDefinitions.InstalledName_NKVM, Log);
+            Log?.Info($"DPeM installed ver: {CommonFunctions.GetInstalledSoftwareVersion(GlobalDefinitions.InstalledName_DPeM, Log)}");
+            Log?.Info($"NKVM installed ver: {CommonFunctions.GetInstalledSoftwareVersion(GlobalDefinitions.InstalledName_NKVM, Log)}");
 
             string filePath = e.Argument.ToString();
             bool monitorAssetReports = DiagnosticReport.SaveLogFile(filePath, Log); //DdpmCommonHelper.DeviceManagerSA.SaveLogFile(filePath).Result;
