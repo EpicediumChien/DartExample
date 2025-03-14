@@ -1592,7 +1592,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
                 catch (Exception ex)
                 {
-                    _logs.DebugMsg($"[DisplayMangerPlugin][InitializeAllALSInfo] Init ALSConfig got exception. {ex}");
+                    //_logs.DebugMsg($"[DisplayMangerPlugin][InitializeAllALSInfo] Init ALSConfig got exception. {ex}");
+                    WriteLog(Log, $"[DisplayMangerPlugin][InitializeAllALSInfo] Init ALSConfig got exception. {ex.Message}", true);
                 }
             });
         }
