@@ -298,7 +298,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null && _viewModel != null)
                             {
                                 // << 241108 added by Hess to delete setting file at first time
-                                if (!DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage)
+                                /*if (!DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage)
                                 {
                                     var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions");
                                     if (Directory.Exists(fileFolder))
@@ -313,7 +313,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                         _log.Info($"Delete Directory: {fileFolder}");
                                         Directory.Delete(fileFolder, true);
                                     }
-                                }
+                                }*/
                                 // >>
 
                                 if (!_globalSettings.isSetTelemetryOverInstaller)
