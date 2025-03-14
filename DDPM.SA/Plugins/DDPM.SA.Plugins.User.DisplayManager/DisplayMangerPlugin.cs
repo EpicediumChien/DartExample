@@ -177,6 +177,34 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         #endregion
 
+        #region IDisposableObservable Support
+
+        /// <summary>
+        /// To detect redundant calls
+        /// </summary>
+        public bool IsDisposed { get; private set; }
+
+        /// <summary>
+        /// Override for Dispose
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
+        {
+            if (!IsDisposed)
+            {
+                if (disposing)
+                {
+                    _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
+                    _agent = null;
+                }
+
+                IsDisposed = true;
+            }
+            base.Dispose(disposing);
+        }
+
+        #endregion
+
         #region Overriding methods
 
         protected override void OnPluginStarting()
@@ -3140,34 +3168,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 monitor = e.monitor,
             };
             OnMonitorinfoUpdatechanged(_EventArgss);
-        }
-
-        #endregion
-
-        #region IDisposableObservable Support
-
-        /// <summary>
-        /// To detect redundant calls
-        /// </summary>
-        public bool IsDisposed { get; private set; }
-
-        /// <summary>
-        /// Override for Dispose
-        /// </summary>
-        /// <param name="disposing"></param>
-        protected override void Dispose(bool disposing)
-        {
-            if (!IsDisposed)
-            {
-                if (disposing)
-                {
-                    _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
-                    _agent = null;
-                }
-
-                IsDisposed = true;
-            }
-            base.Dispose(disposing);
         }
 
         #endregion
