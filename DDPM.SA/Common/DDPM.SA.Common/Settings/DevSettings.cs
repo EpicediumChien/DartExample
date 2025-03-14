@@ -137,6 +137,11 @@ namespace DDPM.SA.Common.Settings
         {
             return 1 == ReadInt("EABroker.DumpWorkWindowsInfoOnRefreshed");
         }
+
+        public static bool IsEABorkerRevoked()
+        {
+            return 1 == ReadInt("IsEABrokerRevoked");
+        }
         #endregion EasyArrange
 
         #region DdpmHomePlgin
