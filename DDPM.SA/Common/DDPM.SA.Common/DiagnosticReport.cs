@@ -13,8 +13,8 @@ namespace DDPM.SA.Common
 
             //Install software information
             CommonFunctions.IsServiceRunning(GlobalDefinitions.DPeMServiceName, log);//add log before save
-            CommonFunctions.GetInstalledSoftwareVersion(GlobalDefinitions.InstalledName_DPeM, log);
-            CommonFunctions.GetInstalledSoftwareVersion(GlobalDefinitions.InstalledName_NKVM, log);
+            log.Info($"DPeM installed ver: {CommonFunctions.GetInstalledSoftwareVersion(GlobalDefinitions.InstalledName_DPeM, log)}");
+            log.Info($"NKVM installed ver: {CommonFunctions.GetInstalledSoftwareVersion(GlobalDefinitions.InstalledName_NKVM, log)}");
 
             bool ret = true;
             log.Info($"{nameof(SaveLogFile)} WTSFunction._WTSGetActiveConsoleSessionId() : {WTSFunction._WTSGetActiveConsoleSessionId()}");

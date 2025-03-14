@@ -121,7 +121,7 @@ namespace DDPM.SA.Common
                     }
                 }
             }
-            return null;
+            return string.Empty;
         }
     }
 }
