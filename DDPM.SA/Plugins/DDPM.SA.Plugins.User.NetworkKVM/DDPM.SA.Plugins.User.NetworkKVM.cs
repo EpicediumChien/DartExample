@@ -1431,8 +1431,11 @@ namespace NetworkKVM.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[NetworkKVM] CreateNamedPipe_init is error");
-                _logs.DebugMsg($"[NetworkKVM] Failed to create {ex}");
+                //_logs.DebugMsg("[NetworkKVM] CreateNamedPipe_init is error");
+                //_logs.DebugMsg($"[NetworkKVM] Failed to create {ex}");
+                _logs.DebugMsg("[NetworkKVM] CreateNamedPipe_init is error, failed to create");
+                WriteLog(Log, $"[NetworkKVM] CreateNamedPipe_init is error, failed to create {ex.Message}", true);
+
                 Disconnect();
                 return false;
             }
@@ -1481,8 +1484,9 @@ namespace NetworkKVM.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[NetworkKVM] CreateNamedPipe is error");
-                _logs.DebugMsg($"[NetworkKVM] Failed to create {ex}");
+                _logs.DebugMsg("[NetworkKVM] CreateNamedPipe is error, failed to create");
+                //_logs.DebugMsg($"[NetworkKVM] Failed to create {ex}");
+                WriteLog(Log, $"[NetworkKVM] CreateNamedPipe is error, failed to create {ex.Message}", true);
                 Disconnect();
                 return false;
             }
