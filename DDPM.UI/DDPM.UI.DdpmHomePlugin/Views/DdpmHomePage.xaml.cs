@@ -987,11 +987,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 var _globalSettings = DdpmCommonHelper.DeviceManagerSA!.GetGlobalSettingParam().Result;
                 if (modalDialog.ShowDialog()!.Value)
                 {
-                    _ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(true).Result;
+                    //_ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(true).Result;
+                    DdpmCommonHelper.Set_GlobalSettings(DdpmCommonHelper.GlobalSettingsType.Consent, true);
                 }
                 else
                 {
-                    _ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(false).Result;
+                    //_ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(false).Result;
+                    DdpmCommonHelper.Set_GlobalSettings(DdpmCommonHelper.GlobalSettingsType.Consent, false);
                 }
             });
         }
