@@ -10932,7 +10932,6 @@ namespace DDPM.CLI.Plugins.Display
             ALSConfig param = new ALSConfig();
             string output = string.Empty;
             ObjGetVCP rc = new ObjGetVCP();
-            bool recode_find = false;
 
             List<DeviceInfo> _deviceinfo = null;
             _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
