@@ -241,129 +241,346 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            
+            <!-- #region SortToggleButton -->
+            <!--<Style x:Key="FocusVisual">
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Rectangle Margin="2" StrokeDashArray="1 2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" StrokeThickness="1"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>-->
+            
+            <!-- Original (Native WPF) ToggleButton Colors 
+            <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
+            <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
+            
+            <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
+            <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
+            <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
+            <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+            <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+            <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+            <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>-->
+
+            <!-- SortToggleButton Colors, move to ModuleStyle.xaml -->
+            <!--<SolidColorBrush x:Key="SortToggleButton_BkColor" Color="#293B4D"/>
+            <SolidColorBrush x:Key="SortToggleButton_BdColor" Color="#40586D"/>
+            <SolidColorBrush x:Key="SortToggleButton_TextColor" Color="#F5F6F7"/>
+            <SolidColorBrush x:Key="SortToggleButton_ArrowColor" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="SortToggleButton_BdColor_Hover" Color="#31A2E3"/>-->
+
+
+
+            <!-- #endregion SortToggleButton -->
+
+            <!-- #region App ListView -->
+            <SolidColorBrush x:Key="AddAppListView_BkColor" Color="#99132F54"/>
+            
+            <Style x:Key="AppListViewItemStyle" TargetType="ListViewItem">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListViewItem">
+                            <Border x:Name="bdItem" Margin="0,4" Background="Transparent">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            </Border>
+                            <!--<ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="bdItem" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="bdItem" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" />
+                              </Trigger>
+                            </ControlTemplate.Triggers>-->
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <!-- #endregion App ListView -->
+            
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
+    
+    <!-- Robert_Lin 20250313 Change Layout:
+    OLD:
+       <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="4*" />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
-
-        <Grid Grid.Column="0" Margin="0,0,0,0">
-            <StackPanel Grid.Column="0" Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="left">
-                <Button Margin="0,0,0,0"   FontFamily="Segoe MDL2 Assets" FontSize="13" Content="&#xE72B;" Height="30" Width="40"  Click="btnCancel_Click" Foreground="{DynamicResource DefaultTheme_TxtColor}" Background="Transparent" BorderThickness="0" VerticalAlignment="Top" />
-                <TextBlock  FontSize="20" Text="{Binding [Color.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource DefaultTheme_TxtColor}" />
-            </StackPanel>
-        </Grid>
-
-        <Grid Grid.Column="1" Margin="5,0,5,0">
+        
+        <Grid Grid.Column="0">
+           Nav
+        
+        <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="20" />
-                <!--Title-->
                 <RowDefinition Height="*" />
-                <!--Decription with little font size-->
                 <RowDefinition Height="0.8*" />
-                <!--Search - editable textblock-->
                 <RowDefinition Height="*" />
-                <!--Two sorting buttons-->
                 <RowDefinition Height="1.5*" />
-                <!--application available list-->
                 <RowDefinition Height="7*" />
-                <!--OK Cancel buttons-->
                 <RowDefinition Height="1.5*" />
                 <RowDefinition Height="30" />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                <UXControls:UXTextBox VerticalAlignment="Center"  Text="{Binding [Search], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" x:Name="edFilter" FontSize="14"  TextChanged="edFilter_TextChanged" HorizontalContentAlignment="Left"/>
-            </Grid>
-            
-            <Grid  Grid.Row="4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <UXControls:UXButton x:Name="btnSortbyName_Ascending" Margin="5,0" Foreground="{DynamicResource DdpmCB_FgColor}" Background="{DynamicResource DdpmCB_BkColor}" HorizontalAlignment="Stretch"   Click="btnSortbyName_Ascending_Click">
-                    <StackPanel Orientation="Horizontal" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Text="{Binding [Color.1], Source={x:Static lang:LangHelper.Instance}}" Margin="-120,0,0,0" />
-                        <Path Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"  Data="M 0 0 L 5 5 L 10 0" Margin="0,0,-120,0" />
-                    </StackPanel>
-                </UXControls:UXButton>
-                <UXControls:UXButton Margin="5,0" Foreground="{DynamicResource DdpmCB_FgColor}" Background="{DynamicResource DdpmCB_BkColor}"  HorizontalAlignment="Stretch" Grid.Column="0" x:Name="btnSortbyName_Descending"     Click="btnSortbyName_Descending_Click" Visibility="Collapsed">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding [Color.1], Source={x:Static lang:LangHelper.Instance}}" Margin="-120,0,0,0" />
-                        <Path Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"  Data="M 0 5 L 5 0 L 10 5" Margin="0,0,-120,0" />
-                    </StackPanel>
-                </UXControls:UXButton>
+            Title
+            Decription with little font size
+            Search - editable textblock
+            Two sorting buttons
+            application available list
+            OK Cancel buttons
+    -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-                <UXControls:UXButton Margin="5,0" Foreground="{DynamicResource DdpmCB_FgColor}" Background="{DynamicResource DdpmCB_BkColor}" Grid.Column="1"   HorizontalAlignment="Stretch" x:Name="btnSortbyDate_Ascending"    VerticalAlignment="Center"  Click="btnSortbyDate_Ascending_Click">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding [Color.2], Source={x:Static lang:LangHelper.Instance}}" Margin="-120,0,0,0" />
-                        <Path Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right"  Data="M 0 0 L 5 5 L 10 0" Margin="0,0,-120,0" />
-                    </StackPanel>
-                </UXControls:UXButton>
-                <UXControls:UXButton Margin="5,0" Foreground="{DynamicResource DdpmCB_FgColor}" Background="{DynamicResource DdpmCB_BkColor}" Grid.Column="1"  HorizontalAlignment="Stretch" x:Name="btnSortbyDate_Descending"  VerticalAlignment="Center"  Click="btnSortbyDate_Descending_Click" Visibility="Collapsed">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding [Color.2], Source={x:Static lang:LangHelper.Instance}}" Margin="-120,0,0,0" />
-                        <Path Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"  Data="M 0 5 L 5 0 L 10 5" Margin="0,0,-120,0" />
-                    </StackPanel>
-                </UXControls:UXButton>
-            </Grid>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Height="44" Margin="60,8,0,0">
+            <!-- BackArrow -->
+            <Button Width="24" Height="24" Margin="0,0,16,0"
+                    Style="{StaticResource StatelessButton}"
+                    VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand"
+                    KeyboardNavigation.TabIndex="11" 
+                    AutomationProperties.Name="{Binding [Back], Source={x:Static lang:LangHelper.Instance}}" 
+                    Click="btnCancel_Click" 
+                    >
+                <Grid Background="{StaticResource FakeTransparent}" >
+                    <ContentControl Template="{StaticResource icon_BackArrow}" Foreground="{DynamicResource TextBlock_ForegroundColor}"/>
+                </Grid>
+            </Button>
+            <!-- Add Application -->
+            <UXControls:UXTextBlock Text="{Binding [Color.0], Source={x:Static lang:LangHelper.Instance}}"
+                                    HorizontalAlignment="Left" VerticalAlignment="Center"
+                                    TextBlockType="Header2" LineHeight="32" FontWeight="Normal"
+                                    FontSize="24" Focusable="True"
+                                    Foreground="{DynamicResource DefaultTheme_TxtColor}" />
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="60,52">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
 
-            <ListView Grid.Row="5" BorderBrush="{DynamicResource DefaultTheme_BdBdColor}" BorderThickness="3"   HorizontalAlignment="Stretch" x:Name="lb_Installed_App"  Background="{DynamicResource DefaultTheme_BdBdColor}" SelectionMode="Multiple" SelectedIndex="{Binding Selected}">
-                <ListView.Template>
-                    <ControlTemplate TargetType="{x:Type ListView}">
-                        <Border CornerRadius="5">
-                            <ScrollViewer>
-                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                            </ScrollViewer>
-                        </Border>
-                    </ControlTemplate>
-                </ListView.Template>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <!--check box-->
-                                <ColumnDefinition Width="*" />
-                                <!--App Icon-->
-                                <ColumnDefinition Width="auto" />
-                                <!--App Name-->
-                                <ColumnDefinition Width="auto" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1" />
-                                <RowDefinition Height="auto" />
-                                <RowDefinition Height="1" />
-                            </Grid.RowDefinitions>
+            <Grid Grid.Column="1" Width="488" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                
+                <!-- #region Row 0: SearchBar -->
+                <!-- OLD:
+                -->
+                <!--<Grid Grid.Row="0" HorizontalAlignment="Stretch" Height="40" Visibility="Collapsed">
+                    <UXControls:UXTextBox VerticalAlignment="Center"  Text="{Binding [Search], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" x:Name="edFilter" FontSize="14"  TextChanged="edFilter_TextChanged"
+                                          HorizontalContentAlignment="Left"/>
+                </Grid>-->
+                <!-- NEW Code: copy from ButtonSettingsRightView 
+                Style="{StaticResource SearchBoxBorderStyle}"
+                -->
+                <Border Grid.Row="0"  Height="40"
+                        BorderThickness="1" CornerRadius="4"
+                        BorderBrush="{DynamicResource AddAppSearch_BdColor}"
+                        Background="{DynamicResource AddAppSearch_BkColor}">
+                    <Grid>
+                        <UXControls:UXTextBox Name="txtSearchText" Width="Auto" HorizontalAlignment="Stretch"
+                                              Watermark="{Binding [Search], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"
+                                              VerticalContentAlignment="Center" MaxLength="30" AcceptsReturn="False" 
+                                              Background="{DynamicResource AddAppSearch_BkColor}" BorderThickness="0" 
+                                              Foreground="{DynamicResource AddAppSearch_TextColor}" 
+                                              Margin="22,0,0,0"
+                                              TextChanged="edFilter_TextChanged" PreviewTextInput="txtSearchText_PreviewTextInput"/>
+                        <Grid Width="16" Height="16" Margin="11,0,0,0" HorizontalAlignment="Left">
+                            <Path Data="M16 15.26L10.7 10C11.6081 8.86609 12.0957 7.45274 12.08 6.00005C12.0801 5.20534 11.9223 4.41853 11.6157 3.68531C11.3092 2.9521 10.8601 2.28708 10.2945 1.72887C9.7288 1.17066 9.05789 0.730381 8.32068 0.4336C7.58346 0.13682 6.79464 -0.010551 6 4.51174e-05C5.20162 0.0078616 4.41266 0.173368 3.67845 0.487054C2.94423 0.800739 2.27924 1.25642 1.72169 1.82791C1.16414 2.3994 0.725012 3.07544 0.429548 3.81717C0.134084 4.55891 -0.0118946 5.35172 1.33726e-06 6.15005C1.33726e-06 7.74134 0.632142 9.26747 1.75736 10.3927C2.88258 11.5179 4.4087 12.15 6 12.15C7.46887 12.1909 8.89849 11.6726 10 10.7L15.3 16L16.04 15.26H16ZM6 11.13C5.34339 11.13 4.69321 11.0007 4.08658 10.7494C3.47996 10.4982 2.92876 10.1299 2.46447 9.66558C1.52679 8.7279 1 7.45613 1 6.13005C0.997272 4.79665 1.52097 3.51607 2.45725 2.56669C3.39352 1.6173 4.6667 1.07585 6 1.06005C6.65661 1.06005 7.30679 1.18937 7.91342 1.44065C8.52005 1.69192 9.07124 2.06022 9.53553 2.52451C9.99983 2.9888 10.3681 3.54 10.6194 4.14663C10.8707 4.75326 11 5.40344 11 6.06005C10.9975 7.39187 10.4722 8.66946 9.53699 9.61772C8.60182 10.566 7.33166 11.1091 6 11.13Z"
+                                  Fill="{DynamicResource AddAppSearch_TextColor}">
+                            </Path>
+                        </Grid>
+                    </Grid>
+                </Border>
+                <!-- #endregion Row 0: SearchBar -->
 
-                            <UXControls:UXRadioButton  Grid.Column="0" Grid.Row="1" GroupName="Group" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" >
-                                <UXControls:UXRadioButton.Resources>
-                                    <Style TargetType="{x:Type UXControls:UXRadioButton}">
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type RadioButton}">
-                                                    <UXControls:UXCheckBox  VerticalAlignment="Center" Background="{DynamicResource DefaultTheme_BdBdColor}"
+                <!-- #region Row 1: SortBar -->
+                <!-- OLD: -->
+                <Grid  Grid.Row="1" Margin="0,12,0,0" Height="49" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <UXControls:UXButton x:Name="btnSortbyName_Ascending" Margin="5,0" Foreground="{DynamicResource DdpmCB_FgColor}" Background="{DynamicResource DdpmCB_BkColor}" HorizontalAlignment="Stretch"   Click="btnSortbyName_Ascending_Click">
+                        <StackPanel Orientation="Horizontal" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <TextBlock Grid.Column="0" HorizontalAlignment="Left" Text="{Binding [Color.1], Source={x:Static lang:LangHelper.Instance}}" Margin="-120,0,0,0" />
+                            <Path Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"  Data="M 0 0 L 5 5 L 10 0" Margin="0,0,-120,0" />
+                        </StackPanel>
+                    </UXControls:UXButton>
+                    <UXControls:UXButton Margin="5,0" Foreground="{DynamicResource DdpmCB_FgColor}" Background="{DynamicResource DdpmCB_BkColor}"  HorizontalAlignment="Stretch" Grid.Column="0" x:Name="btnSortbyName_Descending"     Click="btnSortbyName_Descending_Click" Visibility="Collapsed">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding [Color.1], Source={x:Static lang:LangHelper.Instance}}" Margin="-120,0,0,0" />
+                            <Path Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"  Data="M 0 5 L 5 0 L 10 5" Margin="0,0,-120,0" />
+                        </StackPanel>
+                    </UXControls:UXButton>
+
+                    <UXControls:UXButton Margin="5,0" Foreground="{DynamicResource DdpmCB_FgColor}" Background="{DynamicResource DdpmCB_BkColor}" Grid.Column="1"   HorizontalAlignment="Stretch" x:Name="btnSortbyDate_Ascending"    VerticalAlignment="Center"  Click="btnSortbyDate_Ascending_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding [Color.2], Source={x:Static lang:LangHelper.Instance}}" Margin="-120,0,0,0" />
+                            <Path Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right"  Data="M 0 0 L 5 5 L 10 0" Margin="0,0,-120,0" />
+                        </StackPanel>
+                    </UXControls:UXButton>
+                    <UXControls:UXButton Margin="5,0" Foreground="{DynamicResource DdpmCB_FgColor}" Background="{DynamicResource DdpmCB_BkColor}" Grid.Column="1"  HorizontalAlignment="Stretch" x:Name="btnSortbyDate_Descending"  VerticalAlignment="Center"  Click="btnSortbyDate_Descending_Click" Visibility="Collapsed">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding [Color.2], Source={x:Static lang:LangHelper.Instance}}" Margin="-120,0,0,0" />
+                            <Path Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"  Data="M 0 5 L 5 0 L 10 5" Margin="0,0,-120,0" />
+                        </StackPanel>
+                    </UXControls:UXButton>
+                </Grid>
+                <!-- NEW: Robert_Lin 2025-3-14 -->
+                <Grid Grid.Row="1" Margin="0,12,0,0" Height="40">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontFamily" Value="Roboto"/>
+                            <Setter Property="FontSize" Value="14"/>
+                            <Setter Property="FontWeight" Value="Normal"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </Grid.Resources>
+                    <ToggleButton Name="sortByNameButton" Style="{StaticResource SortToggleButton}" Grid.Column="0" IsChecked="True" HorizontalContentAlignment="Left" 
+                                  Click="sortByNameButton_Click">
+                        <TextBlock Text="{Binding [Color.1], Source={x:Static lang:LangHelper.Instance}}" d:Text="Sort by Name" />
+                    </ToggleButton>
+                    <ToggleButton Name="sortByDateButton" Style="{StaticResource SortToggleButton}" Grid.Column="2" IsChecked="True" HorizontalContentAlignment="Left" Click="sortByDateButton_Click"
+                                  >
+                        <TextBlock Text="{Binding [Color.2], Source={x:Static lang:LangHelper.Instance}}" d:Text="Sort by Date" />
+                    </ToggleButton>
+                </Grid>
+                <!-- #endregion Row 1: SortBar -->
+
+                <!-- #region Row 2: AppListView -->
+                <!-- OLD: -->
+                <ListView Grid.Row="2"
+                          BorderBrush="{DynamicResource DefaultTheme_BdBdColor}" BorderThickness="3"   HorizontalAlignment="Stretch"  Visibility="Collapsed"
+                          x:Name="lb_Installed_App" Width="487"
+                          Background="{DynamicResource DefaultTheme_BdBdColor}" SelectionMode="Multiple" SelectedIndex="{Binding Selected}">
+                    <ListView.Template>
+                        <ControlTemplate TargetType="{x:Type ListView}">
+                            <Border CornerRadius="5">
+                                <ScrollViewer>
+                                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                </ScrollViewer>
+                            </Border>
+                        </ControlTemplate>
+                    </ListView.Template>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <!--check box-->
+                                    <ColumnDefinition Width="*" />
+                                    <!--App Icon-->
+                                    <ColumnDefinition Width="auto" />
+                                    <!--App Name-->
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="1" />
+                                </Grid.RowDefinitions>
+
+                                <UXControls:UXRadioButton  Grid.Column="0" Grid.Row="1" GroupName="Group" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" >
+                                    <UXControls:UXRadioButton.Resources>
+                                        <Style TargetType="{x:Type UXControls:UXRadioButton}">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type RadioButton}">
+                                                        <UXControls:UXCheckBox  VerticalAlignment="Center" Background="{DynamicResource DefaultTheme_BdBdColor}"
                                                                     IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, 
                                                                     Path=IsChecked, Mode=TwoWay}"
                                                                     IsHitTestVisible="False" Content="{TemplateBinding Content}" />
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </UXControls:UXRadioButton.Resources>
-                            </UXControls:UXRadioButton>
-                            <Image Grid.Column="1" Grid.Row="1" x:Name="appIcon" Source="{Binding AppIcon}" Width="40"  Margin="20,0,10,0" VerticalAlignment="Center" />
-                            <UXControls:UXTextBlock Grid.Column="2" Grid.Row="1" x:Name="appName" Text="{Binding AppName}"  VerticalAlignment="Center" />
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </UXControls:UXRadioButton.Resources>
+                                </UXControls:UXRadioButton>
+                                <Image Grid.Column="1" Grid.Row="1" x:Name="appIcon" Source="{Binding AppIcon}" Width="40"  Margin="20,0,10,0" VerticalAlignment="Center" />
+                                <UXControls:UXTextBlock Grid.Column="2" Grid.Row="1" x:Name="appName" Text="{Binding AppName}"  VerticalAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                
+                <!-- NEW: -->
+                <Border Grid.Row="2" Margin="0,20" CornerRadius="6" BorderThickness="0" Background="{DynamicResource AddAppListView_BkColor}" Padding="16">
+                    
+                    <ListView Grid.Row="2" Name="appListView" MinHeight="80" Margin="0,0"
+                              SelectedIndex="{Binding Selected}" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                              Background="Transparent"
+                          ItemContainerStyle="{StaticResource AppListViewItemStyle}" SelectionChanged="appListView_SelectionChanged">
+                        <ListView.Template>
+                            <ControlTemplate TargetType="{x:Type ListView}">
+                                <ScrollViewer>
+                                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                </ScrollViewer>
+                            </ControlTemplate>
+                        </ListView.Template>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
 
-                <Button x:Name="btnAdd" Content="{Binding [Confirm], Source={x:Static lang:LangHelper.Instance}}" Width="100" Margin="0,20,0,0" Foreground="White" Background="DodgerBlue" Click="btnAdd_Click" />
-            </StackPanel>
+                                    <UXControls:UXRadioButton Grid.Column="0" GroupName="appListViewGroup" VerticalAlignment="Center"
+                                                          IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected, Mode=TwoWay}" >
+                                        <UXControls:UXRadioButton.Resources>
+                                            <!-- Robert_Lin 2025-3-17 to fix the issue: The background color of UXRadioButton is not transparent -->
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                            </Style>
+                                        </UXControls:UXRadioButton.Resources>
+                                    </UXControls:UXRadioButton>
+
+                                    <Image Grid.Column="1" Grid.Row="1" x:Name="appIcon" Source="{Binding AppIcon}" Width="24"  Margin="2,0,4,0" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="2" x:Name="appName" Text="{Binding AppName}"  VerticalAlignment="Center" Margin="0,6,0,0"
+                                           FontFamily="Roboto" FontSize="16" FontWeight="Normal" LineHeight="24" Foreground="{DynamicResource SortToggleButton_TextColor}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Border>
+                <!-- #region Row 2: AppListView -->
+
+                <!-- Row 3: ButtonBar -->
+                <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Height="40" >
+
+                    <Button x:Name="btnAdd" Content="{Binding [Confirm], Source={x:Static lang:LangHelper.Instance}}" MinWidth="114" Margin="0,0,0,0" 
+                            Style="{StaticResource PrimaryButtonStyle}" IsEnabled="False"
+                            Click="btnAdd_Click" />
+                </StackPanel>
+                
+                <!-- Row 4: BottomSpace -->
+                <Grid Grid.Row="4" MaxHeight="128" MinHeight="26"/>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

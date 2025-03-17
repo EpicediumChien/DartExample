@@ -207,6 +207,7 @@
                                                             <Trigger Property="IsChecked" Value="True">
                                                                 <Setter TargetName="LowButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                                 <Setter TargetName="LowButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                                <Setter TargetName="LowButtonTextBlock1" Property="Foreground" Value="White" />
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
