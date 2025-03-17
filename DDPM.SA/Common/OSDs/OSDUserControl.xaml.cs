@@ -26,6 +26,7 @@ namespace DDPM.OSDs
     {
         public required string GUID { get; set; }
         public OSDType_Device OSDType_Device { get; set; }
+        public OSDType_Op OSDType_Op { get; set; } = OSDType_Op.None;
         public required string ShowStringTitle { get; set; }
         public required string ShowStringContent { get; set; }
 
