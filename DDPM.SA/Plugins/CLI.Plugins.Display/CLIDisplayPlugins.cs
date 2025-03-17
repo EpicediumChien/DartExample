@@ -23,9 +23,9 @@ using System.Linq;
 using System.Runtime.Intrinsics.X86;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using VcpCore.Common;
 using Windows.Foundation.Collections;
+using static DDPM.RemoteManagement.Common.Interfaces.Params;
 using static DDPM.SA.Common.ICLICommandTable;
 using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 using Console = System.Console;
@@ -981,6 +981,9 @@ namespace DDPM.CLI.Plugins.Display
                 case "LogicalWebcam":
                     cli_Response2.SerialNumber = _devMgr.GetWebcamSerialNumber(g.ID.ToString()).Result ?? "N/A";
                     break;
+                case "LogicalDock"://Elsa 20250307 add for ConnectedDevices get Dock servicetag
+                    cli_Response2.ServiceTag = _devMgr.GetDockServiceTagForDock(g.ID.ToString()).Result ?? "N/A";
+                    break;
             }
             output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
 
@@ -1053,7 +1056,7 @@ namespace DDPM.CLI.Plugins.Display
                     writelog("LogicalHeadset entry");
                     var audio = new DeviceDataAudioResponse(index, device);
                     writelog("_devMgr.GetHeadsetSerialNumber entry");
-                    audio.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(guid).Result ?? "N/A";                    
+                    audio.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(guid).Result ?? "N/A";
                     writelog("_devMgr.GetConnectionTypeAsync entry");
                     audio.Connectiontype = get_headsetconnection_type(_devMgr.GetConnectionTypeAsync(guid).Result);
                     writelog("_devMgr.GetIsANCSupportedAsync entry");
@@ -1088,7 +1091,7 @@ namespace DDPM.CLI.Plugins.Display
                     writelog("_devMgr.GetDockServiceTagForDock entry");
                     dock.ServiceTag = _devMgr.GetDockServiceTagForDock(guid).Result ?? "N/A";
                     return dock;
-                    //return new DeviceDataDockResponse(index, device);
+                //return new DeviceDataDockResponse(index, device);
                 default:
                     return new PeripheralResponse(index, device);
             }
@@ -1109,7 +1112,7 @@ namespace DDPM.CLI.Plugins.Display
             _AllInfoMonitors = await devMgr.GetMonitors();
 
             string output = string.Empty;
-
+            string output_2 = string.Empty;
             _deviceHelper = new DeviceHelper
             {
                 deviceInfo = new List<DeviceInfo>()
@@ -1298,19 +1301,83 @@ namespace DDPM.CLI.Plugins.Display
                         case "HEADSET":
                         case "PEN":
                         case "DOCK":
-                        case "AIRAUDIO":
-                            foreach (var g in _deviceinfo)
+                        case "AIRAUDIO"://20250313 Elsa add for ConnectedDevices support guid/servicetag/model
+                            if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
-                                if (g.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
+                                var match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (match != null)
                                 {
-                                    index_per++;
-                                    recode_per = true;
-                                    output = GetPeripheralResponse(index_per, output, g);
+                                    if (match.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        recode_per = true;
+                                        output = GetPeripheralResponse(0, output, match);
+                                    }
+                                }
+                                else
+                                {
+                                    return Invalidcommand(commandLineInput, output, ref output_2, "guid");
+                                }
+                            }
+                            else if (commandLineInput.ServiceTag != null && commandLineInput.ServiceTag.Count > 0 && !string.IsNullOrEmpty(commandLineInput.ServiceTag[0].ToString()))
+                            {
+                                var match = _deviceinfo.SingleOrDefault(x => x.DockServiceTag.ToString().Equals(commandLineInput.ServiceTag.ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (match != null)
+                                {
+                                    if (match.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        recode_per = true;
+                                        output = GetPeripheralResponse(0, output, match);
+                                    }
+                                }
+                                else
+                                {
+                                    return Invalidcommand(commandLineInput, output, ref output_2, "ServiceTag");
+                                }
+                            }
+                            else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
+                            {
+                                var match = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (match.Count > 0)
+                                {
+                                    foreach (var g in match)
+                                    {
+                                        if (g.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            index_per++;
+                                            recode_per = true;
+                                            output = GetPeripheralResponse(index_per, output, g);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    return Invalidcommand(commandLineInput, output, ref output_2, "Model");
+                                }
+                            }
+                            else
+                            {
+                                foreach (var g in _deviceinfo)
+                                {
+                                    if (g.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        index_per++;
+                                        recode_per = true;
+                                        output = GetPeripheralResponse(index_per, output, g);
+                                    }
                                 }
                             }
                             break;
                         default:
                             break;
+                    }
+                    if (string.IsNullOrEmpty(output))
+                    {
+                        output = new CLI_RESPONSE3
+                        {
+                            Command = commandLineInput.Command,
+                            TargetFeature = commandLineInput.TargetFeature,
+                            Message = "No device found"
+                        }.ToJson();
                     }
                     if (_deviceinfo == null || _deviceinfo.Count == 0)
                         return ((int)CLI_ExitCode.null_device_manager, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
@@ -1452,6 +1519,18 @@ namespace DDPM.CLI.Plugins.Display
                 G_ConnectedDevices_RESPONSE.Message = $"Un-supported command: {type}";
             }
             return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
+        }
+
+        private static (int code, string result) Invalidcommand(CommandLineInput commandLineInput, string output, ref string output_2, string commandin)
+        {
+            CLI_RESPONSE3 cli_Response = new CLI_RESPONSE3();
+            cli_Response.Command = commandLineInput.Command;
+            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+            cli_Response.Result = "FAIL";
+            cli_Response.Message = "Invalid " + commandin;
+            output_2 += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            output_2 += output;
+            return ((int)CLI_ExitCode.success, output_2);
         }
 
         private (int code, string result) ScreenNotificationx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
@@ -8858,13 +8937,14 @@ namespace DDPM.CLI.Plugins.Display
             };*/
 
             List<DeviceInfo> _deviceinfo = null;
+            DeviceInfo match = null;
             _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
 
             //if (_AllInfoMonitors == null)
             _AllInfoMonitors = await devMgr.GetMonitors();
             _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
             _deviceInfoFinal = GetDDeviceIndeies(commandLineInput, _deviceinfo);
-    
+
             int index = 0;
 
             if (commandLineInput.Options.Count > 0)
@@ -9132,19 +9212,15 @@ namespace DDPM.CLI.Plugins.Display
                         case "WIREDAUDIO":
                         case "HEADSET":
                         case "PEN":
-                        case "DOCK":
-                            if (!string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))//20250306Elsa add for DeviceData filter guid
+                        case "DOCK"://20250306Elsa add for DeviceData support guid
+                            if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
-                                var match= _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                match = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
                                 if (match != null)
-                                { 
-                                   recode_per = true;
-                                   output += "\n" + GetDeviceDataPeripheralResponse(0, match).ToJson(); 
-                                }
-                                else
                                 {
-                                   output += "\n" + "Invalid GUID.";
-                                }                                
+                                    recode_per = true;
+                                    output += "\n" + GetDeviceDataPeripheralResponse(0, match).ToJson();
+                                }
                             }
                             else
                             {
@@ -9157,7 +9233,7 @@ namespace DDPM.CLI.Plugins.Display
                                         output += "\n" + GetDeviceDataPeripheralResponse(index, device).ToJson();
                                     }
                                 }
-                            } 
+                            }
                             break;
                         default:
                             break;
@@ -9434,6 +9510,11 @@ namespace DDPM.CLI.Plugins.Display
             else if (_deviceinfo.Count == 0 && _monitorIndeies.Count == 0)
             {
                 cli_Response.Message = "No devices found";
+            }
+            else if (!recode_per && match == null)
+            {
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid guid";
             }
             else
             {
@@ -9793,7 +9874,7 @@ namespace DDPM.CLI.Plugins.Display
             writelog($"Energysaver return exit value{output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
-        
+
         private static List<int>? GetMonitorIndeies(CommandLineInput cmdLineInput, List<MonitorInfo> allMonitors)
         {
             if (allMonitors == null)
@@ -10932,7 +11013,8 @@ namespace DDPM.CLI.Plugins.Display
             ALSConfig param = new ALSConfig();
             string output = string.Empty;
             ObjGetVCP rc = new ObjGetVCP();
-
+            bool math_found = true;
+            List<DeviceInfo> mathdevs = new List<DeviceInfo>();
             List<DeviceInfo> _deviceinfo = null;
             _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
             if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
@@ -11460,349 +11542,273 @@ namespace DDPM.CLI.Plugins.Display
                                 output += "\n" + JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented);
                             }
                             break;
-                        case "KEYBOARD":
+                        case "KEYBOARD"://202503012 Elsa add for Deviceconfiguration support guid&model
                             writelog("KEYBOARD set entry");
-                            foreach (var device in _deviceinfo)
+                            if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
-                                if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                var math = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math != null)
                                 {
-                                    foreach (var property in jsonObject.Properties())
+                                    mathdevs.Add(math);
+                                    if (mathdevs[0].LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                     {
-                                        writelog($"Key: {property.Name}, Value: {property.Value}");
-
-                                        switch (property.Name.ToString())
+                                        ispass = DeviceconfigurationSetKeyboard(jsonObject, true, resultMessages, mathdevs[0]);
+                                    }
+                                    var response = GetDeviceDataPeripheralResponse(0, mathdevs[0]);
+                                    output += "\n" + response.ToJson();
+                                    break;
+                                }
+                                else
+                                {
+                                    math_found = false;
+                                    ispass = false;
+                                    resultMessages.Add("Invalid guid.");
+                                }
+                            }
+                            else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
+                            {
+                                var math = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math.Count != 0)
+                                {
+                                    mathdevs.AddRange(math);
+                                    foreach (var device in mathdevs)
+                                    {
+                                        if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                         {
-                                            case "COLLABSCREENSHARE":
-                                                writelog("COLLABSCREENSHARE entry");
-                                                writelog("device.IsCollaborationScreenShareEnable entry");
-                                                if (device.IsCollabsKeysSupported)
-                                                {
-                                                    if (property.Value.ToString() == "ON")
-                                                    {
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable entry");
-                                                        _devMgr.SetCollaborationScreenShareEnable(true, device.ID);
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable exit");
-                                                    }
-                                                    else if (property.Value.ToString() == "OFF")
-                                                    {
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable entry");
-                                                        _devMgr.SetCollaborationScreenShareEnable(false, device.ID);
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable exit");
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("COLLABSCREENSHARE is wrong value");
-                                                        ispass = false;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    resultMessages.Add("COLLABSCREENSHARE not support");
-                                                }
-                                                break;
-                                            default:
-                                                break;
+                                            ispass = DeviceconfigurationSetKeyboard(jsonObject, ispass, resultMessages, device);
+                                            var response = GetDeviceDataPeripheralResponse(index, mathdevs[index]);
+                                            output += "\n" + response.ToJson();
+                                            index++;
                                         }
                                     }
-                                    index++;
-                                    var response = GetDeviceDataPeripheralResponse(index, device);
-                                    output += "\n" + response.ToJson();
+                                }
+                                else
+                                {
+                                    math_found = false;
+                                    ispass = false;
+                                    resultMessages.Add("Invalid model.");
+                                }
+                            }
+                            else
+                            {
+                                foreach (var device in _deviceinfo)
+                                {
+                                    if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        ispass = DeviceconfigurationSetKeyboard(jsonObject, ispass, resultMessages, device);
+                                        index++;
+                                        var response = GetDeviceDataPeripheralResponse(index, device);
+                                        output += "\n" + response.ToJson();
+                                    }
                                 }
                             }
                             break;
-                        case "WEBCAM":
+                        case "WEBCAM"://202503012 Elsa add for Deviceconfiguration support guid&model
                             writelog("WEBCAM set entry");
-                            foreach (var device in _deviceinfo)
+                            if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
-                                if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                //foreach (var propertys in jsonObject.Properties())
+                                //{
+                                //if (propertys.Name.ToString().ToUpper() == "ID" && propertys.Value.ToString().ToUpper() == commandLineInput.GuidString[0].ToString().ToUpper())
+                                //{
+                                var math = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math != null)
                                 {
-                                    foreach (var property in jsonObject.Properties())
+                                    mathdevs.Add(math);
+                                    if (mathdevs[0].LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                     {
-                                        writelog($"Key: {property.Name}, Value: {property.Value}");
-
-                                        switch (property.Name.ToString())
+                                        ispass = DeviceconfigurationSetWebcam(jsonObject, true, resultMessages, mathdevs[0]);
+                                    }
+                                    var response = GetDeviceDataPeripheralResponse(0, mathdevs[0]);
+                                    output += "\n" + response.ToJson();
+                                    break;
+                                }
+                                //}
+                                //}
+                                else
+                                {
+                                    math_found = false;
+                                    ispass = false;
+                                    resultMessages.Add("Invalid guid.");
+                                }
+                            }
+                            else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
+                            {
+                                var math = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math.Count != 0)
+                                {
+                                    mathdevs.AddRange(math);
+                                    foreach (var device in mathdevs)
+                                    {
+                                        if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                         {
-                                            case "HDR":
-                                                writelog("HDR entry");
-                                                writelog("_devMgr.GetIsPropertyHDRSupported entry");
-                                                if (_devMgr.GetIsPropertyHDRSupported(device.ID.ToString()).Result)
-                                                {
-                                                    if (property.Value.ToString() == "ON")
-                                                    {
-                                                        writelog("_devMgr.SetIsHDROn entry");
-                                                        _devMgr.SetIsHDROn(device.ID.ToString(), true);
-                                                        writelog("_devMgr.SetIsHDROn exit");
-                                                    }
-                                                    else if (property.Value.ToString() == "OFF")
-                                                    {
-                                                        writelog("_devMgr.SetIsHDROn entry");
-                                                        _devMgr.SetIsHDROn(device.ID.ToString(), false);
-                                                        writelog("_devMgr.SetIsHDROn exit");
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("HDR is wrong value");
-                                                        ispass = false;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    resultMessages.Add("HDR not support");
-                                                }
-                                                break;
-                                            case "ANTIFLICKER":
-                                                writelog("ANTIFLICKER entry");
-                                                writelog("_devMgr.GetIsPropertyAntiFlickerSupported entry");
-                                                if (_devMgr.GetIsPropertyAntiFlickerSupported(device.ID.ToString()).Result)
-                                                {
-                                                    if (property.Value.ToString() == "50" || property.Value.ToString() == "60")
-                                                    {
-                                                        var antiflickerValue = property.Value.ToString() == "50" ? 1 : 2;
-                                                        writelog("_devMgr.SetAntiFlicker entry");
-                                                        _devMgr.SetAntiFlicker(device.ID.ToString(), antiflickerValue);
-                                                        writelog("_devMgr.SetAntiFlicker exit");
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("ANTIFLICKER is wrong value");
-                                                        ispass = false;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    resultMessages.Add("ANTIFLICKER not support");
-                                                }
-                                                break;
-                                            case "MICSWITCH":
-                                                writelog("MICSWITCH entry");
-                                                writelog("device.IsMicEnumerationSupported entry");
-                                                if (device.IsMicEnumerationSupported)
-                                                {
-                                                    if (property.Value.ToString() == "ON")
-                                                    {
-                                                        writelog("_devMgr.SetIsMicEnumerationOn entry");
-                                                        _devMgr.SetIsMicEnumerationOn(true, device.ID);
-                                                        writelog("_devMgr.SetIsMicEnumerationOn exit");
-                                                    }
-                                                    else if (property.Value.ToString() == "OFF")
-                                                    {
-                                                        writelog("_devMgr.SetIsMicEnumerationOn entry");
-                                                        _devMgr.SetIsMicEnumerationOn(false, device.ID);
-                                                        writelog("_devMgr.SetIsMicEnumerationOn exit");
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("MICSWITCH is wrong value");
-                                                        ispass = false;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    resultMessages.Add("MICSWITCH not support");
-                                                }
-                                                break;
-                                            case "AIAUTOFRAMING":
-                                                writelog("AIAUTOFRAMING entry");
-                                                writelog("_devMgr.GetIsPropertyAutoFramingSupported entry");
-                                                if (_devMgr.GetIsPropertyAutoFramingSupported(device.ID.ToString()).Result)
-                                                {
-                                                    if (property.Value.ToString() == "ON")
-                                                    {
-                                                        writelog("_devMgr.SetIsAutoFramingOn entry");
-                                                        _devMgr.SetIsAutoFramingOn(device.ID.ToString(), true);
-                                                        writelog("_devMgr.SetIsAutoFramingOn exit");
-                                                    }
-                                                    else if (property.Value.ToString() == "OFF")
-                                                    {
-                                                        writelog("_devMgr.SetIsAutoFramingOn entry");
-                                                        _devMgr.SetIsAutoFramingOn(device.ID.ToString(), false);
-                                                        writelog("_devMgr.SetIsAutoFramingOn exit");
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("AIAUTOFRAMING is wrong value");
-                                                        ispass = false;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    resultMessages.Add("AIAUTOFRAMING not support");
-                                                }
-                                                break;
-                                            case "PRESENCEDETECTION":
-                                                writelog("PRESENCEDETECTION entry");
-                                                writelog("device.IsESISupported entry");
-                                                if (device.IsESISupported)
-                                                {
-                                                    if (property.Value.ToString() == "ON")
-                                                    {
-                                                        writelog("_devMgr.SetIsProximitySensorEnable entry");
-                                                        _devMgr.SetIsProximitySensorEnable(device.ID.ToString(), true);
-                                                        writelog("_devMgr.SetIsProximitySensorEnable exit");
-                                                    }
-                                                    else if (property.Value.ToString() == "OFF")
-                                                    {
-                                                        writelog("_devMgr.SetIsProximitySensorEnable entry");
-                                                        _devMgr.SetIsProximitySensorEnable(device.ID.ToString(), false);
-                                                        writelog("_devMgr.SetIsProximitySensorEnable exit");
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("PRESENCEDETECTION is wrong value");
-                                                        ispass = false;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    resultMessages.Add("PRESENCEDETECTION not support");
-                                                }
-                                                break;
-                                            default:
-                                                break;
+                                            ispass = DeviceconfigurationSetWebcam(jsonObject, ispass, resultMessages, device);
+                                            var response = GetDeviceDataPeripheralResponse(index, mathdevs[index]);
+                                            output += "\n" + response.ToJson();
+                                            index++;
                                         }
                                     }
-                                    index++;
-                                    var response = GetDeviceDataPeripheralResponse(index, device);
-                                    output += "\n" + response.ToJson();
+                                }
+                                else
+                                {
+                                    math_found = false;
+                                    ispass = false;
+                                    resultMessages.Add("Invalid model.");
+                                }
+                            }
+                            else
+                            {
+                                foreach (var device in _deviceinfo)
+                                {
+                                    if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        ispass = DeviceconfigurationSetWebcam(jsonObject, ispass, resultMessages, device);
+                                        index++;
+                                        var response = GetDeviceDataPeripheralResponse(index, device);
+                                        output += "\n" + response.ToJson();
+                                    }
                                 }
                             }
                             break;
                         case "WIREDAUDIO":
                         case "HEADSET":
-                        case "AUDIO":
+                        case "AUDIO"://202503012 Elsa add for Deviceconfiguration support guid&model
                             writelog("AUDIO set entry");
-                            foreach (var device in _deviceinfo)
+                            if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
-                                if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase) || device.LogicalDeviceType.Contains("HEADSET", StringComparison.OrdinalIgnoreCase))
+                                var math = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math != null)
                                 {
-                                    foreach (var property in jsonObject.Properties())
+                                    mathdevs.Add(math);
+                                    if (mathdevs[0].LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                     {
-                                        writelog($"Key: {property.Name}, Value: {property.Value}");
-
-                                        switch (property.Name.ToString())
+                                        ispass = DeviceconfigurationSetAudio(jsonObject, true, resultMessages, mathdevs[0]);
+                                    }
+                                    var response = GetDeviceDataPeripheralResponse(0, mathdevs[0]);
+                                    output += "\n" + response.ToJson();
+                                    break;
+                                }
+                                else
+                                {
+                                    math_found = false;
+                                    ispass = false;
+                                    resultMessages.Add("Invalid guid.");
+                                }
+                            }
+                            else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
+                            {
+                                var math = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math.Count != 0 )
+                                {
+                                    mathdevs.AddRange(math);
+                                    foreach (var device in mathdevs)
+                                    {
+                                        if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
                                         {
-                                            case "ANCMODE":
-                                                writelog("ANCMODE entry");
-                                                writelog("_devMgr.GetIsANCSupportedAsync entry");
-                                                if (_devMgr.GetIsANCSupportedAsync(device.ID.ToString()).Result)
-                                                {
-                                                    if (property.Value.ToString() == "ON")
-                                                    {
-                                                        writelog("_devMgr.SetAncMode entry");
-                                                        _devMgr.SetAncMode(1, device.ID);
-                                                        writelog("_devMgr.SetAncMode exit");
-                                                    }
-                                                    else if (property.Value.ToString() == "OFF")
-                                                    {
-                                                        writelog("_devMgr.SetAncMode entry");
-                                                        _devMgr.SetAncMode(0, device.ID);
-                                                        writelog("_devMgr.SetAncMode exit");
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("ANCMODE is wrong value");
-                                                        ispass = false;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    resultMessages.Add("ANCMODE not support");
-                                                }
-                                                break;
-                                            case "MICNOISECANCELLATION":
-                                                writelog("MICNOISECANCELLATION entry");
-                                                writelog("_devMgr.GetIsMicNoiseCancellationSupportedAsync entry");
-                                                if (_devMgr.GetIsMicNoiseCancellationSupportedAsync(device.ID.ToString()).Result)
-                                                {
-                                                    if (property.Value.ToString() == "ON")
-                                                    {
-                                                        if (device.ModelNumber == "WL7024")
-                                                        {
-                                                            writelog("_devMgr.SetMicNoiseCancellationForMito entry");
-                                                            _devMgr.SetMicNoiseCancellationForMito(true, device.ID);
-                                                            writelog("_devMgr.SetMicNoiseCancellationForMito exit");
-                                                        }
-                                                        else
-                                                        {
-                                                            writelog("_devMgr.SetMicNoiseCancellation entry");
-                                                            _devMgr.SetMicNoiseCancellation(true, device.ID);
-                                                            writelog("_devMgr.SetMicNoiseCancellation exit");
-                                                        }
-                                                    }
-                                                    else if (property.Value.ToString() == "OFF")
-                                                    {
-                                                        if (device.ModelNumber == "WL7024")
-                                                        {
-                                                            writelog("_devMgr.SetMicNoiseCancellationForMito entry");
-                                                            _devMgr.SetMicNoiseCancellationForMito(false, device.ID);
-                                                            writelog("_devMgr.SetMicNoiseCancellationForMito exit");
-                                                        }
-                                                        else
-                                                        {
-                                                            writelog("_devMgr.SetMicNoiseCancellation entry");
-                                                            _devMgr.SetMicNoiseCancellation(false, device.ID);
-                                                            writelog("_devMgr.SetMicNoiseCancellation exit");
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("MICNOISECANCELLATION is wrong value");
-                                                        ispass = false;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    resultMessages.Add("MICNOISECANCELLATION not support");
-                                                }
-                                                break;
-                                            case "WEARDETECTION":
-                                                writelog("WEARDETECTION entry");
-                                                writelog("_devMgr.GetIsWearDetectionSupportedAsync entry");
-                                                if (_devMgr.GetIsWearDetectionSupportedAsync(device.ID.ToString()).Result)
-                                                {
-                                                    if (property.Value.ToString() == "ON")
-                                                    {
-                                                        writelog("_devMgr.SetWearDetectionForCLI entry");
-                                                        _devMgr.SetWearDetectionForCLI(1, device.ID);
-                                                        writelog("_devMgr.SetWearDetectionForCLI exit");
-                                                    }
-                                                    else if (property.Value.ToString() == "OFF")
-                                                    {
-                                                        writelog("_devMgr.SetWearDetectionForCLI entry");
-                                                        _devMgr.SetWearDetectionForCLI(0, device.ID);
-                                                        writelog("_devMgr.SetWearDetectionForCLI exit");
-                                                    }
-                                                    else
-                                                    {
-                                                        resultMessages.Add("WEARDETECTION is wrong value");
-                                                        ispass = false;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    resultMessages.Add("WEARDETECTION not support");
-                                                }
-                                                break;
-                                            default:
-                                                break;
+                                            ispass = DeviceconfigurationSetAudio(jsonObject, ispass, resultMessages, device);
+                                            var response = GetDeviceDataPeripheralResponse(index, mathdevs[index]);
+                                            output += "\n" + response.ToJson();
+                                            index++;
                                         }
                                     }
-                                    index++;
-                                    var response = GetDeviceDataPeripheralResponse(index, device);
-                                    output += "\n" + response.ToJson();
+                                }
+                                else
+                                {
+                                    math_found = false;
+                                    ispass = false;
+                                    resultMessages.Add("Invalid model.");
+                                }
+                            }
+                            else
+                            {
+                                foreach (var device in _deviceinfo)
+                                {
+                                    if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase) || device.LogicalDeviceType.Contains("HEADSET", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        ispass = DeviceconfigurationSetAudio(jsonObject, ispass, resultMessages, device);
+                                        index++;
+                                        var response = GetDeviceDataPeripheralResponse(index, device);
+                                        output += "\n" + response.ToJson();
+                                    }
                                 }
                             }
                             break;
                         case "MOUSE":
                         case "PEN":
-                        case "DOCK":
-                            foreach (var device in _deviceinfo)
+                        case "DOCK"://202503012 Elsa add for Deviceconfiguration support guid&ServiceTag&model
+                            if (commandLineInput.GuidString != null && commandLineInput.GuidString.Count > 0 && !string.IsNullOrEmpty(commandLineInput.GuidString[0].ToString()))
                             {
-                                if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                var math = _deviceinfo.SingleOrDefault(x => x.ID.ToString().Equals(commandLineInput.GuidString[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math != null)
                                 {
-                                    index++;
-                                    var response = GetDeviceDataPeripheralResponse(index, device);
-                                    output += "\n" + response.ToJson();
+                                    mathdevs.Add(math);
+                                    if (mathdevs[0].LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        var response = GetDeviceDataPeripheralResponse(0, mathdevs[0]);
+                                        output += "\n" + response.ToJson();
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    math_found = false;
+                                    ispass = false;
+                                    resultMessages.Add("Invalid guid.");
+                                }
+                            }
+                            else if (commandLineInput.ServiceTag != null && commandLineInput.ServiceTag.Count > 0 && !string.IsNullOrEmpty(commandLineInput.ServiceTag[0].ToString()))
+                            {
+                                var math = _deviceinfo.SingleOrDefault(x => x.DockServiceTag.ToString().Equals(commandLineInput.ServiceTag[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math != null)
+                                {
+                                    mathdevs.Add(math);
+                                    if (mathdevs[0].LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        var response = GetDeviceDataPeripheralResponse(0, mathdevs[0]);
+                                        output += "\n" + response.ToJson();
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    math_found = false;
+                                    ispass = false;
+                                    resultMessages.Add("Invalid ServiceTag.");
+                                }
+                            }
+                            else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
+                            {
+                                var math = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                if (math.Count != 0)
+                                {
+                                    mathdevs.AddRange(math);
+                                    foreach (var device in mathdevs)
+                                    {
+                                        if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            var response = GetDeviceDataPeripheralResponse(index, mathdevs[index]);
+                                            output += "\n" + response.ToJson();
+                                            index++;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    math_found = false;
+                                    ispass = false;
+                                    resultMessages.Add("Invalid model.");
+                                }
+                            }
+                            else
+                            {
+                                foreach (var device in _deviceinfo)
+                                {
+                                    if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        index++;
+                                        var response = GetDeviceDataPeripheralResponse(index, device);
+                                        output += "\n" + response.ToJson();
+                                    }
                                 }
                             }
                             break;
@@ -11814,7 +11820,7 @@ namespace DDPM.CLI.Plugins.Display
                             cli_Response__.Message = "Invalid command line syntax or missing -value=file.json";
                             return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response__.ToJson());
                     }
-                    if (string.IsNullOrWhiteSpace(output))
+                    if (string.IsNullOrWhiteSpace(output) && math_found == true)
                     {
                         output = new CLI_RESPONSE3
                         {
@@ -11852,6 +11858,319 @@ namespace DDPM.CLI.Plugins.Display
             cli_Response.Message = "Invalid command line syntax or missing -value=file.json";
             return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
 
+        }
+
+        private bool DeviceconfigurationSetAudio(JObject jsonObject, bool ispass, List<string> resultMessages, DeviceInfo device)
+        {
+            foreach (var property in jsonObject.Properties())
+            {
+                writelog($"Key: {property.Name}, Value: {property.Value}");
+
+                switch (property.Name.ToString())
+                {
+                    case "ANCMODE":
+                        writelog("ANCMODE entry");
+                        writelog("_devMgr.GetIsANCSupportedAsync entry");
+                        if (_devMgr.GetIsANCSupportedAsync(device.ID.ToString()).Result)
+                        {
+                            if (property.Value.ToString() == "ON")
+                            {
+                                writelog("_devMgr.SetAncMode entry");
+                                _devMgr.SetAncMode(1, device.ID);
+                                writelog("_devMgr.SetAncMode exit");
+                            }
+                            else if (property.Value.ToString() == "OFF")
+                            {
+                                writelog("_devMgr.SetAncMode entry");
+                                _devMgr.SetAncMode(0, device.ID);
+                                writelog("_devMgr.SetAncMode exit");
+                            }
+                            else
+                            {
+                                resultMessages.Add("ANCMODE is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("ANCMODE not support");
+                        }
+                        break;
+                    case "MICNOISECANCELLATION":
+                        writelog("MICNOISECANCELLATION entry");
+                        writelog("_devMgr.GetIsMicNoiseCancellationSupportedAsync entry");
+                        if (_devMgr.GetIsMicNoiseCancellationSupportedAsync(device.ID.ToString()).Result)
+                        {
+                            if (property.Value.ToString() == "ON")
+                            {
+                                if (device.ModelNumber == "WL7024")
+                                {
+                                    writelog("_devMgr.SetMicNoiseCancellationForMito entry");
+                                    _devMgr.SetMicNoiseCancellationForMito(true, device.ID);
+                                    writelog("_devMgr.SetMicNoiseCancellationForMito exit");
+                                }
+                                else
+                                {
+                                    writelog("_devMgr.SetMicNoiseCancellation entry");
+                                    _devMgr.SetMicNoiseCancellation(true, device.ID);
+                                    writelog("_devMgr.SetMicNoiseCancellation exit");
+                                }
+                            }
+                            else if (property.Value.ToString() == "OFF")
+                            {
+                                if (device.ModelNumber == "WL7024")
+                                {
+                                    writelog("_devMgr.SetMicNoiseCancellationForMito entry");
+                                    _devMgr.SetMicNoiseCancellationForMito(false, device.ID);
+                                    writelog("_devMgr.SetMicNoiseCancellationForMito exit");
+                                }
+                                else
+                                {
+                                    writelog("_devMgr.SetMicNoiseCancellation entry");
+                                    _devMgr.SetMicNoiseCancellation(false, device.ID);
+                                    writelog("_devMgr.SetMicNoiseCancellation exit");
+                                }
+                            }
+                            else
+                            {
+                                resultMessages.Add("MICNOISECANCELLATION is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("MICNOISECANCELLATION not support");
+                        }
+                        break;
+                    case "WEARDETECTION":
+                        writelog("WEARDETECTION entry");
+                        writelog("_devMgr.GetIsWearDetectionSupportedAsync entry");
+                        if (_devMgr.GetIsWearDetectionSupportedAsync(device.ID.ToString()).Result)
+                        {
+                            if (property.Value.ToString() == "ON")
+                            {
+                                writelog("_devMgr.SetWearDetectionForCLI entry");
+                                _devMgr.SetWearDetectionForCLI(1, device.ID);
+                                writelog("_devMgr.SetWearDetectionForCLI exit");
+                            }
+                            else if (property.Value.ToString() == "OFF")
+                            {
+                                writelog("_devMgr.SetWearDetectionForCLI entry");
+                                _devMgr.SetWearDetectionForCLI(0, device.ID);
+                                writelog("_devMgr.SetWearDetectionForCLI exit");
+                            }
+                            else
+                            {
+                                resultMessages.Add("WEARDETECTION is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("WEARDETECTION not support");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return ispass;
+        }
+
+        private bool DeviceconfigurationSetKeyboard(JObject jsonObject, bool ispass, List<string> resultMessages, DeviceInfo device)
+        {
+            foreach (var property in jsonObject.Properties())
+            {
+                writelog($"Key: {property.Name}, Value: {property.Value}");
+
+                switch (property.Name.ToString())
+                {
+                    case "COLLABSCREENSHARE":
+                        writelog("COLLABSCREENSHARE entry");
+                        writelog("device.IsCollaborationScreenShareEnable entry");
+                        if (device.IsCollabsKeysSupported)
+                        {
+                            if (property.Value.ToString() == "ON")
+                            {
+                                writelog("_devMgr.SetCollaborationScreenShareEnable entry");
+                                _devMgr.SetCollaborationScreenShareEnable(true, device.ID);
+                                writelog("_devMgr.SetCollaborationScreenShareEnable exit");
+                            }
+                            else if (property.Value.ToString() == "OFF")
+                            {
+                                writelog("_devMgr.SetCollaborationScreenShareEnable entry");
+                                _devMgr.SetCollaborationScreenShareEnable(false, device.ID);
+                                writelog("_devMgr.SetCollaborationScreenShareEnable exit");
+                            }
+                            else
+                            {
+                                resultMessages.Add("COLLABSCREENSHARE is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("COLLABSCREENSHARE not support");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return ispass;
+        }
+
+        private bool DeviceconfigurationSetWebcam(JObject jsonObject, bool ispass, List<string> resultMessages, DeviceInfo device)
+        {
+            foreach (var property in jsonObject.Properties())
+            {
+                writelog($"Key: {property.Name}, Value: {property.Value}");
+
+                switch (property.Name.ToString())
+                {
+                    case "HDR":
+                        writelog("HDR entry");
+                        writelog("_devMgr.GetIsPropertyHDRSupported entry");
+                        if (_devMgr.GetIsPropertyHDRSupported(device.ID.ToString()).Result)
+                        {
+                            if (property.Value.ToString() == "ON")
+                            {
+                                writelog("_devMgr.SetIsHDROn entry");
+                                _devMgr.SetIsHDROn(device.ID.ToString(), true);
+                                writelog("_devMgr.SetIsHDROn exit");
+                            }
+                            else if (property.Value.ToString() == "OFF")
+                            {
+                                writelog("_devMgr.SetIsHDROn entry");
+                                _devMgr.SetIsHDROn(device.ID.ToString(), false);
+                                writelog("_devMgr.SetIsHDROn exit");
+                            }
+                            else
+                            {
+                                resultMessages.Add("HDR is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("HDR not support");
+                        }
+                        break;
+                    case "ANTIFLICKER":
+                        writelog("ANTIFLICKER entry");
+                        writelog("_devMgr.GetIsPropertyAntiFlickerSupported entry");
+                        if (_devMgr.GetIsPropertyAntiFlickerSupported(device.ID.ToString()).Result)
+                        {
+                            if (property.Value.ToString() == "50" || property.Value.ToString() == "60")
+                            {
+                                var antiflickerValue = property.Value.ToString() == "50" ? 1 : 2;
+                                writelog("_devMgr.SetAntiFlicker entry");
+                                _devMgr.SetAntiFlicker(device.ID.ToString(), antiflickerValue);
+                                writelog("_devMgr.SetAntiFlicker exit");
+                            }
+                            else
+                            {
+                                resultMessages.Add("ANTIFLICKER is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("ANTIFLICKER not support");
+                        }
+                        break;
+                    case "MICSWITCH":
+                        writelog("MICSWITCH entry");
+                        writelog("device.IsMicEnumerationSupported entry");
+                        if (device.IsMicEnumerationSupported)
+                        {
+                            if (property.Value.ToString() == "ON")
+                            {
+                                writelog("_devMgr.SetIsMicEnumerationOn entry");
+                                _devMgr.SetIsMicEnumerationOn(true, device.ID);
+                                writelog("_devMgr.SetIsMicEnumerationOn exit");
+                            }
+                            else if (property.Value.ToString() == "OFF")
+                            {
+                                writelog("_devMgr.SetIsMicEnumerationOn entry");
+                                _devMgr.SetIsMicEnumerationOn(false, device.ID);
+                                writelog("_devMgr.SetIsMicEnumerationOn exit");
+                            }
+                            else
+                            {
+                                resultMessages.Add("MICSWITCH is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("MICSWITCH not support");
+                        }
+                        break;
+                    case "AIAUTOFRAMING":
+                        writelog("AIAUTOFRAMING entry");
+                        writelog("_devMgr.GetIsPropertyAutoFramingSupported entry");
+                        if (_devMgr.GetIsPropertyAutoFramingSupported(device.ID.ToString()).Result)
+                        {
+                            if (property.Value.ToString() == "ON")
+                            {
+                                writelog("_devMgr.SetIsAutoFramingOn entry");
+                                _devMgr.SetIsAutoFramingOn(device.ID.ToString(), true);
+                                writelog("_devMgr.SetIsAutoFramingOn exit");
+                            }
+                            else if (property.Value.ToString() == "OFF")
+                            {
+                                writelog("_devMgr.SetIsAutoFramingOn entry");
+                                _devMgr.SetIsAutoFramingOn(device.ID.ToString(), false);
+                                writelog("_devMgr.SetIsAutoFramingOn exit");
+                            }
+                            else
+                            {
+                                resultMessages.Add("AIAUTOFRAMING is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("AIAUTOFRAMING not support");
+                        }
+                        break;
+                    case "PRESENCEDETECTION":
+                        writelog("PRESENCEDETECTION entry");
+                        writelog("device.IsESISupported entry");
+                        if (device.IsESISupported)
+                        {
+                            if (property.Value.ToString() == "ON")
+                            {
+                                writelog("_devMgr.SetIsProximitySensorEnable entry");
+                                _devMgr.SetIsProximitySensorEnable(device.ID.ToString(), true);
+                                writelog("_devMgr.SetIsProximitySensorEnable exit");
+                            }
+                            else if (property.Value.ToString() == "OFF")
+                            {
+                                writelog("_devMgr.SetIsProximitySensorEnable entry");
+                                _devMgr.SetIsProximitySensorEnable(device.ID.ToString(), false);
+                                writelog("_devMgr.SetIsProximitySensorEnable exit");
+                            }
+                            else
+                            {
+                                resultMessages.Add("PRESENCEDETECTION is wrong value");
+                                ispass = false;
+                            }
+                        }
+                        else
+                        {
+                            resultMessages.Add("PRESENCEDETECTION not support");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return ispass;
         }
 
         private static string get_ScreenOrientation_code(string Orientation)
