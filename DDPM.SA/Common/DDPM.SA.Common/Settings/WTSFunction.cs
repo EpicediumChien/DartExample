@@ -15,6 +15,7 @@ using Microsoft.VisualBasic.Logging;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using Newtonsoft.Json.Linq;
 using System.Management;
+using VcpCore.Common;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -414,7 +415,7 @@ namespace DDPM.SA.Common.Settings
             }
             return obj;
         }
-        
+
         /*public static void RunElevatedProcess(string applicationPath, string arguments)
         {
             uint sessionId = (uint)_WTSGetActiveConsoleSessionId();
@@ -486,7 +487,7 @@ namespace DDPM.SA.Common.Settings
                         PInvoke.PROCESS_INFORMATION pi = new PInvoke.PROCESS_INFORMATION();
                         SECURITY_ATTRIBUTES processAttributes = new SECURITY_ATTRIBUTES();
                         SECURITY_ATTRIBUTES threadAttributes = new SECURITY_ATTRIBUTES();
-                        
+
 
                         if (!_CreateProcessAsUser(duplicatedToken, applicationPath, null, ref processAttributes, ref threadAttributes, false, 0, IntPtr.Zero, null, ref si, out pi))
                         {
@@ -510,7 +511,7 @@ namespace DDPM.SA.Common.Settings
         /// <param name="applicationName">The name of the application to launch</param>
         /// <param name="procInfo">Process information regarding the launched application that gets returned to the caller</param>
         /// <returns></returns>
-        public static bool StartProcessAndBypassUACWithAdmin(string applicationName,string workingDirectory, out PInvoke.PROCESS_INFORMATION procInfo)
+        public static bool StartProcessAndBypassUACWithAdmin(string applicationName, string workingDirectory, out PInvoke.PROCESS_INFORMATION procInfo)
         {
             uint winlogonPid = 0;
             IntPtr hUserTokenDup = IntPtr.Zero, hPToken = IntPtr.Zero, hProcess = IntPtr.Zero;
@@ -628,7 +629,7 @@ namespace DDPM.SA.Common.Settings
         public static List<int> GetSessionIdFromProcessId(string processName)
         {
             List<int> result = new List<int>();
-            if(string.IsNullOrEmpty(processName))
+            if (string.IsNullOrEmpty(processName))
             {
                 result.Clear();
                 return result;
@@ -650,6 +651,88 @@ namespace DDPM.SA.Common.Settings
             int cur = GetCurrentUserSessionId();
             WriteLog(log, $"Current active Session is: {act}, Process created in session: {cur}");
             return (cur == act);
+        }
+        public static object ImpersonateUser_ReadRegistry_New(string subKey, string keyName, ILog log, Logs logs)
+        {
+            object obj = null;
+            if (!string.IsNullOrEmpty(subKey) && !string.IsNullOrEmpty(keyName))
+            {
+                string userSid = DirectGetUserID(log);
+                if (!string.IsNullOrEmpty(userSid))
+                {
+                    string subKeyPath = $@"{userSid}\{subKey}"; // Path within the user's registry
+                    try
+                    {
+                        using (RegistryKey key = Registry.Users.OpenSubKey(subKeyPath))
+                        {
+                            if (key != null)
+                            {
+                                object value = key.GetValue(keyName);
+                                if (value != null)
+                                {
+                                    obj = value;
+                                }
+                                else
+                                {
+                                    if (logs != null)
+                                    {
+                                        logs.DebugMsg_1($"ImpersonateUser_ReadRegistry_New can't found : {keyName}");
+                                    }
+                                    else
+                                    {
+                                        WriteLog(log, $"ImpersonateUser_ReadRegistry_New can't found : {keyName}");
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (logs != null)
+                                {
+                                    logs.DebugMsg_1($"ImpersonateUser_ReadRegistry_New Unable to access target registry key : {subKey}");
+                                }
+                                else
+                                {
+                                    WriteLog(log, $"ImpersonateUser_ReadRegistry_New Unable to access target registry key : {subKey}");
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (logs != null)
+                        {
+                            logs.DebugMsg_1($"ImpersonateUser_ReadRegistry_New error : {ex.Message}");
+                        }
+                        else
+                        {
+                            WriteLog(log, $"ImpersonateUser_ReadRegistry_New error : {ex.Message}");
+                        }
+                    }
+                }
+                else
+                {
+                    if (logs != null)
+                    {
+                        logs.DebugMsg_1($"ImpersonateUser_ReadRegistry_New userSid is null or empty");
+                    }
+                    else
+                    {
+                        WriteLog(log, $"ImpersonateUser_ReadRegistry_New userSid is null or empty");
+                    }
+                }
+            }
+            else
+            {
+                if (logs != null)
+                {
+                    logs.DebugMsg_1($"ImpersonateUser_ReadRegistry_New subKey or keyName is null or empty");
+                }
+                else
+                {
+                    WriteLog(log, $"ImpersonateUser_ReadRegistry_New subKey or keyName is null or empty");
+                }
+            }
+            return obj;
         }
     }
 }

@@ -32,7 +32,8 @@ namespace DDPM.UI.Module.PenSettings
                 txtPairWithTile.Text = Strings.PairWithTile;
                 txtPairTooltip.Text = Strings.PairTooltip;
                 btnGetStart.Content = Strings.GetStarted2;
-
+                if (vm.Model == "PN5122W")
+                    gdTile.Visibility = Visibility.Collapsed;
             }
             catch (Exception ex)
             {

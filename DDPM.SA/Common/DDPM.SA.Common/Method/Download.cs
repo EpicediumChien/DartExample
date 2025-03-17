@@ -5,6 +5,8 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using VcpCore.Common;
 
 namespace DDPM.SA.Common.Method
@@ -57,7 +59,7 @@ namespace DDPM.SA.Common.Method
             return ret;
         }
 
-        public bool DownloadFile(string URLPath, string SavePath, out string FailInfo, bool isSkipCA = false)
+        public bool DownloadFile(string URLPath, string SavePath, out string FailInfo, bool isSkipCA = false, CancellationTokenSource cts = null)
         {
             try
             {
@@ -80,34 +82,53 @@ namespace DDPM.SA.Common.Method
                     }
                     string url = URLPath;
                     string savePath = SavePath;
+                    if (cts == null)
+                    {
+                        cts = new CancellationTokenSource();
+                    }
                     HttpClient client = new HttpClient();
-                    client.Timeout = TimeSpan.FromMinutes(1);
+                    client.Timeout = TimeSpan.FromSeconds(30);
                     // 發送 HTTP GET 請求到指定的 URL
-                    HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
+                    HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cts.Token).Result;
                     // 從 URL 中取得回應標頭
-                    var header = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
+                    var header = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cts.Token).Result;
                     // 從回應標頭中提取檔案大小
                     DownloadFileSize = header.Content.Headers.ContentLength;
                     // 取得包含 URL 內容的串流
-                    var stream = client.GetStreamAsync(url).Result;
+                    var stream = client.GetStreamAsync(url, cts.Token).Result;
                     // 建立檔案串流以將下載的內容寫入
                     DownloadFileStream = File.Create(savePath);
                     // 將串流的內容複製到檔案中
-                    stream.CopyToAsync(DownloadFileStream).Wait();
+                    stream.CopyToAsync(DownloadFileStream, cts.Token).Wait();
                 }
                 _logs?.DebugMsg_1(nameof(DownloadFile) + " done");
                 FailInfo = "Pass";
                 return true;
             }
+            catch (TaskCanceledException ex)
+            {
+                FailInfo = $"DownloadFile timeout";
+                _logs?.DebugMsg_1(nameof(DownloadFile) + " timeout : " + ex.Message);
+                return false;
+            }
+            catch (OperationCanceledException ex)
+            {
+                FailInfo = $"DownloadFile Cancel";
+                _logs?.DebugMsg_1(nameof(DownloadFile) + " cancel : " + ex.Message);
+                return false;
+            }
             catch (Exception ex)
             {
-                FailInfo = $"Network fail : {ex.Message}";
+                FailInfo = $"DownloadFile fail : {ex.Message}";
                 _logs?.DebugMsg_1(nameof(DownloadFile) + " fail:" + ex.Message);
                 return false;
             }
             finally
             {
-                DownloadFileStream.Close();
+                if (DownloadFileStream != null)
+                    DownloadFileStream.Close();
+                else
+                    _logs?.DebugMsg_1("[DownloadFile] [Finally] DownloadFileStream is null.");
                 DownloadFileSize = null;
                 DownloadFileStream = null;
             }

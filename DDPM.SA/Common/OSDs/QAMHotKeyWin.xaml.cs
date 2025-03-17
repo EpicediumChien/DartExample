@@ -23,8 +23,8 @@ namespace DDPM.OSDs
     /// </summary>
     public partial class QAMHotKeyWin : Window
     {
-        private DispatcherTimer? animationTimer = null;
-        private TimeSpan time;
+        /*private DispatcherTimer? animationTimer = null;
+        private TimeSpan time;*/
 
 
         public QAMHotKeyWin()
@@ -59,7 +59,7 @@ namespace DDPM.OSDs
             //}
         }
 
-        private void RunTimerTick(object sender, EventArgs e)
+        /*private void RunTimerTick(object sender, EventArgs e)
         {
             if (time == TimeSpan.Zero)
             {
@@ -73,7 +73,7 @@ namespace DDPM.OSDs
             {
                 time = time.Add(TimeSpan.FromMilliseconds(-1000));
             }
-        }
+        }*/
 
         private void close_Click(object sender, MouseButtonEventArgs e)
         {
@@ -128,7 +128,7 @@ namespace DDPM.OSDs
         {
             bool rst = ShowWindow(hWnd, nCmdShow);
 
-            if (!rst) 
+            if (!rst)
             {
 #if DEBUG
                 Console.WriteLine("[QAMHotKeyWin] Windos was hidden before.");
@@ -205,6 +205,14 @@ namespace DDPM.OSDs
             }
 
             return result;
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
         }
     }
 }

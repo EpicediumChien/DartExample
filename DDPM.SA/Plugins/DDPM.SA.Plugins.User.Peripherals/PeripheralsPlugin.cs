@@ -19,8 +19,10 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Dell.TechHub.Sdk.Common.Utilities.Extensions;
+using Dell.UnifiedAgent.DellTechHubSettings;
 using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
+using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Shell.Interop;
@@ -49,7 +51,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
     [Descriptor(Description = pluginDescription)]
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(IDPeMPlugin) })]
-    public class PeripheralsPlugin : BaseAgentPlugin, IDPeMPlugin
+    public class PeripheralsPlugin : BaseAgentPlugin, IDPeMPlugin, IDisposableObservable
     {
         private object _PeripheralLock = new object();
 
@@ -62,7 +64,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private const string publisherWebsite = "https://www.dell.com";
         private const string publisherSupport = "This plugin implements DDPM Peripherals Plugin.";
 
-        private readonly IAgent _agent;
+        private IAgent _agent;
         public const string PluginLogId = "Peripherals";
 
         private DeviceHelper _deviceHelper;
@@ -467,6 +469,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         public void StartPairing(Guid physicalDeviceId)
         {
+            if (physicalDeviceId != Guid.Empty)
+            {
+                writelog($"StartPairing : " + physicalDeviceId.ToString());
+            }
             if (_iDeviceManager != null && _iDeviceManager.Devices.Count > 0)
             {
                 var physicalDevice = _iDeviceManager.Devices.FirstOrDefault(x => x.Id == physicalDeviceId);
@@ -477,12 +483,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 else if (physicalDevice is IPhysicalAudioDeviceDongle _physicalAudioDeviceDongle)
                 {
                     _physicalAudioDeviceDongle.StartPairing();
+                    writelog($"StartPairing: AudioDeviceDongle : physicalDevice.Name = {physicalDevice.Name}; physicalDeviceId = " + physicalDeviceId.ToString());
                 }
             }
         }
 
         public void StopPairing(Guid physicalDeviceId)
         {
+            if (physicalDeviceId != Guid.Empty)
+            {
+                writelog($"StopPairing : " + physicalDeviceId.ToString());
+            }
             if (_iDeviceManager != null && _iDeviceManager.Devices.Count > 0)
             {
                 var physicalDevice = _iDeviceManager.Devices.FirstOrDefault(x => x.Id == physicalDeviceId);
@@ -493,12 +504,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 else if (physicalDevice is IPhysicalAudioDeviceDongle _physicalAudioDeviceDongle)
                 {
                     _physicalAudioDeviceDongle.StopPairing();
+                    writelog($"StopPairing: AudioDeviceDongle : physicalDevice.Name = {physicalDevice.Name}; physicalDeviceId = " + physicalDeviceId.ToString());
                 }
             }
         }
 
         public void UnPair(Guid logicalDeviceId)
         {
+            if (logicalDeviceId != Guid.Empty)
+            {
+                writelog($"UnPair : " + logicalDeviceId.ToString());
+            }
             foreach (var device in _iDeviceManager.Devices)
             {
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == logicalDeviceId);
@@ -512,6 +528,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     else if (logicalDevice.ParentPhysicalDevice is IPhysicalAudioDeviceDongle _logicalAudioDeviceDongle)
                     {
                         _logicalAudioDeviceDongle.UnPair(logicalDeviceId.ToString());
+                        writelog($"UnPair: IPhysicalAudioDeviceDongle : logicalDevice.Name = {logicalDevice.Name.ToString()}; logicalDeviceId = " + logicalDeviceId.ToString());
                         break;
                     }
                     else if (logicalDevice.ParentPhysicalDevice is IPhysicalPenDevice _physicalPenDevice)
@@ -1392,7 +1409,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         #endregion
 
         #region Private Methods
-        private bool IsServiceRunning()
+        //move to CommonFunctions
+        /*private bool IsServiceRunning()
         {
             //Bruce 0221 Add check service status 
             _logs.DebugMsg_1($"[PeripheralsPlugin] {nameof(IsServiceRunning)} start");
@@ -1414,12 +1432,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
             _logs.DebugMsg_1($"[PeripheralsPlugin] {nameof(IsServiceRunning)} done. ret : {ret}");
             return ret;
-        }
+        }*/
         private void ScanDevices()
         {
             lock (_lock)
             {
-                if (IsServiceRunning() && _isClientConnected && _iClient != null && _iDeviceManager != null)
+                if (CommonFunctions.IsServiceRunning(GlobalDefinitions.DPeMServiceName, Log) && _isClientConnected && _iClient != null && _iDeviceManager != null)
                 {
                     _DockCount = 0;
                     _deviceHelper = new DeviceHelper
@@ -2273,21 +2291,27 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             switch (donglePairingStatus)
             {
                 case DonglePairingStatus.DonglePairingStatusStopped:
+                    writelog($"Stopped : DonglePairingStatusStopped");
                     return "Stopped";
 
                 case DonglePairingStatus.DonglePairingStatusStarted:
+                    writelog($"Started : DonglePairingStatusStopped");
                     return "Started";
 
                 case DonglePairingStatus.DonglePairingStatusRequest:
+                    writelog($"Request : DonglePairingStatusStopped");
                     return "Request";
 
                 case DonglePairingStatus.DonglePairingStatusTimeOut:
+                    writelog($"TimeOut : DonglePairingStatusStopped");
                     return "TimeOut";
 
                 case DonglePairingStatus.DonglePairingStatusAlreadyPaired:
+                    writelog($"Already Paired : DonglePairingStatusStopped");
                     return "Already Paired";
 
                 case DonglePairingStatus.DonglePairingStatusOldDevice:
+                    writelog($"Old Device : DonglePairingStatusStopped");
                     return "Old Device";
             }
             return "";
@@ -2298,18 +2322,23 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             switch (donglePairingStatus)
             {
                 case AudioDonglePairingStatus.AudioDonglePairingStatusStopped:
+                    writelog($"Stopped : AudioDonglePairingStatusRequest");
                     return "Stopped";
 
                 case AudioDonglePairingStatus.AudioDonglePairingStatusStarted:
+                    writelog($"Started : AudioDonglePairingStatusRequest");
                     return "Started";
 
                 case AudioDonglePairingStatus.AudioDonglePairingStatusRequest:
+                    writelog($"Request : AudioDonglePairingStatusRequest");
                     return "Request";
 
                 case AudioDonglePairingStatus.AudioDonglePairingStatusTimeOut:
+                    writelog($"TimeOut : AudioDonglePairingStatusTimeOut");
                     return "TimeOut";
 
                 case AudioDonglePairingStatus.AudioDonglePairingStatusAlreadyPaired:
+                    writelog($"Already Paired : AudioDonglePairingStatusAlreadyPaired");
                     return "Already Paired";
             }
             return "";
@@ -2417,10 +2446,15 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void Client_StatusEvent(ClientStatus status, IClient client)
         {
+            if (_iDeviceManager != null)
+            {
+                writelog($"Client_StatusEvent: {_iDeviceManager.Devices.Count.ToString()}; _isClientConnected = {_isClientConnected.ToString()}");
+            }
             if (status == ClientStatus.Connected)
             {
                 lock (_lock)
                 {
+                    writelog($"_isClientConnected turn true ... ");
                     _isClientConnected = true;
 
                     _iClient = client;
@@ -2462,6 +2496,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 {
                     if (_isClientConnected)
                     {
+                        writelog($"_isClientConnected turn false ... ");
                         _isClientConnected = false;
                         _iDeviceManager = null;
                         _iUpdateManager = null;
@@ -2643,6 +2678,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     {
                         foreach (var iPhysicalDevice in iPhysicalDevices)
                         {
+                            writelog("iPhysicalDevice.Name = " + iPhysicalDevice.Name.ToString() + ", iPhysicalDevice.ModelNumber = " + iPhysicalDevice.ModelNumber.ToString());
                             iPhysicalDevice.DeviceAddedEvent -= IPhysicalDevice_DeviceAddedEvent;
                             iPhysicalDevice.DeviceRemovedEvent -= IPhysicalDevice_DeviceRemovedEvent;
 
@@ -2694,6 +2730,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void IPhysicalDevice_DeviceRemovedEvent(Guid deviceGuid)//(ILogicalDevice iLogicalDevice) // Elie, 25/02/17 R23 changes the interface
         {
+            if (deviceGuid != Guid.Empty)
+            {
+                writelog("ParentPhysicalDevice Removed, Id : " + deviceGuid.ToString());
+            }
             lock (_lock)
             {
                 if (_isClientConnected)
@@ -4173,5 +4213,35 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _deviceHelper.deviceInfo.RemoveAll(x => x.PhysicalDeviceType.Equals(DeviceType.LogicalDock) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWiredDock));
             }
         }
+
+        #region IDisposableObservable Support
+
+        /// <summary>
+        /// To detect redundant calls
+        /// </summary>
+        public bool IsDisposed { get; private set; }
+
+        /// <summary>
+        /// Override for Dispose
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
+        {
+            writelog($"Dispose: {disposing}");
+            if (!IsDisposed)
+            {
+                if (disposing)
+                {
+                    _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
+                    _agent = null;
+
+                }
+
+                IsDisposed = true;
+            }
+            base.Dispose(disposing);
+        }
+
+        #endregion
     }
 }

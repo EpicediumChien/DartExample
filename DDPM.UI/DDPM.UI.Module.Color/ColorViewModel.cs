@@ -66,6 +66,9 @@ namespace DDPM.UI.Module.Color
 
         public DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
 
+        private BackgroundWorker? bw;
+
+        public Guid? guid {  get; set; }
         public IModuleOwner? ModuleOwner { get; set; }
         public ColorModule MyModule { get; set; }
 
@@ -522,11 +525,12 @@ namespace DDPM.UI.Module.Color
 
         public void Invoke_RefreshData()
         {
-            BackgroundWorker bw = new BackgroundWorker()
+            bw = new BackgroundWorker()
             {
-                WorkerReportsProgress = false,
-                WorkerSupportsCancellation = false
+                WorkerReportsProgress = true,
+                WorkerSupportsCancellation = true
             };
+            guid = Guid.NewGuid();
             bw.DoWork += DoWork_RefreshData;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
             Log?.Info("RunWorkerCompleted_RefreshData start...");
@@ -743,6 +747,8 @@ namespace DDPM.UI.Module.Color
         {
             try //2024-06-19 Elie, add try catch to get exception.
             {
+                //Jason 20250314 add
+                BackgroundWorker bwk = (BackgroundWorker)sender;
                 // Jim 20250120 add more log
                 DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] WatchForProcessStart_Stop() called Begin");
                 WatchForProcessStart_Stop();
@@ -769,6 +775,10 @@ namespace DDPM.UI.Module.Color
 
                 // Jim 20250120 add more log
                 DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] UpdateHDRStatus() called Begin");
+                if (Cancelled_RefreshData(e, bwk))
+                {
+                    return;
+                }
                 UpdateHDRStatus();
                 DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] UpdateHDRStatus() called End");
 
@@ -832,12 +842,20 @@ namespace DDPM.UI.Module.Color
                 //Dean 0612 add
                 // Jim 20250120 add more log
                 DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] ReadCurrentColorPreset() called Begin");
-                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
+                if (Cancelled_RefreshData(e, bwk))
+                {
+                    return;
+                }
+                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, (Guid)guid, Priority.High).Result;
                 DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] ReadCurrentColorPreset() called End");
                 string strSync_CurrentColorPreset = string.Empty;
                 //strSync_CurrentColorPreset = Sync_CurrentColorPreset(curPreset);
                 // Jim 20250120 add more log
                 DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] Sync_ColorPresetName() called Begin");
+                if (Cancelled_RefreshData(e, bwk))
+                {
+                    return;
+                }
                 strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
                 DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] Sync_ColorPresetName() called End");
 
@@ -870,11 +888,18 @@ namespace DDPM.UI.Module.Color
 
                 //Jim, 20240819, Fixed for applist increase repeatedly when change a different Monitor.
                 //Test_AddAppCollectionData.GetInstance().AppsList.Clear();
-
+                if (Cancelled_RefreshData(e, bwk))
+                {
+                    return;
+                }
                 List<AppData> tempList = new List<AppData>();
 
                 ColorPresetSettings config = get_cur_monitor_preset_config(MyModule.SelectedHomeDevice.MonitorInfo, DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result);
-
+                
+                if (Cancelled_RefreshData(e, bwk))
+                {
+                    return;
+                }
                 // Add to check if  config setting is null
                 if (config != null)
                 {
@@ -898,12 +923,21 @@ namespace DDPM.UI.Module.Color
 
                     // Jim 20250120 add more log
                     DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] WriteColorPresetSettings() called Begin");
+                    if (Cancelled_RefreshData(e, bwk))
+                    {
+                        return;
+                    }
                     DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
                     DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] WriteColorPresetSettings() called End");
                     Thread.Sleep(100);
 
                     foreach (string key in config.AppInfo.Keys)
                     {
+                        if (Cancelled_RefreshData(e, bwk))
+                        {
+                            return;
+                        }
+
                         ColorPresetSettings_AppInfo value = config.AppInfo[key];
 
                         string strColorPresetName = string.Empty;
@@ -912,6 +946,10 @@ namespace DDPM.UI.Module.Color
                         {
                             // Jim 20250120 add more log
                             DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] SmartHDR_ON = true GetColorPresetName() called Begin");
+                            if (Cancelled_RefreshData(e, bwk))
+                            {
+                                return;
+                            }
                             strColorPresetName = DdpmCommonHelper.DeviceManagerSA.GetColorPresetName(value.HDRColor).Result;
                             DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] SmartHDR_ON = true GetColorPresetName() called End");
                         }
@@ -919,6 +957,10 @@ namespace DDPM.UI.Module.Color
                         {
                             // Jim 20250120 add more log
                             DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] SmartHDR_ON = false GetColorPresetName() called Begin");
+                            if (Cancelled_RefreshData(e, bwk))
+                            {
+                                return;
+                            }
                             strColorPresetName = DdpmCommonHelper.DeviceManagerSA.GetColorPresetName(value.Color).Result;
                             DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] SmartHDR_ON = false GetColorPresetName() called End");
                         }
@@ -930,6 +972,10 @@ namespace DDPM.UI.Module.Color
                         {
                             // Jim 20250120 add more log
                             DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] Sync_ColorPresetName() called Begin");
+                            if (Cancelled_RefreshData(e, bwk))
+                            {
+                                return;
+                            }
                             strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, strColorPresetName).Result;
                             DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] Sync_ColorPresetName() called End");
                         }
@@ -949,6 +995,10 @@ namespace DDPM.UI.Module.Color
                         if (pIdx <= 0)
                             pIdx = 0;
 
+                        if (Cancelled_RefreshData(e, bwk))
+                        {
+                            return;
+                        }
                         if ((key.Trim() == "Desktop Application" || key.Trim() == "UWP Application"))
                         {
                             //Test_AddAppCollectionData.GetInstance().AppsList.Add(new AppData
@@ -999,9 +1049,17 @@ namespace DDPM.UI.Module.Color
 
                     // Jim 20250120 add more log
                     DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] DownloadICCData() called Begin");
+                    if (Cancelled_RefreshData(e, bwk))
+                    {
+                        return;
+                    }
                     _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, true).Result;
                     DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] DownloadICCData() called End");
 
+                    if (Cancelled_RefreshData(e, bwk))
+                    {
+                        return;
+                    }
                     MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                     {
                         update_ui_over_runtype(config);
@@ -1018,6 +1076,10 @@ namespace DDPM.UI.Module.Color
 
                     //Read user default lock value, these values are synced from IT lock event          
                     Trace.WriteLine($"[SettingsPage] Color right page(Lock) : {data.LockSettings.Lock_Display_ColorPreset}");
+                }
+                if (Cancelled_RefreshData(e, bwk))
+                {
+                    return;
                 }
 
                 // Update UI
@@ -1105,8 +1167,9 @@ namespace DDPM.UI.Module.Color
                 //Read user default lock value, these values are synced from IT lock event          
                 //Trace.WriteLine($"[SettingsPage] Color right page(Lock) : {data.LockSettings.Lock_Display_ColorPreset}"); 
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
+                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] exception " + ex.ToString());
             }
         }
 
@@ -1124,8 +1187,31 @@ namespace DDPM.UI.Module.Color
                     RefreshUI();
                 }));
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
+                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] exception " + ex.ToString());
+            }
+        }
+
+        private bool Cancelled_RefreshData(DoWorkEventArgs e, BackgroundWorker bw)
+        {
+            if (bw.CancellationPending)
+            {
+                Debug.WriteLine("[InputSource] Cancelled_RefreshData.");
+                _log.Info("[InputSource] Cancelled_RefreshData.");
+                e.Cancel = true;
+                return true;
+            }
+            return false;
+        }
+
+        public void CallCancel()
+        {
+            if (bw.IsBusy)
+            {
+                _log.Info("[InputSource] CallCancel.");
+                bw.CancelAsync();
+                DdpmCommonHelper.DeviceManagerSA.CancelVcpTask((Guid)guid);
             }
         }
 

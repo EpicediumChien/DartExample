@@ -2403,7 +2403,7 @@ namespace DDPM.CLI.Plugins.Display.Test
             devMgr.Setup(m => m.GetInputSourcelist(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(inputList));
             devMgr.Setup(m => m.GetDisplayPropertiesInfo(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(displayPropertiesInfo));
             devMgr.Setup(m => m.GetOSDOrientation(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(GetOSDOrientation));
-            devMgr.Setup(m => m.ReadCurrentColorPreset(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(ReadCurrentColorPreset));
+            devMgr.Setup(m => m.ReadCurrentColorPreset(It.IsAny<MonitorInfo>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(ReadCurrentColorPreset));
             devMgr.Setup(m => m.WriteColorPreset(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(Task.FromResult(WriteColorPreset));
             devMgr.Setup(m => m.GetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<int>())).Returns(Task.FromResult(aLSConfig));
             devMgr.Setup(m => m.GetMonitorProfile(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(MonitorProfile));

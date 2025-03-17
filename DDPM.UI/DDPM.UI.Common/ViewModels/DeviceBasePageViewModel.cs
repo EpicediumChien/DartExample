@@ -10,6 +10,7 @@ using DDPM.UI.Common.UserControls;
 using DDPM.UI.Interfaces;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -31,7 +32,8 @@ namespace DDPM.UI.Common.ViewModels
                 // move to new position
                 _console.RegisterForEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, Handle_MainWindow_MoveToNewPosition);
             }
-
+            DdpmCommonHelper.BitmapImageUpdated -= OnVBarThemeChange;
+            DdpmCommonHelper.BitmapImageUpdated += OnVBarThemeChange;
         }
         #endregion ctor
 
@@ -174,6 +176,10 @@ namespace DDPM.UI.Common.ViewModels
 
         private void RebuildVbarItems()
         {
+            // Vbar animation dark\light mode
+            DdpmCommonHelper.BitmapImageUpdated -= OnVBarThemeChange;
+            DdpmCommonHelper.BitmapImageUpdated += OnVBarThemeChange;
+
             _vbarItems.Clear();
 
             int idx = 0;
@@ -1142,5 +1148,17 @@ namespace DDPM.UI.Common.ViewModels
         }
         #endregion  MainWindow Move To new position
 
+        private void OnVBarThemeChange(OSThemeEnum oSThemeEnum)
+        {
+            foreach (var vbar in _vbarItems)
+            {
+                vbar.OnThemeChangeRefresh();
+            }
+        }
+
+        public void UnloadEvents()
+        {
+            DdpmCommonHelper.BitmapImageUpdated -= OnVBarThemeChange;
+        }
     }
 }

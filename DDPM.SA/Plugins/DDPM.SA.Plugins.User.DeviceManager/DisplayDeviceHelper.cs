@@ -136,6 +136,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //
                         if (File.Exists(exportpath))
                         {
+                            WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Checked exported file exists!");
                             DDPMImpExpSettings dDPMImpExpSettings = new DDPMImpExpSettings();
                             dDPMImpExpSettings = settingsManager.ReadImportSettingsFile(exportpath).Result;
                             if (dDPMImpExpSettings != null)
@@ -143,6 +144,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (dDPMImpExpSettings.MonitorSettings != null
                                     && dDPMImpExpSettings.MonitorSettings.ServiceTag != serviceTag)
                                 {
+                                    WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Checked import monitor serviceTag is different.");
                                     if (isSameModelFlag)
                                     {
                                         DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
@@ -157,6 +159,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     }
                                     else
                                     {
+                                        WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] isSameModelFlag is false.");
                                         desc = desc.Replace("%1", model);
                                         DisplayImportToast(
                                             new DisplayWindowsToast()

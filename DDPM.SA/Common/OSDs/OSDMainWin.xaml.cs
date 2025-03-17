@@ -47,7 +47,13 @@ namespace DDPM.OSDs
         {
             OSDWinInfo? target = OSDWins.FirstOrDefault(x => x.GUID.Equals(guid));
             if (null != target)
+            {
                 OSDWins.Remove(target);
+            }
+            if (OSDWins.Count == 0)
+            {
+                CloseWindow();
+            }
         }
 
         public OSDMainWin()
@@ -77,6 +83,23 @@ namespace DDPM.OSDs
             {
                 Dispatcher.Invoke(() => OSDWins.Add(oSDWinInfo));
                 return;
+            }
+        }
+
+        public void CloseWindow()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(CloseWindow);
+                return;
+            }
+            Close();
+        }
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
             }
         }
     }

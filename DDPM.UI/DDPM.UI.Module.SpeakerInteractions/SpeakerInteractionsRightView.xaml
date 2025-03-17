@@ -148,7 +148,7 @@
                                                 <Border x:Name="ZoomButtonBorder"  BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <UXControls:UXTextBlock x:Name="ZoomButtonBorderTxt" Text="{Binding [SpeakerInteractions.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock x:Name="ZoomButtonBorderTxt" Text="Zoom" FontSize="14" TextAlignment="Center" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>

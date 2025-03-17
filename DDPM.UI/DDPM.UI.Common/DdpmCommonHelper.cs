@@ -17,9 +17,11 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using VcpCore.Common;
+using Windows.Devices.Geolocation;
 using Windows.Devices.PointOfService;
 using static DDPM.UI.Common.Views.DDPMMsgBox;
 using Application = System.Windows.Application;
@@ -1684,6 +1686,86 @@ namespace DDPM.UI.Common
                 return null;
             }
             return obj;
+        }
+
+        public static void WriteRegistryData(RegistryHive hive, string regPath, string regKey, object data)
+        {
+            _ = Task.Run(() =>
+            {
+                try
+                {
+                    bool result = false;
+                    if (DeviceManagerSA != null)
+                    {
+                        result = DeviceManagerSA.WriteRegistryData(hive, regPath, regKey, data).Result;
+                        WriteUILog($"[WriteRegistryData] write to ({regPath}): ({result})");
+                    }
+                    else
+                    {
+                        WriteUILog($"[WriteRegistryData] write to ({regPath}): DeviceManagerSA is null");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    WriteUILog($"[WriteRegistryData] over DeviceManager exception: ({ex.ToString()})");
+                }
+            });
+        }
+
+        public enum GlobalSettingsType
+        {
+            Consent,
+            BatteryLevel,
+            KeyboardLockKey,
+            WB7022CoverState,
+            MuteState,
+            DisplayCPAndEM,
+            EnableQAW,
+            EnableQAWReminder
+        }
+
+        public static void Set_GlobalSettings(GlobalSettingsType property, bool data)
+        {
+            if(DeviceManagerSA == null)
+            {
+                WriteUILog($"[Set_GlobalSettings] DeviceManagerSA is null");
+                return;
+            }
+            _ = Task.Run(() =>
+            {
+                bool result = false;
+                switch (property)
+                {
+                    case GlobalSettingsType.Consent:
+                        result = DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(data).Result;
+                        break;
+                    case GlobalSettingsType.BatteryLevel:
+                        result = DeviceManagerSA.Set_GlobalSetting_DisplayLowBatteryLevel(data).Result;
+                        break;
+                    case GlobalSettingsType.KeyboardLockKey:
+                        result = DeviceManagerSA.Set_GlobalSetting_DisplayKeyboardLockKey(data).Result;
+                        break;
+                    case GlobalSettingsType.WB7022CoverState:
+                        result = DeviceManagerSA.Set_GlobalSetting_DisplayWB7022CoverState(data).Result;
+                        break;
+                    case GlobalSettingsType.MuteState:
+                        result = DeviceManagerSA.Set_GlobalSetting_DisplayMuteState(data).Result;
+                        break;
+                    case GlobalSettingsType.DisplayCPAndEM:
+                        result = DeviceManagerSA.Set_GlobalSetting_DisplayColorPresetAndEasyMemory(data).Result;
+                        break;
+                    case GlobalSettingsType.EnableQAW:
+                        result = DeviceManagerSA.Set_GlobalSetting_EnableQuickAccessWidget(data).Result;
+                        break;
+                    case GlobalSettingsType.EnableQAWReminder:
+                        result = DeviceManagerSA.Set_GlobalSetting_EnableQuickAccessWidget_Reminder(data).Result;
+                        break;
+                    default:
+                        WriteUILog($"[Set_GlobalSettings] unknow setting type in global settings from UI ({nameof(property)})");
+                        return;
+                }
+                WriteUILog($"[Set_GlobalSettings] set ({nameof(property)}) to {data}: result({result})");
+            });
         }
     }
 

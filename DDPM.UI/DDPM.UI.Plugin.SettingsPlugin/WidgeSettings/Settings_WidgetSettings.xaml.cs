@@ -34,14 +34,16 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private void EnableQuickAccessWidget_Click(object sender, RoutedEventArgs e)
         {
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
-            DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableQuickAccessWidget(vm.GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget);
+            //DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableQuickAccessWidget(vm.GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget);
+            DdpmCommonHelper.Set_GlobalSettings(DdpmCommonHelper.GlobalSettingsType.EnableQAW, vm.GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget);
             vm.RefreshUI();
         }
 
         private void QuickAccessWidget_Reminder_Click(object sender, RoutedEventArgs e)
         {
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
-            DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableQuickAccessWidget_Reminder(vm.GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder);
+            //DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableQuickAccessWidget_Reminder(vm.GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder);
+            DdpmCommonHelper.Set_GlobalSettings(DdpmCommonHelper.GlobalSettingsType.EnableQAWReminder, vm.GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder);
             vm.RefreshUI();
         }
 

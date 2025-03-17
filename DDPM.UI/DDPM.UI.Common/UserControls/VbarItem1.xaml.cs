@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Dell.Client.Framework.UX.WPF.Controls;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -23,9 +24,8 @@ namespace DDPM.UI.Common.UserControls
             //DataContext = this;
         }
 
-        public VbarItem1(int id, ImageSource icon, string text, Canvas? iconCanvas = null)
+        public VbarItem1(int id, ImageSource icon, string text, Canvas? iconCanvas = null) : this()
         {
-            InitializeComponent();
             vm.Id = id;
             vm.Icon = icon;
             this.Text = text;
@@ -339,5 +339,51 @@ namespace DDPM.UI.Common.UserControls
             this.IsLandingMode = isLandingMode;
         }
         #endregion
+
+        public void OnThemeChangeRefresh()
+        {
+            var groups = VisualStateManager.GetVisualStateGroups(rootGrid);
+            #region Change Theme for vbar border
+            foreach (VisualStateGroup group in groups)
+            {
+                foreach (VisualState state in group.States)
+                {
+                    if (state.Name == "LandingHover" || state.Name == "Hover")
+                    {
+                        if (state.Storyboard != null)
+                        {
+                            ColorAnimation colorAnimation = new ColorAnimation()
+                            {
+                                To = (System.Windows.Media.Color)System.Windows.Application.Current.Resources["Vbar_BdColor_Hover"], // Change to new color
+                                Duration = new Duration(TimeSpan.FromSeconds(0.3)) // Change duration
+                            };
+                            // Find the ColorAnimation in the Storyboard
+                            state.Storyboard = new Storyboard();
+                            Storyboard.SetTarget(colorAnimation, bdOuter);
+                            Storyboard.SetTargetProperty(colorAnimation, new PropertyPath("BorderBrush.(SolidColorBrush.Color)"));
+
+                            // Add the animation to the Storyboard
+                            state.Storyboard.Children.Add(colorAnimation);
+
+                            if (state.Name == "Hover")
+                            {
+                                DoubleAnimation doubleAnimation = new DoubleAnimation()
+                                {
+                                    To = 212, // Change to new color
+                                    Duration = new Duration(TimeSpan.FromSeconds(0.5)), // Change duration
+                                    FillBehavior = FillBehavior.HoldEnd
+                                };
+                                Storyboard.SetTarget(doubleAnimation, bdOuter);
+                                Storyboard.SetTargetProperty(doubleAnimation, new PropertyPath("Width"));
+
+                                // Add the animation to the Storyboard
+                                state.Storyboard.Children.Add(doubleAnimation);
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+        }
     }
 }

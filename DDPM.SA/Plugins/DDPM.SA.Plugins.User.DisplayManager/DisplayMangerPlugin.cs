@@ -177,6 +177,34 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         #endregion
 
+        #region IDisposableObservable Support
+
+        /// <summary>
+        /// To detect redundant calls
+        /// </summary>
+        public bool IsDisposed { get; private set; }
+
+        /// <summary>
+        /// Override for Dispose
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
+        {
+            if (!IsDisposed)
+            {
+                if (disposing)
+                {
+                    _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
+                    _agent = null;
+                }
+
+                IsDisposed = true;
+            }
+            base.Dispose(disposing);
+        }
+
+        #endregion
+
         #region Overriding methods
 
         protected override void OnPluginStarting()
@@ -1245,7 +1273,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         }
 
         public Task<bool> SetAllUSBUpstream(MonitorInfo monitorInfo, string input1, string usb1, string input2, string usb2,
-                                                                    string input3 = "", string usb3 = "", string input4 = "", string usb4 = "")
+                                                                     string input3, string usb3, string input4, string usb4)
         {
             int input_num = 0;
             ObjGetVCP objGetVCP = new ObjGetVCP();
@@ -1464,27 +1492,26 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<bool> isScreenPartition(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
         {
             ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, 0xF2, guid, priority: priority).Result;
-            if (objGetVCP != null && objGetVCP.result)
+            if (objGetVCP != null && 
+                objGetVCP.result && 
+                (uint)objGetVCP.value != 0)
             {
-                if ((uint)objGetVCP.value != 0)
+                string strSP = Convert.ToString((uint)objGetVCP.value, 2);
+                string strSP_16 = strSP;
+                //add 16 to string
+                if (strSP.Length < 16)
                 {
-                    string strSP = Convert.ToString((uint)objGetVCP.value, 2);
-                    string strSP_16 = strSP;
-                    //add 16 to string
-                    if (strSP.Length < 16)
+                    for (int i = 0; i < (16 - strSP.Length); i++)
                     {
-                        for (int i = 0; i < (16 - strSP.Length); i++)
-                        {
-                            strSP_16 = "0" + strSP_16;
-                        }
+                        strSP_16 = "0" + strSP_16;
                     }
-                    _logs.DebugMsg("[DisplayMangerPlugin][isScreenPartition] strSP_16 : " + strSP_16);
-                    //find 8
-                    if (strSP_16.Length == 16 &&
-                        strSP_16.Substring(7, 1) == "1")
-                    {
-                        return Task.FromResult(true);
-                    }
+                }
+                _logs.DebugMsg("[DisplayMangerPlugin][isScreenPartition] strSP_16 : " + strSP_16);
+                //find 8
+                if (strSP_16.Length == 16 &&
+                    strSP_16.Substring(7, 1) == "1")
+                {
+                    return Task.FromResult(true);
                 }
             }
             return Task.FromResult(false);
@@ -3145,34 +3172,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         #endregion
 
-        #region IDisposableObservable Support
-
-        /// <summary>
-        /// To detect redundant calls
-        /// </summary>
-        public bool IsDisposed { get; private set; }
-
-        /// <summary>
-        /// Override for Dispose
-        /// </summary>
-        /// <param name="disposing"></param>
-        protected override void Dispose(bool disposing)
-        {
-            if (!IsDisposed)
-            {
-                if (disposing)
-                {
-                    _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
-                    _agent = null;
-                }
-
-                IsDisposed = true;
-            }
-            base.Dispose(disposing);
-        }
-
-        #endregion
-
         #region Event Handler
 
         private void OnVcpCorePluginConditionChangeHandler(object sender, EventArgs e)
@@ -3236,12 +3235,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             _logs.DebugMsg("[DisplayMangerPlugin] GetDisplayPropertiesInfo start");
             DisplayPropertiesInfo ret_DisplayPropertiesInfo = new DisplayPropertiesInfo();
-            if (_displayDataManger != null)
+            if (_displayDataManger != null && 
+                _displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out ret_DisplayPropertiesInfo))
             {
-                if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out ret_DisplayPropertiesInfo))
-                {
-                    return Task.FromResult(ret_DisplayPropertiesInfo);
-                }
+                return Task.FromResult(ret_DisplayPropertiesInfo);
             }
             string setParam = "USB-C Prioritization";
             string capabilityString = monitorInfos.CapabilityString;
@@ -3255,13 +3252,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (supportedHDR)
             {
                 int count = 0;
-                ObjGetVCP ObjGetVCP;
+                ObjGetVCP ObjGetVCP = null;
                 do
                 {
+                    if (IsDisposed)
+                    {
+                        _logs?.DebugMsg_1($"GetDisplayPropertiesInfo IsDisposed");
+                        break;
+                    }
                     ObjGetVCP = GetVCPCapability(monitorInfos, 0xE2).Result;
                     count++;
                 } while (ObjGetVCP.result != true && count < 3);
-                if (ObjGetVCP.result == true)
+                if (ObjGetVCP != null && ObjGetVCP.result == true)
                 {
                     uint[] stand = new uint[] { 0x25, 0x23, 0x24, 0x26, 0x27, 0x3A, 0x3B, 0x3C };
                     foreach (uint hdrType in stand)
@@ -3324,13 +3326,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 if (supportedUSBC)
                 {
                     int count = 0;
-                    ObjGetVCP ObjGetVCP;
+                    ObjGetVCP ObjGetVCP = null;
                     do
                     {
+                        if (IsDisposed)
+                        {
+                            _logs?.DebugMsg_1($"GetCurrentDisplayProperties IsDisposed");
+                            break;
+                        }
                         ObjGetVCP = GetVCPCapability(monitorInfo, setParam).Result;
                         count++;
                     } while (ObjGetVCP.result != true && count < 3);
-                    if (ObjGetVCP.result == true)
+                    if (ObjGetVCP != null && ObjGetVCP.result == true)
                     {
                         PrioritizationType = ObjGetVCP.value.ToString() == "High Data Speed" ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
                         _logs.DebugMsg($"[DisplayMangerPlugin] GetCurrentDisplayProperties PrioritizationType:{PrioritizationType}");
@@ -3357,40 +3364,36 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetDisplayPropertiest go");
                 ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation).Result;
                 isSWSetOrientation = false;
-                if (ret)
+                if (ret && 
+                    _displayDataManger != null && 
+                    _displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
                 {
-                    if (_displayDataManger != null)
+                    bool cleanCurrentFlae = false, setCurrentFlae = false;
+                    if (ret_DisplayPropertiesInfo.CurrentOrientation != orientation)
                     {
-                        if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
+                        ret_DisplayPropertiesInfo.CurrentOrientation = orientation;
+                        ret_DisplayPropertiesInfo.SupportedProperties = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfos).Result.SupportedProperties;
+                    }
+                    else
+                    {
+                        foreach (Properties tempProperties in ret_DisplayPropertiesInfo.SupportedProperties.Properties)
                         {
-                            bool cleanCurrentFlae = false, setCurrentFlae = false;
-                            if (ret_DisplayPropertiesInfo.CurrentOrientation != orientation)
+                            if (tempProperties.isCurrent && !cleanCurrentFlae)
                             {
-                                ret_DisplayPropertiesInfo.CurrentOrientation = orientation;
-                                ret_DisplayPropertiesInfo.SupportedProperties = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfos).Result.SupportedProperties;
+                                tempProperties.isCurrent = false;
+                                cleanCurrentFlae = true;
                             }
-                            else
+                            if (tempProperties.Resolutions_Width == properties.Resolutions_Width &&
+                                tempProperties.Resolutions_High == properties.Resolutions_High &&
+                                tempProperties.Frequency == properties.Frequency &&
+                                !setCurrentFlae)
                             {
-                                foreach (Properties tempProperties in ret_DisplayPropertiesInfo.SupportedProperties.Properties)
-                                {
-                                    if (tempProperties.isCurrent && !cleanCurrentFlae)
-                                    {
-                                        tempProperties.isCurrent = false;
-                                        cleanCurrentFlae = true;
-                                    }
-                                    if (tempProperties.Resolutions_Width == properties.Resolutions_Width &&
-                                        tempProperties.Resolutions_High == properties.Resolutions_High &&
-                                        tempProperties.Frequency == properties.Frequency &&
-                                        !setCurrentFlae)
-                                    {
-                                        tempProperties.isCurrent = true;
-                                        setCurrentFlae = true;
-                                    }
-                                    if (cleanCurrentFlae && setCurrentFlae)
-                                    {
-                                        break;
-                                    }
-                                }
+                                tempProperties.isCurrent = true;
+                                setCurrentFlae = true;
+                            }
+                            if (cleanCurrentFlae && setCurrentFlae)
+                            {
+                                break;
                             }
                         }
                     }
@@ -3411,33 +3414,29 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 isSWSetOrientation = true;
                 ret = _DisplayPropertiesPlugin.SetResolutions(monitorInfos.DisplayName, properties).Result;
                 isSWSetOrientation = false;
-                if (ret)
+                if (ret && 
+                    _displayDataManger != null && 
+                    _displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
                 {
-                    if (_displayDataManger != null)
+                    bool cleanCurrentFlae = false, setCurrentFlae = false;
+                    foreach (Properties tempProperties in ret_DisplayPropertiesInfo.SupportedProperties.Properties)
                     {
-                        if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
+                        if (tempProperties.isCurrent && !cleanCurrentFlae)
                         {
-                            bool cleanCurrentFlae = false, setCurrentFlae = false;
-                            foreach (Properties tempProperties in ret_DisplayPropertiesInfo.SupportedProperties.Properties)
-                            {
-                                if (tempProperties.isCurrent && !cleanCurrentFlae)
-                                {
-                                    tempProperties.isCurrent = false;
-                                    cleanCurrentFlae = true;
-                                }
-                                if (tempProperties.Resolutions_Width == properties.Resolutions_Width &&
-                                    tempProperties.Resolutions_High == properties.Resolutions_High &&
-                                    tempProperties.Frequency == properties.Frequency &&
-                                    !setCurrentFlae)
-                                {
-                                    tempProperties.isCurrent = true;
-                                    setCurrentFlae = true;
-                                }
-                                if (cleanCurrentFlae && setCurrentFlae)
-                                {
-                                    break;
-                                }
-                            }
+                            tempProperties.isCurrent = false;
+                            cleanCurrentFlae = true;
+                        }
+                        if (tempProperties.Resolutions_Width == properties.Resolutions_Width &&
+                            tempProperties.Resolutions_High == properties.Resolutions_High &&
+                            tempProperties.Frequency == properties.Frequency &&
+                            !setCurrentFlae)
+                        {
+                            tempProperties.isCurrent = true;
+                            setCurrentFlae = true;
+                        }
+                        if (cleanCurrentFlae && setCurrentFlae)
+                        {
+                            break;
                         }
                     }
                 }
@@ -3458,19 +3457,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 ret = _DisplayPropertiesPlugin.SetOrientation_New(monitorInfos.DisplayName, orientation).Result;
                 //ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
                 isSWSetOrientation = false;
-                if (ret)
+                if (ret && 
+                    _displayDataManger != null)
                 {
-                    if (_displayDataManger != null)
+                    _displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo);
+                    if (ret_DisplayPropertiesInfo != null &&
+                        ret_DisplayPropertiesInfo.SupportedProperties != null &&
+                        ret_DisplayPropertiesInfo.SupportedProperties.Properties != null &&
+                        ret_DisplayPropertiesInfo.SupportedProperties.Properties.Count > 0)
                     {
-                        _displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo);
-                        if (ret_DisplayPropertiesInfo != null &&
-                            ret_DisplayPropertiesInfo.SupportedProperties != null &&
-                            ret_DisplayPropertiesInfo.SupportedProperties.Properties != null &&
-                            ret_DisplayPropertiesInfo.SupportedProperties.Properties.Count > 0)
-                        {
-                            ret_DisplayPropertiesInfo.CurrentOrientation = orientation;
-                            ret_DisplayPropertiesInfo.SupportedProperties = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfos).Result.SupportedProperties;
-                        }
+                        ret_DisplayPropertiesInfo.CurrentOrientation = orientation;
+                        ret_DisplayPropertiesInfo.SupportedProperties = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfos).Result.SupportedProperties;
                     }
                 }
             }
@@ -3568,15 +3565,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
                 count++;
             } while (ret == false && count < 10);
-            if (ret)
+            if (ret && 
+                _displayDataManger != null && 
+                _displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
             {
-                if (_displayDataManger != null)
-                {
-                    if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
-                    {
-                        ret_DisplayPropertiesInfo.isHDREnable = onoff;
-                    }
-                }
+                ret_DisplayPropertiesInfo.isHDREnable = onoff;
             }
             _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetHDRStatus done ret : {ret}");
             _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus done");

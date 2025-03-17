@@ -241,12 +241,13 @@ namespace DDPM.CLI.Plugins.Display
                 return result;
             }
 
-            if (commandLineInput.Options.Count > 0)
+            if (commandLineInput.Options.Count > 0 && 
+                commandLineInput.Options[0].Option_Value.Equals("Display", StringComparison.OrdinalIgnoreCase) && 
+                !input_param_validation(devMgr, commandLineInput, ref result))
             {
-                if (commandLineInput.Options[0].Option_Value.Equals("Display", StringComparison.OrdinalIgnoreCase) && !input_param_validation(devMgr, commandLineInput, ref result))
-                    return result;
+                return result;
             }
-            
+
             switch (commandLineInput.TargetFeature)
             {
                 case "CONNECTEDDEVICES":
@@ -12159,236 +12160,471 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private async Task<(int code, string result)> PowerSetting(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        private (bool code, string result) SetPower(IDeviceManagerSA devMgr, MonitorInfo monitor, CommandLineInput commandLineInput)
         {
             string output = string.Empty;
             bool retcode = false;
             int somethingfail = 0;
-            ObjGetVCP rc = new ObjGetVCP();
+            //ObjGetVCP rc = new ObjGetVCP();
 
-            List<int> _monitorIndeies = new List<int>();
+            //List<int> _monitorIndeies = new List<int>();
 
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = devMgr.GetMonitors().Result;
-            _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+            //if (_AllInfoMonitors == null)
+            //    _AllInfoMonitors = devMgr.GetMonitors().Result;
+            //_monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
-            foreach (int idx in _monitorIndeies)
+            //foreach (int idx in _monitorIndeies)
+            //{
+            //    writelog($"PowerSetting entry");
+            //    MonitorInfo monitor = _AllInfoMonitors[idx];
+            if (monitor != null)
             {
-                writelog($"PowerSetting entry");
-                MonitorInfo monitor = _AllInfoMonitors[idx];
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE(monitor);
-                cli_Response.Command = commandLineInput.Command;
-                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                //CLI_RESPONSE cli_Response = new CLI_RESPONSE(monitor);
+                //cli_Response.Command = commandLineInput.Command;
+                //cli_Response.TargetFeature = commandLineInput.TargetFeature;
 
                 string capability = monitor.CapabilityString;
-                if (capability.Contains("E0("))
+                if (capability.Contains("D6("))
                 {
-                    if (commandLineInput.Command == "SET")
-                    {
-                        writelog($"PowerSetting set entry");
-                        string[] ss = capability.Split("E0(");
-                        ss = ss[1].Split(")");
-                        ss = ss[0].Split(" ");
-                        if (ss[0] == "03" || ss[0] == "0F")
-                        {
-                            if (get_PowerSetting_code(commandLineInput.Options[0].Option_Value) != "unknown_command")
-                            {
-                                rc = GetVCPCode(devMgr, monitor, "0xE0").Result;
-                                string setvalue = (int.Parse(get_PowerSetting_code(commandLineInput.Options[0].Option_Value)) | (int.Parse(rc.value.ToString()) & 0x0c)).ToString();
-                                //Trace.WriteLine(setvalue.ToString());
-                                retcode = SetVCPCode(devMgr, monitor, "0xE0", setvalue).Result;
-                                cli_Response.Value = commandLineInput.Options[0].Option_Value;
-                            }
-                            else
-                                somethingfail |= 0x01;
-                        }
-                    }
-                    else if (commandLineInput.Command == "GET")
-                    {
-                        writelog($"PowerSetting get entry");
-                        retcode = true;
-                        cli_Response.Result = "PASS";
-                        cli_Response.Message = "N/A";
-                        rc = GetVCPCode(devMgr, monitor, "0xE0").Result;
-                        if ((Convert.ToInt32(rc.value) & 0x03) == 0x00)
-                            cli_Response.Value = "ON";
-                        else if ((Convert.ToInt32(rc.value) & 0x03) == 0x01)
-                            cli_Response.Value = "OFF";
-                        else if ((Convert.ToInt32(rc.value) & 0x03) == 0x02)
-                            cli_Response.Value = "STANDBY";
-                    }
-                }
-                else if (capability.Contains("E0"))
-                {
-                    if (commandLineInput.Command == "SET")
+                    writelog($"PowerSetting set entry");
+                    string[] ss = capability.Split("D6(");
+                    ss = ss[1].Split(")");
+                    ss = ss[0].Split(" ");
+                    Trace.WriteLine($"ss[0]:{ss[0]}, ss[1]:{ss[1]}, ss[2]:{ss[2]}");
+                    if (ss[0] == "01" && ss[1] == "04" && ss[2] == "05")
                     {
                         switch (commandLineInput.Options[0].Option_Value.ToUpper())
                         {
                             case "OFF":
-                                writelog($"PowerSetting E0 set off");
-                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x01").Result || SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
-                                cli_Response.Value = commandLineInput.Options[0].Option_Value;
-                                break;
+                                writelog($"PowerSetting D6 set off");
+                                retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x05").Result;
+                                if (!retcode)
+                                    output = "Set Power state fail";
+                                //cLI_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                                return (retcode, output);
 
                             case "ON":
-                                writelog($"PowerSetting E0 set on");
-                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result || SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
-                                cli_Response.Value = commandLineInput.Options[0].Option_Value;
-                                break;
+                                writelog($"PowerSetting D6 set on");
+                                retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x01").Result;
+                                if (!retcode)
+                                    output = "Set Power state fail";
+                                //cLI_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                                return (retcode, output);
 
                             case "STANDBY":
-                                writelog($"PowerSetting E0 set standby");
-                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result || SetVCPCode(devMgr, monitor, "0xE1", "0x01").Result);
-                                cli_Response.Value = commandLineInput.Options[0].Option_Value;
-                                break;
+                                writelog($"PowerSetting D6 set standby");
+                                retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x04").Result;
+                                if (!retcode)
+                                    output = "Set Power state fail";
+                                //cLI_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                                return (retcode, output);
+                            default:
+                                retcode = false;
+                                output = "Invalid command line syntax";
+                                return (retcode, output);
+                                //cLI_RESPONSE.Command = commandLineInput.Command;
+                                //cLI_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                                //cLI_RESPONSE.Result = "FAIL";
+                                //cLI_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
                         }
+                        //if (retcode == true)
+                        //{
+                        //    Console.WriteLine($"Anf_reget monitor info");
+                        //    Sleep(5000);
+                        //    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                        //}
                     }
-                    else if (commandLineInput.Command == "GET")
-                    {
-                        writelog($"PowerSetting E0 get");
-                        retcode = true;
-                        rc = GetVCPCode(devMgr, monitor, "0xE0").Result;
-                        int getcode_e0 = Convert.ToInt32(rc.value);
-                        rc = GetVCPCode(devMgr, monitor, "0xE1").Result;
-                        int getcode_e1 = Convert.ToInt32(rc.value);
-
-                        if ((getcode_e0 == 0x00) && (getcode_e1 == 0x00))
-                            cli_Response.Value = "ON";
-                        else if ((getcode_e0 == 0x01) && (getcode_e1 == 0x00))
-                            cli_Response.Value = "OFF";
-                        else if ((getcode_e0 == 0x00) && (getcode_e1 == 0x01))
-                            cli_Response.Value = "STANDBY";
-                    }
-                }
-                else
-                    somethingfail |= 0x10;
-
-                if (retcode)
-                {
-                    cli_Response.Result = "PASS";
-                    cli_Response.Message = "N/A";
-                }
-                else
-                {
-                    cli_Response.Result = "FAIL";
-                    if ((somethingfail & 0x01) == 0x01)
-                        cli_Response.Message = $"Unknown value ({commandLineInput.Options[0].Option_Value})";
-                    else if ((somethingfail & 0x10) == 0x10)
-                        cli_Response.Message = $"No Support {commandLineInput.TargetFeature}";
                     else
-                        cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
+                    {
+                        retcode = false;
+                        output = "PowerSetting command not support";
+                        return (retcode, output);
+                    }
                 }
-                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                else
+                {
+                    retcode = false;
+                    output = "PowerSetting command not support";
+                    return (retcode, output);
+                }
             }
-            writelog($"PowerSetting exit return value{output}");
-            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+            else
+            {
+                retcode = false;
+                output = "No Monitor found";
+                return (retcode, output);
+            }              
+        }
+        private bool _display_changed = false;
+        private void DevMgr_Displaychanged(object sender, DisplaychangedEventArgs e)
+        {
+            //do things while you get the new all monitors list
+            _AllInfoMonitors = e.monitors;
+            //finally change flag to leave while loop
+            _display_changed = true;
         }
         private async Task<(int code, string result)> PowerSettingv2(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             string output = string.Empty;
             bool retcode = false;
             int somethingfail = 0;
+            int monitorcount = 0;
             ObjGetVCP rc = new ObjGetVCP();
 
             List<int> _monitorIndeies = new List<int>();
 
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = devMgr.GetMonitors().Result;
+            monitorcount = _AllInfoMonitors.Count;
             _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
-
-            foreach (int idx in _monitorIndeies)
+            int ret = 0;
+            if (commandLineInput.Command == "SET")
             {
-                writelog($"PowerSetting entry");
-                MonitorInfo monitor = _AllInfoMonitors[idx];
-                CLI_RESPONSE cli_Response = new CLI_RESPONSE(monitor);
-                cli_Response.Command = commandLineInput.Command;
-                cli_Response.TargetFeature = commandLineInput.TargetFeature;
-
-                string capability = monitor.CapabilityString;
-                if (capability.Contains("D6("))
+                //if (commandLineInput.DeviceIndex.Count <= 0 && commandLineInput.ServiceTag.Count <= 0 && commandLineInput.Model.Count <= 0)
+                if(_monitorIndeies.Count > 1)
                 {
-                    if (commandLineInput.Command == "SET")
+                    bool flag = true;
+                    var serviceTagList = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).Distinct().ToList();
+                    
+                    List<string> swapIsDone = new List<string>();
+                    int count = 0;
+                    while (flag && count < 1000)
                     {
-                        writelog($"PowerSetting set entry");
-                        string[] ss = capability.Split("D6(");
-                        ss = ss[1].Split(")");
-                        ss = ss[0].Split(" ");
-                        Trace.WriteLine($"ss[0]:{ss[0]}, ss[1]:{ss[1]}, ss[2]:{ss[2]}");
-                        if (ss[0] == "01" && ss[1] == "04" && ss[2] == "05")
+                        for (int i = 0; i < serviceTagList.Count; i++)
                         {
-                            switch (commandLineInput.Options[0].Option_Value.ToUpper())
+                            string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
+                            if (!String.IsNullOrWhiteSpace(stIsDone))
+                                continue;
+                            MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
+                            if (mo == null)
                             {
-                                case "OFF":
-                                    writelog($"PowerSetting D6 set off");
-                                    retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x05").Result;
-                                    cli_Response.Value = commandLineInput.Options[0].Option_Value;
-                                    break;
+                                Thread.Sleep(5000);
+                                _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                                Console.WriteLine($"Anf_New Monitor count {_AllInfoMonitors.Count}");
+                                break;
+                            }
+                            //var result = SetPower(devMgr, mo, commandLineInput);
+                            CLI_RESPONSE cLI_RESPONSE = new CLI_RESPONSE(mo);
+                            cLI_RESPONSE.Index = (i + 1).ToString();
+                            cLI_RESPONSE.Command = commandLineInput.Command;
+                            cLI_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                            cLI_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                            string capability = mo.CapabilityString;
+                            if (capability.Contains("D6("))
+                            {
 
-                                case "ON":
-                                    writelog($"PowerSetting D6 set on");
-                                    retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x01").Result;
-                                    cli_Response.Value = commandLineInput.Options[0].Option_Value;
-                                    break;
+                                writelog($"PowerSetting set entry");
+                                string[] ss = capability.Split("D6(");
+                                ss = ss[1].Split(")");
+                                ss = ss[0].Split(" ");
+                                Trace.WriteLine($"ss[0]:{ss[0]}, ss[1]:{ss[1]}, ss[2]:{ss[2]}");
+                                if (ss[0] == "01" && ss[1] == "04" && ss[2] == "05")
+                                {
+                                    switch (commandLineInput.Options[0].Option_Value.ToUpper())
+                                    {
+                                        case "OFF":
+                                            writelog($"PowerSetting D6 set off");
+                                            _display_changed = false;
+                                            devMgr.Displaychanged += DevMgr_Displaychanged;
+                                            retcode = SetVCPCode(devMgr, mo, "0xD6", "0x05").Result;
+                                            //cLI_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                                            int timeout_count = 0;
+                                            while (_display_changed == false)
+                                            {
+                                                Thread.Sleep(1000);
+                                                //check all monitors
 
-                                case "STANDBY":
-                                    writelog($"PowerSetting D6 set standby");
-                                    retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x04").Result;
-                                    cli_Response.Value = commandLineInput.Options[0].Option_Value;
-                                    break;
-                                default:
+                                                if (timeout_count++ > 20)
+                                                {
+                                                    writelog($"PowerSetting D6 set off timeout");
+                                                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                                                    break;
+                                                }
+                                            }
+                                            if (_display_changed == true)
+                                            {
+                                                //do things here
+                                                //_AllInfoMonitors
+                                            }
+                                            devMgr.Displaychanged -= DevMgr_Displaychanged;
+                                            break;
 
-                                    cli_Response.Command = commandLineInput.Command;
-                                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                                    cli_Response.Result = "FAIL";
-                                    cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                                        case "ON":
+                                            writelog($"PowerSetting D6 set on");
+                                            retcode = SetVCPCode(devMgr, mo, "0xD6", "0x01").Result;
+                                            //cLI_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                                            break;
 
-                                    break;
+                                        case "STANDBY":
+                                            writelog($"PowerSetting D6 set standby");
+                                            retcode = SetVCPCode(devMgr, mo, "0xD6", "0x04").Result;
+                                            //cLI_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                                            break;
+                                        default:
+                                            cLI_RESPONSE.Command = commandLineInput.Command;
+                                            cLI_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                                            cLI_RESPONSE.Result = "FAIL";
+                                            cLI_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                                            break;
+                                    }
+                                }
+                                else
+                                    somethingfail |= 0x10;
+                                //Sleep(500);
+                                swapIsDone.Add(mo.edid.ServiceTag);
+                            }
+                            else
+                                somethingfail |= 0x10;
+                            //if (result.code)
+                            if (retcode)
+                            {
+                                cLI_RESPONSE.Result = "PASS";
+                                cLI_RESPONSE.Message = "N/A";
+                            }
+                            else
+                            {
+                                cLI_RESPONSE.Result = "FAIL";
+                                if ((somethingfail & 0x01) == 0x01)
+                                    cLI_RESPONSE.Message = $"Unknown value ({commandLineInput.Options[0].Option_Value})";
+                                else if ((somethingfail & 0x10) == 0x10)
+                                    cLI_RESPONSE.Message = $"No Support {commandLineInput.TargetFeature}";
+                                else
+                                    cLI_RESPONSE.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
+                                //cLI_RESPONSE.Message = result.result;
+                            }
+                            System.Console.WriteLine(JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented);
+                        }
+                        if (serviceTagList.Count == swapIsDone.Count)
+                            flag = false;
+                        count++;
+                    }
+                }
+                else if( _monitorIndeies.Count == 1)
+                {
+                    foreach (int idx in _monitorIndeies)
+                    {
+                        writelog($"PowerSetting entry");
+                        MonitorInfo monitor = _AllInfoMonitors[idx];
+                        CLI_RESPONSE cli_Response = new CLI_RESPONSE(monitor);
+                        cli_Response.Command = commandLineInput.Command;
+                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                        cli_Response.Value = commandLineInput.Options[0].Option_Value;
+                        string capability = monitor.CapabilityString;
+                        if (capability.Contains("D6("))
+                        {
+                            if (commandLineInput.Command == "SET")
+                            {
+                                writelog($"PowerSetting set entry");
+                                string[] ss = capability.Split("D6(");
+                                ss = ss[1].Split(")");
+                                ss = ss[0].Split(" ");
+                                Trace.WriteLine($"ss[0]:{ss[0]}, ss[1]:{ss[1]}, ss[2]:{ss[2]}");
+                                if (ss[0] == "01" && ss[1] == "04" && ss[2] == "05")
+                                {
+                                    switch (commandLineInput.Options[0].Option_Value.ToUpper())
+                                    {
+                                        case "OFF":
+                                            writelog($"PowerSetting D6 set off");                                           
+                                            retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x05").Result;
+                                            //cli_Response.Value = commandLineInput.Options[0].Option_Value;                                           
+                                            break;
+
+                                        case "ON":
+                                            writelog($"PowerSetting D6 set on");
+                                            retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x01").Result;
+                                            //cli_Response.Value = commandLineInput.Options[0].Option_Value;
+                                            break;
+
+                                        case "STANDBY":
+                                            writelog($"PowerSetting D6 set standby");
+                                            retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x04").Result;
+                                            //cli_Response.Value = commandLineInput.Options[0].Option_Value;
+                                            break;
+                                        default:
+
+                                            cli_Response.Command = commandLineInput.Command;
+                                            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                                            cli_Response.Result = "FAIL";
+                                            cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+
+                                            break;
+                                    }
+                                    Sleep(3000);
+                                }
+                                else
+                                    somethingfail |= 0x10;
                             }
                         }
                         else
                             somethingfail |= 0x10;
-                    }
-                    else if (commandLineInput.Command == "GET")
-                    {
-                        writelog($"PowerSetting get entry");
+
                         retcode = true;
-                        cli_Response.Result = "PASS";
-                        cli_Response.Message = "N/A";
-                        rc = GetVCPCode(devMgr, monitor, "0xD6").Result;
-                        if (rc != null && rc.value.ToString() == "1")
-                            cli_Response.Value = "ON";
-                        else if (rc != null && rc.value.ToString() == "4")
-                            cli_Response.Value = "STANDBY";
-                        else if (rc != null && rc.value.ToString() == "5")
-                            cli_Response.Value = "OFF";
+
+                        if (retcode)
+                        {
+                            cli_Response.Result = "PASS";
+                            cli_Response.Message = "N/A";
+                        }
                         else
-                            cli_Response.Value = "Get VCP fail";
+                        {
+                            cli_Response.Result = "FAIL";
+                            if ((somethingfail & 0x01) == 0x01)
+                                cli_Response.Message = $"Unknown value ({commandLineInput.Options[0].Option_Value})";
+                            else if ((somethingfail & 0x10) == 0x10)
+                                cli_Response.Message = $"No Support {commandLineInput.TargetFeature}";
+                            else
+                                cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
+                        }
+                        System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                     }
                 }
                 else
-                    somethingfail |= 0x10;
-
-                retcode = true;
-
-                if (retcode)
                 {
-                    cli_Response.Result = "PASS";
-                    cli_Response.Message = "N/A";
+                    CLI_RESPONSE rsp = new CLI_RESPONSE()
+                    {
+                        Command = commandLineInput.Command,
+                        TargetFeature = commandLineInput.TargetFeature,
+                        // Result = "FAIL",
+                        Message = "No devices found",
+                    };
+                    System.Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(rsp, Formatting.Indented);
                 }
-                else
-                {
-                    cli_Response.Result = "FAIL";
-                    if ((somethingfail & 0x01) == 0x01)
-                        cli_Response.Message = $"Unknown value ({commandLineInput.Options[0].Option_Value})";
-                    else if ((somethingfail & 0x10) == 0x10)
-                        cli_Response.Message = $"No Support {commandLineInput.TargetFeature}";
-                    else
-                        cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
-                }
-                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                
             }
+            else if (commandLineInput.Command == "GET")
+            {
+                foreach (int idx in _monitorIndeies)
+                {
+                    writelog($"PowerSetting get entry");
+                    Console.WriteLine($"-------------------idx {idx}");
+                    retcode = true;
+                    MonitorInfo mo = _AllInfoMonitors[idx];
+                    CLI_RESPONSE cLI_RESPONSE = new CLI_RESPONSE(mo);
+                    cLI_RESPONSE.Command = commandLineInput.Command;
+                    cLI_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
+                    //cLI_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                    cLI_RESPONSE.Result = "PASS";
+                    cLI_RESPONSE.Message = "N/A";
+                    string capability = mo.CapabilityString;
+                    if (capability.Contains("D6("))
+                    {
+                        rc = GetVCPCode(devMgr, mo, "0xD6").Result;
+                        if (rc != null && rc.value.ToString() == "1")
+                            cLI_RESPONSE.Value = "ON";
+                        else if (rc != null && rc.value.ToString() == "4")
+                            cLI_RESPONSE.Value = "STANDBY";
+                        else if (rc != null && rc.value.ToString() == "5")
+                            cLI_RESPONSE.Value = "OFF";
+                        else
+                            cLI_RESPONSE.Value = "Get VCP fail";
+                    }
+                    else
+                    {
+                        cLI_RESPONSE.Result = "FAIL";
+                        cLI_RESPONSE.Message = $"No Support {commandLineInput.TargetFeature}";
+                    }
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented);
+                }
+            }
+            //System.Console.WriteLine(JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented));
+            //output += "\n" + JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented);
+            //foreach (int idx in _monitorIndeies)
+            //{
+            //    writelog($"PowerSetting entry");
+            //    MonitorInfo monitor = _AllInfoMonitors[idx];
+            //    CLI_RESPONSE cli_Response = new CLI_RESPONSE(monitor);
+            //    cli_Response.Command = commandLineInput.Command;
+            //    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+
+            //    string capability = monitor.CapabilityString;
+            //    if (capability.Contains("D6("))
+            //    {
+            //        if (commandLineInput.Command == "SET")
+            //        {
+            //            writelog($"PowerSetting set entry");
+            //            string[] ss = capability.Split("D6(");
+            //            ss = ss[1].Split(")");
+            //            ss = ss[0].Split(" ");
+            //            Trace.WriteLine($"ss[0]:{ss[0]}, ss[1]:{ss[1]}, ss[2]:{ss[2]}");
+            //            if (ss[0] == "01" && ss[1] == "04" && ss[2] == "05")
+            //            {
+            //                switch (commandLineInput.Options[0].Option_Value.ToUpper())
+            //                {
+            //                    case "OFF":
+            //                        writelog($"PowerSetting D6 set off");
+            //                        retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x05").Result;
+            //                        cli_Response.Value = commandLineInput.Options[0].Option_Value;
+            //                        break;
+
+            //                    case "ON":
+            //                        writelog($"PowerSetting D6 set on");
+            //                        retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x01").Result;
+            //                        cli_Response.Value = commandLineInput.Options[0].Option_Value;
+            //                        break;
+
+            //                    case "STANDBY":
+            //                        writelog($"PowerSetting D6 set standby");
+            //                        retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x04").Result;
+            //                        cli_Response.Value = commandLineInput.Options[0].Option_Value;
+            //                        break;
+            //                    default:
+
+            //                        cli_Response.Command = commandLineInput.Command;
+            //                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+            //                        cli_Response.Result = "FAIL";
+            //                        cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+
+            //                        break;
+            //                }
+            //                Sleep(3000);
+            //            }
+            //            else
+            //                somethingfail |= 0x10;
+            //        }
+            //        else if (commandLineInput.Command == "GET")
+            //        {
+            //            writelog($"PowerSetting get entry");
+            //            retcode = true;
+            //            cli_Response.Result = "PASS";
+            //            cli_Response.Message = "N/A";
+            //            rc = GetVCPCode(devMgr, monitor, "0xD6").Result;
+            //            if (rc != null && rc.value.ToString() == "1")
+            //                cli_Response.Value = "ON";
+            //            else if (rc != null && rc.value.ToString() == "4")
+            //                cli_Response.Value = "STANDBY";
+            //            else if (rc != null && rc.value.ToString() == "5")
+            //                cli_Response.Value = "OFF";
+            //            else
+            //                cli_Response.Value = "Get VCP fail";
+            //        }
+            //    }
+            //    else
+            //        somethingfail |= 0x10;
+
+            //    retcode = true;
+
+            //    if (retcode)
+            //    {
+            //        cli_Response.Result = "PASS";
+            //        cli_Response.Message = "N/A";
+            //    }
+            //    else
+            //    {
+            //        cli_Response.Result = "FAIL";
+            //        if ((somethingfail & 0x01) == 0x01)
+            //            cli_Response.Message = $"Unknown value ({commandLineInput.Options[0].Option_Value})";
+            //        else if ((somethingfail & 0x10) == 0x10)
+            //            cli_Response.Message = $"No Support {commandLineInput.TargetFeature}";
+            //        else
+            //            cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
+            //    }
+            //    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+            //    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            //}
             writelog($"PowerSetting exit return value{output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }

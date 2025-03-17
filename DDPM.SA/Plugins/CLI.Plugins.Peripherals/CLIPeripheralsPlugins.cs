@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
+using Windows.Devices.HumanInterfaceDevice;
 using static DDPM.SA.Common.ICLICommandTable;
 using Console = System.Console;
 
@@ -1492,9 +1493,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                     });
                     writelog("SetPeripheralProperty: MICSWITCH" + (retcode ? "SUCCESS" : "FAIL"));
                     return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
-                    taskB = _devMgr.SetIsMicEnumerationOn;
-                    RunTaskD(bl);
-                    return (int)CLI_ExitCode.success;
+                    //taskB = _devMgr.SetIsMicEnumerationOn;
+                    //RunTaskD(bl);
+                    //return (int)CLI_ExitCode.success;
 
                 case "HDR":
                     writelog("SetPeripheralProperty: HDR Entry");
@@ -2115,6 +2116,20 @@ namespace DDPM.CLI.Plugins.Peripherals
             return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
         }
 
+        private (int code, string json) NoupdateResponse(CommandLineInput commandLineInput)
+        {
+            CLI_RESPONSE rsp = new CLI_RESPONSE()
+            {
+                Command = commandLineInput.Command,
+                TargetFeature = commandLineInput.TargetFeature,
+                Result = "FAIL",
+                Message = "No updates available",
+            };
+            writelog("No Device Connect");
+            System.Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
+            return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
+        }
+
         private (int code, string json) FWUpdate(CommandLineInput commandLineInput)
         {
             string output = string.Empty;
@@ -2272,17 +2287,17 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 !string.IsNullOrEmpty(ss_min[0]) &&
                                                 !string.IsNullOrEmpty(ss_min[1]))
                                             {
-                                                var findDevice = false;
-                                                if (_AllInfoMonitors.Any(x => x.FwVersion.ToUpper().Equals(ss_min[0].ToUpper())))
-                                                {
+                                                //var findDevice = false;
+                                                //if (!_AllInfoMonitors.Any(x => x.FwVersion.ToUpper().Equals(ss_min[0].ToUpper())))
+                                                //{
                                                     miniver = ss_min[0];
-                                                    fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => x.FwVersion.ToUpper().Equals(ss_min[0].ToUpper())).ToList();
-                                                    findDevice = true;
-                                                }
-                                                if (!findDevice)
-                                                {
-                                                    return NoDeviceConnectResponse(commandLineInput);
-                                                }
+                                                    //fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => x.FwVersion.ToUpper().Equals(ss_min[0].ToUpper())).ToList();
+                                                //    findDevice = true;
+                                                //}
+                                                //if (!findDevice)
+                                                //{
+                                                //    return NoupdateResponse(commandLineInput);
+                                                //}
 
                                             }
                                         }
@@ -2498,7 +2513,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                     return NoDeviceConnectResponse(commandLineInput);
                                                 }
                                             }
-                                        }
+                                        }                                       
                                         else if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("MINIVERSION"))
                                         {
                                             string[] ss_min = commandLineInput.Options[i].Option_Value.Split(",");
@@ -2508,19 +2523,19 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 !string.IsNullOrEmpty(ss_min[1]))
                                             {
                                                 var findDevice = false;
-                                                foreach (var g in deviceInfoList)
-                                                {
-                                                    if (g.FirmwareVersion.ToUpper() == ss_min[0].ToUpper())
-                                                    {
+                                                //foreach (var g in deviceInfoList)
+                                                //{
+                                                    //if (g.FirmwareVersion.ToUpper() != ss_min[0].ToUpper())
+                                                    //{
                                                         miniver = ss_min[0];
-                                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.FirmwareVersion.Equals(ss_min[0], StringComparison.OrdinalIgnoreCase)).ToList();
-                                                        findDevice = true;
-                                                    }
-                                                }
-                                                if (!findDevice)
-                                                {
-                                                    return NoDeviceConnectResponse(commandLineInput);
-                                                }
+                                                        //fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.FirmwareVersion.Equals(ss_min[0], StringComparison.OrdinalIgnoreCase)).ToList();
+                                                        //findDevice = true;
+                                                //    }
+                                                //}
+                                                //if (!findDevice)
+                                                //{
+                                                //    return NoDeviceConnectResponse(commandLineInput);
+                                                //}
                                             }
                                         }
                                         else if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("MODEL"))
@@ -3068,7 +3083,10 @@ namespace DDPM.CLI.Plugins.Peripherals
         {
             try
             {
-                List<DeviceType> deviceTypes = new List<DeviceType>();
+                List<DeviceInfo> deviceInfoList = null;
+                deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
+                string[] ss_1 = null;
+                List <DeviceType> deviceTypes = new List<DeviceType>();
                 if (commandLineInput.Options.Count > 0)
                 {
                     deviceTypes = SetDevice(commandLineInput).deviceTypes;
@@ -3131,13 +3149,105 @@ namespace DDPM.CLI.Plugins.Peripherals
                     cli_FWU_RESPONSE.FWVersion = string.Join(",", allFWUpdateResponseInfos.Select(_ => $"[{_.Version}]"));
                     cli_FWU_RESPONSE.Result = "PASS";
 
-                    if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
+                    if (commandLineInput.Options.Count > 0)
+                        ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
+
+
+
+                if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
                     {
-                        allFWUpdateResponseInfos.ForEach(_ =>
+                        if (ss_1.Length == 2)
                         {
-                            var msg = $"No updates available: {_.Model}" + (!string.IsNullOrWhiteSpace(_.ServiceTag) ? $", ServiceTag: {_.ServiceTag}" : "") + $" Version: {_.Version}";
-                            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
-                        });
+                            foreach (var g in deviceInfoList)
+                            {
+
+                                if (g.LogicalDeviceType == "LogicalMouse" && ss_1[0].ToUpper().Equals("MOUSE"))
+                                {
+
+                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
+                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.Result = "PASS";
+                                }
+                                else if (g.LogicalDeviceType == "LogicalKeyboard" && ss_1[0].ToUpper().Equals("KEYBOARD"))
+                                {
+
+                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
+                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.Result = "PASS";
+                                }
+                                else if (g.LogicalDeviceType == "LogicalHeadset" && ss_1[0].ToUpper().Equals("HEADSET"))
+                                {
+
+                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
+                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.Result = "PASS";
+                                }
+                                else if (g.LogicalDeviceType == "LogicalWebcam" && ss_1[0].ToUpper().Equals("WEBCAM"))
+                                {
+
+                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
+                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.Result = "PASS";
+                                }
+                                else if (g.LogicalDeviceType == "LogicalWiredAudio" && ss_1[0].ToUpper().Equals("SPEAKER"))
+                                {
+
+                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
+                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.Result = "PASS";
+                                }
+                                else if (g.LogicalDeviceType == "LogicalPen" && ss_1[0].ToUpper().Equals("PEN"))
+                                {
+
+                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
+                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.Result = "PASS";
+                                }
+                                else if (g.LogicalDeviceType == "LogicalDock" && ss_1[0].ToUpper().Equals("DOCK"))
+                                {
+
+                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
+                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.Result = "PASS";
+                                }
+                                else if (ss_1[0].ToUpper().Equals("DONGLE"))
+                                {
+                                    
+                                }
+                                else if (ss_1[0].ToUpper().Equals("AUDIO"))
+                                {
+                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
+                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.Result = "PASS";
+
+                                }
+
+                            }
+                        }
+                        else
+                        {
+                            allFWUpdateResponseInfos.ForEach(_ =>
+                            {
+                                var msg = $"No updates available: {_.Model}" + (!string.IsNullOrWhiteSpace(_.ServiceTag) ? $", ServiceTag: {_.ServiceTag}" : "") + $" Version: {_.Version}";
+                                cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
+                            });
+                        }
                         cli_FWU_RESPONSE.Message = "No updates available";
                         writelog("Auto_FWUpdate2 No updates available");
                         return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));

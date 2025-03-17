@@ -55,7 +55,7 @@
               </TextBlock.Style>
             </TextBlock>
           </StackPanel>
-          <Border.Style>
+          <!--<Border.Style>
             <Style TargetType="Border">
               <Setter Property="Background" Value="Transparent" />
               <Style.Triggers>
@@ -64,7 +64,7 @@
                 </DataTrigger>
               </Style.Triggers>
             </Style>
-          </Border.Style>
+          </Border.Style>-->
         </Border>
 
         <!-- Header[1] -->
@@ -102,7 +102,7 @@
               </TextBlock.Style>
             </TextBlock>
           </StackPanel>
-          <Border.Style>
+          <!--<Border.Style>
             <Style TargetType="Border">
               <Setter Property="Background" Value="Transparent" />
               <Style.Triggers>
@@ -111,7 +111,7 @@
                 </DataTrigger>
               </Style.Triggers>
             </Style>
-          </Border.Style>
+          </Border.Style>-->
         </Border>
 
 
@@ -147,7 +147,7 @@
               </TextBlock.Style>
             </TextBlock>
           </StackPanel>
-          <Border.Style>
+          <!--<Border.Style>
             <Style TargetType="Border">
               <Setter Property="Background" Value="Transparent" />
               <Style.Triggers>
@@ -156,7 +156,7 @@
                 </DataTrigger>
               </Style.Triggers>
             </Style>
-          </Border.Style>
+          </Border.Style>-->
         </Border>
       </Grid>
     </Border>

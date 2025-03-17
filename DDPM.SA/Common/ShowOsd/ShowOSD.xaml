@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DDPM.ShowOSD"  Background="Transparent"
         xmlns:lang="clr-namespace:DDPM.SA.Resources.Helper;assembly=DDPM.SA.Resources"
-        mc:Ignorable="d"  ShowInTaskbar="False" WindowStartupLocation="Manual" Topmost="True" WindowStyle="None" AllowsTransparency="True" 
+        mc:Ignorable="d"  ShowInTaskbar="False" WindowStartupLocation="Manual" Topmost="True" WindowStyle="None" AllowsTransparency="True"
+        Closing="Window_Closing"
         Title=""   Loaded="Window_Loaded">
     <Grid>
         <Border Background="#141D28" CornerRadius="6">

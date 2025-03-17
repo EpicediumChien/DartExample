@@ -301,10 +301,11 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             }
         }
 
-        public bool WriteWalkThroughReg(string Model)
+        public void WriteWalkThroughReg(string Model)
         {
-            try
-            {
+            //try
+            //{
+                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] WriteWalkThroughReg, Model : {Model} ... ");
                 string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin.UserId}";
                 string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{Model}";
                 if (Model == "MS700/7")
@@ -314,16 +315,20 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 if (Model == "CONSENT_PAGE")
                 {
                     regPath = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
-                    return DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true).Result;
+                    //return DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true).Result;
+                    DdpmCommonHelper.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
+                return;// true;
                 }
                 DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] WriteWalkThroughReg UserId : {DdpmHomePlugin.DdpmHomePlugin.UserId}, Model: {Model} ...");
-                return DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true).Result;
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] WriteWalkThroughReg Exception: {ex.Message}");
-                return false;
-            }
+                //return DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true).Result;
+                DdpmCommonHelper.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
+                //return true;
+            //}
+            //catch (Exception ex)
+            //{
+            //    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] WriteWalkThroughReg Exception: {ex.Message}");
+            //    return false;
+            //}
         }
 
         public void UpdateLastlogicalDeviceType()

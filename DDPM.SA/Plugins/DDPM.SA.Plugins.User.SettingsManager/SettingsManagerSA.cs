@@ -55,37 +55,17 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             error
         }
 
-        //Folder/Path collection
-        /*
-         * SpecialFolder.ApplicationData:       C:\Users\{UserName}\AppData\Roaming
-         * SpecialFolder.CommonApplicationData: C:\ProgramData
-         * SpecialFolder.ProgramFiles:          C:\Program Files
-         * SpecialFolder.CommonProgramFiles:    C:\Program Files\Common Files
-         * SpecialFolder.DesktopDirectory:      C:\Users\{UserName}\Desktop
-         * SpecialFolder.LocalApplicationData:  C:\Users\{UserName}\AppData\Local
-         * SpecialFolder.MyDocuments:           C:\Users\{UserName}\Documents
-         * SpecialFolder.System:                C:\Windows\system32
-         * ...
-         */
-
-        //Basic
-        //private static string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-        //private const string folder_product = "Dell Display and Peripheral Manager";
-
         //Global
         private const string folder_localappdata_Applist = "AppLibrary";
         private const string folder_localappdata_Appicon = "Icons";
         private const string folder_localappdata_Display = "Display";
         private const string folder_localappdata_Migration = "Migration";
         private const string folder_localappdata_Export = "Export";
-        //private const string filename_appsettings_peruser = "DDPM.Configs.json";
 
         private const string filename_colorpreset_peruser = "ColorSetting.json";
         private const string filename_hotkey_peruser = "HotkeySetting.json";
         private const string filename_powernap_peruser = "PowerNapSetting.json";
-        //private const string filename_GlobalSetting_peruser = "GlobalSetting.json";
         private const string filename_InterruptScreen_peruser = "InterruptScreen.json";
-
 
         //---
         private ISettingsManagerSA? _SysSettingsPlugin;
@@ -108,15 +88,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private List<HotkeySettings> _hotkeySettings { get; set; }
         private string _hotkeysettings_path { get; set; } = string.Empty;
-        //private static List<HotkeySettings> _present_hotkey_settings = new List<HotkeySettings>();
-
-        //private List<PowerNapSetting> _powerNapSettings { get; set; }
-        //private string _powerNapsettings_path { get; set; } = string.Empty;
-        //private static List<PowerNapSetting> _present_powerNap_settings = new List<PowerNapSetting>();
-        //private static string _settingsAccessInfo = string.Empty;
         private static string _settingsAccessInfoVer = string.Empty;
-        //no consumer, marked as no use, Dean 2025-2-25
-        //private static string _settingsAccessInfoAddr = string.Empty;
 
         private string _GlobalSetting_path { get; set; } = string.Empty;
         private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
@@ -149,15 +121,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             WriteLog("User.SettingsManager plugin report started");
 
             InitializeSysSettingsPlugin();
-
-            //Move to DoRelayRegister function since DDPM private key added
-            /*InitDDPMUserConfigFile();
-            InitColorPresetConfigFile();
-            InitHotkeyConfigFile();
-            InitPowerNapConfigFile();*/
-
-            //Robert_Lin, 2024-9-3, removed, will use SettingsManagerSA.ReloadMonitorSettings() instead
-            //EAMakeSureDirExist();
         }
 
         #endregion Overriding methods
@@ -172,7 +135,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
-            WriteLog($"Dispose: {disposing}");
+            WriteLog($"[Dispose] {disposing}");
             if (!IsDisposed)
             {
                 if (disposing)
@@ -180,11 +143,39 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
                     _agent = null;
 
+                    //data object
+                    _settings = null;
+                    _GlobalSettingParam = null;
+                    _InterruptScreenParam = null;
+                    _DDPMITConfig = null;
+                    try
+                    {
+                        _colorPresetSettings?.Clear();
+                        _colorPresetSettings = null;
+                        _AllAppData?.Clear();
+                        _AllAppData = null;
+                        _AllMonitorSettings?.Clear();
+                        _AllMonitorSettings = null;
+                        _preset_settings?.Clear();
+                        _preset_settings = null;
+                        _hotkeySettings?.Clear();
+                        _hotkeySettings = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteLog($"[Dispose] data object {ex.Message}");
+                    }
+
+                    //event
+                    SettingReadyEvent = null;
+
+                    //plugin
                     if (_SysSettingsPlugin != null)
                     {
                         _SysSettingsPlugin.ITSettingsActionEvent -= _SysSettingsPlugin_ActionEvent;
                         relay_registered = false;
                     }
+                    _SysSettingsPlugin = null;
                 }
 
                 IsDisposed = true;
