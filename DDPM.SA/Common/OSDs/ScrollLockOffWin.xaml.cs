@@ -10,8 +10,8 @@ namespace DDPM.OSDs
     /// </summary>
     public partial class ScrollLockOffWin : Window
     {
-        //private DispatcherTimer? animationTimer = null;
-        private TimeSpan time;
+        /*private DispatcherTimer? animationTimer = null;
+        private TimeSpan time;*/
 
         public ScrollLockOffWin()
         {

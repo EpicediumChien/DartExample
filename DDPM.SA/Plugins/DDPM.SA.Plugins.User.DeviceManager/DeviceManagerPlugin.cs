@@ -1151,7 +1151,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_DisplayManagerPlugin != null)
             {
-                var result = _DisplayManagerPlugin.GetVCPCapability(m, "colorpreset", guid, priority:priority).Result;
+                var result = _DisplayManagerPlugin.GetVCPCapability(m, "colorpreset", guid, priority: priority).Result;
                 if (result.result)
                 {
                     //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
@@ -14217,9 +14217,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        private bool _OSDKeyLock = false;
-
-        private bool isReg = false;
+        /*private bool _OSDKeyLock = false;
+        private bool isReg = false;*/
 
         private string _latestBatterylowContent = string.Empty;
         private OSDType_Device _lastestBatterylowDevice = OSDType_Device.Unknown;
@@ -14417,7 +14416,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             KeyboardHook_Debounce(300, null, KeyboardHook_KeyUpProc, e);
         }
-
+        //private int iTest = 0;
         private void KeyboardHook_KeyUpProc(KeyEventArgs e)
         {
             string strKey = e.KeyCode.ToString().ToUpper();
@@ -14434,7 +14433,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Mouse, "Dell Multi-Device Mouse - MS5320W");
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");*/
-
+            /*iTest++;
+            if (iTest % 2 == 1)
+            {
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
+                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Pen, "Dell Multi-Device pen - MS5320W");
+            }
+            else
+            {
+                _OSD_Controler.CloseMultipleOSDByGuidAndOp("377C7B36-ED5B-446F-93A6-3418F0447836", OSDType_Op.None);
+            }*/
             //will register as ALT+Z ?
             if (_altPressed && strKey.Equals("Z") && !_ctrlPressed && !_shiftPressed)
             {
@@ -18188,7 +18196,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void ShowOSDThread(CancellationTokenSource cts, object monitorInfo, OSDType _types,
                                 OSDType_Device _DeviceType, string Content, bool State = false,
-                                string title = "", bool stayOpen = false, Guid guid = default)
+                                string title = "", bool stayOpen = false, Guid guid = default, OSDType_Op oSDType_Op = OSDType_Op.None)
         {
             if (monitorInfo != null)
             {
@@ -18273,7 +18281,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {B70715F8-9DF6-440F-B5BE-A48336A4B261}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "B70715F8-9DF6-440F-B5BE-A48336A4B261" : guid.ToString(), OSDType_Device.Headset, Content, LangHelper.Instance["Battery_Low"]);
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "B70715F8-9DF6-440F-B5BE-A48336A4B261" : guid.ToString(), OSDType_Device.Headset, oSDType_Op, Content, LangHelper.Instance["Battery_Low"]);
                                             /*  if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Headset))
                                               {
                                                   _latestBatterylowContent = Content;
@@ -18292,7 +18300,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {377C7B36-ED5B-446F-93A6-3418F0447836}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "377C7B36-ED5B-446F-93A6-3418F0447836" : guid.ToString(), OSDType_Device.Keyboard, Content, LangHelper.Instance["Battery_Low"]);
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "377C7B36-ED5B-446F-93A6-3418F0447836" : guid.ToString(), OSDType_Device.Keyboard, oSDType_Op, Content, LangHelper.Instance["Battery_Low"]);
                                             /*if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Keyboard))
                                             {
                                                 //when keyboard battery low, press CapsLock/ScrollLock/NumLockLock combine with
@@ -18312,7 +18320,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {1D5E64AD-212C-4364-AF84-BA1C95723ED7}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "1D5E64AD-212C-4364-AF84-BA1C95723ED7" : guid.ToString(), OSDType_Device.Mouse, Content, LangHelper.Instance["Battery_Low"]);
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "1D5E64AD-212C-4364-AF84-BA1C95723ED7" : guid.ToString(), OSDType_Device.Mouse, oSDType_Op, Content, LangHelper.Instance["Battery_Low"]);
                                             /*if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Mouse))
                                             {
                                                 _latestBatterylowContent = Content;
@@ -18331,7 +18339,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {9239EAA6-660D-4DC5-B141-937D3AB0C3EF}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "9239EAA6-660D-4DC5-B141-937D3AB0C3EF" : guid.ToString(), OSDType_Device.Pen, Content, LangHelper.Instance["Battery_Low"]);
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "9239EAA6-660D-4DC5-B141-937D3AB0C3EF" : guid.ToString(), OSDType_Device.Pen, oSDType_Op, Content, LangHelper.Instance["Battery_Low"]);
 
                                             /* if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Pen))
                                               {
@@ -18543,7 +18551,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {C563A281-26EB-4DCD-8642-EC7498108266}
-                                            _OSD_Controler.ShowMultipleOSD("C563A281-26EB-4DCD-8642-EC7498108266", OSDType_Device.QAM, LangHelper.Instance["QAM_OSD_Msg"], LangHelper.Instance["Go_to_Widget_Settings"]);
+                                            _OSD_Controler.ShowMultipleOSD("C563A281-26EB-4DCD-8642-EC7498108266", OSDType_Device.QAM, oSDType_Op, LangHelper.Instance["QAM_OSD_Msg"], LangHelper.Instance["Go_to_Widget_Settings"]);
                                             /*_OSD_Controler.QAMHotKeyWin_CloseWindow();
                                             _OSD_Controler.QAMHotKeyWin_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
                                         }
@@ -18574,7 +18582,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {1233BBAF-348B-4498-8051-DB0E53004AAB}
-                                            _OSD_Controler.ShowMultipleOSD("1233BBAF-348B-4498-8051-DB0E53004AAB", OSDType_Device.Keyboard, Content, "");
+                                            _OSD_Controler.ShowMultipleOSD("1233BBAF-348B-4498-8051-DB0E53004AAB", OSDType_Device.Keyboard, oSDType_Op, Content, "");
 
                                             /*_OSD_Controler.CollaborationNotAvailableWin_CloseWindow();
                                             _OSD_Controler.CollaborationNotAvailableWin_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/

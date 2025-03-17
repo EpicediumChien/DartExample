@@ -84,6 +84,17 @@ namespace DDPM.OSDs
                 Dispatcher.Invoke(() => OSDWins.Add(oSDWinInfo));
                 return;
             }
+            OSDWins.Add(oSDWinInfo);
+        }
+
+        public void RemoveShowOSDWinInfo(OSDWinInfo oSDWinInfo)
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(() => OSDWins.Remove(oSDWinInfo));
+                return;
+            }
+            OSDWins.Remove(oSDWinInfo);
         }
 
         public void CloseWindow()
