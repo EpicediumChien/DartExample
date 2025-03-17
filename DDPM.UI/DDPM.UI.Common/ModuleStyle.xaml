@@ -2403,6 +2403,127 @@
   <SolidColorBrush x:Key="UpdateGroup_BkColor" Color="#99132F54"/>
   <!-- #endregion SettingsPlugin.UpdatePage.GroupBorder -->
 
-  <SolidColorBrush x:Key="Slider_TxtColor" Color="#A4B8CD" />
-  <SolidColorBrush x:Key="Slider_ValueColor" Color="#A4B8CD" />
+    <!-- #region Add Application Page -->
+    <!-- #region SearchBox -->
+    <SolidColorBrush x:Key="AddAppSearch_BkColor" Color="#141D28"/>
+    <SolidColorBrush x:Key="AddAppSearch_BdColor" Color="#7E7E7E"/>
+    <SolidColorBrush x:Key="AddAppSearch_TextColor" Color="#F5F6F7"/>
+    <!-- #endregion SearchBox -->
+    <!-- #region SortToggleButton -->
+    <SolidColorBrush x:Key="SortToggleButton_BkColor" Color="#293B4D"/>
+    <SolidColorBrush x:Key="SortToggleButton_BdColor" Color="#40586D"/>
+    <SolidColorBrush x:Key="SortToggleButton_TextColor" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="SortToggleButton_ArrowColor" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="SortToggleButton_BdColor_Hover" Color="#31A2E3"/>
+
+    <Style x:Key="SortToggleButton" TargetType="{x:Type ToggleButton}">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+        <Setter Property="Background" Value="{DynamicResource SortToggleButton_BkColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource SortToggleButton_BdColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource SortToggleButton_TextColor}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Padding" Value="12,4"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true"
+                                    CornerRadius="4">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <ContentPresenter x:Name="contentPresenter" Grid.Column="0" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                      Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+
+                            <Grid Grid.Column="1" Width="12" Height="12" VerticalAlignment="Center" Margin="0,0,12,0">
+                                <Path Fill="{DynamicResource SortToggleButton_ArrowColor}"
+                                              Data="M6.5 8.90984L12.5 3.08984L0.5 3.08984L6.5 8.90984Z">
+                                    <Path.RenderTransform>
+                                        <ScaleTransform x:Name="arrowTransform" ScaleY="-1" CenterY="6"/>
+                                    </Path.RenderTransform>
+
+                                </Path>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <!-- No Default state 
+                                <Trigger Property="Button.IsDefaulted" Value="true">
+                                    <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                </Trigger>-->
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource SortToggleButton_BdColor_Hover}"/>
+                        </Trigger>
+                        <!-- Press state not defined 
+                                <Trigger Property="IsPressed" Value="true">
+                                    <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
+                                    <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
+                                </Trigger>-->
+                        <!-- No Disable state 
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+                                    <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
+                                    <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                                </Trigger>-->
+                        <Trigger Property="IsChecked" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="arrowTransform" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetName="arrowTransform" Storyboard.TargetProperty="CenterY" To="0" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="arrowTransform" Storyboard.TargetProperty="ScaleY" To="-1" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetName="arrowTransform" Storyboard.TargetProperty="CenterY" To="6" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- #endregion SortToggleButton -->
+    <!-- #region AppListView -->
+    
+    <!-- #endregion AppListView -->
+    <SolidColorBrush x:Key="AddAppListView_BkColor" Color="#99132F54"/>
+    
+    <Style x:Key="AppListViewItemStyle" TargetType="ListViewItem">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListViewItem">
+                    <Border x:Name="bdItem" Margin="0,4" Background="Transparent">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    </Border>
+                    <!--
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="bdItem" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bdItem" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                    -->
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- #endregion Add Application Page -->
+
 </ResourceDictionary>
