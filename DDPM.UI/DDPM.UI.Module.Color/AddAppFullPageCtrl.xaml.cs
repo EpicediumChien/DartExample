@@ -1,8 +1,10 @@
 using DDPM.SA.Common;
 using DDPM.UI.Common;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using VcpCore.Common;
 
 namespace DDPM.UI.Module.Color
@@ -10,13 +12,17 @@ namespace DDPM.UI.Module.Color
     public partial class AddAppFullPageCtrl : UserControl
     {
         private List<string> _supported_preset = new List<string>();
+        private bool _isSortByNameFirst = true;
+
         public AddAppFullPageCtrl()
         {
             InitializeComponent();
+            RefreshAppList();
         }
 
         private void UserControl_Loaded(object sender, EventArgs e)
         {
+            /*
             ColorViewModel vm = (ColorViewModel)DataContext;
 
             Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.FindAppsbyShell().Result;
@@ -37,8 +43,15 @@ namespace DDPM.UI.Module.Color
             //    _log.Info($"{nameof(UserControl_Loaded)} {FileInfo}");
             //}
 
+            //Robert_Lin 2025-3-14, after changed Theme, the UserControl_Loaded will be called again, so need to clear the list first
+            // and refresh with filter and sort settings
+            _bind_apps.Clear();
+            _apps_all.Clear();
+
+
             if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(strFolder, out info))
             {
+
                 foreach (KeyValuePair<string, InstalledAppInfo> kvp in data)
                 {
                     Bind_AddFullPage_AppCollectionData new_Appdata = new Bind_AddFullPage_AppCollectionData();
@@ -55,7 +68,7 @@ namespace DDPM.UI.Module.Color
                         new_Appdata.AppIcon = "Assets/palette.png";
                     }
 
-                    _bind_apps.Add(new_Appdata);
+                    //_bind_apps.Add(new_Appdata);
                     _apps_all.Add(new_Appdata);
                 }
             }
@@ -64,7 +77,30 @@ namespace DDPM.UI.Module.Color
                 DdpmCommonHelper.WriteUILog($"[AddAppFullPageCtrl][UserControl_Loaded] ValidateFilePath failed: {info}, it cause app list empty");
             }
 
+            //Robert_Lin 2025-3-14 apply filter
+            string userInputText = "";
+            if (txtSearchText != null)
+            {
+                userInputText = txtSearchText.Text;
+            }
+            List<Bind_AddFullPage_AppCollectionData> filterList = _apps_all.Where(contact => contact.AppName.Contains(userInputText, StringComparison.InvariantCultureIgnoreCase)).ToList(); 
+
+            if ((filterList != null) && (filterList.Count > 0))
+            {
+                //Robert_Lin 2025-3-14 to sort the app list by AppName, default is sort by Name _Ascending
+                List<Bind_AddFullPage_AppCollectionData> sortList;
+                sortList = filterList.OrderBy(x => x.AppName).ToList();
+                foreach (var item in sortList)
+                {
+                    if (!_bind_apps.Contains(item))
+                    {
+                        _bind_apps.Add(item);
+                    }
+                }
+            }
+
             lb_Installed_App.ItemsSource = _bind_apps;
+            */
         }
 
         private List<AppCollectionData> _apps { get; set; } = new List<AppCollectionData>();
@@ -105,7 +141,8 @@ namespace DDPM.UI.Module.Color
 
             _supported_preset = vm.SupportColorPresets;
 
-            foreach (var item in lb_Installed_App.SelectedItems)
+            //Robert_Lin 2025-3-17 Change the lsitview name to appListView from lb_Installed_App
+            foreach (var item in appListView.SelectedItems)
             {
                 Bind_AddFullPage_AppCollectionData temp_selApps = (Bind_AddFullPage_AppCollectionData)item;
 
@@ -202,8 +239,23 @@ namespace DDPM.UI.Module.Color
 
         private void edFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
+            //Robert_Lin 2025-3-14 to get the user input text from sender, instead of static name 'edFilter'
+            if (sender == null)
+                return;
+            string userInputText = "";
+            if (sender is UXTextBox)
+            {
+                UXTextBox txtBox = sender as UXTextBox;
+                userInputText = txtBox.Text;
+            }
+            else if (sender is TextBox)
+            {
+                TextBox txtBox = sender as TextBox;
+                userInputText = txtBox.Text;
+            }
             List<Bind_AddFullPage_AppCollectionData> TempFiltered;
-            TempFiltered = _apps_all.Where(contact => contact.AppName.Contains(edFilter.Text, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            //TempFiltered = _apps_all.Where(contact => contact.AppName.Contains(edFilter.Text, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            TempFiltered = _apps_all.Where(contact => contact.AppName.Contains(userInputText, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
             for (int i = _bind_apps.Count - 1; i >= 0; i--)
             {
@@ -301,6 +353,210 @@ namespace DDPM.UI.Module.Color
                     _bind_apps.Add(item);
                 }
             }
+        }
+
+        private void txtSearchText_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+
+        }
+
+        private void sortByNameButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (sender == null)
+                return;
+            _isSortByNameFirst = true;
+            if (sender is ToggleButton)
+            {
+                ToggleButton btn = sender as ToggleButton;
+                if (btn.IsChecked == true)
+                {
+                    btnSortbyName_Ascending_Click(sender, e);
+                }
+                else
+                {
+                    btnSortbyName_Descending_Click(sender, e);
+                }
+            }
+        }
+
+        private void sortByDateButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (sender == null) 
+                return;
+            _isSortByNameFirst = false;
+            if (sender is ToggleButton)
+            {
+                ToggleButton btn = sender as ToggleButton;
+                if (btn.IsChecked == true)
+                {
+                    btnSortbyDate_Ascending_Click(sender, e);
+                }
+                else
+                {
+                    btnSortbyDate_Descending_Click(sender, e);
+                }
+            }
+        }
+
+        private List<Bind_AddFullPage_AppCollectionData> GetAllAppList()
+        {
+            List<Bind_AddFullPage_AppCollectionData> listOut = new List<Bind_AddFullPage_AppCollectionData>();
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
+                strFolder += "\\";
+
+                string info = string.Empty;
+                //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strFolder, out info);   // 20241004 Add for Security
+
+                if (!System.IO.Directory.Exists(strFolder))
+                    System.IO.Directory.CreateDirectory(strFolder);
+
+                if (!DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(strFolder, out info))
+                {
+                    DdpmCommonHelper.WriteUILog($"[AddAppFullPageCtrl][UserControl_Loaded] ValidateFilePath failed: {info}, it cause app list empty");
+                    return listOut;
+                }
+
+                Dictionary<string, InstalledAppInfo> rawData = DdpmCommonHelper.DeviceManagerSA.FindAppsbyShell().Result;
+
+                foreach (KeyValuePair<string, InstalledAppInfo> kvp in rawData)
+                {
+                    Bind_AddFullPage_AppCollectionData new_Appdata = new Bind_AddFullPage_AppCollectionData();
+
+                    new_Appdata.AppName = kvp.Value.AppName;
+                    new_Appdata.InstalledDate = kvp.Value.lastModifyTime;
+
+                    if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
+                    {
+                        new_Appdata.AppIcon = strFolder + kvp.Value.IconName + ".png";
+                    }
+                    else
+                    {
+                        new_Appdata.AppIcon = "Assets/palette.png";
+                    }
+
+                    //_bind_apps.Add(new_Appdata);
+                    listOut.Add(new_Appdata);
+                }
+            }
+            return listOut;
+        }
+
+        private void RefreshAppList()
+        {
+            /*
+            if (DdpmCommonHelper.DeviceManagerSA == null)
+                return;
+
+
+            string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
+            strFolder += "\\";
+
+            string info = string.Empty;
+            //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strFolder, out info);   // 20241004 Add for Security
+
+            if (!System.IO.Directory.Exists(strFolder))
+                System.IO.Directory.CreateDirectory(strFolder);
+
+            Dictionary<string, InstalledAppInfo> rawData = DdpmCommonHelper.DeviceManagerSA.FindAppsbyShell().Result;
+
+            //Robert_Lin 2025-3-14, after changed Theme, the UserControl_Loaded will be called again, so need to clear the list first
+            // and refresh with filter and sort settings
+            _bind_apps.Clear();
+            _apps_all.Clear();
+
+
+            if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(strFolder, out info))
+            {
+
+                foreach (KeyValuePair<string, InstalledAppInfo> kvp in rawData)
+                {
+                    Bind_AddFullPage_AppCollectionData new_Appdata = new Bind_AddFullPage_AppCollectionData();
+
+                    new_Appdata.AppName = kvp.Value.AppName;
+                    new_Appdata.InstalledDate = kvp.Value.lastModifyTime;
+
+                    if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
+                    {
+                        new_Appdata.AppIcon = strFolder + kvp.Value.IconName + ".png";
+                    }
+                    else
+                    {
+                        new_Appdata.AppIcon = "Assets/palette.png";
+                    }
+
+                    //_bind_apps.Add(new_Appdata);
+                    _apps_all.Add(new_Appdata);
+                }
+            }
+            else
+            {
+                DdpmCommonHelper.WriteUILog($"[AddAppFullPageCtrl][UserControl_Loaded] ValidateFilePath failed: {info}, it cause app list empty");
+            }
+            */
+
+            _bind_apps.Clear();
+            _apps_all.Clear();
+
+            _apps_all = GetAllAppList();
+            if (_apps_all == null || _apps_all.Count == 0)
+            {
+                return;
+            }
+
+            //Robert_Lin 2025-3-14 apply filter
+            string userInputText = "";
+            if (txtSearchText != null)
+            {
+                userInputText = txtSearchText.Text;
+            }
+            List<Bind_AddFullPage_AppCollectionData> filterList = _apps_all.Where(contact => contact.AppName.Contains(userInputText, StringComparison.InvariantCultureIgnoreCase)).ToList();
+
+            if ((filterList != null) && (filterList.Count > 0))
+            {
+                //Robert_Lin 2025-3-14 to sort the app list by AppName, default is sort by Name _Ascending
+                List<Bind_AddFullPage_AppCollectionData> sortList;
+
+                if (_isSortByNameFirst)
+                {
+                    if (sortByNameButton.IsChecked == true)
+                    {
+                        sortList = filterList.OrderBy(x => x.AppName).ToList();
+                    }
+                    else
+                    {
+                        sortList = filterList.OrderByDescending(x => x.AppName).ToList();
+                    }
+                }
+                else
+                {
+                    if (sortByDateButton.IsChecked == true)
+                    {
+                        sortList = filterList.OrderBy(x => x.InstalledDate).ToList();
+                    }
+                    else
+                    {
+                        sortList = filterList.OrderByDescending(x => x.InstalledDate).ToList();
+                    }
+                }
+
+                foreach (var item in sortList)
+                {
+                    if (!_bind_apps.Contains(item))
+                    {
+                        _bind_apps.Add(item);
+                    }
+                }
+            }
+
+            lb_Installed_App.ItemsSource = _bind_apps;
+            appListView.ItemsSource = _bind_apps;
+        }
+
+        private void appListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            btnAdd.IsEnabled = appListView.SelectedItems.Count > 0;
         }
     }
 }

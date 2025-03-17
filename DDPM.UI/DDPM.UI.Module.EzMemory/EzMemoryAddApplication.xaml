@@ -245,138 +245,297 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
+    <!-- Robert_Lin 202503017 Change the Layout, will be the same wil ColorModule
+    
+    -->
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="4*" />
-            <ColumnDefinition Width="3*" />
-        </Grid.ColumnDefinitions>
-       
-
-        <!-- 上方的返回按鈕與標題 -->
-        <!-- Robert_Lin, 2025-1-14 Margin of the Back arraow : Left=60, Top=72-->
-        <StackPanel Grid.Column="0" Margin="60,72,0,0">
-            <StackPanel Grid.Column="0" Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="left">
-                <Border Grid.Column="0" Name="prevBtn" IsEnabled="{Binding IsPrevButtonEnabled}" MouseLeftButtonDown="btnCancel_Click" Background="Transparent">
-                    <Viewbox Width="16" Height="16">
-                        <Grid Width="16" Height="16">
-                            <Path Name="ezBtnLeftArrow" Data="M7.79 14.79L8.49 13.99L2.23 8.53004L16 8.53004L16 7.47004L2.23 7.47004L8.49 2.00004L7.79 1.20004L5.93601e-07 8.00004L7.79 14.79Z" Fill="{DynamicResource DefaultTheme_TxtColor}"/>
-                        </Grid>
-                    </Viewbox>
-                </Border>
-                <!--<Button Margin="0,0,0,0"   FontFamily="Segoe MDL2 Assets" FontSize="16" Content="&#xE72B;" Height="30" Width="40"  Click="btnCancel_Click" Foreground="White" Background="Transparent" BorderThickness="0" VerticalAlignment="Top" />-->
-                <UXControls:UXTextBlock Margin="10,0,0,0" FontSize="24" Text="{Binding [Color.0], Source={x:Static lang:LangHelper.Instance}}"  />
-            </StackPanel>
-        </StackPanel>
-        <Grid Grid.Column="1" Margin="5,0,5,0">
+        <!-- Robert_Lin 20250317 NEW layout -->
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="20" />
-                <!--Title-->
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*" />
-                <!--Decription with little font size-->
-                <RowDefinition Height="0.8*" />
-                <!--Search - editable textblock-->
-                <RowDefinition Height="*" />
-                <!--Two sorting buttons-->
-                <RowDefinition Height="1.5*" />
-                <!--application available list-->
-                <RowDefinition Height="7*" />
-                <!--OK Cancel buttons-->
-                <RowDefinition Height="1.5*" />
-                <RowDefinition Height="30" />
             </Grid.RowDefinitions>
-            
-            <!-- 搜尋框 -->
-            <!-- Robert_Lin 2025-1-14, Search TextBox Width is fit to its container 
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Height="44" Margin="60,8,0,0">
+                <!-- BackArrow -->
+                <Button Width="24" Height="24" Margin="0,0,16,0"
+                        Style="{StaticResource StatelessButton}"
+                        VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand"
+                        KeyboardNavigation.TabIndex="11" 
+                        IsEnabled="{Binding IsPrevButtonEnabled}"
+                        AutomationProperties.Name="{Binding [Back], Source={x:Static lang:LangHelper.Instance}}" Click="backArrow_Click" 
+                        >
+                    <Grid Background="{StaticResource FakeTransparent}" >
+                        <ContentControl Template="{StaticResource icon_BackArrow}" Foreground="{DynamicResource TextBlock_ForegroundColor}"/>
+                    </Grid>
+                </Button>
+                <!-- Add Application -->
+                <UXControls:UXTextBlock Text="{Binding [Color.0], Source={x:Static lang:LangHelper.Instance}}"
+                                    HorizontalAlignment="Left" VerticalAlignment="Center"
+                                    TextBlockType="Header2" LineHeight="32" FontWeight="Normal"
+                                    FontSize="24" Focusable="True"
+                                    Foreground="{DynamicResource DefaultTheme_TxtColor}" />
+            </StackPanel>
+
+            <Grid Grid.Row="1" Margin="60,52">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+
+                <Grid Grid.Column="1" Width="488" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- #region Row 0: SearchBar -->
+                    <Border Grid.Row="0"  Height="40"
+                        BorderThickness="1" CornerRadius="4"
+                        BorderBrush="{DynamicResource AddAppSearch_BdColor}"
+                        Background="{DynamicResource AddAppSearch_BkColor}">
+                        <Grid>
+                            <UXControls:UXTextBox Name="txtSearchText" Width="Auto" HorizontalAlignment="Stretch"
+                                                  Watermark="{Binding [Search], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"
+                                                  VerticalContentAlignment="Center" MaxLength="30" AcceptsReturn="False" 
+                                                  Background="{DynamicResource AddAppSearch_BkColor}" BorderThickness="0" 
+                                                  Foreground="{DynamicResource AddAppSearch_TextColor}" 
+                                                  Margin="22,0,0,0"
+                                                  TextChanged="edFilter_TextChanged"/>
+                            <Grid Width="16" Height="16" Margin="11,0,0,0" HorizontalAlignment="Left">
+                                <Path Data="M16 15.26L10.7 10C11.6081 8.86609 12.0957 7.45274 12.08 6.00005C12.0801 5.20534 11.9223 4.41853 11.6157 3.68531C11.3092 2.9521 10.8601 2.28708 10.2945 1.72887C9.7288 1.17066 9.05789 0.730381 8.32068 0.4336C7.58346 0.13682 6.79464 -0.010551 6 4.51174e-05C5.20162 0.0078616 4.41266 0.173368 3.67845 0.487054C2.94423 0.800739 2.27924 1.25642 1.72169 1.82791C1.16414 2.3994 0.725012 3.07544 0.429548 3.81717C0.134084 4.55891 -0.0118946 5.35172 1.33726e-06 6.15005C1.33726e-06 7.74134 0.632142 9.26747 1.75736 10.3927C2.88258 11.5179 4.4087 12.15 6 12.15C7.46887 12.1909 8.89849 11.6726 10 10.7L15.3 16L16.04 15.26H16ZM6 11.13C5.34339 11.13 4.69321 11.0007 4.08658 10.7494C3.47996 10.4982 2.92876 10.1299 2.46447 9.66558C1.52679 8.7279 1 7.45613 1 6.13005C0.997272 4.79665 1.52097 3.51607 2.45725 2.56669C3.39352 1.6173 4.6667 1.07585 6 1.06005C6.65661 1.06005 7.30679 1.18937 7.91342 1.44065C8.52005 1.69192 9.07124 2.06022 9.53553 2.52451C9.99983 2.9888 10.3681 3.54 10.6194 4.14663C10.8707 4.75326 11 5.40344 11 6.06005C10.9975 7.39187 10.4722 8.66946 9.53699 9.61772C8.60182 10.566 7.33166 11.1091 6 11.13Z"
+                                  Fill="{DynamicResource AddAppSearch_TextColor}">
+                                </Path>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <!-- #endregion Row 0: SearchBar -->
+
+                    <!-- #region Row 1: SortBar -->
+                    <Grid Grid.Row="1" Margin="0,12,0,0" Height="40">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontFamily" Value="Roboto"/>
+                                <Setter Property="FontSize" Value="14"/>
+                                <Setter Property="FontWeight" Value="Normal"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </Grid.Resources>
+                        <ToggleButton Name="sortByNameButton" Style="{StaticResource SortToggleButton}" Grid.Column="0" IsChecked="True" HorizontalContentAlignment="Left" Click="sortByNameButton_Click">
+                            <TextBlock Text="{Binding [Color.1], Source={x:Static lang:LangHelper.Instance}}" d:Text="Sort by Name" />
+                        </ToggleButton>
+                        <ToggleButton Name="sortByDateButton" Style="{StaticResource SortToggleButton}" Grid.Column="2" IsChecked="True" HorizontalContentAlignment="Left" Click="sortByDateButton_Click"
+                                  >
+                            <TextBlock Text="{Binding [Color.2], Source={x:Static lang:LangHelper.Instance}}" d:Text="Sort by Date" />
+                        </ToggleButton>
+                    </Grid>
+                    <!-- #endregion Row 1: SortBar -->
+
+                    <!-- #region Row 2: AppListView -->
+                    <Border Grid.Row="2" Margin="0,20" CornerRadius="6" BorderThickness="0" Background="{DynamicResource AddAppListView_BkColor}" Padding="16">
+
+                        <ListView Grid.Row="2" Name="appListView" MinHeight="80" Margin="0,0"
+                              SelectedIndex="{Binding Selected}" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                              Background="Transparent"
+                          ItemContainerStyle="{StaticResource AppListViewItemStyle}" SelectionChanged="appListView_SelectionChanged">
+                            <ListView.Template>
+                                <ControlTemplate TargetType="{x:Type ListView}">
+                                    <ScrollViewer>
+                                        <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    </ScrollViewer>
+                                </ControlTemplate>
+                            </ListView.Template>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <UXControls:UXRadioButton Grid.Column="0" GroupName="appListViewGroup" VerticalAlignment="Center"
+                                                          IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected, Mode=TwoWay}" >
+                                            <UXControls:UXRadioButton.Resources>
+                                                <!-- Robert_Lin 2025-3-17 to fix the issue: The background color of UXRadioButton is not transparent -->
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                </Style>
+                                            </UXControls:UXRadioButton.Resources>
+                                        </UXControls:UXRadioButton>
+
+                                        <Image Grid.Column="1" Grid.Row="1" x:Name="appIcon" Source="{Binding AppIcon}" Width="24"  Margin="2,0,4,0" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" x:Name="appName" Text="{Binding AppName}"  VerticalAlignment="Center" Margin="0,6,0,0"
+                                           FontFamily="Roboto" FontSize="16" FontWeight="Normal" LineHeight="24" Foreground="{DynamicResource SortToggleButton_TextColor}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Border>
+                    <!-- #endregion Row 2: AppListView -->
+                    
+                    <!-- #region Row 3: ButtonBar -->
+                    <Grid Grid.Row="3">
+                        <WrapPanel HorizontalAlignment="Center">
+                            <Button Name="btnSelect" Content="{Binding [EazyMemory.33], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                                Style="{StaticResource PrimaryButtonStyle}" Click="btnSelect_Click"/>
+                            <Button Name="btnAdd" Content="{Binding [Confirm], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0"
+                                Style="{StaticResource PrimaryButtonStyle}"  IsEnabled="False"  Click="btnAdd_Click"/>
+                        </WrapPanel>
+                    </Grid>
+                    <!-- #endregion Row 3: ButtonBar -->
+                    
+                    <!-- #region Row 4: BottomSpace -->
+                    <Grid Grid.Row="4" MaxHeight="128" MinHeight="26"/>
+                    <!-- #endregion Row 4: BottomSpace -->
+                </Grid>
+            </Grid>
+        </Grid>
+        
+        <!-- Robert_Lin 20250317 - OLD layout -->
+        <Grid Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="3*" />
+            </Grid.ColumnDefinitions>
+
+
+            <!-- 上方的返回按鈕與標題 -->
+            <!-- Robert_Lin, 2025-1-14 Margin of the Back arraow : Left=60, Top=72-->
+            <StackPanel Grid.Column="0" Margin="60,72,0,0">
+                <StackPanel Grid.Column="0" Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="left">
+                    <Border Grid.Column="0" Name="prevBtn" IsEnabled="{Binding IsPrevButtonEnabled}" MouseLeftButtonDown="btnCancel_Click" Background="Transparent">
+                        <Viewbox Width="16" Height="16">
+                            <Grid Width="16" Height="16">
+                                <Path Name="ezBtnLeftArrow" Data="M7.79 14.79L8.49 13.99L2.23 8.53004L16 8.53004L16 7.47004L2.23 7.47004L8.49 2.00004L7.79 1.20004L5.93601e-07 8.00004L7.79 14.79Z" Fill="{DynamicResource DefaultTheme_TxtColor}"/>
+                            </Grid>
+                        </Viewbox>
+                    </Border>
+                    <!--<Button Margin="0,0,0,0"   FontFamily="Segoe MDL2 Assets" FontSize="16" Content="&#xE72B;" Height="30" Width="40"  Click="btnCancel_Click" Foreground="White" Background="Transparent" BorderThickness="0" VerticalAlignment="Top" />-->
+                    <UXControls:UXTextBlock Margin="10,0,0,0" FontSize="24" Text="{Binding [Color.0], Source={x:Static lang:LangHelper.Instance}}"  />
+                </StackPanel>
+            </StackPanel>
+            <Grid Grid.Column="1" Margin="5,0,5,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20" />
+                    <!--Title-->
+                    <RowDefinition Height="*" />
+                    <!--Decription with little font size-->
+                    <RowDefinition Height="0.8*" />
+                    <!--Search - editable textblock-->
+                    <RowDefinition Height="*" />
+                    <!--Two sorting buttons-->
+                    <RowDefinition Height="1.5*" />
+                    <!--application available list-->
+                    <RowDefinition Height="7*" />
+                    <!--OK Cancel buttons-->
+                    <RowDefinition Height="1.5*" />
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+
+                <!-- 搜尋框 -->
+                <!-- Robert_Lin 2025-1-14, Search TextBox Width is fit to its container 
             OLD:
                    <UXControls:UXTextBox x:Name="edFilter" FontSize="14" Width="487" Height="40" TextChanged="edFilter_TextChanged" HorizontalContentAlignment="Left" VerticalAlignment="Center"/>
             -->
-            <Grid Grid.Row="3" >
-                <UXControls:UXTextBox x:Name="edFilter" FontSize="14" Height="40" TextChanged="edFilter_TextChanged" HorizontalContentAlignment="Stretch" VerticalAlignment="Center"/>
-            </Grid>
+                <Grid Grid.Row="3" >
+                    <UXControls:UXTextBox x:Name="edFilter" FontSize="14" Height="40" TextChanged="edFilter_TextChanged" HorizontalContentAlignment="Stretch" VerticalAlignment="Center"/>
+                </Grid>
 
-            <!-- 排序按鈕 -->
-            <Grid Grid.Row="4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
+                <!-- 排序按鈕 -->
+                <Grid Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
 
-                <UXControls:UXButton Grid.Column="0" Margin="10,0" x:Name="btnSortbyName_Ascending" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"  Height="40"  Foreground="{DynamicResource DdpmCB_FgColor}"  Background="{DynamicResource DdpmCB_BkColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Click="btnSortbyName_Ascending_Click">
-                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock  HorizontalAlignment="Center" Text="{Binding [Color.1], Source={x:Static lang:LangHelper.Instance}}"  />
-                        <Path Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"  Data="M 0 0 L 5 5 L 10 0"  />
-                    </StackPanel>
-                </UXControls:UXButton>
-                <UXControls:UXButton Grid.Column="1"  Margin="10,0" x:Name="btnSortbyDate_Ascending" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="40" Foreground="{DynamicResource DdpmCB_FgColor}" Background="{DynamicResource DdpmCB_BkColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="btnSortbyDate_Ascending_Click">
-                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Text="{Binding [Color.2], Source={x:Static lang:LangHelper.Instance}}"  />
-                        <Path Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"  Data="M 0 0 L 5 5 L 10 0"  />
-                    </StackPanel>
-                </UXControls:UXButton>
-            </Grid>
+                    <UXControls:UXButton Grid.Column="0" Margin="10,0" x:Name="btnSortbyName_Ascending" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"  Height="40"  Foreground="{DynamicResource DdpmCB_FgColor}"  Background="{DynamicResource DdpmCB_BkColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Click="btnSortbyName_Ascending_Click">
+                        <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock  HorizontalAlignment="Center" Text="{Binding [Color.1], Source={x:Static lang:LangHelper.Instance}}"  />
+                            <Path Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"  Data="M 0 0 L 5 5 L 10 0"  />
+                        </StackPanel>
+                    </UXControls:UXButton>
+                    <UXControls:UXButton Grid.Column="1"  Margin="10,0" x:Name="btnSortbyDate_Ascending" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="40" Foreground="{DynamicResource DdpmCB_FgColor}" Background="{DynamicResource DdpmCB_BkColor}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="btnSortbyDate_Ascending_Click">
+                        <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Grid.Column="0" HorizontalAlignment="Left" Text="{Binding [Color.2], Source={x:Static lang:LangHelper.Instance}}"  />
+                            <Path Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"  Data="M 0 0 L 5 5 L 10 0"  />
+                        </StackPanel>
+                    </UXControls:UXButton>
+                </Grid>
 
-            <!-- 安裝的應用程式列表 -->
-            <ListView  Grid.Row="5" x:Name="lb_Installed_App"   Background="{DynamicResource DefaultTheme_BdBdColor}" SelectionMode="Single" SelectedIndex="{Binding Selected}" SelectionChanged="lb_Installed_App_SelectionChanged">
-                <ListView.Template>
-                    <ControlTemplate TargetType="{x:Type ListView}">
-                        <Border CornerRadius="5">
-                            <ScrollViewer>
-                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                            </ScrollViewer>
-                        </Border>
-                    </ControlTemplate>
-                </ListView.Template>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="auto" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto" />
-                                <RowDefinition Height="auto" />
-                                <RowDefinition Height="auto" />
-                            </Grid.RowDefinitions>
-                            <UXControls:UXRadioButton  Grid.Column="0" Grid.Row="1" GroupName="Group" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" >
-                                <UXControls:UXRadioButton.Resources>
-                                    <Style TargetType="{x:Type UXControls:UXRadioButton}">
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type RadioButton}">
-                                                    <UXControls:UXCheckBox  VerticalAlignment="Center" Background="{DynamicResource DefaultTheme_BdBdColor}"
+                <!-- 安裝的應用程式列表 -->
+                <ListView  Grid.Row="5" x:Name="lb_Installed_App"   Background="{DynamicResource DefaultTheme_BdBdColor}" SelectionMode="Single" SelectedIndex="{Binding Selected}" SelectionChanged="lb_Installed_App_SelectionChanged">
+                    <ListView.Template>
+                        <ControlTemplate TargetType="{x:Type ListView}">
+                            <Border CornerRadius="5">
+                                <ScrollViewer>
+                                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                </ScrollViewer>
+                            </Border>
+                        </ControlTemplate>
+                    </ListView.Template>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+                                <UXControls:UXRadioButton  Grid.Column="0" Grid.Row="1" GroupName="Group" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" >
+                                    <UXControls:UXRadioButton.Resources>
+                                        <Style TargetType="{x:Type UXControls:UXRadioButton}">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type RadioButton}">
+                                                        <UXControls:UXCheckBox  VerticalAlignment="Center" Background="{DynamicResource DefaultTheme_BdBdColor}"
                                                                     IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, 
                                                                     Path=IsChecked, Mode=TwoWay}"
                                                                     IsHitTestVisible="False" Content="{TemplateBinding Content}" />
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
 
-                                </UXControls:UXRadioButton.Resources>
-                            </UXControls:UXRadioButton>
-                            <Image Grid.Column="1" Grid.Row="1" x:Name="appIcon" Source="{Binding AppIcon}" Width="40" Margin="20,0,10,0" VerticalAlignment="Center" />
-                            <UXControls:UXTextBlock Grid.Column="2" Grid.Row="1" x:Name="appName" Text="{Binding AppName}"  VerticalAlignment="Center" />
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <!-- 底部按鈕 -->
-            <Grid Grid.Row="6" Margin="0,20,0,0">
-                <!-- Robert_Lin 2025-1-14 [PIMS-332067] L10N: i18N: DDPM 2.0: GUI: TP1: es-ES, es-XL, fr-CA, it-IT, pt-PT: StringID: EazyMemory.33 was clipped -->
-                <!-- NEW -->
-                <WrapPanel HorizontalAlignment="Center">
-                    <Button x:Name="btnSelect" Content="{Binding [EazyMemory.33], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                                    </UXControls:UXRadioButton.Resources>
+                                </UXControls:UXRadioButton>
+                                <Image Grid.Column="1" Grid.Row="1" x:Name="appIcon" Source="{Binding AppIcon}" Width="40" Margin="20,0,10,0" VerticalAlignment="Center" />
+                                <UXControls:UXTextBlock Grid.Column="2" Grid.Row="1" x:Name="appName" Text="{Binding AppName}"  VerticalAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <!-- 底部按鈕 -->
+                <Grid Grid.Row="6" Margin="0,20,0,0">
+                    <!-- Robert_Lin 2025-1-14 [PIMS-332067] L10N: i18N: DDPM 2.0: GUI: TP1: es-ES, es-XL, fr-CA, it-IT, pt-PT: StringID: EazyMemory.33 was clipped -->
+                    <!-- NEW -->
+                    <WrapPanel HorizontalAlignment="Center">
+                        <Button x:Name="btnSelectOld" Content="{Binding [EazyMemory.33], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
                             Style="{StaticResource PrimaryButtonStyle}" Click="btnSelect_Click"/>
-                    <Button x:Name="btnAdd" Content="{Binding [Confirm], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0"
+                        <Button x:Name="btnAddOld" Content="{Binding [Confirm], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0"
                             Style="{StaticResource PrimaryButtonStyle}"  IsEnabled="False"  Click="btnAdd_Click"/>
-                </WrapPanel>
-                
-                <!-- OLD -->
-                
-                <!--<Grid.ColumnDefinitions>
+                    </WrapPanel>
+
+                    <!-- OLD -->
+
+                    <!--<Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
@@ -388,6 +547,7 @@
                     <UXControls:UXButton x:Name="btnAdd_OLD" Content="{Binding [Confirm], Source={x:Static lang:LangHelper.Instance}}" Width="114" Height="40"  CornerRadius="2" Click="btnAdd_Click" IsEnabled="False" />
 
                 </StackPanel>-->
+                </Grid>
             </Grid>
         </Grid>
     </Grid>
