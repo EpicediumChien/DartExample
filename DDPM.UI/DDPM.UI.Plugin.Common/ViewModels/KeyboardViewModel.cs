@@ -1070,26 +1070,29 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private string GetKeyTooltip(KeyName keyName)
         {
-            var action = KeyboardAction.KeyActions[keyName];
-            ActionItem actionItem;
-            var parameter = "";
-            if (action.AssignedAction.ID == -1)
+            if (KeyboardAction.KeyActions.TryGetValue(keyName, out SelectedAction? action))
             {
-                if (action.DefaultActionID == -1)
+                ActionItem actionItem;
+                var parameter = "";
+                if (action.AssignedAction.ID == -1)
                 {
-                    return Strings.NullActionTooltip1;
+                    if (action.DefaultActionID == -1)
+                    {
+                        return Strings.NullActionTooltip1;
+                    }
+                    actionItem = Actions.KnMActions[action.DefaultActionID];
                 }
-                actionItem = Actions.KnMActions[action.DefaultActionID];
+                else
+                {
+                    actionItem = Actions.KnMActions[action.AssignedAction.ID];
+                    parameter = action.AssignedAction.Parameter;
+                }
+                string tooltip = actionItem.Caption!;
+                if (!string.IsNullOrEmpty(parameter))
+                    tooltip += " : " + parameter;
+                return tooltip;
             }
-            else
-            {
-                actionItem = Actions.KnMActions[action.AssignedAction.ID];
-                parameter = action.AssignedAction.Parameter;
-            }
-            string tooltip = actionItem.Caption!;
-            if (!string.IsNullOrEmpty(parameter))
-                tooltip += " : " + parameter;
-            return tooltip;
+            return string.Empty;
         }
 
         public string SelectedKey { get; set; } = "";

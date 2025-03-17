@@ -11,7 +11,7 @@ namespace DDPM.OSDs
 {
     public class OSD_Controler
     {
-        private BatteryLowIIWin BatteryLowIIWinx;
+        //private BatteryLowIIWin BatteryLowIIWinx;
         private CapsLockOffWin? CapsLockOffWinx = null;
         private CapsLockOnWin? CapsLockOnWinx = null;
         private DisplayChangedWin? DisplayChangedWinx = null;
@@ -67,7 +67,7 @@ namespace DDPM.OSDs
 
         // especially for show the OSD with an "close" button
         private OSDMainWin? OSDMainWin = null;
-        public void ShowMultipleOSD(string guid, OSDType_Device oSDType_Device, string title, string content)
+        public void ShowMultipleOSD(string guid, OSDType_Device oSDType_Device, OSDType_Op oSDType_Op, string title, string content)
         {
             lock (osdLock)
             {
@@ -76,12 +76,13 @@ namespace DDPM.OSDs
                     OSDMainWin = new OSDMainWin();
                     OSDMainWin.Closed += CloseMultipleOSD;
                 }
-                if (!OSDMainWin.OSDWins.Any(x => x.GUID.Equals(guid, StringComparison.InvariantCultureIgnoreCase)))
+                if (!OSDMainWin.OSDWins.Any(x => x.GUID.Equals(guid, StringComparison.InvariantCultureIgnoreCase) && x.OSDType_Op.Equals(oSDType_Op)))
                 {
                     OSDMainWin.AddShowOSDWinInfo(new OSDWinInfo()
                     {
                         GUID = guid,
                         OSDType_Device = oSDType_Device,
+                        OSDType_Op = oSDType_Op,
                         ShowStringTitle = title,
                         /* ShowStringTitle = title + "(" + guid.Substring(0, 4) + ")",*/
                         ShowStringContent = content
@@ -99,7 +100,29 @@ namespace DDPM.OSDs
                 return !(OSDMainWin == null) && OSDMainWin.OSDWins.Count > 0;
             }
         }
+        public void CloseMultipleOSDByGuidAndOp(string guid, OSDType_Op oSDType_Op)
+        {
+            lock (osdLock)
+            {
+                if (OSDMainWin != null)
+                {
+                    OSDWinInfo? target = OSDMainWin.OSDWins.FirstOrDefault(x => x.GUID.Equals(guid, StringComparison.InvariantCultureIgnoreCase) && x.OSDType_Op.Equals(oSDType_Op));
+                    if (target != null)
+                    {
+                        target.IsFadeOut = true;
+                        OSDMainWin.RemoveShowOSDWinInfo(target);
+                        if (OSDMainWin.OSDWins.Count == 0)
+                        {
+                            OSDMainWin.Closed -= CloseMultipleOSD;
+                            OSDMainWin.CloseWindow();
+                            OSDMainWin = null;
+                        }
+                    }
 
+                }
+            }
+
+        }
         public void CloseMultipleOSD(object? sender, EventArgs e)
         {
             lock (osdLock)
