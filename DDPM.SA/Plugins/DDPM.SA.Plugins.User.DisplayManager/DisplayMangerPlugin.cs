@@ -3225,6 +3225,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         ret_DisplayPropertiesInfo.SupportedProperties = rc.SupportedProperties;
                         ret_DisplayPropertiesInfo.CurrentOrientation = rc.CurrentOrientation;
                     }
+                    if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo ret_GamingDisplayPropertiesInfo))
+                    {
+                        _logs.DebugMsg("[DisplayMangerPlugin] GetMonitorGamingDisplayPropertiesInfo update display data go");
+                        ret_GamingDisplayPropertiesInfo.SupportedProperties = rc.SupportedProperties;
+                    }
                 }
             }
             _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties done");
