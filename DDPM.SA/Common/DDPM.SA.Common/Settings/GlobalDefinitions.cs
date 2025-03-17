@@ -50,6 +50,7 @@ namespace DDPM.SA.Common.Settings
         }
 
         //Log location global variables, prefix could be "%programdata%" or "%localappdata%" by the design
+        public const string LogDDPM = @"\Dell\Dell Display and Peripheral Manager";
         public const string LogSwUpdater = @"\Dell\Dell Display and Peripheral Manager\DdpmSwUpdater";
         public const string LogFwUpdater = @"\Dell\Dell Display and Peripheral Manager\FWUpdateLog";
         public const string LogDPeM = @"\Dell\Dell Peripheral Manager\DPeMSDK\Log";
