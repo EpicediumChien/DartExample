@@ -176,9 +176,9 @@ namespace NGA.Resources {
                 return ResourceManager.GetString("Close", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   查詢類似 To access presence sensing features, use the link below to download compitible webcam firmware 的當地語系化字串。
+        ///   查詢類似 To access presence sensing features, use the link below to download compatible webcam firmware 的當地語系化字串。
         /// </summary>
         public static string ColorMsg_1 {
             get {
