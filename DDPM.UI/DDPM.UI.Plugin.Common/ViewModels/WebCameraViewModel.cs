@@ -1364,14 +1364,15 @@ namespace DDPM.UI.Plugin.ViewModels
                         //Derek 2024/11/06 Webcam PIMS-317629 
                         //On Turned on Auto Frame AI option, autofocus should be on and be greyed out. (can't select)
                         OriginalAutoFocus = IsFocusOn;
-                        IsFocusOn = true;
+                        _isFocusOn = true;
                     }
                     else
                     {
                         SetFOV_Selected(SelectedFovIndex);
                         if (!OriginalAutoFocus)
-                            IsFocusOn = false;
+                            _isFocusOn = false;
                     }
+                    OnPropertyChanged(nameof(IsFocusOn));
                 }
                 catch (Exception ex)
                 {

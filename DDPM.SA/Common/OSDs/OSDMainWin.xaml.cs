@@ -84,6 +84,7 @@ namespace DDPM.OSDs
                 Dispatcher.Invoke(() => OSDWins.Add(oSDWinInfo));
                 return;
             }
+            OSDWins.Add(oSDWinInfo);
         }
 
         public void CloseWindow()
