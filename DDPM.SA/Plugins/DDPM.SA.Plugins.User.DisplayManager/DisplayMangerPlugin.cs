@@ -56,6 +56,20 @@ namespace DDPM.SA.Plugins.User.DisplayManager
     [PluginRequires(Id = IDs.VCP_CORE_PLUGIN_ID, Version = "1.0.0", AllowDynamicResolving = true)]
     public class DisplayMangerPlugin : BaseAgentPlugin, IDisposableObservable, IDisplayService
     {
+
+        private static void WriteLog(ILog log, string message, bool isError = false)
+        {
+#if DEBUG
+            Console.WriteLine(message);
+#endif
+            if (log == null)
+                return;
+            if (!isError)
+                log.Info(message);
+            else
+                log.Error(message);
+        }
+
         #region Private Members
 
         private const string pluginName = "DisplayManagerPlugin";
@@ -437,7 +451,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors Exception is " + ex.Message);
+                //_logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors Exception is " + ex.Message);
+                WriteLog(Log, "[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors Exception is " + ex.Message, true);
                 return new List<MonitorInfo>();
             }
         }
@@ -863,7 +878,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     }
                                     catch (Exception ex)
                                     {
-                                        _logs.DebugMsg($"[Error] Exception occurred: {ex.Message}");
+                                        //_logs.DebugMsg($"[Error] Exception occurred: {ex.Message}");
+                                        WriteLog(Log, $"[Error] Exception occurred: {ex.Message}", true);
                                         usbUpstreamList = _usbUpstreamList;
                                         //usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
                                     }
@@ -2040,7 +2056,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig Exception {ex.Message}");
+                //_logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig Exception {ex.Message}");
+                WriteLog(Log, $"[DisplayMangerPlugin] GetAllExistAlsConfig Exception {ex.Message}", true);
                 return Task.FromResult(new List<ALSConfig>());
             }
         }
@@ -2070,7 +2087,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateExistAlsConfig Exception {ex.Message}");
+                //_logs.DebugMsg($"[DisplayMangerPlugin] UpdateExistAlsConfig Exception {ex.Message}");
+                WriteLog(Log, $"[DisplayMangerPlugin] UpdateExistAlsConfig Exception {ex.Message}", true);
                 return Task.FromResult(new List<ALSConfig>());
             }
         }
