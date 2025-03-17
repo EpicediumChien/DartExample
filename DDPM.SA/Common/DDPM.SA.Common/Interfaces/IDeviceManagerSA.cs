@@ -1533,7 +1533,7 @@ namespace DDPM.SA.Common
 
         #region OSD
 
-        Task ShowOSD(object monitorInfo, OSDType type, OSDType_Device Device, string Content);
+        Task ShowOSD(object monitorInfo, OSDType type, OSDType_Device Device, string Content, Guid guid = default);
 
         Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State);
 

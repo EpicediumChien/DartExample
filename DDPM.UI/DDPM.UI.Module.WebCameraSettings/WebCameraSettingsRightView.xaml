@@ -11,610 +11,610 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="675" d:DesignWidth="554" Loaded="UserControl_Loaded">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-            <PluginCommon:ThicknessConverter x:Key="MarginConverter" />
-            <PluginCommon:BooleanToInverseConverter x:Key="BooleanToInverseConverter" />
-            <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
-            <PluginCommon:HeightConverter x:Key="HeightConverter" />
-            <Style x:Key="TextBlockStyle1" TargetType="{x:Type UXControls:UXTextBlock}">
-                <Setter Property="Foreground" Value="#FFFFFF" />
-                <Setter Property="FontFamily" Value="Roboto" />
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="FontWeight" Value="Medium" />
-            </Style>
-            <Style x:Key="ToggleSwitch1" TargetType="{x:Type UXControls:UXToggleSwitch}">
-                <Setter Property="Foreground" Value="#FFFFFF" />
-                <Setter Property="FontFamily" Value="Roboto" />
-                <Setter Property="FontSize" Value="16" />
-            </Style>
-            <Style x:Key="DisableToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
-                <Setter Property="Placement" Value="Top" />
-                <Setter Property="VerticalOffset" Value="45" />
-                <Setter Property="HorizontalOffset">
-                    <Setter.Value>
-                        <MultiBinding Converter="{StaticResource CenterToolTipConverter}">
-                            <Binding RelativeSource="{RelativeSource Self}" Path="PlacementTarget.ActualWidth" />
-                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth" />
-                        </MultiBinding>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <Grid Margin="0,0,0,15">
-        <Border CornerRadius="13" Margin="0,10,0,0" Width="470">
-            <Border.Height>
-                <MultiBinding Converter="{StaticResource HeightConverter}">
-                    <Binding Path="Height" RelativeSource="{RelativeSource AncestorType=Grid}" />
-                </MultiBinding>
-            </Border.Height>
-            <StackPanel Margin="16,16,2,0" Orientation="Vertical">
-                <Grid>
-                    <UXControls:UXTextBlock Margin="0,10,0,6" Text="{Binding [WebCameraSettings.0], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleCaptionStyle}" />
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+      <PluginCommon:ThicknessConverter x:Key="MarginConverter" />
+      <PluginCommon:BooleanToInverseConverter x:Key="BooleanToInverseConverter" />
+      <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
+      <PluginCommon:HeightConverter x:Key="HeightConverter" />
+      <Style x:Key="TextBlockStyle1" TargetType="{x:Type UXControls:UXTextBlock}">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Medium" />
+      </Style>
+      <Style x:Key="ToggleSwitch1" TargetType="{x:Type UXControls:UXToggleSwitch}">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="16" />
+      </Style>
+      <Style x:Key="DisableToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+        <Setter Property="Placement" Value="Top" />
+        <Setter Property="VerticalOffset" Value="45" />
+        <Setter Property="HorizontalOffset">
+          <Setter.Value>
+            <MultiBinding Converter="{StaticResource CenterToolTipConverter}">
+              <Binding RelativeSource="{RelativeSource Self}" Path="PlacementTarget.ActualWidth" />
+              <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth" />
+            </MultiBinding>
+          </Setter.Value>
+        </Setter>
+      </Style>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Grid Margin="0,0,0,15">
+    <Border CornerRadius="13" Margin="0,10,0,0" Width="470">
+      <Border.Height>
+        <MultiBinding Converter="{StaticResource HeightConverter}">
+          <Binding Path="Height" RelativeSource="{RelativeSource AncestorType=Grid}" />
+        </MultiBinding>
+      </Border.Height>
+      <StackPanel Margin="16,16,2,0" Orientation="Vertical">
+        <Grid>
+          <UXControls:UXTextBlock Margin="0,10,0,6" Text="{Binding [WebCameraSettings.0], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleCaptionStyle}" />
 
-                    <Border Margin="0,0,67,0" Background="{StaticResource Webcam_UndoRedo_DisableBkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Undo2Visibility}">
-                        <ContentControl Template="{StaticResource icon_Undo}" Foreground="{DynamicResource Webcam_UndoRedo_DisableFgColor}"
+          <Border Margin="0,0,67,0" Background="{StaticResource Webcam_UndoRedo_DisableBkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Undo2Visibility}">
+            <ContentControl Template="{StaticResource icon_Undo}" Foreground="{DynamicResource Webcam_UndoRedo_DisableFgColor}"
                                         HorizontalAlignment="Center" VerticalContentAlignment="Center"/>
-                    </Border>
+          </Border>
 
-                    <Border Margin="0,0,17,0" Background="{StaticResource Webcam_UndoRedo_DisableBkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Redo2Visibility}">
-                        <ContentControl Template="{StaticResource icon_Redo}" Foreground="{DynamicResource Webcam_UndoRedo_DisableFgColor}"
+          <Border Margin="0,0,17,0" Background="{StaticResource Webcam_UndoRedo_DisableBkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Redo2Visibility}">
+            <ContentControl Template="{StaticResource icon_Redo}" Foreground="{DynamicResource Webcam_UndoRedo_DisableFgColor}"
                                         HorizontalAlignment="Center" VerticalContentAlignment="Center"/>
-                    </Border>
+          </Border>
 
-                    <Border Margin="0,0,67,0" Background="{DynamicResource Webcam_UndoRedo_BkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding UndoVisibility}"
+          <Border Margin="0,0,67,0" Background="{DynamicResource Webcam_UndoRedo_BkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding UndoVisibility}"
                             MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="0" Cursor="Hand">
-                        <ContentControl Template="{StaticResource icon_Undo}" Foreground="{DynamicResource DefaultTheme_PathColor}"
+            <ContentControl Template="{StaticResource icon_Undo}" Foreground="{DynamicResource DefaultTheme_PathColor}"
                                         HorizontalAlignment="Center" VerticalContentAlignment="Center"/>
-                    </Border>
+          </Border>
 
-                    <Border Margin="0,0,17,0" Background="{DynamicResource Webcam_UndoRedo_BkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding RedoVisibility}"
+          <Border Margin="0,0,17,0" Background="{DynamicResource Webcam_UndoRedo_BkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding RedoVisibility}"
                             MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="1" Cursor="Hand">
-                        <ContentControl Template="{StaticResource icon_Redo}" Foreground="{DynamicResource DefaultTheme_PathColor}"
+            <ContentControl Template="{StaticResource icon_Redo}" Foreground="{DynamicResource DefaultTheme_PathColor}"
                                         HorizontalAlignment="Center" VerticalContentAlignment="Center"/>
-                    </Border>
-                </Grid>
-                <DockPanel Margin="0,16,0,4000">
-                    <DockPanel.Height>
-                        <MultiBinding Converter="{StaticResource HeightConverter}" ConverterParameter="85">
-                            <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=1}" />
-                        </MultiBinding>
-                    </DockPanel.Height>
-                    <UXControls:UXScrollViewer>
-                        <StackPanel>
-                            <Border Name="bdrAlert1" Background="#364861" CornerRadius="4" Margin="0,0,0,15" BorderThickness="7,0,0,0" BorderBrush="#0E92F2" Visibility="{Binding MessageBoxVisibility}"
+          </Border>
+        </Grid>
+        <DockPanel Margin="0,16,0,4000">
+          <DockPanel.Height>
+            <MultiBinding Converter="{StaticResource HeightConverter}" ConverterParameter="85">
+              <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=1}" />
+            </MultiBinding>
+          </DockPanel.Height>
+          <UXControls:UXScrollViewer>
+            <StackPanel>
+              <Border Name="bdrAlert1" Background="#364861" CornerRadius="4" Margin="0,0,0,15" BorderThickness="7,0,0,0" BorderBrush="#0E92F2" Visibility="{Binding MessageBoxVisibility}"
 >
-                                <StackPanel Orientation="Horizontal">
-                                    <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                    <UXControls:UXTextBlock Name="txtMessage" FontSize="13" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap" Width="362" 
+                <StackPanel Orientation="Horizontal">
+                  <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                  <UXControls:UXTextBlock Name="txtMessage" FontSize="13" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap" Width="362" 
                                           Text="{Binding [Camera.13], Source={x:Static lang:LangHelper.Instance}}"
                                           VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,15,0,13" LineHeight="21" Padding="2,3,10,2">
-                                    </UXControls:UXTextBlock>
-                                    <Image x:Name="CloseIcon" Source="/DDPM.UI.Common;component/Resources/Close.png" Stretch="Fill" Focusable="True"
+                  </UXControls:UXTextBlock>
+                  <Image x:Name="CloseIcon" Source="/DDPM.UI.Common;component/Resources/Close.png" Stretch="Fill" Focusable="True"
                          VerticalAlignment="Center" HorizontalAlignment="Right" Width="15" Height="15" MouseLeftButtonDown="CloseMessageBox" Cursor="Hand">
-                                    </Image>
-                                </StackPanel>
+                  </Image>
+                </StackPanel>
+              </Border>
+              <Border CornerRadius="6" Visibility="{Binding AutoFramingVisibility}">
+                <StackPanel Orientation="Vertical">
+                  <Grid Margin="16,25,16,0">
+                    <StackPanel Orientation="Horizontal">
+                      <!-- Derek for PIMS-332102 -->
+                      <UXControls:UXTextBlock MaxWidth="270" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraSettings.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                      <Border ToolTipService.Placement="Left" Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                        <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        <Border.ToolTip>
+                          <ToolTip Placement="Bottom" VerticalOffset="15" HorizontalOffset="220">
+                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                              <TextBlock Text="{Binding [WebCameraSettings.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
                             </Border>
-                            <Border CornerRadius="6" Visibility="{Binding AutoFramingVisibility}">
-                                <StackPanel Orientation="Vertical">
-                                    <Grid Margin="16,25,16,0">
-                                        <StackPanel Orientation="Horizontal">
-                                            <!-- Derek for PIMS-332102 -->
-                                            <UXControls:UXTextBlock MaxWidth="270" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraSettings.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                                            <Border ToolTipService.Placement="Left" Background="{StaticResource FakeTransparent}" Cursor="Hand">
-                                                <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                                <Border.ToolTip>
-                                                    <ToolTip Placement="Bottom" VerticalOffset="15" HorizontalOffset="220">
-                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
-                                                        </Border>
-                                                    </ToolTip>
-                                                </Border.ToolTip>
-                                            </Border>
-                                        </StackPanel>
-                                        <UXControls:UXToggleSwitch Click="AutoFrameSwitch_Click" IsChecked="{Binding Path= IsAutoFramingOn}" Content="{Binding Path=IsAutoFramingOnText}" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontFamily="Roboto" FontSize="16" IsEnabled="{Binding IsNotRecording}"/>
-                                    </Grid>
-                                    <Grid Margin="32,12,16,0" Visibility="{Binding AutoFramingTransitionVisibility}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <UXControls:UXTextBlock Margin="0,8,0,8" Text="{Binding [WebCameraSettings.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding Path= IsAutoFramingOn}" />
-                                            <Border ToolTipService.Placement="Center" ToolTipService.VerticalOffset="45" Background="{StaticResource FakeTransparent}" Cursor="Hand">
-                                                <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                                <Border.ToolTip>
-                                                    <ToolTip>
-                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0"/>
-                                                        </Border>
-                                                    </ToolTip>
-                                                </Border.ToolTip>
-                                            </Border>
-                                        </StackPanel>
-                                        <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsAutoFramingTransitionOn}" Content="{Binding Path=IsAutoFramingTransitionOnText}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16" IsEnabled="{Binding IsAutoFramingOn}" />
-                                    </Grid>
-                                    <StackPanel Orientation="Vertical" Margin="32,22,16,16" Visibility="{Binding AutoFramingSensitivityVisibility}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsAutoFramingOn}" />
-                                            <Border ToolTipService.Placement="Center" ToolTipService.VerticalOffset="45" Background="{StaticResource FakeTransparent}" Cursor="Hand">
-                                                <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                                <Border.ToolTip>
-                                                    <ToolTip>
-                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
-                                                        </Border>
-                                                    </ToolTip>
-                                                </Border.ToolTip>
-                                            </Border>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
-                                            <Border x:Name="btnAFS0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="AutoFramingSensitivity_Click" Height="30" Width="192" Tag="1" IsEnabled="{Binding IsAutoFramingOn}">
-                                                <Border.Style>
-                                                    <Style TargetType="Border" >
-                                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="1">
-                                                                <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-                                                                <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="2">
-                                                                <Setter Property="Cursor" Value="Hand" />
-                                                            </DataTrigger>
-                                                            <Trigger Property="IsEnabled"  Value="false">
-                                                                <Setter Property="Opacity"  Value="0.5" />
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Border.Style>
-                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
-                                                    <UXControls:UXTextBlock.Style>
-                                                        <Style TargetType="UXControls:UXTextBlock">
-                                                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="1">
-                                                                    <Setter Property="Foreground"  Value="#FFFFFF" />
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </UXControls:UXTextBlock.Style>
-                                                </UXControls:UXTextBlock>
-                                            </Border>
-                                            <Border x:Name="btnAFS1" CornerRadius="0,5,5,0" Focusable="True" MouseLeftButtonDown="AutoFramingSensitivity_Click" Height="30" Width="192" Tag="2" IsEnabled="{Binding IsAutoFramingOn}">
-                                                <Border.Style>
-                                                    <Style TargetType="Border" >
-                                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="2">
-                                                                <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-                                                                <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="1">
-                                                                <Setter Property="Cursor" Value="Hand" />
-                                                            </DataTrigger>
-                                                            <Trigger Property="IsEnabled"  Value="false">
-                                                                <Setter Property="Opacity"  Value="0.5" />
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Border.Style>
-                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.8], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
-                                                    <UXControls:UXTextBlock.Style>
-                                                        <Style TargetType="UXControls:UXTextBlock">
-                                                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="2">
-                                                                    <Setter Property="Foreground"  Value="#FFFFFF" />
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </UXControls:UXTextBlock.Style>
-                                                </UXControls:UXTextBlock>
-                                            </Border>
-                                        </StackPanel>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Vertical" Margin="32,2,16,16" Visibility="{Binding AutoFramingSizeVisibility}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsAutoFramingOn}" />
-                                            <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
-                                                <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                                <Border.ToolTip>
-                                                    <ToolTip Placement="Center" VerticalOffset="40">
-                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.27], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
-                                                        </Border>
-                                                    </ToolTip>
-                                                </Border.ToolTip>
-                                            </Border>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
-                                            <Border x:Name="btnFS0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="AutoFramingSize_Click" Height="30" Width="192" Tag="2" IsEnabled="{Binding IsAutoFramingOn}">
-                                                <Border.Style>
-                                                    <Style TargetType="Border" >
-                                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding AutoFramingFrameSize}"  Value="2">
-                                                                <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-                                                                <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding AutoFramingFrameSize}"  Value="1">
-                                                                <Setter Property="Cursor" Value="Hand" />
-                                                            </DataTrigger>
-                                                            <Trigger Property="IsEnabled"  Value="false">
-                                                                <Setter Property="Opacity"  Value="0.5" />
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Border.Style>
-                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.10], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
-                                                    <UXControls:UXTextBlock.Style>
-                                                        <Style TargetType="UXControls:UXTextBlock">
-                                                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding AutoFramingFrameSize}"  Value="2">
-                                                                    <Setter Property="Foreground"  Value="#FFFFFF" />
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </UXControls:UXTextBlock.Style>
-                                                </UXControls:UXTextBlock>
-                                            </Border>
-                                            <Border x:Name="btnFS1" CornerRadius="0,5,5,0" Focusable="True" MouseLeftButtonDown="AutoFramingSize_Click" Height="30" Width="192" Tag="1" IsEnabled="{Binding IsAutoFramingOn}">
-                                                <Border.Style>
-                                                    <Style TargetType="Border" >
-                                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding AutoFramingFrameSize}" Value="1">
-                                                                <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-                                                                <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding AutoFramingFrameSize}" Value="2">
-                                                                <Setter Property="Cursor" Value="Hand" />
-                                                            </DataTrigger>
-                                                            <Trigger Property="IsEnabled"  Value="false">
-                                                                <Setter Property="Opacity"  Value="0.5" />
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Border.Style>
-                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.11], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
-                                                    <UXControls:UXTextBlock.Style>
-                                                        <Style TargetType="UXControls:UXTextBlock">
-                                                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding AutoFramingFrameSize}" Value="1">
-                                                                    <Setter Property="Foreground"  Value="#FFFFFF" />
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </UXControls:UXTextBlock.Style>
-                                                </UXControls:UXTextBlock>
-                                            </Border>
-                                        </StackPanel>
-                                    </StackPanel>
-                                </StackPanel>
+                          </ToolTip>
+                        </Border.ToolTip>
+                      </Border>
+                    </StackPanel>
+                    <UXControls:UXToggleSwitch Click="AutoFrameSwitch_Click" IsChecked="{Binding Path= IsAutoFramingOn}" Content="{Binding Path=IsAutoFramingOnText}" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontFamily="Roboto" FontSize="16" IsEnabled="{Binding IsNotRecording}"/>
+                  </Grid>
+                  <Grid Margin="32,12,16,0" Visibility="{Binding AutoFramingTransitionVisibility}">
+                    <StackPanel Orientation="Horizontal">
+                      <UXControls:UXTextBlock Margin="0,8,0,8" Text="{Binding [WebCameraSettings.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding Path= IsAutoFramingOn}" />
+                      <Border ToolTipService.Placement="Center" ToolTipService.VerticalOffset="45" Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                        <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        <Border.ToolTip>
+                          <ToolTip>
+                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                              <TextBlock Text="{Binding [WebCameraSettings.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0"/>
                             </Border>
-                            <Border x:Name="bdrFOV" CornerRadius="6" Margin="0,10,0,0" Visibility="{Binding FOVVisibility}">
-                                <StackPanel Orientation="Vertical">
-                                    <StackPanel Orientation="Vertical" Margin="16,25,16,16">
-                                        <StackPanel Orientation="Horizontal">
-                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.12], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}"/>
-                                            <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
-                                                <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                                <Border.ToolTip>
-                                                    <ToolTip Placement="Center" VerticalOffset="40">
-                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.13], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="WrapWithOverflow" Padding="5,0,5,0" />
-                                                        </Border>
-                                                    </ToolTip>
-                                                </Border.ToolTip>
-                                            </Border>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
-                                            <Border x:Name="btnFOV0" CornerRadius="5,0,0,5" Focusable="True" Tag="0" MouseLeftButtonDown="FOV_Click" Height="30" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}">
-                                                <Border.Style>
-                                                    <Style TargetType="Border" >
-                                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding FOV_IsSelected[0]}" Value="true">
-                                                                <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-                                                                <Setter Property="Cursor" Value="Arrow" />
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding FOV_IsSelected[0]}" Value="false">
-                                                                <Setter Property="Cursor" Value="Hand" />
-                                                            </DataTrigger>
-                                                            <Trigger Property="IsEnabled"  Value="false">
-                                                                <Setter Property="Opacity"  Value="0.5" />
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Border.Style>
-                                                <Grid>
-                                                    <UXControls:UXTextBlock Name="txtFOV0" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
-                                                        <UXControls:UXTextBlock.Style>
-                                                            <Style TargetType="UXControls:UXTextBlock">
-                                                                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding FOV_IsSelected[0]}" Value="true">
-                                                                        <Setter Property="Foreground"  Value="#FFFFFF" />
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </UXControls:UXTextBlock.Style>
-                                                    </UXControls:UXTextBlock>
-                                                </Grid>
-                                            </Border>
-                                            <Border x:Name="btnFOV1"  Focusable="True" Tag="1" MouseLeftButtonDown="FOV_Click" Height="30" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}">
-                                                <Border.Style>
-                                                    <Style TargetType="Border" >
-                                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding FOV_IsSelected[1]}" Value="true">
-                                                                <Setter Property="Background"  Value="{DynamicResource VbarItem_HiBkColor}" />
-                                                                <Setter Property="Cursor" Value="Arrow" />
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding FOV_IsSelected[1]}" Value="false">
-                                                                <Setter Property="Cursor" Value="Hand" />
-                                                            </DataTrigger>
-                                                            <Trigger Property="IsEnabled"  Value="false">
-                                                                <Setter Property="Opacity"  Value="0.5" />
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Border.Style>
-                                                <Grid>
-                                                    <UXControls:UXTextBlock Name="txtFOV1" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
-                                                        <UXControls:UXTextBlock.Style>
-                                                            <Style TargetType="UXControls:UXTextBlock">
-                                                                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding FOV_IsSelected[1]}" Value="true">
-                                                                        <Setter Property="Foreground"  Value="#FFFFFF" />
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </UXControls:UXTextBlock.Style>
-                                                    </UXControls:UXTextBlock>
-                                                </Grid>
-                                            </Border>
-                                            <Border x:Name="btnFOV2" Focusable="True" Tag="2" MouseLeftButtonDown="FOV_Click" Height="30" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}">
-                                                <Border.Style>
-                                                    <Style TargetType="Border" >
-                                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding FOV_IsSelected[2]}" Value="true">
-                                                                <Setter Property="Background"  Value="{DynamicResource VbarItem_HiBkColor}" />
-                                                                <Setter Property="Cursor" Value="Arrow" />
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding FOV_IsSelected[2]}" Value="false">
-                                                                <Setter Property="Cursor" Value="Hand" />
-                                                            </DataTrigger>
-                                                            <Trigger Property="IsEnabled"  Value="false">
-                                                                <Setter Property="Opacity"  Value="0.5" />
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Border.Style>
-                                                <Grid>
-                                                    <UXControls:UXTextBlock Name="txtFOV2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
-                                                        <UXControls:UXTextBlock.Style>
-                                                            <Style TargetType="UXControls:UXTextBlock">
-                                                                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding FOV_IsSelected[2]}" Value="true">
-                                                                        <Setter Property="Foreground"  Value="#FFFFFF" />
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </UXControls:UXTextBlock.Style>
-                                                    </UXControls:UXTextBlock>
-                                                </Grid>
-                                            </Border>
-                                        </StackPanel>
-                                    </StackPanel>
-                                </StackPanel>
+                          </ToolTip>
+                        </Border.ToolTip>
+                      </Border>
+                    </StackPanel>
+                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsAutoFramingTransitionOn}" Content="{Binding Path=IsAutoFramingTransitionOnText}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16" IsEnabled="{Binding IsAutoFramingOn}" />
+                  </Grid>
+                  <StackPanel Orientation="Vertical" Margin="32,22,16,16" Visibility="{Binding AutoFramingSensitivityVisibility}">
+                    <StackPanel Orientation="Horizontal">
+                      <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsAutoFramingOn}" />
+                      <Border ToolTipService.Placement="Center" ToolTipService.VerticalOffset="45" Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                        <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        <Border.ToolTip>
+                          <ToolTip>
+                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                              <TextBlock Text="{Binding [WebCameraSettings.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
                             </Border>
-                            <Border CornerRadius="6" Margin="0,10,0,0" Visibility="{Binding ZoomVisibility}">
-                                <StackPanel Orientation="Vertical">
-                                    <StackPanel Orientation="Vertical" Margin="16,25,16,0">
-                                        <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.15], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}"/>
-                                        <Grid Margin="0,15,0,20">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="16" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="16" />
-                                            </Grid.ColumnDefinitions>
-                                            <Canvas Grid.Column="0" Width="16" Height="16">
-                                                <Path Data="M16 15.2496L10.73 9.99956C11.7148 8.80824 12.2018 7.28284 12.0896 5.74126C11.9775 4.19969 11.2747 2.76087 10.1278 1.72469C8.9809 0.688504 7.47837 0.134891 5.93335 0.17923C4.38834 0.223568 2.92003 0.862437 1.83445 1.96269C0.74887 3.06294 0.129766 4.53969 0.106169 6.08516C0.0825719 7.63063 0.656302 9.12559 1.70779 10.2585C2.75927 11.3914 4.20739 12.0748 5.75033 12.1662C7.29327 12.2577 8.812 11.7502 9.98999 10.7496L15.25 15.9996L16 15.2496ZM6.06999 11.1096C5.08109 11.1096 4.11439 10.8163 3.29214 10.2669C2.4699 9.7175 1.82903 8.93661 1.4506 8.02297C1.07216 7.10934 0.973141 6.10401 1.16607 5.13411C1.35899 4.1642 1.8352 3.27329 2.53446 2.57402C3.23372 1.87476 4.12464 1.39856 5.09454 1.20563C6.06445 1.0127 7.06978 1.11172 7.98341 1.49016C8.89704 1.8686 9.67793 2.50946 10.2273 3.33171C10.7767 4.15395 11.07 5.12065 11.07 6.10956C11.07 7.43564 10.5432 8.70741 9.60553 9.64509C8.66784 10.5828 7.39608 11.1096 6.06999 11.1096Z" />
-                                                <Path Data="M2.89999 5.54956H9.24999V6.60956H2.89999V5.54956Z" />
-                                            </Canvas>
-                                            <UXControls:UXSlider Name="ZoomSlider" Grid.Column="1" Margin="0,0,0,0" Width="360" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center"  
+                          </ToolTip>
+                        </Border.ToolTip>
+                      </Border>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                      <Border x:Name="btnAFS0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="AutoFramingSensitivity_Click" Height="30" Width="192" Tag="1" IsEnabled="{Binding IsAutoFramingOn}">
+                        <Border.Style>
+                          <Style TargetType="Border" >
+                            <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="1">
+                                <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                                <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="2">
+                                <Setter Property="Cursor" Value="Hand" />
+                              </DataTrigger>
+                              <Trigger Property="IsEnabled"  Value="false">
+                                <Setter Property="Opacity"  Value="0.5" />
+                              </Trigger>
+                            </Style.Triggers>
+                          </Style>
+                        </Border.Style>
+                        <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                          <UXControls:UXTextBlock.Style>
+                            <Style TargetType="UXControls:UXTextBlock">
+                              <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="1">
+                                  <Setter Property="Foreground"  Value="#FFFFFF" />
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </UXControls:UXTextBlock.Style>
+                        </UXControls:UXTextBlock>
+                      </Border>
+                      <Border x:Name="btnAFS1" CornerRadius="0,5,5,0" Focusable="True" MouseLeftButtonDown="AutoFramingSensitivity_Click" Height="30" Width="192" Tag="2" IsEnabled="{Binding IsAutoFramingOn}">
+                        <Border.Style>
+                          <Style TargetType="Border" >
+                            <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="2">
+                                <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                                <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="1">
+                                <Setter Property="Cursor" Value="Hand" />
+                              </DataTrigger>
+                              <Trigger Property="IsEnabled"  Value="false">
+                                <Setter Property="Opacity"  Value="0.5" />
+                              </Trigger>
+                            </Style.Triggers>
+                          </Style>
+                        </Border.Style>
+                        <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.8], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                          <UXControls:UXTextBlock.Style>
+                            <Style TargetType="UXControls:UXTextBlock">
+                              <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding AutoFramingSensitivity}"  Value="2">
+                                  <Setter Property="Foreground"  Value="#FFFFFF" />
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </UXControls:UXTextBlock.Style>
+                        </UXControls:UXTextBlock>
+                      </Border>
+                    </StackPanel>
+                  </StackPanel>
+                  <StackPanel Orientation="Vertical" Margin="32,2,16,16" Visibility="{Binding AutoFramingSizeVisibility}">
+                    <StackPanel Orientation="Horizontal">
+                      <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsAutoFramingOn}" />
+                      <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                        <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        <Border.ToolTip>
+                          <ToolTip Placement="Center" VerticalOffset="40">
+                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                              <TextBlock Text="{Binding [WebCameraSettings.27], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
+                            </Border>
+                          </ToolTip>
+                        </Border.ToolTip>
+                      </Border>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                      <Border x:Name="btnFS0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="AutoFramingSize_Click" Height="30" Width="192" Tag="2" IsEnabled="{Binding IsAutoFramingOn}">
+                        <Border.Style>
+                          <Style TargetType="Border" >
+                            <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding AutoFramingFrameSize}"  Value="2">
+                                <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                                <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding AutoFramingFrameSize}"  Value="1">
+                                <Setter Property="Cursor" Value="Hand" />
+                              </DataTrigger>
+                              <Trigger Property="IsEnabled"  Value="false">
+                                <Setter Property="Opacity"  Value="0.5" />
+                              </Trigger>
+                            </Style.Triggers>
+                          </Style>
+                        </Border.Style>
+                        <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.10], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                          <UXControls:UXTextBlock.Style>
+                            <Style TargetType="UXControls:UXTextBlock">
+                              <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding AutoFramingFrameSize}"  Value="2">
+                                  <Setter Property="Foreground"  Value="#FFFFFF" />
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </UXControls:UXTextBlock.Style>
+                        </UXControls:UXTextBlock>
+                      </Border>
+                      <Border x:Name="btnFS1" CornerRadius="0,5,5,0" Focusable="True" MouseLeftButtonDown="AutoFramingSize_Click" Height="30" Width="192" Tag="1" IsEnabled="{Binding IsAutoFramingOn}">
+                        <Border.Style>
+                          <Style TargetType="Border" >
+                            <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding AutoFramingFrameSize}" Value="1">
+                                <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                                <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding AutoFramingFrameSize}" Value="2">
+                                <Setter Property="Cursor" Value="Hand" />
+                              </DataTrigger>
+                              <Trigger Property="IsEnabled"  Value="false">
+                                <Setter Property="Opacity"  Value="0.5" />
+                              </Trigger>
+                            </Style.Triggers>
+                          </Style>
+                        </Border.Style>
+                        <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.11], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
+                          <UXControls:UXTextBlock.Style>
+                            <Style TargetType="UXControls:UXTextBlock">
+                              <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding AutoFramingFrameSize}" Value="1">
+                                  <Setter Property="Foreground"  Value="#FFFFFF" />
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </UXControls:UXTextBlock.Style>
+                        </UXControls:UXTextBlock>
+                      </Border>
+                    </StackPanel>
+                  </StackPanel>
+                </StackPanel>
+              </Border>
+              <Border x:Name="bdrFOV" CornerRadius="6" Margin="0,10,0,0" Visibility="{Binding FOVVisibility}">
+                <StackPanel Orientation="Vertical">
+                  <StackPanel Orientation="Vertical" Margin="16,25,16,16">
+                    <StackPanel Orientation="Horizontal">
+                      <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.12], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}"/>
+                      <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                        <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        <Border.ToolTip>
+                          <ToolTip Placement="Center" VerticalOffset="40">
+                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                              <TextBlock Text="{Binding [WebCameraSettings.13], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="WrapWithOverflow" Padding="5,0,5,0" />
+                            </Border>
+                          </ToolTip>
+                        </Border.ToolTip>
+                      </Border>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                      <Border x:Name="btnFOV0" CornerRadius="5,0,0,5" Focusable="True" Tag="0" MouseLeftButtonDown="FOV_Click" Height="30" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}">
+                        <Border.Style>
+                          <Style TargetType="Border" >
+                            <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding FOV_IsSelected[0]}" Value="true">
+                                <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                                <Setter Property="Cursor" Value="Arrow" />
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding FOV_IsSelected[0]}" Value="false">
+                                <Setter Property="Cursor" Value="Hand" />
+                              </DataTrigger>
+                              <Trigger Property="IsEnabled"  Value="false">
+                                <Setter Property="Opacity"  Value="0.5" />
+                              </Trigger>
+                            </Style.Triggers>
+                          </Style>
+                        </Border.Style>
+                        <Grid>
+                          <UXControls:UXTextBlock Name="txtFOV0" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                            <UXControls:UXTextBlock.Style>
+                              <Style TargetType="UXControls:UXTextBlock">
+                                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                <Style.Triggers>
+                                  <DataTrigger Binding="{Binding FOV_IsSelected[0]}" Value="true">
+                                    <Setter Property="Foreground"  Value="#FFFFFF" />
+                                  </DataTrigger>
+                                </Style.Triggers>
+                              </Style>
+                            </UXControls:UXTextBlock.Style>
+                          </UXControls:UXTextBlock>
+                        </Grid>
+                      </Border>
+                      <Border x:Name="btnFOV1"  Focusable="True" Tag="1" MouseLeftButtonDown="FOV_Click" Height="30" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}">
+                        <Border.Style>
+                          <Style TargetType="Border" >
+                            <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding FOV_IsSelected[1]}" Value="true">
+                                <Setter Property="Background"  Value="{DynamicResource VbarItem_HiBkColor}" />
+                                <Setter Property="Cursor" Value="Arrow" />
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding FOV_IsSelected[1]}" Value="false">
+                                <Setter Property="Cursor" Value="Hand" />
+                              </DataTrigger>
+                              <Trigger Property="IsEnabled"  Value="false">
+                                <Setter Property="Opacity"  Value="0.5" />
+                              </Trigger>
+                            </Style.Triggers>
+                          </Style>
+                        </Border.Style>
+                        <Grid>
+                          <UXControls:UXTextBlock Name="txtFOV1" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
+                            <UXControls:UXTextBlock.Style>
+                              <Style TargetType="UXControls:UXTextBlock">
+                                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                <Style.Triggers>
+                                  <DataTrigger Binding="{Binding FOV_IsSelected[1]}" Value="true">
+                                    <Setter Property="Foreground"  Value="#FFFFFF" />
+                                  </DataTrigger>
+                                </Style.Triggers>
+                              </Style>
+                            </UXControls:UXTextBlock.Style>
+                          </UXControls:UXTextBlock>
+                        </Grid>
+                      </Border>
+                      <Border x:Name="btnFOV2" Focusable="True" Tag="2" MouseLeftButtonDown="FOV_Click" Height="30" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}">
+                        <Border.Style>
+                          <Style TargetType="Border" >
+                            <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding FOV_IsSelected[2]}" Value="true">
+                                <Setter Property="Background"  Value="{DynamicResource VbarItem_HiBkColor}" />
+                                <Setter Property="Cursor" Value="Arrow" />
+                              </DataTrigger>
+                              <DataTrigger Binding="{Binding FOV_IsSelected[2]}" Value="false">
+                                <Setter Property="Cursor" Value="Hand" />
+                              </DataTrigger>
+                              <Trigger Property="IsEnabled"  Value="false">
+                                <Setter Property="Opacity"  Value="0.5" />
+                              </Trigger>
+                            </Style.Triggers>
+                          </Style>
+                        </Border.Style>
+                        <Grid>
+                          <UXControls:UXTextBlock Name="txtFOV2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                            <UXControls:UXTextBlock.Style>
+                              <Style TargetType="UXControls:UXTextBlock">
+                                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                <Style.Triggers>
+                                  <DataTrigger Binding="{Binding FOV_IsSelected[2]}" Value="true">
+                                    <Setter Property="Foreground"  Value="#FFFFFF" />
+                                  </DataTrigger>
+                                </Style.Triggers>
+                              </Style>
+                            </UXControls:UXTextBlock.Style>
+                          </UXControls:UXTextBlock>
+                        </Grid>
+                      </Border>
+                    </StackPanel>
+                  </StackPanel>
+                </StackPanel>
+              </Border>
+              <Border CornerRadius="6" Margin="0,10,0,0" Visibility="{Binding ZoomVisibility}">
+                <StackPanel Orientation="Vertical">
+                  <StackPanel Orientation="Vertical" Margin="16,25,16,0">
+                    <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.15], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}"/>
+                    <Grid Margin="0,15,0,20">
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="16" />
+                      </Grid.ColumnDefinitions>
+                      <Canvas Grid.Column="0" Width="16" Height="16">
+                        <Path Data="M16 15.2496L10.73 9.99956C11.7148 8.80824 12.2018 7.28284 12.0896 5.74126C11.9775 4.19969 11.2747 2.76087 10.1278 1.72469C8.9809 0.688504 7.47837 0.134891 5.93335 0.17923C4.38834 0.223568 2.92003 0.862437 1.83445 1.96269C0.74887 3.06294 0.129766 4.53969 0.106169 6.08516C0.0825719 7.63063 0.656302 9.12559 1.70779 10.2585C2.75927 11.3914 4.20739 12.0748 5.75033 12.1662C7.29327 12.2577 8.812 11.7502 9.98999 10.7496L15.25 15.9996L16 15.2496ZM6.06999 11.1096C5.08109 11.1096 4.11439 10.8163 3.29214 10.2669C2.4699 9.7175 1.82903 8.93661 1.4506 8.02297C1.07216 7.10934 0.973141 6.10401 1.16607 5.13411C1.35899 4.1642 1.8352 3.27329 2.53446 2.57402C3.23372 1.87476 4.12464 1.39856 5.09454 1.20563C6.06445 1.0127 7.06978 1.11172 7.98341 1.49016C8.89704 1.8686 9.67793 2.50946 10.2273 3.33171C10.7767 4.15395 11.07 5.12065 11.07 6.10956C11.07 7.43564 10.5432 8.70741 9.60553 9.64509C8.66784 10.5828 7.39608 11.1096 6.06999 11.1096Z" />
+                        <Path Data="M2.89999 5.54956H9.24999V6.60956H2.89999V5.54956Z" />
+                      </Canvas>
+                      <UXControls:UXSlider Name="ZoomSlider" Grid.Column="1" Margin="0,0,0,0" Width="360" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center"  
                                            IsMoveToPointEnabled="True" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}" IsSnapToTickEnabled="True"
                                            Value="{Binding Zoom}"  Thumb.DragStarted="ZoomSlider_DragStarted" Thumb.DragCompleted="ZoomSlider_DragCompleted" PreviewKeyDown="Slider_PreviewKeyDown" KeyUp="ZoomSlider_KeyUp"/>
-                                            <Canvas Grid.Column="2" Width="16" Height="16">
-                                                <Path Data="M16.0002 15.25L10.7402 10C11.4842 9.11157 11.9593 8.02928 12.1097 6.88024C12.2601 5.73121 12.0795 4.56312 11.5891 3.51313C11.0988 2.46315 10.3191 1.57486 9.34147 0.952577C8.3639 0.33029 7.22906 -0.000164308 6.07023 1.70432e-05C5.08894 -0.00230429 4.12162 0.232535 3.25063 0.684541C2.37964 1.13655 1.63077 1.79233 1.06778 2.59606C0.5048 3.3998 0.144373 4.32767 0.017189 5.30069C-0.109995 6.2737 -0.000167906 7.26304 0.337319 8.18447C0.674805 9.10591 1.22996 9.93214 1.95551 10.5928C2.68106 11.2535 3.55552 11.7291 4.50444 11.9791C5.45335 12.2291 6.44863 12.246 7.40552 12.0286C8.36241 11.8111 9.25257 11.3656 10.0002 10.73L15.2502 16L16.0002 15.25ZM6.07023 11.11C5.08132 11.11 4.11462 10.8168 3.29238 10.2674C2.47013 9.71796 1.82927 8.93707 1.45083 8.02343C1.07239 7.1098 0.973375 6.10447 1.1663 5.13457C1.35923 4.16466 1.83543 3.27375 2.53469 2.57448C3.23396 1.87522 4.12487 1.39902 5.09478 1.20609C6.06468 1.01316 7.07001 1.11218 7.98365 1.49062C8.89728 1.86906 9.67817 2.50992 10.2276 3.33217C10.777 4.15441 11.0702 5.12111 11.0702 6.11002C11.0702 7.4361 10.5434 8.70787 9.60576 9.64555C8.66808 10.5832 7.39631 11.11 6.07023 11.11Z" />
-                                                <Path Data="M6.59023 2.93002H5.53023V5.58002H2.89023V6.64002H5.53023V9.29002H6.59023V6.64002H9.24023V5.58002H6.59023V2.93002Z" />
-                                            </Canvas>
-                                        </Grid>
-                                    </StackPanel>
-                                </StackPanel>
+                      <Canvas Grid.Column="2" Width="16" Height="16">
+                        <Path Data="M16.0002 15.25L10.7402 10C11.4842 9.11157 11.9593 8.02928 12.1097 6.88024C12.2601 5.73121 12.0795 4.56312 11.5891 3.51313C11.0988 2.46315 10.3191 1.57486 9.34147 0.952577C8.3639 0.33029 7.22906 -0.000164308 6.07023 1.70432e-05C5.08894 -0.00230429 4.12162 0.232535 3.25063 0.684541C2.37964 1.13655 1.63077 1.79233 1.06778 2.59606C0.5048 3.3998 0.144373 4.32767 0.017189 5.30069C-0.109995 6.2737 -0.000167906 7.26304 0.337319 8.18447C0.674805 9.10591 1.22996 9.93214 1.95551 10.5928C2.68106 11.2535 3.55552 11.7291 4.50444 11.9791C5.45335 12.2291 6.44863 12.246 7.40552 12.0286C8.36241 11.8111 9.25257 11.3656 10.0002 10.73L15.2502 16L16.0002 15.25ZM6.07023 11.11C5.08132 11.11 4.11462 10.8168 3.29238 10.2674C2.47013 9.71796 1.82927 8.93707 1.45083 8.02343C1.07239 7.1098 0.973375 6.10447 1.1663 5.13457C1.35923 4.16466 1.83543 3.27375 2.53469 2.57448C3.23396 1.87522 4.12487 1.39902 5.09478 1.20609C6.06468 1.01316 7.07001 1.11218 7.98365 1.49062C8.89728 1.86906 9.67817 2.50992 10.2276 3.33217C10.777 4.15441 11.0702 5.12111 11.0702 6.11002C11.0702 7.4361 10.5434 8.70787 9.60576 9.64555C8.66808 10.5832 7.39631 11.11 6.07023 11.11Z" />
+                        <Path Data="M6.59023 2.93002H5.53023V5.58002H2.89023V6.64002H5.53023V9.29002H6.59023V6.64002H9.24023V5.58002H6.59023V2.93002Z" />
+                      </Canvas>
+                    </Grid>
+                  </StackPanel>
+                </StackPanel>
+              </Border>
+              <Border CornerRadius="6" Margin="0,10,0,0" Visibility="{Binding AutofocusVisibility}">
+                <StackPanel Orientation="Vertical">
+                  <Grid Margin="16,25,16,0">
+                    <StackPanel Orientation="Horizontal">
+                      <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [WebCameraSettings.16], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsNotAutoFramingOn}" />
+                      <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                        <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        <Border.ToolTip>
+                          <ToolTip Placement="Center" VerticalOffset="40" HorizontalOffset="-30">
+                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                              <TextBlock Text="{Binding [WebCameraSettings.17], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
                             </Border>
-                            <Border CornerRadius="6" Margin="0,10,0,0" Visibility="{Binding AutofocusVisibility}">
-                                <StackPanel Orientation="Vertical">
-                                    <Grid Margin="16,25,16,0">
-                                        <StackPanel Orientation="Horizontal">
-                                            <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [WebCameraSettings.16], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsNotAutoFramingOn}" />
-                                            <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
-                                                <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                                <Border.ToolTip>
-                                                    <ToolTip Placement="Center" VerticalOffset="40" HorizontalOffset="-30">
-                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.17], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
-                                                        </Border>
-                                                    </ToolTip>
-                                                </Border.ToolTip>
-                                            </Border>
-                                        </StackPanel>
-                                        <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsFocusOn}" Content="{Binding Path=IsFocusOnText}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16" IsEnabled="{Binding IsNotAutoFramingOn}" />
-                                    </Grid>
-                                    <StackPanel Orientation="Vertical" Margin="16,16,16,16">
-                                        <UXControls:UXSlider Name="AutofocusSlider" Width="402" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center" AutoToolTipPlacement="None" IsEnabled="{Binding IsFocusOn, Converter={StaticResource BooleanToInverseConverter}}"
+                          </ToolTip>
+                        </Border.ToolTip>
+                      </Border>
+                    </StackPanel>
+                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsFocusOn}" Content="{Binding Path=IsFocusOnText}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16" IsEnabled="{Binding IsNotAutoFramingOn}" />
+                  </Grid>
+                  <StackPanel Orientation="Vertical" Margin="16,16,16,16">
+                    <UXControls:UXSlider Name="AutofocusSlider" Width="402" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center" AutoToolTipPlacement="None" IsEnabled="{Binding IsFocusOn, Converter={StaticResource BooleanToInverseConverter}}"
                                          Value="{Binding Focus}" IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Thumb.DragStarted="AutofocusSlider_DragStarted" Thumb.DragCompleted="AutofocusSlider_DragCompleted" PreviewKeyDown="Slider_PreviewKeyDown" KeyUp="AutofocusSlider_KeyUp"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </Border>
-                            <Border CornerRadius="6" Margin="0,10,0,0" Visibility="{Binding PriorityVisibility}">
-                                <StackPanel Orientation="Vertical" Margin="16,22,16,10">
-                                    <StackPanel Orientation="Horizontal">
-                                        <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.18], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                                        <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
-                                            <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                            <Border.ToolTip>
-                                                <ToolTip Placement="Center" VerticalOffset="50">
-                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                        <TextBlock Text="{Binding [WebCameraSettings.19], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
-                                                    </Border>
-                                                </ToolTip>
-                                            </Border.ToolTip>
-                                        </Border>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="0,18,0,8">
-                                        <Border x:Name="btnPriority0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="Priority_Click" Height="30" Width="201" Tag="0" IsEnabled="{Binding IsHDROn, Converter={StaticResource BooleanToInverseConverter}}">
-                                            <Border.Style>
-                                                <Style TargetType="Border" >
-                                                    <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Priority}"  Value="0">
-                                                            <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-                                                            <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Priority}"  Value="1">
-                                                            <Setter Property="Cursor" Value="Hand" />
-                                                        </DataTrigger>
-                                                        <Trigger Property="IsEnabled"  Value="false">
-                                                            <Setter Property="Opacity"  Value="0.5" />
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
-                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.20], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
-                                                <UXControls:UXTextBlock.Style>
-                                                    <Style TargetType="UXControls:UXTextBlock">
-                                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding Priority}" Value="0">
-                                                                <Setter Property="Foreground"  Value="#FFFFFF" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </UXControls:UXTextBlock.Style>
-                                            </UXControls:UXTextBlock>
-                                        </Border>
-                                        <Border x:Name="btnPriority1" CornerRadius="0,5,5,0" Focusable="True" MouseLeftButtonDown="Priority_Click" Height="30" Width="201" Tag="1" IsEnabled="{Binding IsHDROn, Converter={StaticResource BooleanToInverseConverter}}">
-                                            <Border.Style>
-                                                <Style TargetType="Border" >
-                                                    <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Priority}"  Value="1">
-                                                            <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-                                                            <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Priority}"  Value="0">
-                                                            <Setter Property="Cursor" Value="Hand" />
-                                                        </DataTrigger>
-                                                        <Trigger Property="IsEnabled"  Value="false">
-                                                            <Setter Property="Opacity"  Value="0.5" />
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
-                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.21], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
-                                                <UXControls:UXTextBlock.Style>
-                                                    <Style TargetType="UXControls:UXTextBlock">
-                                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding Priority}" Value="1">
-                                                                <Setter Property="Foreground"  Value="#FFFFFF" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </UXControls:UXTextBlock.Style>
-                                            </UXControls:UXTextBlock>
-                                        </Border>
-                                    </StackPanel>
-                                    <Border Name="bdrAlert2" Background="#364861" CornerRadius="4" Margin="0,12,0,8" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding IsHDROn, Converter={StaticResource BoolToVisibilityConverter}}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Image x:Name="InfoIcon2" Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Alert.png" Stretch="Fill"
+                  </StackPanel>
+                </StackPanel>
+              </Border>
+              <Border CornerRadius="6" Margin="0,10,0,0" Visibility="{Binding PriorityVisibility}">
+                <StackPanel Orientation="Vertical" Margin="16,22,16,10">
+                  <StackPanel Orientation="Horizontal">
+                    <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.18], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                    <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                      <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                      <Border.ToolTip>
+                        <ToolTip Placement="Center" VerticalOffset="50">
+                          <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                            <TextBlock Text="{Binding [WebCameraSettings.19], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
+                          </Border>
+                        </ToolTip>
+                      </Border.ToolTip>
+                    </Border>
+                  </StackPanel>
+                  <StackPanel Orientation="Horizontal" Margin="0,18,0,8">
+                    <Border x:Name="btnPriority0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="Priority_Click" Height="30" Width="201" Tag="0" IsEnabled="{Binding IsHDROn, Converter={StaticResource BooleanToInverseConverter}}">
+                      <Border.Style>
+                        <Style TargetType="Border" >
+                          <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
+                          <Style.Triggers>
+                            <DataTrigger Binding="{Binding Priority}"  Value="0">
+                              <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                              <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Priority}"  Value="1">
+                              <Setter Property="Cursor" Value="Hand" />
+                            </DataTrigger>
+                            <Trigger Property="IsEnabled"  Value="false">
+                              <Setter Property="Opacity"  Value="0.5" />
+                            </Trigger>
+                          </Style.Triggers>
+                        </Style>
+                      </Border.Style>
+                      <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.20], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                        <UXControls:UXTextBlock.Style>
+                          <Style TargetType="UXControls:UXTextBlock">
+                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding Priority}" Value="0">
+                                <Setter Property="Foreground"  Value="#FFFFFF" />
+                              </DataTrigger>
+                            </Style.Triggers>
+                          </Style>
+                        </UXControls:UXTextBlock.Style>
+                      </UXControls:UXTextBlock>
+                    </Border>
+                    <Border x:Name="btnPriority1" CornerRadius="0,5,5,0" Focusable="True" MouseLeftButtonDown="Priority_Click" Height="30" Width="201" Tag="1" IsEnabled="{Binding IsHDROn, Converter={StaticResource BooleanToInverseConverter}}">
+                      <Border.Style>
+                        <Style TargetType="Border" >
+                          <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
+                          <Style.Triggers>
+                            <DataTrigger Binding="{Binding Priority}"  Value="1">
+                              <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                              <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Priority}"  Value="0">
+                              <Setter Property="Cursor" Value="Hand" />
+                            </DataTrigger>
+                            <Trigger Property="IsEnabled"  Value="false">
+                              <Setter Property="Opacity"  Value="0.5" />
+                            </Trigger>
+                          </Style.Triggers>
+                        </Style>
+                      </Border.Style>
+                      <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.21], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                        <UXControls:UXTextBlock.Style>
+                          <Style TargetType="UXControls:UXTextBlock">
+                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding Priority}" Value="1">
+                                <Setter Property="Foreground"  Value="#FFFFFF" />
+                              </DataTrigger>
+                            </Style.Triggers>
+                          </Style>
+                        </UXControls:UXTextBlock.Style>
+                      </UXControls:UXTextBlock>
+                    </Border>
+                  </StackPanel>
+                  <Border Name="bdrAlert2" Background="#364861" CornerRadius="4" Margin="0,12,0,8" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding IsHDROn, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <StackPanel Orientation="Horizontal">
+                      <Image x:Name="InfoIcon2" Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Alert.png" Stretch="Fill"
                                VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
-                                            </Image>
-                                            <UXControls:UXTextBlock Name="txtMessage1" FontSize="14" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap" Width="416" Focusable="True"
+                      </Image>
+                      <UXControls:UXTextBlock Name="txtMessage1" FontSize="14" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap" Width="416" Focusable="True"
                                               VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,16,0,13" LineHeight="21" Padding="2,3,10,2">
-                                                <Run Text="{Binding [WebCameraSettings.22], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" FontFamily="Roboto" FontWeight="Normal" FontSize="13"/>
-                                                <Run Text="{Binding [WebCameraSettings.23], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" FontFamily="Roboto" Foreground="#31A2E3" FontSize="13" Cursor="Hand" TextDecorations="Underline" MouseLeftButtonDown="ShowHDR_Click" />
-                                                <Run Text="{Binding [WebCameraSettings.24], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" FontFamily="Roboto" FontWeight="Normal" FontSize="13"/>
-                                            </UXControls:UXTextBlock>
-                                        </StackPanel>
-                                    </Border>
-                                </StackPanel>
-                            </Border>
-                            <Border Name="bdrPrioritize" Visibility="{Binding bdrPrioritize_show}" CornerRadius="6" VerticalAlignment="Top" Margin="0,10,0,0" ToolTipService.ShowOnDisabled="True" IsEnabled="{Binding IsNotAddingProfile}">
-                                <Border.ToolTip>
-                                    <ToolTip Visibility="{Binding TooltipVisibility}">
-                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                            <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.12], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0"/>
-                                        </Border>
-                                    </ToolTip>
-                                </Border.ToolTip>
-                                <Grid Margin="18,27,16,27">
-                                    <StackPanel Orientation="Horizontal">
-                                        <UXControls:UXTextBlock MaxWidth="330" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraSettings.25], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                                        <Border ToolTipService.Placement="Left" ToolTipService.VerticalOffset="-60" Background="{StaticResource FakeTransparent}" Cursor="Hand">
-                                            <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                            <Border.ToolTip>
-                                                <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                        <TextBlock Text="{Binding [WebCameraSettings.26], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
-                                                    </Border>
-                                                </ToolTip>
-                                            </Border.ToolTip>
-                                        </Border>
-                                    </StackPanel>
-                                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsPrioritizeExternalWebcam}" ContentTextVisibility="True" Content="{Binding Path=PrioritizeExternalWebcamStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" />
-                                </Grid>
-                            </Border>
-                            <Border x:Name="brdHello" Visibility="{Binding brdHello_show_control }" CornerRadius="6" VerticalAlignment="Top" Margin="0,10,0,0" ToolTipService.ShowOnDisabled="True" IsEnabled="{Binding IsNotAddingProfile}">
-                                <Border.ToolTip>
-                                    <ToolTip Visibility="{Binding TooltipVisibility}">
-                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                            <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.12], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0"/>
-                                        </Border>
-                                    </ToolTip>
-                                </Border.ToolTip>
-                                <Grid Margin="18,22,16,22">
-                                    <StackPanel Orientation="Horizontal">
-                                        <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.10], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                        <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
-                                            <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                            <Border.ToolTip>
-                                                <ToolTip Placement="Center" VerticalOffset="-35" HorizontalOffset="-30">
-                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                        <TextBlock Text="{Binding [WebCameraPresenceDetection.11], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="WrapWithOverflow" Padding="5,0,5,0" />
-                                                    </Border>
-                                                </ToolTip>
-                                            </Border.ToolTip>
-                                        </Border>
-                                    </StackPanel>
-                                    <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="CallWindowsHello_Click" IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary" LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                        <UXControls:UXLink.Resources>
-                                            <Style TargetType="Border">
-                                                <Setter Property="Background" Value="Transparent" />
-                                            </Style>
-                                        </UXControls:UXLink.Resources>
-                                    </UXControls:UXLink>
-                                </Grid>
-                            </Border>
-                        </StackPanel>
-                    </UXControls:UXScrollViewer>
-                </DockPanel>
+                        <Run Text="{Binding [WebCameraSettings.22], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" FontFamily="Roboto" FontWeight="Normal" FontSize="13"/>
+                        <Run Text="{Binding [WebCameraSettings.23], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" FontFamily="Roboto" Foreground="#31A2E3" FontSize="13" Cursor="Hand" TextDecorations="Underline" MouseLeftButtonDown="ShowHDR_Click" />
+                        <Run Text="{Binding [WebCameraSettings.24], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" FontFamily="Roboto" FontWeight="Normal" FontSize="13"/>
+                      </UXControls:UXTextBlock>
+                    </StackPanel>
+                  </Border>
+                </StackPanel>
+              </Border>
+              <Border Name="bdrPrioritize" Visibility="{Binding bdrPrioritize_show}" CornerRadius="6" VerticalAlignment="Top" Margin="0,10,0,0" ToolTipService.ShowOnDisabled="True" IsEnabled="{Binding IsNotAddingProfile}">
+                <Border.ToolTip>
+                  <ToolTip Visibility="{Binding TooltipVisibility}">
+                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                      <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.12], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0"/>
+                    </Border>
+                  </ToolTip>
+                </Border.ToolTip>
+                <Grid Margin="18,27,16,27">
+                  <StackPanel Orientation="Horizontal">
+                    <UXControls:UXTextBlock MaxWidth="330" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraSettings.25], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                    <Border ToolTipService.Placement="Left" ToolTipService.VerticalOffset="-60" Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                      <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                      <Border.ToolTip>
+                        <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                          <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                            <TextBlock Text="{Binding [WebCameraSettings.26], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
+                          </Border>
+                        </ToolTip>
+                      </Border.ToolTip>
+                    </Border>
+                  </StackPanel>
+                  <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsPrioritizeExternalWebcam}" ContentTextVisibility="True" Content="{Binding Path=PrioritizeExternalWebcamStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" />
+                </Grid>
+              </Border>
+              <Border x:Name="brdHello" Visibility="{Binding brdHello_show_control }" CornerRadius="6" VerticalAlignment="Top" Margin="0,10,0,0" ToolTipService.ShowOnDisabled="True" IsEnabled="{Binding IsNotAddingProfile}">
+                <Border.ToolTip>
+                  <ToolTip Visibility="{Binding TooltipVisibility}">
+                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                      <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.12], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0"/>
+                    </Border>
+                  </ToolTip>
+                </Border.ToolTip>
+                <Grid Margin="18,22,16,22">
+                  <StackPanel Orientation="Horizontal">
+                    <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.10], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                      <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                      <Border.ToolTip>
+                        <ToolTip Placement="Center" VerticalOffset="-35" HorizontalOffset="-30">
+                          <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                            <TextBlock Text="{Binding [WebCameraPresenceDetection.11], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="WrapWithOverflow" Padding="5,0,5,0" />
+                          </Border>
+                        </ToolTip>
+                      </Border.ToolTip>
+                    </Border>
+                  </StackPanel>
+                  <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="CallWindowsHello_Click" IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary" LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <UXControls:UXLink.Resources>
+                      <Style TargetType="Border">
+                        <Setter Property="Background" Value="Transparent" />
+                      </Style>
+                    </UXControls:UXLink.Resources>
+                  </UXControls:UXLink>
+                </Grid>
+              </Border>
             </StackPanel>
-        </Border>
-    </Grid>
+          </UXControls:UXScrollViewer>
+        </DockPanel>
+      </StackPanel>
+    </Border>
+  </Grid>
 </UserControl>
