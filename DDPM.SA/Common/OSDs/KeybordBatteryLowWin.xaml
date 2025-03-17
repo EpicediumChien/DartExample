@@ -13,6 +13,7 @@
     Topmost="True"
     WindowStartupLocation="Manual"
     WindowStyle="None"
+    Closed="Window_Closed"
     Title="68C62D1D-CDA5-4EC6-AFB2-6DA8331D7DDE-KeybordBatteryLowIWin"
     mc:Ignorable="d">
 

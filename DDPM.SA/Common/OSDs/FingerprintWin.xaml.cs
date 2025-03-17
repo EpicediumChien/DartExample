@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 
 namespace DDPM.OSDs
@@ -10,8 +11,8 @@ namespace DDPM.OSDs
     /// </summary>
     public partial class FingerprintWin : Window
     {
-        private DispatcherTimer? animationTimer = null;
-        private TimeSpan time;
+        /*private DispatcherTimer? animationTimer = null;
+        private TimeSpan time;*/
 
         public FingerprintWin()
         {
@@ -27,27 +28,46 @@ namespace DDPM.OSDs
             this.WindowState = WindowState.Maximized;
             this.Topmost = true;
 
-            time = TimeSpan.FromMilliseconds(3000);
+            InvokeFadeOutAnimation();
+
+            /*time = TimeSpan.FromMilliseconds(3000);
             animationTimer = new DispatcherTimer();
             animationTimer.Interval = TimeSpan.FromMilliseconds(1000);
             animationTimer.Tick += RunTimerTick;
-            animationTimer.Start();
+            animationTimer.Start();*/
         }
 
-        private void RunTimerTick(object sender, EventArgs e)
+        /* private void RunTimerTick(object sender, EventArgs e)
+         {
+             if (time == TimeSpan.Zero)
+             {
+                 animationTimer?.Stop();
+                 this.Dispatcher.Invoke(() =>
+                 {
+                     this.Close();
+                 });
+             }
+             else
+             {
+                 time = time.Add(TimeSpan.FromMilliseconds(-1000));
+             }
+         }*/
+
+        private void InvokeFadeOutAnimation()
         {
-            if (time == TimeSpan.Zero)
+            this.Dispatcher.Invoke(() =>
             {
-                animationTimer?.Stop();
-                this.Dispatcher.Invoke(() =>
+                Storyboard? sb = Resources["FadeOut"] as Storyboard;
+                if (sb == null)
+                    return;
+
+                sb.Completed += (o, s) =>
                 {
                     this.Close();
-                });
-            }
-            else
-            {
-                time = time.Add(TimeSpan.FromMilliseconds(-1000));
-            }
+                };
+
+                sb.Begin();
+            });
         }
 
         private void close_Click(object sender, MouseButtonEventArgs e)
@@ -73,6 +93,14 @@ namespace DDPM.OSDs
                 return;
             }
             Close();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
         }
     }
 }

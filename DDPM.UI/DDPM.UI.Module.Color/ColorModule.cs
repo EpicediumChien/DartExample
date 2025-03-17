@@ -94,6 +94,7 @@ namespace DDPM.UI.Module.Color
         public void OnDeactivated()
         {
             Trace.WriteLine("ColorModule.OnDeactivated");
+            vm.CallCancel();
         }
 
         #endregion Event Handlers

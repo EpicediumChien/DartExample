@@ -12,7 +12,7 @@
     ShowInTaskbar="False"
     Topmost="True"
     WindowStartupLocation="Manual"
-    WindowStyle="None"
+    WindowStyle="None" Closed="Window_Closed"
     mc:Ignorable="d">
 
     <Window.Resources>
@@ -48,7 +48,7 @@
             VerticalAlignment="Bottom">
 
             <Border
-                Width="366"
+                Width="332"
                 Height="135"
                 Background="{DynamicResource Default_SA_OSD_Border_BkColor}"
                 BorderBrush="#0DFFFFFF"
