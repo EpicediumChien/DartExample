@@ -11,8 +11,8 @@ namespace DDPM.OSDs
     /// </summary>
     public partial class NumLockOffWin : Window
     {
-        //private DispatcherTimer? animationTimer = null;
-        private TimeSpan time;
+        /*private DispatcherTimer? animationTimer = null;
+        private TimeSpan time;*/
 
         public NumLockOffWin()
         {
@@ -91,7 +91,7 @@ namespace DDPM.OSDs
 
                 sb.Completed += (o, s) =>
                 {
-                    
+
                     //animationTimer = null;
                     sb = null;
 

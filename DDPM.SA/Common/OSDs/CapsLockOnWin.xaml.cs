@@ -10,8 +10,8 @@ namespace DDPM.OSDs
     /// </summary>
     public partial class CapsLockOnWin : Window
     {
-        //private DispatcherTimer? animationTimer = null;
-        private TimeSpan time;
+        /*private DispatcherTimer? animationTimer = null;
+        private TimeSpan time;*/
 
         public CapsLockOnWin()
         {
@@ -35,7 +35,7 @@ namespace DDPM.OSDs
             //animationTimer.Tick += RunTimerTick;
             //animationTimer.Start();
         }
-		
+
         public void ShowWindow()
         {
             if (!Dispatcher.CheckAccess())
@@ -45,7 +45,7 @@ namespace DDPM.OSDs
             }
             Show();
         }
-		
+
         public void CloseWindow()
         {
             if (!Dispatcher.CheckAccess())
@@ -55,7 +55,7 @@ namespace DDPM.OSDs
             }
             Close();
         }
-		
+
         //private void RunTimerTick(object sender, EventArgs e)
         //{
         //    if (time == TimeSpan.Zero)
