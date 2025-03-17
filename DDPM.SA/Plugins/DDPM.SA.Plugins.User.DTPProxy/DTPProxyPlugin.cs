@@ -12921,46 +12921,46 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
 
 
-        public async Task<bool> GetAirAudioIsWearDetectionQuickPauseSupportedAsync(string Guid)
-        {
-            string guid = Guid;
+        //public async Task<bool> GetAirAudioIsWearDetectionQuickPauseSupportedAsync(string Guid)
+        //{
+        //    string guid = Guid;
 
-            try
-            {
-                if (!await GetItemIDAsync("AirAudio", guid))
-                    return false;
+        //    try
+        //    {
+        //        if (!await GetItemIDAsync("AirAudio", guid))
+        //            return false;
 
-                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
-                if (commodity is ICommodity)
-                {
-                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsWearDetectionQuickPauseSupported");
-                    if (value == null)
-                    {
-                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync: IsWearDetectionQuickPauseSupported is null for {guid}");
-                        return false;
-                    }
+        //        var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+        //        if (commodity is ICommodity)
+        //        {
+        //            var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsWearDetectionQuickPauseSupported");
+        //            if (value == null)
+        //            {
+        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync: IsWearDetectionQuickPauseSupported is null for {guid}");
+        //                return false;
+        //            }
 
-                    if (value is bool boolValue)
-                    {
-                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync succeeded for {guid}");
-                        return boolValue;
-                    }
-                    else
-                    {
-                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync: IsWearDetectionQuickPauseSupported is not a boolean for {guid}");
-                        return false;
-                    }
-                }
+        //            if (value is bool boolValue)
+        //            {
+        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync succeeded for {guid}");
+        //                return boolValue;
+        //            }
+        //            else
+        //            {
+        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync: IsWearDetectionQuickPauseSupported is not a boolean for {guid}");
+        //                return false;
+        //            }
+        //        }
 
-                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync failed: Could not retrieve commodity interface for {guid}");
-                return false;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync failed for {guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
+        //        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+        //        return false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync failed for {guid} - Exception: {ex.Message}");
+        //        return false;
+        //    }
+        //}
 
         public async Task<bool> GetAirAudioIsWearDetectionMuteMicSupportedAsync(string Guid)
         {

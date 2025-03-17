@@ -588,23 +588,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<bool> GetAirAudioIsWearDetectionQuickPauseSupportedAsync(string Guid)
-        {
-            try
-            {
-                var result = await DTPService.GetAirAudioMicNoiseCancellationAsync(Guid);
-                if (result)
-                    writelog($"GetAirAudioIsMicNoiseCancellationAsync Success");
-                else
-                    writelog($"GetAirAudioIsMicNoiseCancellationAsync Fail");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                writelog($"GetAirAudioIsMicNoiseCancellationAsync failed for {Guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
+        //public async Task<bool> GetAirAudioIsWearDetectionQuickPauseSupportedAsync(string Guid)
+        //{
+        //    try
+        //    {
+        //        var result = await DTPService.GetAirAudioMicNoiseCancellationAsync(Guid);
+        //        if (result)
+        //            writelog($"GetAirAudioIsMicNoiseCancellationAsync Success");
+        //        else
+        //            writelog($"GetAirAudioIsMicNoiseCancellationAsync Fail");
+        //        return result;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        writelog($"GetAirAudioIsMicNoiseCancellationAsync failed for {Guid} - Exception: {ex.Message}");
+        //        return false;
+        //    }
+        //}
 
         public async Task<bool> GetAirAudioIsWearDetectionMuteMicSupportedAsync(string Guid)
         {
@@ -826,7 +826,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             try
             {
-                var result = await DTPService.GetAirAudioIsDirtyAsync(Guid);
+                var result = await DTPService.GetAirAudioIsReadyAsync(Guid);
                 if (result)
                     writelog($"GetAirAudioIsReadyAsync Success");
                 else
