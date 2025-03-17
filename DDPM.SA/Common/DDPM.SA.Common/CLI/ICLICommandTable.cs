@@ -352,12 +352,12 @@ namespace DDPM.SA.Common
                                         t = tS;
                                     if (t.Length > 1 && t.EndsWith("]"))
                                         t = t.Substring(0, t.Length - 1);
-                                    if (tmpSS[0].ToUpper().Contains("SERVICETAG") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
-                                    {
+                                    if (tmpSS[0].ToUpper().Contains("SERVICETAG") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION")  && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))//Elsa20250313 remove && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES")
+                                    {                                                                                                                                                                                 //for ConnectedDevices dock need support ServiceTag
                                         commandInput.ServiceTag.Add(t);
                                     }
-                                    else if (tmpSS[0].ToUpper().Contains("MODEL") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
-                                    {
+                                    else if (tmpSS[0].ToUpper().Contains("MODEL") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION")  && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))//Elsa20250313 remove && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES")
+                                    {                                                                                                                                                                                 //for ConnectedDevices peripheral need support model                                  
                                         commandInput.Model.Add(t);
                                     }
                                     else if (tmpSS[0].ToUpper().Contains("GUID"))
