@@ -3209,16 +3209,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplaySupportedProperties {monitorInfo.modelName} start");
             DisplayPropertiesInfo rc = null;
             if (_DisplayPropertiesPlugin != null)
             {
                 _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties _DisplayPropertiesPlugin.GetDisplaySupportedProperties go");
                 rc = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfo).Result;
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplaySupportedProperties rc.SupportedProperties.Properties.Count : {rc.SupportedProperties.Properties.Count}");
                 _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplaySupportedProperties rc.CurrentOrientation : {rc.CurrentOrientation}");
                 if (_displayDataManger != null)
                 {
-                    _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties find display data go");
+                    _logs.DebugMsg("[DisplayMangerPlugin] find display data go");
                     if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfo, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
                     {
                         _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties update display data go");
@@ -3232,7 +3233,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     }
                 }
             }
-            _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties done");
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplaySupportedProperties {monitorInfo.modelName} done");
             return Task.FromResult(rc.SupportedProperties);
         }
 
