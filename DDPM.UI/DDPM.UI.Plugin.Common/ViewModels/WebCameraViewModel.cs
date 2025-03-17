@@ -1005,7 +1005,11 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 if (CurrentDeviceInfo.IsPropertyPanSupported)
                 {
-                    Zoom = CurrentProfile.Zoom;
+                    SetPan(CurrentProfile.Pan);
+                }
+                if (CurrentDeviceInfo.IsPropertyTiltSupported)
+                {
+                    SetTilt(CurrentProfile.Tilt);
                 }
                 WebcamSettings.NONE = CurrentProfile;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
@@ -1859,13 +1863,11 @@ namespace DDPM.UI.Plugin.ViewModels
         public void SetTilt(int value)
         {
             DdpmCommonHelper.DeviceManagerSA?.SetTilt(CurrentDeviceInfo!.ID.ToString(), value);
-            CurrentProfile.Tilt = value;
             SetProfileProperty("Tilt", value, OperationModule.Other, false);
         }
         public void SetPan(int value)
         {
             DdpmCommonHelper.DeviceManagerSA?.SetPan(CurrentDeviceInfo!.ID.ToString(), value);
-            CurrentProfile.Pan = value;
             SetProfileProperty("Pan", value, OperationModule.Other, false);
 
         }
