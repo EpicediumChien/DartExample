@@ -80,9 +80,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             try
             {
-
-                if (_viewModel?.IsRecording ?? true)
-                    return;
+                
+                
 
                 if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType != null)
                 {
@@ -100,6 +99,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                     //_viewModel!.OnGoBackClicked();
                                 }
                             }
+                            if (_viewModel?.IsRecording == true) 
+                            {
+                                _viewModel!.IsRecording = false;
+                                _viewModel!.OnGoBackClicked();
+                            }
                             return;
                         }
                         if (e.type == DeviceChangedType.Peripherals_PlugIn)
@@ -115,6 +119,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                 GetPeripheralsAsync();
                                 _viewModel!.SetCurrentDevice(e.device_peripherals.ID.ToString());
                             }
+                            if (_viewModel?.IsRecording ?? true)
+                                return;
                             return;
                         }
                         _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);

@@ -362,14 +362,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             ArrowLeft.Source = null;
             ArrowLeft.Source = (BitmapImage)System.Windows.Application.Current.Resources["Arrow_Left"];
-            //if (oSThemeEnum == OSThemeEnum.Dark)
-            //{
-            //    PlayImg.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Play.png");
-            //}
-            //else
-            //{
-            //    PlayImg.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/LightMode/Port.png");
-            //}
+            if (oSThemeEnum == OSThemeEnum.Dark)
+            {
+                playImg.Fill = Brushes.White;
+            }
+            else
+            {
+                playImg.Fill = new BrushConverter().ConvertFromString("#0E0E0E") as SolidColorBrush; ;
+            }
         }
 
         //private void DeviceManagerSA_DeviceChanged(object? sender, DeviceChangedEventArgs e)

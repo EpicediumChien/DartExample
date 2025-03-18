@@ -205,9 +205,9 @@ namespace DDPM.UI.Module.WebCameraSettings
         //  Jim add 20240628
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_vm != null && _vm.MediaCapture != null && 
-                _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Supported)
-            {
+            //if (_vm != null && _vm.MediaCapture != null && 
+            //    _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Supported)
+            //{
                 // 20240702 jim add
                 // Unhook the event handler, so that changing properties on the slider won't trigger an API call
                 //AutofocusSlider.ValueChanged -= AutofocusSlider_ValueChanged;
@@ -242,7 +242,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                 //        _vm.AutofocusStatus_String = "OFF";
                 //    }
                 //}
-            }
+            //}
             //NarratorModeSupport.RecurseUitems(start  );
 
         }

@@ -283,37 +283,37 @@
               <!-- Visibility="{Binding FunctionsVisibility}" -->
               <Border Cursor="Hand" Margin="8,0,0,0" Visibility="Visible" x:Name="btnFolder" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnFolder_Click"
                             Border.CornerRadius="2" Width="40" BorderThickness="0" BorderBrush="{DynamicResource DefaultTheme_SetupSelectBdColor}" IsEnabled="{Binding IsNotRecording}">
-                <Border.ToolTip>
-                  <ToolTip Style="{StaticResource btnToolTipStyle}">
-                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                      <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.7], Source={x:Static lang:LangHelper.Instance}}" />
-                    </Border>
-                  </ToolTip>
-                </Border.ToolTip>
-                <!--<Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Folder.png" Stretch="Fill" Width="17" Height="16" />-->
-                <ContentControl Margin="0" Width="17" Height="16" Template="{StaticResource icon_Folder}" />
-              </Border>
-              <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,0" Visibility="Collapsed" x:Name="btnPause" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnPause_Click">
-                <Border.ToolTip>
-                  <ToolTip Style="{StaticResource btnToolTipStyle}">
-                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                      <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.9], Source={x:Static lang:LangHelper.Instance}}" />
-                    </Border>
-                  </ToolTip>
-                </Border.ToolTip>
-                <ContentControl Margin="0" Width="17" Height="16" Template="{StaticResource icon_Pause}" />
-              </Border>
-              <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,0" Visibility="Collapsed" x:Name="btnPlay" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnPlay_Click">
-                <Border.ToolTip>
-                  <ToolTip Style="{StaticResource btnToolTipStyle}">
-                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                      <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.10], Source={x:Static lang:LangHelper.Instance}}" />
-                    </Border>
-                  </ToolTip>
-                </Border.ToolTip>
-                <Image x:Name="PlayImg" Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Play.png" Stretch="Fill" Width="13" Height="14" />
-              </Border>
-              <Border Cursor="Hand" Margin="8,0,0,0" Visibility="Visible" x:Name="btnRecord" MouseLeftButtonDown="btnRecord_Click" Height="40" Width="40"  VerticalAlignment="Bottom"
+                                    <Border.ToolTip>
+                                        <ToolTip Style="{StaticResource btnToolTipStyle}">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.7], Source={x:Static lang:LangHelper.Instance}}" />
+                                            </Border>
+                                        </ToolTip>
+                                    </Border.ToolTip>
+                                    <!--<Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Folder.png" Stretch="Fill" Width="17" Height="16" />-->
+                                    <ContentControl Margin="0" Width="17" Height="16" Template="{StaticResource icon_Folder}" />
+                                </Border>
+                                <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,0" Visibility="Collapsed" x:Name="btnPause" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnPause_Click">
+                                    <Border.ToolTip>
+                                        <ToolTip Style="{StaticResource btnToolTipStyle}">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.9], Source={x:Static lang:LangHelper.Instance}}" />
+                                            </Border>
+                                        </ToolTip>
+                                    </Border.ToolTip>
+                                    <ContentControl Margin="0" Width="17" Height="16" Template="{StaticResource icon_Pause}" />
+                                </Border>
+                                <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,0" Visibility="Collapsed" x:Name="btnPlay" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnPlay_Click">
+                                    <Border.ToolTip>
+                                        <ToolTip Style="{StaticResource btnToolTipStyle}">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.10], Source={x:Static lang:LangHelper.Instance}}" />
+                                            </Border>
+                                        </ToolTip>
+                                    </Border.ToolTip>
+                                    <Path x:Name="playImg" Data="M12.5 7.00012L0.499999 13.9283L0.5 0.0719184L12.5 7.00012Z" Height="14" Width="13"  Fill="#0E0E0E"/>
+                                </Border>
+                                <Border Cursor="Hand" Margin="8,0,0,0" Visibility="Visible" x:Name="btnRecord" MouseLeftButtonDown="btnRecord_Click" Height="40" Width="40"  VerticalAlignment="Bottom"
                             Border.CornerRadius="2" BorderThickness="0" BorderBrush="#1B385F">
                 <Border.ToolTip>
                   <ToolTip Style="{StaticResource btnToolTipStyle}">
