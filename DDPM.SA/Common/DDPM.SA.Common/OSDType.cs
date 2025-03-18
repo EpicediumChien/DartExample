@@ -26,4 +26,11 @@
         Pen,
         QAM
     }
+
+    public enum OSDType_Op
+    {
+        None,
+        Plugin,
+        Unplug
+    }
 }

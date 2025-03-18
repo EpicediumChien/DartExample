@@ -378,9 +378,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             }
                             System.Windows.Application.Current.Dispatcher.Invoke(() =>
                             {
-                                if (NewValue.ToLower() == "true")
+                                if (NewValue.ToLower() == "true" && !_viewModel!.IsAutoFramingOn)
                                     _viewModel!.IsAutoFramingOn = true;
-                                else
+                                if (NewValue.ToLower() != "true" && _viewModel!.IsAutoFramingOn)
                                     _viewModel!.IsAutoFramingOn = false;
                             });
                         }

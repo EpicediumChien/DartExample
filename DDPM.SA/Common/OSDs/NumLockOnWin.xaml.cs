@@ -11,8 +11,8 @@ namespace DDPM.OSDs
     /// </summary>
     public partial class NumLockOnWin : Window
     {
-        //private DispatcherTimer? animationTimer = null;
-        private TimeSpan time;
+        /*private DispatcherTimer? animationTimer = null;
+        private TimeSpan time;*/
 
         public NumLockOnWin()
         {

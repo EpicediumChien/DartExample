@@ -25,6 +25,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Application = System.Windows.Application;
 
 namespace DDPM.UI.Common
 {
@@ -51,6 +52,7 @@ namespace DDPM.UI.Common
         public InterruptScreen(string versionNumber,InterruptScreenRoot interruptScreenRoot)
         {
             InitializeComponent();
+            this.Owner = Application.Current.MainWindow;
             DataContext = this;
             if (interruptScreenRoot == null)
             {

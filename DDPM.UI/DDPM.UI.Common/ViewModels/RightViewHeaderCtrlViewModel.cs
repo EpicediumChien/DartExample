@@ -296,79 +296,14 @@ namespace DDPM.UI.Common
         {
             get
             {
-                int ret = -1;
-                if (_internalSelectedIndex == 0)
-                    ret = _externalIndex1;
-                else if (_internalSelectedIndex == 1)
-                    ret = _externalIndex2;
+                if (ItemCount == 2 && _internalSelectedIndex == 2)
+                    return  1;
                 else
-                    ret = _externalIndex3;
+                    return _internalSelectedIndex;
 
-                //Check range
-                if ((ret < 0) || (ret >= ItemCount))
-                {
-                    //Invaid return value, force return 0
-                    ret = 0;
-                }
-                return ret;
-                /*
-                if (ItemCount == 3)
-                {
-                    if (_shownCount == 2)
-                    {
-
-                    }
-                }
-                if (ItemCount == 2)
-                    if (_internalSelectedIndex == 2)
-                    {
-                        //_selectedIndex = 1;
-                        return 1;
-                    }
-                return _internalSelectedIndex;
-                */
             }
             set
             {
-                if (_shownCount == 2)
-                {
-                    switch (_caseNo)
-                    {
-                        case 2:
-                            if (value == 0)
-                                InternalSelectedIndex = 0;
-                            else if (value == 1)
-                                InternalSelectedIndex = 2;
-                            break;
-                        case 3:
-                            if (value == 0)
-                                InternalSelectedIndex = 0;
-                            else if (value == 2)
-                                InternalSelectedIndex = 2;
-                            break;
-
-                        case 4:
-                            if (value == 1)
-                                InternalSelectedIndex = 0;
-                            else if (value == 2)
-                                InternalSelectedIndex = 2;
-                            break;
-
-                        case 8:
-                            if (value == 0)
-                                InternalSelectedIndex = 0;
-                            else if (value == 1)
-                                InternalSelectedIndex = 2;
-                            break;
-
-                    }
-                    //if (value >= 1)
-                    //{
-                    //    InternalSelectedIndex = 2;
-                    //    return;
-                    //}
-                    return;
-                }
                 InternalSelectedIndex = value;
             }
         }

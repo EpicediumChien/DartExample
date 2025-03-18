@@ -10,8 +10,8 @@ namespace DDPM.OSDs
     /// </summary>
     public partial class CapsLockOffWin : Window
     {
-        //private DispatcherTimer? animationTimer = null;
-        private TimeSpan time;
+        /*private DispatcherTimer? animationTimer = null;
+        private TimeSpan time;*/
 
         public CapsLockOffWin()
         {

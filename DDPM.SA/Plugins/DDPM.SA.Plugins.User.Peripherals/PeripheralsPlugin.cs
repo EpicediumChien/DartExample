@@ -2845,7 +2845,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             Requester = "CloseBatteryLowOSD",
                             osd_type = OSDType.BatteryLow,
                             osd_device = type,
-                            Guid = ""
+                            Guid = deviceGuid
                         };
                         OnOSDNotify(args);
                     }
@@ -3145,6 +3145,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         DeviceName = Screen.PrimaryScreen.DeviceName,
                         osd_type = OSDType.BatteryLow,
                         osd_device = type,
+                        Guid = deviceInfo.ID,
                         Message = message
                     };
                     OnOSDNotify(args);
@@ -3212,6 +3213,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     DeviceName = Screen.PrimaryScreen.DeviceName,
                                     osd_type = OSDType.BatteryLow,
                                     osd_device = type,
+                                    Guid = di.ID,
                                     Message = message
                                 };
                                 OnOSDNotify(args);
@@ -3227,26 +3229,29 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 }
                 else
                 {
-                    try
+                    foreach (var di in _deviceHelper.deviceInfo)
                     {
-                        OSDEventArgs args = new()
+                        try
                         {
-                            Requester = "CloseBatteryLowOSD",
-                            osd_type = OSDType.BatteryLow,
-                            osd_device = OSDType_Device.Keyboard,
-                            Guid = ""
-                        };
-                        OnOSDNotify(args);
-                        args.osd_device = OSDType_Device.Mouse;
-                        OnOSDNotify(args);
-                        args.osd_device = OSDType_Device.Headset;
-                        OnOSDNotify(args);
-                        args.osd_device = OSDType_Device.Pen;
-                        OnOSDNotify(args);
-                    }
-                    catch (Exception e)
-                    {
-                        writelog($"General setting Uncheck [Low battery level] fail with exception:{e.Message}");
+                            OSDEventArgs args = new()
+                            {
+                                Requester = "CloseBatteryLowOSD",
+                                osd_type = OSDType.BatteryLow,
+                                //osd_device = OSDType_Device.Keyboard,
+                                Guid = di.ID
+                            };
+                            OnOSDNotify(args);
+                            //args.osd_device = OSDType_Device.Mouse;
+                            //OnOSDNotify(args);
+                            //args.osd_device = OSDType_Device.Headset;
+                            //OnOSDNotify(args);
+                            //args.osd_device = OSDType_Device.Pen;
+                            //OnOSDNotify(args);
+                        }
+                        catch (Exception e)
+                        {
+                            writelog($"General setting Uncheck [Low battery level] fail with exception:{e.Message}");
+                        }
                     }
                     LowBatteryIDs.Clear();
                 }
