@@ -284,10 +284,17 @@ namespace DDPM.UI.Module.DisplayProperties
                     ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(currentMonitorInfo).Result;
                     if (ret.result)
                     {
-                        UInt16 _curPxpMode = Convert.ToUInt16(ret.value);
-                        if (_curPxpMode != PipMode_Off)
+                        try
                         {
-                            _HDREnable = false;
+                            UInt16 _curPxpMode = Convert.ToUInt16(ret.value);
+                            if (_curPxpMode != PipMode_Off)
+                            {
+                                _HDREnable = false;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            DdpmCommonHelper.WriteUILog($"[DisplayPropertiesViewModel] DoWork_RefreshData exception with {ex.Message}");
                         }
                     }
                 }
