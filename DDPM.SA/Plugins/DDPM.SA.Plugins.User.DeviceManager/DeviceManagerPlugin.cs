@@ -2583,6 +2583,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     catch (Exception e)
                     {
+                        writelog("[DeviceMangerPlugin] GetInputSourcelist is error : " + e.Message.ToString());
                         inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
                         b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
                     }
@@ -17170,6 +17171,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             catch (Exception ex)
                             {
                                 writelog($"[DDMMigration] delete temp folder exception: {migrationPath}");
+                                writelog($"[DDMMigration] delete temp folder exception: {ex.Message}");
                             }
                         }
                     }
@@ -17400,7 +17402,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                ;
+                writelog($"[DDMtoDDPM_Hotkey] error is {ex.Message}");
             }
         }
 
