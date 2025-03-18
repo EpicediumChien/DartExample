@@ -59,19 +59,36 @@ namespace DDPM.SA.Plugins.User.FWUpdate
     [DependencyKnownTypes(new[] { typeof(IFWUpdateService), typeof(ISettingsManagerSA) })]
     public class FWUpdatePlugins : BaseAgentPlugin, IDisposableObservable, IFWUpdateService
     {
-        private static void WriteLog(ILog log, string message, bool isError = false)
+        public enum log_type
         {
-#if DEBUG
-            Console.WriteLine(message);
-#endif
-            if (log == null)
-                return;
-            if (!isError)
-                log.Info(message);
-            else
-                log.Error(message);
+            info = 0,
+            error
         }
+        /// <summary>
+        /// //
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="log_type">0 means info, others means error</param>
+        private void WriteLog(string text, log_type log_type,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
+        {
+            if (string.IsNullOrEmpty(text))
+                text = "";
 
+            text = $"[FWUpdatePlugins] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
+#if DEBUG
+            Console.WriteLine(text);
+#endif
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
+        }
 
         public static readonly string[] ODM = new string[] { "Chicony", "Primax", "LiteON", "Darfon", "Wacom", "Luxshare", "Wistron", "Horn", "Tymphany", "Dell" };
         #region Private Members
@@ -579,7 +596,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         catch (Exception ex)
                         {
                             //_logs.Error($"updateHelper.UpdateItems[{i}] Error : {ex.Message}");
-                            WriteLog(Log, $"updateHelper.UpdateItems[{i}] Error : {ex.Message}", true);
+                            WriteLog($"updateHelper.UpdateItems[{i}] Error : {ex.Message}", log_type.error);
                         }
                     }
                 }
