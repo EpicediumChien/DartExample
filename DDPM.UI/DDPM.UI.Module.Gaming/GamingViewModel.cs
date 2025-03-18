@@ -442,6 +442,19 @@ namespace DDPM.UI.Module.Gaming
                 {
                     HDRType_IsEnable = false;
                 }
+                else
+                {
+                    UInt16 PipMode_Off = 0;
+                    ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(currentMonitorInfo).Result;
+                    if (ret.result)
+                    {
+                        UInt16 _curPxpMode = Convert.ToUInt16(ret.value);
+                        if (_curPxpMode != PipMode_Off)
+                        {
+                            HDRType_IsEnable = false;
+                        }
+                    }
+                }
                 if (displayPropertiesInfo.Current_DarkStabilizer == Gaming_DarkStabilizer.Disable)
                 {
                     DarkStabilizer_IsEnable = false;
