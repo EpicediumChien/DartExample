@@ -3237,10 +3237,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             {
                                 Requester = "CloseBatteryLowOSD",
                                 osd_type = OSDType.BatteryLow,
-                                osd_device = OSDType_Device.Keyboard,
+                                //osd_device = OSDType_Device.Keyboard,
                                 Guid = di.ID
                             };
-                            //OnOSDNotify(args);
+                            OnOSDNotify(args);
                             //args.osd_device = OSDType_Device.Mouse;
                             //OnOSDNotify(args);
                             //args.osd_device = OSDType_Device.Headset;
