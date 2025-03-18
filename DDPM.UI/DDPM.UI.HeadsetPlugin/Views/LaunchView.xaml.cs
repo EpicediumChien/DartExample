@@ -1,19 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.UserControls;
 using DDPM.UI.Interfaces;
-using DDPM.UI.Module.HeadsetAudioForSB725Settings;
 using DDPM.UI.Module.HeadsetAudioSettings;
 using DDPM.UI.Module.HeadsetAutomatedActions;
 using DDPM.UI.Module.HeadsetDeviceSettings;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
-using System;
 using System.Diagnostics;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -31,15 +27,11 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         private readonly HeadsetViewModel? _vm;
 
         private readonly int[] _rightFrameWidth = new int[] { 0, 533, 533, 533 };
-        //private readonly string Restore = "Restore to default";
-        //private readonly string Unpair = "Unpair";
         private readonly string AudioSettings = Strings.HeadsetAudioSettings;
         private readonly string AutomatedActions = Strings.HeadsetAutomatedActions;
         private readonly string DeviceSettings = Strings.HeadsetDeviceSettings;
         private readonly Style ConnectionStyle1;
         private readonly Style ConnectionStyle2;
-        private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
-        private readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
 
         public LaunchView()
         {

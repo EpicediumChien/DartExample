@@ -1,17 +1,13 @@
 ﻿using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Method;
-using DDPM.UI.Plugin.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft;
-using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Forms;
-using Windows.Gaming.Input;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -23,7 +19,6 @@ namespace DDPM.UI.Plugin.ViewModels
         public IDeviceManagerSA _deviceManager;
         public IShowPluginManager _showPluginManager;
         public DeviceInfoDTP DeviceInfoDTP;
-        public string _current_headset;
         private Debouncer _debouncerHeadset;
         private Debouncer _debouncerHeadsetPauseMusic;
         private Debouncer _debouncerHeadsetMuteMicrophone;
@@ -46,7 +41,6 @@ namespace DDPM.UI.Plugin.ViewModels
             _deviceManager = deviceManager;
             _showPluginManager = showPluginManager;
             DeviceInfoDTP = new DeviceInfoDTP();
-            _current_headset = string.Empty;
             //DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Headset_DTPNotify;
             //DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             DebouncerFfunctionInit();

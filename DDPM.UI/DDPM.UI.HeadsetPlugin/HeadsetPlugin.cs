@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using DDPM.SA.Common;
-using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
@@ -10,7 +9,6 @@ using Dell.Client.Framework.UX.WPF;
 using Microsoft.Extensions.DependencyInjection;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics.CodeAnalysis;
-using System.Windows.Forms;
 using System.Windows.Input;
 using Cursors = System.Windows.Input.Cursors;
 
