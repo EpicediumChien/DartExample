@@ -26,7 +26,7 @@ namespace DDPM.ColorApp
         public string ActiveWindowFilePath { get; set; } = string.Empty;
     }
 
-    public class AppStatusQuery
+    public class AppStatusQuery : IDisposable
     {
         #region Native Win32 APIs
 
@@ -120,6 +120,31 @@ namespace DDPM.ColorApp
 
         ~AppStatusQuery()
         {
+            Dispose(true);
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Dispose] Dispose failed, message: {ex.Message}");
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                focusWatcher?.Dispose();
+                moveWatcher?.Dispose();
+                focusWatcher = null;
+                moveWatcher = null;
+            }            
         }
 
         public static AppStatusQuery GetInstance(ILog log)

@@ -10,6 +10,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using VcpCore.Common;
+using static DDPM.RemoteManagement.Common.Interfaces.Params;
 
 namespace DDPM.ColorApp
 {
@@ -22,9 +23,6 @@ namespace DDPM.ColorApp
         private MonitorInfo Mi;//Dean 0626 fix SAST issue, remove static as recommend and set as private
         //private string Pre_reqKey = string.Empty;//Dean 0626 fix SAST issue, remove static as recommend and set as private
         private int Pre_reqKey = -1;
-
-        // 20240823 jim add - declare log variable
-        private Logs _logs;
 
         // jim add 20240605
         private bool b_AUTO_ColorPresetConfig = false;//Dean 0626 fix SAST issue, remove static as recommend and set as private
@@ -41,7 +39,9 @@ namespace DDPM.ColorApp
         private AppStatusQuery? appStatus = null;//Dean 0626 fix SAST issue, remove static as recommend
         private List<ColorPresetSettings>? appconfigs = null;
         //private List<ColorPresetSettings>? appconfigs = new List<ColorPresetSettings>();
-        private List<string> _supported_preset = new List<string>();
+        //private List<string> _supported_preset = new List<string>();
+
+        private Thread? _update = null;
 
         private ILog Log { get; set; }
 
@@ -81,7 +81,7 @@ namespace DDPM.ColorApp
             b_AUTO_ColorPresetConfig = blAUTO;
             b_SmartHDR_ON = blSmartHDR_ON;
             b_Is_Game_DeviceName = blIs_Game_DeviceName; // jim add 20241207
-            _supported_preset = ColorPresetSupportList;
+            //_supported_preset = ColorPresetSupportList;
 
             writelog("Set_AUTO_ColorPresetConfig AUTO_ColorPresetConfig = " + blAUTO);
 
@@ -171,12 +171,24 @@ namespace DDPM.ColorApp
             if (_apps != null)
                 _apps.Clear();
 
-            Thread update = new Thread(refresh_app_list)
+            if (_update == null)
             {
-                Name = "refresh_app_list",
-                IsBackground = true
-            };
-            update.Start();
+                _update = new Thread(refresh_app_list)
+                {
+                    Name = "refresh_app_list",
+                    IsBackground = true
+                };
+                writelog("Create backgroud thread.");
+            }
+            else
+                writelog("Thread isn't null");
+            if (!_update.IsAlive)
+            {
+                _update.Start();
+                writelog("Start backgroud thread.");
+            }
+            else
+                writelog("Thread is alive.");
         }
 
         private void refresh_app_list()
@@ -188,19 +200,6 @@ namespace DDPM.ColorApp
                 lstApps.ItemsSource = _apps;
             });
         }
-        /*
-        public List<AppCollectionData>? get_loaded_apps_list()
-        {
-            if (_apps != null && _apps.Count > 0)
-            {
-                return _apps;
-            }
-            else
-            {
-                refresh_app_list();
-                return _apps;
-            }
-        }*/
 
         private enum log_type
         {
@@ -210,7 +209,7 @@ namespace DDPM.ColorApp
 
         private void writelog(string? text, log_type log_type = log_type.info)
         {
-            text = "[ColorApp] " + text;
+            text = "[MonitorWin-Color] " + text;
 #if DEBUG
 
             Console.WriteLine(text);
@@ -229,33 +228,12 @@ namespace DDPM.ColorApp
         {
             if (b_AUTO_ColorPresetConfig)
             {
-                /*ActiveWindowData data = null;
-                Screen screen = null;
-
-                if (sender != null)
-                {
-                    data = sender as ActiveWindowData;
-                    screen = Screen.FromHandle(data.ActiveWindowHandle);
-
-                    System.Windows.Forms.Screen? s = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(x => x.DeviceName == Mi.DisplayName);
-
-                    if (s == null)//Dean 0626 fix SAST issue
-                        return;
-
-                    if ((screen.WorkingArea.Height != s.WorkingArea.Height) || (screen.WorkingArea.Width != s.WorkingArea.Width) || (screen.WorkingArea.Left != s.WorkingArea.Left))
-                        return;
-                }*/
-
                 if (sender != null)
                 {
                     //Get window data from active window's event
                     ActiveWindowData data = null;
                     Screen screen = null;
                     data = sender as ActiveWindowData;
-                    //tbWndName.Text = data.ActiveWindowTitle;
-                    //tbWndPID.Text = data.ActiveWindowProcessId.ToString();
-                    //tbWndModule.Text = data.ActiveWindowProcessModuleName;
-
                     screen = Screen.FromHandle(data.ActiveWindowHandle);
 
                     if (screen == null)
@@ -303,18 +281,8 @@ namespace DDPM.ColorApp
                         writelog("s.WorkingArea.Left = " + s?.WorkingArea.Left);
                     }
 
-                    //if (s == null)//Dean 0626 fix SAST issue
-                    //    return;
-
-                    //if ((screen.WorkingArea.Height != s.WorkingArea.Height) || (screen.WorkingArea.Width != s.WorkingArea.Width) || (screen.WorkingArea.Left != s.WorkingArea.Left))
-                    //    return;
-
                     string strFilePath = data.ActiveWindowFilePath;
-                    //writelog("EventAppStatus_SendValue ActiveWindowTitle = " + data.ActiveWindowTitle);
-                    //writelog("EventAppStatus_SendValue ActiveWindowProcessId = " + data.ActiveWindowProcessId.ToString());
                     writelog("EventAppStatus_SendValue ActiveWindowProcessModuleName = " + data.ActiveWindowProcessModuleName);
-                    //writelog("EventAppStatus_SendValue ActiveWindowFilePath = " + data.ActiveWindowFilePath);
-
                     MonitorInfo actived_mi = null;
 
                     // Jim 20250110 modify for exception 
@@ -335,11 +303,6 @@ namespace DDPM.ColorApp
                         actived_mi = null;
                     }            
 
-                    //Get actived Monitor from actived window
-                    //screen = Screen.FromHandle(data.ActiveWindowHandle);
-
-                    //MonitorInfo actived_mi = Mi;
-
                     // Jim 20250110 modify for exception
                     if (actived_mi == null)
                     {
@@ -359,7 +322,6 @@ namespace DDPM.ColorApp
                     if (appconfigs == null)
                     {
                         writelog("appconfigs is null");
-                        //Trace.WriteLine("appconfigs is null");
                         return;
                     }
                     //convert module name to app name, ex: 7zFM.exe -> 7-Zip File Manager
@@ -367,8 +329,7 @@ namespace DDPM.ColorApp
                     int index = -1;
                     if (forgroundProcess != null && forgroundProcess.MainModule != null) {
                     index = _apps.FindIndex(x =>
-                                     forgroundProcess.MainModule.FileName.ToLower(CultureInfo.InvariantCulture).Trim().IndexOf(x.AppPath.ToLower(CultureInfo.InvariantCulture).Trim()) >= 0 ||
-                                    //forgroundProcess.MainModule.FileName.ToLower().Trim().IndexOf(x.AppName.ToLower().Trim()) >= 0 ||
+                                    forgroundProcess.MainModule.FileName.ToLower(CultureInfo.InvariantCulture).Trim().IndexOf(x.AppPath.ToLower(CultureInfo.InvariantCulture).Trim()) >= 0 ||
                                     forgroundProcess.MainModule.ModuleName.ToLower(CultureInfo.InvariantCulture).Trim().Replace(".exe", "") == x.AppName.ToLower(CultureInfo.InvariantCulture).Trim().Replace(".exe", "")
                                     );
                     }
@@ -391,16 +352,9 @@ namespace DDPM.ColorApp
                     }
 
                     reqAppName = _apps[index].AppName;
-
-                    //Trace.WriteLine("reqAppName = " + reqAppName);
                     writelog("reqAppName = " + reqAppName);
-
                     bool isDesktop = _apps[index].AppType.Equals("Desktop"); //besides are UWP
-
-                    //Trace.WriteLine("isDesktop  = " + isDesktop);
                     writelog("isDesktop  = " + isDesktop.ToString());
-
-                    //string tmp = string.Empty;// used for UI display
 
                     // jim add 20240809
                     if (appconfigs != null)
@@ -412,72 +366,25 @@ namespace DDPM.ColorApp
                     {
                         if (config.AppInfo == null || config.AppInfo.Count <= 0)
                         {
-                            //Trace.WriteLine("config.AppInfo.Count = " +  config.AppInfo.Count.ToString());
                             writelog("appconfigs.Count = " + appconfigs.Count.ToString());
                             continue;
                         }
 
                         //Check if actived monitor has its color preset section in config file
-
                         bl_actived_mi_matched_config = (actived_mi.edid.ModelName.Trim() == config.ModelName.Trim()) && (actived_mi.edid.SerialNumber.Trim() == config.SerialNumber.Trim());
 
                         if (!bl_actived_mi_matched_config)
                             bl_actived_mi_matched_config = (actived_mi.edid.ModelName.Trim() == config.ModelName.Trim()) && (actived_mi.edid.ServiceTag.Trim() == config.ServiceTag.Trim());
 
-                        //if (actived_mi.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
-                        //    actived_mi.edid.SerialNumber.Trim() == config.SerialNumber.Trim())
                         if (bl_actived_mi_matched_config)
                         {
                             if (config.RunType != (int)ColorPresetRunType.Auto)
                             {
                                 writelog("config.RunType  is not ColorPresetRunType.Auto");
-                                //Trace.WriteLine("config.RunType  is not ColorPresetRunType.Auto");
-                                writelog("config.RunType  is not ColorPresetRunType.Auto");
                                 break;
                             }
 
-                            //string reqKey = string.Empty;
                             int reqKey = -1;
-
-                            /*foreach (var item_appname in config.AppInfo.Keys)
-                            {
-                                //Trace.WriteLine("item_appname = " + item_appname);
-
-                                if (!reqAppName.Contains(item_appname,StringComparison.OrdinalIgnoreCase))
-                                {
-                                    if (isDesktop)
-                                    {
-                                        if (config.AppInfo.ContainsKey("Desktop Application"))
-                                        {
-                                            reqKey = config.AppInfo["Desktop Application"].ColorPresetName.Trim();
-                                        }
-                                        else
-                                        {
-                                            //return;
-                                            continue;
-                                        }
-                                    }
-                                    else //UWP
-                                    {
-                                        if (config.AppInfo.ContainsKey("UWP Application"))
-                                        {
-                                            reqKey = config.AppInfo["UWP Application"].ColorPresetName.Trim();
-                                        }
-                                        else
-                                        {
-                                            //return;
-                                            continue;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    reqKey = (config.AppInfo[item_appname]).ColorPresetName.Trim();
-                                    writelog("reqKey (ColorPresetName)  = " + reqKey);
-                                    //Trace.WriteLine("reqKey (ColorPresetName) = " + reqKey);
-                                    break;
-                                }
-                            }*/
 
                             if (!config.AppInfo.ContainsKey(reqAppName))
                             {
@@ -485,7 +392,6 @@ namespace DDPM.ColorApp
                                 {
                                     if (config.AppInfo.ContainsKey("Desktop Application"))
                                     {
-                                        //reqKey = config.AppInfo["Desktop Application"].ColorPresetName.Trim();
                                         if (b_SmartHDR_ON)
                                             reqKey = config.AppInfo["Desktop Application"].HDRColor;
                                         else
@@ -503,7 +409,6 @@ namespace DDPM.ColorApp
                                 {
                                     if (config.AppInfo.ContainsKey("UWP Application"))
                                     {
-                                        //reqKey = config.AppInfo["UWP Application"].ColorPresetName.Trim();
                                         if (b_SmartHDR_ON)
                                             reqKey = config.AppInfo["UWP Application"].HDRColor;
                                         else
@@ -520,8 +425,6 @@ namespace DDPM.ColorApp
                             }
                             else
                             {
-                                //reqKey = (config.AppInfo[reqAppName]).ColorPresetName.Trim();
-
                                 if (b_SmartHDR_ON)
                                     reqKey = (config.AppInfo[reqAppName]).HDRColor;
                                 else
@@ -538,12 +441,8 @@ namespace DDPM.ColorApp
                                 return;
                             }
 
-                            //if (!Pre_reqKey.Equals(reqKey, StringComparison.OrdinalIgnoreCase))
                             if ( Pre_reqKey != reqKey)
                             {
-                                //writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey);
-                                //writelog("reqAppName = " + reqAppName + "," + "reqKey  [ColorPresetName] is " + reqKey);
-
                                 writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey.ToString());
                                 writelog("reqAppName = " + reqAppName + "," + "reqKey  [ColorPresetName] is " + reqKey.ToString());
 
@@ -552,31 +451,16 @@ namespace DDPM.ColorApp
                                 //Set request key to update color preset and draw OSD
                                 string outmsg = string.Empty;
                                 set_monitor_preset_by_request_key(actived_mi, reqKey, out outmsg, b_SmartHDR_ON, reqAppName);
-                                //tmp = actived_mi.AliasDeviceName + ":" + reqKey;
+
                                 break;
                             }
                             else
                             {
-                                //writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey);
-                                //writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + reqKey);
-
-                                //writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey.ToString());
-                                //writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + reqKey.ToString());
-
                                 writelog("Pre_reqKey and reqKey is the same");
-
-                                //Trace.WriteLine("Pre_reqKey and reqKey is the same");
                             }
                             
                         }
                     }
-
-                    //if (string.IsNullOrEmpty(tmp))
-                    //{
-                    //    tbColorPreset.Text = "NA";
-                    //}
-                    //else
-                    //    tbColorPreset.Text = tmp;
                 }
             }
         }
@@ -615,6 +499,47 @@ namespace DDPM.ColorApp
             bool bi = ddmLib.WriteColorPreset(actived_mi, strSync_CurrentColorPreset, 1, b_Is_Game_DeviceName, b_SmartHDR_ON, reqAppName).Result;
 
             return true;
-        }      
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
+        }
+
+        private void Window_Unloaded(object sender, RoutedEventArgs e)
+        {
+            //unload thread
+            if(_update != null && _update.IsAlive)
+            {
+                _update.Abort();
+                _update = null;
+            }
+
+            //unload event
+            AppStatusQuery.SendValue -= EventAppStatus_SendValue;
+
+            //unload object and set to null
+            if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
+                _AllInfoMonitors.Clear();
+            _AllInfoMonitors = null;
+            if (_apps != null && _apps.Count > 0)
+                _apps.Clear();
+            _apps = null;
+            if (appconfigs != null && appconfigs.Count > 0)
+                appconfigs.Clear();
+            appconfigs = null;
+            if(appStatus != null)
+            {
+                appStatus.Dispose();
+                appStatus = null;
+            }
+
+            //set param to null
+            ddmLib = null;
+            Log = null;
+        }
     }
 }
