@@ -3240,7 +3240,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 //osd_device = OSDType_Device.Keyboard,
                                 Guid = di.ID
                             };
-                            //OnOSDNotify(args);
+                            OnOSDNotify(args);
                             //args.osd_device = OSDType_Device.Mouse;
                             //OnOSDNotify(args);
                             //args.osd_device = OSDType_Device.Headset;
