@@ -85,7 +85,6 @@ namespace DDPM.SA.Plugins.SWUpdate
         private bool _IsUITrigger = false;
         private bool _bFirstInstance;
         private Mutex? _instanceMutex;
-        private string? _applicationName;
 
         #region Events
 
