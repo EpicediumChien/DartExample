@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -20,8 +21,8 @@ namespace DDPM.OSDs
     /// </summary>
     public partial class ErrorWin : Window
     {
-        private DispatcherTimer? animationTimer = null;
-        private TimeSpan time;
+        /*private DispatcherTimer? animationTimer = null;
+        private TimeSpan time;*/
         private bool stayOpen;
 
 
@@ -42,16 +43,17 @@ namespace DDPM.OSDs
             {
                 this.WindowState = WindowState.Maximized;
                 this.Topmost = true;
+                InvokeFadeOutAnimation();
 
-                time = TimeSpan.FromMilliseconds(3000);
+                /*time = TimeSpan.FromMilliseconds(3000);
                 animationTimer = new DispatcherTimer();
                 animationTimer.Interval = TimeSpan.FromMilliseconds(1000);
                 animationTimer.Tick += RunTimerTick;
-                animationTimer.Start();
+                animationTimer.Start();*/
             }
         }
 
-        private void RunTimerTick(object sender, EventArgs e)
+        /*private void RunTimerTick(object sender, EventArgs e)
         {
             if (time == TimeSpan.Zero)
             {
@@ -65,8 +67,23 @@ namespace DDPM.OSDs
             {
                 time = time.Add(TimeSpan.FromMilliseconds(-1000));
             }
-        }
+        }*/
+        private void InvokeFadeOutAnimation()
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                Storyboard? sb = Resources["FadeOut"] as Storyboard;
+                if (sb == null)
+                    return;
 
+                sb.Completed += (o, s) =>
+                {
+                    this.Close();
+                };
+
+                sb.Begin();
+            });
+        }
         private void close_Click(object sender, MouseButtonEventArgs e)
         {
             this.Close();
@@ -90,6 +107,14 @@ namespace DDPM.OSDs
                 return;
             }
             Close();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
         }
     }
 }

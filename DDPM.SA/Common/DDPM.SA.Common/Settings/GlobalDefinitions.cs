@@ -50,6 +50,7 @@ namespace DDPM.SA.Common.Settings
         }
 
         //Log location global variables, prefix could be "%programdata%" or "%localappdata%" by the design
+        public const string LogDDPM = @"\Dell\Dell Display and Peripheral Manager";
         public const string LogSwUpdater = @"\Dell\Dell Display and Peripheral Manager\DdpmSwUpdater";
         public const string LogFwUpdater = @"\Dell\Dell Display and Peripheral Manager\FWUpdateLog";
         public const string LogDPeM = @"\Dell\Dell Peripheral Manager\DPeMSDK\Log";
@@ -81,6 +82,11 @@ namespace DDPM.SA.Common.Settings
         //User settings param
         public const string Filename_GlobalSetting_peruser = "GlobalSetting.json";
         public const string Filename_appsettings_peruser = "DDPM.Configs.json";
+        //DPeM service
+        public const string DPeMServiceName = "DPMService";
+        //Software installed name
+        public const string InstalledName_DPeM = "Dell Peripheral Core";
+        public const string InstalledName_NKVM = "DDPMW-NKVM";
     }
 
     public class InfoObject

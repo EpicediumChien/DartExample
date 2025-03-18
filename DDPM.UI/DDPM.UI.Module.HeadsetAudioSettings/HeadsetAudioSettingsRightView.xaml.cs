@@ -672,4 +672,36 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             throw new NotImplementedException();
         }
     }
+
+
+    public class BooleanToOpacityConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                if (values.Length == 1
+                    && (bool)values[0])
+                    return 0.6;
+                if (values.Length > 1
+                    && values[0] is bool isChecked
+                    && values[1] is bool TransparencyButton)
+                {
+                    if (isChecked && TransparencyButton)
+                        return 0.6;
+                }
+                return 1.0;
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[BooleanToOpacityConverter] Exception thrown: {ex.Message}. Stack trace: {ex.StackTrace}");
+                return 0.6;
+            }
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

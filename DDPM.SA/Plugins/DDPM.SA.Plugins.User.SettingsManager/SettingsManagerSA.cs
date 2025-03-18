@@ -135,7 +135,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
-            WriteLog($"Dispose: {disposing}");
+            WriteLog($"[Dispose] {disposing}");
             if (!IsDisposed)
             {
                 if (disposing)
@@ -143,27 +143,38 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
                     _agent = null;
 
-                    if (_SysSettingsPlugin != null)
-                    {
-                        _SysSettingsPlugin.ITSettingsActionEvent -= _SysSettingsPlugin_ActionEvent;
-                        relay_registered = false;
-                    }
-
                     //data object
                     _settings = null;
-                    _colorPresetSettings = null;
-                    _AllAppData = null;
-                    _AllMonitorSettings = null;
-                    _preset_settings = null;
-                    _hotkeySettings = null;
                     _GlobalSettingParam = null;
                     _InterruptScreenParam = null;
                     _DDPMITConfig = null;
+                    try
+                    {
+                        _colorPresetSettings?.Clear();
+                        _colorPresetSettings = null;
+                        _AllAppData?.Clear();
+                        _AllAppData = null;
+                        _AllMonitorSettings?.Clear();
+                        _AllMonitorSettings = null;
+                        _preset_settings?.Clear();
+                        _preset_settings = null;
+                        _hotkeySettings?.Clear();
+                        _hotkeySettings = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteLog($"[Dispose] data object {ex.Message}");
+                    }
 
                     //event
                     SettingReadyEvent = null;
 
                     //plugin
+                    if (_SysSettingsPlugin != null)
+                    {
+                        _SysSettingsPlugin.ITSettingsActionEvent -= _SysSettingsPlugin_ActionEvent;
+                        relay_registered = false;
+                    }
                     _SysSettingsPlugin = null;
                 }
 

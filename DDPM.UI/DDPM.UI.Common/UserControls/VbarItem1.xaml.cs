@@ -22,8 +22,6 @@ namespace DDPM.UI.Common.UserControls
         {
             InitializeComponent();
             //DataContext = this;
-            DdpmCommonHelper.BitmapImageUpdated -= onThemeChange;
-            DdpmCommonHelper.BitmapImageUpdated += onThemeChange;
         }
 
         public VbarItem1(int id, ImageSource icon, string text, Canvas? iconCanvas = null) : this()
@@ -342,35 +340,45 @@ namespace DDPM.UI.Common.UserControls
         }
         #endregion
 
-        private void onThemeChange(OSThemeEnum oSThemeEnum)
+        public void OnThemeChangeRefresh()
         {
             var groups = VisualStateManager.GetVisualStateGroups(rootGrid);
             #region Change Theme for vbar border
             foreach (VisualStateGroup group in groups)
             {
-                VisualState targetState = null;
                 foreach (VisualState state in group.States)
                 {
-                    if (state.Name == "LandingHover")
+                    if (state.Name == "LandingHover" || state.Name == "Hover")
                     {
-                        targetState = state;
-                        break;
-                    }
-                }
-
-                if (targetState != null && targetState.Storyboard != null)
-                {
-                    // Find the ColorAnimation in the Storyboard
-                    foreach (var child in targetState.Storyboard.Children)
-                    {
-                        if (child is ColorAnimation colorAnimation)
+                        if (state.Storyboard != null)
                         {
-                            // Modify animation properties dynamically
-                            colorAnimation.To = (System.Windows.Media.Color)System.Windows.Application.Current.Resources["Vbar_BdColor_Hover"]; // Change to new color
-                            colorAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.3)); // Change duration
-
-
+                            ColorAnimation colorAnimation = new ColorAnimation()
+                            {
+                                To = (System.Windows.Media.Color)System.Windows.Application.Current.Resources["Vbar_BdColor_Hover"], // Change to new color
+                                Duration = new Duration(TimeSpan.FromSeconds(0.3)) // Change duration
+                            };
+                            // Find the ColorAnimation in the Storyboard
+                            state.Storyboard = new Storyboard();
                             Storyboard.SetTarget(colorAnimation, bdOuter);
+                            Storyboard.SetTargetProperty(colorAnimation, new PropertyPath("BorderBrush.(SolidColorBrush.Color)"));
+
+                            // Add the animation to the Storyboard
+                            state.Storyboard.Children.Add(colorAnimation);
+
+                            if (state.Name == "Hover")
+                            {
+                                DoubleAnimation doubleAnimation = new DoubleAnimation()
+                                {
+                                    To = 212, // Change to new color
+                                    Duration = new Duration(TimeSpan.FromSeconds(0.5)), // Change duration
+                                    FillBehavior = FillBehavior.HoldEnd
+                                };
+                                Storyboard.SetTarget(doubleAnimation, bdOuter);
+                                Storyboard.SetTargetProperty(doubleAnimation, new PropertyPath("Width"));
+
+                                // Add the animation to the Storyboard
+                                state.Storyboard.Children.Add(doubleAnimation);
+                            }
                         }
                     }
                 }

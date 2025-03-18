@@ -10,8 +10,8 @@ namespace DDPM.OSDs
     /// </summary>
     public partial class HeadsetBatteryLowIWin : Window
     {
-        private DispatcherTimer? animationTimer = null;
-        private TimeSpan time;
+        /*private DispatcherTimer? animationTimer = null;
+        private TimeSpan time;*/
 
         private string showString = string.Empty;
 
@@ -47,7 +47,7 @@ namespace DDPM.OSDs
             }
         }
 
-        private void RunTimerTick(object sender, EventArgs e)
+        /*private void RunTimerTick(object sender, EventArgs e)
         {
             if (time == TimeSpan.Zero)
             {
@@ -61,7 +61,7 @@ namespace DDPM.OSDs
             {
                 time = time.Add(TimeSpan.FromMilliseconds(-1000));
             }
-        }
+        }*/
 
         private void close_Click(object sender, MouseButtonEventArgs e)
         {
@@ -86,6 +86,14 @@ namespace DDPM.OSDs
                 return;
             }
             Close();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
         }
     }
 }

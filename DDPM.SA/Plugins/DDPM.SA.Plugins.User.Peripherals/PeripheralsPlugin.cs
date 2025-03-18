@@ -1409,7 +1409,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         #endregion
 
         #region Private Methods
-        private bool IsServiceRunning()
+        //move to CommonFunctions
+        /*private bool IsServiceRunning()
         {
             //Bruce 0221 Add check service status 
             _logs.DebugMsg_1($"[PeripheralsPlugin] {nameof(IsServiceRunning)} start");
@@ -1431,12 +1432,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
             _logs.DebugMsg_1($"[PeripheralsPlugin] {nameof(IsServiceRunning)} done. ret : {ret}");
             return ret;
-        }
+        }*/
         private void ScanDevices()
         {
             lock (_lock)
             {
-                if (IsServiceRunning() && _isClientConnected && _iClient != null && _iDeviceManager != null)
+                if (CommonFunctions.IsServiceRunning(GlobalDefinitions.DPeMServiceName, Log) && _isClientConnected && _iClient != null && _iDeviceManager != null)
                 {
                     _DockCount = 0;
                     _deviceHelper = new DeviceHelper

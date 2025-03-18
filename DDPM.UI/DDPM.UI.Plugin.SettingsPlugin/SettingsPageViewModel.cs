@@ -11,6 +11,7 @@ using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
+using Microsoft.VisualBasic.Logging;
 using Microsoft.Win32;
 using System;
 using System.ComponentModel;
@@ -367,6 +368,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private void Set_SaveDiagnosticReport_Dowork(object sender, DoWorkEventArgs e)
         {
             Log?.Info($"SaveDiagnosticReport_Dowork start");
+            //Install software information
+            CommonFunctions.IsServiceRunning(GlobalDefinitions.DPeMServiceName, Log);//add log before save
+            Log?.Info($"DPeM installed ver: {CommonFunctions.GetInstalledSoftwareVersion(GlobalDefinitions.InstalledName_DPeM, Log)}");
+            Log?.Info($"NKVM installed ver: {CommonFunctions.GetInstalledSoftwareVersion(GlobalDefinitions.InstalledName_NKVM, Log)}");
+
             string filePath = e.Argument.ToString();
             bool monitorAssetReports = DiagnosticReport.SaveLogFile(filePath, Log); //DdpmCommonHelper.DeviceManagerSA.SaveLogFile(filePath).Result;
             Application.Current.Dispatcher.Invoke(new Action(() =>

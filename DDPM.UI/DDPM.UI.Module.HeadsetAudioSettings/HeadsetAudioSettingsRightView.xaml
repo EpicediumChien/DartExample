@@ -92,7 +92,7 @@
             <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
             <local:BooleanToInverseForegroundConverter x:Key="BooleanToInverseForegroundConverter" />
             <local:BooleanToForegroundConverter x:Key="BooleanToForegroundConverter" />
-
+            <local:BooleanToOpacityConverter x:Key="BooleanToOpacityConverter" />
             <Style x:Key="ToggleButtonTextStyle" TargetType="TextBlock">
                 <Style.Triggers>
 
@@ -403,6 +403,45 @@
                                                 <Border x:Name="CollaborationButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <Path x:Name= "CollaborationPath" Width="25" Height="25" Data="M15.1875 14.5625C16.125 14.5625 16.9062 15.3013 16.9062 16.1878V19.4384H9.09375V16.1878C9.09375 15.3013 9.875 14.5625 10.7344 14.5625H15.1875ZM15.1875 13.085H10.7344C8.9375 13.085 7.53125 14.4886 7.53125 16.1878V20.9159H18.4688V16.1878C18.4688 14.4886 16.9844 13.085 15.1875 13.085Z M12.8438 4.88477C10.8906 4.88477 9.25 6.36231 9.25 8.20923C9.25 10.0562 10.8125 11.5337 12.8438 11.5337C14.7969 11.5337 16.4375 10.0562 16.4375 8.20923C16.3594 6.43618 14.7969 4.88477 12.8438 4.88477ZM12.8438 10.13C11.75 10.13 10.8125 9.31739 10.8125 8.28311C10.8125 7.24883 11.75 6.43618 12.8438 6.43618C13.9375 6.43618 14.875 7.24883 14.875 8.28311C14.7969 9.31739 13.9375 10.13 12.8438 10.13Z M22.1406 8.2832H17.8438C17.8438 8.80034 17.7656 9.31748 17.6094 9.76074H22.1406C23.0781 9.76074 23.9375 10.4995 23.9375 11.4599V15.0799H19.875C19.9531 15.4493 20.0313 15.8925 20.0313 16.2619V16.5574H25.5V11.4599C25.5 9.68687 24.0156 8.2832 22.1406 8.2832Z M3.85938 9.76074H7.92188C7.76562 9.31748 7.6875 8.80034 7.6875 8.2832H3.85938C1.98438 8.2832 0.5 9.68687 0.5 11.4599V16.5574H5.96875V16.2619C5.96875 15.8187 6.04688 15.4493 6.125 15.0799H2.0625V11.4599C2.0625 10.4995 2.84375 9.76074 3.85938 9.76074Z M5.96875 0.0830078C4.01562 0.0830078 2.375 1.56055 2.375 3.48135C2.375 5.32828 3.9375 6.80582 5.96875 6.80582C6.82813 6.80582 7.6875 6.51031 8.3125 5.99317C8.54688 5.54991 8.85938 5.18052 9.25 4.81114C9.48438 4.36788 9.5625 3.92461 9.5625 3.40748C9.48438 1.56055 7.92188 0.0830078 5.96875 0.0830078ZM5.96875 5.32828C4.79688 5.32828 3.9375 4.51563 3.9375 3.48135C3.9375 2.3732 4.79688 1.56055 5.96875 1.56055C7.0625 1.56055 8 2.44707 8 3.48135C7.92188 4.51563 7.0625 5.32828 5.96875 5.32828Z M19.7188 0.0830078C17.7656 0.0830078 16.125 1.56055 16.125 3.48135C16.125 4.07237 16.2812 4.58951 16.5156 5.03277C16.75 5.32828 16.9844 5.54991 17.2187 5.9193C17.8437 6.51031 18.7031 6.8797 19.7188 6.8797C21.6719 6.8797 23.3125 5.40216 23.3125 3.48135C23.2344 1.56055 21.6719 0.0830078 19.7188 0.0830078ZM19.7188 5.32828C18.5469 5.32828 17.6875 4.51563 17.6875 3.48135C17.6875 2.44707 18.625 1.56055 19.7188 1.56055C20.8125 1.56055 21.75 2.44707 21.75 3.48135C21.6719 4.51563 20.8125 5.32828 19.7188 5.32828Z"
+                                                                      Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                                            <UXControls:UXTextBlock x:Name="CollaborationTextBlock" Text="{Binding [Collaboration], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" TextAlignment="Center" Margin="0,8,0,0"
+                                                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
+                                                        </StackPanel>
+                                                        <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
+                                                            <Image.ToolTip>
+                                                                <ToolTip Placement="Center" VerticalOffset="45">
+                                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                        <Border.Resources>
+                                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                                        </Border.Resources>
+                                                                        <StackPanel>
+                                                                            <StackPanel Orientation="Horizontal">
+                                                                                <TextBlock Text="{Binding NoiseCancellingInfoTip}" />
+                                                                            </StackPanel>
+                                                                        </StackPanel>
+                                                                    </Border>
+                                                                </ToolTip>
+                                                            </Image.ToolTip>
+                                                        </Image>
+                                                    </Grid>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter TargetName="CollaborationButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
+                                                        <Setter TargetName="CollaborationButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                        <Setter TargetName="CollaborationTextBlock" Property="Foreground" Value="White" />
+                                                        <Setter TargetName="CollaborationPath" Property="Fill" Value="White" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </UXControls:UXToggleSwitch.Template>
+                                    </UXControls:UXToggleSwitch>
+                                    <!--<UXControls:UXToggleSwitch.Template>
+                                            <ControlTemplate TargetType="UXControls:UXToggleSwitch">
+                                                <Border x:Name="CollaborationButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Grid>
+                                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <Path x:Name="CollaborationPath" Width="25" Height="25" Data="M15.1875 14.5625C16.125 14.5625 16.9062 15.3013 16.9062 16.1878V19.4384H9.09375V16.1878C9.09375 15.3013 9.875 14.5625 10.7344 14.5625H15.1875ZM15.1875 13.085H10.7344C8.9375 13.085 7.53125 14.4886 7.53125 16.1878V20.9159H18.4688V16.1878C18.4688 14.4886 16.9844 13.085 15.1875 13.085Z M12.8438 4.88477C10.8906 4.88477 9.25 6.36231 9.25 8.20923C9.25 10.0562 10.8125 11.5337 12.8438 11.5337C14.7969 11.5337 16.4375 10.0562 16.4375 8.20923C16.3594 6.43618 14.7969 4.88477 12.8438 4.88477ZM12.8438 10.13C11.75 10.13 10.8125 9.31739 10.8125 8.28311C10.8125 7.24883 11.75 6.43618 12.8438 6.43618C13.9375 6.43618 14.875 7.24883 14.875 8.28311C14.7969 9.31739 13.9375 10.13 12.8438 10.13Z M22.1406 8.2832H17.8438C17.8438 8.80034 17.7656 9.31748 17.6094 9.76074H22.1406C23.0781 9.76074 23.9375 10.4995 23.9375 11.4599V15.0799H19.875C19.9531 15.4493 20.0313 15.8925 20.0313 16.2619V16.5574H25.5V11.4599C25.5 9.68687 24.0156 8.2832 22.1406 8.2832Z M3.85938 9.76074H7.92188C7.76562 9.31748 7.6875 8.80034 7.6875 8.2832H3.85938C1.98438 8.2832 0.5 9.68687 0.5 11.4599V16.5574H5.96875V16.2619C5.96875 15.8187 6.04688 15.4493 6.125 15.0799H2.0625V11.4599C2.0625 10.4995 2.84375 9.76074 3.85938 9.76074Z M5.96875 0.0830078C4.01562 0.0830078 2.375 1.56055 2.375 3.48135C2.375 5.32828 3.9375 6.80582 5.96875 6.80582C6.82813 6.80582 7.6875 6.51031 8.3125 5.99317C8.54688 5.54991 8.85938 5.18052 9.25 4.81114C9.48438 4.36788 9.5625 3.92461 9.5625 3.40748C9.48438 1.56055 7.92188 0.0830078 5.96875 0.0830078ZM5.96875 5.32828C4.79688 5.32828 3.9375 4.51563 3.9375 3.48135C3.9375 2.3732 4.79688 1.56055 5.96875 1.56055C7.0625 1.56055 8 2.44707 8 3.48135C7.92188 4.51563 7.0625 5.32828 5.96875 5.32828Z M19.7188 0.0830078C17.7656 0.0830078 16.125 1.56055 16.125 3.48135C16.125 4.07237 16.2812 4.58951 16.5156 5.03277C16.75 5.32828 16.9844 5.54991 17.2187 5.9193C17.8437 6.51031 18.7031 6.8797 19.7188 6.8797C21.6719 6.8797 23.3125 5.40216 23.3125 3.48135C23.2344 1.56055 21.6719 0.0830078 19.7188 0.0830078ZM19.7188 5.32828C18.5469 5.32828 17.6875 4.51563 17.6875 3.48135C17.6875 2.44707 18.625 1.56055 19.7188 1.56055C20.8125 1.56055 21.75 2.44707 21.75 3.48135C21.6719 4.51563 20.8125 5.32828 19.7188 5.32828Z"/>
                                                             <UXControls:UXTextBlock x:Name="CollaborationTextBlock" Text="{Binding [Collaboration], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                         </StackPanel>
@@ -429,7 +468,7 @@
                                                         <Setter TargetName="CollaborationButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                         <Setter TargetName="CollaborationButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
                                                     </Trigger>
-                                                    <!-- Dark Mode且ToggleSwitch被選中 -->
+                                                    --><!-- Dark Mode且ToggleSwitch被選中 --><!--
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding IsDarkTheme}" Value="True" />
@@ -438,7 +477,7 @@
                                                         <Setter TargetName="CollaborationTextBlock" Property="Foreground" Value="White" />
                                                     </MultiDataTrigger>
 
-                                                    <!-- Dark Mode且ToggleSwitch未選中 -->
+                                                    --><!-- Dark Mode且ToggleSwitch未選中 --><!--
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding IsDarkTheme}" Value="True" />
@@ -447,7 +486,7 @@
                                                         <Setter TargetName="CollaborationTextBlock" Property="Foreground" Value="White" />
                                                     </MultiDataTrigger>
 
-                                                    <!-- Light Mode且ToggleSwitch被選中 -->
+                                                    --><!-- Light Mode且ToggleSwitch被選中 --><!--
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding IsDarkTheme}" Value="False" />
@@ -457,7 +496,7 @@
                                                         <Setter TargetName="CollaborationPath" Property="Fill" Value="White" />
                                                     </MultiDataTrigger>
 
-                                                    <!-- Light Mode且ToggleSwitch未選中 -->
+                                                    --><!-- Light Mode且ToggleSwitch未選中 --><!--
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding IsDarkTheme}" Value="False" />
@@ -467,11 +506,49 @@
                                                     </MultiDataTrigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
-                                        </UXControls:UXToggleSwitch.Template>
-                                    </UXControls:UXToggleSwitch>
+                                        </UXControls:UXToggleSwitch.Template>-->
+                                    <!--</UXControls:UXToggleSwitch>-->
                                     <UXControls:UXToggleSwitch x:Name="MultimediaButton" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}" Background="{DynamicResource ToggleSwitch_NormalBackground}" Width="224" Height="89" Margin="4" Padding="16"
                                                                IsChecked="{Binding IsMultimediaChecked, Mode=TwoWay}">
                                         <UXControls:UXToggleSwitch.Template>
+                                            <ControlTemplate TargetType="UXControls:UXToggleSwitch">
+                                                <Border x:Name="MultimediaButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Grid>
+                                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <Path x:Name= "MultimediaPath" Width="25" Height="25" Data="M21.5156 17.1875H21.125L18.3906 22.0313H18.3125L15.5 17.1875H15.1094C12.9219 17.1875 11.5156 18.8281 11.5156 20.9375V25H24.7969V20.9375C24.7187 18.8281 23.7031 17.1875 21.5156 17.1875Z M22.2188 12.5C22.2188 10.3125 20.5 8.59375 18.3125 8.59375C16.125 8.59375 14.4062 10.3125 14.4062 12.5C14.4062 14.6875 16.125 16.4062 18.3125 16.4062C20.5 16.4062 22.2188 14.6875 22.2188 12.5Z M12.2969 16.4062H2.0625V1.5625H20.0312V7.26562C20.5781 7.5 21.125 7.73437 21.5938 8.125V1.01562C21.5938 0.46875 21.125 0 20.5781 0H1.51562C0.96875 0 0.5 0.46875 0.5 1.01562V16.9531C0.5 17.5 0.96875 17.9688 1.51562 17.9688H10.7344C11.2031 17.3438 11.6719 16.7969 12.2969 16.4062Z M12.8662 8.85384L6.68319 12.0112L6.68319 5.69646L12.8662 8.85384Z"
+                              Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                                            <UXControls:UXTextBlock x:Name="MultimediaTextBlock" Text="{Binding [Multimedia], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" TextAlignment="Center" Margin="0,8,0,0"
+                                                Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
+                                                        </StackPanel>
+                                                        <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
+                                                            <Image.ToolTip>
+                                                                <ToolTip Placement="Center" VerticalOffset="45">
+                                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                        <Border.Resources>
+                                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                                        </Border.Resources>
+                                                                        <StackPanel>
+                                                                            <StackPanel Orientation="Horizontal">
+                                                                                <TextBlock Text="{Binding NoiseCancellingInfoTip}" />
+                                                                            </StackPanel>
+                                                                        </StackPanel>
+                                                                    </Border>
+                                                                </ToolTip>
+                                                            </Image.ToolTip>
+                                                        </Image>
+                                                    </Grid>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter TargetName="MultimediaButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
+                                                        <Setter TargetName="MultimediaButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                        <Setter TargetName="MultimediaTextBlock" Property="Foreground" Value="White" />
+                                                        <Setter TargetName="MultimediaPath" Property="Fill" Value="White" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </UXControls:UXToggleSwitch.Template>
+                                        <!--<UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                 <Border x:Name="MultimediaButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
@@ -503,7 +580,7 @@
                                                         <Setter TargetName="MultimediaButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                         <Setter TargetName="MultimediaButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
                                                     </Trigger>
-                                                    <!-- Dark Mode且ToggleSwitch被選中 -->
+                                                    --><!-- Dark Mode且ToggleSwitch被選中 --><!--
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding IsDarkTheme}" Value="True" />
@@ -512,7 +589,7 @@
                                                         <Setter TargetName="MultimediaTextBlock" Property="Foreground" Value="White" />
                                                     </MultiDataTrigger>
 
-                                                    <!-- Dark Mode且ToggleSwitch未選中 -->
+                                                    --><!-- Dark Mode且ToggleSwitch未選中 --><!--
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding IsDarkTheme}" Value="True" />
@@ -521,7 +598,7 @@
                                                         <Setter TargetName="MultimediaTextBlock" Property="Foreground" Value="White" />
                                                     </MultiDataTrigger>
 
-                                                    <!-- Light Mode且ToggleSwitch被選中 -->
+                                                    --><!-- Light Mode且ToggleSwitch被選中 --><!--
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding IsDarkTheme}" Value="False" />
@@ -531,7 +608,7 @@
                                                         <Setter TargetName="MultimediaPath" Property="Fill" Value="White" />
                                                     </MultiDataTrigger>
 
-                                                    <!-- Light Mode且ToggleSwitch未選中 -->
+                                                    --><!-- Light Mode且ToggleSwitch未選中 --><!--
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding IsDarkTheme}" Value="False" />
@@ -541,7 +618,7 @@
                                                     </MultiDataTrigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
-                                        </UXControls:UXToggleSwitch.Template>
+                                        </UXControls:UXToggleSwitch.Template>-->
                                     </UXControls:UXToggleSwitch>
                                 </StackPanel>
 
@@ -985,13 +1062,18 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <!--<UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Text="{Binding [HeadsetAudioSettings.19], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Display1" Margin="20,26,0,0" />-->
-                                        <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Text="{Binding [HeadsetAudioSettings.19], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Display1" Margin="20,26,0,0">
-                                            <UXControls:UXTextBlock.Foreground>
+                                        <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAudioSettings.19], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Display1" Margin="20,26,0,0">
+                                            <UXControls:UXTextBlock.Opacity>
+                                                <MultiBinding Converter="{StaticResource BooleanToOpacityConverter}">
+                                                    <Binding Path="IsChecked" ElementName="TransparencyButton" />
+                                                </MultiBinding>
+                                            </UXControls:UXTextBlock.Opacity>
+                                            <!--<UXControls:UXTextBlock.Foreground>
                                                 <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
                                                     <Binding Path="IsChecked" ElementName="TransparencyButton" />
                                                     <Binding Path="IsDarkTheme" />
                                                 </MultiBinding>
-                                            </UXControls:UXTextBlock.Foreground>
+                                            </UXControls:UXTextBlock.Foreground>-->
                                         </UXControls:UXTextBlock>
                                         <Image ToolTipService.HorizontalOffset="-50" Grid.Column="1" Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" Margin="8,23,0,2">
                                             <Image.ToolTip>
@@ -1012,34 +1094,49 @@
                                             </Image.ToolTip>
                                         </Image>
                                         <!--<UXControls:UXToggleSwitch Name="SidetoneToggleSwitch" FontSize="16" Content="{Binding Path=Sidetone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=SidetoneStatus}" IsEnabled="{Binding Path=IsTransparencyChecked, Converter={StaticResource InverseBooleanConverter}}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" AutomationProperties.Name="SidetoneToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="-26,31,20,0" />-->
-                                        <UXControls:UXToggleSwitch Name="SidetoneToggleSwitch" FontSize="16" Content="{Binding Path=Sidetone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=SidetoneStatus}" IsEnabled="{Binding Path=IsTransparencyChecked, Converter={StaticResource InverseBooleanConverter}}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" AutomationProperties.Name="SidetoneToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Margin="-50,31,20,0">
-                                            <UXControls:UXTextBlock.Foreground>
+                                        <UXControls:UXToggleSwitch Name="SidetoneToggleSwitch" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=Sidetone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=SidetoneStatus}" IsEnabled="{Binding Path=IsTransparencyChecked, Converter={StaticResource InverseBooleanConverter}}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" AutomationProperties.Name="SidetoneToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Margin="-50,31,20,0">
+                                            <UXControls:UXToggleSwitch.Opacity>
+                                                <MultiBinding Converter="{StaticResource BooleanToOpacityConverter}">
+                                                    <Binding Path="IsChecked" ElementName="TransparencyButton" />
+                                                </MultiBinding>
+                                            </UXControls:UXToggleSwitch.Opacity>
+                                            <!--<UXControls:UXTextBlock.Foreground>
                                                 <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
                                                     <Binding Path="IsChecked" ElementName="TransparencyButton" />
                                                     <Binding Path="IsDarkTheme" />
                                                 </MultiBinding>
-                                            </UXControls:UXTextBlock.Foreground>
+                                            </UXControls:UXTextBlock.Foreground>-->
                                         </UXControls:UXToggleSwitch>
                                     </Grid>
                                     <!--<UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_2" Grid.Row="1" Text="2" FontSize="14" Margin="0,-20,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" />-->
-                                    <UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_2" Grid.Row="1" Text="2" FontSize="14" Margin="0,-20,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding SidetoneSliderValue, Converter={StaticResource ValueToVisibilityConverter}, ConverterParameter=2}">
-                                        <UXControls:UXTextBlock.Foreground>
+                                    <UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_2" Grid.Row="1" Text="2" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="14" Margin="0,-20,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding SidetoneSliderValue, Converter={StaticResource ValueToVisibilityConverter}, ConverterParameter=2}">
+                                        <UXControls:UXTextBlock.Opacity>
+                                            <MultiBinding Converter="{StaticResource BooleanToOpacityConverter}">
+                                                <Binding Path="IsChecked" ElementName="TransparencyButton" />
+                                            </MultiBinding>
+                                        </UXControls:UXTextBlock.Opacity>
+                                        <!--<UXControls:UXTextBlock.Foreground>
                                             <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
                                                 <Binding Path="IsChecked" ElementName="TransparencyButton" />
                                                 <Binding Path="IsDarkTheme" />
                                             </MultiBinding>
-                                        </UXControls:UXTextBlock.Foreground>
+                                        </UXControls:UXTextBlock.Foreground>-->
                                     </UXControls:UXTextBlock>
                                     
                                     <StackPanel x:Name="SidetoneSliderStackPanel" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,20">
                                         <!--<UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_1" Text="1" FontSize="14" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="4,20,0,0" VerticalAlignment="Center" />-->
-                                        <UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_1" Text="1" FontSize="14" Margin="4,20,0,0" VerticalAlignment="Center" >
-                                            <UXControls:UXTextBlock.Foreground>
+                                        <UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_1" Text="1" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="14" Margin="4,20,0,0" VerticalAlignment="Center" >
+                                            <UXControls:UXTextBlock.Opacity>
+                                                <MultiBinding Converter="{StaticResource BooleanToOpacityConverter}">
+                                                    <Binding Path="IsChecked" ElementName="TransparencyButton" />
+                                                </MultiBinding>
+                                            </UXControls:UXTextBlock.Opacity>
+                                            <!--<UXControls:UXTextBlock.Foreground>
                                                 <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
                                                     <Binding Path="IsChecked" ElementName="TransparencyButton" />
                                                     <Binding Path="IsDarkTheme" />
                                                 </MultiBinding>
-                                            </UXControls:UXTextBlock.Foreground>
+                                            </UXControls:UXTextBlock.Foreground>-->
                                         </UXControls:UXTextBlock>
                                         <!--<UXControls:UXSlider x:Name="SidetoneSlider" Width="426" Height="14" Minimum="1" Maximum="3" LargeChange="1" SmallChange="1" IsEnabled="{Binding Path=SidetoneSliderStatus}" Value="{Binding Path=SidetoneSliderValue, Mode=TwoWay}" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="4,20,0,0" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>-->
                                         <UXControls:UXSlider x:Name="SidetoneSlider" Width="426" Height="14" Minimum="1" Maximum="3" LargeChange="1" SmallChange="1" IsEnabled="{Binding Path=SidetoneSliderStatus}" Value="{Binding Path=SidetoneSliderValue, Mode=TwoWay}" Margin="4,20,0,0" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1" >
@@ -1051,13 +1148,18 @@
                                             </UXControls:UXTextBlock.Foreground>
                                         </UXControls:UXSlider>
                                         <!--<UXControls:UXTextBlock x:Name="SidetoneSliderMaxValueTextBlock2_3" Text="3" FontSize="14" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="4,20,0,0" VerticalAlignment="Center" />-->
-                                        <UXControls:UXTextBlock x:Name="SidetoneSliderMaxValueTextBlock2_3" Text="3" FontSize="14" Margin="4,20,0,0" VerticalAlignment="Center" >
-                                            <UXControls:UXTextBlock.Foreground>
+                                        <UXControls:UXTextBlock x:Name="SidetoneSliderMaxValueTextBlock2_3" Text="3" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="14" Margin="4,20,0,0" VerticalAlignment="Center" >
+                                            <UXControls:UXTextBlock.Opacity>
+                                                <MultiBinding Converter="{StaticResource BooleanToOpacityConverter}">
+                                                    <Binding Path="IsChecked" ElementName="TransparencyButton" />
+                                                </MultiBinding>
+                                            </UXControls:UXTextBlock.Opacity>
+                                            <!--<UXControls:UXTextBlock.Foreground>
                                                 <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
                                                     <Binding Path="IsChecked" ElementName="TransparencyButton" />
                                                     <Binding Path="IsDarkTheme" />
                                                 </MultiBinding>
-                                            </UXControls:UXTextBlock.Foreground>
+                                            </UXControls:UXTextBlock.Foreground>-->
                                         </UXControls:UXTextBlock>
                                     </StackPanel>
                                 </Grid>

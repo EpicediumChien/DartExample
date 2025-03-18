@@ -10,6 +10,7 @@ using DDPM.UI.Common.Views;
 using DDPM.UI.Interfaces;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using Microsoft.Win32;
@@ -111,6 +112,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public virtual void OnGoBackClicked()
         {
+            DdpmCommonHelper.BitmapImageUpdated -= OnVBarThemeChange;
             VbarSelectedIndex = -1;
             _console.ShowHomePage();
         }
@@ -1013,6 +1015,10 @@ namespace DDPM.UI.Plugin.ViewModels
         /// </summary>
         private void RebuildVbarItems()
         {
+            // Vbar animation dark\light mode
+            DdpmCommonHelper.BitmapImageUpdated -= OnVBarThemeChange;
+            DdpmCommonHelper.BitmapImageUpdated += OnVBarThemeChange;
+
             _vbarItems.Clear();
 
             int idx = 0;
@@ -1401,5 +1407,18 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         #endregion Handle Module Activated/Deactivated
+
+        private void OnVBarThemeChange(OSThemeEnum oSThemeEnum)
+        {
+            foreach (var vbar in _vbarItems)
+            {
+                vbar.OnThemeChangeRefresh();
+            }
+        }
+
+        ~PeripheralViewModel()
+        {
+            DdpmCommonHelper.BitmapImageUpdated -= OnVBarThemeChange;
+        }
     }
 }
