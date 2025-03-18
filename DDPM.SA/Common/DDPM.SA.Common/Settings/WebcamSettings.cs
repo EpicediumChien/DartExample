@@ -54,8 +54,31 @@ namespace DDPM.SA.Common.Settings
         public string ImportSelectedResolution { get; set; } = string.Empty;
         public List<string> WebcamProfileNames = new List<string>() { "Default", "Smooth", "Vibrant", "Warm" };
         //
-        public string CurrentResolution { get => Resolutions[SelectedResolution]; }
-        public string CurrentFPS { get => SelectedFPSs[SelectedResolution]; }
+        //public string CurrentResolution { get => Resolutions[SelectedResolution]; }
+        //public string CurrentFPS { get => SelectedFPSs[SelectedResolution]; }
+
+        public string CurrentResolution {
+            get
+            {
+                if (Resolutions.TryGetValue(SelectedResolution, out var key))
+                {
+                    return key;
+                }
+                else
+                    return "HD";
+            }
+        }
+        public string CurrentFPS
+        {
+            get 
+            {
+                if (SelectedFPSs.TryGetValue(SelectedResolution, out var key)) 
+                {
+                    return key;
+                }else
+                    return "30";
+            }
+        }
         public bool IsFirstTime = true;
         public WebcamProfile NONE = new();
 
