@@ -191,10 +191,18 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
                 }
-                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))
+
+                try
                 {
-                    sw.WriteLine(DateTime.Now);
-                    sw.WriteLine(output);
+                    using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))
+                    {
+                        sw.WriteLine(DateTime.Now);
+                        sw.WriteLine(output);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[CLIProxyPlugin] OutputLog failed, Message: {ex.Message}");
                 }
             }
         }
