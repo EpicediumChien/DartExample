@@ -2267,6 +2267,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(_AllInfoMonitors.ToList());
         }
 
+        public Task ReGetMonitors()
+        {
+            writelog("[DeviceMangerPlugin] received ReGetMonitors requested ...");
+            Task.Run(() => _SystemEvents_DisplaySettingsChanged(null));
+            return Task.CompletedTask;
+        }
+
         public Task<List<MultiCommandArch>> MultiCommandsRun(List<MultiCommandArch> _multiCommands)
         {
             writelog("[DeviceMangerPlugin] received MultiCommandsRun requested ...");
