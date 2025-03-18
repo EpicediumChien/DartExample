@@ -19389,10 +19389,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await _AirAudioHelper.GetAirAudioIsMicNCIncomingSupportedAsync(Guid);
         }
 
-        public async Task<bool> GetAirAudioIsWearDetectionQuickPauseSupportedAsync(string Guid)
-        {
-            return await _AirAudioHelper.GetAirAudioIsWearDetectionQuickPauseSupportedAsync(Guid);
-        }
+        //public async Task<bool> GetAirAudioIsWearDetectionQuickPauseSupportedAsync(string Guid)
+        //{
+        //    return await _AirAudioHelper.GetAirAudioIsWearDetectionQuickPauseSupportedAsync(Guid);
+        //}
 
         public async Task<bool> GetAirAudioIsWearDetectionMuteMicSupportedAsync(string Guid)
         {
