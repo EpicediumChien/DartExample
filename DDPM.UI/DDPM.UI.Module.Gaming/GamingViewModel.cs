@@ -448,10 +448,17 @@ namespace DDPM.UI.Module.Gaming
                     ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(currentMonitorInfo).Result;
                     if (ret.result)
                     {
-                        UInt16 _curPxpMode = Convert.ToUInt16(ret.value);
-                        if (_curPxpMode != PipMode_Off)
+                        try
                         {
-                            HDRType_IsEnable = false;
+                            UInt16 _curPxpMode = Convert.ToUInt16(ret.value);
+                            if (_curPxpMode != PipMode_Off)
+                            {
+                                HDRType_IsEnable = false;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            DdpmCommonHelper.WriteUILog($"[GamingViewModel] DoWork_RefreshData exception with {ex.Message}");
                         }
                     }
                 }

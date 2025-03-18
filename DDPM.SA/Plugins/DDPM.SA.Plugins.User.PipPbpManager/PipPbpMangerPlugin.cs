@@ -389,7 +389,8 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
                 Stopwatch sw = Stopwatch.StartNew();
                 ObjGetVCP ret = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, 0xE9).Result;
                 sw.Stop();
-                WriteLog($"@GetPxpMode({monitorInfo.modelName}), Result={ret.result}, Value=0x{ret.value:X}, Elapsed={sw.ElapsedMilliseconds}");
+                string output = ret.value != null ? $"Value=0x{ret.value:X}" : "Value=null";
+                WriteLog($"@GetPxpMode({monitorInfo.modelName}), Result={ret.result}, {output}, Elapsed={sw.ElapsedMilliseconds}");
                 return Task.FromResult<ObjGetVCP>(ret);
             }
             _lastError = $"GetPxpMode({monitorInfo.modelName}): DeviceManagerPlugin is null.";
