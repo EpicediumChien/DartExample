@@ -794,6 +794,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile finish");
                         _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
                         _downloadTimer.Stop();
+                        _downloadTimer = null;
                         updateProgressInfo = new UpdateProgressInfo()
                         {
                             DeviceName = fwUpdateInfos[i].DeviceName,
