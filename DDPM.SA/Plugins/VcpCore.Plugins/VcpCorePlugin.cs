@@ -68,8 +68,8 @@ namespace VcpCore.Plugins
         {
             if (string.IsNullOrEmpty(text))
                 text = "";
-#if DEBUG
             text = $"[VcpCorePlugin] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
+#if DEBUG
             Console.WriteLine(text);
 #endif
             if (Log != null)
