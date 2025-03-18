@@ -68,9 +68,10 @@ namespace VcpCore.Plugins
         {
             if (string.IsNullOrEmpty(text))
                 text = "";
-
-            text = $"[ColorPreset] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
+#if DEBUG
+            text = $"[VcpCorePlugin] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
             Console.WriteLine(text);
+#endif
             if (Log != null)
             {
                 if (log_type == log_type.info)
