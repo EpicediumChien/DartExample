@@ -7,7 +7,6 @@ using DDPM.UI.Common.UserControls;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
-using DDPM.UI.WalkThroughData;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
@@ -117,14 +116,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private static readonly Dictionary<string, int> ModelTypeMapping = new Dictionary<string, int>
         {
-            { "Consent", 1}, //Add by Derek 2024/10/24
-            { "DDPM", 2 },
-            { "Displays", 3 },
-            { "LogicalWebcam", 4 },
-            { "LogicalKeyboard", 5 },
-            { "LogicalMouse", 6 },
-            { "LogicalPen", 7 },
-            { "LogicalHeadset", 8 }
+            { "DDPM", 1 },
+            { "Displays", 2 },
+            { "LogicalWebcam", 3 },
+            { "LogicalKeyboard", 4 },
+            { "LogicalMouse", 5 },
+            { "LogicalPen", 6 },
+            { "LogicalHeadset", 7 }
         };
 
         private GlobalSettingParam _globalSettings = null;
@@ -1652,6 +1650,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 if (modelNumber == "CONSENT_PAGE" && modelType == "CONSENT_PAGE")
                 {
+                    _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} WalkThrough CONSENT_PAGE in ... ");
                     // Check ConsentPage reg
                     regPath = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
                     //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForConsentPage);
@@ -1670,6 +1669,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
                 else if (modelNumber == "DDPM" && modelType == "DDPM")
                 {
+                    _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} WalkThrough DDPM in ... ");
                     // Check DDPM walkthrough
                     //regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
                     regValue = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
@@ -1689,6 +1689,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
                 else
                 {
+                    _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} Device WalkThrough : {modelNumber} in ...");
                     // read reg
                     if (modelNumber == "U3224KB" || modelNumber == "U3224KBA") // correct DPeM typo
                     {
@@ -1814,7 +1815,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         _modelNumber = _modelNumber + "/" + device.ColorCode.ToString();
                         _log.Info($"[Walkthrough] CheckAndQueueDevice Check color code = {device.ColorCode.ToString()}");
                     }
-                    _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Device)");
+                    _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Device), device.ID : {device.ID.ToString()}");
                     await CheckAndQueueDevice(_modelNumber, device.LogicalDeviceType.ToString(), device);
                 }
 

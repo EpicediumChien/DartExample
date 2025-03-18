@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.UserControls;
 using DDPM.UI.Interfaces;
@@ -8,9 +7,7 @@ using DDPM.UI.Module.SpeakerAudioSettings;
 using DDPM.UI.Module.SpeakerInteractions;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
-using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
-using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Net;
 using System.Windows;
@@ -39,9 +36,6 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         private readonly Style ConnectionStyle2;
         private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
         private readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
-
-        //private readonly string PenSettings = "Pen Settings";
-        //private readonly string PenButton = "Button\nCustomization";
 
         public LaunchView()
         {
