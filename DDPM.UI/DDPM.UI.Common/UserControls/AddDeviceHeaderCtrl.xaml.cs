@@ -111,8 +111,32 @@ namespace DDPM.UI.Common
                 vm.SelectedIndex = value;
                 SetValue(SelectedIndexProperty, vm.SelectedIndex);
                 //SelectionChanged!(this, new RoutedEventArgs());
-                if (value >= 0)
-                    ((Border)FindName($"header{value}Border")).Background = (SolidColorBrush)FindResource("SubNav_Selected_BkBrush_Default");
+                header0Border.Background = new SolidColorBrush(Colors.Transparent);
+                header1Border.Background = new SolidColorBrush(Colors.Transparent);
+                header2Border.Background = new SolidColorBrush(Colors.Transparent);
+
+                switch (value)
+                {
+                    case 0:
+                        header0Border.Background = (SolidColorBrush)FindResource("SubNav_Selected_BkBrush_Default");
+                        break;
+                    case 1:
+                        if (vm.ItemCount == 2)
+                        {
+                            header2Border.Background = (SolidColorBrush)FindResource("SubNav_Selected_BkBrush_Default");
+                            vm.InternalSelectedIndex = 2;
+                        }
+                        else
+                            header1Border.Background = (SolidColorBrush)FindResource("SubNav_Selected_BkBrush_Default");
+                        break;
+                    case 2:
+                        header2Border.Background = (SolidColorBrush)FindResource("SubNav_Selected_BkBrush_Default");
+                        break;
+                    default:
+                        break;
+                }
+                //if (value == 0)
+                //    ((Border)FindName($"header{value}Border")).Background = (SolidColorBrush)FindResource("SubNav_Selected_BkBrush_Default");
             }
         }
 
@@ -222,7 +246,7 @@ namespace DDPM.UI.Common
                     if (bd == null)
                         return;
 
-                    if (index == vm.SelectedIndex)
+                    if (index == vm.SelectedIndex || (index == 2 && vm.SelectedIndex == 1 && vm.ItemCount == 2))
                         bd.Background = (SolidColorBrush)FindResource("SubNav_Selected_BkBrush_Hover");
                     else
                         bd.Background = DdpmCommonHelper.isDarkMode() ? (SolidColorBrush)FindResource("SubNav_BkBrush_Hover_Dark") : (SolidColorBrush)FindResource("SubNav_BkBrush_Hover_Light");
@@ -239,7 +263,7 @@ namespace DDPM.UI.Common
                 if (int.TryParse(hd.Tag.ToString(), out int index))
                 {
                     vm.HoverSelectedIndex = -1;
-                    if (index == vm.SelectedIndex)
+                    if (index == vm.SelectedIndex || (index == 2 && vm.SelectedIndex == 1 && vm.ItemCount == 2))
                         ((Border)FindName($"header{index}Border")).Background = (SolidColorBrush)FindResource("SubNav_Selected_BkBrush_Default");
                     else
                         ((Border)FindName($"header{index}Border")).Background = new SolidColorBrush(Colors.Transparent);
