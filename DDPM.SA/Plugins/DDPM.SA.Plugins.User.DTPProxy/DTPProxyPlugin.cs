@@ -15640,7 +15640,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             catch (Exception e)
             {
-                writelog($"[AirAudio] {index} RegisterEventsForHeadset Exception {e.Message}");
+                writelog($"[AirAudio] {index} RegisterEventsForAirAudioAsync Exception {e.Message}");
 
                 return false;
             }
