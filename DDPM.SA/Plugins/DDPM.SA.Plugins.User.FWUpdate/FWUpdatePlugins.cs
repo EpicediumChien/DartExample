@@ -927,7 +927,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             catch (Exception ex)
             {
-                method.Dispose();
                 if (_downloadTimer != null)
                 {
                     _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
@@ -940,6 +939,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 StartService();
                 _IsDownloadAndInsytall = false;
                 return Task.FromResult(fwUpdateInfos);
+            }
+            finally
+            {
+                method.Dispose();
             }
         }
 
