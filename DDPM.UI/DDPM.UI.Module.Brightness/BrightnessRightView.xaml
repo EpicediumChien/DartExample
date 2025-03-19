@@ -1277,9 +1277,16 @@
                                                             ItemsSource="{Binding mIns}"
                                                             SelectedItem="{Binding mIns1, Mode=TwoWay}"
                                                             SelectionChanged="ComboBox_SelectionChanged"
-                                                            Style="{StaticResource DdpmComboBoxStyle}" />
-                                                        
-                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="60" TextWrapping="WrapWithOverflow" change FontSize="16" to FontSize="15" -->
+                                                            Style="{StaticResource DdpmComboBoxStyle}" >
+                                                            <ComboBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding StringFormat=D2}" />
+                                                                </DataTemplate>
+                                                            </ComboBox.ItemTemplate>
+                                                        </UXControls:UXComboBox>
+
+
+                                                            <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="60" TextWrapping="WrapWithOverflow" change FontSize="16" to FontSize="15" -->
                                                         <UXControls:UXTextBlock
                                                             Width="60"
                                                             TextWrapping="WrapWithOverflow"
@@ -1364,7 +1371,13 @@
                                                             ItemsSource="{Binding dUration}"
                                                             SelectedItem="{Binding dUration1, Mode=TwoWay}"
                                                             SelectionChanged="ComboBox_SelectionChanged"
-                                                            Style="{StaticResource DdpmComboBoxStyle}" />
+                                                            Style="{StaticResource DdpmComboBoxStyle}" >
+                                                            <ComboBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding StringFormat=D2}" />
+                                                                </DataTemplate>
+                                                            </ComboBox.ItemTemplate>
+                                                        </UXControls:UXComboBox>
 
                                                         <UXControls:UXTextBlock
                                                             Grid.Row="1"
@@ -1654,7 +1667,13 @@
                                                             ItemsSource="{Binding mIns}"
                                                             SelectedItem="{Binding mIns2, Mode=TwoWay}"
                                                             SelectionChanged="ComboBox_SelectionChanged"
-                                                            Style="{StaticResource DdpmComboBoxStyle}" />
+                                                            Style="{StaticResource DdpmComboBoxStyle}" >
+                                                        <ComboBox.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding StringFormat=D2}" />
+                                                            </DataTemplate>
+                                                        </ComboBox.ItemTemplate>
+                                                        </UXControls:UXComboBox>
                                                         <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="190" TextWrapping="WrapWithOverflow" change FontSize="16" to FontSize="15"-->
                                                         <UXControls:UXTextBlock
                                                             TextWrapping="WrapWithOverflow"
@@ -1742,7 +1761,13 @@
                                                             ItemsSource="{Binding dUration}"
                                                             SelectedItem="{Binding dUration2, Mode=TwoWay}"
                                                             SelectionChanged="ComboBox_SelectionChanged"
-                                                            Style="{StaticResource DdpmComboBoxStyle}" />
+                                                            Style="{StaticResource DdpmComboBoxStyle}" >
+                                                            <ComboBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding StringFormat=D2}" />
+                                                                </DataTemplate>
+                                                            </ComboBox.ItemTemplate>
+                                                        </UXControls:UXComboBox>
 
                                                         <UXControls:UXTextBlock
                                                             Grid.Row="1"
