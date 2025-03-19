@@ -470,7 +470,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             catch (Exception ex)
             {
                 //_logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors Exception is " + ex.Message);
-                WriteLog("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors Exception is " + ex.Message, log_type.error);
+                WriteLog("Re_GetMonitors() AllInfoMonitors Exception is " + ex.Message, log_type.error);
                 return new List<MonitorInfo>();
             }
         }
@@ -2075,7 +2075,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             catch (Exception ex)
             {
                 //_logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig Exception {ex.Message}");
-                WriteLog($"[DisplayMangerPlugin] GetAllExistAlsConfig Exception {ex.Message}", log_type.error);
+                WriteLog($"GetAllExistAlsConfig Exception {ex.Message}", log_type.error);
                 return Task.FromResult(new List<ALSConfig>());
             }
         }
@@ -2106,7 +2106,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             catch (Exception ex)
             {
                 //_logs.DebugMsg($"[DisplayMangerPlugin] UpdateExistAlsConfig Exception {ex.Message}");
-                WriteLog($"[DisplayMangerPlugin] UpdateExistAlsConfig Exception {ex.Message}", log_type.error);
+                WriteLog($"UpdateExistAlsConfig Exception {ex.Message}", log_type.error);
                 return Task.FromResult(new List<ALSConfig>());
             }
         }
