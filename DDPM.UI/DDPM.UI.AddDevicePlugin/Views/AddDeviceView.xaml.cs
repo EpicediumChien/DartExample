@@ -154,8 +154,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                                         {
                                             ShowMessage(Strings.Error, Strings.AlreadyPaired, "");
                                             _vm.StopPairing();
-                                            rightViewHeaderCtrl.SelectedIndex = -1;
-                                            rightViewHeaderCtrl.SelectedIndex = 1;
+                                            StartPairing();
                                         }));
                                         break;
                                     case "Old Device":
@@ -163,8 +162,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                                         {
                                             ShowMessage(Strings.Error, Strings.NotSupportedDevice, CancelButtonCaption);
                                             _vm.StopPairing();
-                                            rightViewHeaderCtrl.SelectedIndex = -1;
-                                            rightViewHeaderCtrl.SelectedIndex = 1;
+                                            StartPairing();
                                         }));
                                         break;
                                     case "Stopped":

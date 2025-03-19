@@ -350,17 +350,15 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(DongleAlertKnMVisibility));
             OnPropertyChanged(nameof(DongleAlertHeadsetVisibility));
 
-            if (DeviceBarSelectedIndex == 2 && DongleAlertKnMVisibility == Visibility.Collapsed && RightViewHeaderSelectedIndex == 1 && !IsPairing)
+            if (DeviceBarSelectedIndex == 2 && DongleAlertKnMVisibility == Visibility.Collapsed && RightViewHeaderSelectedIndex == 1)
             {
                 CurrentDongle = DongleInfos.Values.First();
-                if (!IsPairing)
-                    StartPairing(CurrentDongle.ID);
+                StartPairing(CurrentDongle.ID);
             }
-            if (DeviceBarSelectedIndex == 4 && DongleAlertHeadsetVisibility == Visibility.Collapsed && RightViewHeaderSelectedIndex == 1 && !IsPairing)
+            if (DeviceBarSelectedIndex == 4 && DongleAlertHeadsetVisibility == Visibility.Collapsed && RightViewHeaderSelectedIndex == 1)
             {
                 CurrentDongle = AudioDongleInfos.Values.First();
-                if (!IsPairing)
-                    StartPairing(CurrentDongle.ID);
+                StartPairing(CurrentDongle.ID);
             }
             //if (DeviceBarSelectedIndex == 3 && RightViewHeaderSelectedIndex == 1)
             //{
