@@ -8581,28 +8581,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                     if (!string.IsNullOrEmpty(path_programdata))
                     {
-                        Method method = new Method(Log);
-                        string path = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
-                        bool delete_Ret_1 = false, delete_Ret_2 = false;
-                        if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+                        using (Method method = new Method(Log))
                         {
-                            writelog($"[DeleteDdpmSwUpdaterFolder], path Exists.");
-                            delete_Ret_1 = method.DeleteFolder(path);
-                            writelog($"[DeleteDdpmSwUpdaterFolder], path Delete.");
-                        }
-                        string path_2 = path_programdata + "\\Dell" + "\\" + o.ToString();
-                        if (!string.IsNullOrEmpty(path_2) && Directory.Exists(path_2))
-                        {
-                            writelog($"[DeleteDdpmSwUpdaterFolder], path_2 Exists.");
-                            delete_Ret_2 = method.DeleteFolder(path_2);
-                            writelog($"[DeleteDdpmSwUpdaterFolder], path_2 Delete.");
-                        }
-                        method.Dispose();
-                        if (delete_Ret_1 || delete_Ret_2)
-                        {
-                            WriteRegistryData(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater", "");
-                            writelog($"[DeleteDdpmSwUpdaterFolder], WriteRegistryData.");
-                        }
+                            string path = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
+                            bool delete_Ret_1 = false, delete_Ret_2 = false;
+                            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+                            {
+                                writelog($"[DeleteDdpmSwUpdaterFolder], path Exists.");
+                                delete_Ret_1 = method.DeleteFolder(path);
+                                writelog($"[DeleteDdpmSwUpdaterFolder], path Delete.");
+                            }
+                            string path_2 = path_programdata + "\\Dell" + "\\" + o.ToString();
+                            if (!string.IsNullOrEmpty(path_2) && Directory.Exists(path_2))
+                            {
+                                writelog($"[DeleteDdpmSwUpdaterFolder], path_2 Exists.");
+                                delete_Ret_2 = method.DeleteFolder(path_2);
+                                writelog($"[DeleteDdpmSwUpdaterFolder], path_2 Delete.");
+                            }
+                            method.Dispose();
+                            if (delete_Ret_1 || delete_Ret_2)
+                            {
+                                WriteRegistryData(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater", "");
+                                writelog($"[DeleteDdpmSwUpdaterFolder], WriteRegistryData.");
+                            }
+                        }                        
                     }
                     else
                     {
@@ -17472,33 +17474,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool CopyFile(string copyPath, string savePath)
         {
             writelog($"{nameof(CopyFile)} start");
-            Method method = new Method(Log);//Bruce 1213 Move the method to the common code
-            bool ret = false;
-            if (_DisplayManagerPlugin != null)
+
+            using (Method method = new Method(Log))//Bruce 1213 Move the method to the common code)
             {
-                // 確保資料夾存在
-                if (!Directory.Exists(savePath))
+                if (_DisplayManagerPlugin != null)
                 {
-                    Directory.CreateDirectory(savePath);
+                    // 確保資料夾存在
+                    if (!Directory.Exists(savePath))
+                    {
+                        Directory.CreateDirectory(savePath);
+                    }
+
+                    if (method.DirectoryContainsFiles(copyPath))//Bruce 1213 Move the method to the common code
+                    {
+                        // 取得資料夾名稱
+                        string folderName = method.GetFolderName(copyPath);//Bruce 1213 Move the method to the common code
+                                                                           // 複製指定的 log 文件到選擇的資料夾
+                        method.CopyLogFolder(copyPath, savePath);//Bruce 1213 Move the method to the common code
+                        writelog($"{nameof(CopyFile)} end");
+                        return true;
+                    }
                 }
 
-                if (method.DirectoryContainsFiles(copyPath))//Bruce 1213 Move the method to the common code
-                {
-                    // 取得資料夾名稱
-                    string folderName = method.GetFolderName(copyPath);//Bruce 1213 Move the method to the common code
-                    // 複製指定的 log 文件到選擇的資料夾
-                    method.CopyLogFolder(copyPath, savePath);//Bruce 1213 Move the method to the common code
-                    writelog($"{nameof(CopyFile)} end");
-                    return true;
-                }
+                writelog($"{nameof(CopyFile)} end");
+                return false;
             }
-            if (method != null)//Bruce 1213 Move the method to the common code
-            {
-                method.Dispose();
-                method = null;
-            }
-            writelog($"{nameof(CopyFile)} end");
-            return false;
+            
         }
 
         //Robert_Lin, 2024-10-11, added
