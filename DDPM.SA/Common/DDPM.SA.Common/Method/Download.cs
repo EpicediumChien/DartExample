@@ -87,13 +87,16 @@ namespace DDPM.SA.Common.Method
                         cts = new CancellationTokenSource();
                     }
                     HttpClient client = new HttpClient();
-                    client.Timeout = TimeSpan.FromSeconds(30);
+                    // 設定逾時
+                    client.Timeout = TimeSpan.FromSeconds(10);
                     // 發送 HTTP GET 請求到指定的 URL
                     HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cts.Token).Result;
                     // 從 URL 中取得回應標頭
                     var header = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cts.Token).Result;
                     // 從回應標頭中提取檔案大小
                     DownloadFileSize = header.Content.Headers.ContentLength;
+                    // 設定逾時
+                    cts.CancelAfter(TimeSpan.FromSeconds(10));
                     // 取得包含 URL 內容的串流
                     var stream = client.GetStreamAsync(url, cts.Token).Result;
                     // 建立檔案串流以將下載的內容寫入
