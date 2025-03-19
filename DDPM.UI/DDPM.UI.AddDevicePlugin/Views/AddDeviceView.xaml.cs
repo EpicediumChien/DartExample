@@ -351,7 +351,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 selectedTab = newSelId;
             }
 
-            if (newSelId == 1 && (_vm.DeviceBarSelectedIndex == 2 || _vm.DeviceBarSelectedIndex == 3 || _vm.DeviceBarSelectedIndex == 4))
+            if (newSelId == 1 && (_vm.DeviceBarSelectedIndex == 2 || _vm.DeviceBarSelectedIndex == 3 || _vm.DeviceBarSelectedIndex == 4) && _vm.DongleAlertKnMVisibility == Visibility.Collapsed)
             {
                 StartPairing();
             }
