@@ -321,9 +321,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void PrepareDongleInfo()
         {
-            if (IsPairing)
-            { StopPairing(); }
-
+            StopPairing();
             DongleAlertKnMVisibility = Visibility.Collapsed;
             DongleAlertHeadsetVisibility = Visibility.Collapsed;
 
@@ -423,8 +421,8 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 foreach (var di in DongleInfos.Values)
                 { DdpmCommonHelper.DeviceManagerSA!.StopPairing(di.ID); }
+                IsPairing = false;
             }
-            IsPairing = false;
         }
         public void StopPairingPen()
         {
