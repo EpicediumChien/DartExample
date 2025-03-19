@@ -11044,8 +11044,10 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         try
                         {
-                            using StreamReader r = new StreamReader(ss_1[1]);
-                            jsonString = r.ReadToEnd();
+                            using (StreamReader r = new StreamReader(ss_1[1]))
+                            {
+                                jsonString = r.ReadToEnd();
+                            }
                         }
                         catch(Exception ex)
                         {
