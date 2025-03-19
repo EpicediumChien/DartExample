@@ -321,7 +321,9 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void PrepareDongleInfo()
         {
-            StopPairing();
+            if (IsPairing)
+            { StopPairing(); }
+
             DongleAlertKnMVisibility = Visibility.Collapsed;
             DongleAlertHeadsetVisibility = Visibility.Collapsed;
 
@@ -353,12 +355,14 @@ namespace DDPM.UI.Plugin.ViewModels
             if (DeviceBarSelectedIndex == 2 && DongleAlertKnMVisibility == Visibility.Collapsed && RightViewHeaderSelectedIndex == 1 && !IsPairing)
             {
                 CurrentDongle = DongleInfos.Values.First();
-                StartPairing(CurrentDongle.ID);
+                if (!IsPairing)
+                    StartPairing(CurrentDongle.ID);
             }
             if (DeviceBarSelectedIndex == 4 && DongleAlertHeadsetVisibility == Visibility.Collapsed && RightViewHeaderSelectedIndex == 1 && !IsPairing)
             {
                 CurrentDongle = AudioDongleInfos.Values.First();
-                StartPairing(CurrentDongle.ID);
+                if (!IsPairing)
+                    StartPairing(CurrentDongle.ID);
             }
             //if (DeviceBarSelectedIndex == 3 && RightViewHeaderSelectedIndex == 1)
             //{
@@ -415,9 +419,10 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void StopPairing()
         {
-            if (IsPairing && CurrentDongle != null)
+            if (IsPairing)
             {
-                DdpmCommonHelper.DeviceManagerSA!.StopPairing(CurrentDongle.ID);
+                foreach (var di in DongleInfos.Values)
+                { DdpmCommonHelper.DeviceManagerSA!.StopPairing(di.ID); }
             }
             IsPairing = false;
         }
@@ -435,6 +440,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void GotoNewDevice()
         {
+            StopPairing();
             IsPairing = false;
             //PairingStatus = "Stopped";
             //OnPropertyChanged(nameof(PairingStatus));
