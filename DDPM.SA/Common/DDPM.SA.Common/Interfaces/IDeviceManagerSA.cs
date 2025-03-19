@@ -171,6 +171,8 @@ namespace DDPM.SA.Common
 
         Task<List<MonitorInfo>> Re_GetMonitors();
 
+        Task ReGetMonitors();
+
         event EventHandler<VCPchangedEventArgs> VCPchanged;
 
         event EventHandler<DDCCIchangedEventArgs> DDCCIStatuschanged;

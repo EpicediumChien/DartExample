@@ -915,6 +915,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //Robert_Lin, 2024-12-16
                     //NEW:
                     viewModel.ResetDevices();
+                    DdpmCommonHelper.DeviceManagerSA.ReGetMonitors();
                     //OLD:
                     //viewModel.HomeDevices = new System.Collections.ObjectModel.ObservableCollection<HomeDevice>();
 

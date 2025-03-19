@@ -176,14 +176,16 @@ namespace DDPM.UI.Module.Kvm
                     vm.isPxPFullView = false;
                 }
                 //Return to DdpmHomePage              
-                IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
-                console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+                //IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
+                //console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+                DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
             }
             catch (Exception ex)
             {
                 //Return to DdpmHomePage
-                IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
-                console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+                //IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
+                //console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+                DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
                 if (vm != null)
                 {
                     vm.FromProgressValue = 0;
@@ -363,8 +365,9 @@ namespace DDPM.UI.Module.Kvm
                 vm.isPxPFullView = false;
             }
             //Return to DdpmHomePage
-            IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
-            console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+            //IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
+            //console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+            DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
         }
 
         private void CloseUSBKVM(object sender, RoutedEventArgs e)
