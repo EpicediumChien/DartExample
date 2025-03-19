@@ -1058,7 +1058,11 @@ namespace DDPM.UI.Module.Kvm
                 {
                     SupportNKVM = Visibility.Collapsed;
                     OnPropertyChanged("SupportNKVM");
-                    NKVMisON = false;
+                    if (NKVMisON)
+                    {
+                        isOnNKVM(false);
+                        NKVMisON = false;
+                    }
                 }
 
                 if (Cancelled_RefreshData(e, bwk))
