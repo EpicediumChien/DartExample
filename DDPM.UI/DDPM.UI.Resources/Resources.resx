@@ -135,6 +135,9 @@
   <data name="FirmwareVersion" xml:space="preserve">
     <value>Firmware Version</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+   <value>Device ID</value>
+ </data>
   <data name="Gaming" xml:space="preserve">
     <value>Gaming</value>
   </data>

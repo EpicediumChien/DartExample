@@ -138,6 +138,7 @@ namespace DDPM.UI.Common
         public static readonly string FirmwareVersion = GetString("FirmwareVersion"); //"Firmware Version"
         public static readonly string ServiceTag = GetString("ServiceTag"); //"Service Tag"
         public static readonly string ManufactureMonth = GetString("ManufactureMonth"); //"Manufactured"
+        public static readonly string DeviceID = GetString("DeviceID"); //"Firmware Version"
         //public static readonly string RestoreToDefaultButton = GetString("RestoreToDefaultButton"); //"Restore to default"
 
         //strings for Action
