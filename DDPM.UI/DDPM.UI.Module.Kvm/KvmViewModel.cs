@@ -948,7 +948,7 @@ namespace DDPM.UI.Module.Kvm
             {
                 _log?.Info("MonitorInfo is null.");
             }
-
+            IsKVMBusy = true;
             bw.DoWork -= DoWork_RefreshData;
             bw.DoWork += DoWork_RefreshData;
             if (USBKVMisON && !NKVMisON && !NoKVMisON)
@@ -961,7 +961,6 @@ namespace DDPM.UI.Module.Kvm
             bw.RunWorkerCompleted -= RunWorkerCompleted_RefreshData;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
             bw.RunWorkerAsync(); //myArg is the optional argument
-            IsKVMBusy = true;
             _log.Info("[KvmViewModel] Invoke_RefreshData end");
             entryUSBKVM = DateTime.Now;
             _log.Info($"[Invoke_RefreshData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
