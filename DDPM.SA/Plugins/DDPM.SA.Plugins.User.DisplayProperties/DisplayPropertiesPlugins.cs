@@ -128,36 +128,38 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         /// <param name="monitorInfo">螢幕資訊</param>
         /// <returns>支援的解析度列表</returns>
         public Task<DisplayPropertiesInfo> GetDisplaySupportedProperties(MonitorInfo monitorInfo)
-        {
-            try
+        {                
+            using (HDRSetting hDRSetting = new HDRSetting())
             {
-                _logs?.DebugMsg_1($"{nameof(GetDisplaySupportedProperties)} start");
-                DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo();
-                HDRSetting hDRSetting = new HDRSetting();
-                Properties currentProperties = new Properties();
-                displayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
-                if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation))
+                try
                 {
+                    _logs?.DebugMsg_1($"{nameof(GetDisplaySupportedProperties)} start");
+                    DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo();
+                    Properties currentProperties = new Properties();
+                    displayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
+                    if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation))
+                    {
+                        return Task.FromResult(new DisplayPropertiesInfo());
+                    }
+                    if (JudgmentList.AutoRotateOSMonitorList.Contains(monitorInfo.modelName))
+                    {
+                        displayPropertiesInfo.CurrentOrientation = DisplayOrientation.Unknow;
+                    }
+                    displayPropertiesInfo.SupportedProperties.Properties = GetSupportedResolutions(monitorInfo, currentProperties, displayPropertiesInfo.CurrentOrientation);
+                    displayPropertiesInfo.SupportedProperties.Orientations = new DisplayOrientation[4]
+                    {
+                    DisplayOrientation.Angle0,DisplayOrientation.Angle90,DisplayOrientation.Angle180,DisplayOrientation.Angle270
+                    };
+                    _displayPropertiesInfo = (displayPropertiesInfo);
+                    _logs?.DebugMsg_1($"{nameof(GetDisplaySupportedProperties)} done");
+                    return Task.FromResult(_displayPropertiesInfo);
+                }
+                catch (Exception ex)
+                {
+                    _logs?.DebugMsg_1($"{nameof(GetDisplaySupportedProperties)} error : {ex.Message}");
                     return Task.FromResult(new DisplayPropertiesInfo());
                 }
-                if (JudgmentList.AutoRotateOSMonitorList.Contains(monitorInfo.modelName))
-                {
-                    displayPropertiesInfo.CurrentOrientation = DisplayOrientation.Unknow;
-                }
-                displayPropertiesInfo.SupportedProperties.Properties = GetSupportedResolutions(monitorInfo, currentProperties, displayPropertiesInfo.CurrentOrientation);
-                displayPropertiesInfo.SupportedProperties.Orientations = new DisplayOrientation[4]
-                {
-                    DisplayOrientation.Angle0,DisplayOrientation.Angle90,DisplayOrientation.Angle180,DisplayOrientation.Angle270
-                };
-                _displayPropertiesInfo = (displayPropertiesInfo);
-                _logs?.DebugMsg_1($"{nameof(GetDisplaySupportedProperties)} done");
-                return Task.FromResult(_displayPropertiesInfo);
-            }
-            catch (Exception ex)
-            {
-                _logs?.DebugMsg_1($"{nameof(GetDisplaySupportedProperties)} error : {ex.Message}");
-                return Task.FromResult(new DisplayPropertiesInfo());
-            }
+            }                
         }
 
         /// <summary>
@@ -601,13 +603,14 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         private bool RefreshDisplayPropertiesInfo(MonitorInfo monitorInfo, string s, bool isSupportedHDR, bool isHDREnable, bool isSupportUSBCPrioritization, USBCPrioritizationType USBCPrioritizationType)
         {
             //Bruce 0605 修改註記:因讀取時間過長(約5000mS)，故修改軟體目前降至(約2800mS)
+            HDRSetting hDRSetting = new HDRSetting();
+
             try
             {
                 _logs?.DebugMsg_1(nameof(RefreshDisplayPropertiesInfo) + " start");
                 _displayPropertiesInfo = new DisplayPropertiesInfo();
                 {
                     DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo();
-                    HDRSetting hDRSetting = new HDRSetting();
                     Properties currentProperties = new Properties();
                     displayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
                     if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation))
@@ -649,6 +652,10 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             catch (Exception)
             {
                 return false;
+            }
+            finally
+            {
+                hDRSetting.Dispose();
             }
         }
         /// <summary>
