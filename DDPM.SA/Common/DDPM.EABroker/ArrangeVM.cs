@@ -141,6 +141,34 @@ namespace DDPM.EABroker
         }
         #endregion
 
+        #region Exit
+        /// <summary>
+        /// Called when EABroker is going to stop.
+        /// </summary>
+        public void Exit()
+        {
+            //1 Close all WorkWindows
+            foreach (EAWorkWindow workWin in _workWindows)
+            {
+                if (workWin != null)
+                {
+                    workWin.Close();
+                }
+            }
+            //2 Close AwsWindow and AwsBuddyWindow
+            if (_awsWindow != null)
+            {
+                _awsWindow.Close();
+                _awsWindow = null;
+            }
+            if (_awsBuddyWindow != null)
+            {
+                _awsBuddyWindow.Close();
+                _awsBuddyWindow = null;
+            }
+        }
+        #endregion
+
         #region DCF Agent Related
         public void WriteLog(string msg, Exception? e = null)
         {
@@ -1192,6 +1220,7 @@ namespace DDPM.EABroker
                 }
                 added++;
  
+                //Robert_Lin 2025-3-19, AwsWindow.Window_Closeing() will call Dispatcher.InvokeShutdown() to exit from below Run() loop.
                 System.Windows.Threading.Dispatcher.Run();
             });
             thread.SetApartmentState(ApartmentState.STA);
