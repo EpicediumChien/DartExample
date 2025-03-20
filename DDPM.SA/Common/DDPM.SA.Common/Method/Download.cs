@@ -95,8 +95,12 @@ namespace DDPM.SA.Common.Method
                     var header = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cts.Token).Result;
                     // 從回應標頭中提取檔案大小
                     DownloadFileSize = header.Content.Headers.ContentLength;
+                    long? fileSize = DownloadFileSize;
+                    _logs?.DebugMsg_1($"{nameof(DownloadFile)} fileSize : {fileSize}");
+                    int timeoutInSeconds = fileSize.HasValue ? (int)(fileSize.Value / 1024 / 1024) * 5 : 30; // 每MB分配5秒
+                    _logs?.DebugMsg_1($"{nameof(DownloadFile)} timeoutInSeconds : {timeoutInSeconds}");
                     // 設定逾時
-                    cts.CancelAfter(TimeSpan.FromSeconds(10));
+                    cts.CancelAfter(TimeSpan.FromSeconds(timeoutInSeconds));
                     // 取得包含 URL 內容的串流
                     var stream = client.GetStreamAsync(url, cts.Token).Result;
                     // 建立檔案串流以將下載的內容寫入
