@@ -1458,7 +1458,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             else
                             {
                                 _logs.DebugMsg_1($"{processName} process not found.");
-                                resetState();
                                 _updateErrorCode = FWUErrorCode.Service_not_running_Try_again;
                                 _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName} {nameof(Install)} {LangHelper.Instance["Service_not_running_Try_again"]}");
                                 _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
@@ -1577,7 +1576,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _notificationStr = ret;
                     sendMessageToEvent(updateProgressInfo);
                 }
-                resetState();
                 _logs.DebugMsg_1($"{nameof(Install)} DeviceName : {fwUpdateInfo.DeviceName}, Model : {fwUpdateInfo.Model} _updateErrorCode : {_updateErrorCode}");
                 _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} _notificationStr : {_notificationStr}");
                 _logs.DebugMsg_1($"{nameof(Install)} done");
@@ -1587,11 +1585,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             catch (Exception ex)
             {
-                resetState();
                 _updateErrorCode = FWUErrorCode.Unknow;
                 _logs.DebugMsg_1(fwUpdateInfo.DeviceName + nameof(Install) + " Error:" + ex.ToString());
                 _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
                 return _updateErrorCode;
+            }
+            finally
+            {
+                resetState();
             }
         }
 
