@@ -2706,6 +2706,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     };
                     OnNotify(_EventArgs);
                 }
+
+                // << 250320 added by Hess
+                PhysicalDevices.Remove(physicalDeviceId);
+                PhysicalDevices2.Remove(physicalDeviceId);
+                PhysicalPenDevices.Remove(physicalDeviceId);
+                // >>
             }
         }
 
@@ -2863,6 +2869,15 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         }
                     }
                 }
+
+                // << 250320 added by Hess
+                IDevices.Remove(deviceGuid);
+                LogicalDevices.Remove(deviceGuid);
+                LogicalDevices2.Remove(deviceGuid);
+                LogicalDevices3.Remove(deviceGuid);
+                LogicalDevicesPen.Remove(deviceGuid);
+                LogicalDevicHeadset.Remove(deviceGuid);
+                // >>
             }
         }
 
