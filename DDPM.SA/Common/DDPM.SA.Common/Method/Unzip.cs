@@ -87,14 +87,14 @@ namespace DDPM.SA.Common.Method
         /// <summary>
         /// 解壓縮InApp檔案
         /// </summary>
-        /// <param name="zipFilePath">InApp檔路徑</param>
+        /// <param name="InAppexeFilePath">InApp檔路徑</param>
         /// <param name="upgFilePath">回傳解壓縮後資料夾中的upg檔案</param>
         /// <returns></returns>
-        public bool ExecuteUnzipForInAppUpdate(string zipFilePath, out string upgFilePath)
+        public bool ExecuteUnzipForInAppUpdate(string InAppexeFilePath, out string upgFilePath)
         {
             //Elsa Add Security
             string FileInfo;
-            if (!DDPMFileSecurity.IsFilePathValid(zipFilePath, out FileInfo))
+            if (!DDPMFileSecurity.IsFilePathValid(InAppexeFilePath, out FileInfo))
             {
                 _logs?.Info($"{nameof(ExecuteUnzipForInAppUpdate)} {FileInfo}");
                 upgFilePath = "";
@@ -105,17 +105,17 @@ namespace DDPM.SA.Common.Method
             {
                 _logs?.DebugMsg_1(nameof(ExecuteUnzipForInAppUpdate) + " start");
 
-                using (FileLock fileLock = new FileLock(zipFilePath, PathCheckOption.None, lockNow: true))
+                using (FileLock fileLock = new FileLock(InAppexeFilePath, PathCheckOption.None, lockNow: true))
                 {
                     AclChecker aclChecker = new AclChecker();
                     if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
                     {
-                        throw new SecurityException($"File ACLs for {zipFilePath} contained unprivileged write access for one or more identity");
+                        throw new SecurityException($"File ACLs for {InAppexeFilePath} contained unprivileged write access for one or more identity");
                     }
-                    string workingDirectory = DDPMFileSecurity.SanitizePath(Path.GetDirectoryName(zipFilePath), out string info);
+                    string workingDirectory = DDPMFileSecurity.SanitizePath(Path.GetDirectoryName(InAppexeFilePath), out string info);
                     _logs?.DebugMsg_1($"{nameof(ExecuteUnzipForInAppUpdate)} DDPMFileSecurity.SanitizePath info : {info}");
                     Process process = new Process();
-                    process.StartInfo.FileName = zipFilePath; // 設置要執行的 .exe 檔案
+                    process.StartInfo.FileName = InAppexeFilePath; // 設置要執行的 .exe 檔案
                     process.StartInfo.Arguments = "-s -ext"; // 傳入的命令行參數
                     process.StartInfo.WorkingDirectory = workingDirectory;
                     process.StartInfo.UseShellExecute = false; // 禁用 Shell，啟用更可控的進程
