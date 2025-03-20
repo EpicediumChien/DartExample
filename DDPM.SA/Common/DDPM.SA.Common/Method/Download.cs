@@ -16,6 +16,8 @@ namespace DDPM.SA.Common.Method
         private Logs? _logs;
         public long? DownloadFileSize = null;
         public FileStream? DownloadFileStream = null;
+        long currentFileSize;
+        CancellationTokenSource CTS = null;
 
         public Download(Logs logs)
         {
@@ -64,6 +66,7 @@ namespace DDPM.SA.Common.Method
             try
             {
                 _logs?.DebugMsg_1(nameof(DownloadFile) + " start");
+                currentFileSize = 0;
                 CertificateCheck caCheck = new CertificateCheck(_logs);
                 {
                     if (!isSkipCA)
@@ -88,7 +91,7 @@ namespace DDPM.SA.Common.Method
                     }
                     HttpClient client = new HttpClient();
                     // 設定逾時
-                    client.Timeout = TimeSpan.FromSeconds(10);
+                    client.Timeout = TimeSpan.FromSeconds(30);
                     // 發送 HTTP GET 請求到指定的 URL
                     HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cts.Token).Result;
                     // 從 URL 中取得回應標頭
@@ -101,12 +104,14 @@ namespace DDPM.SA.Common.Method
                     _logs?.DebugMsg_1($"{nameof(DownloadFile)} timeoutInSeconds : {timeoutInSeconds}");
                     // 設定逾時
                     cts.CancelAfter(TimeSpan.FromSeconds(timeoutInSeconds));
+                    CTS = cts;
                     // 取得包含 URL 內容的串流
                     var stream = client.GetStreamAsync(url, cts.Token).Result;
                     // 建立檔案串流以將下載的內容寫入
                     DownloadFileStream = File.Create(savePath);
                     // 將串流的內容複製到檔案中
                     stream.CopyToAsync(DownloadFileStream, cts.Token).Wait();
+                    CTS = null;
                 }
                 _logs?.DebugMsg_1(nameof(DownloadFile) + " done");
                 FailInfo = "Pass";
@@ -170,6 +175,14 @@ namespace DDPM.SA.Common.Method
                 {
                     DownloadFileSize = 1;
                 }
+                if (DownloadFileStream.Length > currentFileSize)
+                {
+                    if (CTS != null)
+                    {
+                        CTS.CancelAfter(TimeSpan.FromSeconds(60));
+                    }
+                }
+                currentFileSize = DownloadFileStream.Length;
                 progress = Math.Round(((double)DownloadFileStream.Length / (double)DownloadFileSize) * 100.0, 2);
             }
             return progress;
