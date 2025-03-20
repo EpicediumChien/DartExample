@@ -2153,15 +2153,15 @@ namespace DDPM.UI.Plugin.ViewModels
             HidePleaseWait();
         }
 
-        public void Invoke_PleaseWaitAsync(string model, AirAudioViewModel vm)
+        public async Task Invoke_PleaseWaitAsync(string model, AirAudioViewModel vm)
         {
             vm.ShowPleaseWait();
             try
             {
-                using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
-                {
-                    Task.Run(() => DoWork_PleaseWait(model, vm), cts.Token);
-                }
+                //using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1)))
+                //{
+                    await Task.Run(() => DoWork_PleaseWait(model, vm));
+                //}
             }
             catch (OperationCanceledException)
             {
