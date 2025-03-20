@@ -258,7 +258,7 @@ namespace DdpmSwUpdater
                                 {
                                     swUpdateInfos[i].SWUErrorCode = SWUErrorCode.CAFail;
                                 }
-                                else if (downloadInfo.StartsWith("Network fail"))
+                                else
                                 {
                                     swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
                                 }
@@ -507,7 +507,7 @@ namespace DdpmSwUpdater
                             {
                                 swUpdateInfos[i].SWUErrorCode = SWUErrorCode.CAFail;
                             }
-                            else if (downloadInfo.StartsWith("Network fail"))
+                            else
                             {
                                 swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
                             }
