@@ -650,7 +650,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             _IsDownloadAndInsytall = true;
             _IsUITrigger = isUITrigger;
-            originalDirectory = DDPMFileSecurity.SanitizePath(Path.GetDirectoryName(Environment.CurrentDirectory), out string info);
+            originalDirectory = DDPMFileSecurity.SanitizePath(Directory.GetCurrentDirectory(), out string info);
             _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} DDPMFileSecurity.SanitizePath info : {info}");
             Method method = new Method(_logs);
             try
@@ -2674,8 +2674,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 try
                 {
-                    string directory = Path.GetDirectoryName(dllFilename); // 取得 A.dll 的目錄
-
+                    string directory = Path.GetDirectoryName(dllFilename);
                     // 設定當前工作目錄
                     Directory.SetCurrentDirectory(directory);
                     // Step 1 & 2: Load the assembly and get the type

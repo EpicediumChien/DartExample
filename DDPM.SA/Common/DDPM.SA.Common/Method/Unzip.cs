@@ -140,7 +140,7 @@ namespace DDPM.SA.Common.Method
                     //Dean 1223 check output
                     if (string.IsNullOrEmpty(upgFilePath) || upgFilePath.Length == 0)
                     {
-                        _logs?.DebugMsg_1(nameof(ExecuteUnzipForInAppUpdate) + ": search exe file got null/empty return");
+                        _logs?.DebugMsg_1(nameof(ExecuteUnzipForInAppUpdate) + ": search upg file got null/empty return");
                         return false;
                     }
                 }
@@ -293,7 +293,7 @@ namespace DDPM.SA.Common.Method
             _logs?.DebugMsg_1(nameof(SearchUpgFileFromDirectory) + $": Folder [{directoryInfo.Name}]");
             foreach (FileInfo file in files)
             {
-                if (file.Extension.Equals(".exe", StringComparison.OrdinalIgnoreCase))
+                if (file.Extension.Equals(".upg", StringComparison.OrdinalIgnoreCase))
                 {
                     if (recursive)
                     {
@@ -338,17 +338,17 @@ namespace DDPM.SA.Common.Method
                 if (Directory.Exists(directory))
                 {
                     //for checkmarx check [code part4]
-                    List<string> files = SearchExeFileFromDirectory(new DirectoryInfo(directory), _logs, recursive);
+                    List<string> files = SearchUpgFileFromDirectory(new DirectoryInfo(directory), _logs, recursive);
                     if (files != null && files.Count > 0)
                     {
                         upgFiles = files.ToArray();
-                        _logs?.DebugMsg_1(nameof(GetExeFilePath) + $": Got {upgFiles.Length} upg file(s)");
+                        _logs?.DebugMsg_1(nameof(GetUpgFilePath) + $": Got {upgFiles.Length} upg file(s)");
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logs?.DebugMsg_1(nameof(GetExeFilePath) + "Get exe files in folder fail: " + ex.Message);
+                _logs?.DebugMsg_1(nameof(GetUpgFilePath) + "Get upg files in folder fail: " + ex.Message);
             }
 
             if (upgFiles == null || upgFiles.Length == 0)
@@ -367,7 +367,7 @@ namespace DDPM.SA.Common.Method
                 string[] comparedList = upgFiles.Where(x => whitelist.Any(y => x.Contains(y, StringComparison.OrdinalIgnoreCase))).ToArray();
                 if (comparedList != null && comparedList.Length > 0)
                 {
-                    _logs?.DebugMsg_1(nameof(GetExeFilePath) + $": Matching {comparedList.Length} upg file(s), return first one");
+                    _logs?.DebugMsg_1(nameof(GetUpgFilePath) + $": Matching {comparedList.Length} upg file(s), return first one");
                     return comparedList[0];
                 }
             }
