@@ -154,6 +154,7 @@ namespace DdpmSwUpdater
             LogManage.LogMessage($"_instanceMutex?.Dispose() go");
             _instanceMutex?.Dispose();
             LogManage.LogMessage($"_instanceMutex?.Dispose() done");
+
             Method method = new Method(LogManage.Logs);
             try
             {
@@ -350,13 +351,11 @@ namespace DdpmSwUpdater
                     }
                 }
                 method.DeleteFolder(savePath);
-                method.Dispose();
                 LogManage.LogMessage(nameof(DownloadAndInstall) + " done");
                 return Task.FromResult(swUpdateInfos);
             }
             catch (Exception ex)
             {
-                method.Dispose();
                 foreach (SWUpdateInfo deviceInfo in swUpdateInfos)
                 {
                     deviceInfo.SWUErrorCode = SWUErrorCode.NetworkDisconnection;
@@ -365,6 +364,10 @@ namespace DdpmSwUpdater
                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                 LogManage.LogMessage(nameof(DownloadAndInstall) + " Error：" + ex.Message); // 輸出錯誤訊息
                 return Task.FromResult(swUpdateInfos);
+            }
+            finally
+            {
+                method.Dispose();
             }
         }
         /// <summary>
@@ -584,19 +587,21 @@ namespace DdpmSwUpdater
                         LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} FileLock Error: {ex.Message}");
                     }
                 }
-                method.Dispose();
                 LogManage.LogMessage(nameof(DownloadAndExecutionSwUpdater) + " done");
                 return ret;
             }
             catch (Exception ex)
             {
-                method.Dispose();
                 foreach (SWUpdateInfo deviceInfo in swUpdateInfos)
                 {
                     deviceInfo.SWUErrorCode = SWUErrorCode.NetworkDisconnection;
                 }
                 LogManage.LogMessage(nameof(DownloadAndExecutionSwUpdater) + " Error：" + ex.Message); // 輸出錯誤訊息
                 return ret;
+            }
+            finally
+            {
+                method.Dispose();
             }
         }
         /// <summary>
