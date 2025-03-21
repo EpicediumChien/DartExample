@@ -1483,6 +1483,51 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Features automatically apply during calls 的當地語系化字串。
+        /// </summary>
+        internal static string Cardi_3 {
+            get {
+                return ResourceManager.GetString("Cardi.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Features automatically apply when you listen to music and other content 的當地語系化字串。
+        /// </summary>
+        internal static string Cardi_4 {
+            get {
+                return ResourceManager.GetString("Cardi.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Limits your near-end mic noise to create a better audio experience for others 的當地語系化字串。
+        /// </summary>
+        internal static string Cardi_5 {
+            get {
+                return ResourceManager.GetString("Cardi.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Limits far-end mic noise to create a better audio experience for you 的當地語系化字串。
+        /// </summary>
+        internal static string Cardi_6 {
+            get {
+                return ResourceManager.GetString("Cardi.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Equalizer adjusts based on chosen preset 的當地語系化字串。
+        /// </summary>
+        internal static string Cardi_7 {
+            get {
+                return ResourceManager.GetString("Cardi.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Chat 的當地語系化字串。
         /// </summary>
         internal static string Chat {
@@ -2208,6 +2253,15 @@ namespace DDPM.UI.Resources {
         internal static string Device_specific {
             get {
                 return ResourceManager.GetString("Device_specific", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Device ID 的當地語系化字串。
+        /// </summary>
+        internal static string DeviceID {
+            get {
+                return ResourceManager.GetString("DeviceID", resourceCulture);
             }
         }
         
