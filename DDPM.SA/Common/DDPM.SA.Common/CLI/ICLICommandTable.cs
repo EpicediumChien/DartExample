@@ -512,7 +512,7 @@ namespace DDPM.SA.Common
                     logMessage = logMessage.Replace("\n", "").Replace("\r", "");
                     logMessage = System.Security.SecurityElement.Escape(logMessage);
 
-                    _Log.Error($"[CLI] input unknown command {command}");
+                    _Log.Error($"[CLI] input unknown command {logMessage}");
                     commandInputs.Add(input);
                     return commandInputs;
                 }

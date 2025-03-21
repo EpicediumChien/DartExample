@@ -514,7 +514,7 @@ namespace DDPM.SA.Common.Settings
                 logMessage = logMessage.Replace("\n", "").Replace("\r", "");
                 logMessage = System.Security.SecurityElement.Escape(logMessage);
 
-                log?.Info($"[ExportWebcamSettings] json json:{json}");
+                log?.Info($"[ExportWebcamSettings] json json:{logMessage}");
                 var fileFolder = target_folder;
                 string info = string.Empty;
                 if (!Directory.Exists(fileFolder))
