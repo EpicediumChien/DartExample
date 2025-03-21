@@ -10080,20 +10080,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Value is {newValue}");
             var result = _DTPProxyPlugin.SetIsAutoFramingOn(Guid, newValue);
 
-            //writelog("[DeviceMangerPlugin] DeviceMangerPlugin Notify UI Update in SetIsAutoFramingOn ...");
-            //DeviceInfo di = new()
-            //{
-            //    LogicalDeviceType = "Webcam",
-            //    ID = new Guid(Guid),
-            //    Message = newValue.ToString()
-            //};
-            //DeviceChangedEventArgs _EventArgs = new()
-            //{
-            //    type = DeviceChangedType.Peripherals_SettingsChange,
-            //    device_peripherals = di,
-            //    changedProperty = "IsAutoFramingOnChanged"
-            //};
-            //_ = Task.Run(() => DeviceChanged?.Invoke(this, _EventArgs)).ConfigureAwait(false);
+            writelog("[DeviceMangerPlugin] DeviceMangerPlugin Notify UI Update in SetIsAutoFramingOn ...");
+            DeviceInfo di = new()
+            {
+                LogicalDeviceType = "Webcam",
+                ID = new Guid(Guid),
+                Message = newValue.ToString()
+            };
+            DeviceChangedEventArgs _EventArgs = new()
+            {
+                type = DeviceChangedType.Peripherals_SettingsChange,
+                device_peripherals = di,
+                changedProperty = "IsAutoFramingOnChanged"
+            };
+            _ = Task.Run(() => DeviceChanged?.Invoke(this, _EventArgs)).ConfigureAwait(false);
 
             return result;
         }

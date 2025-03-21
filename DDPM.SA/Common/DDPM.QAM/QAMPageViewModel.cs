@@ -261,14 +261,14 @@ namespace DDPM.QAM
                         //add event by leo 2025/01/14 end
 
                         case "Webcam_ZoomChanged":
-                            { //leo fixed 2025/01/14
-                                if (int.TryParse(eventMsg.NewValue, out currentValue))
-                                {
-                                    isStatusChangeByDDPM = true;
-                                    ZoomValue = currentValue;
-                                }
+                        { //leo fixed 2025/01/14
+                            if (int.TryParse(eventMsg.NewValue, out currentValue))
+                            {
+                                isStatusChangeByDDPM = true;
+                                ZoomValue = currentValue;
                             }
-                            break;
+                        }
+                        break;
 
                         case "Webcam_FieldOfViewChanged":
                             if (int.TryParse(eventMsg.NewValue, out currentValue))
@@ -346,6 +346,13 @@ namespace DDPM.QAM
 
                 selectedProfileName = "NONE"; //Derek 2025/01/20
                 webcamSettings.SelectedProfileName = selectedProfileName;
+
+                // << 250321 added by hess
+                webcamSettings.NONE.IsAutoFramingOn = _AutoFramingStatus;
+                webcamSettings.NONE.FieldOfView = FOVs[SelectedFOVIndex];
+                webcamSettings.NONE.Zoom = _ZoomValue;
+                // >>
+
                 SaveSelectProfile(); //Derek 2025/02/11 for PIMS 330862 FOV test fail
             }
             catch (Exception ex)
@@ -676,6 +683,8 @@ namespace DDPM.QAM
                 OnPropertyChanged(nameof(AutoFramingStatus));
 
                 SetAutoFramingStatus();
+                if (!value)
+                    FOV_Selected(SelectedFOVIndex);
             }
         }
 
@@ -737,8 +746,11 @@ namespace DDPM.QAM
                     LogMsg($"QAM SetFieldOfView value has modified by UI");
             }
         }
+
+        private int SelectedFOVIndex = 0;
         public void FOV_Selected(int index)
         {
+            SelectedFOVIndex = index;
             for (int j = 0; j < FOV_IsSelected.Length; j++)
             {
                 FOV_IsSelected[j] = false;
@@ -847,12 +859,12 @@ namespace DDPM.QAM
         {
             //MessageBox.Show("ChangeUIWhenAutoFramingStatusChange");
 
-            if (selIndex < 2)
-            {
-                LogMsg($"ChangeUIWhenAutoFramingStatusChange return due to page FOV or ZOOM not selected");
+            //if (selIndex < 2)
+            //{
+            //    LogMsg($"ChangeUIWhenAutoFramingStatusChange return due to page FOV or ZOOM not selected");
 
-                return;
-            }
+            //    return;
+            //}
 
             //disable/enable FOV and zoom slider bar status
             ZoomEnableStatus = !statusIsOn;
