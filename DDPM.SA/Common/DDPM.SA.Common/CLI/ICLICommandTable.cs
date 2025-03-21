@@ -507,6 +507,11 @@ namespace DDPM.SA.Common
                 }
                 else
                 {
+                    // [Checkmarx] Avoid Log Forging
+                    string logMessage = command;
+                    logMessage = logMessage.Replace("\n", "").Replace("\r", "");
+                    logMessage = System.Security.SecurityElement.Escape(logMessage);
+
                     _Log.Error($"[CLI] input unknown command {command}");
                     commandInputs.Add(input);
                     return commandInputs;
@@ -517,7 +522,12 @@ namespace DDPM.SA.Common
                 string[] str = in_type.Split('=');
                 if (str.Length < 2)
                 {
-                    _Log.Error($"[CLI] 2nd code should be the format like -Display=targetFeature (fail string: {args[start_index + 1]})");
+                    // [Checkmarx] Avoid Log Forging
+                    string logMessage = args[start_index + 1];
+                    logMessage = logMessage.Replace("\n", "").Replace("\r", "");
+                    logMessage = System.Security.SecurityElement.Escape(logMessage);
+
+                    _Log.Error($"[CLI] 2nd code should be the format like -Display=targetFeature (fail string: {logMessage})");
                     commandInputs.Add(input);
                     return commandInputs;
                 }
