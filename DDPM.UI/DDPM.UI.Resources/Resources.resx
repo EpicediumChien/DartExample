@@ -135,6 +135,9 @@
   <data name="FirmwareVersion" xml:space="preserve">
     <value>Firmware Version</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+   <value>Device ID</value>
+ </data>
   <data name="Gaming" xml:space="preserve">
     <value>Gaming</value>
   </data>
@@ -3524,6 +3527,21 @@
   <data name="Cardi.2" xml:space="preserve">
     <value>Multimedia Presets</value>
   </data>
+  <data name="Cardi.3" xml:space="preserve">
+    <value>Features automatically apply during calls</value>
+  </data>
+  <data name="Cardi.4" xml:space="preserve">
+    <value>Features automatically apply when you listen to music and other content</value>
+  </data>
+  <data name="Cardi.5" xml:space="preserve">
+    <value>Limits your near-end mic noise to create a better audio experience for others</value>
+  </data>
+  <data name="Cardi.6" xml:space="preserve">
+    <value>Limits far-end mic noise to create a better audio experience for you</value>
+  </data>
+  <data name="Cardi.7" xml:space="preserve">
+    <value>Equalizer adjusts based on chosen preset</value>
+  </data>	
   <data name="CustomizeScrollTiltLCaption" xml:space="preserve">
     <value>Customize Scroll Tilt Left</value>
   </data>
