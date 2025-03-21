@@ -312,7 +312,7 @@ namespace DDPM.SA.Obfuscation
             string token = content;
             byte[] secToken = Encoding.UTF8.GetBytes(token);
             //Console.WriteLine($"*** GenerateRandomNumber {secToken.Length} {hexRandomNumber.Length}");
-            //password = random number XOR string
+            //pass word = random number XOR string
             byte[] byteArray = ComputeBytes(Encoding.UTF8.GetBytes(salt), Encoding.UTF8.GetBytes(hexRandomNumber));
 
             byte[] hash = Rfc2898DeriveBytes.Pbkdf2(
