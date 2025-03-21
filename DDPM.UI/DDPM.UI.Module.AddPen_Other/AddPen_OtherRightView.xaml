@@ -10,33 +10,34 @@
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
              d:DesignHeight="527" d:DesignWidth="958"
              SizeChanged="UserControl_SizeChanged"
-             Loaded="UserControl_Loaded">
+             Loaded="UserControl_Loaded"
+             Unloaded="UserControl_Unloaded">
 
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <Style x:Key="TextStyle1" TargetType="UXControls:UXTextBlock">
-                <Setter Property="Foreground" Value="{DynamicResource AddDeviceTxtCaption_TxtColor}" />
-                <Setter Property="FontFamily" Value="Roboto" />
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="FontWeight" Value="Normal" />
-                <Setter Property="LineHeight" Value="24" />
-                <Setter Property="TextWrapping" Value="WrapWithOverflow" />
-                <Setter Property="VerticalAlignment" Value="Top" />
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="Margin" Value="6,0,6,25"/>
-            </Style>
-            <Style x:Key="Border1" TargetType="Border">
-                <Setter Property="Background" Value="{DynamicResource AddDeviceBorder1_BgColor}" />
-                <Setter Property="CornerRadius" Value="13" />
-                <!--Setter Property="Width" Value="459" /-->
-                <!--Setter Property="Height" Value="240" /-->
-                <Setter Property="VerticalAlignment" Value="Top" />
-                <Setter Property="BorderThickness" Value="2" />
-                <Setter Property="BorderBrush" Value="{DynamicResource Border1BorderBrush}" />
-                <Setter Property="Margin" Value="7,7,0,7"/>
-            </Style>
-        </ResourceDictionary>
-    </UserControl.Resources>
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <Style x:Key="TextStyle1" TargetType="UXControls:UXTextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource AddDeviceTxtCaption_TxtColor}" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="LineHeight" Value="24" />
+        <Setter Property="TextWrapping" Value="WrapWithOverflow" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Margin" Value="6,0,6,25"/>
+      </Style>
+      <Style x:Key="Border1" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource AddDeviceBorder1_BgColor}" />
+        <Setter Property="CornerRadius" Value="13" />
+        <!--Setter Property="Width" Value="459" /-->
+        <!--Setter Property="Height" Value="240" /-->
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Border1BorderBrush}" />
+        <Setter Property="Margin" Value="7,7,0,7"/>
+      </Style>
+    </ResourceDictionary>
+  </UserControl.Resources>
   <Grid>
     <UXControls:UXScrollViewer>
       <Border StylusDown="Pairing" Background="Transparent">
