@@ -22,7 +22,7 @@ namespace DDPM.UI.Common.UserControls
     /// </summary>
     public partial class DeviceBasePage : UserControl
     {
-        private ILog _log;
+        private readonly ILog _log;
         private Stopwatch _stopwatch = new Stopwatch();
 
         private DeviceBasePageViewModel viewModel = new DeviceBasePageViewModel();
@@ -547,6 +547,11 @@ namespace DDPM.UI.Common.UserControls
                 return null;
             }
             return toolTip;
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _log?.Info("DeviceBasePage_Unloaded");
         }
 
         private void ShowVBar(bool bShowLeft = true)

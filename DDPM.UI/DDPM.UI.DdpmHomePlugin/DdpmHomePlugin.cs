@@ -46,6 +46,8 @@ using System.Windows.Automation;
 using DDPM.SA.Common.Settings;
 using System.Globalization;
 using DDPM.UI.Resources.Helper;
+using Microsoft.VisualBasic.Logging;
+using System.Diagnostics.Eventing.Reader;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -252,6 +254,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _deviceManager.DeviceChanged += _deviceManager_DeviceChanged;
                             _deviceManager.VCPchanged += _deviceManager_VCPchanged;
                             _deviceManager.UIUpdateNotify += _deviceManager_UIUpdateNotify;
+                            _deviceManager.MonitorinfoUpdated += _deviceManager_MonitorinfoUpdated;
 
                             //Move to call from OnActivated( ) => Failed, it's called too late
                             //So uncommented below code
@@ -418,6 +421,44 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 _lock.Release();
                 _log.Trace($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} unlock");
+            }
+        }
+
+        //Robert_Lin 2025-3-20 added when MonitorInfo has been updated, one event for each Monitor
+        private void _deviceManager_MonitorinfoUpdated(object? sender, MonitorinfoUpdateEventArgs e)
+        {
+            if ((e != null) && (e.monitor != null) && (e.edid != null))
+            {
+                MonitorInfo monitor = e.monitor;
+                EDID edid = e.edid;
+
+                _log.Info($"@ MonitorInfoUpdated(): Model=[{monitor.modelName}], ServiceTag=[{monitor.edid.ServiceTag}]");
+
+                if (_viewModel != null)
+                {
+                    HomeDevice? homeDevice = _viewModel.FindMonitorByEdid(edid);
+                    if (homeDevice == null)
+                    {
+                        _log.Info($"@ MonitorInfoUpdated(): Monitor not found in HomeDevices");
+                    }
+                    else
+                    {
+                        _log.Info($"@ MonitorInfoUpdated(): MonitorInfo updated");
+                        homeDevice.MonitorInfo = monitor;
+
+                        _viewModel.DumpDevicesToLog();
+                    }
+                }
+                //_log.Info($"@ MonitorInfoUpdated: MonitorName=[{e.MonitorName}], MonitorType=[{e.MonitorType}], MonitorStatus=[{e.MonitorStatus}]");
+            }
+            else
+            {
+                if (e == null)
+                    _log.Info($"@ MonitorInfoUpdated(): e is null");
+                else if (e.monitor == null)
+                    _log.Info($"@ MonitorInfoUpdated(): e.monitor is null");
+                else
+                    _log.Info($"@ MonitorInfoUpdated(): e.edid is null");
             }
         }
 
@@ -915,6 +956,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //Robert_Lin, 2024-12-16
                     //NEW:
                     viewModel.ResetDevices();
+                    DdpmCommonHelper.DeviceManagerSA.ReGetMonitors();
                     //OLD:
                     //viewModel.HomeDevices = new System.Collections.ObjectModel.ObservableCollection<HomeDevice>();
 

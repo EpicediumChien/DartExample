@@ -63,6 +63,11 @@ namespace DDPM.EABroker
 
           //  InitLayoutList();
             //InitPresetLayoutsComboBox();
+
+            if (DevSettings.IsTestMonitorInfoUpdateEnabled())
+            {
+                testMonitorInfoUpdateButton.Visibility = Visibility.Visible;
+            }
         }
         #endregion Init
 
@@ -449,6 +454,18 @@ namespace DDPM.EABroker
             if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
             {
                  System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
+        }
+
+        private void testMonitorInfoUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            if (_vm != null)
+            {
+                EAArgs eaArgs = new EAArgs()
+                {
+                    Command = EAEMConstants.EACommand_TestMonitorInfoUpdated,
+                };
+                _vm.SendEANotifyToUI(eaArgs);
             }
         }
     }

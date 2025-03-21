@@ -542,6 +542,31 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             });
         }
 
+        public HomeDevice? FindMonitorByEdid(VcpCore.Common.EDID edid)
+        {
+            if (HomeDevices == null)
+                return null;
+            if (HomeDevices.Count == 0)
+                return null;
+            foreach (HomeDevice device in HomeDevices)
+            {
+                if (device.DeviceCategory == eDeviceCategory.Display)
+                {
+                    if (device.MonitorInfo != null)
+                    {
+                        if (device.MonitorInfo.edid != null)
+                        {
+                            if (device.MonitorInfo.edid.Equals(edid))
+                            {
+                                return device;
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
         #region Refresh CollectionView
 
         /// <summary>

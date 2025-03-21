@@ -321,6 +321,14 @@ namespace DDPM.EABroker
             }
             return Array.Empty<SplitJson>();
         }
+
+        public void SendEANotifyToUI(EAArgs eAArgs)
+        {
+            if (_deviceManagerSA != null)
+            {
+                _deviceManagerSA.SendEANotify(eAArgs);
+            }
+        }
         #endregion
 
         #region EAPlugin
@@ -838,7 +846,7 @@ namespace DDPM.EABroker
         }
 
         //To be removed, do use and test
-        public void RefreshWorkWindows_v1()
+        public void RefreshWorkWindows_v1_Unused()
         {
             bool isSupportNonDellMonitors = false;
 

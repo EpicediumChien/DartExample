@@ -1,7 +1,7 @@
 ﻿namespace DDPM.UI.Common
 {
     [Serializable]
-    public class EDID
+    public class EDID //_Unused //Please use VcpCore.Common.EDID instead.
     {
         public string ManufactureID { get; set; }
         public string VendorID { get; set; }

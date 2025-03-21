@@ -33,7 +33,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
     [PluginRequires(Id = DDPM.SA.Common.IDs.DDPM_EAPlugin_PLUGIN_ID, AllowDynamicResolving = true)]
     //   [PluginRequires(Id = DDPM.SA.Common.IDs.PipPbp_Manager_PLUGIN_ID, AllowDynamicResolving = true)]
     [ExcludeFromCodeCoverage]
-    public class DisplayPlugin : IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
+    public class DisplayPlugin : IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin, IDisposable
     //IConsolePagePlugin, IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
     {
         #region Private
@@ -537,5 +537,24 @@ namespace DDPM.UI.Plugin.DisplayPlugin
         }
         */
         #endregion  MainWindow Move To new position
+
+        #region Exit
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+        }
+
+        ~DisplayPlugin()
+        {
+            Dispose(false);
+        }
+        #endregion Exit
     }
 }
