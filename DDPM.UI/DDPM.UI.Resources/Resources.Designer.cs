@@ -2257,7 +2257,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Devices.
+        ///   查詢類似 Device ID 的當地語系化字串。
+        /// </summary>
+        internal static string DeviceID {
+            get {
+                return ResourceManager.GetString("DeviceID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Devices 的當地語系化字串。
         /// </summary>
         internal static string Devices {
             get {
