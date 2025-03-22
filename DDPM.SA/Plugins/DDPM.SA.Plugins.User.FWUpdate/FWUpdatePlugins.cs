@@ -59,6 +59,37 @@ namespace DDPM.SA.Plugins.User.FWUpdate
     [DependencyKnownTypes(new[] { typeof(IFWUpdateService), typeof(ISettingsManagerSA) })]
     public class FWUpdatePlugins : BaseAgentPlugin, IDisposableObservable, IFWUpdateService
     {
+        public enum log_type
+        {
+            info = 0,
+            error
+        }
+        /// <summary>
+        /// //
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="log_type">0 means info, others means error</param>
+        private void WriteLog(string text, log_type log_type,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
+        {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
+            text = $"[FWUpdatePlugins] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
+#if DEBUG
+            Console.WriteLine(text);
+#endif
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
+        }
+
         public static readonly string[] ODM = new string[] { "Chicony", "Primax", "LiteON", "Darfon", "Wacom", "Luxshare", "Wistron", "Horn", "Tymphany", "Dell" };
         #region Private Members
 
@@ -564,7 +595,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         }
                         catch (Exception ex)
                         {
-                            _logs.Error($"updateHelper.UpdateItems[{i}] Error : {ex.Message}");
+                            //_logs.Error($"updateHelper.UpdateItems[{i}] Error : {ex.Message}");
+                            WriteLog($"updateHelper.UpdateItems[{i}] Error : {ex.Message}", log_type.error);
                         }
                     }
                 }
