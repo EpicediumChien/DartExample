@@ -2267,6 +2267,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(_AllInfoMonitors.ToList());
         }
 
+        public Task ReGetMonitors()
+        {
+            writelog("[DeviceMangerPlugin] received ReGetMonitors requested ...");
+            Task.Run(() => _SystemEvents_DisplaySettingsChanged(null));
+            return Task.CompletedTask;
+        }
+
         public Task<List<MultiCommandArch>> MultiCommandsRun(List<MultiCommandArch> _multiCommands)
         {
             writelog("[DeviceMangerPlugin] received MultiCommandsRun requested ...");
@@ -2583,6 +2590,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     catch (Exception e)
                     {
+                        writelog("[DeviceMangerPlugin] GetInputSourcelist is error : " + e.Message.ToString());
                         inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
                         b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
                     }
@@ -17178,6 +17186,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             catch (Exception ex)
                             {
                                 writelog($"[DDMMigration] delete temp folder exception: {migrationPath}");
+                                writelog($"[DDMMigration] delete temp folder exception: {ex.Message}");
                             }
                         }
                     }
@@ -17408,7 +17417,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                ;
+                writelog($"[DDMtoDDPM_Hotkey] error is {ex.Message}");
             }
         }
 
