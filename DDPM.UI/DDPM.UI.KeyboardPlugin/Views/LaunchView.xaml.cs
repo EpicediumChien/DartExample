@@ -544,9 +544,9 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             }
             if (txtBLHost1.Text.Length > 15 && txtBLHost1.Text != Strings.ReadyToBePaired)
                 txtBLHost1.Text = txtBLHost1.Text.Substring(0, 15);
-            if (txtBLHost2.Text.Length > 15 && txtBLHost1.Text != Strings.ReadyToBePaired)
+            if (txtBLHost2.Text.Length > 15 && txtBLHost2.Text != Strings.ReadyToBePaired)
                 txtBLHost2.Text = txtBLHost2.Text.Substring(0, 15);
-            if (txtBLHost3.Text.Length > 15 && txtBLHost1.Text != Strings.ReadyToBePaired)
+            if (txtBLHost3.Text.Length > 15 && txtBLHost3.Text != Strings.ReadyToBePaired)
                 txtBLHost3.Text = txtBLHost3.Text.Substring(0, 15);
         }
 

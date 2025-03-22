@@ -1975,16 +1975,16 @@ namespace ColorPreset.Plugins
         /// </summary>
         /// <param name="m">Monitor Info</param>
         /// <returns> Run Deserialize ICC.json後的 object   </returns>
-        public Task<IIC_Metadata> DownloadICCData(MonitorInfo m, ISettingsManagerDev _SettingsPlugin, bool blICCProfile = false, string savelPath = "", bool UpdateMetadata = false)
+        public Task<IIC_Metadata> DownloadICCData(MonitorInfo m, bool blICCProfile = false, string savelPath = "", bool UpdateMetadata = false)
         {
             writelog("ColorPresetPlugin DownloadICCData requested ...");
             try
             {
-                if (_SettingsPlugin_internal == null)
-                {
-                    writelog("ColorPresetPlugin DownloadICCData SettingsPlugin initiate");
-                    _SettingsPlugin_internal = _SettingsPlugin;
-                }
+                //if (_SettingsPlugin_internal == null)
+                //{
+                //    writelog("ColorPresetPlugin DownloadICCData SettingsPlugin initiate");
+                //    _SettingsPlugin_internal = _SettingsPlugin;
+                //}
 
                 string strFilePath = string.Empty;
                 string strReadJson = string.Empty;

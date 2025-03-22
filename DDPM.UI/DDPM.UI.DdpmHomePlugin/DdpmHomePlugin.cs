@@ -175,6 +175,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _log.Info($"{nameof(PluginManager_PluginsStarted)} started");
             try
             {
+                if (_deviceManager != null)
+                    return;
+
                 _deviceManager = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
 
                 if (_deviceManager == null)
@@ -915,6 +918,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //Robert_Lin, 2024-12-16
                     //NEW:
                     viewModel.ResetDevices();
+                    DdpmCommonHelper.DeviceManagerSA.ReGetMonitors();
                     //OLD:
                     //viewModel.HomeDevices = new System.Collections.ObjectModel.ObservableCollection<HomeDevice>();
 
@@ -1521,7 +1525,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             bool rst = WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
 
-            if (!rst) 
+            if (!rst)
             {
                 _log.Info($"[DdpmHomePlugin] WTSQuerySessionInformation failed.");
 
@@ -1788,7 +1792,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _log.Info($"[Walkthrough] {nameof(CollectAndCompareDevicesAsync)} Start");
             try
             {
-                if(_deviceManager == null)
+                if (_deviceManager == null)
                 {
                     _log.Info($"[Walkthrough] {nameof(CollectAndCompareDevicesAsync)} _deviceManager is null");
                     return;

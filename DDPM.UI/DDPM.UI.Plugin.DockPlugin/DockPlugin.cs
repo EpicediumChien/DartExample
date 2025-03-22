@@ -54,7 +54,7 @@ namespace DDPM.UI.Plugin.DockPlugin
         public DockPlugin(IPluginManager pluginManager, IConsole console, IShowPluginManager showPluginManager)
         {
             _pluginManager = pluginManager;
-            _showPluginManager= showPluginManager;
+            _showPluginManager = showPluginManager;
             _console = console;
             _log = console.CreateLog("Dock");
             _log.Info($"{nameof(DockPage)} - Constructed");
@@ -68,6 +68,9 @@ namespace DDPM.UI.Plugin.DockPlugin
             _log.Info($"{nameof(PluginManager_PluginsStarted)} started");
             try
             {
+                if (_deviceManagerPlugin != null)
+                    return;
+
                 _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
 
                 if (_deviceManagerPlugin == null)
@@ -109,7 +112,7 @@ namespace DDPM.UI.Plugin.DockPlugin
                     }
                     GetPeripheralsAsync();
                 }
-                _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);                
+                _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
             }
         }
 

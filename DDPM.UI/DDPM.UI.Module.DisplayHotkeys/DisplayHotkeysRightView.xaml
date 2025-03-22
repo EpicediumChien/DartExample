@@ -186,9 +186,14 @@
                                         </ComboBox.ItemContainerStyle>
                                     </ComboBox>
                                     <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" Margin="0,8,8,8">
+                                        <!-- Elsa 20250319 add Path For [PIMS-348408][UI] Missing icon,change ComboBox Margin="5,0,0,0" to Margin="-8,0,0,0"-->
+                                        <Grid VerticalAlignment="Center">
+                                            <Path Data="M16 10.64H8.2L12.39 7.17L11.71 6.35L5.87 11.18L11.71 16L12.39 15.18L8.19 11.71H16V10.64Z" Fill="{DynamicResource DefaultTheme_PathColor}" />
+                                            <Path Data="M4.31 0L3.63 0.82L7.83 4.29H0V5.36H7.83L3.63 8.82L4.31 9.65L10.15 4.82L4.31 0Z" Fill="{DynamicResource DefaultTheme_PathColor}" />
+                                        </Grid>
                                         <Image x:Name="SwapInputIcon"    Source="/DDPM.UI.Resources;component/Resources/Images/SwapArrow.png" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" Width="14" Height="14" />
                                         <ComboBox Style="{StaticResource DdpmComboBoxStyle}"
-                                                  Width="140" Margin="5,0,0,0" DisplayMemberPath="inputDisplayText"
+                                                  Width="140" Margin="-8,0,0,0" DisplayMemberPath="inputDisplayText"
                                                   KeyboardNavigation.TabIndex="111"
                                           KeyboardNavigation.TabNavigation="Continue"
                                                   ItemsSource="{Binding InputsList}"

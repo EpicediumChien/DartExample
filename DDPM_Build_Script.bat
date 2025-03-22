@@ -228,7 +228,20 @@ xcopy ".\_BIN\*.*" "%RootDir%\DDPM.UI\CommonDll" /Y /S /Q
 echo errorlevel is %errorlevel%
 xcopy ".\_BIN\*.*" "%RootDir%\DDPM.SA\dll" /Y /S /Q
 echo errorlevel is %errorlevel%
+goto _copyDPeMSDK
+
 :_skipDTP
+echo --------------------------------------------------------------
+echo [Copy DPeM SDK 3 brothers to DDPM.SA\dll from DDPM.SA\DTP_dll]
+echo --------------------------------------------------------------
+cd /d "%RootDir%\DDPM.SA"
+xcopy ".\DTP_dll\DPeMClientBroker.*" ".\dll" /Y /S /Q /C /I
+xcopy ".\DTP_dll\DPeMClientRpcHelper.*" ".\dll" /Y /S /Q /C /I
+xcopy ".\DTP_dll\DPeMPublic.Common.*" ".\dll" /Y /S /Q /C /I
+echo errorlevel is %errorlevel%
+echo *copy finish*
+pause
+:_copyDPeMSDK
 Echo --------------------------------------------
 Echo [Build SA]
 Echo --------------------------------------------

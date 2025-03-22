@@ -128,21 +128,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private DisplayChange displayChange;
 
-        //private static Dell.Client.Framework.Utility.Log _log;
         // ColorPreset objects
         private Dictionary<string, InstalledAppInfo> _AllAppData_tmp = new Dictionary<string, InstalledAppInfo>();
-
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private List<string> _SupportedColorPreset = new List<string>();
         private readonly object _CheckAutoLock = new object();
-
         // Jim move to here 20240621
         private ShowOSDWin OsdWin = null;
-
         private string iconFolderPath = string.Empty;
-
         private MainWindow? MonitorBorkerWin = null; //Dean 0626 fix SAST issue, remove static
-
         private Thread newWindowThread_AutoSetColorPresetForMonitorConfig = null;
 
         /// <summary>
@@ -154,14 +148,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// NightLight Status change event，return On or Off
         /// </summary>
         public event EventHandler<string> NightLightStatus_ChangeEvent;
-
-        /// <summary>
-        /// Webcam change event
-        /// </summary>
-        //public event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
-        //public event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
-        //public event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
-        //public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
 
         //Monitor objects
         private List<MonitorInfo> _AllInfoMonitors = new List<MonitorInfo>();
@@ -206,12 +192,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //Bruce 07-30 Added total screens
         private int _lastScreenCount;
 
-        //private enum log_type
-        //{
-        //    info = 0,
-        //    error
-        //}
-
         private readonly object _MoLock = new object();
 
         //Bruce 0815 Added new judgment whether to trigger DisplayChang event
@@ -236,6 +216,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static PowerEventControl _pwr_Mon = null;
         private static DisplayDeviceHelper _disDevHelper = null;
         private static PeripheralAirAudioHelper _AirAudioHelper = null;
+        private static ColorProfileHelper _ColorProfileHelper = null;
         private static int _millisecond = 8000;
         private static OSD_Controler _OSD_Controler = new OSD_Controler();
 
@@ -254,14 +235,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private DDMtoDDPM dDMtodDPM = new DDMtoDDPM();
         private HotkeySettings hotkeySettings = new HotkeySettings();
-
-        /// <summary>
-        ///Check ICC profile update timers
-        /// </summary>
-        private System.Timers.Timer _checkICCProfileScheduleTimer;//Added 02/10 by Bruce
-
-        private bool isDownloadingICC = false;//Added 02/13 by Bruce
-        private bool isNeedPreDownloadingICC = false;//Added 02/13 by Bruce
 
         #endregion
 
@@ -726,9 +699,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
 
-            if (_AirAudioHelper == null)
-                _AirAudioHelper = new PeripheralAirAudioHelper(Log);
             IDeviceManagerSA deviceManagerSA = (IDeviceManagerSA)this;
+
+            if (_ColorProfileHelper == null)
+                _ColorProfileHelper = new ColorProfileHelper(deviceManagerSA, Log);
+            if (_AirAudioHelper == null)
+                _AirAudioHelper = new PeripheralAirAudioHelper(Log);            
             _disDevHelper = new DisplayDeviceHelper(Log, deviceManagerSA);
         }
 
@@ -910,7 +886,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else
             {
-                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, _SettingsPlugin, blICCProfile, savelPath).Result;
+                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, blICCProfile, savelPath).Result;
             }
 
             return Task.FromResult(_ICC_Metadata);
@@ -1974,7 +1950,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} _AllInfoMonitors.Count : {_AllInfoMonitors.Count}");
                 for (int i = 0; i < _AllInfoMonitors.Count; i++)
                 {
-                    _ColorPresetPlugin.DownloadICCData(_AllInfoMonitors[i], _SettingsPlugin, true, "", true).Wait();
+                    _ColorPresetPlugin.DownloadICCData(_AllInfoMonitors[i], true, "", true).Wait();
                 }
             }
             else
@@ -1982,27 +1958,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} _ColorPresetPlugin is null");
             }
             writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} done");
-        }
-
-        private void PreDownloadICC(MonitorInfo newMontor)
-        {
-            writelog($"{nameof(PreDownloadICC)} start");
-            writelog($"{nameof(PreDownloadICC)} isDownloadingICC : {isDownloadingICC}");
-            if (!isDownloadingICC)
-            {
-                isDownloadingICC = true;
-                writelog($"{nameof(PreDownloadICC)} DownloadICCData go, newMontor : {newMontor.modelName}");
-                ///for (int i = 0; i < _AllInfoMonitors.Count; i++)
-                {
-                    _ColorPresetPlugin.DownloadICCData(/*_AllInfoMonitors[i]*/newMontor, _SettingsPlugin, true, "", isNeedPreDownloadingICC).Wait();
-                }
-                if (isNeedPreDownloadingICC)
-                {
-                    isNeedPreDownloadingICC = false;
-                }
-                isDownloadingICC = false;
-            }
-            writelog($"{nameof(PreDownloadICC)} done");
         }
 
         #endregion
@@ -2265,6 +2220,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("[DeviceMangerPlugin] received Re_GetMonitors requested ...");
             Task.Run(() => _SystemEvents_DisplaySettingsChanged(null)).Wait();
             return Task.FromResult(_AllInfoMonitors.ToList());
+        }
+
+        public Task ReGetMonitors()
+        {
+            writelog("[DeviceMangerPlugin] received ReGetMonitors requested ...");
+            Task.Run(() => _SystemEvents_DisplaySettingsChanged(null));
+            return Task.CompletedTask;
         }
 
         public Task<List<MultiCommandArch>> MultiCommandsRun(List<MultiCommandArch> _multiCommands)
@@ -2583,6 +2545,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     catch (Exception e)
                     {
+                        writelog("[DeviceMangerPlugin] GetInputSourcelist is error : " + e.Message.ToString());
                         inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
                         b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
                     }
@@ -12349,7 +12312,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (_ColorPresetPlugin != null && _SettingsPlugin != null)//Bruce 02/10 added display In/Out to check icm
                     {
                         writelog($"OnDeviceChanged: _ColorPresetPlugin.DownloadICCData go");
-                        _ColorPresetPlugin.DownloadICCData(monitor, _SettingsPlugin, true).Wait();
+                        _ColorPresetPlugin.DownloadICCData(monitor, true).Wait();
                         writelog($"OnDeviceChanged: _ColorPresetPlugin.DownloadICCData done");
                     }
                 }
@@ -13019,34 +12982,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _ = Task.Run(async () =>
             {
                 var pluginCondition = await (_ColorPresetPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
-                //PluginCondition _ColorPresetPluginCondition;
                 lock (_PluginConditionLock_ColorPreset)
                 {
                     if (pluginCondition is PluginErrorCondition)
                     {
-                        writelog($"{nameof(GetCurrentColorPresetCondition)} - ColorPreset Plugin is in an error condition");
-                        //_ColorPresetPluginCondition = pluginCondition;
+                        writelog($"{nameof(GetCurrentColorPresetCondition)} - ColorPreset Plugin is in an error condition");                        
                     }
                     else if (pluginCondition is PluginStartedCondition || pluginCondition is PluginRunningCondition)
                     {
                         writelog($"{nameof(GetCurrentColorPresetCondition)} - ColorPreset Plugin is in a started/running condition");
-                        //_ColorPresetPluginCondition = pluginCondition;
-                        //_ColorPresetPlugin.VCPchanged += show_colorpreset;
 
                         _ColorPresetPlugin.Coloreset_manual_ChangeEvent += OnColoresetManualChangeHandler;
-
                         _ColorPresetPlugin.NightLightStatus_ChangeEvent += OnNightLightStatusChangeHandler;
 
-                        //Bruce 02/10 added timer to check icm
-                        if (_checkICCProfileScheduleTimer == null)
-                        {
-                            writelog($"_checkICCProfileScheduleTimer initialize");
-                            _checkICCProfileScheduleTimer = new System.Timers.Timer();
-                            _checkICCProfileScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
-                            _checkICCProfileScheduleTimer.Elapsed += new ElapsedEventHandler(CheckICCProfileScheduleTimer_Elapsed);
-                            _checkICCProfileScheduleTimer.Start();
-                        }
-                        isNeedPreDownloadingICC = true;
+                        //Dean 20250319 add color profile helper
+                        if (_ColorProfileHelper == null)
+                            _ColorProfileHelper = new ColorProfileHelper((IDeviceManagerSA)this, Log);
+                        _ColorProfileHelper.UpdateColorPluginInstance((IColorPresetSA)_ColorPresetPlugin);
+                        _ColorProfileHelper.InitColorProfileTimer();
 
                         if (_SettingsPlugin != null)
                         {
@@ -16816,7 +16769,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             monitorSettingsList.Add(settings);
                             bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
 
-                            PreDownloadICC(m);//
+                            Task.Run(() =>
+                            {
+                                if(_ColorProfileHelper == null)
+                                    writelog("[InitMonitorSettings] null _ColorProfileHelper");
+                                _ColorProfileHelper?.PreDownloadICC(m);//
+                            });
                         }
                     }
                 }
@@ -16933,10 +16891,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             _checkUpdateScheduleTimer.Stop();
                         }
                     }
-                    if (_checkICCProfileScheduleTimer != null)
+                    if(_ColorProfileHelper != null)
                     {
-                        _checkICCProfileScheduleTimer.Elapsed -= new ElapsedEventHandler(CheckICCProfileScheduleTimer_Elapsed);
-                        _checkICCProfileScheduleTimer.Stop();
+                        _ColorProfileHelper.Dispose();
+                        _ColorProfileHelper = null;
                     }
                     if (_SettingsPlugin != null)
                         _SettingsPlugin.ITSettingsActionEvent -= _SettingsPlugin_ITSettingsActionEvent;
@@ -17178,6 +17136,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             catch (Exception ex)
                             {
                                 writelog($"[DDMMigration] delete temp folder exception: {migrationPath}");
+                                writelog($"[DDMMigration] delete temp folder exception: {ex.Message}");
                             }
                         }
                     }
@@ -17408,7 +17367,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                ;
+                writelog($"[DDMtoDDPM_Hotkey] error is {ex.Message}");
             }
         }
 
@@ -19766,6 +19725,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #endregion
+
+        //Get latest all monitors cache
+        public Task<List<MonitorInfo>> GetCurrentMonitorCache()
+        {
+            return Task.FromResult(_AllInfoMonitors);
+        }
     }
 }
 
