@@ -1861,5 +1861,7 @@ namespace DDPM.SA.Common
         #endregion Set
 
         #endregion IAirAudioCommodity
+
+        Task<List<MonitorInfo>> GetCurrentMonitorCache();
     }
 }
