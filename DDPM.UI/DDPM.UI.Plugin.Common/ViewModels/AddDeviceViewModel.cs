@@ -45,6 +45,7 @@ namespace DDPM.UI.Plugin.ViewModels
             _console = console;
             _log = log;
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+            _log!.Info($"[AddDeviceViewModel] AddDeviceViewModel Start ...");
         }
 
         public bool IsPandoraPaired = false;

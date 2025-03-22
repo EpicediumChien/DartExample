@@ -727,10 +727,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
             IsPleaseWaitVisible = true;
             bw.RunWorkerAsync();
+            _log.Info($"[DdpmHomePageViewModel] Invoke_PleaseWait IsPleaseWaitVisible = true, out ...");
         }
 
         private void DoWork_PleaseWait(object? sender, DoWorkEventArgs e)
         {
+            _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait in ... ");
             Thread.Sleep(1500);
 
             Stopwatch sw = new Stopwatch();
@@ -743,19 +745,25 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             {
                 PleaseWaitMessage = LangHelper.Instance["Wait_DTH"];// "DellTechHub service is not running";
                 Thread.Sleep(200);
+                _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait Wait_DTH {PleaseWaitMessage} ... ");
             }
             while (!IsDeviceManagerReady)
             {
                 PleaseWaitMessage = LangHelper.Instance["Wait_DevMgr"]; //"DDPM.Subagent.DeviceManager is not ready";
                 Thread.Sleep(200);
+                _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait Wait_DevMgr {PleaseWaitMessage} ... ");
             }
             int timeoutMsec = 10000;
             while (HomeDeviceCount == 0)
             {
                 PleaseWaitMessage = LangHelper.Instance["Wait_NoDevice"];// "No device detected";
                 Thread.Sleep(500);
+                _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait Wait_NoDevice {PleaseWaitMessage} ... ");
                 if (sw.ElapsedMilliseconds > timeoutMsec)
+                {
+                    _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait timeoutMsec break ... ");
                     break;
+                }
             }
             sw.Stop();
 
@@ -782,6 +790,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     if (deviceHelper == null || deviceHelper.deviceInfo.Count <= 0)
                     {
                         deviceHelper = DeviceManagerPlugin.GetDevices(true).Result;
+                        if (deviceHelper != null)
+                        {
+                            _log.Info($"PleaseWait-Monitor count = {deviceHelper.deviceInfo.Count}");
+                        }
                     }
                     List<DeviceInfo> _deviceInfos = new List<DeviceInfo>();
                     if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
@@ -796,11 +808,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     }
                 }
             }
+            _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait out ... ");
         }
 
         private void RunWorkerCompleted_PleaseWait(object sender, RunWorkerCompletedEventArgs e)
         {
             IsPleaseWaitVisible = false;
+            _log.Info($"[DdpmHomePageViewModel] RunWorkerCompleted_PleaseWait IsPleaseWaitVisible = false,  out ... ");
         }
 
         private string _pleaseWaitMessage = "";

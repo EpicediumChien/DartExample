@@ -97,11 +97,12 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private void GetPeripheralsAsync()
         {
-            _log.Debug($"GetPeripherals is invoked");
+            _log.Info($"[Mouseplugin] GetPeripherals is invoked ... in");
             Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(); //(true);
             _deviceHelper = task.Result;
 
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
+            _log.Info($"[Mouseplugin] GetPeripherals is invoked ... out");
         }
 
         /// <summary>
@@ -110,6 +111,7 @@ namespace DDPM.UI.Plugin.MousePlugin
         /// <remarks>Below code will be removed when <see cref="IConsole"/> provides the bootstrapper support</remarks>
         private void ConfigureServices()
         {
+            _log.Info($"[Mouseplugin] ConfigureServices is invoked ... in");
             if (_isConfigured)
                 return;
 
@@ -130,6 +132,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 _viewModel.OutlookVisibility = CheckOfficeApp("Outlook.Application");
             }
             _isConfigured = true;
+            _log.Info($"[Mouseplugin] ConfigureServices is invoked ... out");
         }
 
         private static Visibility CheckOfficeApp(string progId)

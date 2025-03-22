@@ -147,11 +147,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void GetPeripheralsAsync()
         {
-            DdpmCommonHelper.WriteUILog($"GetPeripherals is invoked");
+            DdpmCommonHelper.WriteUILog($"GetPeripherals is invoked ... in");
             Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(); //(true);
             _deviceHelper = task.Result;
 
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
+            DdpmCommonHelper.WriteUILog($"GetPeripherals is invoked ... out");
         }
 
         /// <summary>
@@ -160,6 +161,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         /// <remarks>Below code will be removed when <see cref="IConsole"/> provides the bootstrapper support</remarks>
         private void ConfigureServices()
         {
+            _log.Info($"[WebCameraplugin] ConfigureServices ... in");
             if (_isConfigured)
                 return;
 
@@ -172,6 +174,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             _viewModel = (WebCameraViewModel?)PluginIoc.GetService<IPeripheralViewModel>();
             _isConfigured = true;
+            _log.Info($"[WebCameraplugin] ConfigureServices ... out");
         }
 
         public string HeaderText => "Dell WebCamera";

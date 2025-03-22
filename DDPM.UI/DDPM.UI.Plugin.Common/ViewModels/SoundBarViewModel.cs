@@ -30,18 +30,17 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public string modelTest;
 
-        public SoundBarViewModel(IShowPluginManager showPluginManager, IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
+        public SoundBarViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
 
             _log = log;
             _deviceManager = deviceManager;
-            _showPluginManager = showPluginManager;
-            _log!.Info($"[SoundBarViewModel] SoundBarViewModel Start...");
             SpeakerInfoValueDTP = new SpeakerInfoValue();
             //DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Speaker_DTPNotify;
             _debouncerSpeaker = new Debouncer(1000, ExecuteDebouncedAction);
+            _log!.Info($"[SoundBarViewModel] SoundBarViewModel Start ...");
         }
 
         public void UloadSpeaker_DTPNotify()

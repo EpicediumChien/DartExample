@@ -46,7 +46,7 @@ namespace DDPM.UI.Module.SpeakerAudioPreset.Tests
             log = logMock.Object;
             showPluginManagerMock = new Mock<IShowPluginManager>();
             showPluginManager = showPluginManagerMock.Object;
-            vm = new SoundBarViewModel(showPluginManager,console, log, deviceManager);
+            vm = new SoundBarViewModel(console, log, deviceManager);
             //vm.SpeakerInfoValueDTP.SpeakerProfile = "SpeakerProfile";
             CurrentDeviceInfo = new DeviceInfo() { IsWiredAudioIMicNSEnable = true, IsWiredAudioMicMuteSoundEnable = true, WiredAudioVolumeAdjustmentTone = 1 };
             vm.CurrentDeviceInfo = CurrentDeviceInfo;
