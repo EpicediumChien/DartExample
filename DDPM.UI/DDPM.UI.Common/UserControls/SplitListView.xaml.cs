@@ -7,6 +7,7 @@ using DDPM.UI.Common.ViewModels;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -15,7 +16,7 @@ namespace DDPM.UI.Common.UserControls
     /// <summary>
     /// Interaction logic for SplitListView.xaml
     /// </summary>
-    public partial class SplitListView : UserControl
+    public partial class SplitListView : UserControl, IDisposable
     {
         private SplitListViewModel vm = new SplitListViewModel();
         private ICommand? _splitItemClickCommand;
@@ -29,6 +30,29 @@ namespace DDPM.UI.Common.UserControls
             addButton.ClickCommand = new RelayCommand<AddCustomLayoutButton>(HandleAddButtonClickCommand);
         }
         #endregion ctor
+
+        #region Exit
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                addButton.ClickCommand = null;
+
+                ClearList();
+                BindingOperations.ClearAllBindings(this);
+            }
+        }
+
+        ~SplitListView()
+        {
+            Dispose(false);
+        }
+        #endregion Exit
 
         #region SplitOwner
         //Owner must assign this value before calling to AddSplitToList()

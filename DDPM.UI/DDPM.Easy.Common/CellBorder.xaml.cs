@@ -75,15 +75,16 @@ namespace DDPM.Easy.Common
             DependencyProperty.Register("CellName", typeof(string), typeof(CellBorder), new PropertyMetadata(""));
 
 
-
-        public Thickness BorderThickness
+        //Robert_Lin 2025-3-20 fix CS0108 'CellBorder.BorderThicknessProperty' hides inherited member 'Control.BorderThicknessProperty'. Use the new keyword if hiding was intended.
+        public new Thickness BorderThickness
         {
             get { return (Thickness)GetValue(BorderThicknessProperty); }
             set { SetValue(BorderThicknessProperty, value); }
         }
 
+        //Robert_Lin 2025-3-20 fix CS0108 'CellBorder.BorderThicknessProperty' hides inherited member 'Control.BorderThicknessProperty'. Use the new keyword if hiding was intended.
         // Using a DependencyProperty as the backing store for BorderThickness.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty BorderThicknessProperty =
+        public static new readonly DependencyProperty BorderThicknessProperty =
             DependencyProperty.Register("BorderThickness", typeof(Thickness), typeof(CellBorder), new PropertyMetadata(new Thickness(0)));
 
 

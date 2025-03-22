@@ -81,6 +81,8 @@
                 <StackPanel Margin="8">
                     <WrapPanel>
                         <Button Content="Edit Overlap" Click="editOverlapButton_Click"/>
+                        <Button Name="testMonitorInfoUpdateButton" Content="Test MonitorInfo Update" 
+                                Click="testMonitorInfoUpdate_Click" Margin="4,0" Visibility="Collapsed"/>
                     </WrapPanel>
                 </StackPanel>
             </TabItem>
