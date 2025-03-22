@@ -1254,8 +1254,8 @@ namespace DDPM.UI.Common.Models
                         //Host 3 is unused
                         BleHost3Style = BleHostStyle_Collapsed; // "0";
 
-                        BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName1) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName2;
-                        BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName3;
+                        BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName2;
+                        BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName3) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName3;
 
                         //@ LaunchView:
                         // if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))

@@ -10041,7 +10041,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received SetIsAutoFramingOn requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            return _DTPProxyPlugin.SetIsAutoFramingOn(Guid, newValue);
+            var result = _DTPProxyPlugin.SetIsAutoFramingOn(Guid, newValue);
+
+            //writelog("[DeviceMangerPlugin] DeviceMangerPlugin Notify UI Update in SetIsAutoFramingOn ...");
+            //DeviceInfo di = new()
+            //{
+            //    LogicalDeviceType = "Webcam",
+            //    ID = new Guid(Guid),
+            //    Message = newValue.ToString()
+            //};
+            //DeviceChangedEventArgs _EventArgs = new()
+            //{
+            //    type = DeviceChangedType.Peripherals_SettingsChange,
+            //    device_peripherals = di,
+            //    changedProperty = "IsAutoFramingOnChanged"
+            //};
+            //_ = Task.Run(() => DeviceChanged?.Invoke(this, _EventArgs)).ConfigureAwait(false);
+
+            return result;
         }
 
         public Task<bool> SetIsAutoFramingTransitionOn(string Guid, bool newValue)
@@ -10101,13 +10118,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ID = new Guid(Guid),
                 Message = newValue.ToString()
             };
-            DeviceChangedEventArgs _EventArgs = new DeviceChangedEventArgs
+            DeviceChangedEventArgs _EventArgs = new()
             {
                 type = DeviceChangedType.Peripherals_SettingsChange,
                 device_peripherals = di,
                 changedProperty = "IsHDROnChanged"
             };
-            Task.Run(() => DeviceChanged?.Invoke(this, _EventArgs)).ConfigureAwait(false);
+            _ = Task.Run(() => DeviceChanged?.Invoke(this, _EventArgs)).ConfigureAwait(false);
 
             return result;
         }

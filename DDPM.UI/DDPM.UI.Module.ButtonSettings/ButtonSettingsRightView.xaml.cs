@@ -420,8 +420,8 @@ namespace DDPM.UI.Module.ButtonSettings
                 id = (int)((UXRadioButton)sender).DataContext;
                 rb.Name = $"Radio{id}";
                 rb.Content = id > 100 ? Actions.OfficeActions[id].Caption : Actions.KnMActions[id].Caption;
-                if (rb.Tag.ToString() != "search")
-                    rb.IsChecked = id == SelectedActionID;
+                //if (rb.Tag.ToString() != "search")
+                rb.IsChecked = id == SelectedActionID;
                 rb.Visibility = ((_vm.IsCopilotEnabled && _vm.CurrentVersion >= 11) || id != 1) ? Visibility.Visible : Visibility.Collapsed;
             }
             else if (sender is ActionButton btn)
