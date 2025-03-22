@@ -439,5 +439,17 @@ namespace DDPM.EABroker
             _vm.Invoke_EditCommand(mi, eaArgs);
         }
 
+        /// <summary>
+        /// Robert_Lin 2025-3-19 added to terminate the Dispatcher.Run() loop in EABroker.InitAllWindows()
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                 System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
+        }
     }
 }
