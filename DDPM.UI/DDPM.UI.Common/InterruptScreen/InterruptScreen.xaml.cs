@@ -230,7 +230,7 @@ namespace DDPM.UI.Common
             }
             return ret;
         }
-        public static string GetTranslationByLanguage(Translations translations, CultureInfo cultureIn)
+        private string GetTranslationByLanguage(Translations translations, CultureInfo cultureIn)
         {
             //"ar": All convert to "ar-SA"
             if (cultureIn.TwoLetterISOLanguageName.Equals("ar", StringComparison.OrdinalIgnoreCase))
