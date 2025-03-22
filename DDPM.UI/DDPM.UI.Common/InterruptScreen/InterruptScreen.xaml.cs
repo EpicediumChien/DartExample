@@ -188,7 +188,7 @@ namespace DDPM.UI.Common
         }
         private string GetTranslation(object o)
         {
-            string ret = string.Empty;
+            string ret = "";
             ProductLabel productLabel = o as ProductLabel;
             DetailsList detailsList = o as DetailsList;
             BugDescription bugDescription = o as BugDescription;
