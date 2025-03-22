@@ -572,12 +572,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //For existing monitor to check if need to pop-up message to import setting
             Task.Run(() =>
             {
+                _log.Info($"[DdpmHomePlugin] CheckIfNeedImportSetting_Display Task.Run in ... ");
                 if (monitorInfos == null && monitorInfos.Count == 0)
                     return;
                 //make sure no walkthrough page displaying
+                int tick = 0;
                 while (WalkThroughQueue != null && WalkThroughQueue.Count > 0)
                 {
                     Thread.Sleep(5000);
+                    tick++;
+                    _log.Info($"[DdpmHomePlugin] CheckIfNeedImportSetting_Display, 5 sec x {tick.ToString()}... ");
                 }
                 string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
                 string path = localAppDataPath + "\\Dell Display and Peripheral Manager\\Export";
@@ -733,6 +737,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private async Task GetDdpmDevicesAsync(IDeviceManagerSA deviceManager, DeviceChangedEventArgs e = null, string condition = "all")
         {
+            _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync in ...");
             if (!SpinWait.SpinUntil(() =>
             (_IDeviceManagerPluginCondition is IFrameworkPluginConditionNotification), TimeSpan.FromMinutes(2)))
             {
@@ -770,15 +775,17 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
                 _ = Task.Run(() =>
                 {
+                    _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Task.Run {_isConfigured.ToString()} ...");
                     while (!_isConfigured)
                         ;
-
+                    _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Task.Run {_isConfigured.ToString()} ...");
                     Interfaces.IDdpmHomePageViewModel? viewModel = PluginIoc.GetService<Interfaces.IDdpmHomePageViewModel>();
                     if (viewModel != null)
                     {
                         //Robert_Lin, 2024-12-16, PIMS-329606 Observe no device connected manu flash on disconnect - connect device.
                         //To prevent "Add your first device" (flash) show, we will show Please wait before clear all devices
                         viewModel.IsPleaseWaitVisible = true;
+                        _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync IsPleaseWaitVisible true ...");
 
                         viewModel.ResetDevices();
 
@@ -796,8 +803,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //Invoke_PleaseWait() will set IsPleaseWaitVisible=true again, and reset to false, when device count>0
                             // or time out.
                             //The "PleaseWait" UI will be displayed and auto closed after timeout (=12 sec)
+                            _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Invoke_PleaseWait");
                             viewModel.Invoke_PleaseWait();
-
                             //Robert_Lin, 2025-1-7, the DDPMDebug.txt solution will be removed, use DevSettings instaed.
                             //NEW:
                             if (DevSettings.DdpmHomeAddFakeMonitorIfHomeDevicesEmpty())
@@ -822,11 +829,17 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         else
                         {
                             viewModel.IsPleaseWaitVisible = false;
+                            _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync IsPleaseWaitVisible false ...");
                             viewModel.DumpDevicesToLog();
                         }
                     }
                 });
             }
+            else
+            {
+                _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync IDeviceManagerSA is null");
+            }
+            _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync out ... ");
         }
 
         /// <summary>
@@ -864,6 +877,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// <remarks>Below code will be removed when <see cref="IConsole"/> provides the bootstrapper support</remarks>
         private void ConfigureServices()
         {
+            _log.Info($"[DdpmHomePlugin] ConfigureServices in ...");
             if (_isConfigured)
                 return;
 
@@ -879,9 +893,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _viewModel = (DdpmHomePageViewModel?)PluginIoc.GetService<IDdpmHomePageViewModel>();
             if (_viewModel != null)
             {
+                _log.Info($"[DdpmHomePlugin] ConfigureServices Invoke_PleaseWait");
                 _viewModel.Invoke_PleaseWait();
             }
             _isConfigured = true;
+            _log.Info($"[DdpmHomePlugin] ConfigureServices _isConfigured = true, out ...");
         }
 
         #region Interface IConsolePluginSupportsActivations
@@ -889,6 +905,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// <inheritdoc/>
         public void OnActivated()
         {
+            _log.Info($"[DdpmHomePlugin] OnActivated ...");
             //_deviceManager.DeviceChanged += _deviceManager_DeviceChanged;
             Mouse.OverrideCursor = null;
             _isActived = true;
@@ -897,6 +914,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// <inheritdoc/>
         public void OnDeactivated()
         {
+            _log.Info($"[DdpmHomePlugin] OnDeactivated ...");
             //_deviceManager.DeviceChanged -= _deviceManager_DeviceChanged;
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
             _isActived = false;
@@ -905,6 +923,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// <inheritdoc/>
         public void OnShown(string pluginParameter = "")
         {
+            _log.Info($"[DdpmHomePlugin] OnShown in ...");
             if (!string.IsNullOrEmpty(pluginParameter))
             {
                 IDdpmHomePageViewModel? viewModel = PluginIoc.GetService<IDdpmHomePageViewModel>();
@@ -914,10 +933,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //will be visible immediately. We need set ViewModel.IsPleaseWaitVisible=true to show
                     //the Please wait
                     viewModel.IsPleaseWaitVisible = true;
-
+                    _log.Info($"[DdpmHomePlugin] OnShown IsPleaseWaitVisible true ...");
                     //Robert_Lin, 2024-12-16
                     //NEW:
                     viewModel.ResetDevices();
+                    _log.Info($"[DdpmHomePlugin] OnShown ResetDevices ...");
                     DdpmCommonHelper.DeviceManagerSA.ReGetMonitors();
                     //OLD:
                     //viewModel.HomeDevices = new System.Collections.ObjectModel.ObservableCollection<HomeDevice>();
@@ -928,6 +948,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //Robert_Lin, 2024-12-16 Not sure if we should invokd PleaseWait??
                     //If the device will be reconnect soon, then we don't need to invoke it.
                     //But if we clear the devices, but no a DeviceChanged later, then we need to invoke it.
+                    _log.Info($"[DdpmHomePlugin] OnShown Invoke_PleaseWait");
                     viewModel.Invoke_PleaseWait();
                 }
             }
@@ -944,6 +965,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //    _iconAddDevice.Visibility = Visibility.Visible;
             //if (_iconGear != null)
             //    _iconGear.Visibility = Visibility.Visible;
+
+            _log.Info($"[DdpmHomePlugin] OnShown out ...");
         }
 
         [Obsolete]
@@ -1496,138 +1519,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         #endregion SW/FW Update
 
         #region WalkThrough
-        private enum WTS_INFO_CLASS
-        {
-            WTSUserName = 5,
-            WTSDomainName = 7,
-        }
-        [DllImport("Kernel32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern int WTSGetActiveConsoleSessionId();
-
-        private int WTSGetActiveConsoleSessionId_Public()
-        {
-            return WTSGetActiveConsoleSessionId();
-        }
-        [DllImport("Wtsapi32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern void WTSFreeMemory(IntPtr pointer);
-
-        private void WTSFreeMemory_Public(IntPtr pointer)
-        {
-            WTSFreeMemory(pointer);
-        }
-        [DllImport("Wtsapi32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned);
-
-        private bool WTSQuerySessionInformation_Public(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned)
-        {
-            bool rst = WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
-
-            if (!rst)
-            {
-                _log.Info($"[DdpmHomePlugin] WTSQuerySessionInformation failed.");
-
-#if DEBUG
-                Console.WriteLine("[DdpmHomePlugin] WTSQuerySessionInformation failed.");
-#endif
-            }
-
-            return rst;
-        }
-        /// <summary>
-        /// From SA code
-        /// </summary>
-        /// <returns>User Sid</returns>
-        public string GetActiveUserID()
-        {
-            IntPtr buffer;
-            int bytesReturned = 0;
-            int sessionId = WTSGetActiveConsoleSessionId_Public(); // This gets the session ID of the user logged into the console
-            Console.WriteLine($"[Walkthrough] WTSGetActiveConsoleSessionId: {sessionId}");
-            _log.Info($"[Walkthrough] WTSGetActiveConsoleSessionId: {sessionId}");
-            if (WTSQuerySessionInformation_Public(IntPtr.Zero, sessionId, WTS_INFO_CLASS.WTSUserName, out buffer, out bytesReturned))
-            {
-                string userName = Marshal.PtrToStringAnsi(buffer);
-                WTSFreeMemory_Public(buffer);
-                Console.WriteLine($"[Walkthrough] WTSQuerySessionInformation: user name ({userName})");
-                _log.Info($"[Walkthrough] WTSQuerySessionInformation: user name ({userName})");
-                if (!string.IsNullOrEmpty(userName))
-                {
-                    string userSid = GetUserSid(userName);
-                    if (!string.IsNullOrEmpty(userSid))
-                    {
-#if DEBUG
-                        Console.WriteLine($"[Walkthrough] User ID from registry: {userSid}");
-                        _log.Info($"[Walkthrough] User ID from registry: {userSid}");
-#endif
-                        return userSid;
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("[Walkthrough] Got null user id");
-                    _log.Info($"[Walkthrough] Got null user id");
-                }
-            }
-            else
-            {
-                Console.WriteLine("[Walkthrough] WTSQuerySessionInformation: return false");
-                _log.Info($"[Walkthrough] WTSQuerySessionInformation: return false");
-            }
-            return null;
-        }
-        /// <summary>
-        /// Get User Sid. From SA code
-        /// </summary>
-        /// <param name="userName"></param>
-        /// <returns>User Sid</returns>
-        private string GetUserSid(string userName)
-        {
-            _log.Info($"[Walkthrough] {nameof(GetUserSid)} Start");
-            NTAccount f_normal, f_domain = null;
-            string accountName = $"{Environment.MachineName}\\{userName}";
-            f_normal = new NTAccount(accountName);
-            Console.WriteLine($"[Walkthrough] GetUserSid: Machine name: {Environment.MachineName}, User name:{userName}");
-            if (!string.IsNullOrEmpty(Environment.UserDomainName))
-            {
-                accountName = $"{Environment.UserDomainName}\\{userName}";
-                Console.WriteLine($"[Walkthrough] GetUserSid: find domain name: {Environment.UserDomainName}, User name:{userName}");
-                f_domain = new NTAccount(Environment.UserDomainName, userName);
-            }
-            String sidString;
-            try
-            {
-                SecurityIdentifier s = (SecurityIdentifier)f_normal.Translate(typeof(SecurityIdentifier));
-                sidString = s.ToString();
-                Console.WriteLine($"[Walkthrough] GetUserSid(normal user): SID: {sidString}");
-            }
-            catch (Exception ex)
-            {
-                sidString = null;
-                Console.WriteLine($"[Walkthrough] GetUserSid(normal user): try translate fail: {ex.Message}");
-
-                //0724 add code that translate normal user and do translate domain user if fail.
-                if (f_domain != null)
-                {
-                    try
-                    {
-                        SecurityIdentifier s = (SecurityIdentifier)f_domain.Translate(typeof(SecurityIdentifier));
-                        sidString = s.ToString();
-                        Console.WriteLine($"[Walkthrough] GetUserSid(domain user): SID: {sidString}");
-                    }
-                    catch (Exception e)
-                    {
-                        sidString = null;
-                        Console.WriteLine($"[Walkthrough] GetUserSid(domain user): try translate fail: {e.Message}");
-                        _log.Error($"[Walkthrough] GetUserSid(domain user): try translate fail: {e.Message}");
-                    }
-                }
-            }
-            return sidString;
-        }
-
         /// <summary>
         /// Check if the device has completed the WalkThrough, and add new devices to the queue
         /// </summary>
@@ -1638,7 +1529,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} Start ... in");
             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} Start for ModelNumber {modelNumber}, ModelType {modelType}, UserID {UserId}");
             object regValue;
-            //UserId = GetActiveUserID();
             string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
             string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{modelNumber}";
             string regKeyForConsentPage = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.CONSENT_PAGE";
@@ -1801,7 +1691,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 var deviceHelper = _deviceManager.GetDevices().Result;
                 _log.Info($"[Walkthrough] CollectAndCompareDevicesAsync, monitor count:{monitorInfos.Count.ToString()}, device count : {deviceHelper.deviceInfo.Count.ToString()}");
                 Trace.WriteLine($"[Walkthrough] CollectAndCompareDevicesAsync, monitor count:{monitorInfos.Count.ToString()}, device count : {deviceHelper.deviceInfo.Count.ToString()}");
-                //UserId = GetActiveUserID();
                 // WalkThroughInfo
                 foreach (var monitor in monitorInfos)
                 {

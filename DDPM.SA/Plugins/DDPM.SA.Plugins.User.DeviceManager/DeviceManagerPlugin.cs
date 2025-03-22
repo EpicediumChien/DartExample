@@ -13056,13 +13056,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             bool flag = false;
                             int loopCount = 0;
                             DeviceHelper di = null;
+                            string UserId = string.Empty;
                             while (loopCount < 60)
                             {
                                 di = GetDevices().Result;
                                 if (_isSysSettingReady)
                                 {
                                     object regValue = null;
-                                    string UserId = WTSFunction.DirectGetUserID(Log);
+                                    if (string.IsNullOrEmpty(UserId)) // just do one time
+                                    {
+                                        UserId = WTSFunction.DirectGetUserID(Log);
+                                    }
                                     if (di.deviceInfo.Count > 0)
                                     {
                                         string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
