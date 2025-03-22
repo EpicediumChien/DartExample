@@ -33,7 +33,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin.Tests
             consoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(_logMock.Object);
             deviceManagerSAMock = new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
-            soundBarPlugin = new SoundBarPlugin(showPluginManagerMock.Object, pluginManagerMock.Object, consoleMock.Object);
+            soundBarPlugin = new SoundBarPlugin(pluginManagerMock.Object, consoleMock.Object);
             privateObject = new PrivateObject(soundBarPlugin);
         }
 

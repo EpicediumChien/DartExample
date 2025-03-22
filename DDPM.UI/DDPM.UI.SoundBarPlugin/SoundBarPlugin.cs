@@ -32,7 +32,6 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         private readonly ILog _log;
         private readonly IConsole _console;
         private readonly IPluginManager _pluginManager;
-        private readonly IShowPluginManager _showPluginManager;
         private readonly string? _applicationName;
         private SoundBarViewModel? _viewModel;
 
@@ -48,9 +47,8 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         /// <summary>
         /// Default constructor
         /// </summary>
-        public SoundBarPlugin(IShowPluginManager showPluginManager, IPluginManager pluginManager, IConsole console)
+        public SoundBarPlugin(IPluginManager pluginManager, IConsole console)
         {
-            _showPluginManager = showPluginManager;
             _pluginManager = pluginManager;
             _console = console;
             _log = console.CreateLog("SoundBar");
@@ -203,7 +201,6 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                 // Marked all the instances as singleton
                 // Pass the existing _console and _log instance so that Ioc doesn't new'up them
                 PluginIoc.ConfigureServices(new ServiceCollection()
-                    .AddSingleton(_showPluginManager)
                     .AddSingleton(_console)
                     .AddSingleton(_log)
                     .AddSingleton(_deviceManagerPlugin)

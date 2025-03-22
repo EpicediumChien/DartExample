@@ -573,7 +573,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             Task.Run(() =>
             {
                 _log.Info($"[DdpmHomePlugin] CheckIfNeedImportSetting_Display Task.Run in ... ");
-                if (monitorInfos == null && monitorInfos.Count == 0)
+                if (monitorInfos == null || monitorInfos.Count == 0)
                     return;
                 //make sure no walkthrough page displaying
                 int tick = 0;

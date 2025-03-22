@@ -49,9 +49,8 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         /// <summary>
         /// Default constructor
         /// </summary>
-        public HeadsetPlugin(IShowPluginManager showPluginManager, IPluginManager pluginManager, IConsole console)
+        public HeadsetPlugin(IPluginManager pluginManager, IConsole console)
         {
-            _showPluginManager = showPluginManager;
             _pluginManager = pluginManager;
             _console = console;
             _log = console.CreateLog("Headset");
@@ -203,7 +202,6 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 // Marked all the instances as singleton
                 // Pass the existing _console and _log instance so that Ioc doesn't new'up them
                 PluginIoc.ConfigureServices(new ServiceCollection()
-                    .AddSingleton(_showPluginManager)
                     .AddSingleton(_console)
                     .AddSingleton(_log)
                     .AddSingleton(_deviceManagerPlugin)

@@ -1662,6 +1662,7 @@ namespace DDPM.UI.Common
             object obj = null;
             try
             {
+                WriteUILog($"[ReadRegistryData] read to ({keyPath}); KeyName: ({keyName})");
                 if (DeviceManagerSA != null)
                 {
                     return DeviceManagerSA.ReadRegistryData(hive, keyPath, keyName).Result;
@@ -1695,6 +1696,7 @@ namespace DDPM.UI.Common
                 try
                 {
                     bool result = false;
+                    WriteUILog($"[WriteRegistryData] write to ({regPath}); Ket: ({regKey})");
                     if (DeviceManagerSA != null)
                     {
                         result = DeviceManagerSA.WriteRegistryData(hive, regPath, regKey, data).Result;

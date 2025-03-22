@@ -1,7 +1,10 @@
 ﻿using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace DDPM.SA.Common
 {
@@ -717,11 +720,13 @@ namespace DDPM.SA.Common
                                     foreach (string item in successItems)
                                     {
                                         writer.WriteLine(item.Trim());
+                                        log.Info($"SaveLogFile - {item.Trim()}");
                                     }
                                 }
                                 else
                                 {
                                     writer.WriteLine("No success info.");
+                                    log.Info($"SaveLogFile - No fail info.");
                                 }
 
                                 writer.WriteLine(); // 空一行
@@ -734,11 +739,13 @@ namespace DDPM.SA.Common
                                     foreach (string item in failItems)
                                     {
                                         writer.WriteLine(item.Trim());
+                                        log.Info($"SaveLogFile - {item.Trim()}");
                                     }
                                 }
                                 else
                                 {
                                     writer.WriteLine("No fail info.");
+                                    log.Info($"SaveLogFile - No fail info.");
                                 }
 
                                 writer.WriteLine(); // 空一行
@@ -751,12 +758,52 @@ namespace DDPM.SA.Common
                                     foreach (string item in pathItems)
                                     {
                                         writer.WriteLine(item.Trim());
+                                        log.Info($"SaveLogFile - {item.Trim()}");
                                     }
                                 }
                                 else
                                 {
                                     writer.WriteLine("No path info.");
+                                    log.Info($"SaveLogFile - No path info.");
                                 }
+
+                                writer.WriteLine(); // 空一行
+
+                                // EXE
+                                var exeList = new List<(string ProcessName, string DisplayName)>
+                                {
+                                    ("DDPM",               "DDPM.exe"),
+                                    ("DDPM.Subagent",      "DDPM.Subagent.exe"),
+                                    ("DDPM.Subagent.User", "DDPM.Subagent.User.exe"),
+                                    ("Dell.TechHub",       "Dell.TechHub.exe"),
+                                    ("DPMService",         "DPMService.exe")
+                                };
+
+                                writer.WriteLine("=== EXE Info ===");
+
+                                foreach (var (processName, displayName) in exeList)
+                                {
+                                    var process = Process.GetProcessesByName(processName).FirstOrDefault();
+                                    if (process == null)
+                                    {
+                                        writer.WriteLine($"[{displayName}] : Fail");
+                                    }
+                                    else
+                                    {
+                                        try
+                                        {
+                                            var versionInfo = process.MainModule.FileVersionInfo;
+                                            writer.WriteLine($"[{displayName}] : True, Ver = {versionInfo.FileVersion}");
+                                            log.Info($"SaveLogFile - [{displayName}] : True, Ver = {versionInfo.FileVersion}");
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            writer.WriteLine($"[{displayName}] : True, Ver = ({ex.Message})");
+                                            log.Info($"SaveLogFile - [{displayName}] : True, Ver = ({ex.Message})");
+                                        }
+                                    }
+                                }
+
                             }
                         }
                         catch (Exception ex)
@@ -775,7 +822,9 @@ namespace DDPM.SA.Common
                                 log.Info("SaveLogFile - CreateZipFile fail.");
                             }
                             else
-
+                            {
+                                log.Info($"SaveLogFile - CreateZipFile : {zipFilePath}, succcess.");
+                            }
 
                             if (DDPMFileSecurity.ValidateFilePath(saveFolderPath, out string info))
                                 Directory.Delete(saveFolderPath, true);

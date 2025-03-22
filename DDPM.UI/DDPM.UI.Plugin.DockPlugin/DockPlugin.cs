@@ -161,18 +161,19 @@ namespace DDPM.UI.Plugin.DockPlugin
 
         private void GetPeripheralsAsync()
         {
+            _log.Info($"[DockPlugin] GetPeripherals is invoked ... in");
             if (!SpinWait.SpinUntil(() =>
             _deviceManagerPluginCondition is not null, TimeSpan.FromMinutes(2)))
             {
                 Console.WriteLine("Could not establish communication with DDPM!!");
                 return;
             }
-            _log.Debug($"GetPeripherals is invoked");
             //_deviceHelper = await peripheralsPlugin.GetDevices();
             Task<DeviceHelper> task = _deviceManagerPlugin!.GetDevices();
             _deviceHelper = task.Result;
 
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
+            _log.Info($"[DockPlugin] GetPeripherals is invoked ... out");
         }
 
         /// <summary>
@@ -181,6 +182,7 @@ namespace DDPM.UI.Plugin.DockPlugin
         /// <remarks>Below code will be removed when <see cref="IConsole"/> provides the bootstrapper support</remarks>
         private void ConfigureServices()
         {
+            _log.Info($"[DockPlugin] ConfigureServices is invoked ... in");
             if (_isConfigured)
                 return;
 
@@ -200,6 +202,7 @@ namespace DDPM.UI.Plugin.DockPlugin
 
             _viewModel = (DockPageViewModel?)PluginIoc.GetService<IPeripheralViewModel>();
             _isConfigured = true;
+            _log.Info($"[DockPlugin] ConfigureServices is invoked ... out");
         }
 
         public string HeaderText => "Dell Dock";
@@ -226,9 +229,11 @@ namespace DDPM.UI.Plugin.DockPlugin
         /// <inheritdoc/>
         public void OnShown(string pluginParameter)
         {
+            _log.Info($"[DockPlugin] OnShown ... in");
             ConfigureServices();
             GetPeripheralsAsync();
             if (_viewModel != null && !_viewModel.SetCurrentDevice(pluginParameter)) { }
+            _log.Info($"[DockPlugin] OnShown ... out");
         }
 
         #endregion Interface IConsolePluginSupportsActivations
