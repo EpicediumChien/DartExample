@@ -826,16 +826,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile finish");
                         _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
                         _downloadTimer.Stop();
-                        _downloadTimer = null;
-                        updateProgressInfo = new UpdateProgressInfo()
-                        {
-                            DeviceName = fwUpdateInfos[i].DeviceName,
-                            Model = fwUpdateInfos[i].Model,
-                            TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                            ProcessName = "Downloading",
-                            ProcessProgress = 100,
-                        };
-                        sendMessageToEvent(updateProgressInfo);
                         if (!downloadRet)
                         {
                             if (downloadInfo.Equals("CA check fail"))
@@ -856,6 +846,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             method.DeleteFolder(savePath);
                             continue;
                         }
+                        updateProgressInfo = new UpdateProgressInfo()
+                        {
+                            DeviceName = fwUpdateInfos[i].DeviceName,
+                            Model = fwUpdateInfos[i].Model,
+                            TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                            ProcessName = "Downloading",
+                            ProcessProgress = 100,
+                        };
+                        sendMessageToEvent(updateProgressInfo);
                     }
                     catch (Exception ex)
                     {
