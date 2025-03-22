@@ -71,6 +71,9 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
             _log.Info($"{nameof(PluginManager_PluginsStarted)} started");
             try
             {
+                if (_deviceManagerPlugin != null)
+                    return;
+
                 _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
 
                 if (_deviceManagerPlugin == null)

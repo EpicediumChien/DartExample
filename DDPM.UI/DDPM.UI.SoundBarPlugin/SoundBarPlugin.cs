@@ -65,6 +65,9 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             _log.Info($"[SoundBarPlugin] {nameof(PluginManager_PluginsStarted)} started");
             try
             {
+                if (_deviceManagerPlugin != null)
+                    return;
+
                 _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
 
                 if (_deviceManagerPlugin == null)
@@ -89,7 +92,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             catch (Exception ex)
             {
                 _log.Error(ex, $"[SoundBarPlugin] PluginManager_PluginsStarted ... failed: {ex.Message}");
-            }          
+            }
         }
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
@@ -115,7 +118,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             catch (Exception ex)
             {
                 _log.Error(ex, $"[SoundBarPlugin] DeviceManager_DeviceChanged ... failed: {ex.Message}");
-            }         
+            }
         }
 
         private void PeripheralsPlugin_UpdateNotify(object? sender, EventArgs e)
@@ -310,7 +313,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                 }
                 ConfigureServices();
                 GetPeripheralsAsync();
-                if (_viewModel != null && !_viewModel.SetCurrentDevice(pluginParameter)){ }
+                if (_viewModel != null && !_viewModel.SetCurrentDevice(pluginParameter)) { }
                 Mouse.OverrideCursor = null;
                 _log.Info($"[SoundBarPlugin] OnShown ... out");
             }
