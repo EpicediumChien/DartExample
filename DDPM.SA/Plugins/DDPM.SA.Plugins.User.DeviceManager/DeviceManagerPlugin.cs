@@ -14411,11 +14411,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (iTest % 2 == 1)
             {
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Pen, "Dell Multi-Device pen - MS5320W");
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Pen, "Dell Multi-Device pen - MS5320W");
+                //public Task ShowOSD(object monitorInfo, OSDType type, bool State, (string, string, bool) args)
             }
             else
             {
-                _OSD_Controler.CloseMultipleOSDByGuidAndOp("377C7B36-ED5B-446F-93A6-3418F0447836", OSDType_Op.None);
+                //_OSD_Controler.CloseMultipleOSDByGuidAndOp("377C7B36-ED5B-446F-93A6-3418F0447836", OSDType_Op.None);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("FW", "fwxxxx update ccccccccccccccccccccccccccccccccccc...", true));
+
             }*/
             //will register as ALT+Z ?
             if (_altPressed && strKey.Equals("Z") && !_ctrlPressed && !_shiftPressed)
@@ -18174,7 +18177,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        private void ShowOSDThread(CancellationTokenSource cts, object monitorInfo, OSDType _types,
+        private async Task ShowOSDThread(CancellationTokenSource cts, object monitorInfo, OSDType _types,
                                 OSDType_Device _DeviceType, string Content, bool State = false,
                                 string title = "", bool stayOpen = false, Guid guid = default, OSDType_Op oSDType_Op = OSDType_Op.None)
         {
@@ -18378,94 +18381,164 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             break;
 
                             case OSDType.ScrollLock:
-                            {
-                                try
                                 {
-                                    if (_OSD_Controler.ExistMultipleOSD())
+                                    try
                                     {
-                                        _OSD_Controler.CloseMultipleOSD(null, null);
-                                    }
-                                    else
-                                    {
+
                                         if (State)
                                         {
-                                            //_OSD_Controler.ScrollLockOn_CloseWindow();
-                                            _OSD_Controler.ScrollLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            if (_OSD_Controler.ExistMultipleOSD())
+                                            {
+                                                //default guid {4C24C783-3E8B-4FED-81ED-70CBE7DA43DD}
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "4C24C783-3E8B-4FED-81ED-70CBE7DA43DD" : guid.ToString(), OSDType_Device.ScrollLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_On"]);
+                                                await Task.Run(async () =>
+                                                {
+                                                    await Task.Delay(1000);
+                                                    _OSD_Controler.CloseMultipleOSD(null, null);
+                                                });
+                                            }
+                                            else
+                                            {
+                                                //_OSD_Controler.ScrollLockOn_CloseWindow();
+                                                _OSD_Controler.ScrollLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            }
                                         }
                                         else
                                         {
-                                            //_OSD_Controler.ScrollLockOff_CloseWindow();
-                                            _OSD_Controler.ScrollLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            if (_OSD_Controler.ExistMultipleOSD())
+                                            {
+                                                //default guid {99EACE23-6309-44AD-91F6-D55915D2D41E}
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "99EACE23-6309-44AD-91F6-D55915D2D41E" : guid.ToString(), OSDType_Device.ScrollLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_Off"]);
+                                                await Task.Run(async () =>
+                                                {
+                                                    await Task.Delay(1000);
+                                                    _OSD_Controler.CloseMultipleOSD(null, null);
+                                                });
+                                            }
+                                            else
+                                            {
+                                                //_OSD_Controler.ScrollLockOff_CloseWindow();
+                                                _OSD_Controler.ScrollLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            }
                                         }
+
+                                        /* if (_OSD_Controler.ExistMultipleOSD())
+                                        {
+                                            _OSD_Controler.CloseMultipleOSD(null, null);
+                                        }
+                                        else
+                                        {
+
+                                        }*/
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
                                     }
                                 }
-                                catch (Exception ex)
-                                {
-                                    writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
-                                }
-                            }
-                            break;
+                                break;
 
                             case OSDType.NumLock:
-                            {
-                                try
                                 {
-                                    if (_OSD_Controler.ExistMultipleOSD())
+                                    try
                                     {
-                                        _OSD_Controler.CloseMultipleOSD(null, null);
-                                    }
-                                    else
-                                    {
+
                                         if (State)
                                         {
-                                            //_OSD_Controler.NumLockOn_CloseWindow();
-                                            _OSD_Controler.NumLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            if (_OSD_Controler.ExistMultipleOSD())
+                                            {
+                                                //default guid {288AB64E-4730-41C1-9681-A3DF934F1FDA}
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "288AB64E-4730-41C1-9681-A3DF934F1FDA" : guid.ToString(), OSDType_Device.NumLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_On"]);
+                                                await Task.Run(async () =>
+                                                {
+                                                    await Task.Delay(1000);
+                                                    _OSD_Controler.CloseMultipleOSD(null, null);
+                                                });
+                                            }
+                                            else
+                                            {
+                                                //_OSD_Controler.NumLockOn_CloseWindow();
+                                                _OSD_Controler.NumLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            }
+
                                         }
                                         else
                                         {
-                                            //_OSD_Controler.NumLockOff_CloseWindow();
-                                            _OSD_Controler.NumLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            if (_OSD_Controler.ExistMultipleOSD())
+                                            {
+                                                //default guid {41F5E9F5-0537-4404-BCD8-3612803F09BF}
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "41F5E9F5-0537-4404-BCD8-3612803F09BF" : guid.ToString(), OSDType_Device.NumLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_Off"]);
+                                                await Task.Run(async () =>
+                                                {
+                                                    await Task.Delay(1000);
+                                                    _OSD_Controler.CloseMultipleOSD(null, null);
+                                                });
+                                            }
+                                            else
+                                            {
+                                                //_OSD_Controler.NumLockOff_CloseWindow();
+                                                _OSD_Controler.NumLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            }
                                         }
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
                                     }
                                 }
-                                catch (Exception ex)
-                                {
-                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
-                                }
-                            }
-                            break;
+                                break;
 
                             case OSDType.CapsLock:
-                            {
-                                try
                                 {
-                                    if (_OSD_Controler.ExistMultipleOSD())
-                                    {
-                                        _OSD_Controler.CloseMultipleOSD(null, null);
-                                    }
-                                    else
+                                    try
                                     {
                                         if (State)
                                         {
-                                            //_OSD_Controler.CapsLockOn_CloseWindow();
-                                            _OSD_Controler.CapsLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            if (_OSD_Controler.ExistMultipleOSD())
+                                            {
+                                                //default guid {1B97890A-B1D9-4372-9B09-AC04893C9B39}
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "1B97890A-B1D9-4372-9B09-AC04893C9B39" : guid.ToString(), OSDType_Device.CapsLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_On"]);
+                                                await Task.Run(async () =>
+                                                {
+                                                    await Task.Delay(1000);
+                                                    _OSD_Controler.CloseMultipleOSD(null, null);
+                                                });
+                                            }
+                                            else
+                                            {
+                                                //_OSD_Controler.CapsLockOn_CloseWindow();
+                                                _OSD_Controler.CapsLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            }
                                         }
                                         else
                                         {
-                                            //_OSD_Controler.CapsLockOff_CloseWindow();
-                                            _OSD_Controler.CapsLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            if (_OSD_Controler.ExistMultipleOSD())
+                                            {
+                                                //default guid {C88641DE-92EC-493F-A398-7CB664FDC563}
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "C88641DE-92EC-493F-A398-7CB664FDC563" : guid.ToString(), OSDType_Device.CapsLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_Off"]);
+                                                await Task.Run(async () =>
+                                                {
+                                                    await Task.Delay(1000);
+                                                    _OSD_Controler.CloseMultipleOSD(null, null);
+                                                });
+                                            }
+                                            else
+                                            {
+                                                //_OSD_Controler.CapsLockOff_CloseWindow();
+                                                _OSD_Controler.CapsLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            }
                                         }
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
                                     }
 
-                                }
-                                catch (Exception ex)
-                                {
-                                    writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
-                                }
 
-
-                            }
-                            break;
+                                }
+                                break;
 
                             case OSDType.Fingerprint:
                             {
@@ -18513,10 +18586,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 //{
                                 try
                                 {
-                                    _OSD_Controler.Error_CloseWindow(null, null);
-                                    _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                }
-                                catch (Exception ex)
+                                        Debug.WriteLine($"title={title},Content={Content}");
+                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.FW, oSDType_Op, title, Content);
+                                        /* _OSD_Controler.Error_CloseWindow(null, null);
+                                         _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
+                                    }
+                                    catch (Exception ex)
                                 {
                                     writelog($"[_showosd] ERROR - OSDType.Error: {ex.Message}, State:{State}");
                                 }
