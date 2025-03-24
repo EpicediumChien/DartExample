@@ -56,6 +56,38 @@ namespace DDPM.SA.Plugins.User.DisplayManager
     [PluginRequires(Id = IDs.VCP_CORE_PLUGIN_ID, Version = "1.0.0", AllowDynamicResolving = true)]
     public class DisplayMangerPlugin : BaseAgentPlugin, IDisposableObservable, IDisplayService
     {
+        public enum log_type
+        {
+            info = 0,
+            error
+        }
+
+        /// <summary>
+        /// //
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="log_type">0 means info, others means error</param>
+        private void WriteLog(string text, log_type log_type = log_type.info,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
+        {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
+            text = $"[DisplayMangerPlugin] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
+#if DEBUG
+            Console.WriteLine(text);
+#endif
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
+        }
+
         #region Private Members
 
         private const string pluginName = "DisplayManagerPlugin";
@@ -364,7 +396,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             catch (ArgumentException ex)
             {
                 result = false;
-                _logs.Error($"Process with ID {processID} is not running: {ex.Message}");
+                //_logs.Error($"Process with ID {processID} is not running: {ex.Message}");
+                WriteLog(Log, $"Process with ID {processID} is not running: {ex.Message}", true);
             }
 
             return Task.FromResult(result);
@@ -437,7 +470,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors Exception is " + ex.Message);
+                //_logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors Exception is " + ex.Message);
+                WriteLog("Re_GetMonitors() AllInfoMonitors Exception is " + ex.Message, log_type.error);
                 return new List<MonitorInfo>();
             }
         }
@@ -863,7 +897,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     }
                                     catch (Exception ex)
                                     {
-                                        _logs.DebugMsg($"[Error] Exception occurred: {ex.Message}");
+                                        //_logs.DebugMsg($"[Error] Exception occurred: {ex.Message}");
+                                        WriteLog($"[Error] Exception occurred: {ex.Message}", log_type.error);
                                         usbUpstreamList = _usbUpstreamList;
                                         //usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
                                     }
@@ -1606,7 +1641,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
                 catch (Exception ex)
                 {
-                    _logs.DebugMsg($"[DisplayMangerPlugin][InitializeAllALSInfo] Init ALSConfig got exception. {ex}");
+                    //_logs.DebugMsg($"[DisplayMangerPlugin][InitializeAllALSInfo] Init ALSConfig got exception. {ex}");
+                    WriteLog(Log, $"[DisplayMangerPlugin][InitializeAllALSInfo] Init ALSConfig got exception. {ex.Message}", true);
                 }
             });
         }
@@ -2040,7 +2076,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig Exception {ex.Message}");
+                //_logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig Exception {ex.Message}");
+                WriteLog($"GetAllExistAlsConfig Exception {ex.Message}", log_type.error);
                 return Task.FromResult(new List<ALSConfig>());
             }
         }
@@ -2070,7 +2107,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateExistAlsConfig Exception {ex.Message}");
+                //_logs.DebugMsg($"[DisplayMangerPlugin] UpdateExistAlsConfig Exception {ex.Message}");
+                WriteLog($"UpdateExistAlsConfig Exception {ex.Message}", log_type.error);
                 return Task.FromResult(new List<ALSConfig>());
             }
         }

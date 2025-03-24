@@ -38,6 +38,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
             _log = log;
             _deviceManager = deviceManager;
+            _log!.Info($"[DockPageViewModel] DockPageViewModel Start ...");
         }
 
         public override void OnPropertyChanged([CallerMemberName] string propertyName = "")

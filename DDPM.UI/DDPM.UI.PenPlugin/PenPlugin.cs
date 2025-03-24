@@ -82,13 +82,14 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         private void GetPeripheralsAsync()
         {
-            _log.Debug($"GetPeripherals is invoked");
+            _log.Info($"[Penplugin] GetPeripherals is invoked ... in");
             Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(); //(true);
             _deviceHelper = task.Result;
 
             //Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA!.GetPenDeviceItemsEx();
             //var jArray = JArray.FromObject(task2.Result);
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
+            _log.Info($"[Penplugin] GetPeripherals is invoked ... out");
         }
 
         /// <summary>
@@ -97,6 +98,7 @@ namespace DDPM.UI.Plugin.PenPlugin
         /// <remarks>Below code will be removed when <see cref="IConsole"/> provides the bootstrapper support</remarks>
         private void ConfigureServices()
         {
+            _log.Debug($"[Penplugin] ConfigureServices is invoked ... in");
             if (_isConfigured)
                 return;
 
@@ -110,6 +112,7 @@ namespace DDPM.UI.Plugin.PenPlugin
 
             _viewModel = (PenViewModel?)PluginIoc.GetService<IPeripheralViewModel>();
             _isConfigured = true;
+            _log.Debug($"[Penplugin] ConfigureServices is invoked ... out");
         }
 
         public string HeaderText => "Dell Pen";

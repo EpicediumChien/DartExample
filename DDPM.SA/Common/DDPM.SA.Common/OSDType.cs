@@ -24,7 +24,17 @@
         Mouse,
         Headset,
         Pen,
-        QAM
+        QAM,
+        CapsLockOn,
+        CapsLockOff,
+        ScrollLockOn,
+        ScrollLockOff,
+        NumLockOn,
+        NumLockOff,
+        FW,
+        Mute,
+        UnMute,
+        FingerPrint
     }
 
     public enum OSDType_Op

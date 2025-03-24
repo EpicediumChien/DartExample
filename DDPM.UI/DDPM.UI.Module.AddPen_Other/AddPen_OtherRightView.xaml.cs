@@ -38,10 +38,9 @@ namespace DDPM.UI.Module.AddPen_Other
             //txtStep2.Text = Step2;
 
             breakPoints = DdpmCommonHelper.GetBreakPoints();
-            Unloaded += AddPen_OtherRightView_Unloaded;
         }
 
-        bool IsBLE = true;
+        volatile int IsBLE = -1;
         bool IsConnected = true;
         bool IsSupported = true;
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
@@ -49,13 +48,13 @@ namespace DDPM.UI.Module.AddPen_Other
             if (e.type == DeviceChangedType.Peripherals_SettingsChange && e.changedProperty == "ActivePenInformationChanged")
             {
                 var di = e.device_peripherals;
-                IsBLE = di.IsBLE;
+                IsBLE = di.IsBLE ? 1 : 0;
                 IsConnected = di.IsConnected;
                 IsSupported = di.IsReady;
             }
         }
 
-        private void AddPen_OtherRightView_Unloaded(object sender, RoutedEventArgs e)
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
@@ -91,9 +90,12 @@ namespace DDPM.UI.Module.AddPen_Other
 
         private void Pairing(object sender, System.Windows.Input.StylusDownEventArgs e)
         {
-            Thread.Sleep(300);
+            if (e.StylusDevice.TabletDevice.Type != System.Windows.Input.TabletDeviceType.Stylus)
+                return;
 
-            if (!IsBLE)
+            Task.Delay(300).Wait();
+
+            if (IsBLE == 0)
             {
                 MessageModalDialog messageModalDialog;
                 Window mainWindow = System.Windows.Application.Current.MainWindow;
@@ -119,8 +121,8 @@ namespace DDPM.UI.Module.AddPen_Other
                 {
                     _vm.StartPairingPen();
                 }
-                //IsBLE = true;
             }
+            IsBLE = -1;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

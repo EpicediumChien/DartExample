@@ -28,6 +28,7 @@ using Windows.Media.AppBroadcasting;
 using DdmLibrary.Utility;
 using System.Globalization;
 using System.Windows.Interop;
+using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -1658,9 +1659,17 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             string jsonString = string.Empty;
             jsonString = JsonConvert.SerializeObject(powerNapSettings);
-            using (StreamWriter writer = new StreamWriter(filePath))
+
+            try
             {
-                writer.Write(jsonString);
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    writer.Write(jsonString);
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"[SettingsManagerSA] RunSerializeObject failed, Message: {ex.Message}", log_type.error);
             }
 
             return jsonString;
@@ -1914,10 +1923,20 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             //    _log.Info($"{nameof(RunSerializeObject)} {FileInfo}");
             //    return string.Empty;
             //}
-            using (StreamWriter writer = new StreamWriter(path))
+            
+            try
             {
-                writer.Write(jsonString);
+                using (StreamWriter writer = new StreamWriter(path))
+                {
+                    writer.Write(jsonString);
+                }
             }
+            catch (Exception ex)
+            {
+                WriteLog($"[SettingsManagerSA] RunSerializeObject failed, Message: {ex.Message}", log_type.error);
+            }
+
+
 
             return jsonString;
         }

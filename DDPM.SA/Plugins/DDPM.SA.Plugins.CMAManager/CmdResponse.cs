@@ -577,7 +577,7 @@ namespace DDPM.SA.Plugins.CMAManager
                                 {
                                     fwupdateresponse = fwupdateresponse + ",\n";
                                 }
-                                fwupdateresponse = fwupdateresponse + fw.ToString();
+                                fwupdateresponse = fwupdateresponse + "\"" + fw.ToString() + "\"";  // fix PIMS-352424 @ 20250322 stephen
                                 counter++;
                             }
                         }

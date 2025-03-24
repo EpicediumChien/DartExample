@@ -362,8 +362,8 @@ namespace DDPM.UI.Module.PenButtonSettings
                         //rb.Content = _vm.SelectedButton == PenButtonName.TopButton.ToString() ? Actions.PenActions[id].Caption : Actions.KnMActions[id].Caption;
                         rb.Content = Actions.PenActions[id].Caption;
                         //rb.Content = _vm.ActionNames[id];
-                        if (rb.Tag.ToString() != "search")
-                            rb.IsChecked = id == _vm.SelectedActionID;
+                        //if (rb.Tag.ToString() != "search")
+                        rb.IsChecked = id == _vm.SelectedActionID;
                     }
                 }
                 else if (sender is ActionButton btn)

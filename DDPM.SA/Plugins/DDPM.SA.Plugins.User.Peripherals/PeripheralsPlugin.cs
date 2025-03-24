@@ -102,7 +102,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         //private IDeviceManagerSA _DeviceManagerPlugin;
         //private readonly object _PluginConditionLock_DeviceManager = new object();
-        private readonly object _lock = new();
+        //private readonly object _lock = new();
 
         private IDTPProxyPlugin _DTPProxyPlugin = null;
         private ISettingsManagerDev _UserSettingsPlugin = null;
@@ -161,7 +161,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 return await System.Threading.Tasks.Task.Run(() =>
                 {
-                    lock (_lock)
+                    lock (this)
                     {
                         if (_isClientConnected && _deviceHelper != null)
                         {
@@ -1435,7 +1435,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         }*/
         private void ScanDevices()
         {
-            lock (_lock)
+            lock (this)
             {
                 if (CommonFunctions.IsServiceRunning(GlobalDefinitions.DPeMServiceName, Log) && _isClientConnected && _iClient != null && _iDeviceManager != null)
                 {
@@ -1644,6 +1644,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     _logicalDevice3.PairedHostNameChanged += ILogicalDevice_PairedHostNameChanged;
                                     _logicalDevice3.IsDPILevelChangePendingChanged += ILogicalDevice_IsDPILevelChangePendingChanged;
                                     _logicalDevice3.IsDPIValueChangePendingChanged += ILogicalDevice_IsDPIValueChangePendingChanged;
+                                    _logicalDevice3.ReportRateChanged += _logicalDevice3_ReportRateChanged;
                                     LogicalDevices3.Add(_logicalDevice3.Id);
                                 }
                             }
@@ -2031,6 +2032,31 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     writelog(_deviceHelper.ToString());
                     CheckDocks();
                     writelog($"after CheckDocks --- {_deviceHelper.ToString()}");
+                }
+            }
+        }
+
+        private void _logicalDevice3_ReportRateChanged(ILogicalDevice3 arg1, int arg2)
+        {
+            writelog($"ReportRateChanged: Guid:{arg1.Id}  NewValue:{arg2}");
+            if (_deviceHelper is { deviceInfo: not null })
+            {
+                var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
+                if (deviceInfo != null)
+                {
+                    deviceInfo.ReportRate = arg2;
+
+                    DeviceChangedEventArgs _EventArgs = new()
+                    {
+                        type = DeviceChangedType.Peripherals_SettingsChange,
+                        device_peripherals = deviceInfo,
+                        changedProperty = "ReportRateChanged"
+                    };
+                    OnNotify(_EventArgs);
+                }
+                else
+                {
+                    writelog($"ReportRateChanged: Error: deviceInfo is null");
                 }
             }
         }
@@ -2452,7 +2478,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
             if (status == ClientStatus.Connected)
             {
-                lock (_lock)
+                lock (this)
                 {
                     writelog($"_isClientConnected turn true ... ");
                     _isClientConnected = true;
@@ -2492,7 +2518,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
             else
             {
-                lock (_lock)
+                lock (this)
                 {
                     if (_isClientConnected)
                     {
@@ -2640,7 +2666,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             //System.Diagnostics.Debug.WriteLine("ParentPhysicalDevice Added, Id : " + iPhysicalDevice.Id + ", Name : " + iPhysicalDevice.Name);
             writelog("ParentPhysicalDevice Added, Id : " + iPhysicalDevice.Id + ", Name : " + iPhysicalDevice.Name);
 
-            lock (_lock)
+            lock (this)
             {
                 if (_isClientConnected)
                 {
@@ -2706,6 +2732,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     };
                     OnNotify(_EventArgs);
                 }
+
+                // << 250320 added by Hess
+                PhysicalDevices.Remove(physicalDeviceId);
+                PhysicalDevices2.Remove(physicalDeviceId);
+                PhysicalPenDevices.Remove(physicalDeviceId);
+                // >>
             }
         }
 
@@ -2713,7 +2745,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         {
             //System.Diagnostics.Debug.WriteLine("LogicalDevice Added, Id : " + iLogicalDevice.Id + ", Name : " + iLogicalDevice.Name);
             writelog("LogicalDevice Added, Id : " + iLogicalDevice.Id + ", Name : " + iLogicalDevice.Name);
-            lock (_lock)
+            lock (this)
             {
                 if (_isClientConnected)
                 {
@@ -2734,7 +2766,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 writelog("ParentPhysicalDevice Removed, Id : " + deviceGuid.ToString());
             }
-            lock (_lock)
+            lock (this)
             {
                 if (_isClientConnected)
                 {
@@ -2806,6 +2838,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             _logicalDevice3.PairedHostNameChanged -= ILogicalDevice_PairedHostNameChanged;
                             _logicalDevice3.IsDPILevelChangePendingChanged -= ILogicalDevice_IsDPILevelChangePendingChanged;
                             _logicalDevice3.IsDPIValueChangePendingChanged -= ILogicalDevice_IsDPIValueChangePendingChanged;
+                            _logicalDevice3.ReportRateChanged -= _logicalDevice3_ReportRateChanged;
                             LogicalDevices3.Remove(iLogicalDevice.Id);
                         }
                         if (LogicalDevicesPen.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevicePen _logicalDevicePen)
@@ -2863,6 +2896,15 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         }
                     }
                 }
+
+                // << 250320 added by Hess
+                IDevices.Remove(deviceGuid);
+                LogicalDevices.Remove(deviceGuid);
+                LogicalDevices2.Remove(deviceGuid);
+                LogicalDevices3.Remove(deviceGuid);
+                LogicalDevicesPen.Remove(deviceGuid);
+                LogicalDevicHeadset.Remove(deviceGuid);
+                // >>
             }
         }
 
@@ -3733,7 +3775,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         }
         private void IUpdateManager_IsAnyUpdateAvailableChanged(bool isAnyUpdateAvailable)
         {
-            lock (_lock)
+            lock (this)
             {
                 if (_isClientConnected && _iUpdateManager != null)
                 {
@@ -3982,7 +4024,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _logs.DebugMsg_1($"[PeripheralsPlugin] GetFWUpdateInfo done and _updateHelper is no null");
                 return await Task.Run(() =>
                 {
-                    lock (_lock)
+                    lock (this)
                     {
                         if (_isClientConnected && _updateHelper != null)
                         {

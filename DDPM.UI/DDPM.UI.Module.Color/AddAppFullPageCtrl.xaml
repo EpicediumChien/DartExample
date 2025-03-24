@@ -277,7 +277,6 @@
             <!-- #endregion SortToggleButton -->
 
             <!-- #region App ListView -->
-            <SolidColorBrush x:Key="AddAppListView_BkColor" Color="#99132F54"/>
             
             <Style x:Key="AppListViewItemStyle" TargetType="ListViewItem">
                 <Setter Property="Template">

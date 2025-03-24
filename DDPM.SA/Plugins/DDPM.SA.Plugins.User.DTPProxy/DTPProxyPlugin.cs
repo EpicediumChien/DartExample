@@ -8266,7 +8266,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private async Task<bool> UnregisterEventsForHeadsetAsync(string devcieID)
         {
-            writelog($"[Headset] UnregisterEventsForHeadsetAsync in ... "); 
+            writelog($"[Headset] UnregisterEventsForHeadsetAsync in ... ");
             if (devcieID == null || devcieID == string.Empty || headsetList.Count == 0)
             {
                 writelog($"devcieID == string.Empty || devcieID == null || headsetList.Count == 0");
@@ -11158,7 +11158,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Webcamcom.AutoFramingSensitivityChanged += Webcam_AutoFramingSensitivityChanged;
                     _Webcamcom.AutoFramingFrameSizeChanged += Webcam_AutoFramingFrameSizeChanged;
                     _Webcamcom.FieldOfViewChanged += Webcam_FieldOfViewChanged;
-                    _Webcamcom.IsHDROnChanged += Webcam_IsHDROnChanged;
+                    //_Webcamcom.IsHDROnChanged += Webcam_IsHDROnChanged;
                     _Webcamcom.SerialNumberChanged += Webcam_SerialNumberChanged;
                     _Webcamcom.IsZoomMeetingActiveChanged += Webcam_IsZoomMeetingActiveChanged; //for QAM
                     _Webcamcom.IsZoomScreenShareActiveChanged += Webcam_IsZoomScreenShareActiveChanged; //for QAM
@@ -11378,7 +11378,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 _Webcamcom.AutoFramingSensitivityChanged -= Webcam_AutoFramingSensitivityChanged;
                 _Webcamcom.AutoFramingFrameSizeChanged -= Webcam_AutoFramingFrameSizeChanged;
                 _Webcamcom.FieldOfViewChanged -= Webcam_FieldOfViewChanged;
-                _Webcamcom.IsHDROnChanged -= Webcam_IsHDROnChanged;
+                //_Webcamcom.IsHDROnChanged -= Webcam_IsHDROnChanged;
                 _Webcamcom.SerialNumberChanged -= Webcam_SerialNumberChanged;
                 _Webcamcom.IsZoomMeetingActiveChanged -= Webcam_IsZoomMeetingActiveChanged;
                 _Webcamcom.IsZoomScreenShareActiveChanged -= Webcam_IsZoomScreenShareActiveChanged;
@@ -11829,15 +11829,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             writelog($"Catch event _Webcamcom_SerialNumberChanged, NewValue:{e.SerialNumber}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
-        private void Webcam_IsHDROnChanged(object sender, IsHDROnChangedArgs e)
-        {
-            // << 250207 updated by Hess to prevent cli duplicate event
-            //SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsHDROnChanged",
-            //                        e.DeviceId, $"NewValue:{e.IsHDROn}"));
-            // >> 
+        //private void Webcam_IsHDROnChanged(object sender, IsHDROnChangedArgs e)
+        //{
+        //    // << 250207 updated by Hess to prevent cli duplicate event
+        //    //SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsHDROnChanged",
+        //    //                        e.DeviceId, $"NewValue:{e.IsHDROn}"));
+        //    // >> 
 
-            writelog($"Catch event IsHDROnChanged, Guid: {e.DeviceId} NewValue:{e.IsHDROn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-        }
+        //    writelog($"Catch event IsHDROnChanged, Guid: {e.DeviceId} NewValue:{e.IsHDROn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        //}
 
         private void Webcam_FieldOfViewChanged(object sender, FieldOfViewChangedArgs e)
         {
@@ -11865,10 +11865,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_IsAutoFramingOnChanged(object sender, IsAutoFramingOnChangedArgs e)
         {
-            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoFramingOnChanged",
-                                    e.DeviceId, $"NewValue:{e.IsAutoFramingOn}"));
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoFramingOnChanged", e.DeviceId, $"NewValue:{e.IsAutoFramingOn}"));
 
-            writelog($"Catch event _Webcamcom_IsAutoFramingOnChanged, NewValue:{e.IsAutoFramingOn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_IsAutoFramingOnChanged, Guid:{e.DeviceId} NewValue:{e.IsAutoFramingOn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_IsAutoFramingTransitionOnChanged(object sender, IsAutoFramingTransitionOnChangedArgs e)
@@ -15640,7 +15639,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             catch (Exception e)
             {
-                writelog($"[AirAudio] {index} RegisterEventsForHeadset Exception {e.Message}");
+                writelog($"[AirAudio] {index} RegisterEventsForAirAudioAsync Exception {e.Message}");
 
                 return false;
             }

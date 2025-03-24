@@ -17,6 +17,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using VcpCore.Common;
+using EDID= VcpCore.Common.EDID;
+
 //using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DDPM.UI.Common.Models
@@ -116,6 +118,11 @@ namespace DDPM.UI.Common.Models
 
                 //Robert_lin, 2024-11-14 add Pxp Capapbilies check support
                 InitPipPbpCaps();
+
+                //Robert_Lin 2025-3-20 refresh the tooltip info
+                OnPropertyChanged("TooltipModelName");
+                OnPropertyChanged("DeviceInfoToolTipText");
+
 
                 OnPropertyChanged("DisplayName");
             }
@@ -1247,8 +1254,8 @@ namespace DDPM.UI.Common.Models
                         //Host 3 is unused
                         BleHost3Style = BleHostStyle_Collapsed; // "0";
 
-                        BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName1) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName2;
-                        BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName3;
+                        BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName2;
+                        BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName3) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName3;
 
                         //@ LaunchView:
                         // if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
@@ -1938,7 +1945,8 @@ namespace DDPM.UI.Common.Models
                 return false;
             if (!mask.Contains("inputSource", StringComparison.OrdinalIgnoreCase) && mi1.inputSource != mi2.inputSource)
                 return false;
-            if (!mask.Contains("edid", StringComparison.OrdinalIgnoreCase) && !EqualityComparer<EDID>.Equals(mi1.edid, mi2.edid))
+            if (!mask.Contains("edid", StringComparison.OrdinalIgnoreCase) && //!EqualityComparer<EDID>.Equals(mi1.edid, mi2.edid))
+                (mi1.edid.Equals(mi2.edid)))
                 return false;
 
             return true;

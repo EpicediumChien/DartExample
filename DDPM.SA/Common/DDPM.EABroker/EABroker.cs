@@ -113,7 +113,9 @@ namespace DDPM.EABroker
                         WriteLog("After new InfoWindow");
                         _infoWindow.Show();
 
-                        _vm.InitScreenIdWindows();
+                        //Robert_Lin 2025-3-19, the ScreenIdWindows are not used in DDPM v2.0.1
+                        //Remoarked below, don't create them.
+                        //_vm.InitScreenIdWindows();
                     }
                     catch (Exception exIn)
                     {
@@ -123,6 +125,7 @@ namespace DDPM.EABroker
 
                 added++;
 
+                //Robert_Lin 2025-3-19, InfoWindow.Window_Closing() will call InvokeShutdown() to exit from Run() loop.
                 System.Windows.Threading.Dispatcher.Run();
             });
 
@@ -137,8 +140,20 @@ namespace DDPM.EABroker
         #endregion
 
         #region Exiting
+        //Reverse function of EABroker.Start()
         public void Stop()
         {
+            //Reverse of _vm.InitWorkWindows(), _vm.InitAwsWindow()
+            if (_vm != null)
+                _vm.Exit();
+
+            //Reverse of InitAllWindows()
+            if (_infoWindow != null)
+            {
+                _infoWindow.Close();
+                _infoWindow = null;
+            }
+
             RunningState = eEARunningStates.NotAvailable;
         }
         #endregion

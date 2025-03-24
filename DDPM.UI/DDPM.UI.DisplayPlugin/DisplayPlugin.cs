@@ -33,7 +33,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
     [PluginRequires(Id = DDPM.SA.Common.IDs.DDPM_EAPlugin_PLUGIN_ID, AllowDynamicResolving = true)]
     //   [PluginRequires(Id = DDPM.SA.Common.IDs.PipPbp_Manager_PLUGIN_ID, AllowDynamicResolving = true)]
     [ExcludeFromCodeCoverage]
-    public class DisplayPlugin : IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
+    public class DisplayPlugin : IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin, IDisposable
     //IConsolePagePlugin, IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
     {
         #region Private
@@ -117,7 +117,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
 
         public void OnActivated()
         {
-            _log?.Info("OnActivated()");
+            _log?.Info("[DisplayPlugin] OnActivated()");
             Mouse.OverrideCursor = null;
             _isActivated = true;
             DdpmCommonHelper.IsDisplayPluginActivated = true;
@@ -127,13 +127,14 @@ namespace DDPM.UI.Plugin.DisplayPlugin
 
         public void OnDeactivated()
         {
-            _log?.Info("OnDeactivated()");
+            _log?.Info("[DisplayPlugin] OnDeactivated()");
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
             _isActivated = false;
             DdpmCommonHelper.IsDisplayPluginActivated = false;
         }
         private void ConfigureServices()
         {
+            _log?.Info("[DisplayPlugin] ConfigureServices ... in");
             if (_isConfigured)
                 return;
 
@@ -184,13 +185,15 @@ namespace DDPM.UI.Plugin.DisplayPlugin
                 _viewModel.HomeDevices = DdpmHomePlugin.DdpmHomePlugin.GetHomeDevices();
             }
             _isConfigured = true;
+            _log?.Info("[DisplayPlugin] ConfigureServices ... out");
         }
 
         public void OnShown()
         {
-            _log?.Info("OnShown()");
+            _log?.Info("[DisplayPlugin] OnShown() ... in");
             ConfigureServices();
             PrepareHomeDevices();
+            _log?.Info("[DisplayPlugin] OnShown() ... out");
         }
 
         /// <summary>
@@ -198,6 +201,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
         /// </summary>
         private void PrepareHomeDevices()
         {
+            _log?.Info("[DisplayPlugin] PrepareHomeDevices ... in");
             //Get IDisplayPageViewModel, it will be created after ConfigureServices() executed
             IDisplayPageViewModel? vmDisplay = PluginIoc.GetService<IDisplayPageViewModel>();
 
@@ -217,6 +221,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
                 //Assign to DisplayPageViewModel
                 vmDisplay.HomeDevices = monitors;
             }
+            _log?.Info("[DisplayPlugin] PrepareHomeDevices ... out");
         }
 
         #region Plugin related
@@ -537,5 +542,24 @@ namespace DDPM.UI.Plugin.DisplayPlugin
         }
         */
         #endregion  MainWindow Move To new position
+
+        #region Exit
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+        }
+
+        ~DisplayPlugin()
+        {
+            Dispose(false);
+        }
+        #endregion Exit
     }
 }

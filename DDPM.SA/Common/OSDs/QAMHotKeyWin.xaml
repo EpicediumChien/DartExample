@@ -28,23 +28,33 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="32" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="32" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="48" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="48" />
         </Grid.ColumnDefinitions>
-        <Grid Margin="0,50,0,0"
-              x:Name="fadeOutCtrl"
-              Grid.Row="0"
+        <Grid Grid.Row="0" Grid.Column="2">
+            <!--Close-->
+            <Canvas Grid.Row="0" Width="20" Height="20" Margin="0,8,8,0" 
+                            HorizontalAlignment="Right" VerticalAlignment="Top" 
+                            MouseLeftButtonDown="close_Click"
+                            Background="Transparent"
+                            Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                <Path Data="M16,0.82 L15.18,0 L8,7.2 L0.82,0.05 L0,0.87 L7.15,8 L0.05,15.13 L0.87,16 L8,8.85 L15.13,16 L15.95,15.18 L8.8,8 L16,0.82 Z" 
+                            Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            </Canvas>
+        </Grid>
+        <Grid x:Name="fadeOutCtrl"
+              Grid.Row="1"
               Grid.Column="1"
               HorizontalAlignment="Center"
               VerticalAlignment="Bottom">
-            <Border Width="332"
-                    Height="135"
+            <Border Width="270"
+                    MinHeight="96"
                     Background="{DynamicResource Default_SA_OSD_Border_BkColor}"
                     BorderBrush="#0DFFFFFF"
                     BorderThickness="1.5"
@@ -55,21 +65,12 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <!--Close-->
-                    <Canvas Grid.Row="0" Width="20" Height="20" Margin="0,8,8,0" 
-                            HorizontalAlignment="Right" VerticalAlignment="Top" 
-                            MouseLeftButtonDown="close_Click"
-                            Background="Transparent"
-                            Tag="{DynamicResource Default_SA_OSD_PathColor}">
-                        <Path Data="M16,0.82 L15.18,0 L8,7.2 L0.82,0.05 L0,0.87 L7.15,8 L0.05,15.13 L0.87,16 L8,8.85 L15.13,16 L15.95,15.18 L8.8,8 L16,0.82 Z" 
-                            Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                    </Canvas>
                     <Grid Grid.Row="1">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="50*" />
-                            <RowDefinition Height="50*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Margin="5,5,5,0"
+                        <TextBlock Grid.Row="0" Margin="0,5,0,0"
                                    x:Name="ShowStringText"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Top"

@@ -57,7 +57,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         private void GetRFDongleAsync()
         {
-            _log.Debug($"GetRFDongleAsync is invoked");
+            _log.Info($"[AddDevicePlugin] GetRFDongleAsync is invoked ... in");
             //Task<DeviceHelper> tsk = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
             //_viewModel!.WacomVersion = tsk.Result.IsdDriverVersion;
             if (DdpmCommonHelper.DeviceManagerSA == null)
@@ -71,6 +71,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
                 _viewModel?.PrepareDongleInfo(_deviceHelper.dongleInfo);
             }
+            _log.Info($"[AddDevicePlugin] GetRFDongleAsync is invoked ... out");
         }
 
         /// <summary>
@@ -79,6 +80,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         /// <remarks>Below code will be removed when <see cref="IConsole"/> provides the bootstrapper support</remarks>
         private void ConfigureServices()
         {
+            _log.Info($"[AddDevicePlugin] ConfigureServices ... in");
             if (_isConfigured)
                 return;
 
@@ -93,6 +95,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
             _viewModel = (AddDeviceViewModel?)PluginIoc.GetService<IAddDeviceViewModel>();
             _isConfigured = true;
+            _log.Info($"[AddDevicePlugin] ConfigureServices ... out");
         }
 
         public string HeaderText => "Add Device";
@@ -120,6 +123,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         /// <inheritdoc/>
         public void OnShown(string pluginParameter)
         {
+            DdpmCommonHelper.WriteUILog($"AddDevice pugin OnShown Begin timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
             ConfigureServices();
             //GetPeripheralsAsync();
             GetRFDongleAsync();
@@ -128,6 +132,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceChanged;
             }
             Mouse.OverrideCursor = null;
+            DdpmCommonHelper.WriteUILog($"AddDevice pugin OnShown End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
 
         #endregion Interface IConsolePluginSupportsActivations

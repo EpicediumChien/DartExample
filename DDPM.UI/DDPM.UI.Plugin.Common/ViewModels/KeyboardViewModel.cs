@@ -74,6 +74,7 @@ namespace DDPM.UI.Plugin.ViewModels
             _isCollaborationScreenShareEnableText = Strings.Off;
             _isCollaborationChatEnableText = Strings.Off;
             _isCollaborationMicEnableText = Strings.Off;
+            _log!.Info($"[KeyboardViewModel] KeyboardViewModel Start ...");
         }
 
         private void OnTabOffClicked()

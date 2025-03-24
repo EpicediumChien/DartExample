@@ -258,7 +258,7 @@ namespace DdpmSwUpdater
                                 {
                                     swUpdateInfos[i].SWUErrorCode = SWUErrorCode.CAFail;
                                 }
-                                else if (downloadInfo.StartsWith("Network fail"))
+                                else
                                 {
                                     swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
                                 }
@@ -269,6 +269,12 @@ namespace DdpmSwUpdater
                         if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.CAFail || string.IsNullOrEmpty(_installationFileStoragePath))
                         {
                             LogManage.LogMessage($"{swUpdateInfos[i].SoftwareName} Download File Fail retry 3 count");
+                            method.DeleteFolder(savePath);
+                            continue;
+                        }
+                        if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NetworkDisconnection || string.IsNullOrEmpty(_installationFileStoragePath))
+                        {
+                            LogManage.LogMessage($"{swUpdateInfos[i].SoftwareName} Download File Fail NetworkDisconnection");
                             method.DeleteFolder(savePath);
                             continue;
                         }
@@ -507,7 +513,7 @@ namespace DdpmSwUpdater
                             {
                                 swUpdateInfos[i].SWUErrorCode = SWUErrorCode.CAFail;
                             }
-                            else if (downloadInfo.StartsWith("Network fail"))
+                            else
                             {
                                 swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
                             }
@@ -517,6 +523,12 @@ namespace DdpmSwUpdater
                     if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.CAFail || string.IsNullOrEmpty(_installationFileStoragePath))
                     {
                         LogManage.LogMessage($"{swUpdateInfos[i].SoftwareName} Download File Fail retry 3 count");
+                        method.DeleteFolder(savePath);
+                        continue;
+                    }
+                    if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NetworkDisconnection || string.IsNullOrEmpty(_installationFileStoragePath))
+                    {
+                        LogManage.LogMessage($"{swUpdateInfos[i].SoftwareName} Download File Fail NetworkDisconnection");
                         method.DeleteFolder(savePath);
                         continue;
                     }

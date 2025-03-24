@@ -52,9 +52,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Opacity="{Binding UpdatesPageUI_Opacity}">
-        <UXControls:UXScrollViewer>
             <!-- bdUpdate -->
-            <Border Style="{StaticResource GroupBorderStyle}" CornerRadius="13" Padding="16">
+        <Border Style="{StaticResource GroupBorderStyle}" CornerRadius="13" Padding="16">
+            <UXControls:UXScrollViewer>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -291,8 +291,8 @@
                         <!--<UXControls:UXTextBlock x:Name="DownloadUXTextBlock" Grid.Column="2" Text="{Binding [Updates.6], Source={x:Static lang:LangHelper.Instance}}" TextBlockType="Header1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Visibility="Hidden"/>-->
                     </Grid>
                 </Grid>
-            </Border>
-        </UXControls:UXScrollViewer>
+            </UXControls:UXScrollViewer>
+        </Border>
         <Border Name="DisableAll"
                 Background="#4C24273C">
             <Border.Style>

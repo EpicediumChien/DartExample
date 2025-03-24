@@ -70,11 +70,14 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         }
         public void OnShown()
         {
+            _log.Info($"[WalkThroughPlugin] OnShown ... in");
             ConfigureServices();
             Mouse.OverrideCursor = null;
+            _log.Info($"[WalkThroughPlugin] OnShown ... out");
         }
         private void ConfigureServices()
         {
+            _log.Info($"[WalkThroughPlugin] ConfigureServices ... in");
             if (_isConfigured)
                 return;
 
@@ -85,6 +88,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 //.AddSingleton<WalkThroughPageViewModel, WalkThroughPageViewModel>()
                 .BuildServiceProvider());
             _isConfigured = true;
+            _log.Info($"[WalkThroughPlugin] ConfigureServices ... out");
         }
     }
 }

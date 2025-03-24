@@ -118,7 +118,8 @@
                                         <Border.Resources>
                                             <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                         </Border.Resources>
-                                        <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Vertical">
+                                            <TextBlock Text="{Binding DeviceID}" />
                                             <TextBlock Text="{Binding FirmwareVersion2}" />
                                         </StackPanel>
                                     </Border>

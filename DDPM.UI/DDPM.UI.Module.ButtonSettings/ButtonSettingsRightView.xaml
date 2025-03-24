@@ -273,7 +273,7 @@
               <DockPanel Name="SearchPanel" Margin="0,-9,0,12">
                 <DockPanel.Height>
                   <MultiBinding Converter="{StaticResource HeightConverter}" ConverterParameter="207">
-                    <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=2}" />
+                    <Binding Path="MaxHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=2}" />
                   </MultiBinding>
                 </DockPanel.Height>
                 <UXControls:UXScrollViewer x:Name="svSearch" VerticalScrollBarVisibility="Auto">
@@ -289,10 +289,10 @@
                               </Style>
                             </UXControls:UXRadioButton.Resources>
                           </UXControls:UXRadioButton>
-                          <!--<StackPanel Orientation="Horizontal" Margin="58,10,0,3.5" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
-                                                    <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
-                                                    <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
-                                                    </StackPanel>-->
+                          <StackPanel Orientation="Horizontal" Margin="58,10,0,3.5" Tag="_A" Loaded="ActionButtonLoaded" Visibility="Collapsed">
+                            <common:ActionButton Style="{StaticResource EditActionButtonStyle}" Margin="0,0,7,0" Loaded="ActionButtonLoaded" Tag="Edit" MouseDown="EditActionClick" />
+                            <common:ActionButton Style="{StaticResource RemoveActionButtonStyle}" Loaded="ActionButtonLoaded" Tag="Remove" MouseDown="RemoveActionClick" />
+                          </StackPanel>
                         </StackPanel>
                       </DataTemplate>
                     </ItemsControl.ItemTemplate>

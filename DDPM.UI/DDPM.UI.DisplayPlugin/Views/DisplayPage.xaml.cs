@@ -997,5 +997,12 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         }
 
         #endregion ModuleOwner
+
+        #region Exit
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _log?.Info("DisplayPage.UserControl_Unloaded");
+        }
+        #endregion
     }
 }
