@@ -1040,12 +1040,20 @@ namespace DDPM.UI.Plugin.ViewModels
                             switch (property)
                             {
                                 case "IsHDROnChanged":
-                                    if (bool.TryParse(di.Message, out bool isHDROn) &&
-                                        IsHDROn != isHDROn)
+                                    if (bool.TryParse(di.Message, out bool isHDROn) && di.ID == CurrentDeviceID && IsHDROn != isHDROn)
                                     {
                                         Application.Current.Dispatcher.Invoke(() =>
                                         {
                                             IsHDROn = isHDROn;
+                                        });
+                                    }
+                                    break;
+                                case "IsAutoFramingOnChanged":
+                                    if (bool.TryParse(di.Message, out bool isAFOn) && di.ID == CurrentDeviceID && IsAutoFramingOn != isAFOn)
+                                    {
+                                        Application.Current.Dispatcher.Invoke(() =>
+                                        {
+                                            IsAutoFramingOn = isAFOn;
                                         });
                                     }
                                     break;
@@ -1353,7 +1361,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsAutoFramingOnText));
                     OnPropertyChanged(nameof(PanArrowVisibility));
-                    CurrentProfile.IsAutoFramingOn = value;
+                    //CurrentProfile.IsAutoFramingOn = value;
 
                     //Derek 2024/11/06
                     if (IsAutoFramingOn)

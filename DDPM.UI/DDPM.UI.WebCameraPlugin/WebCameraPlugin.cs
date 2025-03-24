@@ -268,33 +268,33 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             }
                             break;
                         case "Webcam_SerialNumberChanged":
-                            {
-                                //??
-                            }
-                            break;
-                        case "Webcam_IsHDROnChanged":
-                            {
-                                if (!event_param.TryGetValue("NewValue", out var NewValue))
-                                {
-                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
-                                    return;
-                                }
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    //_viewModel!.IsSettingProfile = true;
-                                    if (NewValue.ToLower() == "true")
-                                        _viewModel.IsHDROn = true;
-                                    else
-                                        _viewModel.IsHDROn = false;
-                                    //_viewModel!.IsSettingProfile = false;
-                                });
-                                //HDR SIWTCH時候,需要重置CAMERA,中間需要一段初始化時間約1秒
-                                //_viewModel!.mre.Set();
-                                Task.Delay(1000).Wait();
-                                _viewModel!.mre.Set();
-                                _viewModel!.hdr_change = false;
-                            }
-                            break;
+                        {
+                            //??
+                        }
+                        break;
+                        //case "Webcam_IsHDROnChanged":
+                        //{
+                        //    if (!event_param.TryGetValue("NewValue", out var NewValue))
+                        //    {
+                        //        DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                        //        return;
+                        //    }
+                        //    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        //    {
+                        //        //_viewModel!.IsSettingProfile = true;
+                        //        if (NewValue.ToLower() == "true")
+                        //            _viewModel.IsHDROn = true;
+                        //        else
+                        //            _viewModel.IsHDROn = false;
+                        //        //_viewModel!.IsSettingProfile = false;
+                        //    });
+                        //    //HDR SIWTCH時候,需要重置CAMERA,中間需要一段初始化時間約1秒
+                        //    //_viewModel!.mre.Set();
+                        //    Thread.Sleep(1000);
+                        //    _viewModel!.mre.Set();
+                        //    _viewModel!.hdr_change = false;
+                        //}
+                        //break;
                         case "Webcam_FieldOfViewChanged":
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))

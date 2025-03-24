@@ -11867,7 +11867,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoFramingOnChanged", e.DeviceId, $"NewValue:{e.IsAutoFramingOn}"));
 
-            writelog($"Catch event _Webcamcom_IsAutoFramingOnChanged, NewValue:{e.IsAutoFramingOn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcamcom_IsAutoFramingOnChanged, Guid:{e.DeviceId} NewValue:{e.IsAutoFramingOn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_IsAutoFramingTransitionOnChanged(object sender, IsAutoFramingTransitionOnChangedArgs e)
