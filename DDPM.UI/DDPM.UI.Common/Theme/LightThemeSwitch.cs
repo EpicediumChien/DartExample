@@ -475,7 +475,7 @@ namespace DDPM.UI.Common
                 UpdateFreezable("SortToggleButton_BdColor_Hover", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#31A2E3"));
                 #endregion SortToggleButton
                 #region AppListView
-                UpdateFreezable("AddAppListView_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E5ECF9"));
+                UpdateFreezable("AddAppListView_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFF5F6F7"));
                 #endregion AppListView
                 #endregion Add Application Page
 
