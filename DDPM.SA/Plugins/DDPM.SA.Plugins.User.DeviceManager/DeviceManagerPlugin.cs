@@ -12575,9 +12575,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             writelog($"monitor count {e.monitors.Count} ...");
 
-            InitMonitorSettings(_AllInfoMonitors);
+            InitMonitorSettings((e.monitors).ToList());
 
-            Task.Run(() => InitAllDisplayData(_AllInfoMonitors)).ConfigureAwait(false);
+            Task.Run(() => InitAllDisplayData((e.monitors).ToList())).ConfigureAwait(false);
 
             DisplaychangedEventArgs _displaychangedEventArgs = new DisplaychangedEventArgs();
             _displaychangedEventArgs.count = e.count;
@@ -16756,6 +16756,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
             if (AllInfoMonitors != null && _SettingsPlugin != null)
             {
+                writelog("[InitMonitorSettings] AllInfoMonitors count = " + AllInfoMonitors.Count.ToString());
                 foreach (MonitorInfo m in AllInfoMonitors.ToList())
                 {
                     monitorSettingsList = _SettingsPlugin.InitDDPMMonitorConfigFile(m.modelName, out isInitMonitorSettings).Result;
@@ -16828,6 +16829,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     }
                 }
+            }
+            else
+            {
+                writelog("[InitMonitorSettings] AllInfoMonitors or _SettingsPlugin is null");
             }
         }
 
