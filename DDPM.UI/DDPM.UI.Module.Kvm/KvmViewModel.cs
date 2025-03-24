@@ -514,6 +514,8 @@ namespace DDPM.UI.Module.Kvm
 
         public bool firstinKVM {  get; set; } = true;
 
+        public bool LockSendNoKVM { get; set; } = false;
+
         #region Hotkey
 
         private string _kvmHotkeyTooltip = LangHelper.Instance["None"];
@@ -971,6 +973,7 @@ namespace DDPM.UI.Module.Kvm
             _log.Info("[KvmViewModel] DoWork_RefreshData start");
             DateTime entryUSBKVM = DateTime.Now;
             _log.Info($"[DoWork_RefreshData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
+            LockSendNoKVM = true;
             try // 2024-06-19 Fix exception when close Main UI or device remove.
             {
                 //sender is the ‘bw’ object
@@ -1095,6 +1098,7 @@ namespace DDPM.UI.Module.Kvm
             {
                 _log.Error(ex, "[DoWork_RefreshData] exception");
             }
+            LockSendNoKVM = false;
             _log.Info("[KvmViewModel] DoWork_RefreshData end");
             entryUSBKVM = DateTime.Now;
             _log.Info($"[DoWork_RefreshData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
