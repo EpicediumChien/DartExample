@@ -24,9 +24,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <UXControls:UXScrollViewer>
-            <Border Style="{StaticResource GroupBorderStyle}"
+        <Border Style="{StaticResource GroupBorderStyle}"
                     CornerRadius="13">
+            <UXControls:UXScrollViewer>
                 <StackPanel>
                     <!-- Robert_Lin 2025-3-6 PIMS-348208 S-348208 Multiple Instances of Incorrect Padding (too much space) in Settings
                      1 Problem: The Margin.Left of each Region below should be 16 (original 20)
@@ -208,7 +208,7 @@
                     <!-- OLD:
                     <Grid Margin="20,20,8,8">
                     -->
-                    <Grid Margin="0,0,0,0">
+                    <Grid Height="72" Margin="0,0,0,16">
                         <Border Style="{StaticResource PartBorderStyle}" x:Name="reportsBorder"
                                 BorderThickness="0" CornerRadius="6">
                             <!-- OLD:
@@ -224,7 +224,7 @@
                                         Margin="8,15,5,15"
                                 -->
                                 <Button Style="{DynamicResource Button_WhiteFrame}"
-                                        MinWidth="176"
+                                        MinWidth="226"
                                         Height="40"
                                         Click="SaveDiagnosticReport_Click"
                                         x:Name="btnSaveDiagnosticReport"
@@ -246,7 +246,7 @@
                                         Margin="8,15,5,15"
                                 -->
                                 <Button Style="{StaticResource Button_WhiteFrame}"
-                                        MinWidth="176"
+                                        MinWidth="226"
                                         Height="40"
                                         Click="SaveMonitorAssetReport_Click"
                                         x:Name="btnSaveMonitorAssetReport"
@@ -266,8 +266,8 @@
                     </Grid>
                     <!-- #endregion 4 Reports Buttons -->
                 </StackPanel>
-            </Border>
-        </UXControls:UXScrollViewer>
+            </UXControls:UXScrollViewer>
+        </Border>
         <Border Name="DisableAll"
                 Background="#4C24273C">
             <Border.Style>

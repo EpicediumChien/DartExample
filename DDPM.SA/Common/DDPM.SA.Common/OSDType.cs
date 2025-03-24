@@ -31,7 +31,10 @@
         ScrollLockOff,
         NumLockOn,
         NumLockOff,
-        FW
+        FW,
+        Mute,
+        UnMute,
+        FingerPrint
     }
 
     public enum OSDType_Op
