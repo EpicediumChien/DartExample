@@ -810,12 +810,22 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             print_debug("CheckUSBtype() s2");
 
+            //Dean 2025/3/24 remove test code.
             //硬體與條件狀態模擬測試 rd測試用
-            if (File.Exists(@"C:\ui_cond\ddpm_cond.txt"))
+            /*if (File.Exists(@"C:\ui_cond\ddpm_cond.txt"))
             {
-                ui_cond cond = JsonConvert.DeserializeObject<ui_cond>(File.ReadAllText(@"C:\ui_cond\ddpm_cond.txt"));
-                AllSupportedResolutions = cond.AllSupportedResolutions;
-            }
+                try
+                {
+                    ui_cond cond = JsonConvert.DeserializeObject<ui_cond>(File.ReadAllText(@"C:\ui_cond\ddpm_cond.txt"));
+                    AllSupportedResolutions = cond.AllSupportedResolutions;
+                }
+                catch(Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog($"CheckUSBtype catch exception: {ex.Message}");
+
+                }
+
+            }*/
 
             print_debug("CheckUSBtype() s3 AllSupportedResolutions- " + AllSupportedResolutions);
 
