@@ -620,7 +620,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 int tick = 0;
                 while (WalkThroughQueue != null && WalkThroughQueue.Count > 0)
                 {
-                    Thread.Sleep(5000);
+                    Task.Delay(5000).Wait();
                     tick++;
                     _log.Info($"[DdpmHomePlugin] CheckIfNeedImportSetting_Display, 5 sec x {tick.ToString()}... ");
                 }

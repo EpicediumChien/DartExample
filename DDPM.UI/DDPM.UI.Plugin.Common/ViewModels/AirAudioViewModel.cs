@@ -1993,7 +1993,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _log.Info($"[AirAudioViewModel] DoWork_PleaseWait ... Can not get AirAudioReady ...... {tick.ToString()} sec, fail ...");
                         break;
                     }
-                    Thread.Sleep(1000); // IL provide info, DPeM 18 need 3sec, DPeM 20 need 18~25 sec,
+                    Task.Delay(1000).Wait();//Thread.Sleep(1000); // IL provide info, DPeM 18 need 3sec, DPeM 20 need 18~25 sec,
                     tick++;
                 }
                 if (_waitAirAudioReady)
@@ -2035,7 +2035,7 @@ namespace DDPM.UI.Plugin.ViewModels
             //{
             //    AirAudioGroupChanged?.Invoke(this, EventArgs.Empty);
             //});
-            Thread.Sleep(500);
+            Task.Delay(500).Wait();//Thread.Sleep(500);
             HidePleaseWait();
         }
 

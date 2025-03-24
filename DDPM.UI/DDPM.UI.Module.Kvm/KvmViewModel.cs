@@ -512,7 +512,7 @@ namespace DDPM.UI.Module.Kvm
 
         public bool LeftButtonEnable { get; set; } = true;
 
-        public bool firstinKVM {  get; set; } = true;
+        public bool firstinKVM { get; set; } = true;
 
         #region Hotkey
 
@@ -754,8 +754,8 @@ namespace DDPM.UI.Module.Kvm
                             _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}";
                         }
                     }
-                    if (curHotkey.HotkeyOptions.Count > 0 && 
-                        curHotkey.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)) && 
+                    if (curHotkey.HotkeyOptions.Count > 0 &&
+                        curHotkey.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)) &&
                         selectedHomeDevice != null && selectedHomeDevice.MonitorInfo != null)
                     {
                         if (IsPBPMode(selectedHomeDevice.MonitorInfo, _curPxpMode))
@@ -786,7 +786,7 @@ namespace DDPM.UI.Module.Kvm
             UInt16 pxpModeValue = 0;
             if (!mo.CapabilityDic.ContainsKey("E9"))
                 return ret;
-            if (curPxpMode == 0 && 
+            if (curPxpMode == 0 &&
                 DdpmCommonHelper.DeviceManagerSA != null)
             {
                 ObjGetVCP ret_PxP = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(mo).Result;
@@ -1176,7 +1176,7 @@ namespace DDPM.UI.Module.Kvm
                 //Update Left view Text1
                 Text1 = selHomeDevice.Text1;
                 OnPropertyChanged("Text1");
-                
+
                 if (mi.CapabilityDic.ContainsKey("E7"))
                 {
                     _log?.Info("[KvmViewModel]Have 0xEE");
@@ -1324,7 +1324,7 @@ namespace DDPM.UI.Module.Kvm
                                 {
                                     ModifiedPCinputList();
                                     if (pcsList.TryGetValue("PC3", out var pc3))
-                                        {
+                                    {
                                         _PC3selectInput = _inputsList3.Find(x => (x.Type == pcsList["PC3"].InputType));
                                         if (_PC3selectInput == null)
                                         {
@@ -1335,7 +1335,7 @@ namespace DDPM.UI.Module.Kvm
                                             _PC3selectInput = _inputsList3[0];
                                         }
                                         _PC3selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC3"].USBUpstream));
-                                            
+
                                         PC3_Input = pcsList["PC3"].InputType;
                                         if (!USBKVMisON)
                                         {
@@ -2378,7 +2378,7 @@ namespace DDPM.UI.Module.Kvm
             catch (System.Exception ex)
             {
                 Trace.WriteLine($"ERROR : Run NKVM ==> {ex.ToString()}");
-                Thread.Sleep(1000);
+                Task.Delay(1000).Wait();
             }
         }
 
@@ -2469,7 +2469,7 @@ namespace DDPM.UI.Module.Kvm
                     break;
                 }
                 i++;
-                Thread.Sleep(500);
+                Task.Delay(500).Wait();
             }
             if (i == 120)
             {
@@ -2495,7 +2495,7 @@ namespace DDPM.UI.Module.Kvm
             }
             if (e.Result != null)
             {
-                Thread.Sleep(3000);
+                Task.Delay(3000).Wait();
             }
             IsBusy = false;
             OnPropertyChanged("IsBusy");
@@ -2558,7 +2558,7 @@ namespace DDPM.UI.Module.Kvm
                 int i = 0;
                 while (i < 20)
                 {
-                    Thread.Sleep(2000);
+                    Task.Delay(2000).Wait();
                     monitorList = DdpmCommonHelper.DeviceManagerSA.GetMonitors().Result;
                     if (monitorList != null && monitorList.Count > 0)
                     {
@@ -2580,11 +2580,11 @@ namespace DDPM.UI.Module.Kvm
             //    (pcsList.ContainsKey("PC3") && pcsList["PC3"] != original_pcsList["PC3"]) ||
             //    (pcsList.ContainsKey("PC4") && pcsList["PC4"] != original_pcsList["PC4"]))
             //{
-                bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
-                        monitorInfo,
-                        PC2input, PC3input, PC4input).Result;
-                string result = res ? "Success" : "Failed";
-                _log.Info($"[KvmViewModel] SubInputs PC Done with {result}.");
+            bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
+                    monitorInfo,
+                    PC2input, PC3input, PC4input).Result;
+            string result = res ? "Success" : "Failed";
+            _log.Info($"[KvmViewModel] SubInputs PC Done with {result}.");
             //}
         }
 

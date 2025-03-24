@@ -76,7 +76,7 @@ namespace DDPM.UI.Module.Color
             {
                 ColorViewModel vm = (ColorViewModel)DataContext;
                 if (vm != null)
-                {   
+                {
                     ALSConfig cfg = DdpmCommonHelper.DeviceManagerSA?.GetALSFeatureValue(
                         DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                         ALSFeatureQueryType.All, 0).Result;
@@ -127,15 +127,15 @@ namespace DDPM.UI.Module.Color
             //Lock/unlock
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;    
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
         {
-            bool? isLockColor = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ColorPreset", e);            
+            bool? isLockColor = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ColorPreset", e);
             bool? isLockAutoTemp = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_AutoBriTemp", e);
-            
+
             if (isLockColor != null || isLockAutoTemp != null)
             {
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
@@ -269,21 +269,21 @@ namespace DDPM.UI.Module.Color
                         string colorPresetName = vm.SupportColorPresets[cb.SelectedIndex];
 
                         var nColorVCPCoreValue = DdpmCommonHelper.DeviceManagerSA.GetColorVCPCoreValue(colorPresetName).Result;
-                            
-                        if (vm.SmartHDR_ON )
+
+                        if (vm.SmartHDR_ON)
                             Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].HDRColor = nColorVCPCoreValue;
                         else
                             Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].Color = nColorVCPCoreValue;
 
                         DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
-                        Thread.Sleep(500);
+                        Task.Delay(500).Wait();
 
                         // jim add 20240627
                         DdpmCommonHelper.DeviceManagerSA.Notify_refresh_app_list();
 
                         // jim add 20240806
-                        Thread.Sleep(500);
-                    }                    
+                        Task.Delay(500).Wait();
+                    }
                 }
             }
         }
@@ -310,11 +310,11 @@ namespace DDPM.UI.Module.Color
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo.Remove(selected_app.AppName);
 
                         DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
-                        Thread.Sleep(500);
+                        Task.Delay(500).Wait();
                     }
-                                       
+
                     Test_AddAppCollectionData.GetInstance().AppsList.Remove(selected_app);
-                    Thread.Sleep(100);
+                    Task.Delay(100).Wait();
                 }
             }
         }
@@ -387,7 +387,7 @@ namespace DDPM.UI.Module.Color
                     {
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs = DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result;
 
-                        int index=-1;
+                        int index = -1;
 
                         if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
                             index = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
@@ -423,11 +423,11 @@ namespace DDPM.UI.Module.Color
                 this.Dispatcher.Invoke((Action)(() =>
                 {
                     if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
-                        DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", vm.Is_Game_DeviceName , vm.IsAutoColorPreset_Lock); // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                        DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", vm.Is_Game_DeviceName, vm.IsAutoColorPreset_Lock); // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "on");
                     //int j = 0;
-                })); 
-            
+                }));
+
             }
         }
 
@@ -461,7 +461,7 @@ namespace DDPM.UI.Module.Color
                     vm.ColorManagement_isChecked = false;
                     vm.ICCprofile_based_Colorpreset_enable = false;
                 }
-            }          
+            }
         }
 
         private void rb_ICCprofile_based_Colorpreset_click(object sender, RoutedEventArgs e)
@@ -469,9 +469,9 @@ namespace DDPM.UI.Module.Color
             DdpmCommonHelper.DeviceManagerSA.AutoColorManagementForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "BYMONITOR");
 
             if ((bool)rb_Colorpreset_based_ICCprofile.IsChecked)
-            { 
+            {
                 rb_Colorpreset_based_ICCprofile.IsChecked = false;
-            }        
+            }
         }
 
         private void rb_Colorpreset_based_ICCprofile_click(object sender, RoutedEventArgs e)
@@ -481,13 +481,13 @@ namespace DDPM.UI.Module.Color
             ColorViewModel vm = (ColorViewModel)DataContext;
 
             if ((bool)rb_ICCprofile_based_Colorpreset.IsChecked)
-            {             
+            {
                 rb_ICCprofile_based_Colorpreset.IsChecked = false;
 
                 //Dean 0612 add
                 if (vm != null)
                     vm.ICCprofile_based_Colorpreset_enable = false;
-            } 
+            }
         }
 
         private void lb_AppList_PreviewDragEnter(object sender, System.Windows.DragEventArgs e)
@@ -509,7 +509,7 @@ namespace DDPM.UI.Module.Color
                 //pathName = "Dragging object is not \"single\" file.";               
                 return;
             }
-        
+
             string targetPath = dropFileNames[0];
 
             //Elsa Add Security
@@ -520,8 +520,8 @@ namespace DDPM.UI.Module.Color
             //    return;
             //}
 
-            if (targetPath.EndsWith(".lnk")  || targetPath.EndsWith(".exe"))
-            {     
+            if (targetPath.EndsWith(".lnk") || targetPath.EndsWith(".exe"))
+            {
                 string strAppName = string.Empty;
                 string strFileName = string.Empty;
                 string strAppIcon = string.Empty;
@@ -584,12 +584,12 @@ namespace DDPM.UI.Module.Color
                         }
                     }
                     catch
-                    { 
+                    {
                         // No log function in this project
                     }
 
                 }
-               
+
                 if (targetPath.EndsWith(".exe"))
                 {
                     strFileName = targetPath;
@@ -597,11 +597,11 @@ namespace DDPM.UI.Module.Color
 
                 Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.FindAppsbyShell().Result;
 
-                foreach (KeyValuePair<string, InstalledAppInfo> kvp in data) 
-                { 
+                foreach (KeyValuePair<string, InstalledAppInfo> kvp in data)
+                {
                     if (kvp.Value.AppInstallPath.Equals(strFileName, StringComparison.OrdinalIgnoreCase))
                     {
-                        strAppName = kvp.Value.AppName;   
+                        strAppName = kvp.Value.AppName;
 
                         string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
                         strFolder += "\\";
@@ -662,13 +662,13 @@ namespace DDPM.UI.Module.Color
                             }
 
                             DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
-                            Thread.Sleep(500);
+                            Task.Delay(500).Wait();
 
                             DdpmCommonHelper.DeviceManagerSA.Notify_refresh_app_list();
                         }
                     }
-                }               
-              
+                }
+
             }
         }
 
@@ -680,7 +680,7 @@ namespace DDPM.UI.Module.Color
         {
             var comboBox = sender as System.Windows.Controls.ComboBox;
             ColorViewModel vm = (ColorViewModel)DataContext;
-            if(vm != null && comboBox != null &&
+            if (vm != null && comboBox != null &&
                !string.IsNullOrEmpty(vm.last_selected_value))
             {
                 comboBox.SelectedValue = vm.last_selected_value;
