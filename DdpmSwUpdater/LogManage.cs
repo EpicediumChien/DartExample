@@ -119,12 +119,17 @@ namespace DdpmSwUpdater
                 //{
                 //    Directory.CreateDirectory(path);
                 //}
+
+                // [Checkmarx] Avoid Log Forging
+                string safeMessage = message.Replace("\n", "").Replace("\r", "");
+                safeMessage = System.Security.SecurityElement.Escape(safeMessage);
+
                 if (Logs != null)
                 {
-                    Logs.DebugMsg_1(message);
+                    Logs.DebugMsg_1(safeMessage);
                 }
 #if DEBUG
-                Console.WriteLine($"{DateTime.Now}: {message}");
+                Console.WriteLine($"{DateTime.Now}: {safeMessage}");
 #endif
             }
             catch(Exception ex)

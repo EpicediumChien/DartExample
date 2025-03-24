@@ -46,7 +46,7 @@ namespace VcpCore.Common
         }
 
         public void DebugMsg_1(string DebugMsg)
-        {
+        {            
             string s = $"[{_PluginLogId}][INFO] " + DebugMsg;
             if (Logg != null) // Elie, check if it's null or not.
             { Logg.Info(s); }
