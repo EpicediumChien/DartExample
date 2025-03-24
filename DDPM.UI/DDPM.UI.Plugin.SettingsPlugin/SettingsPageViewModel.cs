@@ -244,27 +244,49 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
         private void Set_Page_Done_1(object sender, RunWorkerCompletedEventArgs e)
         {
-            IsBusy_UpdatePage = false;
-            OnPropertyChanged("IsBusy_UpdatePage");
             if (SWUpdateInfoPackage != null && SWUpdateInfoPackage.SWUpdateInfo != null && SWUpdateInfoPackage.SWUpdateInfo.Count >= 1)
             {
-                InterruptScreenRoot myDeserializedClass = DdpmCommonHelper.DeviceManagerSA.InterruptScreen_Metadata().Result;
-                if (myDeserializedClass != null)
+                InterruptScreenRoot myDeserializedClass = null;
+                BackgroundWorker bw = new BackgroundWorker
                 {
-                    bool? b = false;
+                    WorkerReportsProgress = false,
+                    WorkerSupportsCancellation = false
+                };
+                bw.DoWork += delegate
+                {
+                    IsBusy_UpdatePage = true;
+                    OnPropertyChanged("IsBusy_UpdatePage");
+                    myDeserializedClass = DdpmCommonHelper.DeviceManagerSA.InterruptScreen_Metadata().Result;
+                };
+                bw.RunWorkerCompleted += delegate
+                {
                     Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() =>
                     {
-                        InterruptScreen interruptScreen = new InterruptScreen(SWUpdateInfoPackage.SWUpdateInfo[0].TheLatestVersion, myDeserializedClass);
-                        b = interruptScreen.ShowDialog();
-                        if (b == true)
+                        if (myDeserializedClass != null)
                         {
-                            Log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall go");
-                            List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(SWUpdateInfoPackage.SWUpdateInfo, true, "").Result;
-                            Log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall finish");
-                            //SetSelected(1);
+                            bool? b = false;
+
+                            InterruptScreen interruptScreen = new InterruptScreen(SWUpdateInfoPackage.SWUpdateInfo[0].TheLatestVersion, myDeserializedClass);
+                            b = interruptScreen.ShowDialog();
+                            if (b == true)
+                            {
+                                Log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall go");
+                                List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(SWUpdateInfoPackage.SWUpdateInfo, true, "").Result;
+                                Log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall finish");
+                                //SetSelected(1);
+                            }
+
                         }
                     }));
-                }
+                    IsBusy_UpdatePage = false;
+                    OnPropertyChanged("IsBusy_UpdatePage");
+                };
+                bw.RunWorkerAsync();
+            }
+            else
+            {
+                IsBusy_UpdatePage = false;
+                OnPropertyChanged("IsBusy_UpdatePage");
             }
             Log?.Info($"Invoke_RefreshData_1 done");
         }
