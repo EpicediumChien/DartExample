@@ -342,31 +342,31 @@ namespace NetworkKVM.Plugins
                     _AllInfoMonitors.AddRange(monitorInfos);
                     //if (unplug.Count > 0 || plugin.Count > 0)
                     //{
-                        if (pipeServer != null)
+                    if (pipeServer != null)
+                    {
+                        if (pipeServer.IsConnected)
                         {
-                            if (pipeServer.IsConnected)
-                            {
-                                _logs.DebugMsg("[UpdateMonitorInfo] MonitorPlug no wait(3).");
-                                //ResponseSupportedMonitor();
-                                MonitorPlug();
-                            }
-                            else
-                            {
-                                _logs.DebugMsg("[UpdateMonitorInfo] do disconnect(4).");
-                                Disconnect();
-                                Thread.Sleep(1000);
-                                isMonintorChange = true;
-                                //_runloop = true;
-                                _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(6).");
-                                _ = Task.Run(async () => await NamedPipeServer(token));
-                            }
+                            _logs.DebugMsg("[UpdateMonitorInfo] MonitorPlug no wait(3).");
+                            //ResponseSupportedMonitor();
+                            MonitorPlug();
                         }
                         else
                         {
-                            _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(7).");
+                            _logs.DebugMsg("[UpdateMonitorInfo] do disconnect(4).");
+                            Disconnect();
+                            Thread.Sleep(1000);
                             isMonintorChange = true;
+                            //_runloop = true;
+                            _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(6).");
                             _ = Task.Run(async () => await NamedPipeServer(token));
                         }
+                    }
+                    else
+                    {
+                        _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(7).");
+                        isMonintorChange = true;
+                        _ = Task.Run(async () => await NamedPipeServer(token));
+                    }
                     //}
                 }
             }
@@ -1166,8 +1166,8 @@ namespace NetworkKVM.Plugins
                 while (_runloop)
                 {
                     if (IsDisposed)
-                    { 
-                        break; 
+                    {
+                        break;
                     }
                     //if (i > 10)
                     //{
@@ -1246,7 +1246,7 @@ namespace NetworkKVM.Plugins
                                 catch (Exception ex)
                                 {
                                     //_logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
-                                    WriteLog(Log, $"[NetworkKVM] Failed to connect {ex.Message}", true);
+                                    WriteLog($"[NetworkKVM] Failed to connect {ex.Message}", log_type.error);
                                     Disconnect();
                                     Thread.Sleep(1000);
                                     _AllInfoMonitors = GetMonitors().Result;
@@ -1362,7 +1362,7 @@ namespace NetworkKVM.Plugins
                                 catch (Exception ex)
                                 {
                                     //_logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
-                                    WriteLog(Log, $"[NetworkKVM] Failed to connect {ex.Message}", true);
+                                    WriteLog($"[NetworkKVM] Failed to connect {ex.Message}", log_type.error);
                                     Disconnect();
                                     Thread.Sleep(1000);
                                     _AllInfoMonitors = GetMonitors().Result;
@@ -1455,7 +1455,7 @@ namespace NetworkKVM.Plugins
                 //_logs.DebugMsg("[NetworkKVM] CreateNamedPipe_init is error");
                 //_logs.DebugMsg($"[NetworkKVM] Failed to create {ex}");
                 _logs.DebugMsg("[NetworkKVM] CreateNamedPipe_init is error, failed to create");
-                WriteLog(Log, $"[NetworkKVM] CreateNamedPipe_init is error, failed to create {ex.Message}", true);
+                WriteLog($"[NetworkKVM] CreateNamedPipe_init is error, failed to create {ex.Message}", log_type.error);
 
                 Disconnect();
                 return false;
@@ -1507,7 +1507,7 @@ namespace NetworkKVM.Plugins
             {
                 _logs.DebugMsg("[NetworkKVM] CreateNamedPipe is error, failed to create");
                 //_logs.DebugMsg($"[NetworkKVM] Failed to create {ex}");
-                WriteLog(Log, $"[NetworkKVM] CreateNamedPipe is error, failed to create {ex.Message}", true);
+                WriteLog($"[NetworkKVM] CreateNamedPipe is error, failed to create {ex.Message}", log_type.error);
                 Disconnect();
                 return false;
             }
@@ -2227,8 +2227,8 @@ namespace NetworkKVM.Plugins
                                 foreach (HotkeyInfo hotkeyInfo in hotkeySettings.HotkeyInfo)
                                 {
                                     if (IsDisposed)
-                                    { 
-                                        break; 
+                                    {
+                                        break;
                                     }
                                     if (jsonHotkey.Control == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Control) &&
                                         jsonHotkey.Alt == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Menu) &&
