@@ -29,6 +29,9 @@
 		<Reference Include="DPeMPublic.Common">
 			<HintPath>..\..\dll\DPeMPublic.Common.dll</HintPath>
 		</Reference>
+		<Reference Include="IFirmwareUpdaterDll">
+		  <HintPath>..\..\dll\IFirmwareUpdaterDll.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 </Project>

@@ -91,6 +91,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         public void OnShown(string pluginParameter)
         {
+            _log.Info($"[SettingsPlugin] OnShown ... in");
             ConfigureServices();
             PrepareHomeDevices();
             if (_viewModel != null)
@@ -105,9 +106,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 }
             }
             Mouse.OverrideCursor = null;
+            _log.Info($"[SettingsPlugin] OnShown ... out");
         }
         private void ConfigureServices()
         {
+            _log.Info($"[SettingsPlugin] ConfigureServices ... in");
             if (_isConfigured)
                 return;
 
@@ -124,12 +127,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 _viewModel.Log = PluginIoc.GetService<ILog>();
             }
             _isConfigured = true;
+            _log.Info($"[SettingsPlugin] ConfigureServices ... out");
         }
         /// <summary>
         /// Get HomeDevices and SelectedHomeDevice from DdpmHomePlugin, and add them to ISettingsPageViewModel
         /// </summary>
         private void PrepareHomeDevices()
         {
+            _log.Info($"[SettingsPlugin] PrepareHomeDevices ... in");
             //Get ISettingsPageViewModel, it will be created after ConfigureServices() executed
             ISettingsPageViewModel? vmDisplay = PluginIoc.GetService<ISettingsPageViewModel>();
 
@@ -144,6 +149,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         vmDisplay.HomeDevices.Add(obj);
                 }
             }
+            _log.Info($"[SettingsPlugin] PrepareHomeDevices ... out");
         }
         /// <summary>
         /// Method to show <see cref="SettingsPage"/>

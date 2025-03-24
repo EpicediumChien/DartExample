@@ -52,6 +52,7 @@ namespace DDPM.UI.Plugin.ViewModels
             Requires.NotNull(log, nameof(log));
 
             _log = log;
+            _log!.Info($"[PenViewModel] PenViewModel Start ...");
         }
 
         public override void OnPropertyChanged([CallerMemberName] string propertyName = "")

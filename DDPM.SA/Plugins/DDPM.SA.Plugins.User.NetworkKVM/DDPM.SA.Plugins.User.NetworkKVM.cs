@@ -36,6 +36,19 @@ namespace NetworkKVM.Plugins
     [PublishedUnelevatedInterface(new[] { typeof(INKVMService) })]
     public class NKVMPlugin : BaseAgentPlugin, INKVMService, IDisposableObservable
     {
+        private static void WriteLog(ILog log, string message, bool isError = false)
+        {
+#if DEBUG
+            Console.WriteLine(message);
+#endif
+            if (log == null)
+                return;
+            if (!isError)
+                log.Info(message);
+            else
+                log.Error(message);
+        }
+
         #region Private Members
 
         private const string pluginName = "NKVMPlugin";
@@ -1210,7 +1223,8 @@ namespace NetworkKVM.Plugins
                                 }
                                 catch (Exception ex)
                                 {
-                                    _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
+                                    //_logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
+                                    WriteLog(Log, $"[NetworkKVM] Failed to connect {ex.Message}", true);
                                     Disconnect();
                                     Thread.Sleep(1000);
                                     _AllInfoMonitors = GetMonitors().Result;
@@ -1325,7 +1339,8 @@ namespace NetworkKVM.Plugins
                                 }
                                 catch (Exception ex)
                                 {
-                                    _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
+                                    //_logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
+                                    WriteLog(Log, $"[NetworkKVM] Failed to connect {ex.Message}", true);
                                     Disconnect();
                                     Thread.Sleep(1000);
                                     _AllInfoMonitors = GetMonitors().Result;
@@ -1415,8 +1430,11 @@ namespace NetworkKVM.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[NetworkKVM] CreateNamedPipe_init is error");
-                _logs.DebugMsg($"[NetworkKVM] Failed to create {ex}");
+                //_logs.DebugMsg("[NetworkKVM] CreateNamedPipe_init is error");
+                //_logs.DebugMsg($"[NetworkKVM] Failed to create {ex}");
+                _logs.DebugMsg("[NetworkKVM] CreateNamedPipe_init is error, failed to create");
+                WriteLog(Log, $"[NetworkKVM] CreateNamedPipe_init is error, failed to create {ex.Message}", true);
+
                 Disconnect();
                 return false;
             }
@@ -1465,8 +1483,9 @@ namespace NetworkKVM.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[NetworkKVM] CreateNamedPipe is error");
-                _logs.DebugMsg($"[NetworkKVM] Failed to create {ex}");
+                _logs.DebugMsg("[NetworkKVM] CreateNamedPipe is error, failed to create");
+                //_logs.DebugMsg($"[NetworkKVM] Failed to create {ex}");
+                WriteLog(Log, $"[NetworkKVM] CreateNamedPipe is error, failed to create {ex.Message}", true);
                 Disconnect();
                 return false;
             }

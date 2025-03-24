@@ -7,6 +7,7 @@ using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
 using UserControl = System.Windows.Controls.UserControl;
@@ -19,7 +20,7 @@ namespace DDPM.UI.Common.UserControls
     /// Interaction logic for SplitItem.xaml
     /// </summary>
     [ContentProperty("InnerContent")]
-    public partial class SplitItem : UserControl
+    public partial class SplitItem : UserControl , IDisposable
     {
         private SplitItemViewModel vm = new SplitItemViewModel();
 
@@ -44,6 +45,29 @@ namespace DDPM.UI.Common.UserControls
         }
 
         #endregion Init
+
+        #region Exit
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                //Release data binding
+                BindingOperations.ClearAllBindings(this);
+                InnerContent = null;
+                vm = null;
+            }
+        }
+
+        ~SplitItem()
+        {
+            Dispose(false);
+        }
+        #endregion
 
         #region Content, ISplit
 

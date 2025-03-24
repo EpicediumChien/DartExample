@@ -34,7 +34,7 @@ namespace DDPM.UI.Module.EzArrange
     /// <summary>
     /// Interaction logic for EzArrangeRightVierw.xaml
     /// </summary>
-    public partial class EzArrangeRightVierw : UserControl
+    public partial class EzArrangeRightVierw : UserControl, IDisposable
     {
         #region Private Members
         private HomeDevice _homeDevice;
@@ -107,26 +107,27 @@ namespace DDPM.UI.Module.EzArrange
             splitListView_6w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
             splitListView_7w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
 
-            splitListView_Recent.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            splitListView_Custom.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            splitListView_2w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            splitListView_3w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            splitListView_4w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            splitListView_5w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            splitListView_6w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            splitListView_7w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            //Robert_Lin 2025-3-20 fix CS8622 Nullability of reference types in type of parameter 'spItem' of 'void EzArrangeRightVierw.OnListViewItemClicked(SplitItem spItem)' doesn't match the target delegate 'Action<SplitItem?>' (possibly because of nullability attributes).
+            splitListView_Recent.ItemClickCommand = new RelayCommand<SplitItem>(execute: OnListViewItemClicked);
+            splitListView_Custom.ItemClickCommand = new RelayCommand<SplitItem>(execute:OnListViewItemClicked);
+            splitListView_2w.ItemClickCommand = new RelayCommand<SplitItem>(execute:OnListViewItemClicked);
+            splitListView_3w.ItemClickCommand = new RelayCommand<SplitItem>(execute:OnListViewItemClicked);
+            splitListView_4w.ItemClickCommand = new RelayCommand<SplitItem>(execute:OnListViewItemClicked);
+            splitListView_5w.ItemClickCommand = new RelayCommand<SplitItem>(execute:OnListViewItemClicked);
+            splitListView_6w.ItemClickCommand = new RelayCommand<SplitItem>(execute: OnListViewItemClicked);
+            splitListView_7w.ItemClickCommand = new RelayCommand<SplitItem>(execute: OnListViewItemClicked);
 
-            splitListView_Custom.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            splitListView_2w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            splitListView_3w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            splitListView_4w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            splitListView_5w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            splitListView_6w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            splitListView_7w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_Custom.ItemEditCommand = new RelayCommand<SplitItem>(execute:HandleSplitItemEditCommand);
+            splitListView_2w.ItemEditCommand = new RelayCommand<SplitItem>(execute: HandleSplitItemEditCommand);
+            splitListView_3w.ItemEditCommand = new RelayCommand<SplitItem>(execute: HandleSplitItemEditCommand);
+            splitListView_4w.ItemEditCommand = new RelayCommand<SplitItem>(execute: HandleSplitItemEditCommand);
+            splitListView_5w.ItemEditCommand = new RelayCommand<SplitItem>(execute: HandleSplitItemEditCommand);
+            splitListView_6w.ItemEditCommand = new RelayCommand<SplitItem>(execute: HandleSplitItemEditCommand);
+            splitListView_7w.ItemEditCommand = new RelayCommand<SplitItem>(execute: HandleSplitItemEditCommand);
 
-            splitListView_Custom.ItemDeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
+            splitListView_Custom.ItemDeleteCommand = new RelayCommand<SplitItem>(execute: HandleSplitItemDeleteCommand);
             splitListView_Custom.HasAddButton = true;
-            splitListView_Custom.AddButtonClickCommand = new RelayCommand<SplitListView>(HandleAddButtonClickCommand);
+            splitListView_Custom.AddButtonClickCommand = new RelayCommand<SplitListView>(execute:HandleAddButtonClickCommand);
 
             //InitRecentListView();
             InitListViewItems();
@@ -151,6 +152,30 @@ namespace DDPM.UI.Module.EzArrange
                 saveSplitCtrlsToPngImagesButton.Visibility = Visibility.Visible;
             }
 
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                splitListView_Recent.Dispose();
+                splitListView_Custom.Dispose();
+                splitListView_2w.Dispose();
+                splitListView_3w.Dispose();
+                splitListView_4w.Dispose();
+                splitListView_5w.Dispose();
+                splitListView_6w.Dispose();
+                splitListView_7w.Dispose();
+            }
+        }
+
+        ~EzArrangeRightVierw()
+        {
+            Dispose(false);
         }
         #endregion
 
@@ -821,11 +846,9 @@ namespace DDPM.UI.Module.EzArrange
         /// <param name="spItem"></param>
         private void HandleSplitItemEditCommand(SplitItem spItem)
         {
-            if (spItem.InnerContent is ISplitCtrl)
+            if (spItem.InnerContent is ISplitCtrl spCtrl)
             {
-                ISplitCtrl spCtrl = spItem.InnerContent as ISplitCtrl;
-                //_vm.SelectedSplitItem = spItem;
-                //_vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey);
+                //ISplitCtrl spCtrl = spItem.InnerContent as ISplitCtrl;
 
                 if (_deviceManagerSA != null)
                 {
@@ -1282,9 +1305,15 @@ namespace DDPM.UI.Module.EzArrange
         #region Settings File
         private bool SaveEaSettings(bool includeCustomList = false)
         {
+            //Robert_Lin 2025-3-20 fix CS8602 Dereference of a possibly null reference.
+            if (_vm.SelectedSplitItem == null)
+                return false;
+
             //Save MonitorSettings: Selected, RecentList
             EAMonitorSettings eaSettings = new EAMonitorSettings();
-            eaSettings.SelectedSplit = _vm.SelectedSplitItem.ToSplitJson;
+
+            SplitItem spItem = (SplitItem)_vm.SelectedSplitItem;
+            eaSettings.SelectedSplit = spItem.ToSplitJson;
 
             List<SplitJson> recentList = new List<SplitJson>();
             foreach (SplitItem itemRecent in splitListView_Recent.SplitList.Skip(1))
@@ -1442,7 +1471,7 @@ namespace DDPM.UI.Module.EzArrange
                 if (DdpmCommonHelper.ModuleOwner != null)
                 {
                     _homeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
-                    if (_homeDevice.vmEzArrange == null)
+                    if ((_homeDevice != null) && (_homeDevice.vmEzArrange == null))
                     {
                         _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
                     }

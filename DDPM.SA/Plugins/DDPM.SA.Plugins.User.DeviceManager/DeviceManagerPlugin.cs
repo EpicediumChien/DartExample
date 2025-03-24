@@ -128,21 +128,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private DisplayChange displayChange;
 
-        //private static Dell.Client.Framework.Utility.Log _log;
         // ColorPreset objects
         private Dictionary<string, InstalledAppInfo> _AllAppData_tmp = new Dictionary<string, InstalledAppInfo>();
-
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private List<string> _SupportedColorPreset = new List<string>();
         private readonly object _CheckAutoLock = new object();
-
         // Jim move to here 20240621
         private ShowOSDWin OsdWin = null;
-
         private string iconFolderPath = string.Empty;
-
         private MainWindow? MonitorBorkerWin = null; //Dean 0626 fix SAST issue, remove static
-
         private Thread newWindowThread_AutoSetColorPresetForMonitorConfig = null;
 
         /// <summary>
@@ -154,14 +148,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// NightLight Status change event，return On or Off
         /// </summary>
         public event EventHandler<string> NightLightStatus_ChangeEvent;
-
-        /// <summary>
-        /// Webcam change event
-        /// </summary>
-        //public event EventHandler<bool>? Esi_IsCameraSensorCover_ChangeEvent;
-        //public event EventHandler<int>? WALSnoozeTimeLeftInSeconds_ChangeEvent;
-        //public event EventHandler<bool>? Esi_IsWALLockCountdownStartedChanged_ChangeEvent;
-        //public event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
 
         //Monitor objects
         private List<MonitorInfo> _AllInfoMonitors = new List<MonitorInfo>();
@@ -206,12 +192,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //Bruce 07-30 Added total screens
         private int _lastScreenCount;
 
-        //private enum log_type
-        //{
-        //    info = 0,
-        //    error
-        //}
-
         private readonly object _MoLock = new object();
 
         //Bruce 0815 Added new judgment whether to trigger DisplayChang event
@@ -236,6 +216,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static PowerEventControl _pwr_Mon = null;
         private static DisplayDeviceHelper _disDevHelper = null;
         private static PeripheralAirAudioHelper _AirAudioHelper = null;
+        private static ColorProfileHelper _ColorProfileHelper = null;
         private static int _millisecond = 8000;
         private static OSD_Controler _OSD_Controler = new OSD_Controler();
 
@@ -254,14 +235,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private DDMtoDDPM dDMtodDPM = new DDMtoDDPM();
         private HotkeySettings hotkeySettings = new HotkeySettings();
-
-        /// <summary>
-        ///Check ICC profile update timers
-        /// </summary>
-        private System.Timers.Timer _checkICCProfileScheduleTimer;//Added 02/10 by Bruce
-
-        private bool isDownloadingICC = false;//Added 02/13 by Bruce
-        private bool isNeedPreDownloadingICC = false;//Added 02/13 by Bruce
 
         #endregion
 
@@ -726,9 +699,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
 
-            if (_AirAudioHelper == null)
-                _AirAudioHelper = new PeripheralAirAudioHelper(Log);
             IDeviceManagerSA deviceManagerSA = (IDeviceManagerSA)this;
+
+            if (_ColorProfileHelper == null)
+                _ColorProfileHelper = new ColorProfileHelper(deviceManagerSA, Log);
+            if (_AirAudioHelper == null)
+                _AirAudioHelper = new PeripheralAirAudioHelper(Log);            
             _disDevHelper = new DisplayDeviceHelper(Log, deviceManagerSA);
         }
 
@@ -910,7 +886,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else
             {
-                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, _SettingsPlugin, blICCProfile, savelPath).Result;
+                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, blICCProfile, savelPath).Result;
             }
 
             return Task.FromResult(_ICC_Metadata);
@@ -1974,7 +1950,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} _AllInfoMonitors.Count : {_AllInfoMonitors.Count}");
                 for (int i = 0; i < _AllInfoMonitors.Count; i++)
                 {
-                    _ColorPresetPlugin.DownloadICCData(_AllInfoMonitors[i], _SettingsPlugin, true, "", true).Wait();
+                    _ColorPresetPlugin.DownloadICCData(_AllInfoMonitors[i], true, "", true).Wait();
                 }
             }
             else
@@ -1982,27 +1958,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} _ColorPresetPlugin is null");
             }
             writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} done");
-        }
-
-        private void PreDownloadICC(MonitorInfo newMontor)
-        {
-            writelog($"{nameof(PreDownloadICC)} start");
-            writelog($"{nameof(PreDownloadICC)} isDownloadingICC : {isDownloadingICC}");
-            if (!isDownloadingICC)
-            {
-                isDownloadingICC = true;
-                writelog($"{nameof(PreDownloadICC)} DownloadICCData go, newMontor : {newMontor.modelName}");
-                ///for (int i = 0; i < _AllInfoMonitors.Count; i++)
-                {
-                    _ColorPresetPlugin.DownloadICCData(/*_AllInfoMonitors[i]*/newMontor, _SettingsPlugin, true, "", isNeedPreDownloadingICC).Wait();
-                }
-                if (isNeedPreDownloadingICC)
-                {
-                    isNeedPreDownloadingICC = false;
-                }
-                isDownloadingICC = false;
-            }
-            writelog($"{nameof(PreDownloadICC)} done");
         }
 
         #endregion
@@ -10086,7 +10041,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received SetIsAutoFramingOn requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            return _DTPProxyPlugin.SetIsAutoFramingOn(Guid, newValue);
+            var result = _DTPProxyPlugin.SetIsAutoFramingOn(Guid, newValue);
+
+            //writelog("[DeviceMangerPlugin] DeviceMangerPlugin Notify UI Update in SetIsAutoFramingOn ...");
+            //DeviceInfo di = new()
+            //{
+            //    LogicalDeviceType = "Webcam",
+            //    ID = new Guid(Guid),
+            //    Message = newValue.ToString()
+            //};
+            //DeviceChangedEventArgs _EventArgs = new()
+            //{
+            //    type = DeviceChangedType.Peripherals_SettingsChange,
+            //    device_peripherals = di,
+            //    changedProperty = "IsAutoFramingOnChanged"
+            //};
+            //_ = Task.Run(() => DeviceChanged?.Invoke(this, _EventArgs)).ConfigureAwait(false);
+
+            return result;
         }
 
         public Task<bool> SetIsAutoFramingTransitionOn(string Guid, bool newValue)
@@ -10146,13 +10118,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ID = new Guid(Guid),
                 Message = newValue.ToString()
             };
-            DeviceChangedEventArgs _EventArgs = new DeviceChangedEventArgs
+            DeviceChangedEventArgs _EventArgs = new()
             {
                 type = DeviceChangedType.Peripherals_SettingsChange,
                 device_peripherals = di,
                 changedProperty = "IsHDROnChanged"
             };
-            Task.Run(() => DeviceChanged?.Invoke(this, _EventArgs)).ConfigureAwait(false);
+            _ = Task.Run(() => DeviceChanged?.Invoke(this, _EventArgs)).ConfigureAwait(false);
 
             return result;
         }
@@ -12357,7 +12329,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (_ColorPresetPlugin != null && _SettingsPlugin != null)//Bruce 02/10 added display In/Out to check icm
                     {
                         writelog($"OnDeviceChanged: _ColorPresetPlugin.DownloadICCData go");
-                        _ColorPresetPlugin.DownloadICCData(monitor, _SettingsPlugin, true).Wait();
+                        _ColorPresetPlugin.DownloadICCData(monitor, true).Wait();
                         writelog($"OnDeviceChanged: _ColorPresetPlugin.DownloadICCData done");
                     }
                 }
@@ -13027,34 +12999,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _ = Task.Run(async () =>
             {
                 var pluginCondition = await (_ColorPresetPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
-                //PluginCondition _ColorPresetPluginCondition;
                 lock (_PluginConditionLock_ColorPreset)
                 {
                     if (pluginCondition is PluginErrorCondition)
                     {
-                        writelog($"{nameof(GetCurrentColorPresetCondition)} - ColorPreset Plugin is in an error condition");
-                        //_ColorPresetPluginCondition = pluginCondition;
+                        writelog($"{nameof(GetCurrentColorPresetCondition)} - ColorPreset Plugin is in an error condition");                        
                     }
                     else if (pluginCondition is PluginStartedCondition || pluginCondition is PluginRunningCondition)
                     {
                         writelog($"{nameof(GetCurrentColorPresetCondition)} - ColorPreset Plugin is in a started/running condition");
-                        //_ColorPresetPluginCondition = pluginCondition;
-                        //_ColorPresetPlugin.VCPchanged += show_colorpreset;
 
                         _ColorPresetPlugin.Coloreset_manual_ChangeEvent += OnColoresetManualChangeHandler;
-
                         _ColorPresetPlugin.NightLightStatus_ChangeEvent += OnNightLightStatusChangeHandler;
 
-                        //Bruce 02/10 added timer to check icm
-                        if (_checkICCProfileScheduleTimer == null)
-                        {
-                            writelog($"_checkICCProfileScheduleTimer initialize");
-                            _checkICCProfileScheduleTimer = new System.Timers.Timer();
-                            _checkICCProfileScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
-                            _checkICCProfileScheduleTimer.Elapsed += new ElapsedEventHandler(CheckICCProfileScheduleTimer_Elapsed);
-                            _checkICCProfileScheduleTimer.Start();
-                        }
-                        isNeedPreDownloadingICC = true;
+                        //Dean 20250319 add color profile helper
+                        if (_ColorProfileHelper == null)
+                            _ColorProfileHelper = new ColorProfileHelper((IDeviceManagerSA)this, Log);
+                        _ColorProfileHelper.UpdateColorPluginInstance((IColorPresetSA)_ColorPresetPlugin);
+                        _ColorProfileHelper.InitColorProfileTimer();
 
                         if (_SettingsPlugin != null)
                         {
@@ -13111,13 +13073,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             bool flag = false;
                             int loopCount = 0;
                             DeviceHelper di = null;
+                            string UserId = string.Empty;
                             while (loopCount < 60)
                             {
                                 di = GetDevices().Result;
                                 if (_isSysSettingReady)
                                 {
                                     object regValue = null;
-                                    string UserId = WTSFunction.DirectGetUserID(Log);
+                                    if (string.IsNullOrEmpty(UserId)) // just do one time
+                                    {
+                                        UserId = WTSFunction.DirectGetUserID(Log);
+                                    }
                                     if (di.deviceInfo.Count > 0)
                                     {
                                         string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
@@ -14445,11 +14411,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (iTest % 2 == 1)
             {
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Pen, "Dell Multi-Device pen - MS5320W");
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Pen, "Dell Multi-Device pen - MS5320W");
+                //public Task ShowOSD(object monitorInfo, OSDType type, bool State, (string, string, bool) args)
             }
             else
             {
-                _OSD_Controler.CloseMultipleOSDByGuidAndOp("377C7B36-ED5B-446F-93A6-3418F0447836", OSDType_Op.None);
+                //_OSD_Controler.CloseMultipleOSDByGuidAndOp("377C7B36-ED5B-446F-93A6-3418F0447836", OSDType_Op.None);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("FW", "fwxxxx update ccccccccccccccccccccccccccccccccccc...", true));
+
             }*/
             //will register as ALT+Z ?
             if (_altPressed && strKey.Equals("Z") && !_ctrlPressed && !_shiftPressed)
@@ -16825,7 +16794,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             monitorSettingsList.Add(settings);
                             bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
 
-                            PreDownloadICC(m);//
+                            Task.Run(() =>
+                            {
+                                if(_ColorProfileHelper == null)
+                                    writelog("[InitMonitorSettings] null _ColorProfileHelper");
+                                _ColorProfileHelper?.PreDownloadICC(m);//
+                            });
                         }
                     }
                 }
@@ -16946,10 +16920,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             _checkUpdateScheduleTimer.Stop();
                         }
                     }
-                    if (_checkICCProfileScheduleTimer != null)
+                    if(_ColorProfileHelper != null)
                     {
-                        _checkICCProfileScheduleTimer.Elapsed -= new ElapsedEventHandler(CheckICCProfileScheduleTimer_Elapsed);
-                        _checkICCProfileScheduleTimer.Stop();
+                        _ColorProfileHelper.Dispose();
+                        _ColorProfileHelper = null;
                     }
                     if (_SettingsPlugin != null)
                         _SettingsPlugin.ITSettingsActionEvent -= _SettingsPlugin_ITSettingsActionEvent;
@@ -18208,7 +18182,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        private void ShowOSDThread(CancellationTokenSource cts, object monitorInfo, OSDType _types,
+        private async Task ShowOSDThread(CancellationTokenSource cts, object monitorInfo, OSDType _types,
                                 OSDType_Device _DeviceType, string Content, bool State = false,
                                 string title = "", bool stayOpen = false, Guid guid = default, OSDType_Op oSDType_Op = OSDType_Op.None)
         {
@@ -18412,94 +18386,164 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             break;
 
                             case OSDType.ScrollLock:
-                            {
-                                try
                                 {
-                                    if (_OSD_Controler.ExistMultipleOSD())
+                                    try
                                     {
-                                        _OSD_Controler.CloseMultipleOSD(null, null);
-                                    }
-                                    else
-                                    {
+
                                         if (State)
                                         {
-                                            //_OSD_Controler.ScrollLockOn_CloseWindow();
-                                            _OSD_Controler.ScrollLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            if (_OSD_Controler.ExistMultipleOSD())
+                                            {
+                                                //default guid {4C24C783-3E8B-4FED-81ED-70CBE7DA43DD}
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "4C24C783-3E8B-4FED-81ED-70CBE7DA43DD" : guid.ToString(), OSDType_Device.ScrollLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_On"]);
+                                                await Task.Run(async () =>
+                                                {
+                                                    await Task.Delay(1000);
+                                                    _OSD_Controler.CloseMultipleOSD(null, null);
+                                                });
+                                            }
+                                            else
+                                            {
+                                                //_OSD_Controler.ScrollLockOn_CloseWindow();
+                                                _OSD_Controler.ScrollLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            }
                                         }
                                         else
                                         {
-                                            //_OSD_Controler.ScrollLockOff_CloseWindow();
-                                            _OSD_Controler.ScrollLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            if (_OSD_Controler.ExistMultipleOSD())
+                                            {
+                                                //default guid {99EACE23-6309-44AD-91F6-D55915D2D41E}
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "99EACE23-6309-44AD-91F6-D55915D2D41E" : guid.ToString(), OSDType_Device.ScrollLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_Off"]);
+                                                await Task.Run(async () =>
+                                                {
+                                                    await Task.Delay(1000);
+                                                    _OSD_Controler.CloseMultipleOSD(null, null);
+                                                });
+                                            }
+                                            else
+                                            {
+                                                //_OSD_Controler.ScrollLockOff_CloseWindow();
+                                                _OSD_Controler.ScrollLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            }
                                         }
+
+                                        /* if (_OSD_Controler.ExistMultipleOSD())
+                                        {
+                                            _OSD_Controler.CloseMultipleOSD(null, null);
+                                        }
+                                        else
+                                        {
+
+                                        }*/
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
                                     }
                                 }
-                                catch (Exception ex)
-                                {
-                                    writelog($"[_showosd] ERROR - OSDType.ScrollLock: {ex.Message}, State:{State}");
-                                }
-                            }
-                            break;
+                                break;
 
                             case OSDType.NumLock:
-                            {
-                                try
                                 {
-                                    if (_OSD_Controler.ExistMultipleOSD())
+                                    try
                                     {
-                                        _OSD_Controler.CloseMultipleOSD(null, null);
-                                    }
-                                    else
-                                    {
+
                                         if (State)
                                         {
-                                            //_OSD_Controler.NumLockOn_CloseWindow();
-                                            _OSD_Controler.NumLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            if (_OSD_Controler.ExistMultipleOSD())
+                                            {
+                                                //default guid {288AB64E-4730-41C1-9681-A3DF934F1FDA}
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "288AB64E-4730-41C1-9681-A3DF934F1FDA" : guid.ToString(), OSDType_Device.NumLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_On"]);
+                                                await Task.Run(async () =>
+                                                {
+                                                    await Task.Delay(1000);
+                                                    _OSD_Controler.CloseMultipleOSD(null, null);
+                                                });
+                                            }
+                                            else
+                                            {
+                                                //_OSD_Controler.NumLockOn_CloseWindow();
+                                                _OSD_Controler.NumLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            }
+
                                         }
                                         else
                                         {
-                                            //_OSD_Controler.NumLockOff_CloseWindow();
-                                            _OSD_Controler.NumLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            if (_OSD_Controler.ExistMultipleOSD())
+                                            {
+                                                //default guid {41F5E9F5-0537-4404-BCD8-3612803F09BF}
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "41F5E9F5-0537-4404-BCD8-3612803F09BF" : guid.ToString(), OSDType_Device.NumLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_Off"]);
+                                                await Task.Run(async () =>
+                                                {
+                                                    await Task.Delay(1000);
+                                                    _OSD_Controler.CloseMultipleOSD(null, null);
+                                                });
+                                            }
+                                            else
+                                            {
+                                                //_OSD_Controler.NumLockOff_CloseWindow();
+                                                _OSD_Controler.NumLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            }
                                         }
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
                                     }
                                 }
-                                catch (Exception ex)
-                                {
-                                    writelog($"[_showosd] ERROR - OSDType.NumLock: {ex.Message}, State:{State}");
-                                }
-                            }
-                            break;
+                                break;
 
                             case OSDType.CapsLock:
-                            {
-                                try
                                 {
-                                    if (_OSD_Controler.ExistMultipleOSD())
-                                    {
-                                        _OSD_Controler.CloseMultipleOSD(null, null);
-                                    }
-                                    else
+                                    try
                                     {
                                         if (State)
                                         {
-                                            //_OSD_Controler.CapsLockOn_CloseWindow();
-                                            _OSD_Controler.CapsLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            if (_OSD_Controler.ExistMultipleOSD())
+                                            {
+                                                //default guid {1B97890A-B1D9-4372-9B09-AC04893C9B39}
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "1B97890A-B1D9-4372-9B09-AC04893C9B39" : guid.ToString(), OSDType_Device.CapsLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_On"]);
+                                                await Task.Run(async () =>
+                                                {
+                                                    await Task.Delay(1000);
+                                                    _OSD_Controler.CloseMultipleOSD(null, null);
+                                                });
+                                            }
+                                            else
+                                            {
+                                                //_OSD_Controler.CapsLockOn_CloseWindow();
+                                                _OSD_Controler.CapsLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            }
                                         }
                                         else
                                         {
-                                            //_OSD_Controler.CapsLockOff_CloseWindow();
-                                            _OSD_Controler.CapsLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            if (_OSD_Controler.ExistMultipleOSD())
+                                            {
+                                                //default guid {C88641DE-92EC-493F-A398-7CB664FDC563}
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "C88641DE-92EC-493F-A398-7CB664FDC563" : guid.ToString(), OSDType_Device.CapsLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_Off"]);
+                                                await Task.Run(async () =>
+                                                {
+                                                    await Task.Delay(1000);
+                                                    _OSD_Controler.CloseMultipleOSD(null, null);
+                                                });
+                                            }
+                                            else
+                                            {
+                                                //_OSD_Controler.CapsLockOff_CloseWindow();
+                                                _OSD_Controler.CapsLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                            }
                                         }
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
                                     }
 
-                                }
-                                catch (Exception ex)
-                                {
-                                    writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
-                                }
 
-
-                            }
-                            break;
+                                }
+                                break;
 
                             case OSDType.Fingerprint:
                             {
@@ -18547,10 +18591,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 //{
                                 try
                                 {
-                                    _OSD_Controler.Error_CloseWindow(null, null);
-                                    _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
-                                }
-                                catch (Exception ex)
+                                        Debug.WriteLine($"title={title},Content={Content}");
+                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.FW, oSDType_Op, title, Content);
+                                        /* _OSD_Controler.Error_CloseWindow(null, null);
+                                         _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
+                                    }
+                                    catch (Exception ex)
                                 {
                                     writelog($"[_showosd] ERROR - OSDType.Error: {ex.Message}, State:{State}");
                                 }
@@ -19780,6 +19826,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #endregion
+
+        //Get latest all monitors cache
+        public Task<List<MonitorInfo>> GetCurrentMonitorCache()
+        {
+            return Task.FromResult(_AllInfoMonitors);
+        }
     }
 }
 

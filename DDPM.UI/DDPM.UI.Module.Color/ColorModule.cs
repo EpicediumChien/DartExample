@@ -11,9 +11,9 @@ namespace DDPM.UI.Module.Color
     {
         private UserControl? _leftView = null;
         private UserControl _rightView = new ColorRightView();
-        private ColorViewModel vm;
+        private ColorViewModel? vm = null;
 
-        private bool isSelectChanged = false;
+        private bool isSelectChanged = true;
         public bool IsModuleActive { get; set; } = false;
 
         //Robert_Lin 2024-5-30, remove argument from ctor
@@ -21,12 +21,12 @@ namespace DDPM.UI.Module.Color
         public ColorModule(IModuleOwner? moduleOwner = null)
         {
             //_rightView.DataContext = vm;
-            this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
-            vm = new ColorViewModel();
-            _rightView.DataContext = vm;
-            vm.MyModule = this;
+            //this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+            //vm = new ColorViewModel();
+            //_rightView.DataContext = vm;
+            //vm.MyModule = this;
 
-            vm.Invoke_RefreshData();
+            //vm.Invoke_RefreshData();
             //vm.Invoke_DownloadICCData();
         }
 
@@ -61,7 +61,7 @@ namespace DDPM.UI.Module.Color
             Trace.WriteLine("ColorModule.OnSelectedHomeDeviceChanged");
             isSelectChanged = true;
             if (IsModuleActive)
-            {              
+            {
                 isSelectChanged = false;
                 InitNewViewModel();
             }
@@ -83,11 +83,8 @@ namespace DDPM.UI.Module.Color
         public void OnActivated()
         {
             Trace.WriteLine("ColorModule.OnActivated");
-            if (isSelectChanged)
-            {
-                isSelectChanged = false;
-                InitNewViewModel();
-            }
+
+            InitNewViewModel();
             vm.UpdateHDRStatus();
         }
 

@@ -2,13 +2,14 @@ using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using VcpCore.Common;
 
 namespace DDPM.UI.Common.Tests
 {
     [Apartment(ApartmentState.STA)]
     public class EDIDTests
     {
-        private EDID? eDID;
+        private VcpCore.Common.EDID? eDID;
 
         [SetUp]
         public void Setup()

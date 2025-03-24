@@ -530,18 +530,17 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
         public void TestDownloadICCData()
         {
             string savelPath = "";
-            string url = GlobalDefinitions.major_url; //@"https://clientperipherals.dell.com/DDPM/";
-            string[] issuer = { "Entrust Certification Authority - L1F, OU=\"(c) 2016 Entrust, Inc. - for authorized use only\", OU=See www.entrust.net/legal-terms, O=\"Entrust, Inc.\", C=US" };
-            string[] subject = { "CN=content-cdn.dell.com, O=Dell, L=Round Rock, S=Texas, C=US" };
-            PrivateObject privatehotkeyPluginObject = new PrivateObject(colorPresetPlugin);
-            //privatehotkeyPluginObject.SetFieldOrProperty("Issuers", issuer);
-            //privatehotkeyPluginObject.SetFieldOrProperty("Subjects", subject);
-            Mock<ISettingsManagerDev> SettingsManagerPluginService = new Mock<ISettingsManagerDev>();
-            var settingsPluginManagerDev_ = SettingsManagerPluginService.Object;
-            privatehotkeyPluginObject.SetFieldOrProperty("_SettingsPlugin_internal", settingsPluginManagerDev_);
+            //string url = GlobalDefinitions.major_url; //@"https://clientperipherals.dell.com/DDPM/";
+            //string[] issuer = { "Entrust Certification Authority - L1F, OU=\"(c) 2016 Entrust, Inc. - for authorized use only\", OU=See www.entrust.net/legal-terms, O=\"Entrust, Inc.\", C=US" };
+            //string[] subject = { "CN=content-cdn.dell.com, O=Dell, L=Round Rock, S=Texas, C=US" };
+            //PrivateObject privatehotkeyPluginObject = new PrivateObject(colorPresetPlugin);
+            //Mock<ISettingsManagerDev> SettingsManagerPluginService = new Mock<ISettingsManagerDev>();
+            //var settingsPluginManagerDev_ = SettingsManagerPluginService.Object;
+            //privatehotkeyPluginObject.SetFieldOrProperty("_SettingsPlugin_internal", settingsPluginManagerDev_);
             try
             {
-                var Result = colorPresetPlugin.DownloadICCData(monitorInfo1, settingsPluginManagerDev_, true, savelPath, true).Result;  // web no response,(404) Not Found.
+                //var Result = colorPresetPlugin.DownloadICCData(monitorInfo1, settingsPluginManagerDev_, true, savelPath, true).Result;  // web no response,(404) Not Found.
+                var Result = colorPresetPlugin.DownloadICCData(monitorInfo1, true, savelPath, true).Result;
                 Assert.IsNotNull(Result);
                 Assert.IsNotNull(Result.strICC_Folder);
                 Assert.IsNotNull(Result.Is_Support_ICC_DeviceName);

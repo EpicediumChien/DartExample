@@ -351,8 +351,8 @@ namespace DDPM.UI.Module.KeyCustomization
                 id = (int)((UXRadioButton)sender).DataContext;
                 rb.Name = $"Radio{id}";
                 rb.Content = Actions.KnMActions[id].Caption;
-                if (rb.Tag.ToString() != "search")
-                    rb.IsChecked = id == SelectedActionID;
+                //if (rb.Tag.ToString() != "search")
+                rb.IsChecked = id == SelectedActionID;
                 rb.Visibility = ((_vm.IsCopilotEnabled && _vm.CurrentVersion >= 11) || id != 1) ? Visibility.Visible : Visibility.Collapsed;
             }
             else if (sender is ActionButton btn)
