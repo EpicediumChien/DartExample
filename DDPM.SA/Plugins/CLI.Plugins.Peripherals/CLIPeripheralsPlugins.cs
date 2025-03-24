@@ -2170,6 +2170,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             bool _recode_headset = false;
             bool _recode_webcam = false;
             bool _recode_speaker = false;
+            bool _record_soundbar = false;
             bool _recode_pen = false;
             bool _recode_dongle = false;
 
@@ -2438,6 +2439,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         _recode_speaker = true;
                                         fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.LogicalDeviceType == "LogicalWiredAudio").ToList();
                                     }
+                                    else if (g.LogicalDeviceType == "LogicalWiredAudio" && ss_1[0].ToUpper().Equals("SOUNDBAR"))
+                                    {
+                                        _record_soundbar = true;
+                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.LogicalDeviceType == "LogicalWiredAudio").ToList();
+                                    }
                                     else if (g.LogicalDeviceType == "LogicalPen" && ss_1[0].ToUpper().Equals("PEN"))
                                     {
                                         _recode_pen = true;
@@ -2463,6 +2469,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 break;
                                             case "LogicalWiredAudio":
                                                 _recode_speaker = true;
+                                                _record_soundbar = true;
                                                 break;
                                             default:
                                                 break;
@@ -2639,7 +2646,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             }
                                         }
                                     }
-                                    if (_recode_mouse || _recode_kb || _recode_dock || _recode_headset || _recode_webcam || _recode_speaker || _recode_pen || _recode_dongle)
+                                    if (_recode_mouse || _recode_kb || _recode_dock || _recode_headset || _recode_webcam || _recode_speaker || _record_soundbar || _recode_pen || _recode_dongle)
                                     {
                                         string[] ss_2 = commandLineInput.Options[0].Option_Value.Split(",");
 
@@ -2725,6 +2732,19 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                 }
+                                                else if (ss_2[0].ToUpper().Equals("SOUNDBAR") && !_record_soundbar)
+                                                {
+                                                    CLI_RESPONSE rsp = new CLI_RESPONSE()
+                                                    {
+                                                        Command = commandLineInput.Command,
+                                                        TargetFeature = commandLineInput.TargetFeature,
+                                                        Result = "FAIL",
+                                                        Message = "No SOUNDBAR connected",
+                                                    };
+                                                    writelog("FAIL No SOUNDBAR connected");
+                                                    Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
+                                                    return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
+                                                }
                                                 else if (ss_2[0].ToUpper().Equals("PEN") && !_recode_pen)
                                                 {
                                                     CLI_RESPONSE rsp = new CLI_RESPONSE()
@@ -2751,7 +2771,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                 }
-                                                else if (ss_2[0].ToUpper().Equals("AUDIO") && !_recode_headset && !_recode_speaker)
+                                                else if (ss_2[0].ToUpper().Equals("AUDIO") && !_recode_headset && !_recode_speaker && !_record_soundbar)
                                                 {
                                                     CLI_RESPONSE rsp = new CLI_RESPONSE()
                                                     {
@@ -3150,7 +3170,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     cli_FWU_RESPONSE.Result = "PASS";
 
                     if (commandLineInput.Options.Count > 0)
-                        ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
+                        ss_1 = commandLineInput.Options[0].Option_Value.Split(","); //device type: mouse, keyboard, etc.
 
 
 
@@ -3199,7 +3219,25 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 }
                                 else if (g.LogicalDeviceType == "LogicalWiredAudio" && ss_1[0].ToUpper().Equals("SPEAKER"))
                                 {
-
+                                    foreach (string m in model)
+                                    {
+                                        if (m.ToString().Equals(g.ModelNumber))
+                                            Console.WriteLine($"------- SAME{m}  {g.ModelNumber} -------");
+                                        else
+                                            Console.WriteLine($"------- DIFFERENT{m}  {g.ModelNumber} -------");
+                                    }
+                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
+                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                                    cli_FWU_RESPONSE.Result = "PASS";
+                                }
+                                else if (g.LogicalDeviceType == "LogicalWiredAudio" && ss_1[0].ToUpper().Equals("SOUNDBAR"))
+                                {
+                                    if (model.ToString().Equals(g.ModelNumber))
+                                        Console.WriteLine($"------- SAME{model}  {g.ModelNumber} -------");
+                                    else
+                                        Console.WriteLine($"------- DIFFERENT{model}  {g.ModelNumber} -------");
                                     cli_FWU_RESPONSE.Model = g.ModelNumber;
                                     cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
                                     cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
@@ -3230,12 +3268,22 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 }
                                 else if (ss_1[0].ToUpper().Equals("AUDIO"))
                                 {
-                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
-                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
-                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
-                                    cli_FWU_RESPONSE.Result = "PASS";
-
+                                    if (g.ModelNumber.ToString().Equals(commandLineInput.Model.ToString()))
+                                    {
+                                        cli_FWU_RESPONSE.Model = g.ModelNumber;
+                                        cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                                        cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                                        cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                                        cli_FWU_RESPONSE.Result = "PASS";
+                                    }
+                                    else
+                                    {
+                                        cli_FWU_RESPONSE.Model = g.ModelNumber;
+                                        cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                                        cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                                        cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber.ToString()}, ServiceTag: {commandLineInput.Model.ToString()}");
+                                        cli_FWU_RESPONSE.Result = "PASS";
+                                    }
                                 }
 
                             }
@@ -3652,6 +3700,13 @@ namespace DDPM.CLI.Plugins.Peripherals
                     deviceType = DeviceType.LogicalHeadset;
                     break;
                 case "SPEAKER":
+                    deviceTypes.Add(DeviceType.LogicalWiredAudio);
+                    deviceTypes.Add(DeviceType.PhysicalWiredAudio);
+                    deviceTypes.Add(DeviceType.PhysicalAudioDongle);
+                    deviceTypes.Add(DeviceType.PhysicalBluetoothAudio);
+                    deviceType = DeviceType.LogicalWiredAudio;
+                    break;
+                case "SOUNDBAR":
                     deviceTypes.Add(DeviceType.LogicalWiredAudio);
                     deviceTypes.Add(DeviceType.PhysicalWiredAudio);
                     deviceTypes.Add(DeviceType.PhysicalAudioDongle);
