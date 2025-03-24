@@ -52,7 +52,8 @@
      KeyboardNavigation.DirectionalNavigation="{Binding TabSTOP}" KeyboardNavigation.TabNavigation="{Binding TabSTOP}"
     -->
     <Grid>
-        <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Hidden" >
+        <!--20250324 Chewlin Fix Gradient showing when content is too long issue ADD UseFadingScrolling="False" -->
+        <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Hidden" UseFadingScrolling="False" >
             <Grid>
                 <StackPanel>
                     <Grid>
@@ -1304,7 +1305,9 @@
 
                                                     <Grid Grid.Column="3" />
 
-                                                    <Grid Grid.Column="4">
+                                                </Grid>
+                                                <!--20250321 Chewlin for EDG New layout requirement for translation change Transition Length move to 2nd line and ADD Margin="0,20,0,0" and chagne Grid.Column="4" to one single grid -->
+                                                <Grid Grid.Column="4" Margin="0,20,0,0">
                                                         <!-- Elsa 20250113 For PIMS [PIMS-333699]change Height="24" to MinHeight="24" -->
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition MinHeight="24" />
@@ -1390,8 +1393,8 @@
                                                             Text="{Binding [Min], Source={x:Static lang:LangHelper.Instance}}"
                                                             TextBlockSemanticColorType="Light"
                                                             TextBlockType="Display1" />
-                                                    </Grid>
                                                 </Grid>
+                                                
 
                                                 <!--  Row: "Brightness"  -->
                                                 <!-- Elsa 20250113 For PIMS [PIMS-333699] add Margin="0,20,0,-20" -->
@@ -1426,10 +1429,11 @@
                                                         Source="{DynamicResource BrightnessImage}"
                                                         Stretch="UniformToFill" />
                                                     <!-- Elsa 20250113 For PIMS [PIMS-333699]change Margin="8,0" Margin="8,-10,0,-40" -->
+                                                    <!-- Chewlin 20250324 For Fix Brightness show value move up issue change Margin="8,-10,0,-40" to Margin="8,0"  -->
                                                     <UXControls:UXSlider
                                                         Name="preset1_B_slider"
                                                         Grid.Column="1"
-                                                        Margin="8,-10,0,-40"
+                                                        Margin="8,0"
                                                         HorizontalContentAlignment="Stretch"
                                                         KeyboardNavigation.TabIndex="143" 
                                                         AutomationProperties.LabeledBy="{Binding ElementName=labelPreset1Brightness}"
@@ -1691,8 +1695,10 @@
                                                     </Grid>
 
                                                     <Grid Grid.Column="3" />
+                                                </Grid>
 
-                                                    <Grid Grid.Column="4">
+                                                <!--20250324 Chewlin for EDG New layout requirement for translation change Transition Length move to 2nd line and ADD Margin="0,20,0,0" and chagne Grid.Column="4" to one single grid -->
+                                                <Grid Grid.Column="4" Margin="0,20,0,0">
                                                         <!-- Elsa 20250113 For PIMS [PIMS-333699]change Height="24" to MinHeight="24" -->
                                                         <Grid.RowDefinitions>
                                                             <RowDefinition MinHeight="24" />
@@ -1780,8 +1786,8 @@
                                                             Text="{Binding [Min], Source={x:Static lang:LangHelper.Instance}}"
                                                             TextBlockSemanticColorType="Light"
                                                             TextBlockType="Display1" />
-                                                    </Grid>
                                                 </Grid>
+                                                
 
                                                 <!--  Row: "Brightness"  -->
                                                 <!-- Elsa 20250113 For PIMS [PIMS-333699] add Margin="0,20,0,-20" -->
@@ -1816,10 +1822,11 @@
                                                         Source="{DynamicResource BrightnessImage}"
                                                         Stretch="UniformToFill" />
                                                     <!-- Elsa 20250113 For PIMS [PIMS-333699]change Margin="8,0" Margin="8,-10,0,-40" -->
+                                                    <!-- Chewlin 20250324 For Fix Brightness show value move up issue change Margin="8,-10,0,-40" to Margin="8,0"  -->
                                                     <UXControls:UXSlider
                                                         Name="preset2_B_slider"
                                                         Grid.Column="1"
-                                                        Margin="8,-10,0,-40"
+                                                        Margin="8,0"
                                                         HorizontalContentAlignment="Stretch"
                                                         IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                         IsSnapToTickEnabled="True"
