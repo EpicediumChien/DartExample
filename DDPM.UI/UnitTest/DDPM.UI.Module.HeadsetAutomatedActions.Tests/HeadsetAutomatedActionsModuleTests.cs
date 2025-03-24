@@ -51,7 +51,7 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions.Tests
             console = consoleMock.Object;
             showPluginManagerMock = new Mock<IShowPluginManager>();
             showPluginManager = showPluginManagerMock.Object;
-            vm = new HeadsetViewModel(showPluginManager, console, log, deviceManagerSA);
+            vm = new HeadsetViewModel(console, log, deviceManagerSA);
             moduleOwnerMock = new Mock<IModuleOwner>();
             moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;

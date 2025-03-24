@@ -21,11 +21,11 @@ namespace NGA.ThickClientCore
 
     public sealed class ThickClientConsole : IThickClientConsole, IDisposable
     {
-        private readonly ILog? _log;
+        private readonly ILog? _log = null;
         private readonly IPluginManager _pluginManager;
         private readonly object _syncObject = new();
         private readonly List<HomePageTileInfo> _homePageTiles = new();
-        private IConsoleHomePagePlugin? _homePagePlugin;
+        private IConsoleHomePagePlugin? _homePagePlugin = null;
         private bool _disposedValue;
         private bool _hasTiles;
 
@@ -58,7 +58,9 @@ namespace NGA.ThickClientCore
             _dispatcherWrapper = dispatcherWrapper;
 
             _pluginManager.PluginsLoaded += MainWindow_PluginsLoadedEvent;
-            _homePagePlugin = _pluginManager.FindPluginByType<IThickClientHomePagePlugin>();
+
+            if (_homePagePlugin == null)
+                _homePagePlugin = _pluginManager.FindPluginByType<IThickClientHomePagePlugin>();
 
             _log?.Info($"{nameof(ThickClientConsole)} - Constructed");
         }

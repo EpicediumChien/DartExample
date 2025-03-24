@@ -40,6 +40,7 @@ namespace DDPM.UI.Plugin.Common.ViewModels
             _log = log;
             _deviceMnagerSA = deviceManagerSA;
             _easyArrange = easyArrange;
+            _log!.Info($"[DisplayViewModel] DisplayViewModel Start ...");
         }
 
         #region DCF/DUCA Interfaces

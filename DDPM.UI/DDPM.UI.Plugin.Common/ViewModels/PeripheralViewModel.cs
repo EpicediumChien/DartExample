@@ -103,6 +103,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     CurrentVersion = 10;
                 }
             }
+            _log!.Info($"[PeripheralViewModel] PeripheralViewModel Start ...");
         }
 
         public void Unpair()

@@ -564,6 +564,7 @@ namespace DDPM.UI.Plugin.ViewModels
             Requires.NotNull(log, nameof(log));
 
             _log = log;
+            _log!.Info($"[WebCameraViewModel] WebCameraViewModel Start ...");
         }
 
         public void SetResolution_Selected(int index)

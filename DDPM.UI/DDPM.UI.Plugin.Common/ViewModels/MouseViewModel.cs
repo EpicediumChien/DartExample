@@ -89,6 +89,7 @@ namespace DDPM.UI.Plugin.ViewModels
             Hz2501ClickedCommand = new RelayCommand(OnHz2501Clicked);
             Hz2502ClickedCommand = new RelayCommand(OnHz2502Clicked);
             Hz333ClickedCommand = new RelayCommand(OnHz333Clicked);
+            _log!.Info($"[MouseViewModel] MouseViewModel Start ...");
         }
 
         private void OnHz125Clicked()

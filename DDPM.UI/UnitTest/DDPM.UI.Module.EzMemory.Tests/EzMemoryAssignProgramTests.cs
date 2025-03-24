@@ -84,7 +84,7 @@ namespace DDPM.UI.Module.EzMemory.Tests
             splitItem = new SplitItem();
             privateObjecta = new PrivateObject(splitItem);
             privateObjecta.SetFieldOrProperty("vm", new SplitItemViewModel() { SplitCtrl = ISplitCtrlMock.Object });
-            vm = new EzArrangeViewModel(new HomeDevice()) { SelectedSplitItem = splitItem, IsEditProfile=true , currentEditprofile =new SA.Common.Settings.EAProfileDDPM() { AppInfos =new List<SA.Common.Settings.EAAppInfoDDPM>()} };
+            vm = new EzArrangeViewModel(new HomeDevice()) { SelectedSplitItem = splitItem, IsEditProfile = true, currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() } };
             logMock = new Mock<ILog>();
             log = logMock.Object;
             consoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(logMock.Object);
@@ -119,11 +119,11 @@ namespace DDPM.UI.Module.EzMemory.Tests
         public void TestInitializePagea()
         {
             ezMemoryAssignProgram.InitializePage();
-            var pageData=new EzMemoryPageData() {MainText= "Assign programs", SubText= "Assign applications/documents to windows or drag the application icon to the respective partition.\r\n\r\nNote: Easy Arrange Memory usability may vary according to application type and launch behavior." };
+            var pageData = new EzMemoryPageData() { MainText = "Assign programs", SubText = "Assign applications/documents to windows or drag the application icon to the respective partition.\r\n\r\nNote: Easy Arrange Memory usability may vary according to application type and launch behavior." };
             var MainTextText = pageData.MainText!;
             var SubTextText = pageData.SubText!;
             EzArrangeViewModel vm = (EzArrangeViewModel)privateObject.GetFieldOrProperty("_vm");
-            Assert.That(vm.IsRightGridPage2Visible,Is.EqualTo(true)); 
+            Assert.That(vm.IsRightGridPage2Visible, Is.EqualTo(true));
             Assert.That(vm.SelectedValue, Is.EqualTo(2));
             Assert.That(MainTextText, Is.EqualTo("Assign programs"));
             Assert.That(SubTextText, Is.EqualTo("Assign applications/documents to windows or drag the application icon to the respective partition.\r\n\r\nNote: Easy Arrange Memory usability may vary according to application type and launch behavior."));
@@ -145,33 +145,33 @@ namespace DDPM.UI.Module.EzMemory.Tests
         [Test]
         public void TestSyncEditStatusForAssignPage()
         {
-            vm = new EzArrangeViewModel(new HomeDevice()) { SelectedSplitItem = splitItem, IsEditProfile = true, currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() { new SA.Common.Settings.EAAppInfoDDPM() { Path= "EAAppInfoDDPM" },new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDP" } } }, _sortApps = new Dictionary<string, Bind_AddFullPage_AppCollectionData>(), SelectedValue = 1 , _bind_apps =new System.Collections.ObjectModel.ObservableCollection<Bind_AddFullPage_AppCollectionData>() { new Bind_AddFullPage_AppCollectionData() { AppPath= "EAAppInfoDDPM",AppName="Name1" , AppUserModelID ="1", AppType ="Type1",AppIcon="Icon1"} } };
+            vm = new EzArrangeViewModel(new HomeDevice()) { SelectedSplitItem = splitItem, IsEditProfile = true, currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() { new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDPM" }, new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDP" } } }, _sortApps = new Dictionary<string, Bind_AddFullPage_AppCollectionData>(), SelectedValue = 1, _bind_apps = new System.Collections.ObjectModel.ObservableCollection<Bind_AddFullPage_AppCollectionData>() { new Bind_AddFullPage_AppCollectionData() { AppPath = "EAAppInfoDDPM", AppName = "Name1", AppUserModelID = "1", AppType = "Type1", AppIcon = "Icon1" } } };
             ISplitCtrlMock.Setup(x => x.CellList).Returns(new List<CellObj>() { new CellObj("name1", new Border()) { CellBd = new CellBorder() }, new CellObj("name2", new Border()) { CellBd = new CellBorder() }, new CellObj("name3", new Border()) { CellBd = new CellBorder() } });
             ezMemoryAssignProgram = new EzMemoryAssignProgram(vmDisplay, vm, new HomeDevice());
             ezMemoryAssignProgram.SyncEditStatusForAssignPage();
             EzArrangeViewModel vma = (EzArrangeViewModel)privateObject.GetFieldOrProperty("_vm");
             Assert.That(vm, Is.InstanceOf<EzArrangeViewModel>());
             Assert.That(ezMemoryAssignProgram.DataContext, Is.InstanceOf<EzArrangeViewModel>());
-            Assert.That(vma._sortApps.Count,Is.EqualTo(0));
+            Assert.That(vma._sortApps.Count, Is.EqualTo(0));
         }
 
         [Test]
         public void TestNextPage()
-        {          
+        {
             ezMemoryAssignProgram.NextPage();
             EzArrangeViewModel vm = (EzArrangeViewModel)privateObject.GetFieldOrProperty("_vm");
             // Assert
             Assert.That(ezMemoryAssignProgram, Is.Not.Null);
             Assert.That(vm, Is.InstanceOf<EzArrangeViewModel>());
             Assert.That(ezMemoryAssignProgram.DataContext, Is.InstanceOf<EzArrangeViewModel>());
-            Assert.That(vm.IsAddPageBack,Is.EqualTo(false));
+            Assert.That(vm.IsAddPageBack, Is.EqualTo(false));
             Assert.NotZero(vm._currentPageIndex);
         }
 
         [Test]
         public void TestPreviousPage()
         {
-            vm = new EzArrangeViewModel(new HomeDevice()) {_currentPageIndex=3, SelectedSplitItem = splitItem, IsEditProfile = true, currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() { new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDPM" }, new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDP" } } }, _sortApps = new Dictionary<string, Bind_AddFullPage_AppCollectionData>(), SelectedValue = 1, _bind_apps = new System.Collections.ObjectModel.ObservableCollection<Bind_AddFullPage_AppCollectionData>() { new Bind_AddFullPage_AppCollectionData() { AppPath = "EAAppInfoDDPM", AppName = "Name1", AppUserModelID = "1", AppType = "Type1", AppIcon = "Icon1" } } };
+            vm = new EzArrangeViewModel(new HomeDevice()) { _currentPageIndex = 3, SelectedSplitItem = splitItem, IsEditProfile = true, currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() { new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDPM" }, new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDP" } } }, _sortApps = new Dictionary<string, Bind_AddFullPage_AppCollectionData>(), SelectedValue = 1, _bind_apps = new System.Collections.ObjectModel.ObservableCollection<Bind_AddFullPage_AppCollectionData>() { new Bind_AddFullPage_AppCollectionData() { AppPath = "EAAppInfoDDPM", AppName = "Name1", AppUserModelID = "1", AppType = "Type1", AppIcon = "Icon1" } } };
             ezMemoryAssignProgram = new EzMemoryAssignProgram(vmDisplay, vm, new HomeDevice());
             ezMemoryAssignProgram.PreviousPage();
             // Assert
@@ -185,7 +185,7 @@ namespace DDPM.UI.Module.EzMemory.Tests
             var pageData = new EzMemoryPageData() { MainText = "Assign programs", SubText = "Assign applications/documents to windows or drag the application icon to the respective partition.\r\n\r\nNote: Easy Arrange Memory usability may vary according to application type and launch behavior." };
             var MainTextText = pageData.MainText!;
             var SubTextText = pageData.SubText!;
-            vm = new EzArrangeViewModel(new HomeDevice()) { ezPages=new Dictionary<string, List<EzMemoryPageData>>() { { "EzMemory", new List<EzMemoryPageData>() { new EzMemoryPageData(),new EzMemoryPageData(),new EzMemoryPageData(), pageData } }, { "EzMemoryb", new List<EzMemoryPageData>() },{ "EzMemoryc",new List<EzMemoryPageData>() } }, _currentPageIndex = 3, SelectedSplitItem = splitItem, IsEditProfile = true, currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() { new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDPM" }, new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDP" } } }, _sortApps = new Dictionary<string, Bind_AddFullPage_AppCollectionData>(), SelectedValue = 1, _bind_apps = new System.Collections.ObjectModel.ObservableCollection<Bind_AddFullPage_AppCollectionData>() { new Bind_AddFullPage_AppCollectionData() { AppPath = "EAAppInfoDDPM", AppName = "Name1", AppUserModelID = "1", AppType = "Type1", AppIcon = "Icon1" } } };
+            vm = new EzArrangeViewModel(new HomeDevice()) { ezPages = new Dictionary<string, List<EzMemoryPageData>>() { { "EzMemory", new List<EzMemoryPageData>() { new EzMemoryPageData(), new EzMemoryPageData(), new EzMemoryPageData(), pageData } }, { "EzMemoryb", new List<EzMemoryPageData>() }, { "EzMemoryc", new List<EzMemoryPageData>() } }, _currentPageIndex = 3, SelectedSplitItem = splitItem, IsEditProfile = true, currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() { new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDPM" }, new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDP" } } }, _sortApps = new Dictionary<string, Bind_AddFullPage_AppCollectionData>(), SelectedValue = 1, _bind_apps = new System.Collections.ObjectModel.ObservableCollection<Bind_AddFullPage_AppCollectionData>() { new Bind_AddFullPage_AppCollectionData() { AppPath = "EAAppInfoDDPM", AppName = "Name1", AppUserModelID = "1", AppType = "Type1", AppIcon = "Icon1" } } };
             privateObject.SetFieldOrProperty("_vm", vm);
             ezMemoryAssignProgram.UpdatePageContent();
             EzArrangeViewModel vma = (EzArrangeViewModel)privateObject.GetFieldOrProperty("_vm");
@@ -201,8 +201,8 @@ namespace DDPM.UI.Module.EzMemory.Tests
         [Test]
         public void TestConvert()
         {
-            var windowGridVisibilityConverter=new WindowGridVisibilityConverter();
-            var result = windowGridVisibilityConverter.Convert(null,null,null,null);
+            var windowGridVisibilityConverter = new WindowGridVisibilityConverter();
+            var result = windowGridVisibilityConverter.Convert(null, null, null, null);
             // Assert
             Assert.That(result, Is.EqualTo(Visibility.Collapsed));
         }
@@ -224,5 +224,18 @@ namespace DDPM.UI.Module.EzMemory.Tests
             // Assert
             Assert.That(result, Is.EqualTo(Visibility.Collapsed));
         }
+
+
+        [TearDown]
+        public void TearDown()
+        {
+            // Dispose of splitItem after each test
+            if (splitItem != null)
+            {
+                splitItem.Dispose();
+                splitItem = null;
+            }
+        }
+
     }
 }

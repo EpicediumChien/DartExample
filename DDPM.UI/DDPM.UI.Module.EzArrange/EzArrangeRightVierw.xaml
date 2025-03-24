@@ -34,7 +34,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <UXControls:UXScrollViewer>
+        <UXControls:UXScrollViewer UseFadingScrolling="False">
             <Grid>
                 <StackPanel>
                     <Border Style="{StaticResource RightGroupBorderStyle}">

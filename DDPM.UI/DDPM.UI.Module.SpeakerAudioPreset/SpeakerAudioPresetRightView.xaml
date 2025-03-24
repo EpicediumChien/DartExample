@@ -149,73 +149,80 @@
                             </StackPanel>
                         </Border>
                     </Grid>
-                    <Grid Visibility="{Binding IsDefaultChecked, Converter={StaticResource BooleanToVisibilityConverter}}"  x:Name="AudioEqualizerGrid" Grid.Row="4" Grid.ColumnSpan="1" Width="456" Height="344" VerticalAlignment="Top" Margin="0,0,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" HorizontalAlignment="Left" Margin="20,20,0,0">
-                            <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.10], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="1" HorizontalAlignment="Left" Margin="20,20,0,20">
-                            <!--Chewlin 20250108 for PIMS-334383 change TextWrapping="Wrap" to TextWrapping="WrapWithOverflow",ADD Width="430"(default 435.287)-->
-                            <UXControls:UXTextBlock Text="{Binding [SpeakerAudioPreset.3], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" Width="430" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="14" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="2" HorizontalAlignment="Left" Margin="20,20,0,0">
-                            <Canvas x:Name="EqualizerCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" Width="456" Height="324" Margin="0,0,0,0">
-                                <!-- 中間橫線 -->
-                                <Line X1="40" Y1="81" X2="411" Y2="81" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
-
-                                <!-- 垂直線條 -->
-                                <Line X1="92.5" Y1="0" X2="92.5" Y2="159" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
-                                <Line X1="222.5" Y1="0" X2="222.5" Y2="159" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
-                                <Line X1="352.5" Y1="0" X2="352.5" Y2="159" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
-                                <!-- 曲線 -->
-                                <Path Name="CurvePath" Stroke="#FF0672CB" Canvas.Left="0" Canvas.Top="0" StrokeThickness="2.3" Width="410" Fill="Transparent">
-                                    <Path.Data>
-                                        <PathGeometry>
-                                            <PathFigure StartPoint="90,65" IsClosed="False" x:Name="CurvePathFigure">
-                                                <BezierSegment x:Name="Segment1" Point1="100,65" Point2="150,65" Point3="150,65" />
-                                                <BezierSegment x:Name="Segment2" Point1="200,65" Point2="250,65" Point3="350,65" />
-                                            </PathFigure>
-                                        </PathGeometry>
-                                    </Path.Data>
-                                </Path>
-                                <!-- 節點 -->
-                                <Image x:Name="Node1" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" Canvas.Left="86" Canvas.Top="59" Width="13.79" Height="13.79" MouseLeftButtonDown="Node_MouseLeftButtonDown" MouseMove="Node_MouseMove" MouseLeftButtonUp="Node_MouseLeftButtonUp" />
-                                <Border x:Name="Node1TextBackground" Background="{StaticResource UnselectedNodeImage}" Width="28" Height="28" Canvas.Left="46" Canvas.Top="35" Visibility="Collapsed">
-                                    <TextBlock x:Name="Node1Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                </Border>
-
-                                <Image x:Name="Node2" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" Canvas.Left="216" Canvas.Top="59" Width="13.79" Height="13.79" MouseLeftButtonDown="Node_MouseLeftButtonDown" MouseMove="Node_MouseMove" MouseLeftButtonUp="Node_MouseLeftButtonUp" />
-                                <Border x:Name="Node2TextBackground" Background="{StaticResource UnselectedNodeImage}" Width="28" Height="28" Canvas.Left="136" Canvas.Top="35" Visibility="Collapsed">
-                                    <TextBlock x:Name="Node2Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                </Border>
-
-                                <Image x:Name="Node3" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" Canvas.Left="346" Canvas.Top="59" Width="13.79" Height="13.79" MouseLeftButtonDown="Node_MouseLeftButtonDown" MouseMove="Node_MouseMove" MouseLeftButtonUp="Node_MouseLeftButtonUp" />
-                                <Border x:Name="Node3TextBackground" Background="{StaticResource UnselectedNodeImage}" Width="28" Height="28" Canvas.Left="226" Canvas.Top="35" Visibility="Collapsed">
-                                    <TextBlock x:Name="Node3Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                </Border>
-
-                                <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="20,58,0,0">
-                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.12], Source={x:Static lang:LangHelper.Instance},StringFormat={}0 {0}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
+                    <!--Elsa 20250320 for PIMS-348396 change Margin="0,0,0,0" to Margin="-8,0,0,0" add Border and StackPanel-->
+                    <Grid Visibility="{Binding IsDefaultChecked, Converter={StaticResource BooleanToVisibilityConverter}}"  x:Name="AudioEqualizerGrid" Grid.Row="4" Grid.ColumnSpan="1" Width="456" Height="344" VerticalAlignment="Top" Margin="-8,0,0,0">
+                        <Border x:Name="AudioEqualizer" CornerRadius="6" Width="438" Height="Auto" VerticalAlignment="Top">
+                            <StackPanel x:Name="AudioEqualizerStackPanel" Orientation="Vertical">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                </Grid>
+                                <StackPanel Grid.Row="0" HorizontalAlignment="Left" Margin="20,20,0,0">
+                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.10], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" />
                                 </StackPanel>
-
-                                <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="80,165,0,0">
-                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.13], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
+                                <StackPanel Grid.Row="1" HorizontalAlignment="Left" Margin="20,20,0,20">
+                                    <!--Chewlin 20250108 for PIMS-334383 change TextWrapping="Wrap" to TextWrapping="WrapWithOverflow",ADD Width="430"(default 435.287)-->
+                                    <UXControls:UXTextBlock Text="{Binding [SpeakerAudioPreset.3], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" Width="430" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="14" />
                                 </StackPanel>
+                                <StackPanel Grid.Row="2" HorizontalAlignment="Left" Margin="20,20,0,0">
+                                    <Canvas x:Name="EqualizerCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" Width="456" Height="324" Margin="0,0,0,0">
+                                        <!-- 中間橫線 -->
+                                        <Line X1="40" Y1="81" X2="411" Y2="81" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
 
-                                <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="195,165,0,0">
-                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.14], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
-                                </StackPanel>
+                                        <!-- 垂直線條 -->
+                                        <Line X1="92.5" Y1="0" X2="92.5" Y2="159" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
+                                        <Line X1="222.5" Y1="0" X2="222.5" Y2="159" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
+                                        <Line X1="352.5" Y1="0" X2="352.5" Y2="159" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
+                                        <!-- 曲線 -->
+                                        <Path Name="CurvePath" Stroke="#FF0672CB" Canvas.Left="0" Canvas.Top="0" StrokeThickness="2.3" Width="410" Fill="Transparent">
+                                            <Path.Data>
+                                                <PathGeometry>
+                                                    <PathFigure StartPoint="90,65" IsClosed="False" x:Name="CurvePathFigure">
+                                                        <BezierSegment x:Name="Segment1" Point1="100,65" Point2="150,65" Point3="150,65" />
+                                                        <BezierSegment x:Name="Segment2" Point1="200,65" Point2="250,65" Point3="350,65" />
+                                                    </PathFigure>
+                                                </PathGeometry>
+                                            </Path.Data>
+                                        </Path>
+                                        <!-- 節點 -->
+                                        <Image x:Name="Node1" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" Canvas.Left="86" Canvas.Top="59" Width="13.79" Height="13.79" MouseLeftButtonDown="Node_MouseLeftButtonDown" MouseMove="Node_MouseMove" MouseLeftButtonUp="Node_MouseLeftButtonUp" />
+                                        <Border x:Name="Node1TextBackground" Background="{StaticResource UnselectedNodeImage}" Width="28" Height="28" Canvas.Left="46" Canvas.Top="35" Visibility="Collapsed">
+                                            <TextBlock x:Name="Node1Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
 
-                                <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="335,165,0,0">
-                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.15], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
+                                        <Image x:Name="Node2" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" Canvas.Left="216" Canvas.Top="59" Width="13.79" Height="13.79" MouseLeftButtonDown="Node_MouseLeftButtonDown" MouseMove="Node_MouseMove" MouseLeftButtonUp="Node_MouseLeftButtonUp" />
+                                        <Border x:Name="Node2TextBackground" Background="{StaticResource UnselectedNodeImage}" Width="28" Height="28" Canvas.Left="136" Canvas.Top="35" Visibility="Collapsed">
+                                            <TextBlock x:Name="Node2Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+
+                                        <Image x:Name="Node3" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" Canvas.Left="346" Canvas.Top="59" Width="13.79" Height="13.79" MouseLeftButtonDown="Node_MouseLeftButtonDown" MouseMove="Node_MouseMove" MouseLeftButtonUp="Node_MouseLeftButtonUp" />
+                                        <Border x:Name="Node3TextBackground" Background="{StaticResource UnselectedNodeImage}" Width="28" Height="28" Canvas.Left="226" Canvas.Top="35" Visibility="Collapsed">
+                                            <TextBlock x:Name="Node3Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+
+                                        <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="20,58,0,0">
+                                            <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.12], Source={x:Static lang:LangHelper.Instance},StringFormat={}0 {0}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="80,165,0,0">
+                                            <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.13], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="195,165,0,0">
+                                            <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.14], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="335,165,0,0">
+                                            <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.15], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
+                                        </StackPanel>
+                                    </Canvas>
                                 </StackPanel>
-                            </Canvas>
-                        </StackPanel>
+                            </StackPanel>
+                        </Border>
                     </Grid>
                 </StackPanel>
             </Border>

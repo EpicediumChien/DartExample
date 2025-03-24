@@ -712,12 +712,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //Launch the major function in UI Thread
             Thread thread = new Thread(() =>
             {
-                STA_EditCommand(monitorInfo, args);
+                if (!STA_EditCommand(monitorInfo, args))
+                    return;
+                WriteLog("@ EditCommand(), Entering Dispatcher.Run().");
                 System.Windows.Threading.Dispatcher.Run();
+                WriteLog("@ EditCommand(), exit from Dispatcher.Run().");
             });
 
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
+            WriteLog("@ EditCommand(), STA Thread is started.");
 
             return Task.FromResult(true);
         }
@@ -731,18 +735,24 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         /// </summary>
         /// <param name="monitorInfo"></param>
         /// <param name="args"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// false: the STA thread can be terminated.
+        /// true: the STA thread need to keep running, STA_EditCommand will call Dispatcher.InvokeShutdown() to terminate the STA thread.
+        /// </returns>
         private bool STA_EditCommand(MonitorInfo monitorInfo, EAArgs args)
         {
             //Should be never, these flags are checked alaredy in EditCommand()
-            if (_eaBroker == null) 
+            if (_eaBroker == null)
+            {
+                WriteLog("@ STA_EditCommand(), exit due to _eaBroker is null.");
                 return false;
+            }
             //if (_editWindow == null)
             //    return false;
             //if (_saveCustomWindow == null)
             //    return false;
 
-            Trace.WriteLine("@ UI_EditCommand()");
+            Trace.WriteLine("@ STA_EditCommand()");
             Trace.WriteLine($"  * Monitor.Model=[{monitorInfo.modelName}], ServiceTag=[{monitorInfo.edid.ServiceTag}]");
             Trace.WriteLine($"  * EAArgs.Split=[{args.CellCount}{args.SplitKey}], CustomName=[{args.CustomName}]");
 
@@ -826,7 +836,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                             _eaBroker.VM.IsWorkUIEnabled = true;
                             _eaBroker.RunningState = eEARunningStates.Waiting;
                         }
-                        return true;
+                        return false;
                     }
 
                     //Get the selected/edited CustomName from SaveCustomWindow
@@ -957,7 +967,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 //Non-Overlap edit steps
                 //1 Show the layout for editing
                 _editWindow = new EABroker.EAEditWindow(_log);
-                _saveCustomWindow = new EABroker.SaveCustomWindow(_deviceManagerPlugin);
+                //Robert_Lin 2025-3-19 remove the duplicate code
+                //_saveCustomWindow = new EABroker.SaveCustomWindow(_deviceManagerPlugin);
                 if (!_editWindow.ShowAndEdit(args, workingArea))
                 {
                     if (EditStarted != null)
