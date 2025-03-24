@@ -11,7 +11,7 @@
              d:DesignHeight="450"
              d:DesignWidth="800"
              SizeChanged="UserControl_SizeChanged">
-    
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -21,12 +21,12 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <UXControls:UXScrollViewer>
-            <!-- Robert_Lin 2025-3-6 PIMS-348208 S-348208 Multiple Instances of Incorrect Padding (too much space) in Settings 
+        <!-- Robert_Lin 2025-3-6 PIMS-348208 S-348208 Multiple Instances of Incorrect Padding (too much space) in Settings 
             Fix Margins of UI elements 
             -->
-            <Border Style="{StaticResource GroupBorderStyle}"
+        <Border Style="{StaticResource GroupBorderStyle}"
                     CornerRadius="13">
+            <UXControls:UXScrollViewer>
                 <StackPanel>
                     <!-- OLD:  <Grid Margin="20,20,8,8">
                     NEW: Add to UXTextBlock: VerticalAlignment="Center"
@@ -81,7 +81,7 @@
                                       Margin="0,16,0,0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
-                                        <!-- 定义一行 and Add VerticalAlignment="Center" chewlin Fix PIMS-348202 20250312-->                                       
+                                        <!-- 定义一行 and Add VerticalAlignment="Center" chewlin Fix PIMS-348202 20250312-->
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -111,7 +111,7 @@
                         </Border>
                     </Grid>
                 </StackPanel>
-            </Border>
-        </UXControls:UXScrollViewer>
+            </UXControls:UXScrollViewer>
+        </Border>
     </Grid>
 </UserControl>
