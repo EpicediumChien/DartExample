@@ -2018,7 +2018,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
                 }
                 _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetIsReadyAsync, false ... {tick}");
-                Thread.Sleep(1000);
+                Task.Delay(1000).Wait();
                 tick++;
             }
 
@@ -2043,7 +2043,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         break;
                     }
                     _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... DTH_IsReady, false ... {tick}");
-                    Thread.Sleep(1000);
+                    Task.Delay(1000).Wait();
                     tick++;
                 }
 
@@ -2058,7 +2058,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
 
             DetectPageShow(model);
-            Thread.Sleep(500);
+            Task.Delay(500).Wait();
             HidePleaseWait();
         }
 

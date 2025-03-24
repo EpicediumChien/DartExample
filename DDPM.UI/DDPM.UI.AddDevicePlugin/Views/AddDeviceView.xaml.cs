@@ -96,7 +96,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                             //if(e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
                             while (IsRequested && !_vm.IsPairingLoaded)
                             {
-                                Thread.Sleep(1000);
+                                Task.Delay(1000).Wait();
                             }
                             if (WaitingModalDialogIsOpen)
                             {

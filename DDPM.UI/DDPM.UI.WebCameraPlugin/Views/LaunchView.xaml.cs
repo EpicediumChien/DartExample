@@ -1392,7 +1392,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 catch (Exception ex)
                 {
                     print_debug("ex1:" + ex.Message);
-                    Thread.Sleep(200);//for wait device init
+                    Task.Delay(200).Wait();//Thread.Sleep(200);//for wait device init
                     DdpmCommonHelper.WriteUILog("MediaCapture initiate fail (retry): " + ex.Message);
                     _vm.mre.Set();
                     return;
@@ -1401,7 +1401,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (_vm.MediaCapture == null)
                 {
                     print_debug("_vm.MediaCapture == null");
-                    Thread.Sleep(100);//for wait device init
+                    Task.Delay(100).Wait();//Thread.Sleep(100);//for wait device init
                     DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 10 (retry) : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                     _vm.mre.Set();
                     return;
@@ -1946,7 +1946,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
 
 
-            Thread.Sleep(60);
+            Task.Delay(60).Wait();////Thread.Sleep(60);
 
             try
             {
@@ -2428,11 +2428,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     _vm.AlertType = WebcamAlert.Alert1;
                     _vm.AlertVisibility = Visibility.Visible;
 
-                    new Thread(() =>
+                    //new Thread(() =>
+                    //{
+                    //    Thread.Sleep(3000);
+                    //    _vm.AlertVisibility = Visibility.Collapsed;
+                    //}).Start();
+                    Task.Run(async () =>
                     {
-                        Thread.Sleep(3000);
+                        await Task.Delay(3000);
                         _vm.AlertVisibility = Visibility.Collapsed;
-                    }).Start();
+                    });
 
                     _vm.SetProfile();
 

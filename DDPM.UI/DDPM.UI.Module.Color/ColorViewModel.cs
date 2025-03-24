@@ -929,7 +929,7 @@ namespace DDPM.UI.Module.Color
                     }
                     DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
                     DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] WriteColorPresetSettings() called End");
-                    Thread.Sleep(100);
+                    Task.Delay(100).Wait();
 
                     foreach (string key in config.AppInfo.Keys)
                     {
