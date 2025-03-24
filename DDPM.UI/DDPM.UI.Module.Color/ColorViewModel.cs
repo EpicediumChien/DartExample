@@ -50,7 +50,7 @@ namespace DDPM.UI.Module.Color
     internal class ColorViewModel : ObservableObject, INotifyPropertyChanged
     {
         #region Log
-        private ILog? _log;
+        private ILog? _log = null;
         public ILog? Log { get; set; }
 
         #endregion Log
@@ -61,12 +61,12 @@ namespace DDPM.UI.Module.Color
         //public RegistryMonitor_ICC registryMonitor_ICC = null;     
 
         // jim mofidy 20240606
-        public ManagementEventWatcher startWatcher = null;
-        public ManagementEventWatcher endProcWatcher = null;
+        public ManagementEventWatcher? startWatcher = null;
+        public ManagementEventWatcher? endProcWatcher = null;
 
         public DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
 
-        private BackgroundWorker? bw;
+        private BackgroundWorker? bw = null;
 
         public Guid? guid { get; set; }
         public IModuleOwner? ModuleOwner { get; set; }
@@ -1195,10 +1195,10 @@ namespace DDPM.UI.Module.Color
 
         private bool Cancelled_RefreshData(DoWorkEventArgs e, BackgroundWorker bw)
         {
-            if (bw.CancellationPending)
+            if (bw != null && bw.CancellationPending)
             {
                 Debug.WriteLine("[InputSource] Cancelled_RefreshData.");
-                _log.Info("[InputSource] Cancelled_RefreshData.");
+                _log?.Info("[InputSource] Cancelled_RefreshData.");
                 e.Cancel = true;
                 return true;
             }
@@ -1207,11 +1207,12 @@ namespace DDPM.UI.Module.Color
 
         public void CallCancel()
         {
-            if (bw.IsBusy)
+            if (bw != null && bw.IsBusy)
             {
-                _log.Info("[InputSource] CallCancel.");
+                _log?.Info("[InputSource] CallCancel.");
                 bw.CancelAsync();
-                DdpmCommonHelper.DeviceManagerSA.CancelVcpTask((Guid)guid);
+                if (guid != null)
+                    DdpmCommonHelper.DeviceManagerSA.CancelVcpTask((Guid)guid);
             }
         }
 
