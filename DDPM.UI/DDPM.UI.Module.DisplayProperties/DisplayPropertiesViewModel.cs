@@ -45,26 +45,29 @@ namespace DDPM.UI.Module.DisplayProperties
             get => _selectedOrientation;
             set
             {
-                SetProperty(ref _selectedOrientation, value);
-                if (DdpmCommonHelper.DeviceManagerSA.SetOrientation(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
-                    _selectedOrientation.Orientation
-                    ).Result)
+                if (value != null)
                 {
-                    DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
-                    Resolution_ItemsCollection.Clear();
-                    MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                    SetProperty(ref _selectedOrientation, value);
+                    if (DdpmCommonHelper.DeviceManagerSA.SetOrientation(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
+                        _selectedOrientation.Orientation
+                        ).Result)
                     {
-                        foreach (Properties Properties in displayPropertiesInfo.SupportedProperties.Properties)
+                        DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
+                        Resolution_ItemsCollection.Clear();
+                        MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                         {
-                            Resolution_ItemsCollection.Add(new UI_Properties
+                            foreach (Properties Properties in displayPropertiesInfo.SupportedProperties.Properties)
                             {
-                                Properties = Properties
-                            });
-                        }
-                    }));
-                    _selectedResolution = Resolution_ItemsCollection.Find(x => (x.Properties.isCurrent));
-                    RefreshUI();
-                    //DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
+                                Resolution_ItemsCollection.Add(new UI_Properties
+                                {
+                                    Properties = Properties
+                                });
+                            }
+                        }));
+                        _selectedResolution = Resolution_ItemsCollection.Find(x => (x.Properties.isCurrent));
+                        RefreshUI();
+                        //DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
+                    }
                 }
             }
         }
