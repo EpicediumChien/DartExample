@@ -19840,7 +19840,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await _AirAudioHelper.GetAirAudioBatteryLevelCaseAsync(Guid);
         }
-
+        public async Task<int> GetAirAudioMaxAllowedPariedHost(string Guid)
+        {
+            return await _AirAudioHelper.GetAirAudioMaxAllowedPariedHost(Guid);
+        }
         public async Task<bool> SetFactoryResetAsyncValueForAirAudioAsync(string Guid, bool newValue)
         {
             return await _AirAudioHelper.SetFactoryResetAsyncValueForAirAudioAsync(Guid, newValue);
