@@ -1,12 +1,9 @@
 ﻿using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
-using Newtonsoft.Json.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Windows.Devices.Geolocation;
-using DDPM.SA.Common;
 
 namespace DDPM.UI.Module.HeadsetDeviceSettings
 {

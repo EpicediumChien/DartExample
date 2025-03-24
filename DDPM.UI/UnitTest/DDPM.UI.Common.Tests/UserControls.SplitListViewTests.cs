@@ -31,7 +31,7 @@ namespace DDPM.UI.Common.Tests
     public class SplitListViewTests
     {
         private SplitListView? splitListView;
-        private PrivateObject?privateObject;
+        private PrivateObject? privateObject;
         private Mock<IDeviceManagerSA>? deviceManagerSAMock;
         private SplitListViewModel? vm;
 
@@ -45,8 +45,8 @@ namespace DDPM.UI.Common.Tests
             var resourceDictionary = new ResourceDictionary();
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
-            deviceManagerSAMock =new Mock<IDeviceManagerSA>();
-            DdpmCommonHelper.DeviceManagerSA=deviceManagerSAMock.Object;
+            deviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
             splitListView = new SplitListView();
             privateObject = new PrivateObject(splitListView);
             vm = new SplitListViewModel();
@@ -75,7 +75,7 @@ namespace DDPM.UI.Common.Tests
         public void TestSplitList()
         {
             // Act
-            SplitListViewModel vm = (SplitListViewModel) privateObject.GetFieldOrProperty("vm");
+            SplitListViewModel vm = (SplitListViewModel)privateObject.GetFieldOrProperty("vm");
             // Assert
             Assert.That(splitListView.SplitList, Is.EqualTo(vm.SplitList));
         }
@@ -106,7 +106,7 @@ namespace DDPM.UI.Common.Tests
 
             // Act
             SplitListViewModel vm = new SplitListViewModel();
-            vm.SplitList=new ObservableCollection<SplitItem>() { new SplitItem() ,new SplitItem() { SplitOwner= eSplitOwner.EaWin} };
+            vm.SplitList = new ObservableCollection<SplitItem>() { new SplitItem(), new SplitItem() { SplitOwner = eSplitOwner.EaWin } };
             privateObject.SetFieldOrProperty("vm", vm);
             result = splitListView.GetAt(1);
             // Assert
@@ -143,7 +143,7 @@ namespace DDPM.UI.Common.Tests
             // Act
             var contentControl = new ContentControl();
             var vma = new SplitListViewModel() { SplitOwner = eSplitOwner.EaCustom };
-            privateObject.SetFieldOrProperty("vm",vma);
+            privateObject.SetFieldOrProperty("vm", vma);
             var result = splitListView.AddItemToList(contentControl);
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -162,7 +162,7 @@ namespace DDPM.UI.Common.Tests
             var ispMock = new Mock<ISplitCtrl>();
             var vma = new SplitListViewModel() { SplitOwner = eSplitOwner.EaCustom };
             privateObject.SetFieldOrProperty("vm", vma);
-            var result = splitListView.InsertSplitCtrlToList(ispMock.Object,-1);
+            var result = splitListView.InsertSplitCtrlToList(ispMock.Object, -1);
             // Assert
             Assert.That(result, Is.Not.Null);
 
@@ -189,7 +189,7 @@ namespace DDPM.UI.Common.Tests
         {
             // Act
             var itemClickCommandMock = new Mock<ICommand>();
-            splitListView.ItemClickCommand= itemClickCommandMock.Object;
+            splitListView.ItemClickCommand = itemClickCommandMock.Object;
             // Assert
             Assert.That(splitListView.ItemClickCommand, Is.EqualTo(itemClickCommandMock.Object));
         }
@@ -204,8 +204,8 @@ namespace DDPM.UI.Common.Tests
             Assert.That(result, Is.EqualTo(false));
 
             //SplitList!=null
-            var vm=new SplitListViewModel();
-            vm.SplitList= new ObservableCollection<SplitItem> { new SplitItem() { CustomId = 1 }, new SplitItem() { CustomId = 0,IsSelected=true } };         
+            var vm = new SplitListViewModel();
+            vm.SplitList = new ObservableCollection<SplitItem> { new SplitItem() { CustomId = 1 }, new SplitItem() { CustomId = 0, IsSelected = true } };
             privateObject.SetFieldOrProperty("vm", vm);
             result = splitListView.GotoFirstSelectedItemPage();
             // Assert
@@ -289,7 +289,7 @@ namespace DDPM.UI.Common.Tests
             result = splitListView.FindIndexOfSelectedItem();
             Assert.That(result, Is.EqualTo(1));
 
-            vma = new SplitListViewModel() { SplitList =new ObservableCollection<SplitItem>() { new SplitItem() { SplitOwner= eSplitOwner.EaWin,IsSelected=true},new SplitItem() { SplitOwner=eSplitOwner.EaCustom,IsSelected= true } } };
+            vma = new SplitListViewModel() { SplitList = new ObservableCollection<SplitItem>() { new SplitItem() { SplitOwner = eSplitOwner.EaWin, IsSelected = true }, new SplitItem() { SplitOwner = eSplitOwner.EaCustom, IsSelected = true } } };
             privateObject.SetFieldOrProperty("vm", vma);
             result = splitListView.FindIndexOfSelectedItem();
             Assert.That(result, Is.EqualTo(0));
@@ -332,7 +332,7 @@ namespace DDPM.UI.Common.Tests
             privateObjectsplitItem.SetFieldOrProperty("vm", vmSplitItemViewModel);
             _splitList = new ObservableCollection<SplitItem> { new SplitItem() { }, splitItem };
             privateObjecta.SetFieldOrProperty("_splitList", _splitList);
-            var ISplitCtrl= splitItem.ISplitCtrl;        
+            var ISplitCtrl = splitItem.ISplitCtrl;
             result = splitListView.FindItemByFriendlyName("A");
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -360,7 +360,7 @@ namespace DDPM.UI.Common.Tests
             // Act
             vma = new SplitListViewModel() { };
             privateObjecta = new PrivateObject(vma);
-            var _splitList=new ObservableCollection<SplitItem> { new SplitItem() { } ,new SplitItem() { CustomId=2} };
+            var _splitList = new ObservableCollection<SplitItem> { new SplitItem() { }, new SplitItem() { CustomId = 2 } };
             privateObjecta.SetFieldOrProperty("_splitList", _splitList);
             privateObject.SetFieldOrProperty("vm", vma);
             result = splitListView.FindItemByCustomId(2);
@@ -397,7 +397,7 @@ namespace DDPM.UI.Common.Tests
 
             // Act
             //spItem.CustomId == 0
-            spj = new SplitJson() { CustomId = 0 ,CellCount=0,SplitKey= 'A' };
+            spj = new SplitJson() { CustomId = 0, CellCount = 0, SplitKey = 'A' };
             var _splitList = new ObservableCollection<SplitItem> { new SplitItem() { CustomId = 1 }, new SplitItem() { CustomId = 0, } };
             privateObjecta.SetFieldOrProperty("_splitList", _splitList);
             result = splitListView.FindItemBySplitJson(spj);
@@ -466,7 +466,7 @@ namespace DDPM.UI.Common.Tests
         {
             // Act
             var ispMock = new Mock<ISplitCtrl>();
-            var vma = new SplitListViewModel() { SplitOwner = eSplitOwner.EaCustom ,SplitList=new ObservableCollection<SplitItem>() { new SplitItem(),new SplitItem()} };
+            var vma = new SplitListViewModel() { SplitOwner = eSplitOwner.EaCustom, SplitList = new ObservableCollection<SplitItem>() { new SplitItem(), new SplitItem() } };
             privateObject.SetFieldOrProperty("vm", vma);
             var result = splitListView.AddSplitCtrlTo2ndPosition(ispMock.Object);
             // Assert
@@ -486,7 +486,7 @@ namespace DDPM.UI.Common.Tests
             // Act
             var vma = new SplitListViewModel() { SplitOwner = eSplitOwner.EaWin, SplitList = new ObservableCollection<SplitItem>() { new SplitItem() } };
             privateObject.SetFieldOrProperty("vm", vma);
-            var SplitItem= vma.SplitItem0 as SplitItem;
+            var SplitItem = vma.SplitItem0 as SplitItem;
             var result = splitListView.DeleteSplitItem(SplitItem);
             // Assert
             Assert.That(result, Is.EqualTo(true));
@@ -508,16 +508,16 @@ namespace DDPM.UI.Common.Tests
             // Assert
             Assert.That(splitListView.IsVertical, Is.EqualTo(true));
         }
-      
+
         [Test]
         public void TestHasAddButton()
         {
             // Act
-            splitListView.HasAddButton=true;
+            splitListView.HasAddButton = true;
             // Assert
             Assert.That(splitListView.HasAddButton, Is.EqualTo(true));
         }
-        
+
         [Test]
         public void TestAddButtonClickCommand()
         {
@@ -535,7 +535,7 @@ namespace DDPM.UI.Common.Tests
             var SplitCtrlMock = new Mock<ISplitCtrl>();
             var vmSplitItem = new SplitItemViewModel() { SplitOwner = eSplitOwner.EaCustom, SplitCtrl = SplitCtrlMock.Object };
             var splitItem = new SplitItem();
-            PrivateObject prisplitItem=new PrivateObject(splitItem);
+            PrivateObject prisplitItem = new PrivateObject(splitItem);
             prisplitItem.SetFieldOrProperty("vm", vmSplitItem);
             var vmSplitListView = new SplitListViewModel() { SplitOwner = eSplitOwner.EaWin, SplitList = new ObservableCollection<SplitItem>() { splitItem } };
             privateObject.SetFieldOrProperty("vm", vmSplitListView);
@@ -551,5 +551,18 @@ namespace DDPM.UI.Common.Tests
                 Assert.Fail("not invoked");
             }
         }
+
+
+        [TearDown]
+        public void TearDown()
+        {
+            // Dispose of splitListView after each test
+            if (splitListView != null)
+            {
+                splitListView.Dispose();
+                splitListView = null;
+            }
+        }
+
     }
 }

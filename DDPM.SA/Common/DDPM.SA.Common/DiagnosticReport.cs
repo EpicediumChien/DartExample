@@ -1,7 +1,10 @@
 ﻿using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace DDPM.SA.Common
 {
@@ -20,8 +23,9 @@ namespace DDPM.SA.Common
             log.Info($"{nameof(SaveLogFile)} WTSFunction._WTSGetActiveConsoleSessionId() : {WTSFunction._WTSGetActiveConsoleSessionId()}");
             if (WTSFunction._WTSGetActiveConsoleSessionId() >= 1)
             {
-                string fail_info = "[SaveLogFile] : saveFolderPath : " + saveFolderPath + ", ";
-                string success_info = "[SaveLogFile] : saveFolderPath : " + saveFolderPath + ", ";
+                string fail_info = string.Empty;
+                string success_info = string.Empty;
+                string path_info = "[SaveFolderPath] = " + saveFolderPath + ", ";
                 if (!string.IsNullOrEmpty(saveFolderPath))
                 {
                     log.Info($"{nameof(SaveLogFile)} saveFolderPath : {saveFolderPath}");
@@ -63,21 +67,37 @@ namespace DDPM.SA.Common
                     } while (!folderValid && count < 2);
 
                     string programdataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-                    //log.Info($"folderPath - programdataPath Line 60: programdataPath is null : {string.IsNullOrEmpty(programdataPath)}");
                     string appDataPath = WTSFunction.GetActiveUserLocalAppDataPath(log);
-                    //log.Info($"folderPath - appDataPath Line 62: appDataPath is null : {string.IsNullOrEmpty(appDataPath)}");
+                    if (!string.IsNullOrEmpty(appDataPath))
+                    {
+                        path_info += "[AppDataPath] From WTS, ";
+                        log.Info($"folderPath - WTSFunction appDataPath = {appDataPath}");
+                    }
+                    else
+                    {
+                        path_info += "[AppDataPath] WTSFunction = null, ";
+                        log.Info($"folderPath - ActiveUserLocalAppDataPath is null or empty. Fallback to Environment.LocalApplicationData.");
+
+                        // win32 重取 AppDataPath
+                        path_info += "[AppDataPath] From Common, ";
+                        appDataPath = CommonFunctions.GetLocalApplicationData(log);
+                        log.Info($"folderPath - Environment SpecialFolder LocalApplicationData");
+                    }
+
                     try
                     {
                         string LogFolder = string.Empty;
                         // AppDataPath
                         if (!string.IsNullOrEmpty(appDataPath))
                         {
-                            log.Info($"folderPath - appDataPath Line 69: appDataPath  : {appDataPath}");
+                            path_info += "[AppDataPath] = " + appDataPath + ", ";
+                            log.Info($"folderPath - appDataPath : {appDataPath}");
                             // DDPM.Subagent.User Log
                             try
                             {
                                 LogFolder = @$"{appDataPath}{GlobalDefinitions.LogDDPMUSERSA}";//\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
-                                log.Info("folderPath - LogFolder Line 74: " + LogFolder);
+                                path_info += "[DDPM.Subagent.User] = " + LogFolder + ", ";
+                                log.Info("folderPath - LogFolder : " + LogFolder);
                                 if (method.DirectoryContainsFiles(LogFolder))
                                 {
                                     // 取得資料夾名稱
@@ -112,7 +132,8 @@ namespace DDPM.SA.Common
                             try
                             {
                                 LogFolder = @$"{appDataPath}{GlobalDefinitions.LogDDPMGUI}";//\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
-                                log.Info("folderPath - LogFolder Line 109: " + LogFolder);
+                                path_info += "[DDPM.GUI] = " + LogFolder + ", ";
+                                log.Info("folderPath - LogFolder : " + LogFolder);
                                 if (method.DirectoryContainsFiles(LogFolder))
                                 {
                                     // 取得資料夾名稱
@@ -145,19 +166,22 @@ namespace DDPM.SA.Common
                         }
                         else
                         {
-                            fail_info += "SaveLogFile - [AppDataPath] null, ";
+                            path_info += "[AppDataPath] : null, ";
+                            fail_info += "[AppDataPath] : null, ";
                             log.Error("SaveLogFile - AppDataPath is null, it means is no active user currently");
                         }
 
                         // ProgramDataPath
                         if (!string.IsNullOrEmpty(programdataPath))
                         {
-                            log.Info($"folderPath - ProgramDataPath Line 149: programdataPath  : {programdataPath}");
+                            path_info += "[ProgramDataPath] = " + programdataPath + ", ";
+                            log.Info($"folderPath - ProgramDataPath : programdataPath  : {programdataPath}");
                             // DDPM.Subagent Log
                             try
                             {
                                 LogFolder = @$"{programdataPath}{GlobalDefinitions.LogDDPMSYSSA}";//\Dell\DDPM.Subagent";
-                                log.Info("folderPath - LogFolder Line 154: " + LogFolder);
+                                path_info += "[DDPM.Subagent] = " + LogFolder + ", ";
+                                log.Info("folderPath - LogFolder : " + LogFolder);
                                 if (method.DirectoryContainsFiles(LogFolder))
                                 {
                                     // 取得資料夾名稱
@@ -192,7 +216,8 @@ namespace DDPM.SA.Common
                             try
                             {
                                 LogFolder = @$"{programdataPath}{GlobalDefinitions.LogDTH}";//\Dell\Dell TechHub";
-                                log.Info("folderPath - LogFolder Line 189: " + LogFolder);
+                                path_info += "[Dell TechHub] = " + LogFolder + ", ";
+                                log.Info("folderPath - LogFolder : " + LogFolder);
                                 if (method.DirectoryContainsFiles(LogFolder))
                                 {
                                     // 取得資料夾名稱
@@ -227,7 +252,8 @@ namespace DDPM.SA.Common
                             try
                             {
                                 LogFolder = @$"{programdataPath}{GlobalDefinitions.LogDTP}";//\Dell\DTP\Logs";
-                                log.Info("folderPath - LogFolder Line 224: " + LogFolder);
+                                path_info += "[DTP_log] = " + LogFolder + ", ";
+                                log.Info("folderPath - LogFolder : " + LogFolder);
                                 if (method.DirectoryContainsFiles(LogFolder))
                                 {
                                     // 取得資料夾名稱
@@ -262,11 +288,12 @@ namespace DDPM.SA.Common
                             try
                             {
                                 string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM";
-                                object o = DDPMRegistryHelper.ReadRegistryKey(RegistryHive.LocalMachine, registryKey, "GUID");
+                                object o = DDPMRegistryHelper.ReadRegistryKey(RegistryHive.LocalMachine, registryKey, "GUID");                               
                                 if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
                                 {
                                     LogFolder = @$"{programdataPath}\{o.ToString()}\DDPMW-NKVM";
-                                    log.Info("folderPath - LogFolder Line 262: " + LogFolder);
+                                    path_info += "[DDPMW-NKVM] = " + LogFolder + ", ";
+                                    log.Info("folderPath - LogFolder : " + LogFolder);
                                     if (method.DirectoryContainsFiles(LogFolder))
                                     {
                                         // 取得資料夾名稱
@@ -302,7 +329,8 @@ namespace DDPM.SA.Common
                             try
                             {
                                 LogFolder = @$"{programdataPath}{GlobalDefinitions.LogDPMService}";//\Dell\Dell Peripheral Manager\DPMService\Log";
-                                log.Info("folderPath - LogFolder Line 299: " + LogFolder);
+                                path_info += "[DPMService_Log] = " + LogFolder + ", ";
+                                log.Info("folderPath - LogFolder : " + LogFolder);
                                 if (method.DirectoryContainsFiles(LogFolder))
                                 {
                                     // 取得資料夾名稱
@@ -337,7 +365,8 @@ namespace DDPM.SA.Common
                             try
                             {
                                 LogFolder = @$"{programdataPath}{GlobalDefinitions.LogDPM}";//\Dell\Dell Peripheral Manager\DPM\Log";
-                                log.Info("folderPath - LogFolder Line 334: " + LogFolder);
+                                path_info += "[DPM_Log] = " + LogFolder + ", ";
+                                log.Info("folderPath - LogFolder : " + LogFolder);
                                 if (method.DirectoryContainsFiles(LogFolder))
                                 {
                                     // 取得資料夾名稱
@@ -372,7 +401,8 @@ namespace DDPM.SA.Common
                             try
                             {
                                 LogFolder = @$"{programdataPath}{GlobalDefinitions.LogDPeM}";//\Dell\Dell Peripheral Manager\DPeMSDK\Log";
-                                log.Info("folderPath - LogFolder Line 369: " + LogFolder);
+                                path_info += "[DPeMSDK_Log] = " + LogFolder + ", ";
+                                log.Info("folderPath - LogFolder : " + LogFolder);
                                 if (method.DirectoryContainsFiles(LogFolder))
                                 {
                                     // 取得資料夾名稱
@@ -403,46 +433,82 @@ namespace DDPM.SA.Common
                                 log.Error($"SaveLogFile - DPeMSDK_Log : {ex.Message}");
                             }
 
-                            // SwUpdater Log
-                            try
-                            {
-                                LogFolder = @$"{programdataPath}{GlobalDefinitions.LogSwUpdater}";//\Dell\DdpmSwUpdater";
-                                log.Info("folderPath - LogFolder Line 404: " + LogFolder);
-                                if (method.DirectoryContainsFiles(LogFolder))
-                                {
-                                    // 取得資料夾名稱
-                                    string folderName = method.GetFolderName(LogFolder);
-                                    string savePath = Path.Combine(saveFolderPath, folderName);
-                                    // 複製指定的 log 文件到選擇的資料夾
-                                    if (!method.CopyLogFolder(LogFolder, savePath))
-                                    {
-                                        fail_info += "[DDPM.SwUpdater] : Fail, ";
-                                        log.Info("SaveLogFile - DDPM.SwUpdater : Fail ");
-                                        ret = false;
-                                    }
-                                    else
-                                    {
-                                        success_info += "[DDPM.SwUpdater] : Success, ";
-                                        log.Info("SaveLogFile - DDPM.SwUpdater : Success ");
-                                    }
-                                }
-                                else
-                                {
-                                    fail_info += "[DDPM.SwUpdater] : No Log File, ";
-                                    log.Info("SaveLogFile - DDPM.SwUpdater : No Log File ");
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                fail_info += "[DDPM.SwUpdater] : Exception Fail, ";
-                                log.Error($"SaveLogFile - DDPM.SwUpdater : {ex.Message}");
-                            }
+                            //// SwUpdater Log
+                            //try
+                            //{
+                            //    LogFolder = @$"{programdataPath}{GlobalDefinitions.LogSwUpdater}";//\Dell\DdpmSwUpdater";
+                            //    log.Info("folderPath - LogFolder Line 404: " + LogFolder);
+                            //    if (method.DirectoryContainsFiles(LogFolder))
+                            //    {
+                            //        // 取得資料夾名稱
+                            //        string folderName = method.GetFolderName(LogFolder);
+                            //        string savePath = Path.Combine(saveFolderPath, folderName);
+                            //        // 複製指定的 log 文件到選擇的資料夾
+                            //        if (!method.CopyLogFolder(LogFolder, savePath))
+                            //        {
+                            //            fail_info += "[DDPM.SwUpdater] : Fail, ";
+                            //            log.Info("SaveLogFile - DDPM.SwUpdater : Fail ");
+                            //            ret = false;
+                            //        }
+                            //        else
+                            //        {
+                            //            success_info += "[DDPM.SwUpdater] : Success, ";
+                            //            log.Info("SaveLogFile - DDPM.SwUpdater : Success ");
+                            //        }
+                            //    }
+                            //    else
+                            //    {
+                            //        fail_info += "[DDPM.SwUpdater] : No Log File, ";
+                            //        log.Info("SaveLogFile - DDPM.SwUpdater : No Log File ");
+                            //    }
+                            //}
+                            //catch (Exception ex)
+                            //{
+                            //    fail_info += "[DDPM.SwUpdater] : Exception Fail, ";
+                            //    log.Error($"SaveLogFile - DDPM.SwUpdater : {ex.Message}");
+                            //}
 
-                            // FwUpdater Log
+                            //// FwUpdater Log
+                            //try
+                            //{
+                            //    LogFolder = @$"{programdataPath}{GlobalDefinitions.LogFwUpdater}";//\Dell\FWUpdateLog";
+                            //    log.Info("folderPath - LogFolder Line 440: " + LogFolder);
+                            //    if (method.DirectoryContainsFiles(LogFolder))
+                            //    {
+                            //        // 取得資料夾名稱
+                            //        string folderName = method.GetFolderName(LogFolder);
+                            //        string savePath = Path.Combine(saveFolderPath, folderName);
+                            //        // 複製指定的 log 文件到選擇的資料夾
+                            //        if (!method.CopyLogFolder(LogFolder, savePath))
+                            //        {
+                            //            fail_info += "[DDPM.FwUpdate] : Fail, ";
+                            //            log.Info("SaveLogFile - DDPM.FwUpdate : Fail ");
+                            //            ret = false;
+                            //        }
+                            //        else
+                            //        {
+                            //            success_info += "[DDPM.FwUpdate] : Success, ";
+                            //            log.Info("SaveLogFile - DDPM.FwUpdate : Success ");
+                            //        }
+                            //    }
+                            //    else
+                            //    {
+                            //        fail_info += "[DDPM.FwUpdate] : No Log File, ";
+                            //        log.Info("SaveLogFile - DDPM.FwUpdate : No Log File ");
+                            //    }
+                            //}
+                            //catch (Exception ex)
+                            //{
+                            //    fail_info += "[DDPM.FwUpdate] : Exception Fail, ";
+                            //    log.Error($"SaveLogFile - DDPM.FwUpdate : {ex.Message}");
+                            //}
+
+                            // LogDDPM Log, merge SwUpdater Log and FwUpdater Log
                             try
                             {
-                                LogFolder = @$"{programdataPath}{GlobalDefinitions.LogFwUpdater}";//\Dell\FWUpdateLog";
-                                log.Info("folderPath - LogFolder Line 440: " + LogFolder);
+                                LogFolder = @$"{programdataPath}{GlobalDefinitions.LogDDPM}";//\Dell\Dell Display and Peripheral Manager";
+                                path_info += "[DDPM] = " + LogFolder + ", ";
+                                log.Info("folderPath - LogFolder : " + LogFolder);
                                 if (method.DirectoryContainsFiles(LogFolder))
                                 {
                                     // 取得資料夾名稱
@@ -451,32 +517,33 @@ namespace DDPM.SA.Common
                                     // 複製指定的 log 文件到選擇的資料夾
                                     if (!method.CopyLogFolder(LogFolder, savePath))
                                     {
-                                        fail_info += "[DDPM.FwUpdate] : Fail, ";
-                                        log.Info("SaveLogFile - DDPM.FwUpdate : Fail ");
+                                        fail_info += "[DDPM] : Fail, ";
+                                        log.Info("SaveLogFile - DDPM : Fail ");
                                         ret = false;
                                     }
                                     else
                                     {
-                                        success_info += "[DDPM.FwUpdate] : Success, ";
-                                        log.Info("SaveLogFile - DDPM.FwUpdate : Success ");
+                                        success_info += "[DDPM] : Success, ";
+                                        log.Info("SaveLogFile - DDPM : Success ");
                                     }
                                 }
                                 else
                                 {
-                                    fail_info += "[DDPM.FwUpdate] : No Log File, ";
-                                    log.Info("SaveLogFile - DDPM.FwUpdate : No Log File ");
+                                    fail_info += "[DDPM] : No Log File, ";
+                                    log.Info("SaveLogFile - DDPM : No Log File ");
                                 }
                             }
                             catch (Exception ex)
                             {
-                                fail_info += "[DDPM.FwUpdate] : Exception Fail, ";
-                                log.Error($"SaveLogFile - DDPM.FwUpdate : {ex.Message}");
+                                fail_info += "[DDPM] : Exception Fail, ";
+                                log.Error($"SaveLogFile - DDPM : {ex.Message}");
                             }
                         }
                         else
                         {
-                            fail_info += "[ProgramDataPath] null, ";
-                            log.Error("ProgramDataPath is null, it means is no active user currently");
+                            path_info += "[ProgramDataPath] : null, ";
+                            fail_info += "[ProgramDataPath] : null, ";
+                            log.Error("SaveLogFile - ProgramDataPath is null, it means is no active user currently");
                         }
 
                         // Application EventLog
@@ -484,6 +551,7 @@ namespace DDPM.SA.Common
                         {
                             string logFileName = "Application_EventLog.evtx";
                             string logFilePath = Path.Combine(saveFolderPath, logFileName);
+                            path_info += "[Application EventLog] = " + logFilePath + ", ";
                             if (!method.ExecuteWevtutilCommand(logFilePath, "Application"))
                             {
                                 fail_info += "[Application EventLog] : Fail, ";
@@ -505,6 +573,7 @@ namespace DDPM.SA.Common
                         {
                             string logFileName = "System_EventLog.evtx";
                             string logFilePath = Path.Combine(saveFolderPath, logFileName);
+                            path_info += "[System EventLog] = " + logFilePath + ", ";
                             if (!method.ExecuteWevtutilCommand(logFilePath, "System"))
                             {
                                 fail_info += "[System EventLog] : Fail, ";
@@ -530,14 +599,15 @@ namespace DDPM.SA.Common
                             string sourcePath = Path.Combine(baseDir, "Plugins", "NKVM");
                             string fileName = "install.log";
                             string sourceFile = Path.Combine(sourcePath, fileName);
-                            log.Info("SourceFile - SourceFile Line 497: " + sourceFile);
+                            path_info += "[NKVM/install.log] = " + sourceFile + ", ";
+                            log.Info("SourceFile - SourceFile : " + sourceFile);
                             if (method.DirectoryContainsFiles(sourcePath))
                             {
                                 string savePath = Path.Combine(saveFolderPath, "NKVM_Log");
                                 // 複製指定的 log 文件到選擇的資料夾
                                 if (!method.CopyLogFolder(sourceFile, savePath))
                                 {
-                                    fail_info += "[NKVM/install.log] : Path = " + sourceFile + "; Fail, ";
+                                    fail_info += "[NKVM/install.log] : Fail, ";
                                     log.Info("SaveLogFile - NKVM/install.log : Fail ");
                                     ret = false;
                                 }
@@ -549,7 +619,7 @@ namespace DDPM.SA.Common
                             }
                             else
                             {
-                                fail_info += "[NKVM/install.log] : PATH = " + sourceFile + " : No Log File, ";
+                                fail_info += "[NKVM/install.log] : No Log File, ";
                                 log.Info("SaveLogFile - NKVM/install.log : No Log File ");
                             }
                             // Wayn add Dell registry record file
@@ -593,6 +663,48 @@ namespace DDPM.SA.Common
                         }
                         // Dell registry record end
 
+                        // Install Shell and DCS Log
+                        try
+                        {
+                            string registryKey = @"SOFTWARE\Dell\Dell Display and Peripheral Manager";
+                            object o = DDPMRegistryHelper.ReadRegistryKey(RegistryHive.LocalMachine, registryKey, "LogPath");
+                            if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+                            {
+                                LogFolder = Convert.ToString(o);
+                                path_info += "[DDPMW-InstallShell_DCS Log] = " + LogFolder + ", ";
+                                log.Info("folderPath - LogFolder : " + LogFolder);
+                                if (method.DirectoryContainsFiles(LogFolder))
+                                {
+                                    // 取得資料夾名稱
+                                    string folderName = method.GetFolderName(LogFolder);
+                                    string savePath = Path.Combine(saveFolderPath, folderName);
+                                    log.Info($"folderPath - folderName : {folderName} and savePath : {savePath}, Line 645 " );
+                                    // 複製指定的 log 文件到選擇的資料夾
+                                    if (!method.CopyLogFolder(o.ToString(), savePath))
+                                    {
+                                        fail_info += "[DDPMW-InstallShell_DCS Log] : Fail, ";
+                                        log.Info("SaveLogFile - DDPMW-InstallShell_DCS Log : Fail ");
+                                        ret = false;
+                                    }
+                                    else
+                                    {
+                                        success_info += "[DDPMW-InstallShell_DCS Log] : Success, ";
+                                        log.Info("SaveLogFile - DDPMW-InstallShell_DCS Log: Success ");
+                                    }
+                                }
+                            } 
+                            else
+                            {
+                                fail_info += "[DDPMW-InstallShell_DCS Log] : No Log File, ";
+                                log.Info("SaveLogFile - DDPMW-InstallShell_DCS Log : No Log File ");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            fail_info += "[DDPMW-InstallShell_DCS Log] : Exception Fail, ";
+                            log.Error($"SaveLogFile - DDPMW-InstallShell_DCS Log : {ex.Message}");
+                        }
+
                         // Write SaveLogFile log
                         string resultInfoFile = Path.Combine(saveFolderPath, "SaveLogInfo.txt");
                         try
@@ -608,11 +720,13 @@ namespace DDPM.SA.Common
                                     foreach (string item in successItems)
                                     {
                                         writer.WriteLine(item.Trim());
+                                        log.Info($"SaveLogFile - {item.Trim()}");
                                     }
                                 }
                                 else
                                 {
                                     writer.WriteLine("No success info.");
+                                    log.Info($"SaveLogFile - No fail info.");
                                 }
 
                                 writer.WriteLine(); // 空一行
@@ -625,12 +739,71 @@ namespace DDPM.SA.Common
                                     foreach (string item in failItems)
                                     {
                                         writer.WriteLine(item.Trim());
+                                        log.Info($"SaveLogFile - {item.Trim()}");
                                     }
                                 }
                                 else
                                 {
                                     writer.WriteLine("No fail info.");
+                                    log.Info($"SaveLogFile - No fail info.");
                                 }
+
+                                writer.WriteLine(); // 空一行
+
+                                // Path
+                                writer.WriteLine("=== Path Info ===");
+                                if (!string.IsNullOrEmpty(path_info))
+                                {
+                                    var pathItems = path_info.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                    foreach (string item in pathItems)
+                                    {
+                                        writer.WriteLine(item.Trim());
+                                        log.Info($"SaveLogFile - {item.Trim()}");
+                                    }
+                                }
+                                else
+                                {
+                                    writer.WriteLine("No path info.");
+                                    log.Info($"SaveLogFile - No path info.");
+                                }
+
+                                writer.WriteLine(); // 空一行
+
+                                // EXE
+                                var exeList = new List<(string ProcessName, string DisplayName)>
+                                {
+                                    ("DDPM",               "DDPM.exe"),
+                                    ("DDPM.Subagent",      "DDPM.Subagent.exe"),
+                                    ("DDPM.Subagent.User", "DDPM.Subagent.User.exe"),
+                                    ("Dell.TechHub",       "Dell.TechHub.exe"),
+                                    ("DPMService",         "DPMService.exe")
+                                };
+
+                                writer.WriteLine("=== EXE Info ===");
+
+                                foreach (var (processName, displayName) in exeList)
+                                {
+                                    var process = Process.GetProcessesByName(processName).FirstOrDefault();
+                                    if (process == null)
+                                    {
+                                        writer.WriteLine($"[{displayName}] : Fail");
+                                    }
+                                    else
+                                    {
+                                        try
+                                        {
+                                            var versionInfo = process.MainModule.FileVersionInfo;
+                                            writer.WriteLine($"[{displayName}] : True, Ver = {versionInfo.FileVersion}");
+                                            log.Info($"SaveLogFile - [{displayName}] : True, Ver = {versionInfo.FileVersion}");
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            writer.WriteLine($"[{displayName}] : True, Ver = ({ex.Message})");
+                                            log.Info($"SaveLogFile - [{displayName}] : True, Ver = ({ex.Message})");
+                                        }
+                                    }
+                                }
+
                             }
                         }
                         catch (Exception ex)
@@ -649,7 +822,9 @@ namespace DDPM.SA.Common
                                 log.Info("SaveLogFile - CreateZipFile fail.");
                             }
                             else
-
+                            {
+                                log.Info($"SaveLogFile - CreateZipFile : {zipFilePath}, succcess.");
+                            }
 
                             if (DDPMFileSecurity.ValidateFilePath(saveFolderPath, out string info))
                                 Directory.Delete(saveFolderPath, true);

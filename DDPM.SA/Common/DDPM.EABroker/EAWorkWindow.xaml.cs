@@ -193,11 +193,16 @@ namespace DDPM.EABroker
                     Trace.WriteLine($"EAWorkWindow.WorkScreen:({_workScreen.Bounds.Left},{_workScreen.Bounds.Top})-({_workScreen.Bounds.Right},{_workScreen.Bounds.Bottom}){_workScreen.Bounds.Width}x{_workScreen.Bounds.Height}");
 
                     double scale = 1.000;
-                    //Rect rcScreen = new Rect();
-                    rcScreen.X = _workScreen.Bounds.Left / scale;
-                    rcScreen.Y = _workScreen.Bounds.Top / scale;
-                    rcScreen.Width = _workScreen.Bounds.Width / scale;
-                    rcScreen.Height = _workScreen.Bounds.Height / scale;
+                    //Robert_Lin 2025-3-17, change to use WorkingArea instead of Bounds
+                    //rcScreen.X = _workScreen.Bounds.Left / scale;
+                    //rcScreen.Y = _workScreen.Bounds.Top / scale;
+                    //rcScreen.Width = _workScreen.Bounds.Width / scale;
+                    //rcScreen.Height = _workScreen.Bounds.Height / scale;
+
+                    rcScreen.X = _workScreen.WorkingArea.Left / scale;
+                    rcScreen.Y = _workScreen.WorkingArea.Top / scale;
+                    rcScreen.Width = _workScreen.WorkingArea.Width / scale;
+                    rcScreen.Height = _workScreen.WorkingArea.Height / scale;
 
                     Trace.WriteLine($"AfterScale(/{_vm.ScreenScale}):({rcScreen.X},{rcScreen.Y})-({rcScreen.Right},{rcScreen.Bottom}){rcScreen.Width}x{rcScreen.Height}");
 
@@ -651,5 +656,12 @@ namespace DDPM.EABroker
 
         #endregion InUse
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
+        }
     }
 }

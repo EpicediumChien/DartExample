@@ -54,8 +54,31 @@ namespace DDPM.SA.Common.Settings
         public string ImportSelectedResolution { get; set; } = string.Empty;
         public List<string> WebcamProfileNames = new List<string>() { "Default", "Smooth", "Vibrant", "Warm" };
         //
-        public string CurrentResolution { get => Resolutions[SelectedResolution]; }
-        public string CurrentFPS { get => SelectedFPSs[SelectedResolution]; }
+        //public string CurrentResolution { get => Resolutions[SelectedResolution]; }
+        //public string CurrentFPS { get => SelectedFPSs[SelectedResolution]; }
+
+        public string CurrentResolution {
+            get
+            {
+                if (Resolutions.TryGetValue(SelectedResolution, out var key))
+                {
+                    return key;
+                }
+                else
+                    return "HD";
+            }
+        }
+        public string CurrentFPS
+        {
+            get 
+            {
+                if (SelectedFPSs.TryGetValue(SelectedResolution, out var key)) 
+                {
+                    return key;
+                }else
+                    return "30";
+            }
+        }
         public bool IsFirstTime = true;
         public WebcamProfile NONE = new();
 
@@ -143,6 +166,19 @@ namespace DDPM.SA.Common.Settings
                 profile.FieldOfView = 78;
                 profile.IsAutoWhiteBalanceOn = true;
                 profile.AutoWhiteBalance = 5000;
+
+                // << 250314 add by Hess for V2.0.2 new requirement
+                profile.Priority = 0;                     //Exposure
+                profile.IsFocusOn = true;
+                profile.Focus = di.FocusMin;
+                profile.Zoom = di.ZoomMin;
+                profile.AntiFlicker = 2;                  //60Hz
+                profile.AutoFramingSensitivity = 1;       //Normal
+                profile.AutoFramingFrameSize = 1;         //Standard
+                profile.IsAutoFramingTransitionOn = true;
+                profile.Pan = 0;
+                profile.Tilt = 0;
+                // >>
                 PresetProfiles.TryAdd(profile.Name, profile);
 
                 profile = new();
@@ -157,6 +193,19 @@ namespace DDPM.SA.Common.Settings
                 profile.FieldOfView = 78;
                 profile.IsAutoWhiteBalanceOn = true;
                 profile.AutoWhiteBalance = 5000;
+
+                // << 250314 add by Hess for V2.0.2 new requirement
+                profile.Priority = 0;                     //Exposure
+                profile.IsFocusOn = true;
+                profile.Focus = di.FocusMin;
+                profile.Zoom = di.ZoomMin;
+                profile.AntiFlicker = 2;                  //60Hz
+                profile.AutoFramingSensitivity = 1;       //Normal
+                profile.AutoFramingFrameSize = 1;         //Standard
+                profile.IsAutoFramingTransitionOn = true;
+                profile.Pan = 0;
+                profile.Tilt = 0;
+                // >>
                 PresetProfiles.TryAdd(profile.Name, profile);
 
                 profile = new();
@@ -171,6 +220,19 @@ namespace DDPM.SA.Common.Settings
                 profile.FieldOfView = 78;
                 profile.IsAutoWhiteBalanceOn = true;
                 profile.AutoWhiteBalance = 5000;
+
+                // << 250314 add by Hess for V2.0.2 new requirement
+                profile.Priority = 0;                     //Exposure
+                profile.IsFocusOn = true;
+                profile.Focus = di.FocusMin;
+                profile.Zoom = di.ZoomMin;
+                profile.AntiFlicker = 2;                  //60Hz
+                profile.AutoFramingSensitivity = 1;       //Normal
+                profile.AutoFramingFrameSize = 1;         //Standard
+                profile.IsAutoFramingTransitionOn = true;
+                profile.Pan = 0;
+                profile.Tilt = 0;
+                // >>
                 PresetProfiles.TryAdd(profile.Name, profile);
 
                 profile = new();
@@ -185,6 +247,19 @@ namespace DDPM.SA.Common.Settings
                 profile.FieldOfView = 78;
                 profile.IsAutoWhiteBalanceOn = true;
                 profile.AutoWhiteBalance = 5950;
+
+                // << 250314 add by Hess for V2.0.2 new requirement
+                profile.Priority = 0;                     //Exposure
+                profile.IsFocusOn = true;
+                profile.Focus = di.FocusMin;
+                profile.Zoom = di.ZoomMin;
+                profile.AntiFlicker = 2;                  //60Hz
+                profile.AutoFramingSensitivity = 1;       //Normal
+                profile.AutoFramingFrameSize = 1;         //Standard
+                profile.IsAutoFramingTransitionOn = true;
+                profile.Pan = 0;
+                profile.Tilt = 0;
+                // >>
                 PresetProfiles.TryAdd(profile.Name, profile);
 
                 switch (di.ModelNumber.ToUpper())
@@ -192,43 +267,43 @@ namespace DDPM.SA.Common.Settings
                     case "P2424HEB":
                     case "P2724DEB":
                     case "P3424WEB":
-                        PresetProfiles["Default"].IsFocusOn = true;
-                        PresetProfiles["Warm"].IsFocusOn = true;
-                        PresetProfiles["Vibrant"].IsFocusOn = true;
-                        PresetProfiles["Smooth"].IsFocusOn = true;
+                        //PresetProfiles["Default"].IsFocusOn = true;
+                        //PresetProfiles["Warm"].IsFocusOn = true;
+                        //PresetProfiles["Vibrant"].IsFocusOn = true;
+                        //PresetProfiles["Smooth"].IsFocusOn = true;
                         PresetProfiles["Smooth"].Sharpness = 32;
                         break;
                     case "U3223QZ":
                         PresetProfiles["Default"].FieldOfView = 90;
-                        PresetProfiles["Default"].IsFocusOn = true;
+                        //PresetProfiles["Default"].IsFocusOn = true;
                         PresetProfiles["Smooth"].IsHDROn = false;
                         PresetProfiles["Smooth"].FieldOfView = 90;
                         PresetProfiles["Smooth"].Sharpness = 250;
-                        PresetProfiles["Smooth"].IsFocusOn = true;
+                        //PresetProfiles["Smooth"].IsFocusOn = true;
                         PresetProfiles["Vibrant"].IsHDROn = false;
                         PresetProfiles["Vibrant"].FieldOfView = 90;
                         PresetProfiles["Vibrant"].Brightness = 200;
                         PresetProfiles["Vibrant"].Contrast = 162;
                         PresetProfiles["Vibrant"].Saturation = 128;
                         PresetProfiles["Vibrant"].Sharpness = 180;
-                        PresetProfiles["Vibrant"].IsFocusOn = true;
+                        //PresetProfiles["Vibrant"].IsFocusOn = true;
                         PresetProfiles["Warm"].IsHDROn = false;
                         PresetProfiles["Warm"].FieldOfView = 90;
                         PresetProfiles["Warm"].Brightness = 204;
                         PresetProfiles["Warm"].Contrast = 147;
                         PresetProfiles["Warm"].Saturation = 155;
                         PresetProfiles["Warm"].Sharpness = 128;
-                        PresetProfiles["Warm"].IsFocusOn = true;
+                        //PresetProfiles["Warm"].IsFocusOn = true;
                         break;
                     case "U3224KB":
                     case "U3224KBA":
                         PresetProfiles["Default"].FieldOfView = 90;
-                        PresetProfiles["Default"].IsFocusOn = true;
-                        PresetProfiles["Default"].Focus = 1;
+                        //PresetProfiles["Default"].IsFocusOn = true;
+                        //PresetProfiles["Default"].Focus = 1;
                         PresetProfiles["Smooth"].FieldOfView = 90;
                         PresetProfiles["Smooth"].Brightness = 128;
                         PresetProfiles["Smooth"].Sharpness = 25;
-                        PresetProfiles["Smooth"].IsFocusOn = true;
+                        //PresetProfiles["Smooth"].IsFocusOn = true;
                         PresetProfiles["Smooth"].Saturation = 100;
                         PresetProfiles["Smooth"].IsHDROn = false;
                         PresetProfiles["Vibrant"].FieldOfView = 90;
@@ -237,52 +312,52 @@ namespace DDPM.SA.Common.Settings
                         PresetProfiles["Vibrant"].Saturation = 157;
                         PresetProfiles["Vibrant"].Sharpness = 163;
                         PresetProfiles["Vibrant"].IsHDROn = false;
-                        PresetProfiles["Vibrant"].IsFocusOn = true;
+                        //PresetProfiles["Vibrant"].IsFocusOn = true;
                         PresetProfiles["Warm"].FieldOfView = 90;
                         PresetProfiles["Warm"].Brightness = 93;
                         PresetProfiles["Warm"].Contrast = 128;
                         PresetProfiles["Warm"].Saturation = 129;
                         PresetProfiles["Warm"].Sharpness = 63;
                         PresetProfiles["Warm"].IsHDROn = false;
-                        PresetProfiles["Warm"].IsFocusOn = true;
+                        //PresetProfiles["Warm"].IsFocusOn = true;
                         PresetProfiles["Warm"].IsAutoWhiteBalanceOn = false;
                         PresetProfiles["Warm"].AutoWhiteBalance = 5830;
 
                         break;
                     case "WB5023":
-                        PresetProfiles["Default"].IsFocusOn = true;
-                        PresetProfiles["Warm"].IsFocusOn = true;
-                        PresetProfiles["Vibrant"].IsFocusOn = true;
-                        PresetProfiles["Smooth"].IsFocusOn = true;
+                        //PresetProfiles["Default"].IsFocusOn = true;
+                        //PresetProfiles["Warm"].IsFocusOn = true;
+                        //PresetProfiles["Vibrant"].IsFocusOn = true;
+                        //PresetProfiles["Smooth"].IsFocusOn = true;
                         break;
                     case "WB3023":
-                        PresetProfiles["Default"].IsFocusOn = true;
-                        PresetProfiles["Default"].Focus = 1;
+                        //PresetProfiles["Default"].IsFocusOn = true;
+                        //PresetProfiles["Default"].Focus = 1;
                         PresetProfiles["Default"].AutoFramingSensitivity = 0;
                         PresetProfiles["Default"].AutoFramingFrameSize = 0;
                         PresetProfiles["Default"].IsAutoFramingTransitionOn = false;
-                        PresetProfiles["Warm"].IsFocusOn = true;
+                        //PresetProfiles["Warm"].IsFocusOn = true;
                         PresetProfiles["Warm"].AutoFramingSensitivity = 0;
                         PresetProfiles["Warm"].AutoFramingFrameSize = 0;
                         PresetProfiles["Warm"].IsAutoFramingTransitionOn = false;
-                        PresetProfiles["Vibrant"].IsFocusOn = true;
+                        //PresetProfiles["Vibrant"].IsFocusOn = true;
                         PresetProfiles["Vibrant"].AutoFramingSensitivity = 0;
                         PresetProfiles["Vibrant"].AutoFramingFrameSize = 0;
                         PresetProfiles["Vibrant"].IsAutoFramingTransitionOn = false;
-                        PresetProfiles["Smooth"].IsFocusOn = true;
+                        //PresetProfiles["Smooth"].IsFocusOn = true;
                         PresetProfiles["Smooth"].AutoFramingSensitivity = 0;
                         PresetProfiles["Smooth"].AutoFramingFrameSize = 0;
                         PresetProfiles["Smooth"].IsAutoFramingTransitionOn = false;
                         break;
                     case "WB7022":
                         PresetProfiles["Default"].FieldOfView = 90;
-                        PresetProfiles["Default"].IsFocusOn = true;
+                        //PresetProfiles["Default"].IsFocusOn = true;
                         PresetProfiles["Smooth"].FieldOfView = 90;
-                        PresetProfiles["Smooth"].IsFocusOn = true;
+                        //PresetProfiles["Smooth"].IsFocusOn = true;
                         PresetProfiles["Vibrant"].FieldOfView = 90;
-                        PresetProfiles["Vibrant"].IsFocusOn = true;
+                        //PresetProfiles["Vibrant"].IsFocusOn = true;
                         PresetProfiles["Warm"].FieldOfView = 90;
-                        PresetProfiles["Warm"].IsFocusOn = true;
+                        //PresetProfiles["Warm"].IsFocusOn = true;
                         break;
                     default:
                         break;

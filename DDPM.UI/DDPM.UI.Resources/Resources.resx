@@ -135,6 +135,9 @@
   <data name="FirmwareVersion" xml:space="preserve">
     <value>Firmware Version</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+   <value>Device ID</value>
+ </data>
   <data name="Gaming" xml:space="preserve">
     <value>Gaming</value>
   </data>
@@ -1038,7 +1041,7 @@
     <value>Setup through network</value>
   </data>
   <data name="Kvm.30" xml:space="preserve">
-    <value>Easy, secure file-sharing between PCs (Mac &amp; Windows)</value>
+    <value>Easy and secure file-sharing between PCs (Mac &amp; Windows)</value>
   </data>
   <data name="Kvm.31" xml:space="preserve">
     <value>Open Network KVM</value>
@@ -3504,7 +3507,7 @@
     <value>Save Icon Images...</value>
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
-    <value>To access presence sensing features, use the link below to download compitible webcam firmware</value>
+    <value>To access presence sensing features, use the link below to download compatible webcam firmware</value>
   </data>
   <data name="Camera.26" xml:space="preserve">
     <value>Connect your monitor via USB 3.0 to enable 4K UHD resolution.</value>
@@ -3524,6 +3527,21 @@
   <data name="Cardi.2" xml:space="preserve">
     <value>Multimedia Presets</value>
   </data>
+  <data name="Cardi.3" xml:space="preserve">
+    <value>Features automatically apply during calls</value>
+  </data>
+  <data name="Cardi.4" xml:space="preserve">
+    <value>Features automatically apply when you listen to music and other content</value>
+  </data>
+  <data name="Cardi.5" xml:space="preserve">
+    <value>Limits your near-end mic noise to create a better audio experience for others</value>
+  </data>
+  <data name="Cardi.6" xml:space="preserve">
+    <value>Limits far-end mic noise to create a better audio experience for you</value>
+  </data>
+  <data name="Cardi.7" xml:space="preserve">
+    <value>Equalizer adjusts based on chosen preset</value>
+  </data>	
   <data name="CustomizeScrollTiltLCaption" xml:space="preserve">
     <value>Customize Scroll Tilt Left</value>
   </data>

@@ -84,7 +84,7 @@ namespace DDPM.UI.Module.EzMemory.Tests
             splitItem = new SplitItem();
             privateObjecta = new PrivateObject(splitItem);
             privateObjecta.SetFieldOrProperty("vm", new SplitItemViewModel() { SplitCtrl = ISplitCtrlMock.Object });
-            vm = new EzArrangeViewModel(new HomeDevice()) { currentEditprofileSetting=new SA.Common.Settings.EzProfileSettingDDPM(1, true, 2, true) { Auto=true}, SelectedSplitItem = splitItem, IsEditProfile=true , currentEditprofile =new SA.Common.Settings.EAProfileDDPM() { AppInfos =new List<SA.Common.Settings.EAAppInfoDDPM>()} };
+            vm = new EzArrangeViewModel(new HomeDevice()) { currentEditprofileSetting = new SA.Common.Settings.EzProfileSettingDDPM(1, true, 2, true) { Auto = true }, SelectedSplitItem = splitItem, IsEditProfile = true, currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() } };
             logMock = new Mock<ILog>();
             log = logMock.Object;
             consoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(logMock.Object);
@@ -97,7 +97,7 @@ namespace DDPM.UI.Module.EzMemory.Tests
         public void TestConstructor_EzMemoryLaunchOption()
         {
             // Assert
-            EzArrangeViewModel vma =(EzArrangeViewModel) privateObject.GetFieldOrProperty("_vm");
+            EzArrangeViewModel vma = (EzArrangeViewModel)privateObject.GetFieldOrProperty("_vm");
             Assert.That(ezMemoryLaunchOption, Is.Not.Null);
             Assert.That(vm, Is.InstanceOf<EzArrangeViewModel>());
             Assert.That(ezMemoryLaunchOption.DataContext, Is.InstanceOf<EzArrangeViewModel>());
@@ -108,7 +108,7 @@ namespace DDPM.UI.Module.EzMemory.Tests
         public void TestInitializePagea()
         {
             ezMemoryLaunchOption.InitializePage();
-            var pageData=new EzMemoryPageData() {MainText= "Launch options", SubText= "Select a launch type" };
+            var pageData = new EzMemoryPageData() { MainText = "Launch options", SubText = "Select a launch type" };
             var MainTextText = pageData.MainText!;
             var SubTextText = pageData.SubText!;
             EzArrangeViewModel vma = (EzArrangeViewModel)privateObject.GetFieldOrProperty("_vm");
@@ -172,5 +172,18 @@ namespace DDPM.UI.Module.EzMemory.Tests
             Assert.That(vma.IsManualLaunch, Is.EqualTo(true));
             Assert.That(vma.IsLaunchAtStartup, Is.EqualTo(false));
         }
+
+
+        [TearDown]
+        public void TearDown()
+        {
+            // Dispose of splitItem after each test
+            if (splitItem != null)
+            {
+                splitItem.Dispose();
+                splitItem = null;
+            }
+        }
+
     }
 }

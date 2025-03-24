@@ -13,12 +13,6 @@ namespace DDPM.UI.Module.SpeakerInteractions
     public partial class SpeakerInteractionsRightView : UserControl
     {
         public SoundBarViewModel _vm;
-
-        bool isTeamsInstalled = IsProgramInstalled("Teams");
-
-        bool isZoomInstalled = IsProgramInstalled("Zoom");
-
-        bool isMeetInstalled = IsProgramInstalled("Google Meet");// Awalys need
         public SpeakerInteractionsRightView(SoundBarViewModel vm)
         {
             InitializeComponent();

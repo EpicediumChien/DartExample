@@ -63,6 +63,11 @@ namespace DDPM.EABroker
 
           //  InitLayoutList();
             //InitPresetLayoutsComboBox();
+
+            if (DevSettings.IsTestMonitorInfoUpdateEnabled())
+            {
+                testMonitorInfoUpdateButton.Visibility = Visibility.Visible;
+            }
         }
         #endregion Init
 
@@ -439,5 +444,29 @@ namespace DDPM.EABroker
             _vm.Invoke_EditCommand(mi, eaArgs);
         }
 
+        /// <summary>
+        /// Robert_Lin 2025-3-19 added to terminate the Dispatcher.Run() loop in EABroker.InitAllWindows()
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                 System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
+        }
+
+        private void testMonitorInfoUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            if (_vm != null)
+            {
+                EAArgs eaArgs = new EAArgs()
+                {
+                    Command = EAEMConstants.EACommand_TestMonitorInfoUpdated,
+                };
+                _vm.SendEANotifyToUI(eaArgs);
+            }
+        }
     }
 }

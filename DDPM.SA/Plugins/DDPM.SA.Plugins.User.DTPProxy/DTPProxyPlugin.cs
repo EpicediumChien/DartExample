@@ -8266,7 +8266,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private async Task<bool> UnregisterEventsForHeadsetAsync(string devcieID)
         {
-            writelog($"[Headset] UnregisterEventsForHeadsetAsync in ... "); 
+            writelog($"[Headset] UnregisterEventsForHeadsetAsync in ... ");
             if (devcieID == null || devcieID == string.Empty || headsetList.Count == 0)
             {
                 writelog($"devcieID == string.Empty || devcieID == null || headsetList.Count == 0");
@@ -11158,7 +11158,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Webcamcom.AutoFramingSensitivityChanged += Webcam_AutoFramingSensitivityChanged;
                     _Webcamcom.AutoFramingFrameSizeChanged += Webcam_AutoFramingFrameSizeChanged;
                     _Webcamcom.FieldOfViewChanged += Webcam_FieldOfViewChanged;
-                    _Webcamcom.IsHDROnChanged += Webcam_IsHDROnChanged;
+                    //_Webcamcom.IsHDROnChanged += Webcam_IsHDROnChanged;
                     _Webcamcom.SerialNumberChanged += Webcam_SerialNumberChanged;
                     _Webcamcom.IsZoomMeetingActiveChanged += Webcam_IsZoomMeetingActiveChanged; //for QAM
                     _Webcamcom.IsZoomScreenShareActiveChanged += Webcam_IsZoomScreenShareActiveChanged; //for QAM
@@ -11378,7 +11378,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 _Webcamcom.AutoFramingSensitivityChanged -= Webcam_AutoFramingSensitivityChanged;
                 _Webcamcom.AutoFramingFrameSizeChanged -= Webcam_AutoFramingFrameSizeChanged;
                 _Webcamcom.FieldOfViewChanged -= Webcam_FieldOfViewChanged;
-                _Webcamcom.IsHDROnChanged -= Webcam_IsHDROnChanged;
+                //_Webcamcom.IsHDROnChanged -= Webcam_IsHDROnChanged;
                 _Webcamcom.SerialNumberChanged -= Webcam_SerialNumberChanged;
                 _Webcamcom.IsZoomMeetingActiveChanged -= Webcam_IsZoomMeetingActiveChanged;
                 _Webcamcom.IsZoomScreenShareActiveChanged -= Webcam_IsZoomScreenShareActiveChanged;
@@ -11829,15 +11829,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             writelog($"Catch event _Webcamcom_SerialNumberChanged, NewValue:{e.SerialNumber}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
-        private void Webcam_IsHDROnChanged(object sender, IsHDROnChangedArgs e)
-        {
-            // << 250207 updated by Hess to prevent cli duplicate event
-            //SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsHDROnChanged",
-            //                        e.DeviceId, $"NewValue:{e.IsHDROn}"));
-            // >> 
+        //private void Webcam_IsHDROnChanged(object sender, IsHDROnChangedArgs e)
+        //{
+        //    // << 250207 updated by Hess to prevent cli duplicate event
+        //    //SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsHDROnChanged",
+        //    //                        e.DeviceId, $"NewValue:{e.IsHDROn}"));
+        //    // >> 
 
-            writelog($"Catch event IsHDROnChanged, Guid: {e.DeviceId} NewValue:{e.IsHDROn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-        }
+        //    writelog($"Catch event IsHDROnChanged, Guid: {e.DeviceId} NewValue:{e.IsHDROn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        //}
 
         private void Webcam_FieldOfViewChanged(object sender, FieldOfViewChangedArgs e)
         {
@@ -11865,8 +11865,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_IsAutoFramingOnChanged(object sender, IsAutoFramingOnChangedArgs e)
         {
-            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoFramingOnChanged",
-                                    e.DeviceId, $"NewValue:{e.IsAutoFramingOn}"));
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAutoFramingOnChanged", e.DeviceId, $"NewValue:{e.IsAutoFramingOn}"));
 
             writelog($"Catch event _Webcamcom_IsAutoFramingOnChanged, NewValue:{e.IsAutoFramingOn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
@@ -12921,46 +12920,46 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
 
 
-        public async Task<bool> GetAirAudioIsWearDetectionQuickPauseSupportedAsync(string Guid)
-        {
-            string guid = Guid;
+        //public async Task<bool> GetAirAudioIsWearDetectionQuickPauseSupportedAsync(string Guid)
+        //{
+        //    string guid = Guid;
 
-            try
-            {
-                if (!await GetItemIDAsync("AirAudio", guid))
-                    return false;
+        //    try
+        //    {
+        //        if (!await GetItemIDAsync("AirAudio", guid))
+        //            return false;
 
-                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
-                if (commodity is ICommodity)
-                {
-                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsWearDetectionQuickPauseSupported");
-                    if (value == null)
-                    {
-                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync: IsWearDetectionQuickPauseSupported is null for {guid}");
-                        return false;
-                    }
+        //        var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+        //        if (commodity is ICommodity)
+        //        {
+        //            var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsWearDetectionQuickPauseSupported");
+        //            if (value == null)
+        //            {
+        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync: IsWearDetectionQuickPauseSupported is null for {guid}");
+        //                return false;
+        //            }
 
-                    if (value is bool boolValue)
-                    {
-                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync succeeded for {guid}");
-                        return boolValue;
-                    }
-                    else
-                    {
-                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync: IsWearDetectionQuickPauseSupported is not a boolean for {guid}");
-                        return false;
-                    }
-                }
+        //            if (value is bool boolValue)
+        //            {
+        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync succeeded for {guid}");
+        //                return boolValue;
+        //            }
+        //            else
+        //            {
+        //                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync: IsWearDetectionQuickPauseSupported is not a boolean for {guid}");
+        //                return false;
+        //            }
+        //        }
 
-                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync failed: Could not retrieve commodity interface for {guid}");
-                return false;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync failed for {guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
+        //        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+        //        return false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync failed for {guid} - Exception: {ex.Message}");
+        //        return false;
+        //    }
+        //}
 
         public async Task<bool> GetAirAudioIsWearDetectionMuteMicSupportedAsync(string Guid)
         {
@@ -15640,7 +15639,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             catch (Exception e)
             {
-                writelog($"[AirAudio] {index} RegisterEventsForHeadset Exception {e.Message}");
+                writelog($"[AirAudio] {index} RegisterEventsForAirAudioAsync Exception {e.Message}");
 
                 return false;
             }

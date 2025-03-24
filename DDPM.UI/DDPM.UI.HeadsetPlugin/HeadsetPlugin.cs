@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using DDPM.SA.Common;
-using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
@@ -10,7 +9,6 @@ using Dell.Client.Framework.UX.WPF;
 using Microsoft.Extensions.DependencyInjection;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics.CodeAnalysis;
-using System.Windows.Forms;
 using System.Windows.Input;
 using Cursors = System.Windows.Input.Cursors;
 
@@ -51,9 +49,8 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         /// <summary>
         /// Default constructor
         /// </summary>
-        public HeadsetPlugin(IShowPluginManager showPluginManager, IPluginManager pluginManager, IConsole console)
+        public HeadsetPlugin(IPluginManager pluginManager, IConsole console)
         {
-            _showPluginManager = showPluginManager;
             _pluginManager = pluginManager;
             _console = console;
             _log = console.CreateLog("Headset");
@@ -68,6 +65,9 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             _log.Info($"[HeadsetPlugin] {nameof(PluginManager_PluginsStarted)} started");
             try
             {
+                if (_deviceManagerPlugin != null)
+                    return;
+
                 _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
 
                 if (_deviceManagerPlugin == null)
@@ -202,7 +202,6 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 // Marked all the instances as singleton
                 // Pass the existing _console and _log instance so that Ioc doesn't new'up them
                 PluginIoc.ConfigureServices(new ServiceCollection()
-                    .AddSingleton(_showPluginManager)
                     .AddSingleton(_console)
                     .AddSingleton(_log)
                     .AddSingleton(_deviceManagerPlugin)

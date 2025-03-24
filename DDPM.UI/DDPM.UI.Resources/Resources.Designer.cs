@@ -1483,7 +1483,52 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chat.
+        ///   查詢類似 Features automatically apply during calls 的當地語系化字串。
+        /// </summary>
+        internal static string Cardi_3 {
+            get {
+                return ResourceManager.GetString("Cardi.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Features automatically apply when you listen to music and other content 的當地語系化字串。
+        /// </summary>
+        internal static string Cardi_4 {
+            get {
+                return ResourceManager.GetString("Cardi.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Limits your near-end mic noise to create a better audio experience for others 的當地語系化字串。
+        /// </summary>
+        internal static string Cardi_5 {
+            get {
+                return ResourceManager.GetString("Cardi.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Limits far-end mic noise to create a better audio experience for you 的當地語系化字串。
+        /// </summary>
+        internal static string Cardi_6 {
+            get {
+                return ResourceManager.GetString("Cardi.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Equalizer adjusts based on chosen preset 的當地語系化字串。
+        /// </summary>
+        internal static string Cardi_7 {
+            get {
+                return ResourceManager.GetString("Cardi.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Chat 的當地語系化字串。
         /// </summary>
         internal static string Chat {
             get {
@@ -1870,7 +1915,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To access presence sensing features, use the link below to download compitible webcam firmware.
+        ///   Looks up a localized string similar to To access presence sensing features, use the link below to download compatible webcam firmware.
         /// </summary>
         internal static string ColorMsg_1 {
             get {
@@ -2212,7 +2257,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Devices.
+        ///   查詢類似 Device ID 的當地語系化字串。
+        /// </summary>
+        internal static string DeviceID {
+            get {
+                return ResourceManager.GetString("DeviceID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Devices 的當地語系化字串。
         /// </summary>
         internal static string Devices {
             get {
@@ -5650,7 +5704,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Easy, secure file-sharing between PCs (Mac &amp; Windows).
+        ///   Looks up a localized string similar to Easy and secure file-sharing between PCs (Mac &amp; Windows).
         /// </summary>
         internal static string Kvm_30 {
             get {
@@ -8341,7 +8395,8 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to This update will enable presence sensing controls through Microsoft settings in systems: Win 11 22H2 or higher, and with OS build
+        ///22621 or higher.
         /// </summary>
         internal static string Update_Webcam_Alert2 {
             get {

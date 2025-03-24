@@ -17,6 +17,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using VcpCore.Common;
+using EDID= VcpCore.Common.EDID;
+
 //using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DDPM.UI.Common.Models
@@ -116,6 +118,11 @@ namespace DDPM.UI.Common.Models
 
                 //Robert_lin, 2024-11-14 add Pxp Capapbilies check support
                 InitPipPbpCaps();
+
+                //Robert_Lin 2025-3-20 refresh the tooltip info
+                OnPropertyChanged("TooltipModelName");
+                OnPropertyChanged("DeviceInfoToolTipText");
+
 
                 OnPropertyChanged("DisplayName");
             }
@@ -1115,6 +1122,7 @@ namespace DDPM.UI.Common.Models
         private const string BleHostStyle_White = "1";
         private const string BleHostStyle_Gray = "2";
 
+        //Robert_Lin 2025-3-18 for PIMS-351300, refreash from Mouse/LaunchView.xaml.cs
         //Robert_Lin, 2024-12-30, updated from Mouse/LaunchView.xaml.cs
         private void SetBLConnectionStatus_Mouse()
         {
@@ -1123,14 +1131,26 @@ namespace DDPM.UI.Common.Models
                 if (DeviceInfo == null)
                     return;
 
-                string hostName = Dns.GetHostName();
-                if (hostName.Length > 15)
-                    hostName = hostName.Substring(0, 15);
+                //@ LaunchView:
+                //string hostName = Dns.GetHostName();
 
-                //Determine current connected host index: 1,2, or 3
-                //var hostIndex = DeviceInfo.VisiblePairedHostName1.ToUpper() == "VISIBLE" ? 1 : (DeviceInfo.VisiblePairedHostName2.ToUpper() == "VISIBLE" ? 2 : 3);
+                string hostName = Dns.GetHostName();
+                //if (hostName.Length > 15)
+                //    hostName = hostName.Substring(0, 15);
 
                 //Set default styles are "2" (gray)
+                //@ LaunchView:
+                //txt1.Style = ConnectionStyle2;
+                //txtBLHost1.Style = ConnectionStyle2;
+                //txt2.Style = ConnectionStyle2;
+                //txtBLHost2.Style = ConnectionStyle2;
+                //txt3.Style = ConnectionStyle2;
+                //txtBLHost3.Style = ConnectionStyle2;
+                //
+                //_vm.ImgBL1 = false;
+                //_vm.ImgBL2 = false;
+                //_vm.ImgBL3 = false;
+
                 BleHost1Style = BleHostStyle_Gray;// "2";
                 BleHost2Style = BleHostStyle_Gray;// "2";
                 BleHost3Style = BleHostStyle_Gray;// "2";
@@ -1138,9 +1158,6 @@ namespace DDPM.UI.Common.Models
                 BleHost1Text = "";
                 BleHost2Text = "";
                 BleHost3Text = "";
-                //txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
-                //txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
-                //txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
 
                 switch (DeviceInfo.ModelNumber)
                 {
@@ -1161,34 +1178,28 @@ namespace DDPM.UI.Common.Models
                         if (BleHost1Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                         {
                             //@ LaunchView:
-                            //txt1.Style = ConnectionStyle1;
-                            //txtBLHost1.Style = ConnectionStyle1;
-                            //_vm.ImgBL1 = true;
-                            //@ HomeDevice:
+                            // txt1.Style = ConnectionStyle1;
+                            // txtBLHost1.Style = ConnectionStyle1;
+                            // _vm.ImgBL1 = true;
                             BleHost1Style = BleHostStyle_White;// "1";
-                            //BleHost1Text = BleHost1Text.Substring(0, maxHostNameLength);
                         }
                         //@ LaunchView:
                         //else if (txtBLHost2.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                         else if (BleHost2Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                         {
-                            //@ LaunchView:
-                            //txt2.Style = ConnectionStyle1;
-                            //txtBLHost2.Style = ConnectionStyle1;
-                            //_vm.ImgBL2 = true;
-                            //@ HomeDevice:
+                            //@ LunchView:
+                            // txt2.Style = ConnectionStyle1;
+                            // txtBLHost2.Style = ConnectionStyle1;
+                            // _vm.ImgBL2 = true;
                             BleHost2Style = BleHostStyle_White;// "1";
-                            //BleHost2Text = BleHost2Text.Substring(0, maxHostNameLength);
                         }
                         else
                         {
-                            //@ LaunchView:
-                            //txt3.Style = ConnectionStyle1;
-                            //txtBLHost3.Style = ConnectionStyle1;
-                            //_vm.ImgBL3 = true;
-                            //@ HomeDevice:
+                            //@ LunchView:
+                            // txt3.Style = ConnectionStyle1;
+                            // txtBLHost3.Style = ConnectionStyle1;
+                            // _vm.ImgBL3 = true;
                             BleHost3Style = BleHostStyle_White;// "1";
-                            //BleHost3Text = BleHost3Text.Substring(0, maxHostNameLength);
                         }
                         break;
 
@@ -1198,8 +1209,6 @@ namespace DDPM.UI.Common.Models
                         //Host1.Visibility = Visibility.Collapsed;
                         //txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
                         //txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
-
-                        //@ HomeDevice:
 
                         //Host1 is unused
                         BleHost1Style = BleHostStyle_Collapsed; // "0";
@@ -1243,10 +1252,10 @@ namespace DDPM.UI.Common.Models
                         //@ HomeDevice:
 
                         //Host 3 is unused
-                        BleHost3Style = "0";
+                        BleHost3Style = BleHostStyle_Collapsed; // "0";
 
-                        BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName1) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName1;
-                        BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName2;
+                        BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName2;
+                        BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName3) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName3;
 
                         //@ LaunchView:
                         // if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
@@ -1291,21 +1300,21 @@ namespace DDPM.UI.Common.Models
                         break;
                 } //switch
 
-                //@ LaunchView:
-                //if (txtBLHost1.Text.Length > 20)
-                //    txtBLHost1.Text = txtBLHost1.Text.Substring(0, 20);
-                //if (txtBLHost2.Text.Length > 20)
-                //    txtBLHost2.Text = txtBLHost2.Text.Substring(0, 20);
-                //if (txtBLHost3.Text.Length > 20)
-                //    txtBLHost3.Text = txtBLHost3.Text.Substring(0, 20);
+                //@ LaunchView: (2025-3-18)
+                //if (txtBLHost1.Text.Length > 15 && txtBLHost1.Text != Strings.ReadyToBePaired)
+                //    txtBLHost1.Text = txtBLHost1.Text.Substring(0, 15);
+                //if (txtBLHost2.Text.Length > 15 && txtBLHost2.Text != Strings.ReadyToBePaired)
+                //    txtBLHost2.Text = txtBLHost2.Text.Substring(0, 15);
+                //if (txtBLHost3.Text.Length > 15 && txtBLHost3.Text != Strings.ReadyToBePaired)
+                //    txtBLHost3.Text = txtBLHost3.Text.Substring(0, 15);
 
                 //@ HomeDevice:
-                if (BleHost1Text.Length > 20)
-                    BleHost1Text = BleHost1Text.Substring(0, 20);
-                if (BleHost2Text.Length > 20)
-                    BleHost2Text = BleHost2Text.Substring(0, 20);
-                if (BleHost3Text.Length > 20)
-                    BleHost3Text = BleHost3Text.Substring(0, 20);
+                if (BleHost1Text.Length > 15 && BleHost1Text != Strings.ReadyToBePaired)
+                    BleHost1Text = BleHost1Text.Substring(0, 15);
+                if (BleHost2Text.Length > 15 && BleHost2Text != Strings.ReadyToBePaired)
+                    BleHost2Text = BleHost2Text.Substring(0, 15);
+                if (BleHost3Text.Length > 15 && BleHost3Text != Strings.ReadyToBePaired)
+                    BleHost3Text = BleHost3Text.Substring(0, 15);
             }
             catch (Exception ex)
             {
@@ -1936,7 +1945,8 @@ namespace DDPM.UI.Common.Models
                 return false;
             if (!mask.Contains("inputSource", StringComparison.OrdinalIgnoreCase) && mi1.inputSource != mi2.inputSource)
                 return false;
-            if (!mask.Contains("edid", StringComparison.OrdinalIgnoreCase) && !EqualityComparer<EDID>.Equals(mi1.edid, mi2.edid))
+            if (!mask.Contains("edid", StringComparison.OrdinalIgnoreCase) && //!EqualityComparer<EDID>.Equals(mi1.edid, mi2.edid))
+                (mi1.edid.Equals(mi2.edid)))
                 return false;
 
             return true;

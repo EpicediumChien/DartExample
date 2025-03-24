@@ -396,7 +396,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             catch (ArgumentException ex)
             {
                 result = false;
-                _logs.Error($"Process with ID {processID} is not running: {ex.Message}");
+                //_logs.Error($"Process with ID {processID} is not running: {ex.Message}");
+                WriteLog(Log, $"Process with ID {processID} is not running: {ex.Message}", true);
             }
 
             return Task.FromResult(result);
@@ -1640,7 +1641,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
                 catch (Exception ex)
                 {
-                    _logs.DebugMsg($"[DisplayMangerPlugin][InitializeAllALSInfo] Init ALSConfig got exception. {ex}");
+                    //_logs.DebugMsg($"[DisplayMangerPlugin][InitializeAllALSInfo] Init ALSConfig got exception. {ex}");
+                    WriteLog(Log, $"[DisplayMangerPlugin][InitializeAllALSInfo] Init ALSConfig got exception. {ex.Message}", true);
                 }
             });
         }
@@ -3245,25 +3247,31 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo)
         {
-            _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties start");
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplaySupportedProperties {monitorInfo.modelName} start");
             DisplayPropertiesInfo rc = null;
             if (_DisplayPropertiesPlugin != null)
             {
                 _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties _DisplayPropertiesPlugin.GetDisplaySupportedProperties go");
                 rc = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfo).Result;
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplaySupportedProperties rc.SupportedProperties.Properties.Count : {rc.SupportedProperties.Properties.Count}");
                 _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplaySupportedProperties rc.CurrentOrientation : {rc.CurrentOrientation}");
                 if (_displayDataManger != null)
                 {
-                    _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties find display data go");
+                    _logs.DebugMsg("[DisplayMangerPlugin] find display data go");
                     if (_displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfo, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
                     {
                         _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties update display data go");
                         ret_DisplayPropertiesInfo.SupportedProperties = rc.SupportedProperties;
                         ret_DisplayPropertiesInfo.CurrentOrientation = rc.CurrentOrientation;
                     }
+                    if (_displayDataManger.GetMonitorGamingDisplayPropertiesInfo(monitorInfo, out GamingDisplayPropertiesInfo ret_GamingDisplayPropertiesInfo))
+                    {
+                        _logs.DebugMsg("[DisplayMangerPlugin] GetMonitorGamingDisplayPropertiesInfo update display data go");
+                        ret_GamingDisplayPropertiesInfo.SupportedProperties = rc.SupportedProperties;
+                    }
                 }
             }
-            _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties done");
+            _logs.DebugMsg($"[DisplayMangerPlugin] GetDisplaySupportedProperties {monitorInfo.modelName} done");
             return Task.FromResult(rc.SupportedProperties);
         }
 

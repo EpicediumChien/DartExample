@@ -14,7 +14,7 @@
         ShowInTaskbar="False"
         Topmost="True"
         Background="Transparent" 
-        Loaded="Window_Loaded" IsVisibleChanged="Window_IsVisibleChanged"
+        Loaded="Window_Loaded" IsVisibleChanged="Window_IsVisibleChanged" Closing="Window_Closing"
         >
     <Window.Resources>
         <SolidColorBrush x:Key="OuterBorder_BkBrush" Color="#F20D121A"/>

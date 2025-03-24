@@ -68,6 +68,9 @@ namespace DDPM.UI.Plugin.BootloaderPlugin
             _log.Info($"{nameof(PluginManager_PluginsStarted)} started");
             try
             {
+                if (_deviceManagerPlugin != null)
+                    return;
+
                 _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
 
                 if (_deviceManagerPlugin == null)
@@ -157,18 +160,20 @@ namespace DDPM.UI.Plugin.BootloaderPlugin
 
         private void GetPeripheralsAsync()
         {
+            _log.Info($"[BootloaderPlugin] GetPeripheralsAsync is invoked ... in");
             if (!SpinWait.SpinUntil(() =>
             _deviceManagerPluginCondition is not null, TimeSpan.FromMinutes(2)))
             {
                 Console.WriteLine("Could not establish communication with DDPM!!");
                 return;
             }
-            _log.Debug($"GetPeripherals is invoked");
+
             //_deviceHelper = await peripheralsPlugin.GetDevices();
             Task<DeviceHelper> task = _deviceManagerPlugin!.GetDevices();
             _deviceHelper = task.Result;
 
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
+            _log.Info($"[BootloaderPlugin] GetPeripheralsAsync is invoked ... out");
         }
 
         /// <summary>
@@ -177,6 +182,7 @@ namespace DDPM.UI.Plugin.BootloaderPlugin
         /// <remarks>Below code will be removed when <see cref="IConsole"/> provides the bootstrapper support</remarks>
         private void ConfigureServices()
         {
+            _log.Info($"[BootloaderPlugin] ConfigureServices ... in");
             if (_isConfigured)
                 return;
 
@@ -196,6 +202,7 @@ namespace DDPM.UI.Plugin.BootloaderPlugin
 
             _viewModel = (BootloaderViewModel?)PluginIoc.GetService<IPeripheralViewModel>();
             _isConfigured = true;
+            _log.Info($"[BootloaderPlugin] ConfigureServices ... out");
         }
 
         public string HeaderText => "Bootloader";
@@ -222,9 +229,11 @@ namespace DDPM.UI.Plugin.BootloaderPlugin
         /// <inheritdoc/>
         public void OnShown(string pluginParameter)
         {
+            _log.Info($"Bootloader pugin OnShown Begin timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
             ConfigureServices();
             GetPeripheralsAsync();
             if (_viewModel != null && !_viewModel.SetCurrentDevice(pluginParameter)) { }
+            _log.Info($"Bootloader pugin OnShown End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
 
         #endregion Interface IConsolePluginSupportsActivations

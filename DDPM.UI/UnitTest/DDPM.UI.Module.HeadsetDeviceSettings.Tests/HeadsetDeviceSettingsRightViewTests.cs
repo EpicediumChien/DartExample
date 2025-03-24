@@ -49,7 +49,7 @@ namespace DDPM.UI.Module.HeadsetDeviceSettings.Tests
             console = consoleMock.Object;
             showPluginManagerMock = new Mock<IShowPluginManager>();
             showPluginManager = showPluginManagerMock.Object;
-            vm = new HeadsetViewModel(showPluginManager, console, log, deviceManagerSA);
+            vm = new HeadsetViewModel(console, log, deviceManagerSA);
             var currentDeviceInfo = new DeviceInfo();
             vm.CurrentDeviceInfo = currentDeviceInfo;
             headsetDeviceSettingsRightView = new HeadsetDeviceSettingsRightView(vm);

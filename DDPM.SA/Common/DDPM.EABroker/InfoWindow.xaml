@@ -9,7 +9,7 @@
         Title="InfoWindow" Height="300" Width="840" 
         Left="-99999" Top="-9999"
         ShowInTaskbar="False"
-        Loaded="Window_Loaded" Unloaded="Window_Unloaded">
+        Loaded="Window_Loaded" Unloaded="Window_Unloaded" Closing="Window_Closing">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -81,6 +81,8 @@
                 <StackPanel Margin="8">
                     <WrapPanel>
                         <Button Content="Edit Overlap" Click="editOverlapButton_Click"/>
+                        <Button Name="testMonitorInfoUpdateButton" Content="Test MonitorInfo Update" 
+                                Click="testMonitorInfoUpdate_Click" Margin="4,0" Visibility="Collapsed"/>
                     </WrapPanel>
                 </StackPanel>
             </TabItem>

@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -25,6 +26,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Application = System.Windows.Application;
 
 namespace DDPM.UI.Common
 {
@@ -51,6 +53,7 @@ namespace DDPM.UI.Common
         public InterruptScreen(string versionNumber,InterruptScreenRoot interruptScreenRoot)
         {
             InitializeComponent();
+            this.Owner = Application.Current.MainWindow;
             DataContext = this;
             if (interruptScreenRoot == null)
             {
@@ -87,7 +90,7 @@ namespace DDPM.UI.Common
                                 Console.WriteLine($"{featuresList.content.productLabel.source}");
                                 NewSupportedDevicesCollection.Add(new UI_NewSupportedDevices()
                                 {
-                                    Title = featuresList.content.productLabel.source,
+                                    Title = GetTranslation(featuresList.content.productLabel),
                                     BackgroundImage = ConvertByteArrayToBitmapImage(featuresList.content.image),
                                 });
                             }
@@ -101,7 +104,7 @@ namespace DDPM.UI.Common
                                 {
                                     temp.Add(new UI_NewFeaturesContent()
                                     {
-                                        Content = detailsList.source
+                                        Content = GetTranslation(detailsList)
                                     });
                                 }
                                 NewFeaturesList.Add(new UI_NewFeatures()
@@ -117,7 +120,7 @@ namespace DDPM.UI.Common
                                 BugFixes.Visibility = Visibility.Visible;
                                 BugFixesList.Add(new UI_BugFixesContent()
                                 {
-                                    BugFixesContent = featuresList.content.bugDescription.source
+                                    BugFixesContent = GetTranslation(featuresList.content.bugDescription)
                                 });
                             }
                             break;
@@ -183,7 +186,144 @@ namespace DDPM.UI.Common
             }
             return bitmap;
         }
+        private string GetTranslation(object o)
+        {
+            string ret = "";
+            ProductLabel productLabel = o as ProductLabel;
+            DetailsList detailsList = o as DetailsList;
+            BugDescription bugDescription = o as BugDescription;
+            if (productLabel != null)
+            {
+                ret = productLabel.source;
+                if (productLabel.translations != null)
+                {
+                    string s = GetTranslationByLanguage(productLabel.translations, CultureInfo.CurrentUICulture);
+                    if (!string.IsNullOrEmpty(s))
+                    {
+                        ret = s;
+                    }
+                }
+            }
+            if (detailsList != null)
+            {
+                ret = detailsList.source;
+                if (detailsList.translations != null)
+                {
+                    string s = GetTranslationByLanguage(detailsList.translations, CultureInfo.CurrentUICulture);
+                    if (!string.IsNullOrEmpty(s))
+                    {
+                        ret = s;
+                    }
+                }
+            }
+            if (bugDescription != null)
+            {
+                ret = bugDescription.source;
+                if (bugDescription.translations != null)
+                {
+                    string s = GetTranslationByLanguage(bugDescription.translations, CultureInfo.CurrentUICulture);
+                    if (!string.IsNullOrEmpty(s))
+                    {
+                        ret = s;
+                    }
+                }
+            }
+            return ret;
+        }
+        private string GetTranslationByLanguage(Translations translations, CultureInfo cultureIn)
+        {
+            //"ar": All convert to "ar-SA"
+            if (cultureIn.TwoLetterISOLanguageName.Equals("ar", StringComparison.OrdinalIgnoreCase))
+            {
+                return translations.ar;
+            }
+            //"de": All convert to "de-DE"
+            if (cultureIn.TwoLetterISOLanguageName.Equals("de", StringComparison.OrdinalIgnoreCase))
+            {
+                return translations.de;
+            }
+            //"es"
+            if (cultureIn.TwoLetterISOLanguageName.Equals("es", StringComparison.OrdinalIgnoreCase))
+            {
+                return translations.es;
+            }// if "es"
+            //"fr"
+            if (cultureIn.TwoLetterISOLanguageName.Equals("fr", StringComparison.OrdinalIgnoreCase))
+            {
+                if (cultureIn.Name.Equals("fr-CA", StringComparison.OrdinalIgnoreCase))
+                    return translations.fr_CA;
+                else
+                    return translations.fr;
+            }
+            //"it"
+            if (cultureIn.TwoLetterISOLanguageName.Equals("it", StringComparison.OrdinalIgnoreCase))
+            {
+                return translations.it;
+            }
+            //"ja"
+            if (cultureIn.TwoLetterISOLanguageName.Equals("ja", StringComparison.OrdinalIgnoreCase))
+            {
+                return translations.ja;
 
+            }
+
+            //"ko"
+            if (cultureIn.TwoLetterISOLanguageName.Equals("ko", StringComparison.OrdinalIgnoreCase))
+            {
+                return translations.ko;
+
+            }
+            //"pl"
+            if (cultureIn.TwoLetterISOLanguageName.Equals("pl", StringComparison.OrdinalIgnoreCase))
+            {
+                return translations.pl;
+            }
+            //"pt"
+            if (cultureIn.TwoLetterISOLanguageName.Equals("pt", StringComparison.OrdinalIgnoreCase))
+            {
+                if (cultureIn.Name.Equals("pt-BR", StringComparison.OrdinalIgnoreCase))
+                    return translations.pt_BR;
+            }
+            //"ru"
+            if (cultureIn.TwoLetterISOLanguageName.Equals("ru", StringComparison.OrdinalIgnoreCase))
+            {
+                return translations.ru;
+            }
+
+            //"tr"
+            if (cultureIn.TwoLetterISOLanguageName.Equals("tr", StringComparison.OrdinalIgnoreCase))
+            {
+                return translations.tr;
+            }
+
+            //"uk"
+            if (cultureIn.TwoLetterISOLanguageName.Equals("uk", StringComparison.OrdinalIgnoreCase))
+            {
+                return translations.uk;
+            }
+
+            //"zh"
+            if (cultureIn.TwoLetterISOLanguageName.Equals("zh", StringComparison.OrdinalIgnoreCase))
+            {
+                switch (cultureIn.Name)
+                {
+
+                    case "zh-Hans-CN":
+                    case "zh-CN":
+                        return translations.zh;
+                    case "zh-TW":
+                        return translations.zh_TW;
+
+                    case "zh-Hans":
+                    case "zh-SG":
+                        return translations.zh;
+                    default:
+                        return translations.zh_TW;
+                }
+            } //
+            //Otherwise, return the input cultureInfo
+            return "";
+        }
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
             this.Close();

@@ -89,6 +89,7 @@ namespace DDPM.UI.Plugin.ViewModels
             Hz2501ClickedCommand = new RelayCommand(OnHz2501Clicked);
             Hz2502ClickedCommand = new RelayCommand(OnHz2502Clicked);
             Hz333ClickedCommand = new RelayCommand(OnHz333Clicked);
+            _log!.Info($"[MouseViewModel] MouseViewModel Start ...");
         }
 
         private void OnHz125Clicked()
@@ -1019,28 +1020,31 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         private string GetButtonTooltip(MouseButtonName btnName)
         {
-            var action = MouseAction.ButtonActions[btnName];
-            if (SelectedApp == "AllApp")
+            if (MouseAction.ButtonActions.TryGetValue(btnName, out SelectedMouseAction? action))
             {
-                return GetAllAppTooltip(action);
-            }
-            else
-            {
-                var actionID = action.OfficeActions[SelectedApp];
-                if (actionID == -1)
+                if (SelectedApp == "AllApp")
                 {
-                    if (action.AssignedAction.ID == -1)
-                    {
-                        return string.IsNullOrEmpty(SelectedButton) ? Strings.NullActionTooltip1 : Strings.NullActionTooltip2;
-                    }
-                    else
-                    {
-                        return GetAllAppTooltip(action);
-                    }
+                    return GetAllAppTooltip(action);
                 }
                 else
-                    return Actions.OfficeActions[actionID].Caption;
+                {
+                    var actionID = action.OfficeActions[SelectedApp];
+                    if (actionID == -1)
+                    {
+                        if (action.AssignedAction.ID == -1)
+                        {
+                            return string.IsNullOrEmpty(SelectedButton) ? Strings.NullActionTooltip1 : Strings.NullActionTooltip2;
+                        }
+                        else
+                        {
+                            return GetAllAppTooltip(action);
+                        }
+                    }
+                    else
+                        return Actions.OfficeActions[actionID].Caption;
+                }
             }
+            return string.Empty;
         }
         private string GetAllAppTooltip(SelectedMouseAction action)
         {

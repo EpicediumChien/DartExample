@@ -171,6 +171,8 @@ namespace DDPM.SA.Common
 
         Task<List<MonitorInfo>> Re_GetMonitors();
 
+        Task ReGetMonitors();
+
         event EventHandler<VCPchangedEventArgs> VCPchanged;
 
         event EventHandler<DDCCIchangedEventArgs> DDCCIStatuschanged;
@@ -1533,7 +1535,7 @@ namespace DDPM.SA.Common
 
         #region OSD
 
-        Task ShowOSD(object monitorInfo, OSDType type, OSDType_Device Device, string Content);
+        Task ShowOSD(object monitorInfo, OSDType type, OSDType_Device Device, string Content, Guid guid = default);
 
         Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State);
 
@@ -1859,5 +1861,7 @@ namespace DDPM.SA.Common
         #endregion Set
 
         #endregion IAirAudioCommodity
+
+        Task<List<MonitorInfo>> GetCurrentMonitorCache();
     }
 }

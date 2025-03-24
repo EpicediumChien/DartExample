@@ -19,7 +19,7 @@ namespace DDPM.UI.Common
         public string szPhysicalMonitorDescription { get; set; }
         public string DisplayName { get; set; }
         public bool DDCisON { get; set; }
-        public EDID edid { get; set; }
+        //public EDID edid { get; set; }
         public DISPLAY_DEVICE displaydevice { get; set; }
         public MonitorInfoEx pMonitorInfoEx { get; set; }
         public DEVMODE pDevmode { get; set; }

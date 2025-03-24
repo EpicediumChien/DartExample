@@ -38,6 +38,7 @@ namespace DDPM.UI.Module.EzArrange.Tests
         private DisplayViewModel? vmDisplay;
         private Mock<IEasyArrangeService>? easyArrange;
 
+
         [SetUp]
         public void Setup()
         {
@@ -65,7 +66,7 @@ namespace DDPM.UI.Module.EzArrange.Tests
             log = logMock.Object;
             easyArrange = new Mock<IEasyArrangeService>();
             HomeDevice.DeviceManagerSA = deviceManagerSA;
-            vmDisplay = new DisplayViewModel(console, log, deviceManagerSA, easyArrange.Object) { SelectedHomeDevice = new Common.Models.HomeDevice() { vmEzArrange=new EzArrangeViewModel(new Common.Models.HomeDevice()) { SelectedSplitItem = new Common.UserControls.SplitItem() }, MonitorInfo = new VcpCore.Common.MonitorInfo() { DisplayName = "NAME" } } };
+            vmDisplay = new DisplayViewModel(console, log, deviceManagerSA, easyArrange.Object) { SelectedHomeDevice = new Common.Models.HomeDevice() { vmEzArrange = new EzArrangeViewModel(new Common.Models.HomeDevice()) { SelectedSplitItem = new Common.UserControls.SplitItem() }, MonitorInfo = new VcpCore.Common.MonitorInfo() { DisplayName = "NAME" } } };
             ezArrangeRightVierw = new EzArrangeRightVierw(vmDisplay);
             privateObject = new PrivateObject(ezArrangeRightVierw);
         }
@@ -81,8 +82,8 @@ namespace DDPM.UI.Module.EzArrange.Tests
             var splitListView_5wSplitOwner = Common.EAEM.eSplitOwner.EaWin;
             var splitListView_6wSplitOwner = Common.EAEM.eSplitOwner.EaWin;
             var splitListView_7wSplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            Assert.That(ezArrangeRightVierw,Is.Not.Null);
-            Assert.That(ezArrangeRightVierw.DataContext,Is.InstanceOf<EzArrangeViewModel>());
+            Assert.That(ezArrangeRightVierw, Is.Not.Null);
+            Assert.That(ezArrangeRightVierw.DataContext, Is.InstanceOf<EzArrangeViewModel>());
             Assert.That(splitListView_RecentSplitOwner, Is.EqualTo(eSplitOwner.EaRecent));
             Assert.That(splitListView_CustomSplitOwner, Is.EqualTo(eSplitOwner.EaCustom));
             Assert.That(splitListView_2wSplitOwner, Is.EqualTo(eSplitOwner.EaWin));
@@ -96,8 +97,8 @@ namespace DDPM.UI.Module.EzArrange.Tests
         [Test]
         public void TestGenerateCustomId()
         {
-           var result = EzArrangeRightVierw.GenerateCustomId();
-           Assert.NotZero(result);
+            var result = EzArrangeRightVierw.GenerateCustomId();
+            Assert.NotZero(result);
         }
 
         [Test]
@@ -107,6 +108,17 @@ namespace DDPM.UI.Module.EzArrange.Tests
             ezArrangeRightVierw.HandleSelectedHomeDeviceChanged();
             Assert.That(privateObject.GetFieldOrProperty("_vm"), Is.InstanceOf<EzArrangeViewModel>());
             Assert.That(ezArrangeRightVierw.DataContext, Is.InstanceOf<EzArrangeViewModel>());
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            // Dispose of splitItem after each test
+            if (ezArrangeRightVierw != null)
+            {
+                ezArrangeRightVierw.Dispose();
+                ezArrangeRightVierw = null;
+            }
         }
     }
 }

@@ -1644,6 +1644,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     _logicalDevice3.PairedHostNameChanged += ILogicalDevice_PairedHostNameChanged;
                                     _logicalDevice3.IsDPILevelChangePendingChanged += ILogicalDevice_IsDPILevelChangePendingChanged;
                                     _logicalDevice3.IsDPIValueChangePendingChanged += ILogicalDevice_IsDPIValueChangePendingChanged;
+                                    _logicalDevice3.ReportRateChanged += _logicalDevice3_ReportRateChanged;
                                     LogicalDevices3.Add(_logicalDevice3.Id);
                                 }
                             }
@@ -2031,6 +2032,31 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     writelog(_deviceHelper.ToString());
                     CheckDocks();
                     writelog($"after CheckDocks --- {_deviceHelper.ToString()}");
+                }
+            }
+        }
+
+        private void _logicalDevice3_ReportRateChanged(ILogicalDevice3 arg1, int arg2)
+        {
+            writelog($"ReportRateChanged: Guid:{arg1.Id}  NewValue:{arg2}");
+            if (_deviceHelper is { deviceInfo: not null })
+            {
+                var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
+                if (deviceInfo != null)
+                {
+                    deviceInfo.ReportRate = arg2;
+
+                    DeviceChangedEventArgs _EventArgs = new()
+                    {
+                        type = DeviceChangedType.Peripherals_SettingsChange,
+                        device_peripherals = deviceInfo,
+                        changedProperty = "ReportRateChanged"
+                    };
+                    OnNotify(_EventArgs);
+                }
+                else
+                {
+                    writelog($"ReportRateChanged: Error: deviceInfo is null");
                 }
             }
         }
@@ -2706,6 +2732,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     };
                     OnNotify(_EventArgs);
                 }
+
+                // << 250320 added by Hess
+                PhysicalDevices.Remove(physicalDeviceId);
+                PhysicalDevices2.Remove(physicalDeviceId);
+                PhysicalPenDevices.Remove(physicalDeviceId);
+                // >>
             }
         }
 
@@ -2806,6 +2838,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             _logicalDevice3.PairedHostNameChanged -= ILogicalDevice_PairedHostNameChanged;
                             _logicalDevice3.IsDPILevelChangePendingChanged -= ILogicalDevice_IsDPILevelChangePendingChanged;
                             _logicalDevice3.IsDPIValueChangePendingChanged -= ILogicalDevice_IsDPIValueChangePendingChanged;
+                            _logicalDevice3.ReportRateChanged -= _logicalDevice3_ReportRateChanged;
                             LogicalDevices3.Remove(iLogicalDevice.Id);
                         }
                         if (LogicalDevicesPen.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevicePen _logicalDevicePen)
@@ -2845,7 +2878,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             Requester = "CloseBatteryLowOSD",
                             osd_type = OSDType.BatteryLow,
                             osd_device = type,
-                            Guid = ""
+                            Guid = deviceGuid
                         };
                         OnOSDNotify(args);
                     }
@@ -2863,6 +2896,15 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         }
                     }
                 }
+
+                // << 250320 added by Hess
+                IDevices.Remove(deviceGuid);
+                LogicalDevices.Remove(deviceGuid);
+                LogicalDevices2.Remove(deviceGuid);
+                LogicalDevices3.Remove(deviceGuid);
+                LogicalDevicesPen.Remove(deviceGuid);
+                LogicalDevicHeadset.Remove(deviceGuid);
+                // >>
             }
         }
 
@@ -3145,6 +3187,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         DeviceName = Screen.PrimaryScreen.DeviceName,
                         osd_type = OSDType.BatteryLow,
                         osd_device = type,
+                        Guid = deviceInfo.ID,
                         Message = message
                     };
                     OnOSDNotify(args);
@@ -3212,6 +3255,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     DeviceName = Screen.PrimaryScreen.DeviceName,
                                     osd_type = OSDType.BatteryLow,
                                     osd_device = type,
+                                    Guid = di.ID,
                                     Message = message
                                 };
                                 OnOSDNotify(args);
@@ -3227,26 +3271,29 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 }
                 else
                 {
-                    try
+                    foreach (var di in _deviceHelper.deviceInfo)
                     {
-                        OSDEventArgs args = new()
+                        try
                         {
-                            Requester = "CloseBatteryLowOSD",
-                            osd_type = OSDType.BatteryLow,
-                            osd_device = OSDType_Device.Keyboard,
-                            Guid = ""
-                        };
-                        OnOSDNotify(args);
-                        args.osd_device = OSDType_Device.Mouse;
-                        OnOSDNotify(args);
-                        args.osd_device = OSDType_Device.Headset;
-                        OnOSDNotify(args);
-                        args.osd_device = OSDType_Device.Pen;
-                        OnOSDNotify(args);
-                    }
-                    catch (Exception e)
-                    {
-                        writelog($"General setting Uncheck [Low battery level] fail with exception:{e.Message}");
+                            OSDEventArgs args = new()
+                            {
+                                Requester = "CloseBatteryLowOSD",
+                                osd_type = OSDType.BatteryLow,
+                                //osd_device = OSDType_Device.Keyboard,
+                                Guid = di.ID
+                            };
+                            OnOSDNotify(args);
+                            //args.osd_device = OSDType_Device.Mouse;
+                            //OnOSDNotify(args);
+                            //args.osd_device = OSDType_Device.Headset;
+                            //OnOSDNotify(args);
+                            //args.osd_device = OSDType_Device.Pen;
+                            //OnOSDNotify(args);
+                        }
+                        catch (Exception e)
+                        {
+                            writelog($"General setting Uncheck [Low battery level] fail with exception:{e.Message}");
+                        }
                     }
                     LowBatteryIDs.Clear();
                 }

@@ -17,17 +17,12 @@ using System.Windows;
 using VcpCore.Common;
 using IDs = DDPM.SA.Common.IDs;
 using Microsoft.WindowsAPICodePack.Shell;
-using System.Windows.Input;
 using System.Runtime.InteropServices;
 using System.Text;
-using Microsoft.VisualBasic.Logging;
 using System.Diagnostics;
-using DPeMPublic.Common;
 using System.Threading;
-using static VcpCore.Common.User32;
-using DDPM.EABroker;
-using DDPM.SA.Common.Display;
 using System.Globalization;
+
 
 namespace DDPM.SA.Plugins.User.EzMemory
 {
@@ -41,6 +36,38 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
     public class EzMemoryPlugin : BaseAgentPlugin, IDisposableObservable, IEzMemoryPlugin
     {
+        public enum log_type
+        {
+            info = 0,
+            error
+        }
+        /// <summary>
+        /// //
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="log_type">0 means info, others means error</param>
+        private void WriteLog(string text, log_type log_type = log_type.info,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
+        {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
+            text = $"[EzMemoryPlugin] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
+#if DEBUG
+            Console.WriteLine(text);
+#endif
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
+        }
+
+
         #region DLL
         //For UWP
         [DllImport("user32.dll", SetLastError = true)]
@@ -51,7 +78,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
         {
             bool rst = EnumWindows(lpEnumFunc, lParam);
 
-            if (!rst) 
+            if (!rst)
             {
                 _logs.Info($"[EzMemoryPlugin] EzMemoryEnumWindows failed.");
 
@@ -128,7 +155,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
             return rst;
         }
-        
+
         /*[DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -450,7 +477,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
                 }
             });
         }
-      
+
         #endregion
 
         #region IDisposableObservable Support
@@ -476,7 +503,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
                     {
                         _EzMemoryTimer.Dispose();
                         _logs.DebugMsg_1($"Dispose: _EzMemoryTimer Dispose ... ");
-                    }                   
+                    }
                     _agent = null;
                 }
 
@@ -554,7 +581,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
             catch (Exception ex)
             {
-                _logs.Error($"[EzMemoryManagerPlugin] CheckMonitorsAndLaunchApps Exception occurred: {ex.Message}");
+                //_logs.Error($"[EzMemoryManagerPlugin] CheckMonitorsAndLaunchApps Exception occurred: {ex.Message}");
+                WriteLog($"[EzMemoryManagerPlugin] CheckMonitorsAndLaunchApps Exception occurred: {ex.Message}", log_type.error);
             }
         }
 
@@ -642,7 +670,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
             catch (Exception ex)
             {
-                _logs.Error($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor Exception occurred: {ex.Message}");
+                //_logs.Error($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor Exception occurred: {ex.Message}");
+                WriteLog($"[EzMemoryManagerPlugin] CheckAndLaunchForMonitor Exception occurred: {ex.Message}", log_type.error);
             }
         }
 
@@ -707,7 +736,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
             catch (Exception ex)
             {
-                _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeApps Exception occurred: {ex.Message}");
+                //_logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeApps Exception occurred: {ex.Message}");
+                WriteLog($"[EzMemoryManagerPlugin] DeleteEAID, Exception  Error: {ex.Message}", log_type.error);
             }
         }
         private bool IsStartupRecently(long startupTime)
@@ -760,7 +790,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
             catch (Exception ex)
             {
-                _logs.Info($"[EzMemoryManagerPlugin], FromKnownFolderId Exception {ex}");
+                //_logs.Info($"[EzMemoryManagerPlugin], FromKnownFolderId Exception {ex}");
+                WriteLog($"[EzMemoryManagerPlugin], FromKnownFolderId Exception {ex.Message}", log_type.error);
                 return Task.FromResult(installedApp);
             }
             if (ikf == null)
@@ -782,7 +813,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
                 }
                 catch (Exception ex)// ex)
                 {
-                    _logs.Info($"[EzMemoryManagerPlugin], value and value2 {ex}");
+                    //_logs.Info($"[EzMemoryManagerPlugin], value and value2 {ex}");
+                    WriteLog($"[EzMemoryManagerPlugin], value and value2 {ex.Message}", log_type.error);
                 }
 
                 //
@@ -802,7 +834,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
                         DateTime lastAccessTime = f.CreationTime;//.LastAccessTime;
                         if (!File.Exists(IconFolder + text + ".png"))
                         {
-                            if(canSave)
+                            if (canSave)
                                 System.Drawing.Icon.ExtractAssociatedIcon(value)!.ToBitmap().Save(IconFolder + text + ".png");
                         }
                         if (!dictionary.ContainsKey(value))
@@ -836,7 +868,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
                     }
                     catch (Exception ex)
                     {
-                        _logs.Info($"[EzMemoryManagerPlugin], Desktop application parsing Exception {ex}");
+                        //_logs.Info($"[EzMemoryManagerPlugin], Desktop application parsing Exception {ex}");
+                        WriteLog($"[EzMemoryManagerPlugin], Desktop application parsing Exception {ex.Message}", log_type.error);
                     }
                     continue;
                 }
@@ -867,7 +900,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
                         bitmap.UnlockBits(bitmapData);
                         if (!File.Exists(IconFolder + filename + ".png"))
                         {
-                            if(canSave)
+                            if (canSave)
                                 bitmap.Save(IconFolder + filename + ".png");
                         }
                         if (!installedApp.ContainsKey(text2))
@@ -879,7 +912,9 @@ namespace DDPM.SA.Plugins.User.EzMemory
                 }
                 catch (Exception ex)
                 {
-                    _logs.Info($"[EzMemoryManagerPlugin], UWP Exception {ex}");
+                    //_logs.Info($"[EzMemoryManagerPlugin], UWP Exception {ex}");
+                    WriteLog($"[EzMemoryManagerPlugin], UWP Exception {ex.Message}", log_type.error);
+
                 }
                 finally
                 {
@@ -922,7 +957,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
             catch (Exception ex)
             {
-                _logs.Info($"[EzMemoryManagerPlugin], KeyValuePair<string, List<AppItemInfo>> Exception {ex}");
+                //_logs.Info($"[EzMemoryManagerPlugin], KeyValuePair<string, List<AppItemInfo>> Exception {ex}");
+                WriteLog($"[EzMemoryManagerPlugin], KeyValuePair<string, List<AppItemInfo>> Exception {ex.Message}", log_type.error);
             }
             AppListDictionary.GetInstance().LoadFile();
             tmpAppListDictionary = AppListDictionary.GetInstance();
@@ -956,7 +992,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
                 }
                 catch (Exception ex)
                 {
-                    _logs.Error($"[EzMemoryManagerPlugin] tmpAppListDictionary.AppInstallsList.Keys Exception occurred: {ex.Message}");
+                    //_logs.Error($"[EzMemoryManagerPlugin] tmpAppListDictionary.AppInstallsList.Keys Exception occurred: {ex.Message}");
+                    WriteLog($"[EzMemoryManagerPlugin] tmpAppListDictionary.AppInstallsList.Keys Exception occurred: {ex.Message}", log_type.error);
                 }
             }
             tmpAppListDictionary.SaveInstalledAppInfo_Thread();
@@ -1132,7 +1169,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
         //            {
         //                var app = seletcApps[i];
         //                IntPtr handle = IntPtr.Zero;
-                        
+
         //                try
         //                {
         //                    // 檢查應用程式是否已經存在
@@ -1207,13 +1244,13 @@ namespace DDPM.SA.Plugins.User.EzMemory
         //                    //}
 
         //                    Task.Delay(1000);
-                            
+
         //                }
         //                catch (Exception ex)
         //                {
         //                    _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, Error arranging app {app.AppName}: {ex}");
         //                }
-                        
+
 
         //            } //for
 
@@ -1327,7 +1364,9 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
             catch (Exception ex)
             {
-                _logs.Error($"[EzMemoryManagerPlugin] LaunchApp, Failed while launching app or file: {appData.AppName}, Error: {ex}");
+                //_logs.Error($"[EzMemoryManagerPlugin] LaunchApp, Failed while launching app or file: {appData.AppName}, Error: {ex}");
+                WriteLog($"[EzMemoryManagerPlugin] LaunchApp, Failed while launching app or file: {appData.AppName}, Error: {ex.Message}", log_type.error);
+
             }
 
             return process;
@@ -1368,7 +1407,9 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
             catch (Exception ex)
             {
-                _logs.Error($"[EzMemoryManagerPlugin] GetWindowHandle, Exception while retrieving window handle for {appData.AppName}, Error: {ex}");
+                //_logs.Error($"[EzMemoryManagerPlugin] GetWindowHandle, Exception while retrieving window handle for {appData.AppName}, Error: {ex}");
+                WriteLog($"[EzMemoryManagerPlugin] GetWindowHandle, Exception while retrieving window handle for {appData.AppName}, Error: {ex}", log_type.error);
+
             }
 
             return windowHandle;
@@ -1394,7 +1435,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
             catch (Exception ex)
             {
-                _logs.Error($"[EzMemoryManagerPlugin] GetProcessesByName, Exception while getting processes for {appData.AppName}, Error: {ex}");
+                //_logs.Error($"[EzMemoryManagerPlugin] GetProcessesByName, Exception while getting processes for {appData.AppName}, Error: {ex}");
+                WriteLog($"[EzMemoryManagerPlugin] GetProcessesByName, Exception while getting processes for {appData.AppName}, Error: {ex.Message}", log_type.error);
             }
 
             return processes;
@@ -1418,7 +1460,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
             catch (Exception ex)
             {
-                _logs.Error($"[EzMemoryManagerPlugin] GetDpiScaleForWindow, Exception while getting DPI scale for window, Error: {ex}");
+                //_logs.Error($"[EzMemoryManagerPlugin] GetDpiScaleForWindow, Exception while getting DPI scale for window, Error: {ex}");
+                WriteLog($"[EzMemoryManagerPlugin] GetDpiScaleForWindow, Exception while getting DPI scale for window, Error: {ex.Message}", log_type.error);
             }
             return dpiScale;
         }
@@ -1433,7 +1476,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
             catch (Exception ex)
             {
-                _logs.Error($"[EzMemoryManagerPlugin] GetWindowClassName, Exception while getting window class name, Error: {ex}");
+                //_logs.Error($"[EzMemoryManagerPlugin] GetWindowClassName, Exception while getting window class name, Error: {ex}");
+                WriteLog($"[EzMemoryManagerPlugin] GetWindowClassName, Exception while getting window class name, Error: {ex.Message}", log_type.error);
             }
             return className.ToString();
         }
@@ -1442,7 +1486,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
         {
             bool exists = false;
             try
-            {               
+            {
                 DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
                 if (ddpmSettings != null)
                 {
@@ -1465,7 +1509,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
             catch (Exception ex)
             {
-                _logs.Error($"[EzMemoryManagerPlugin] CheckEAIDExit, Exception  Error: {ex}");
+                //_logs.Error($"[EzMemoryManagerPlugin] CheckEAIDExit, Exception  Error: {ex}");
+                WriteLog($"[EzMemoryManagerPlugin] CheckEAIDExit, Exception  Error: {ex.Message}", log_type.error);
             }
             return Task.FromResult(exists);
         }
@@ -1474,7 +1519,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
         {
             bool result = false;
             try
-            {             
+            {
                 DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
                 if (ddpmSettings != null)
                 {
@@ -1494,7 +1539,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
             }
             catch (Exception ex)
             {
-                _logs.Error($"[EzMemoryManagerPlugin] DeleteEAID, Exception  Error: {ex}");
+                //_logs.Error($"[EzMemoryManagerPlugin] DeleteEAID, Exception  Error: {ex}");
+                WriteLog($"[EzMemoryManagerPlugin] DeleteEAID, Exception  Error: {ex.Message}", log_type.error);
             }
             return Task.FromResult(result);
         }

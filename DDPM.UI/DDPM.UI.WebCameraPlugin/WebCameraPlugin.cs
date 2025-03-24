@@ -80,9 +80,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             try
             {
-
-                if (_viewModel?.IsRecording ?? true)
-                    return;
+                
+                
 
                 if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType != null)
                 {
@@ -100,6 +99,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                     //_viewModel!.OnGoBackClicked();
                                 }
                             }
+                            if (_viewModel?.IsRecording == true) 
+                            {
+                                _viewModel!.IsRecording = false;
+                                _viewModel!.OnGoBackClicked();
+                            }
                             return;
                         }
                         if (e.type == DeviceChangedType.Peripherals_PlugIn)
@@ -115,6 +119,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                 GetPeripheralsAsync();
                                 _viewModel!.SetCurrentDevice(e.device_peripherals.ID.ToString());
                             }
+                            if (_viewModel?.IsRecording ?? true)
+                                return;
                             return;
                         }
                         _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
@@ -141,11 +147,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void GetPeripheralsAsync()
         {
-            DdpmCommonHelper.WriteUILog($"GetPeripherals is invoked");
+            DdpmCommonHelper.WriteUILog($"GetPeripherals is invoked ... in");
             Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(); //(true);
             _deviceHelper = task.Result;
 
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
+            DdpmCommonHelper.WriteUILog($"GetPeripherals is invoked ... out");
         }
 
         /// <summary>
@@ -154,6 +161,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         /// <remarks>Below code will be removed when <see cref="IConsole"/> provides the bootstrapper support</remarks>
         private void ConfigureServices()
         {
+            _log.Info($"[WebCameraplugin] ConfigureServices ... in");
             if (_isConfigured)
                 return;
 
@@ -166,6 +174,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             _viewModel = (WebCameraViewModel?)PluginIoc.GetService<IPeripheralViewModel>();
             _isConfigured = true;
+            _log.Info($"[WebCameraplugin] ConfigureServices ... out");
         }
 
         public string HeaderText => "Dell WebCamera";
@@ -372,9 +381,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             }
                             System.Windows.Application.Current.Dispatcher.Invoke(() =>
                             {
-                                if (NewValue.ToLower() == "true")
+                                if (NewValue.ToLower() == "true" && !_viewModel!.IsAutoFramingOn)
                                     _viewModel!.IsAutoFramingOn = true;
-                                else
+                                if (NewValue.ToLower() != "true" && _viewModel!.IsAutoFramingOn)
                                     _viewModel!.IsAutoFramingOn = false;
                             });
                         }

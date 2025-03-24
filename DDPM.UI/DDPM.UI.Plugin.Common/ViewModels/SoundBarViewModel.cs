@@ -2,10 +2,8 @@
 using DDPM.UI.Common;
 using DDPM.UI.Common.Method;
 using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Security;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
-using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -20,7 +18,6 @@ namespace DDPM.UI.Plugin.ViewModels
         public IDeviceManagerSA _deviceManager;
         public IShowPluginManager _showPluginManager;
         public SpeakerInfoValue SpeakerInfoValueDTP;
-        public string _current_soundBar;
         public string _default = "{CFA20B04-897A-4E5F-A0C3-D95FD4594F85}";
         public string _speech = "{78EE7B67-5946-4A11-959D-299CC77466D1}";
         public string _bassBoost = "{44F5D888-F551-4D2C-B41C-EFD6EBD09D23}";
@@ -33,19 +30,17 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public string modelTest;
 
-        public SoundBarViewModel(IShowPluginManager showPluginManager, IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
+        public SoundBarViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
 
             _log = log;
             _deviceManager = deviceManager;
-            _showPluginManager = showPluginManager;
-            _log!.Info($"[SoundBarViewModel] SoundBarViewModel Start...");
             SpeakerInfoValueDTP = new SpeakerInfoValue();
-            _current_soundBar = string.Empty;
             //DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Speaker_DTPNotify;
             _debouncerSpeaker = new Debouncer(1000, ExecuteDebouncedAction);
+            _log!.Info($"[SoundBarViewModel] SoundBarViewModel Start ...");
         }
 
         public void UloadSpeaker_DTPNotify()

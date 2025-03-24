@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.IO;
 using Microsoft;
 using DDPM.UI.Common.UserControls;
+using System.Windows.Controls.Primitives;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -44,6 +45,8 @@ namespace DDPM.UI.Module.EzMemory
         private HomeDevice _selecthomeDevice;
         private bool SortbyNameDescenAscen = false;
         private bool SortbyDateDescenAscen = false;
+        private bool _isSortByNameFirst = true;
+        private string _selectedAppName = string.Empty;
         #endregion Private Members
 
         public EzMemoryAddApplication(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
@@ -65,6 +68,7 @@ namespace DDPM.UI.Module.EzMemory
             DataContext = vm;
             
             InitializeComponent();
+            btnSortbyName_Ascending_Click(appListView, new RoutedEventArgs(ToggleButton.ClickEvent));
             edFilter_TextChanged(edFilter, new TextChangedEventArgs(TextBox.TextChangedEvent, UndoAction.None));
         }
 
@@ -76,7 +80,8 @@ namespace DDPM.UI.Module.EzMemory
         private void edFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
             List<Bind_AddFullPage_AppCollectionData> TempFiltered;
-            TempFiltered = _vm._apps_all.Where(contact => contact.AppName.Contains(edFilter.Text, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            //TempFiltered = _vm._apps_all.Where(contact => contact.AppName.Contains(edFilter.Text, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            TempFiltered = _vm._apps_all.Where(contact => contact.AppName.Contains(txtSearchText.Text, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
             for (int i = _vm._bind_apps.Count - 1; i >= 0; i--)
             {
@@ -103,7 +108,7 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void btnSortbyName_Ascending_Click(object sender, EventArgs e)
         {
-            if (!SortbyNameDescenAscen)
+            //if (!SortbyNameDescenAscen)
             {
                 List<Bind_AddFullPage_AppCollectionData> TempSorted;
 
@@ -120,8 +125,8 @@ namespace DDPM.UI.Module.EzMemory
                 }
                 SortbyNameDescenAscen = true;
             }
-            else
-                btnSortbyName_Descending_Click(sender, e);
+            //else
+            //    btnSortbyName_Descending_Click(sender, e);
 
         }
 
@@ -155,7 +160,7 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void btnSortbyDate_Ascending_Click(object sender, EventArgs e)
         {
-            if (!SortbyDateDescenAscen)
+            //if (!SortbyDateDescenAscen)
             {
                 List<Bind_AddFullPage_AppCollectionData> TempSorted;
 
@@ -172,8 +177,8 @@ namespace DDPM.UI.Module.EzMemory
                 }
                 SortbyDateDescenAscen = true;
             }
-            else
-                btnSortbyDate_Descending_Click(sender, e);
+            //else
+            //    btnSortbyDate_Descending_Click(sender, e);
         }
 
         /// <summary>
@@ -207,7 +212,8 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            lb_Installed_App.ItemsSource = _vm._bind_apps;
+            //lb_Installed_App.ItemsSource = _vm._bind_apps;
+            appListView.ItemsSource = _vm._bind_apps;
         }
 
         /// <summary>
@@ -232,9 +238,13 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _log.Info($"@{nameof(EzMemoryAddApplication)} btnAdd_Click: ... in");
 
-                if (lb_Installed_App.SelectedItems.Count == 0)
+                //if (lb_Installed_App.SelectedItems.Count == 0)
+                //    return;
+                if (appListView.SelectedItems.Count == 0)
                     return;
-                var app = lb_Installed_App.SelectedItems.Cast<Bind_AddFullPage_AppCollectionData>().ToList();
+
+                //var app = lb_Installed_App.SelectedItems.Cast<Bind_AddFullPage_AppCollectionData>().ToList();
+                var app = appListView.SelectedItems.Cast<Bind_AddFullPage_AppCollectionData>().ToList();
 
                 // 如果有重複的應用程式，直接返回
                 if (_vm._sortApps.Values.Any(a =>
@@ -343,7 +353,62 @@ namespace DDPM.UI.Module.EzMemory
 
         private void lb_Installed_App_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            btnAdd.IsEnabled = lb_Installed_App.SelectedItems.Count > 0;
+            //btnAdd.IsEnabled = lb_Installed_App.SelectedItems.Count > 0;
+            btnAdd.IsEnabled = appListView.SelectedItems.Count > 0;
+        }
+
+        private void backArrow_Click(object sender, RoutedEventArgs e)
+        {
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay, _vm, _selecthomeDevice);
+            DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
+        }
+
+        private void sortByNameButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender == null)
+                return;
+            _isSortByNameFirst = true;
+            if (sender is ToggleButton)
+            {
+                ToggleButton btn = sender as ToggleButton;
+                if (btn.IsChecked == true)
+                {
+                    btnSortbyName_Ascending_Click(sender, e);
+                }
+                else
+                {
+                    btnSortbyName_Descending_Click(sender, e);
+                }
+            }
+        }
+
+        private void sortByDateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender == null)
+                return;
+            _isSortByNameFirst = false;
+            if (sender is ToggleButton)
+            {
+                ToggleButton btn = sender as ToggleButton;
+                if (btn.IsChecked == true)
+                {
+                    btnSortbyDate_Ascending_Click(sender, e);
+                }
+                else
+                {
+                    btnSortbyDate_Descending_Click(sender, e);
+                }
+            }
+        }
+
+        private void appListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            btnAdd.IsEnabled = appListView.SelectedItems.Count > 0;
+        }
+
+        private void RefreshAppList()
+        {
+
         }
     }
 }

@@ -78,8 +78,9 @@ namespace DDPM.UI.Module.Kvm
             {
                 vm.FinishtoSetPCs();
                 //Return to DdpmHomePage
-                IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
-                console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+                //IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
+                //console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+                DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
             }
         }
 

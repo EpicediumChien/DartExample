@@ -34,7 +34,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin.Tests
             consoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(_logMock.Object);
             deviceManagerSAMock = new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
-            headsetPlugin = new HeadsetPlugin(showPluginManagerMock.Object, pluginManagerMock.Object, consoleMock.Object);
+            headsetPlugin = new HeadsetPlugin(pluginManagerMock.Object, consoleMock.Object);
             privateObject = new PrivateObject(headsetPlugin);
         }
 
