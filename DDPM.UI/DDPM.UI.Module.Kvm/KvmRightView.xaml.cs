@@ -270,7 +270,7 @@ namespace DDPM.UI.Module.Kvm
                 //{
                 //    vm.isNoKVM = true;
                 //}
-                if (!vm.IsKVMBusy)
+                if (!vm.LockSendNoKVM)
                 {
                     vm.isOnNoKVM(true);
                     if (vm.NKVMisON)
