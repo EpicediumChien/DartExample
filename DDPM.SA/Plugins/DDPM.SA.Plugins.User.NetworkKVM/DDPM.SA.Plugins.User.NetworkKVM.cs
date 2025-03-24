@@ -36,17 +36,35 @@ namespace NetworkKVM.Plugins
     [PublishedUnelevatedInterface(new[] { typeof(INKVMService) })]
     public class NKVMPlugin : BaseAgentPlugin, INKVMService, IDisposableObservable
     {
-        private static void WriteLog(ILog log, string message, bool isError = false)
+        public enum log_type
         {
+            info = 0,
+            error
+        }
+        /// <summary>
+        /// //
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="log_type">0 means info, others means error</param>
+        private void WriteLog(string text, log_type log_type = log_type.info,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
+        {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
+            text = $"[NKVMPlugin] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
 #if DEBUG
-            Console.WriteLine(message);
+            Console.WriteLine(text);
 #endif
-            if (log == null)
-                return;
-            if (!isError)
-                log.Info(message);
-            else
-                log.Error(message);
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
         }
 
         #region Private Members
@@ -664,7 +682,8 @@ namespace NetworkKVM.Plugins
             }
             catch (Exception e)
             {
-                _logs.DebugMsg($"[SetHotkey] exception: {e.Message}");
+                //_logs.DebugMsg($"[SetHotkey] exception: {e.Message}");
+                WriteLog($"[SetHotkey] exception: {e.Message}", log_type.error);
             }
             return Task.FromResult(false);
         }
@@ -711,7 +730,8 @@ namespace NetworkKVM.Plugins
             }
             catch (Exception e)
             {
-                _logs.DebugMsg($"[NKVM_ChangeLimitedSW] exception: {e.Message}");
+                //_logs.DebugMsg($"[NKVM_ChangeLimitedSW] exception: {e.Message}");
+                WriteLog($"[NKVM_ChangeLimitedSW] exception: {e.Message}", log_type.error);
             }
 
             _AllInfoMonitors = GetMonitors().Result;
@@ -735,7 +755,8 @@ namespace NetworkKVM.Plugins
             }
             catch (Exception e)
             {
-                _logs.DebugMsg($"[NKVM_ChangeMonitorIndex] exception: {e.Message}");
+                //_logs.DebugMsg($"[NKVM_ChangeMonitorIndex] exception: {e.Message}");
+                WriteLog($"[NKVM_ChangeMonitorIndex] exception: {e.Message}", log_type.error);
             }
             return Task.CompletedTask;
         }
@@ -1016,7 +1037,8 @@ namespace NetworkKVM.Plugins
                     catch (System.Exception ex)
                     {
                         Trace.WriteLine($"ERROR : Run NKVM ==> {ex.ToString()}");
-                        _logs.DebugMsg($"ERROR : Run NKVM ==> {ex.ToString()}");
+                        //_logs.DebugMsg($"ERROR : Run NKVM ==> {ex.ToString()}");
+                        WriteLog($"ERROR : Run NKVM ==> {ex.ToString()}", log_type.error);
                         Thread.Sleep(1000);
                         Disconnect();
                         return Task.FromResult(false);
@@ -1796,7 +1818,8 @@ namespace NetworkKVM.Plugins
                 }
                 catch (Exception ex)
                 {
-                    _logs.DebugMsg("[NetworkKVM] JsonstringParse exception : " + ex.ToString());
+                    //_logs.DebugMsg("[NetworkKVM] JsonstringParse exception : " + ex.ToString());
+                    WriteLog("[NetworkKVM] JsonstringParse exception : " + ex.ToString(), log_type.error);
                 }
             }
             else
