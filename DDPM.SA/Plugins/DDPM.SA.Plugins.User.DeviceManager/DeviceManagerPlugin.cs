@@ -11874,9 +11874,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             writelog($"[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() get monitor count {NewMonitors.Count} ...");
 
-                            InitMonitorSettings(_AllInfoMonitors);
+                            InitMonitorSettings(NewMonitors.ToList());
 
-                            Task.Run(() => InitAllDisplayData(_AllInfoMonitors)).ConfigureAwait(false);
+                            Task.Run(() => InitAllDisplayData(NewMonitors.ToList())).ConfigureAwait(false);
 
                             // add @ 20250303 stephen
                             // modified @ 20250305 stephen : set count = -1 as a flag to avoid trigger ui reflash
