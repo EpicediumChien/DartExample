@@ -50,8 +50,8 @@ namespace DDPM.UI.Module.Color
     internal class ColorViewModel : ObservableObject, INotifyPropertyChanged
     {
         #region Log
-        private ILog? _log = null;
-        public ILog? Log { get; set; } = null;
+        private ILog? _log;
+        public ILog? Log { get; set; }
 
         #endregion Log
 
@@ -61,16 +61,16 @@ namespace DDPM.UI.Module.Color
         //public RegistryMonitor_ICC registryMonitor_ICC = null;     
 
         // jim mofidy 20240606
-        public ManagementEventWatcher? startWatcher = null;
-        public ManagementEventWatcher? endProcWatcher = null;
+        public ManagementEventWatcher startWatcher = null;
+        public ManagementEventWatcher endProcWatcher = null;
 
         public DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
 
-        private BackgroundWorker? bw = null;
+        private BackgroundWorker? bw;
 
-        public Guid? guid { get; set; } = null;
-        public IModuleOwner? ModuleOwner { get; set; } = null;
-        public ColorModule? MyModule { get; set; } = null;
+        public Guid? guid { get; set; }
+        public IModuleOwner? ModuleOwner { get; set; }
+        public ColorModule MyModule { get; set; }
 
         // jim modify 20240604
         //public List<string> SupportColorPresets { get; set; } = new List<string>();
@@ -95,15 +95,6 @@ namespace DDPM.UI.Module.Color
         //Robert_Lin 2025-2-26 Narrator. The default value of KeyboardNavigation.TabNavigation is "Conntinue".
         //Howerever, I add a constant string below to restore back to original value.
         public const string DefaultTabNavigation = "Continue"; //"Cycle";
-
-        private bool _IsFinished = false;
-
-        public bool IsFinished
-        {
-            get { return _IsFinished; }
-            set { _IsFinished = value; }
-        }
-
 
         public bool ColorEnable
         {
@@ -365,7 +356,7 @@ namespace DDPM.UI.Module.Color
         public bool ColorManagement_isChecked { get; set; } = false;
         public bool ICCprofile_based_Colorpreset_enable { get; set; } = false;
 
-        private Visibility _DCM_Visibility = Visibility.Hidden;
+        private Visibility _DCM_Visibility = Visibility.Collapsed;
 
         public Visibility DCM_Visibility
         {
@@ -539,7 +530,6 @@ namespace DDPM.UI.Module.Color
                 WorkerReportsProgress = true,
                 WorkerSupportsCancellation = true
             };
-
             guid = Guid.NewGuid();
             bw.DoWork += DoWork_RefreshData;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
@@ -701,8 +691,8 @@ namespace DDPM.UI.Module.Color
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsEnabled = true;
-                    ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Hidden;
-                    DCM_Visibility = Visibility.Hidden;
+                    ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Collapsed;
+                    DCM_Visibility = Visibility.Collapsed;
 
                     if (((UXToggleSwitch)(MyModule.GetRightView().FindName("ColorManagement_ToggleSwitch"))).IsChecked == true)
                     {
@@ -755,7 +745,6 @@ namespace DDPM.UI.Module.Color
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
-            IsFinished = false;
             try //2024-06-19 Elie, add try catch to get exception.
             {
                 //Jason 20250314 add
@@ -1209,7 +1198,7 @@ namespace DDPM.UI.Module.Color
             if (bw.CancellationPending)
             {
                 Debug.WriteLine("[InputSource] Cancelled_RefreshData.");
-                _log?.Info("[InputSource] Cancelled_RefreshData.");
+                _log.Info("[InputSource] Cancelled_RefreshData.");
                 e.Cancel = true;
                 return true;
             }
@@ -1218,10 +1207,10 @@ namespace DDPM.UI.Module.Color
 
         public void CallCancel()
         {
-            if (bw != null && bw.IsBusy)
+            if (bw.IsBusy)
             {
-                _log?.Info("[InputSource] CallCancel.");
-                bw?.CancelAsync();
+                _log.Info("[InputSource] CallCancel.");
+                bw.CancelAsync();
                 DdpmCommonHelper.DeviceManagerSA.CancelVcpTask((Guid)guid);
             }
         }
@@ -1438,7 +1427,6 @@ namespace DDPM.UI.Module.Color
             WatchForProcessStart();
             WatchForProcessEnd();
 
-            _IsFinished = true;
             //UpdateHDRStatus();
         }
 
@@ -1712,7 +1700,7 @@ namespace DDPM.UI.Module.Color
 
                 }
                 else
-                    vis_ad = Visibility.Hidden;
+                    vis_ad = Visibility.Collapsed;
 
                 IsisAdvanced_Settings = vis_ad;
             }
