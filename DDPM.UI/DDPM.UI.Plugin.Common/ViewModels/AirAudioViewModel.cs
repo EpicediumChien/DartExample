@@ -1966,7 +1966,15 @@ namespace DDPM.UI.Plugin.ViewModels
         private void DoWork_PleaseWait(string model, AirAudioViewModel vm)
         {
             _log.Info($"[AirAudioViewModel] DoWork_PleaseWait .......");
-            DeviceID = _deviceManager.GetAirAudioDeviceIdAsync(CurrentDeviceID.ToString()).Result;
+            DeviceID = _deviceManager.GetAirAudioSerialNumberAsync(CurrentDeviceID.ToString()).Result;
+            if (string.IsNullOrEmpty(DeviceID))
+            {
+                _log.Error("[AirAudioViewModel] DoWork_PleaseWait ... DeviceID is null.");
+                // Handle the null case appropriately, e.g., set a default value or return
+                DeviceID = "Unknown DeviceID";
+            }
+
+
             FirmwareVersion2 = _deviceManager.GetAirAudioFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
             if (_deviceManager.GetDTPProxyPluginReady().Result)
             {
@@ -1999,7 +2007,14 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (_waitAirAudioReady)
                 {
                     FirmwareVersion2 = _deviceManager.GetAirAudioFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
-                    DeviceID = _deviceManager.GetAirAudioDeviceIdAsync(CurrentDeviceID.ToString()).Result;
+                    DeviceID = _deviceManager.GetAirAudioSerialNumberAsync(CurrentDeviceID.ToString()).Result;
+                    if (string.IsNullOrEmpty(DeviceID))
+                    {
+                        _log.Error("[AirAudioViewModel] DoWork_PleaseWait ... DeviceID is null.");
+                        // Handle the null case appropriately, e.g., set a default value or return
+                        DeviceID = "Unknown DeviceID";
+                    }
+
                     if (FirmwareVersion2 != null && FirmwareVersion2 != "0.0.0.0")
                     {
                         FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";

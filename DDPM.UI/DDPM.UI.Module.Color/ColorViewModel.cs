@@ -68,8 +68,8 @@ namespace DDPM.UI.Module.Color
 
         private BackgroundWorker? bw = null;
 
-        public Guid? guid { get; set; }
-        public IModuleOwner? ModuleOwner { get; set; }
+        public Guid? guid { get; set; } = Guid.NewGuid();
+        public IModuleOwner? ModuleOwner { get; set; } = null;
         public ColorModule MyModule { get; set; }
 
         // jim modify 20240604
