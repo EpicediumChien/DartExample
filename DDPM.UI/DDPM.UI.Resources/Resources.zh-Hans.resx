@@ -3459,6 +3459,15 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>了解有关软件的更多信息</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>未检测到设备</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>添加您的第一台设备</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>连接</value>
+  </data>
   <data name="WebcamMPS.0" xml:space="preserve">
     <value>要访问 Microsoft 用户感应功能，请访问 Windows 设置</value>
   </data>
@@ -3467,7 +3476,7 @@
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
     <value>要访问用户感应功能，请通过下方链接下载兼容的网络摄像头固件</value>
-	  </data>
+  </data>
   <data name="Bootloader" xml:space="preserve">
     <value>启动加载程序</value>
   </data>
@@ -3483,19 +3492,13 @@
   <data name="Bootloader.3" xml:space="preserve">
     <value>更新固件，以恢复功能。</value>
   </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>搜索操作</value>
+  </data>
   <data name="Update_Dock_Alert_2" xml:space="preserve">
     <value>注意：在更新期间，连接到此坞站的外围设备可能不可用</value>
   </data>
-  <data name="NoDeviceDetected" xml:space="preserve">
-    <value>未检测到设备</value>
-  </data>
-  <data name="Add1sDevice" xml:space="preserve">
-    <value>添加您的第一台设备</value>
-  </data>
-  <data name="Connect" xml:space="preserve">
-    <value>连接</value>
-  </data>
-  <data name="SearchActions" xml:space="preserve">
-    <value>搜索操作</value>
+  <data name="Color.14" xml:space="preserve">
+    <value>颜色预设</value>
   </data>
 </root>

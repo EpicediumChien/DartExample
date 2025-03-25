@@ -3462,6 +3462,15 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Дізнайтеся більше про програмне забезпечення</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>ПРИСТРІЙ НЕ ВИЯВЛЕНО</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>Додавання пристрою вперше</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Підключити</value>
+  </data>
   <data name="WebcamMPS.0" xml:space="preserve">
     <value>Щоб отримати доступ до функцій датчика присутності Microsoft, перейдіть у Налаштування Windows</value>
   </data>
@@ -3470,7 +3479,7 @@
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
     <value>Щоб отримати доступ до функцій датчика присутності, перейдіть за посиланням нижче й завантажте мікропрограму для сумісної вебкамери.</value>
-	  </data>
+  </data>
   <data name="Bootloader" xml:space="preserve">
     <value>Завантажувач</value>
   </data>
@@ -3486,19 +3495,13 @@
   <data name="Bootloader.3" xml:space="preserve">
     <value>для оновлення мікропрограми й відновлення функцій.</value>
   </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>Дії пошуку</value>
+  </data>
   <data name="Update_Dock_Alert_2" xml:space="preserve">
     <value>Примітка: периферійні пристрої, під’єднані до цієї док-станції, можуть бути недоступними під час оновлення</value>
   </data>
-  <data name="NoDeviceDetected" xml:space="preserve">
-    <value>ПРИСТРІЙ НЕ ВИЯВЛЕНО</value>
-  </data>
-  <data name="Add1sDevice" xml:space="preserve">
-    <value>Додавання пристрою вперше</value>
-  </data>
-  <data name="Connect" xml:space="preserve">
-    <value>Підключити</value>
-  </data>
-  <data name="SearchActions" xml:space="preserve">
-    <value>Дії пошуку</value>
+  <data name="Color.14" xml:space="preserve">
+    <value>Колірна схема</value>
   </data>
 </root>

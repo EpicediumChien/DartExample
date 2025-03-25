@@ -3459,6 +3459,15 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>深入瞭解軟體</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>偵測不到任何裝置</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>新增第一個裝置</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>連線</value>
+  </data>
   <data name="WebcamMPS.0" xml:space="preserve">
     <value>如需存取 Microsoft 在場感應功能，請造訪 Windows 設定</value>
   </data>
@@ -3467,7 +3476,7 @@
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
     <value>如需存取在場感應功能，請使用以下連結下載相容的網路攝影機韌體</value>
-	  </data>
+  </data>
   <data name="Bootloader" xml:space="preserve">
     <value>開機載入器</value>
   </data>
@@ -3483,19 +3492,13 @@
   <data name="Bootloader.3" xml:space="preserve">
     <value>來更新韌體以還原功能。</value>
   </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>搜尋動作</value>
+  </data>
   <data name="Update_Dock_Alert_2" xml:space="preserve">
     <value>備註：在更新過程中，連接到此擴充基座的周邊設備可能無法使用</value>
   </data>
-  <data name="NoDeviceDetected" xml:space="preserve">
-    <value>偵測不到任何裝置</value>
-  </data>
-  <data name="Add1sDevice" xml:space="preserve">
-    <value>新增第一個裝置</value>
-  </data>
-  <data name="Connect" xml:space="preserve">
-    <value>連線</value>
-  </data>
-  <data name="SearchActions" xml:space="preserve">
-    <value>搜尋動作</value>
+  <data name="Color.14" xml:space="preserve">
+    <value>色彩預設</value>
   </data>
 </root>

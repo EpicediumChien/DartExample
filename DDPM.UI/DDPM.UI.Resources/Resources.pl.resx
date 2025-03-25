@@ -3459,6 +3459,15 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Dowiedz się więcej o oprogramowaniu</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>NIE WYKRYTO URZĄDZENIA</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>Dodaj pierwsze urządzenie</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Podłącz się</value>
+  </data>
   <data name="WebcamMPS.0" xml:space="preserve">
     <value>Aby uzyskać dostęp do funkcji wykrywania obecności firmy Microsoft, odwiedź sekcję Ustawienia systemu Windows</value>
   </data>
@@ -3467,7 +3476,7 @@
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
     <value>Aby uzyskać dostęp do funkcji wykrywania obecności, użyj poniższego łącza, aby pobrać kompatybilne oprogramowanie wewnętrzne kamery internetowej.</value>
-	  </data>
+  </data>
   <data name="Bootloader" xml:space="preserve">
     <value>Program rozruchowy</value>
   </data>
@@ -3483,19 +3492,13 @@
   <data name="Bootloader.3" xml:space="preserve">
     <value>aby zaktualizować oprogramowanie wewnętrzne w celu przywrócenia funkcjonalności.</value>
   </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>Wyszukaj działania</value>
+  </data>
   <data name="Update_Dock_Alert_2" xml:space="preserve">
     <value>Uwaga: urządzenia peryferyjne podłączone do tej stacji dokującej mogą nie być dostępne podczas procesu aktualizacji.</value>
   </data>
-  <data name="NoDeviceDetected" xml:space="preserve">
-    <value>NIE WYKRYTO URZĄDZENIA</value>
-  </data>
-  <data name="Add1sDevice" xml:space="preserve">
-    <value>Dodaj pierwsze urządzenie</value>
-  </data>
-  <data name="Connect" xml:space="preserve">
-    <value>Podłącz się</value>
-  </data>
-  <data name="SearchActions" xml:space="preserve">
-    <value>Wyszukaj działania</value>
+  <data name="Color.14" xml:space="preserve">
+    <value>ustawienie kolorów</value>
   </data>
 </root>

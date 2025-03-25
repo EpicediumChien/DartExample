@@ -3459,6 +3459,15 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>En savoir plus sur le logiciel</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>AUCUN APPAREIL DÉTECTÉ</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>Ajouter votre premier appareil</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Connecter</value>
+  </data>
   <data name="WebcamMPS.0" xml:space="preserve">
     <value>Pour accéder aux fonctionnalités de détection de présence de Microsoft, accédez aux Paramètres Windows</value>
   </data>
@@ -3483,19 +3492,13 @@
   <data name="Bootloader.3" xml:space="preserve">
     <value>pour mettre à jour votre firmware afin de restaurer les fonctionnalités.</value>
   </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>Actions de recherche</value>
+  </data>
   <data name="Update_Dock_Alert_2" xml:space="preserve">
     <value>Remarque : Les périphériques connectés à cette station d’accueil ne seront peut-être pas disponibles pendant le processus de mise à jour</value>
   </data>
-  <data name="NoDeviceDetected" xml:space="preserve">
-    <value>AUCUN APPAREIL DÉTECTÉ</value>
-  </data>
-  <data name="Add1sDevice" xml:space="preserve">
-    <value>Ajouter votre premier appareil</value>
-  </data>
-  <data name="Connect" xml:space="preserve">
-    <value>Connecter</value>
-  </data>
-  <data name="SearchActions" xml:space="preserve">
-    <value>Actions de recherche</value>
+  <data name="Color.14" xml:space="preserve">
+    <value>Préréglage de couleur</value>
   </data>
 </root>

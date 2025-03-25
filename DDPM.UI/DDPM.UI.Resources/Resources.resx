@@ -3603,4 +3603,7 @@
     <value>This update will enable presence sensing controls through Microsoft settings in systems: Win 11 22H2 or higher, and with OS build
 22621 or higher</value>
   </data>
+  <data name="Color.14" xml:space="preserve">
+    <value>Color Preset</value>
+  </data>
 </root>
