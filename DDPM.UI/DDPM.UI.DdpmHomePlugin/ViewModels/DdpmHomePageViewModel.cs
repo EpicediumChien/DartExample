@@ -792,7 +792,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         deviceHelper = DeviceManagerPlugin.GetDevices(true).Result;
                         if (deviceHelper != null)
                         {
-                            _log.Info($"PleaseWait-Monitor count = {deviceHelper.deviceInfo.Count}");
+                            _log.Info($"PleaseWait-Peripheral count = {deviceHelper.deviceInfo.Count}");
                         }
                     }
                     List<DeviceInfo> _deviceInfos = new List<DeviceInfo>();
