@@ -997,6 +997,27 @@ namespace DDPM.UI.Module.Kvm
                 directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
                 string strFullPath = string.Format("{0}\\Plugins\\NKVM\\{1}", directory, GlobalDefinitions.DDMExeName);
 
+                if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result /*&& File.Exists(strFullPath)*/)
+                {
+                    SupportNKVM = Visibility.Visible;
+                    OnPropertyChanged("SupportNKVM");
+                }
+                else
+                {
+                    SupportNKVM = Visibility.Collapsed;
+                    OnPropertyChanged("SupportNKVM");
+                    if (NKVMisON)
+                    {
+                        isOnNKVM(false);
+                        NKVMisON = false;
+                    }
+                }
+
+                if (Cancelled_RefreshData(e, bwk))
+                {
+                    return;
+                }
+
                 if (mi.CapabilityDic.ContainsKey("E7"))
                 {
                     SupportUSBKVM = Visibility.Visible;
@@ -1051,27 +1072,6 @@ namespace DDPM.UI.Module.Kvm
                     return;
                 }
 
-                if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result && File.Exists(strFullPath))
-                {
-                    SupportNKVM = Visibility.Visible;
-                    OnPropertyChanged("SupportNKVM");
-                }
-                else
-                {
-                    SupportNKVM = Visibility.Collapsed;
-                    OnPropertyChanged("SupportNKVM");
-                    if (NKVMisON)
-                    {
-                        isOnNKVM(false);
-                        NKVMisON = false;
-                    }
-                }
-
-                if (Cancelled_RefreshData(e, bwk))
-                {
-                    return;
-                }
-
                 //if (USBKVMisON && !isScreenPartition)
                 //{
                 //    isUSBKVM = true;
@@ -1098,7 +1098,6 @@ namespace DDPM.UI.Module.Kvm
             {
                 _log?.Error(ex, "[DoWork_RefreshData] exception");
             }
-            LockSendNoKVM = false;
             _log?.Info("[KvmViewModel] DoWork_RefreshData end");
             entryUSBKVM = DateTime.Now;
             _log?.Info($"[DoWork_RefreshData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
