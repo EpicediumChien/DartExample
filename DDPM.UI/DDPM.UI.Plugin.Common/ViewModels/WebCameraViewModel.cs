@@ -880,6 +880,30 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (!IsUSB3)
                     CurrentProfile.IsHDROn = false;
 
+
+                if (CurrentDeviceInfo!.IsPropertyFOVSupported)
+                {
+                    //task = DdpmCommonHelper.DeviceManagerSA?.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.FieldOfView);
+                    //if (!task.Result)
+                    //{
+                    //    _log.Error("DTP SetFieldOfView fail!");
+                    //}
+                    if (_fOVs[0] == CurrentProfile.FieldOfView)
+                    {
+                        SetFOV_Selected(0);
+                        SelectedFovIndex = 0;
+                    }
+                    else if (_fOVs[1] == CurrentProfile.FieldOfView)
+                    {
+                        SetFOV_Selected(1);
+                        SelectedFovIndex = 1;
+                    }
+                    else
+                    {
+                        SetFOV_Selected(2);
+                        SelectedFovIndex = 2;
+                    }
+                }
                 Task<bool> task;
                 if (CurrentDeviceInfo!.IsPropertyAutoFramingSupported)
                 {
@@ -926,29 +950,6 @@ namespace DDPM.UI.Plugin.ViewModels
                     IsFocusOn = CurrentProfile.IsFocusOn;
                     Focus = CurrentProfile.Focus;
 
-                }
-                if (CurrentDeviceInfo.IsPropertyFOVSupported)
-                {
-                    //task = DdpmCommonHelper.DeviceManagerSA?.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.FieldOfView);
-                    //if (!task.Result)
-                    //{
-                    //    _log.Error("DTP SetFieldOfView fail!");
-                    //}
-                    if (_fOVs[0] == CurrentProfile.FieldOfView)
-                    {
-                        SetFOV_Selected(0);
-                        SelectedFovIndex = 0;
-                    }
-                    else if (_fOVs[1] == CurrentProfile.FieldOfView)
-                    {
-                        SetFOV_Selected(1);
-                        SelectedFovIndex = 1;
-                    }
-                    else
-                    {
-                        SetFOV_Selected(2);
-                        SelectedFovIndex = 2;
-                    }
                 }
 
                 if (CurrentDeviceInfo.IsPropertyHDRSupported && IsUSB3)
@@ -1042,7 +1043,7 @@ namespace DDPM.UI.Plugin.ViewModels
                                     }
                                     break;
                                 case "IsAutoFramingOnChanged":
-                                    if (bool.TryParse(di.Message, out bool isAFOn) && di.ID == CurrentDeviceID && IsAutoFramingOn != isAFOn)
+                                    if (bool.TryParse(di.Message, out bool isAFOn) && di.ID == CurrentDeviceID && _isAutoFramingOn != isAFOn)
                                     {
                                         Application.Current.Dispatcher.Invoke(() =>
                                         {
@@ -1314,15 +1315,15 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool OriginalAutoFocus = true;
+        private bool _isAutoFramingOn = false;
         public bool IsAutoFramingOn
         {
-            get => CurrentProfile.IsAutoFramingOn;
+            get => _isAutoFramingOn;
             set
             {
-
                 try
                 {
-
+                    _isAutoFramingOn = value;
                     //if (value && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 1)
                     //{
                     //    if (WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][1] == "60")
@@ -1338,49 +1339,47 @@ namespace DDPM.UI.Plugin.ViewModels
                         else if (supportedFPS.Count > 2 && supportedFPS[2] == "60")
                             SetFPS_Selected(1);
                     }
-                    OnPropertyChanged(nameof(IsNotAutoFramingOn));
-                    OnPropertyChanged(nameof(IsFPS1Enable));
-                    OnPropertyChanged(nameof(IsFPS2Enable));
-
-                    // << 250314 upated by Hess
-                    //if (value == CurrentProfile.IsAutoFramingOn)
-                    //    return;
-                    // >>
 
                     if (!isUIHasUpdateByQAM)
                         DdpmCommonHelper.DeviceManagerSA?.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), value);
 
                     SetProfileProperty(nameof(IsAutoFramingOn), value, OperationModule.CameraControl);
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(IsAutoFramingOnText));
-                    OnPropertyChanged(nameof(PanArrowVisibility));
                     //CurrentProfile.IsAutoFramingOn = value;
-
-                    //Derek 2024/11/06
-                    if (IsAutoFramingOn)
-                    {
-                        //Derek 1109 change to selected the max support FOV due to not all camera will support all FOVs
-                        var FOV = CurrentDeviceInfo!.FOVValues;
-                        SetFOV_Selected(FOV.Length - 1);
-
-                        //Derek 2024/11/06 Webcam PIMS-317629 
-                        //On Turned on Auto Frame AI option, autofocus should be on and be greyed out. (can't select)
-                        OriginalAutoFocus = IsFocusOn;
-                        _isFocusOn = true;
-                    }
-                    else
-                    {
-                        SetFOV_Selected(SelectedFovIndex);
-                        if (!OriginalAutoFocus)
-                            _isFocusOn = false;
-                    }
-                    OnPropertyChanged(nameof(IsFocusOn));
+                    SetAutoFraming();
                 }
                 catch (Exception ex)
                 {
                     DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs  IsAutoFramingOn set ex:" + ex.Message);
                 }
             }
+        }
+
+        private void SetAutoFraming()
+        {
+            if (_isAutoFramingOn)
+            {
+                var FOV = CurrentDeviceInfo!.FOVValues;
+                SetFOV_Selected(FOV.Length - 1, true);
+
+                //Derek 2024/11/06 Webcam PIMS-317629 
+                //On Turned on Auto Frame AI option, autofocus should be on and be greyed out. (can't select)
+                OriginalAutoFocus = IsFocusOn;
+                _isFocusOn = true;
+            }
+            else
+            {
+                SetFOV_Selected(SelectedFovIndex, true);
+                if (!OriginalAutoFocus)
+                    _isFocusOn = false;
+            }
+            OnPropertyChanged(nameof(IsAutoFramingOn));
+            OnPropertyChanged(nameof(IsAutoFramingOnText));
+            OnPropertyChanged(nameof(IsFocusOn));
+            OnPropertyChanged(nameof(IsFocusOnText));
+            OnPropertyChanged(nameof(PanArrowVisibility));
+            OnPropertyChanged(nameof(IsNotAutoFramingOn));
+            OnPropertyChanged(nameof(IsFPS1Enable));
+            OnPropertyChanged(nameof(IsFPS2Enable));
         }
 
         public string IsAutoFramingTransitionOnText
@@ -1439,14 +1438,16 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
+        private int _fieldOfView = 0;
         public int FieldOfView
         {
-            get => CurrentProfile.FieldOfView;
+            get => _fieldOfView;
             set
             {
-                //if (value == CurrentProfile.FieldOfView)
-                //    return;
+                if (value == _fieldOfView)
+                    return;
 
+                _fieldOfView = value;
                 if (!isUIHasUpdateByQAM)
                     DdpmCommonHelper.DeviceManagerSA?.SetFieldOfView(CurrentDeviceID.ToString(), value);
 
@@ -2379,7 +2380,8 @@ namespace DDPM.UI.Plugin.ViewModels
                         break;
                     case "IsAutoFramingOn":
                         DdpmCommonHelper.DeviceManagerSA?.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), (bool)value);
-                        OnPropertyChanged(nameof(IsAutoFramingOnText));
+                        _isAutoFramingOn = (bool)value;
+                        SetAutoFraming();
                         break;
                     case "IsAutoFramingTransitionOn":
                         DdpmCommonHelper.DeviceManagerSA?.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), (bool)value);
@@ -2398,10 +2400,10 @@ namespace DDPM.UI.Plugin.ViewModels
                         break;
                     case "FieldOfView":
                         DdpmCommonHelper.DeviceManagerSA?.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), (int)value);
-                        CurrentProfile.FieldOfView = (int)value;
-                        if (_fOVs[0] == CurrentProfile.FieldOfView)
+                        _fieldOfView = (int)value;
+                        if (_fOVs[0] == _fieldOfView)
                             SetFOV_Selected(0, true);
-                        else if (_fOVs[1] == CurrentProfile.FieldOfView)
+                        else if (_fOVs[1] == _fieldOfView)
                             SetFOV_Selected(1, true);
                         else
                             SetFOV_Selected(2, true);
