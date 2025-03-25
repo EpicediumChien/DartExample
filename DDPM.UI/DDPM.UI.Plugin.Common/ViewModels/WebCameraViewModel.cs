@@ -923,15 +923,16 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 if (CurrentDeviceInfo.IsPropertyFocusSupported)
                 {
-                    task = DdpmCommonHelper.DeviceManagerSA?.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn);
-                    if (!task.Result)
-                    {
-                        _log.Error("DTP IsFocusOn fail!");
-                    }
-                    OnPropertyChanged(nameof(IsFocusOn));
-                    OnPropertyChanged(nameof(IsFocusOnText));
+                    //task = DdpmCommonHelper.DeviceManagerSA?.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn);
+                    //if (!task.Result)
+                    //{
+                    //    _log.Error("DTP IsFocusOn fail!");
+                    //}
+                    //OnPropertyChanged(nameof(IsFocusOn));
+                    //OnPropertyChanged(nameof(IsFocusOnText));
+                    IsFocusOn = CurrentProfile.IsFocusOn;
                     Focus = CurrentProfile.Focus;
-                    OnPropertyChanged(nameof(Focus));
+                    //OnPropertyChanged(nameof(Focus));
 
                 }
                 if (CurrentDeviceInfo.IsPropertyFOVSupported)
