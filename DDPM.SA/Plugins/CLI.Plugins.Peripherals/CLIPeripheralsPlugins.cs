@@ -3164,138 +3164,121 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                                                                  }))
                                                                       .ToList();
 
+                    var serialNumbers = new List<string>();
+
+                    if (commandLineInput.Options.Count > 0)
+                        ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
+                    if (ss_1.Length > 0)
+                    {
+                        foreach (var info in allFWUpdateResponseInfos)
+                        {
+                            var device = fwUpdateDeviceInfos.FirstOrDefault(_ => _.ModelNumber.Equals(info.Model, StringComparison.OrdinalIgnoreCase) &&
+                            _.LogicalDeviceType.ToString().ToUpper().Contains(ss_1[0]));
+                            //Console.WriteLine($"-----Model: {info.Model} Service Tag: {ss_1[0]} Version: {info.Version}-----");
+                            //Console.WriteLine($"-----DeviceType: {device.LogicalDeviceType} FW Version: {device.FirmwareVersion}-----");
+                            if (device != null)
+                            {
+                                serialNumbers.Add(_devMgr.GetHeadsetSerialNumberAsync(device.ID.ToString()).Result ?? "N/A");
+                            }
+                        }
+                    }
                     cli_FWU_RESPONSE.Model = string.Join(",", allFWUpdateResponseInfos.Select(_ => _.Model));
+                    cli_FWU_RESPONSE.SerialNumber = string.Join(",", serialNumbers);
                     cli_FWU_RESPONSE.ServiceTag = string.Join(",", allFWUpdateResponseInfos.Select(_ => !string.IsNullOrWhiteSpace(_.ServiceTag) ? _.ServiceTag : "N/A"));
                     cli_FWU_RESPONSE.FWVersion = string.Join(",", allFWUpdateResponseInfos.Select(_ => $"[{_.Version}]"));
                     cli_FWU_RESPONSE.Result = "PASS";
 
-                    if (commandLineInput.Options.Count > 0)
-                        ss_1 = commandLineInput.Options[0].Option_Value.Split(","); //device type: mouse, keyboard, etc.
-
-
-
-                if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
+                    //Console.WriteLine($"------------- device type: {ss_1.Length}{ss_1[0]}{ss_1[1]} -------------");
+                    if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
                     {
-                        if (ss_1.Length == 2)
-                        {
-                            foreach (var g in deviceInfoList)
-                            {
-
-                                if (g.LogicalDeviceType == "LogicalMouse" && ss_1[0].ToUpper().Equals("MOUSE"))
-                                {
-
-                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
-                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
-                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
-                                    cli_FWU_RESPONSE.Result = "PASS";
-                                }
-                                else if (g.LogicalDeviceType == "LogicalKeyboard" && ss_1[0].ToUpper().Equals("KEYBOARD"))
-                                {
-
-                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
-                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
-                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
-                                    cli_FWU_RESPONSE.Result = "PASS";
-                                }
-                                else if (g.LogicalDeviceType == "LogicalHeadset" && ss_1[0].ToUpper().Equals("HEADSET"))
-                                {
-
-                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
-                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
-                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
-                                    cli_FWU_RESPONSE.Result = "PASS";
-                                }
-                                else if (g.LogicalDeviceType == "LogicalWebcam" && ss_1[0].ToUpper().Equals("WEBCAM"))
-                                {
-
-                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
-                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
-                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
-                                    cli_FWU_RESPONSE.Result = "PASS";
-                                }
-                                else if (g.LogicalDeviceType == "LogicalWiredAudio" && ss_1[0].ToUpper().Equals("SPEAKER"))
-                                {
-                                    //foreach (string m in model)
-                                    //{
-                                    //    if (m.ToString().Equals(g.ModelNumber))
-                                    //        Console.WriteLine($"------- SAME{m}  {g.ModelNumber} -------");
-                                    //    else
-                                    //        Console.WriteLine($"------- DIFFERENT{m}  {g.ModelNumber} -------");
-                                    //}
-                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
-                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
-                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
-                                    cli_FWU_RESPONSE.Result = "PASS";
-                                }
-                                else if (g.LogicalDeviceType == "LogicalWiredAudio" && ss_1[0].ToUpper().Equals("SOUNDBAR"))
-                                {
-                                    //if (model.ToString().Equals(g.ModelNumber))
-                                    //    Console.WriteLine($"------- SAME{model}  {g.ModelNumber} -------");
-                                    //else
-                                    //    Console.WriteLine($"------- DIFFERENT{model}  {g.ModelNumber} -------");
-                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
-                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
-                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
-                                    cli_FWU_RESPONSE.Result = "PASS";
-                                }
-                                else if (g.LogicalDeviceType == "LogicalPen" && ss_1[0].ToUpper().Equals("PEN"))
-                                {
-
-                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
-                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
-                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
-                                    cli_FWU_RESPONSE.Result = "PASS";
-                                }
-                                else if (g.LogicalDeviceType == "LogicalDock" && ss_1[0].ToUpper().Equals("DOCK"))
-                                {
-
-                                    cli_FWU_RESPONSE.Model = g.ModelNumber;
-                                    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
-                                    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
-                                    cli_FWU_RESPONSE.Result = "PASS";
-                                }
-                                else if (ss_1[0].ToUpper().Equals("DONGLE"))
-                                {
-                                    
-                                }
-                                else if (ss_1[0].ToUpper().Equals("AUDIO"))
-                                {
-                                    //if (g.ModelNumber.ToString().Equals(commandLineInput.Model.ToString()))
-                                    {
-                                        cli_FWU_RESPONSE.Model = g.ModelNumber;
-                                        cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
-                                        cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                        cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
-                                        cli_FWU_RESPONSE.Result = "PASS";
-                                    }
-                                    //else
-                                    //{
-                                    //    cli_FWU_RESPONSE.Model = g.ModelNumber;
-                                    //    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
-                                    //    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                    //    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber.ToString()}, ServiceTag: {commandLineInput.Model.ToString()}");
-                                    //    cli_FWU_RESPONSE.Result = "PASS";
-                                    //}
-                                }
-
-                            }
-                        }
-                        else
-                        {
-                            allFWUpdateResponseInfos.ForEach(_ =>
-                            {
-                                var msg = $"No updates available: {_.Model}" + (!string.IsNullOrWhiteSpace(_.ServiceTag) ? $", ServiceTag: {_.ServiceTag}" : "") + $" Version: {_.Version}";
-                                cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
-                            });
-                        }
+                        fwUpdateDeviceInfos.ForEach(_ => cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {_.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(_.DockServiceTag) ? "N/A" : _.DockServiceTag)} to Version: {_.FirmwareVersion}"));
+                        //if (ss_1.Length == 2)
+                        //{
+                        //    foreach (var g in deviceInfoList)
+                        //    {
+                        //        if (g.LogicalDeviceType == "LogicalMouse" && ss_1[0].ToUpper().Equals("MOUSE"))
+                        //        {
+                        //            cli_FWU_RESPONSE.Model = g.ModelNumber;
+                        //            cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                        //            cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                        //            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                        //            cli_FWU_RESPONSE.Result = "PASS";
+                        //        }
+                        //        else if (g.LogicalDeviceType == "LogicalKeyboard" && ss_1[0].ToUpper().Equals("KEYBOARD"))
+                        //        {
+                        //            cli_FWU_RESPONSE.Model = g.ModelNumber;
+                        //            cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                        //            cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                        //            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                        //            cli_FWU_RESPONSE.Result = "PASS";
+                        //        }
+                        //        else if (g.LogicalDeviceType == "LogicalHeadset" && ss_1[0].ToUpper().Equals("HEADSET"))
+                        //        {
+                        //            cli_FWU_RESPONSE.Model = g.ModelNumber;
+                        //            cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                        //            cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                        //            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                        //            cli_FWU_RESPONSE.Result = "PASS";
+                        //        }
+                        //        else if (g.LogicalDeviceType == "LogicalWebcam" && ss_1[0].ToUpper().Equals("WEBCAM"))
+                        //        {
+                        //            cli_FWU_RESPONSE.Model = g.ModelNumber;
+                        //            cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                        //            cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                        //            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                        //            cli_FWU_RESPONSE.Result = "PASS";
+                        //        }
+                        //        else if (g.LogicalDeviceType == "LogicalWiredAudio" && ss_1[0].ToUpper().Equals("SPEAKER"))
+                        //        {
+                        //            cli_FWU_RESPONSE.Model = g.ModelNumber;
+                        //            cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                        //            cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                        //            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                        //            cli_FWU_RESPONSE.Result = "PASS";
+                        //        }
+                        //        else if (g.LogicalDeviceType == "LogicalPen" && ss_1[0].ToUpper().Equals("PEN"))
+                        //        {
+                        //            cli_FWU_RESPONSE.Model = g.ModelNumber;
+                        //            cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                        //            cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                        //            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                        //            cli_FWU_RESPONSE.Result = "PASS";
+                        //        }
+                        //        else if (g.LogicalDeviceType == "LogicalDock" && ss_1[0].ToUpper().Equals("DOCK"))
+                        //        {
+                        //            cli_FWU_RESPONSE.Model = g.ModelNumber;
+                        //            cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                        //            cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                        //            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                        //            cli_FWU_RESPONSE.Result = "PASS";
+                        //        }
+                        //        else if (ss_1[0].ToUpper().Equals("DONGLE"))
+                        //        {
+                        //        }
+                        //        else if (ss_1[0].ToUpper().Equals("AUDIO"))
+                        //        {
+                        //            cli_FWU_RESPONSE.Model = g.ModelNumber;
+                        //            cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                        //            cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                        //            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
+                        //            cli_FWU_RESPONSE.Result = "PASS";
+                        //}
+                        //else
+                        //{
+                        //    cli_FWU_RESPONSE.Model = g.ModelNumber;
+                        //    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                        //    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                        //    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber.ToString()}, ServiceTag: {commandLineInput.Model.ToString()}");
+                        //    cli_FWU_RESPONSE.Result = "PASS";
+                        //}
+                        //else
+                        //{
+                        //    allFWUpdateResponseInfos.ForEach(_ =>
+                        //    {
+                        //        var msg = $"No updates available: {_.Model}" + (!string.IsNullOrWhiteSpace(_.ServiceTag) ? $", ServiceTag: {_.ServiceTag}" : "") + $" Version: {_.Version}";
+                        //        cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
+                        //    });
+                        //}
                         cli_FWU_RESPONSE.Message = "No updates available";
                         writelog("Auto_FWUpdate2 No updates available");
                         return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
@@ -3317,7 +3300,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     {
                         fwUpdateInfoPackage.FWUpdateInfo.ForEach(_ =>
                         {
-                            var msg = $"Ready to start updating Device: {_.Model}" + (!string.IsNullOrWhiteSpace(_.ServiceTag) ? $", ServiceTag: {_.ServiceTag}" : "") + $" to Version: {_.TheLatestVersion}";
+                            var msg = $"Ready to start updating Device: {_.Model}" + $" ServiceTag: {(!string.IsNullOrWhiteSpace(_.ServiceTag) ? _.ServiceTag : "N/A")}" + $" to Version: {_.TheLatestVersion}";
                             cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
                         });
 
@@ -3325,7 +3308,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                            .ToList()
                                            .ForEach(_ => 
                                            {
-                                               var msg = $"No updates available: {_.ModelNumber}" + (!string.IsNullOrWhiteSpace(_.DockServiceTag) ? $", ServiceTag: {_.DockServiceTag}" : "") + $" Version: {_.FirmwareVersion}";
+                                               var msg = $"No updates available: {_.ModelNumber}" + $" ServiceTag: {(!string.IsNullOrWhiteSpace(_.DockServiceTag) ? _.DockServiceTag : "N/A")}" + $" to Version: {_.FirmwareVersion}";
                                                cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
                                            });
 
