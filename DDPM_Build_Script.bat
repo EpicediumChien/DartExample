@@ -240,7 +240,6 @@ xcopy ".\DTP_dll\DPeMClientRpcHelper.*" ".\dll" /Y /S /Q /C /I
 xcopy ".\DTP_dll\DPeMPublic.Common.*" ".\dll" /Y /S /Q /C /I
 echo errorlevel is %errorlevel%
 echo *copy finish*
-pause
 :_copyDPeMSDK
 Echo --------------------------------------------
 Echo [Build SA]

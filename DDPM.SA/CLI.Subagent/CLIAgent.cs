@@ -187,6 +187,9 @@ namespace CLI.Subagent
                 "PEN",
                 "WEBCAM",
                 "DOCK",
+                "HEADSET",
+                "SPEAKER",
+                "SOUNDBAR",
             };
 
             List<string> Valid_Option_Name = new List<string>()
@@ -210,7 +213,7 @@ namespace CLI.Subagent
             if (idx >= 0)
             {
                 //check command line has the option value with set command
-                //int tmp = TargetFeature_WO_Value.FindIndex(x => x.Equals(commandLineInputs[idx].TargetFeature));
+                int tmp = TargetFeature_WO_Value.FindIndex(x => x.Equals(commandLineInputs[idx].TargetFeature));
                 //Console.WriteLine($"idx: {idx}, option_count: {commandLineInputs[idx].Options.Count}, targetfeature: {commandLineInputs[idx].TargetFeature} {tmp}");
                 if (commandLineInputs[idx].Options.Count <= 0 && TargetFeature_WO_Value.FindIndex(x => x.Equals(commandLineInputs[idx].TargetFeature)) < 0) //set command without option value --> fail
                 {
@@ -218,28 +221,45 @@ namespace CLI.Subagent
                     return;
                 }
                 else
-                {
+                {   
                     //check if set command with correct targettype and targetfeature
-                    //Console.WriteLine($"TargetType: {commandLineInputs[idx].TargetType} {commandLineInputs[idx].Options.Count}");
+                    //Console.WriteLine($"TargetType: {commandLineInputs[idx].TargetType} Option Count: {commandLineInputs[idx].Options.Count}");
                     var matchingItems = ICLICommandTable.CLIHelpCommandStructure.FeatureList.Where(dict =>
                         dict["TargetType"].ToString().Equals(commandLineInputs[idx].TargetType.ToString(), StringComparison.OrdinalIgnoreCase) &&
                         dict["TargetFeature"].ToString().Equals(commandLineInputs[idx].TargetFeature.ToString(), StringComparison.OrdinalIgnoreCase)).ToList();
-                    //Console.WriteLine($"TargetType: {commandLineInputs[idx].TargetType}, {matchingItems.Count}");
-                    if (matchingItems.Count <= 0) //targettype and targetfeature are not meet defined
+                    //Console.WriteLine($"TargetType: {commandLineInputs[idx].TargetType}, match: {matchingItems.Count}");
+                    if (matchingItems.Count <= 0) //targettype and targetfeature are not meet pre-defined value
                     {
                         _exitcode = ICLICommandTable.Response_FormatError();
                         return;
                     }
                     else
                     {
-                        foreach (var option in commandLineInputs[idx].Options)
+                        //check if Option Value meet requirement
+                        foreach (var option in commandLineInputs[idx].Options) //check each option value
                         {
-                            //check command line has the device type is correct in Firmwareupdate 
-                            //Console.WriteLine($"TargetType: {commandLineInputs[idx].TargetType}, Option value: {option.Option_Value}");
-                            if ((commandLineInputs[idx].TargetFeature.Equals("FIRMWAREUPDATE")) && (DeviceType.FindIndex(x => x.Equals(option.Option_Value)) < 0))
+                             
+                            
+                            string[] ov = option.Option_Value.Split(',');
+                            //Console.WriteLine($"Option name: {option.Option_Name} Option value: {option.Option_Value}");
+                            //Console.WriteLine($"Option count: {commandLineInputs[idx].Options.Count} ov_length: {ov.Length} ov_count:{ov.Count()}");
+                            //check the Option Value of Firmwareupdate, since it will need to support CLI and CMA  commandLineInputs[idx].Options.Count <= 1 && 
+                            if ((commandLineInputs[idx].TargetFeature.Equals("FIRMWAREUPDATE")))// && (DeviceType.FindIndex(x => x.Equals(option.Option_Value)) < 0))
                             {
-                                _exitcode = ICLICommandTable.Response_FormatError();
-                                return;
+                                //Console.WriteLine($"ov_0: {ov[0]} index: {DeviceType.FindIndex(x => x.Equals(ov[0]))}");
+                                //if (commandLineInputs[idx].Options.Count <= 1 && !string.IsNullOrEmpty(ov[0]) && (DeviceType.FindIndex(x => x.Equals(ov[0])) < 0))
+                                if (!string.IsNullOrEmpty(ov[0]) && (DeviceType.FindIndex(x => x.Equals(ov[0])) >= 0))
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    _exitcode = ICLICommandTable.Response_FormatError();
+                                    return;
+                                }
+
+                                //_exitcode = ICLICommandTable.Response_FormatError();
+                                //return;
                             }
                             //Console.WriteLine($"Option_Name: {option.Option_Name}");
                             if (Valid_Option_Name.FindIndex(x => x.Equals(option.Option_Name)) < 0)
@@ -249,6 +269,20 @@ namespace CLI.Subagent
                             }
                         }
                     }
+                    //}
+                    //else
+                    //{
+                    //    foreach (var option in commandLineInputs[idx].Options)
+                    //    {
+                    //        Console.WriteLine($"Option name: {option.Option_Name} Option value: {option.Option_Value} Option count: {commandLineInputs[idx].Options.Count}");
+                    //        string[] ov = option.Option_Value.Split(',');
+                    //        if (ov.Length > 0)
+                    //        {
+
+                    //        }
+
+                    //    }
+                    //}
                 }
             }
 
