@@ -274,8 +274,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _deviceManager.ReceiveTelemetryInfo("AppSession", "AppStarted", Telementry_Frequency.RealTime);
 
                             //Elapsed= 484, 316, 314 msec
-                            _log.Info("Calling GetDdpmDevicesAsync()");
-                            await GetDdpmDevicesAsync(_deviceManager);
+                            //_log.Info("Calling GetDdpmDevicesAsync()");
+                            //await GetDdpmDevicesAsync(_deviceManager);
                             //CloseQAMIfExist();
                             await CheckIfNeedNavigateToSettingPageByQAMOSD();  //Derek 1217 for QAM PIMS-332041
 
@@ -291,8 +291,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //1030 Dean
                             //For Hess to read global setting "_globalSettings"
                             //After "GetDdpmDevicesAsync" the user setting cache is ready "DdpmCommonHelper.Settings_Cache"
-                            if (DdpmCommonHelper.Settings_Cache == null &&
-                                DdpmCommonHelper.DeviceManagerSA != null)
+                            if (DdpmCommonHelper.Settings_Cache == null)// &&
+                                //DdpmCommonHelper.DeviceManagerSA != null)
                             {
                                 //Elapsed= 2 msec
                                 _log.Info("Calling to ReadDDPMSettings()");
@@ -402,6 +402,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
                             ShowPluginById = true;
                         }
+
+                        _log.Info("Calling GetDdpmDevicesAsync()");
+                        await GetDdpmDevicesAsync(_deviceManager);
 
                         //Elapsed= 1 msec
                         _log.Info($"Calling to CheckIfNeedImportSetting_Display()");
