@@ -501,6 +501,8 @@ namespace DDPM.EABroker
                 {
                     msg = e1.Message;
                     WriteLog($"    [{idx}] Abandon: Get PathName from Procss causes exception, {msg}");
+                    //Robert_Lin 2025-3-19 add the missing continue
+                    continue;
                 }
 
                 //Filter out DDPM processes
@@ -647,5 +649,13 @@ namespace DDPM.EABroker
             Close();
         }
         #endregion
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+         //       System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
+        }
     }
 }

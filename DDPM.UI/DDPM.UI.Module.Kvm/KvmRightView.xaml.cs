@@ -270,15 +270,15 @@ namespace DDPM.UI.Module.Kvm
                 //{
                 //    vm.isNoKVM = true;
                 //}
-                if (!vm.IsKVMBusy)
+                if (!vm.LockSendNoKVM)
                 {
                     vm.isOnNoKVM(true);
                     if (vm.NKVMisON)
                     {
                         vm.isOnNKVM(false);
+                        vm.NKVMisON = false;
                     }
                     vm.NoKVMisON = true;
-                    vm.NKVMisON = false;
                 }
                 vm.LoadnewLeftView(true);
                 //DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM");

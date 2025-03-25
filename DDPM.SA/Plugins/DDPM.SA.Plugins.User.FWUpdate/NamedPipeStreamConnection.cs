@@ -16,7 +16,14 @@
             this._InstanceLock = new object();
             this._Stream = stream;
             byte[] buffer = new byte[NamedPipeStreamBase.BUFFER_LENGTH];
-            this._Stream.BeginRead(buffer, 0, NamedPipeStreamBase.BUFFER_LENGTH, new AsyncCallback(this.EndRead), buffer);
+            try
+            {
+                this._Stream.BeginRead(buffer, 0, NamedPipeStreamBase.BUFFER_LENGTH, new AsyncCallback(this.EndRead), buffer);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[NamedPipeStreamConnection] Constructor exception, message: {ex.Message}");
+            }
         }
 
         public override void Disconnect()

@@ -1,38 +1,160 @@
 ﻿<UserControl x:Class="DDPM.OSDs.OSDUserControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.OSDs"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              Loaded="UserControl_Loaded">
-
     <UserControl.Resources>
         <Storyboard x:Key="FadeOut">
-            <DoubleAnimation
-          BeginTime="0:0:2.0"
-          FillBehavior="HoldEnd"
-          Storyboard.TargetName="fadeOutCtrl"
-          Storyboard.TargetProperty="Opacity"
-          From="0.9"
-          To="0"
-          Duration="0:0:1" />
+            <DoubleAnimation 
+                             FillBehavior="HoldEnd"
+                             Storyboard.TargetName="fadeOutCtrl"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0.9"
+                             To="0"
+                             Duration="0:0:1" />
         </Storyboard>
-
-        <DataTemplate x:Key="BatteryLowIcon">
-            <!--Battery-->
-            <Canvas Grid.Row="0" Width="35" Height="35" Tag="{DynamicResource Default_SA_OSD_PathColor}">
-                <Path Data="M20.26,4.18 V0 H11.74 V4.18 H7.28 V31.28 H24.72 V4.18 ZM13.84,2 H18.16 V4 H13.84 ZM22.62,29.2 H9.38 V6.26 H22.62 ZM20.54,15.64 H11.46 V27.1 H20.54 V15.64 ZM18.54,25.02 H13.54 V17.72 H18.46 Z" 
-              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        <DataTemplate x:Key="CapLockOFFIcon">
+            <!--CapLockOFF-->
+            <Canvas Grid.Row="0"
+                    Width="50"
+                    Height="50"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                <!--Main Container Shape-->
+                <Path Data="M16.5625 20V12.5C16.25 7.8125 20 4.0625 24.375 3.75H25.625C30.625 3.75 34.375 7.8125 34.375 12.5H37.8125C38.125 5.625 32.8125 0.3125 25.9375 0H25.625C18.75 0 13.125 5.625 13.125 12.5V20H5.625V50H44.0625V20H16.5625ZM40.9375 46.5625H9.375V23.4375H40.9375V46.5625Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <!--Inner Details-->
+                <Path Data="M25.2842 30.1885L21.8037 40.7969H19L23.7549 28H25.5391L25.2842 30.1885Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <Path Data="M28.1758 40.7969L24.6865 30.1885L24.4053 28H26.207L30.9883 40.7969H28.1758Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <Path Data="M28.0176 36.0332V38.0986H21.2588V36.0332H28.0176Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
             </Canvas>
         </DataTemplate>
-
+        <DataTemplate x:Key="CapLockONIcon">
+            <!--CapLockON-->
+            <Canvas Grid.Row="0"
+                    Width="50"
+                    Height="50"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                <!--Main Shape-->
+                <Path Data="M37.8125 20V12.5C38.125 5.625 32.8125 0.3125 25.9375 0H25.3125C18.4375 0 12.8125 5.625 12.8125 12.5V20H5.625V50H44.0625V20H37.8125ZM16.5625 12.5C16.25 7.8125 20 4.0625 24.375 3.75H25.625C30.625 3.75 34.375 7.8125 34.375 12.5V20H16.5625V12.5ZM40.9375 46.5625H9.375V23.4375H40.9375V46.5625Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <!--Additional Details-->
+                <Path Data="M25.2842 30.1885L21.8037 40.7969H19L23.7549 28H25.5391L25.2842 30.1885Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <Path Data="M28.1758 40.7969L24.6865 30.1885L24.4053 28H26.207L30.9883 40.7969H28.1758Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <Path Data="M28.0176 36.0332V38.0986H21.2588V36.0332H28.0176Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            </Canvas>
+        </DataTemplate>
+        <DataTemplate x:Key="NumLockOFFIcon">
+            <!--NumLockOFF-->
+            <Canvas Grid.Row="0"
+                    Width="50"
+                    Height="50"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                <Path Data="M16.5625 20V12.5C16.25 7.8125 20 4.0625 24.375 3.75H25.625C30.625 3.75 34.375 7.8125 34.375 12.5H37.8125C38.125 5.625 32.8125 0.3125 25.9375 0H25.625C18.75 0 13.125 5.625 13.125 12.5V20H5.625V50H44.0625V20H16.5625ZM40.9375 46.5625H9.375V23.4375H40.9375V46.5625Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <Path Data="M27.8809 28.1768V41H25.3496V31.0947L22.3086 32.0615V30.0664L27.6084 28.1768H27.8809Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            </Canvas>
+        </DataTemplate>
+        <DataTemplate x:Key="NumLockONIcon">
+            <!--NumLockON-->
+            <Canvas Grid.Row="0"
+                    Width="50"
+                    Height="50"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                <Path Data="M37.8125 20V12.5C38.125 5.625 32.8125 0.3125 25.9375 0H25.3125C18.4375 0 12.8125 5.625 12.8125 12.5V20H5.625V50H44.0625V20H37.8125ZM16.5625 12.5C16.25 7.8125 20 4.0625 24.375 3.75H25.625C30.625 3.75 34.375 7.8125 34.375 12.5V20H16.5625V12.5ZM40.9375 46.5625H9.375V23.4375H40.9375V46.5625Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <Path Data="M27.8809 28.1768V41H25.3496V31.0947L22.3086 32.0615V30.0664L27.6084 28.1768H27.8809Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            </Canvas>
+        </DataTemplate>
+        <DataTemplate x:Key="ScrollLockOFFIcon">
+            <!--ScrollLockOFF-->
+            <Canvas Grid.Row="0"
+                    Width="50"
+                    Height="50"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                <Path Data="M16.5625 20V12.5C16.25 7.8125 20 4.0625 24.375 3.75H25.625C30.625 3.75 34.375 7.8125 34.375 12.5H37.8125C38.125 5.625 32.8125 0.3125 25.9375 0H25.625C18.75 0 13.125 5.625 13.125 12.5V20H5.625V50H44.0625V20H16.5625ZM40.9375 46.5625H9.375V23.4375H40.9375V46.5625Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <Path Data="M25 30L25 40"
+                      Stroke="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}"
+                      StrokeThickness="2.5" />
+                <Path Data="M22 32L25 29L28 32"
+                      Stroke="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}"
+                      StrokeThickness="2"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round" />
+                <Path Data="M28 38L25 41L22 38"
+                      Stroke="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}"
+                      StrokeThickness="2"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round" />
+            </Canvas>
+        </DataTemplate>
+        <DataTemplate x:Key="ScrollLockONIcon">
+            <!--ScrollLockON-->
+            <Canvas Grid.Row="0"
+                    Width="50"
+                    Height="50"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                <Path Data="M37.8125 20V12.5C38.125 5.625 32.8125 0.3125 25.9375 0H25.3125C18.4375 0 12.8125 5.625 12.8125 12.5V20H5.625V50H44.0625V20H37.8125ZM16.5625 12.5C16.25 7.8125 20 4.0625 24.375 3.75H25.625C30.625 3.75 34.375 7.8125 34.375 12.5V20H16.5625V12.5ZM40.9375 46.5625H9.375V23.4375H40.9375V46.5625Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <Path Data="M25 30L25 40"
+                      Stroke="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}"
+                      StrokeThickness="2.5" />
+                <Path Data="M22 32L25 29L28 32"
+                      Stroke="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}"
+                      StrokeThickness="2"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round" />
+                <Path Data="M28 38L25 41L22 38"
+                      Stroke="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}"
+                      StrokeThickness="2"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round" />
+            </Canvas>
+        </DataTemplate>
+        <DataTemplate x:Key="BatteryLowIcon">
+            <!--Battery-->
+            <Canvas Grid.Row="0"
+                    Width="35"
+                    Height="35"
+                    Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                <Path Data="M20.26,4.18 V0 H11.74 V4.18 H7.28 V31.28 H24.72 V4.18 ZM13.84,2 H18.16 V4 H13.84 ZM22.62,29.2 H9.38 V6.26 H22.62 ZM20.54,15.64 H11.46 V27.1 H20.54 V15.64 ZM18.54,25.02 H13.54 V17.72 H18.46 Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            </Canvas>
+        </DataTemplate>
         <DataTemplate x:Key="HeadsetIcon">
             <!--Headset-->
             <Canvas Grid.Row="0"
-                    Width="35" Height="35"
+                    Width="35"
+                    Height="35"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Top" 
+                    VerticalAlignment="Top"
                     Tag="{DynamicResource Default_SA_OSD_PathColor}">
                 <Canvas.Clip>
                     <RectangleGeometry Rect="0,0,35,35" />
@@ -41,11 +163,11 @@
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
             </Canvas>
         </DataTemplate>
-
         <DataTemplate x:Key="KeyboardIcon">
             <!--Keyboard-->
             <Canvas Grid.Row="0"
-                    Width="50" Height="44"
+                    Width="50"
+                    Height="44"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
                     Tag="{DynamicResource Default_SA_OSD_PathColor}">
@@ -79,13 +201,13 @@
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
             </Canvas>
         </DataTemplate>
-
         <DataTemplate x:Key="WirelessMouseIcon">
             <!--Wireless Mouse-->
             <Canvas Grid.Row="0"
-                    Width="50" Height="50"
+                    Width="50"
+                    Height="50"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Top" 
+                    VerticalAlignment="Top"
                     Tag="{DynamicResource Default_SA_OSD_PathColor}">
                 <!-- Path for the small rectangle -->
                 <Path Data="M14.94 5.36h2.12v5.72h-2.12z"
@@ -95,25 +217,25 @@
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
             </Canvas>
         </DataTemplate>
-
         <DataTemplate x:Key="PencilIcon">
             <!--Pencil-->
             <Canvas Grid.Row="0"
-                    Width="35" Height="35"
+                    Width="35"
+                    Height="35"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Bottom" 
+                    VerticalAlignment="Bottom"
                     Tag="{DynamicResource Default_SA_OSD_PathColor}">
                 <Path Data="M26.14 0l-22.46 22.46-3.32 8.52-0.36 1.02 1.02-0.36 8.54-3.34 22.44-22.44zM3.74 28.26l1.72-4.44 2.74 2.7zM9.74 25.04l-2.82-2.8 16-16 2.82 2.78-16 16zM24.48 4.72l1.66-1.66 2.8 2.8-1.64 1.64z"
                       Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
             </Canvas>
         </DataTemplate>
-
         <DataTemplate x:Key="QAM">
             <!--QAM-->
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Orientation="Vertical">
-                <TextBlock Grid.Row="0" Margin="5,5,5,0"
+                <TextBlock Grid.Row="0"
+                           Margin="5,5,5,0"
                            x:Name="ShowStringText"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Top"
@@ -125,7 +247,8 @@
                            FontWeight="Medium"
                            Foreground="{DynamicResource Default_SA_QAM_Path_BkColor}"
                            Text="{Binding DataContext.ShowStringTitle, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
-                <Button Grid.Row="1" Margin="0,5,0,0"
+                <Button Grid.Row="1"
+                        Margin="0,5,0,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
                         FontFamily="Roboto"
@@ -136,115 +259,355 @@
                         Click="Button_Click"
                         Style="{StaticResource PrimaryButtonStyle}">
                     <Button.Content>
-                        <TextBlock Margin="0,0" Text="{Binding DataContext.ShowStringContent, RelativeSource={RelativeSource AncestorType=ContentControl,AncestorLevel=2}}"></TextBlock>
+                        <TextBlock Margin="0,0"
+                                   Text="{Binding DataContext.ShowStringContent, RelativeSource={RelativeSource AncestorType=ContentControl,AncestorLevel=2}}"></TextBlock>
                     </Button.Content>
                 </Button>
             </StackPanel>
         </DataTemplate>
-
+        <DataTemplate x:Key="Mute">
+            <!--Mute-->
+            <Canvas Grid.Row="0"
+                    Width="35" Height="35"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top" 
+                    Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                <Path Data="M7.91563 20.8031H3.3875V14.2406H8.025L15.3313 6.19062L16.6 5.95V14.7L18.7875 13.1687V3.28125L14.1719 4.15625L7.0625 12.0094H1.17813V22.9469H4.875L7.91563 20.8031Z"
+                        Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <Path Data="M16.6 29.05L15.3313 28.8094L12.0281 25.2L10.1906 26.4688L14.1938 30.8438L18.8094 31.7188V20.475L16.6219 22.0063L16.6 29.05Z"
+                        Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <Path Data="M30.2937 5.25C28.8447 3.48991 27.088 2.00753 25.1094 0.875L24.0156 2.82187C25.6702 3.80122 27.149 5.0508 28.3906 6.51875L30.25 5.22813L30.2937 5.25Z"
+                        Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <Path Data="M31.5188 11.8125C32.9046 15.529 32.9217 19.6175 31.5668 23.3454C30.2119 27.0733 27.5737 30.1969 24.125 32.1562L25.2406 34.1031C29.2307 31.8201 32.2596 28.1699 33.7675 23.8272C35.2754 19.4844 35.1604 14.7427 33.4438 10.4781L31.5188 11.8125Z"
+                        Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <Path Data="M24.5625 9.1875C23.9072 8.52362 23.1725 7.94318 22.375 7.45937L21.1719 9.3625C21.683 9.69269 22.1594 10.0738 22.5938 10.5L24.5625 9.1875Z"
+                        Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <Path Data="M27.8875 17.5C27.8939 16.5049 27.7763 15.5129 27.5375 14.5469L25.525 15.9469C25.6022 16.4612 25.6461 16.98 25.6562 17.5C25.6728 19.0978 25.294 20.6748 24.5536 22.0908C23.8132 23.5067 22.7341 24.7176 21.4125 25.6156L22.6156 27.5188C24.2545 26.4151 25.594 24.9222 26.514 23.1737C27.4341 21.4252 27.906 19.4757 27.8875 17.5Z"
+                        Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <Path Data="M0.5 27.9563L34.2313 5.18437L35.5 7.04375L1.76875 29.8156L0.5 27.9563Z"
+                        Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            </Canvas>
+        </DataTemplate>
+        <DataTemplate x:Key="UnMute">
+            <!--Unmute-->
+            <Canvas Grid.Row="0"
+                            Width="35" Height="35"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                <Path Data="M7.06172 12.0312H1.19922V22.9688H7.06172L14.1711 30.8438L18.8961 31.7406V3.30312L14.1711 4.15625L7.06172 12.0312ZM16.5555 6.08125V28.9406L15.3742 28.7L8.11172 20.7156H3.51797V14.35H8.11172L15.3742 6.3L16.5555 6.08125Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <Path Data="M25.0867 0.984375L23.9711 2.93125C26.5398 4.39858 28.6749 6.51898 30.1599 9.07751C31.645 11.636 32.4271 14.5417 32.4271 17.5C32.4271 20.4583 31.645 23.364 30.1599 25.9225C28.6749 28.481 26.5398 30.6014 23.9711 32.0688L25.0867 34.0156C28.0015 32.3545 30.4248 29.9515 32.1104 27.0508C33.796 24.1501 34.6838 20.8549 34.6838 17.5C34.6838 14.1451 33.796 10.8499 32.1104 7.94921C30.4248 5.04848 28.0015 2.64552 25.0867 0.984375Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <Path Data="M27.843 17.5C27.8619 15.5139 27.3834 13.5547 26.4511 11.8009C25.5188 10.0471 24.1624 8.5546 22.5055 7.45937L21.3242 9.3625C22.6789 10.2416 23.7899 11.4482 24.5546 12.8705C25.3194 14.2929 25.713 15.8852 25.6992 17.5C25.7207 19.0901 25.346 20.6606 24.6089 22.0698C23.8719 23.4789 22.7957 24.6825 21.4773 25.5719L22.6805 27.4531C24.2953 26.3488 25.6119 24.862 26.5126 23.1254C27.4134 21.3887 27.8704 19.4562 27.843 17.5Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            </Canvas>
+        </DataTemplate>
+        <DataTemplate x:Key="Fingerprint">
+            <!--FingerPrint-->
+            <Canvas Grid.Row="0"
+                    Width="35" Height="35"
+                    HorizontalAlignment="Center" VerticalAlignment="Top"
+                    Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                <Path Data="M8.1127 5.09687C11.1557 3.43428 14.5366 2.48435 18.0002 2.31875C21.464 2.49182 24.8472 3.42538 27.9096 5.05312L28.9377 5.62187L30.0533 3.5875L29.0471 3.01875C25.6364 1.20014 21.8617 0.168631 18.0002 0C14.1695 0.179767 10.4297 1.22692 7.0627 3.0625L6.05645 3.63125L7.0627 5.66562L8.09082 5.09687H8.1127Z" Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}"/>
+                <Path Data="M33.7283 12.4469C31.9263 9.94457 29.5675 7.89513 26.8381 6.46018C24.1086 5.02523 21.0831 4.24401 18.0002 4.17812C14.9082 4.23443 11.873 5.01833 9.14045 6.46632C6.4079 7.9143 4.05489 9.98564 2.27207 12.5125L1.6377 13.475L3.58457 14.7656L4.21895 13.7812C5.81321 11.6065 7.88394 9.82529 10.2726 8.57408C12.6613 7.32286 15.3046 6.63478 18.0002 6.5625C20.6941 6.64285 23.3346 7.33444 25.722 8.58501C28.1095 9.83557 30.1815 11.6124 31.7814 13.7812L32.4377 14.7437L34.3627 13.4531L33.7283 12.4906V12.4469Z" Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}"/>
+                <Path Data="M18.0002 8.09375C14.5102 8.09293 11.1399 9.36592 8.52197 11.6738C5.904 13.9816 4.21836 17.1656 3.78145 20.6281C3.49188 23.6484 4.08457 26.6879 5.4877 29.3781L6.07832 30.3844L8.06895 29.225L7.5002 28.2188C6.36124 25.9694 5.8762 23.4457 6.1002 20.9344C6.44882 18.0266 7.85359 15.3483 10.0475 13.4085C12.2415 11.4686 15.0717 10.4024 18.0002 10.4125C20.4158 10.3828 22.7829 11.0917 24.7845 12.4444C26.7861 13.797 28.3268 15.7289 29.2002 17.9813C29.8346 20.1688 30.3158 22.8375 28.4346 23.8875C27.9828 24.1604 27.4791 24.3363 26.9557 24.4041C26.4322 24.4719 25.9004 24.43 25.3939 24.2812C24.8629 24.163 24.3949 23.851 24.0814 23.4062C23.9411 23.0273 23.8242 22.6402 23.7314 22.2469C23.6199 21.2349 23.2904 20.2591 22.7654 19.3868C22.2405 18.5144 21.5327 17.7662 20.6908 17.1937C19.4867 16.4547 18.0441 16.2083 16.6629 16.5057C15.2818 16.8031 14.0684 17.6215 13.2752 18.7906C11.7877 21.2406 12.7064 26.3375 15.1783 29.2906C17.3753 31.6768 20.1137 33.4999 23.1627 34.6063L24.2564 35L25.0439 32.8125L23.9502 32.4188C21.2751 31.4639 18.8726 29.8723 16.9502 27.7812C15.0252 25.5938 14.3689 21.4594 15.2658 19.9938C15.7497 19.3188 16.4789 18.8605 17.297 18.7174C18.115 18.5742 18.9565 18.7576 19.6408 19.2281C20.8221 19.8625 21.2158 21.4156 21.5221 22.7719C21.6282 23.3525 21.8045 23.9181 22.0471 24.4563C22.6477 25.4608 23.6107 26.1968 24.7377 26.5125C25.5491 26.7446 26.3987 26.812 27.2365 26.7105C28.0743 26.6091 28.8833 26.3409 29.6158 25.9219C33.3564 23.8438 31.9564 18.9438 31.4752 17.325C30.4694 14.5752 28.6305 12.2078 26.2149 10.553C23.7994 8.89824 20.9277 8.03851 18.0002 8.09375Z" Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}"/>
+                <Path Data="M18.3939 14.4375C19.8722 14.4373 21.3071 14.9361 22.4664 15.8533C23.6257 16.7704 24.4415 18.052 24.7814 19.4906L25.0439 20.6281L27.2314 20.0813L26.9689 18.9656C26.4992 17.0033 25.3783 15.2581 23.7893 14.0146C22.2002 12.7712 20.2366 12.1029 18.2189 12.1187C11.7877 12.1187 7.9377 16.2094 7.9377 23.0562C7.9377 23.625 8.11269 28.8531 13.8877 34.1469L14.7627 34.9125L16.3158 33.2062L15.4627 32.4188C12.5766 30.093 10.7094 26.735 10.2564 23.0562C10.1422 21.9374 10.2704 20.807 10.6322 19.742C10.9939 18.6771 11.5809 17.7026 12.353 16.8848C13.1251 16.067 14.0644 15.4251 15.1068 15.0028C16.1492 14.5805 17.2703 14.3877 18.3939 14.4375Z" Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}"/>
+                <Path Data="M28.4783 29.0281C28.4783 29.0281 21.5877 29.3781 19.4658 23.4719L19.0939 22.3781L16.9064 23.1656L17.2783 24.2594C18.0939 26.8531 20.1908 28.6625 22.4346 29.6312C23.9493 30.2276 25.599 30.509 27.2564 30.4594C27.7731 30.4703 28.2868 30.4006 28.7845 30.2531L30.0502 31.2125L31.2127 29.4625L29.9564 28.5156C29.0962 28.9114 28.2096 29.2223 27.3064 29.4469C27.0233 29.5045 26.7359 29.5527 26.4471 29.5906C26.1836 29.5906 24.2283 29.1625 28.4783 29.0281Z" Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}"/>
+            </Canvas>
+        </DataTemplate>
     </UserControl.Resources>
-    <Grid
-     
-     x:Name="fadeOutCtrl"
-     HorizontalAlignment="Center"
-     VerticalAlignment="Bottom">
-
-        <Border      
-         Width="332"
-         Height="135"
-         Background="{DynamicResource Default_SA_OSD_Border_BkColor}"
-         BorderBrush="#0DFFFFFF"
-         BorderThickness="1.5"
-         CornerRadius="5"
-         Opacity="0.9">
-
+    <Grid x:Name="fadeOutCtrl"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Bottom">
+        <Border Width="332"
+                Height="135"
+                Background="{DynamicResource Default_SA_OSD_Border_BkColor}"
+                BorderBrush="#0DFFFFFF"
+                BorderThickness="1.5"
+                CornerRadius="5"
+                Opacity="0.9">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <!--Close-->
-                <Canvas Grid.Row="0" Width="20" Height="20" Margin="0,10,10,0" 
-                     HorizontalAlignment="Right" VerticalAlignment="Top" 
-                     MouseLeftButtonDown="close_Click"
-                     Background="Transparent"
-                     Tag="{DynamicResource Default_SA_OSD_PathColor}">
-                    <Path Data="M16,0.82 L15.18,0 L8,7.2 L0.82,0.05 L0,0.87 L7.15,8 L0.05,15.13 L0.87,16 L8,8.85 L15.13,16 L15.95,15.18 L8.8,8 L16,0.82 Z" 
-                     Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
-                </Canvas>
-
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               FontFamily="Roboto"
+                               FontSize="20"
+                               FontWeight="Medium"
+                               Margin="10,10,31,10"
+                               TextWrapping="WrapWithOverflow"
+                               Foreground="{DynamicResource Default_SA_OSD_PathColor}"
+                               Text="{Binding ShowStringTitle}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="Unknown">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="Keyboard">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="Mouse">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="Headset">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="Pen">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="QAM">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="CapsLockOn">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="CapsLockOff">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="ScrollLockOn">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="ScrollLockOff">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="NumLockOn">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="NumLockOff">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style></TextBlock>
+                    <!--Close-->
+                    <Canvas Grid.Column="1"
+                            Width="20"
+                            Height="20"
+                            Margin="0,10,10,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            MouseLeftButtonDown="close_Click"
+                            Background="Transparent"
+                            Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                        <Canvas.Style>
+                            <Style TargetType="Canvas">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="CapLockONIcon">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="CapLockOFFIcon">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="NumLockONIcon">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="NumLockOFFIcon">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="ScrollLockONIcon">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="ScrollLockOFFIcon">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Canvas.Style>
+                        <Path Data="M16,0.82 L15.18,0 L8,7.2 L0.82,0.05 L0,0.87 L7.15,8 L0.05,15.13 L0.87,16 L8,8.85 L15.13,16 L15.95,15.18 L8.8,8 L16,0.82 Z"
+                              Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                    </Canvas>
+                </Grid>
                 <Grid Grid.Row="1">
-
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="50*" />
+                        <RowDefinition Height="auto" />
                         <RowDefinition Height="50*" />
                     </Grid.RowDefinitions>
-
-                    <ContentControl >
+                    <ContentControl>
                         <ContentControl.Style>
                             <Style TargetType="ContentControl">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="Unknown">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource BatteryLowIcon}"/>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="Unknown">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource BatteryLowIcon}" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="Keyboard">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource KeyboardIcon}"/>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="Keyboard">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource KeyboardIcon}" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="Mouse">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource WirelessMouseIcon}"/>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="Mouse">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource WirelessMouseIcon}" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="Headset">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource HeadsetIcon}"/>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="Headset">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource HeadsetIcon}" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="Pen">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource PencilIcon}"/>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="Pen">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource PencilIcon}" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="QAM">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource QAM}"/>
-                                        <Setter Property="Grid.RowSpan" Value="2"/>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="QAM">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource QAM}" />
+                                        <Setter Property="Grid.RowSpan"
+                                                Value="2" />
                                     </DataTrigger>
-
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="CapsLockOn">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource CapLockONIcon}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="CapsLockOff">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource CapLockOFFIcon}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="NumLockOn">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource NumLockONIcon}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="NumLockOff">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource NumLockOFFIcon}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="ScrollLockOn">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource ScrollLockONIcon}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="ScrollLockOff">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource ScrollLockOFFIcon}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="FW">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="Mute">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource Mute}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="UnMute">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource UnMute}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="FingerPrint">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource Fingerprint}" />
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </ContentControl.Style>
                     </ContentControl>
-
-                    <StackPanel                   
-                     x:Name="StringPart"
-                     Grid.Row="1"
-                     HorizontalAlignment="Center"
-                     VerticalAlignment="Center"
-                     Orientation="Vertical">
-
+                    <StackPanel x:Name="StringPart"
+                                Grid.Row="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Orientation="Vertical">
                         <StackPanel.Style>
                             <Style TargetType="StackPanel">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="QAM">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="QAM">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="FW">
+                                        <Setter Property="Grid.Row"
+                                                Value="0" />
+                                        <Setter Property="Grid.RowSpan"
+                                                Value="2" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </StackPanel.Style>
-
-                        <TextBlock
-                         HorizontalAlignment="Center"
-                         VerticalAlignment="Top"
-                         FontFamily="Roboto"
-                         FontSize="14"
-                         FontWeight="Medium"
-                         TextWrapping="WrapWithOverflow"
-                         Foreground="{DynamicResource Default_SA_OSD_PathColor}"
-                         Text="{Binding ShowStringTitle}" />
-
-                        <TextBlock
-                         HorizontalAlignment="Center"
-                         VerticalAlignment="Top"
-                         FontFamily="Roboto"
-                         FontSize="14"
-                         FontWeight="Medium"
-                         TextWrapping="Wrap"
-                         Foreground="{DynamicResource Default_SA_OSD_PathColor}"
-                         Text="{Binding ShowStringContent}" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Top"
+                                   FontFamily="Roboto"
+                                   FontSize="14"
+                                   FontWeight="Medium"
+                                   TextWrapping="WrapWithOverflow"
+                                   Foreground="{DynamicResource Default_SA_OSD_PathColor}"
+                                   Text="{Binding ShowStringTitle}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding OSDType_Device}"
+                                                     Value="FW">
+                                            <Setter Property="Visibility"
+                                                    Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style></TextBlock>
+                        <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Top"
+                                   FontFamily="Roboto"
+                                   FontSize="14"
+                                   FontWeight="Medium"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource Default_SA_OSD_PathColor}"
+                                   Text="{Binding ShowStringContent}"></TextBlock>
                     </StackPanel>
                 </Grid>
             </Grid>

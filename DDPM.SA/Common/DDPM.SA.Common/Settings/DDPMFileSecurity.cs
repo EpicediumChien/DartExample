@@ -322,13 +322,17 @@ namespace DDPM.SA.Common.Settings
             string sInfo = string.Empty;
             string ticket = string.Empty;
             //3. retrieve signature for comparison
+            var settings = new JsonSerializerSettings
+            {
+                DateParseHandling = DateParseHandling.None // Prevent automatic parsing of dates
+            };
             try
             {
                 JToken token = JToken.Parse(serialized);
                 string temp = string.Empty;
                 if (token.Type == JTokenType.Object)
                 {
-                    JObject obj = (JObject)token;
+                    JObject obj = JsonConvert.DeserializeObject<JObject>(serialized, settings); //(JObject)token;
                     // Handle object
                     signature = (string)obj["DDPM.Signature"];
                     // Remove the "signature" property for hash generating
@@ -364,7 +368,7 @@ namespace DDPM.SA.Common.Settings
                 }
                 else if (token.Type == JTokenType.Array)
                 {
-                    JArray array = (JArray)token;
+                    JArray array = JsonConvert.DeserializeObject<JArray>(serialized, settings); //(JArray)token;
                     // Handle array
                     var signatureStrings = array.Where(token => token.Type == JTokenType.String && token.ToString().StartsWith("DDPM.Signature"));
                     foreach (var sign in signatureStrings)

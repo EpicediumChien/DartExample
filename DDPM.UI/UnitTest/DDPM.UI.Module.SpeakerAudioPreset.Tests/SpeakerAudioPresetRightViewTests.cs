@@ -42,7 +42,7 @@ namespace DDPM.UI.Module.SpeakerAudioPreset.Tests
             log = logMock.Object;
             showPluginManagerMock = new Mock<IShowPluginManager>();
             showPluginManager = showPluginManagerMock.Object;
-            vm = new SoundBarViewModel(showPluginManager, console, log, deviceManager);
+            vm = new SoundBarViewModel(console, log, deviceManager);
         }
 
         [Test]

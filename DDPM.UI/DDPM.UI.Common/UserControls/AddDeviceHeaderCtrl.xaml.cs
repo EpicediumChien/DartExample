@@ -19,7 +19,7 @@ namespace DDPM.UI.Common
     /// </summary>
     public partial class AddDeviceHeaderCtrl : UserControl
     {
-        private RightViewHeaderCtrlViewModel vm = new();
+        private AddDeviceHeaderCtrlViewModel vm = new();
         //private ILog _log;
 
         public AddDeviceHeaderCtrl()

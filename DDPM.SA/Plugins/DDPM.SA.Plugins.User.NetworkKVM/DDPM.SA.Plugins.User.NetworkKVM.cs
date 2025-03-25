@@ -36,6 +36,37 @@ namespace NetworkKVM.Plugins
     [PublishedUnelevatedInterface(new[] { typeof(INKVMService) })]
     public class NKVMPlugin : BaseAgentPlugin, INKVMService, IDisposableObservable
     {
+        public enum log_type
+        {
+            info = 0,
+            error
+        }
+        /// <summary>
+        /// //
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="log_type">0 means info, others means error</param>
+        private void WriteLog(string text, log_type log_type = log_type.info,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
+        {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
+            text = $"[NKVMPlugin] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
+#if DEBUG
+            Console.WriteLine(text);
+#endif
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
+        }
+
         #region Private Members
 
         private const string pluginName = "NKVMPlugin";
@@ -46,7 +77,6 @@ namespace NetworkKVM.Plugins
         private const string publisherSupport = "This plugin implements NKVM Plugin.";
 
         private IAgent _agent;
-        private Agent _Agent;
         private Logs _logs;
         public const string PluginLogId = "NKVM";
         private bool _runloop = true;
@@ -312,31 +342,31 @@ namespace NetworkKVM.Plugins
                     _AllInfoMonitors.AddRange(monitorInfos);
                     //if (unplug.Count > 0 || plugin.Count > 0)
                     //{
-                        if (pipeServer != null)
+                    if (pipeServer != null)
+                    {
+                        if (pipeServer.IsConnected)
                         {
-                            if (pipeServer.IsConnected)
-                            {
-                                _logs.DebugMsg("[UpdateMonitorInfo] MonitorPlug no wait(3).");
-                                //ResponseSupportedMonitor();
-                                MonitorPlug();
-                            }
-                            else
-                            {
-                                _logs.DebugMsg("[UpdateMonitorInfo] do disconnect(4).");
-                                Disconnect();
-                                Thread.Sleep(1000);
-                                isMonintorChange = true;
-                                //_runloop = true;
-                                _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(6).");
-                                _ = Task.Run(async () => await NamedPipeServer(token));
-                            }
+                            _logs.DebugMsg("[UpdateMonitorInfo] MonitorPlug no wait(3).");
+                            //ResponseSupportedMonitor();
+                            MonitorPlug();
                         }
                         else
                         {
-                            _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(7).");
+                            _logs.DebugMsg("[UpdateMonitorInfo] do disconnect(4).");
+                            Disconnect();
+                            Thread.Sleep(1000);
                             isMonintorChange = true;
+                            //_runloop = true;
+                            _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(6).");
                             _ = Task.Run(async () => await NamedPipeServer(token));
                         }
+                    }
+                    else
+                    {
+                        _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(7).");
+                        isMonintorChange = true;
+                        _ = Task.Run(async () => await NamedPipeServer(token));
+                    }
                     //}
                 }
             }
@@ -370,7 +400,7 @@ namespace NetworkKVM.Plugins
         public Task<List<string>> GetSupportedNKVM()
         {
             _logs.DebugMsg("[NetworkKVM] GetSupportedNKVM....");
-            bool isAdd = false;
+            //bool isAdd = false;
             _AllInfoMonitors = GetMonitors().Result;
             foreach (MonitorInfo monitorInfo in _AllInfoMonitors)
             {
@@ -387,7 +417,7 @@ namespace NetworkKVM.Plugins
                                 IsSupportNKVM(capabilityString))
                             {
                                 _SupportedMonitors.Add(ModelName);
-                                isAdd = true;
+                                //isAdd = true;
                             }
                         }
                         else
@@ -395,7 +425,7 @@ namespace NetworkKVM.Plugins
                             if (IsSupportNKVM(capabilityString))
                             {
                                 _SupportedMonitors.Add(ModelName);
-                                isAdd = true;
+                                //isAdd = true;
                             }
                         }
                     }
@@ -405,7 +435,7 @@ namespace NetworkKVM.Plugins
                         if (IsSupportNKVM(capabilityString))
                         {
                             _SupportedMonitors.Add(ModelName);
-                            isAdd = true;
+                            //isAdd = true;
                         }
                     }
                 }
@@ -652,7 +682,8 @@ namespace NetworkKVM.Plugins
             }
             catch (Exception e)
             {
-                _logs.DebugMsg($"[SetHotkey] exception: {e.Message}");
+                //_logs.DebugMsg($"[SetHotkey] exception: {e.Message}");
+                WriteLog($"[SetHotkey] exception: {e.Message}", log_type.error);
             }
             return Task.FromResult(false);
         }
@@ -699,7 +730,8 @@ namespace NetworkKVM.Plugins
             }
             catch (Exception e)
             {
-                _logs.DebugMsg($"[NKVM_ChangeLimitedSW] exception: {e.Message}");
+                //_logs.DebugMsg($"[NKVM_ChangeLimitedSW] exception: {e.Message}");
+                WriteLog($"[NKVM_ChangeLimitedSW] exception: {e.Message}", log_type.error);
             }
 
             _AllInfoMonitors = GetMonitors().Result;
@@ -723,7 +755,8 @@ namespace NetworkKVM.Plugins
             }
             catch (Exception e)
             {
-                _logs.DebugMsg($"[NKVM_ChangeMonitorIndex] exception: {e.Message}");
+                //_logs.DebugMsg($"[NKVM_ChangeMonitorIndex] exception: {e.Message}");
+                WriteLog($"[NKVM_ChangeMonitorIndex] exception: {e.Message}", log_type.error);
             }
             return Task.CompletedTask;
         }
@@ -1004,7 +1037,8 @@ namespace NetworkKVM.Plugins
                     catch (System.Exception ex)
                     {
                         Trace.WriteLine($"ERROR : Run NKVM ==> {ex.ToString()}");
-                        _logs.DebugMsg($"ERROR : Run NKVM ==> {ex.ToString()}");
+                        //_logs.DebugMsg($"ERROR : Run NKVM ==> {ex.ToString()}");
+                        WriteLog($"ERROR : Run NKVM ==> {ex.ToString()}", log_type.error);
                         Thread.Sleep(1000);
                         Disconnect();
                         return Task.FromResult(false);
@@ -1132,8 +1166,8 @@ namespace NetworkKVM.Plugins
                 while (_runloop)
                 {
                     if (IsDisposed)
-                    { 
-                        break; 
+                    {
+                        break;
                     }
                     //if (i > 10)
                     //{
@@ -1211,7 +1245,8 @@ namespace NetworkKVM.Plugins
                                 }
                                 catch (Exception ex)
                                 {
-                                    _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
+                                    //_logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
+                                    WriteLog($"[NetworkKVM] Failed to connect {ex.Message}", log_type.error);
                                     Disconnect();
                                     Thread.Sleep(1000);
                                     _AllInfoMonitors = GetMonitors().Result;
@@ -1326,7 +1361,8 @@ namespace NetworkKVM.Plugins
                                 }
                                 catch (Exception ex)
                                 {
-                                    _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
+                                    //_logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
+                                    WriteLog($"[NetworkKVM] Failed to connect {ex.Message}", log_type.error);
                                     Disconnect();
                                     Thread.Sleep(1000);
                                     _AllInfoMonitors = GetMonitors().Result;
@@ -1416,8 +1452,11 @@ namespace NetworkKVM.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[NetworkKVM] CreateNamedPipe_init is error");
-                _logs.DebugMsg($"[NetworkKVM] Failed to create {ex}");
+                //_logs.DebugMsg("[NetworkKVM] CreateNamedPipe_init is error");
+                //_logs.DebugMsg($"[NetworkKVM] Failed to create {ex}");
+                _logs.DebugMsg("[NetworkKVM] CreateNamedPipe_init is error, failed to create");
+                WriteLog($"[NetworkKVM] CreateNamedPipe_init is error, failed to create {ex.Message}", log_type.error);
+
                 Disconnect();
                 return false;
             }
@@ -1466,8 +1505,9 @@ namespace NetworkKVM.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[NetworkKVM] CreateNamedPipe is error");
-                _logs.DebugMsg($"[NetworkKVM] Failed to create {ex}");
+                _logs.DebugMsg("[NetworkKVM] CreateNamedPipe is error, failed to create");
+                //_logs.DebugMsg($"[NetworkKVM] Failed to create {ex}");
+                WriteLog($"[NetworkKVM] CreateNamedPipe is error, failed to create {ex.Message}", log_type.error);
                 Disconnect();
                 return false;
             }
@@ -1509,7 +1549,7 @@ namespace NetworkKVM.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[NetworkKVM] StartAsync is error");
+                _logs.DebugMsg("[NetworkKVM] StartAsync is error : " + ex.ToString());
             }
         }
 
@@ -1551,14 +1591,15 @@ namespace NetworkKVM.Plugins
             {
                 if (pipeServer.IsConnected)
                 {
-                    //try
-                    //{
-                    await pipeServer.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    _logs.DebugMsg("[NetworkKVM] WriteAsync exception, message: " + ex.Message);
-                    //}
+                    try
+                    {
+                        await pipeServer.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        //_logs.DebugMsg("[NetworkKVM] WriteAsync exception, message: " + ex.Message);
+                        WriteLog($"WriteAsync exception, message: {ex.Message}", log_type.error);
+                    }
 
                     await pipeServer.FlushAsync();
                     //pipeServer.WaitForPipeDrain();
@@ -1587,16 +1628,16 @@ namespace NetworkKVM.Plugins
             {
                 if (pipeServer.IsConnected)
                 {
-                    //try
-                    //{
-                    bytesRead = await pipeServer.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-
-                    //}
-                    //catch (Exception ex) 
-                    //{ 
-                    //    _logs.DebugMsg("[NetworkKVM] ReadAsync failed, message: " + ex.Message);
-                    //    return string.Empty;
-                    //}
+                    try
+                    {
+                        bytesRead = await pipeServer.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                    }
+                    catch (Exception ex) 
+                    { 
+                        //_logs.DebugMsg("[NetworkKVM] ReadAsync failed, message: " + ex.Message);
+                        WriteLog($"ReadAsync failed, message: " + ex.Message, log_type.error);
+                        return string.Empty;
+                    }
 
                     readmessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                     _logs.DebugMsg("[NetworkKVM] ReadAsync : " + readmessage);
@@ -1778,7 +1819,8 @@ namespace NetworkKVM.Plugins
                 }
                 catch (Exception ex)
                 {
-                    _logs.DebugMsg("[NetworkKVM] JsonstringParse exception : " + ex.ToString());
+                    //_logs.DebugMsg("[NetworkKVM] JsonstringParse exception : " + ex.ToString());
+                    WriteLog("[NetworkKVM] JsonstringParse exception : " + ex.ToString(), log_type.error);
                 }
             }
             else
@@ -2186,8 +2228,8 @@ namespace NetworkKVM.Plugins
                                 foreach (HotkeyInfo hotkeyInfo in hotkeySettings.HotkeyInfo)
                                 {
                                     if (IsDisposed)
-                                    { 
-                                        break; 
+                                    {
+                                        break;
                                     }
                                     if (jsonHotkey.Control == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Control) &&
                                         jsonHotkey.Alt == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Menu) &&
@@ -2624,7 +2666,7 @@ namespace NetworkKVM.Plugins
                     int value = 0;
                     int value_60 = 0;
                     int value_E8 = 0;
-                    int value_E9 = 0;
+                    //int value_E9 = 0;
                     ObjGetVCP objGetVCP_60 = new ObjGetVCP();
                     ObjGetVCP objGetVCP_E8 = new ObjGetVCP();
                     ObjGetVCP objGetVCP_E9 = new ObjGetVCP();

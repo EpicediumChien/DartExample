@@ -56,6 +56,38 @@ namespace DDPM.SA.Plugins.User.DisplayManager
     [PluginRequires(Id = IDs.VCP_CORE_PLUGIN_ID, Version = "1.0.0", AllowDynamicResolving = true)]
     public class DisplayMangerPlugin : BaseAgentPlugin, IDisposableObservable, IDisplayService
     {
+        public enum log_type
+        {
+            info = 0,
+            error
+        }
+
+        /// <summary>
+        /// //
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="log_type">0 means info, others means error</param>
+        private void WriteLog(string text, log_type log_type = log_type.info,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
+        {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+
+            text = $"[DisplayMangerPlugin] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
+#if DEBUG
+            Console.WriteLine(text);
+#endif
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
+        }
+
         #region Private Members
 
         private const string pluginName = "DisplayManagerPlugin";
@@ -170,7 +202,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _agent = agent;
 
             _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
-            _logs ??= new Logs(Log);
+            _logs = new Logs(Log);
 
             _logs.DebugMsg("[DisplayMangerPlugin] Does DisplayMangerPlugin have Administrator: " + _IsAdministrator.ToString());
         }
@@ -364,7 +396,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             catch (ArgumentException ex)
             {
                 result = false;
-                _logs.Error($"Process with ID {processID} is not running: {ex.Message}");
+                //_logs.Error($"Process with ID {processID} is not running: {ex.Message}");
+                WriteLog($"Process with ID {processID} is not running: {ex.Message}", log_type.error);
             }
 
             return Task.FromResult(result);
@@ -437,7 +470,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors Exception is " + ex.Message);
+                //_logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors Exception is " + ex.Message);
+                WriteLog("Re_GetMonitors() AllInfoMonitors Exception is " + ex.Message, log_type.error);
                 return new List<MonitorInfo>();
             }
         }
@@ -863,7 +897,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     }
                                     catch (Exception ex)
                                     {
-                                        _logs.DebugMsg($"[Error] Exception occurred: {ex.Message}");
+                                        //_logs.DebugMsg($"[Error] Exception occurred: {ex.Message}");
+                                        WriteLog($"[Error] Exception occurred: {ex.Message}", log_type.error);
                                         usbUpstreamList = _usbUpstreamList;
                                         //usbUpstreamList = inputTypeString.SubInputType(_usbUpstreamList);
                                     }
@@ -1492,8 +1527,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<bool> isScreenPartition(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low)
         {
             ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, 0xF2, guid, priority: priority).Result;
-            if (objGetVCP != null && 
-                objGetVCP.result && 
+            if (objGetVCP != null &&
+                objGetVCP.result &&
                 (uint)objGetVCP.value != 0)
             {
                 string strSP = Convert.ToString((uint)objGetVCP.value, 2);
@@ -1606,7 +1641,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
                 catch (Exception ex)
                 {
-                    _logs.DebugMsg($"[DisplayMangerPlugin][InitializeAllALSInfo] Init ALSConfig got exception. {ex}");
+                    //_logs.DebugMsg($"[DisplayMangerPlugin][InitializeAllALSInfo] Init ALSConfig got exception. {ex}");
+                    WriteLog($"[DisplayMangerPlugin][InitializeAllALSInfo] Init ALSConfig got exception. {ex.Message}", log_type.error);
                 }
             });
         }
@@ -2040,7 +2076,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig Exception {ex.Message}");
+                //_logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig Exception {ex.Message}");
+                WriteLog($"GetAllExistAlsConfig Exception {ex.Message}", log_type.error);
                 return Task.FromResult(new List<ALSConfig>());
             }
         }
@@ -2070,7 +2107,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateExistAlsConfig Exception {ex.Message}");
+                //_logs.DebugMsg($"[DisplayMangerPlugin] UpdateExistAlsConfig Exception {ex.Message}");
+                WriteLog($"UpdateExistAlsConfig Exception {ex.Message}", log_type.error);
                 return Task.FromResult(new List<ALSConfig>());
             }
         }
@@ -3241,7 +3279,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             _logs.DebugMsg("[DisplayMangerPlugin] GetDisplayPropertiesInfo start");
             DisplayPropertiesInfo ret_DisplayPropertiesInfo = new DisplayPropertiesInfo();
-            if (_displayDataManger != null && 
+            if (_displayDataManger != null &&
                 _displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out ret_DisplayPropertiesInfo))
             {
                 return Task.FromResult(ret_DisplayPropertiesInfo);
@@ -3370,8 +3408,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetDisplayPropertiest go");
                 ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation).Result;
                 isSWSetOrientation = false;
-                if (ret && 
-                    _displayDataManger != null && 
+                if (ret &&
+                    _displayDataManger != null &&
                     _displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
                 {
                     bool cleanCurrentFlae = false, setCurrentFlae = false;
@@ -3420,8 +3458,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 isSWSetOrientation = true;
                 ret = _DisplayPropertiesPlugin.SetResolutions(monitorInfos.DisplayName, properties).Result;
                 isSWSetOrientation = false;
-                if (ret && 
-                    _displayDataManger != null && 
+                if (ret &&
+                    _displayDataManger != null &&
                     _displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
                 {
                     bool cleanCurrentFlae = false, setCurrentFlae = false;
@@ -3463,7 +3501,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 ret = _DisplayPropertiesPlugin.SetOrientation_New(monitorInfos.DisplayName, orientation).Result;
                 //ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
                 isSWSetOrientation = false;
-                if (ret && 
+                if (ret &&
                     _displayDataManger != null)
                 {
                     _displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo);
@@ -3571,8 +3609,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
                 count++;
             } while (ret == false && count < 10);
-            if (ret && 
-                _displayDataManger != null && 
+            if (ret &&
+                _displayDataManger != null &&
                 _displayDataManger.GetMonitorDisplayPropertiesInfo(monitorInfos, out DisplayPropertiesInfo ret_DisplayPropertiesInfo))
             {
                 ret_DisplayPropertiesInfo.isHDREnable = onoff;

@@ -129,7 +129,7 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
             {
                 _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
                 DdpmCommonHelper.WriteUILog($"[Headset] LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
-                if (!_vm.IsRestoreEnable)
+                if (_vm.IsRestoreEnable)
                 {
                     btnRestore.Visibility = Visibility.Visible;
                 }

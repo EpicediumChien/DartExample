@@ -171,6 +171,8 @@ namespace DDPM.SA.Common
 
         Task<List<MonitorInfo>> Re_GetMonitors();
 
+        Task ReGetMonitors();
+
         event EventHandler<VCPchangedEventArgs> VCPchanged;
 
         event EventHandler<DDCCIchangedEventArgs> DDCCIStatuschanged;
@@ -1859,5 +1861,7 @@ namespace DDPM.SA.Common
         #endregion Set
 
         #endregion IAirAudioCommodity
+
+        Task<List<MonitorInfo>> GetCurrentMonitorCache();
     }
 }

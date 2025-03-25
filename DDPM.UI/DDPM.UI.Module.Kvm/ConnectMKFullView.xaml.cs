@@ -79,16 +79,18 @@ namespace DDPM.UI.Module.Kvm
                 vm.NKVMisON = false;
                 vm.NoKVMisON = false;
                 //Return to DdpmHomePage              
-                IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
-                console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+                //IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
+                //console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+                DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
                 vm.FromProgressValue = 0;
                 vm.ToProgressValue = 1;
             }
             catch (Exception ex)
             {
                 //Return to DdpmHomePage
-                IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
-                console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+                //IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
+                //console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+                DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
                 vm.FromProgressValue = 0;
                 vm.ToProgressValue = 1;
             }

@@ -44,7 +44,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
             console = consoleMock.Object;
             showPluginManagerMock = new Mock<IShowPluginManager>();
             showPluginManager = showPluginManagerMock.Object;
-            vm = new HeadsetViewModel(showPluginManager, console, log, deviceManagerSA);
+            vm = new HeadsetViewModel(console, log, deviceManagerSA);
             var currentDeviceInfo = new DeviceInfo();
             vm.CurrentDeviceInfo = currentDeviceInfo;
             headsetAudioSettingsRightView = new HeadsetAudioSettingsRightView(vm);
@@ -85,7 +85,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
             CollaborationCheckedToVisibilityConverter collaborationCheckedToVisibilityConverter = new CollaborationCheckedToVisibilityConverter();
             showPluginManagerMock = new Mock<IShowPluginManager>();
             showPluginManager = showPluginManagerMock.Object;
-            vm = new HeadsetViewModel(showPluginManager, console, log, deviceManagerSA);
+            vm = new HeadsetViewModel(console, log, deviceManagerSA);
             //collaborationCheckedToVisibilityConverter.ViewModel = viewModel;
             // Assert
             Assert.That(collaborationCheckedToVisibilityConverter, Is.Not.Null);
@@ -101,7 +101,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
 
             //var parameter == "",isChecked && ViewModel.Model == "WL7024"
             var parameter = "";
-            var viewModel = new HeadsetViewModel(showPluginManager, console, log, deviceManagerSA);
+            var viewModel = new HeadsetViewModel(console, log, deviceManagerSA);
             viewModel.Model = "WL7024";
             collaborationCheckedToVisibilityConverter.ViewModel = viewModel;
             res = collaborationCheckedToVisibilityConverter.Convert(true, null, parameter, null);
@@ -109,7 +109,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
 
             //parameter == "MicNoiseCancellationPageShow"&&isChecked,viewModel.Model == "WL7024"
             parameter = "MicNoiseCancellationPageShow";
-            viewModel = new HeadsetViewModel(showPluginManager, console, log, deviceManagerSA);
+            viewModel = new HeadsetViewModel(console, log, deviceManagerSA);
             viewModel.Model = "WL7024";
             collaborationCheckedToVisibilityConverter.ViewModel = viewModel;
             res = collaborationCheckedToVisibilityConverter.Convert(true, null, parameter, null);
@@ -117,13 +117,13 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
 
             //parameter=="",isChecked && ViewModel.Model != "WL7024"
             parameter = "";
-            collaborationCheckedToVisibilityConverter.ViewModel = new HeadsetViewModel(showPluginManager, console, log, deviceManagerSA);
+            collaborationCheckedToVisibilityConverter.ViewModel = new HeadsetViewModel(console, log, deviceManagerSA);
             res = collaborationCheckedToVisibilityConverter.Convert(true, null, parameter, null);
             Assert.That(res, Is.EqualTo(Visibility.Collapsed));
 
             //parameter=="MicNoiseCancellationFewPageShow",isChecked && ViewModel.Model != "WL7024"
             parameter = "MicNoiseCancellationFewPageShow";
-            collaborationCheckedToVisibilityConverter.ViewModel = new HeadsetViewModel(showPluginManager, console, log, deviceManagerSA);
+            collaborationCheckedToVisibilityConverter.ViewModel = new HeadsetViewModel(console, log, deviceManagerSA);
             res = collaborationCheckedToVisibilityConverter.Convert(true, null, parameter, null);
             Assert.That(res, Is.EqualTo(Visibility.Visible));
         }

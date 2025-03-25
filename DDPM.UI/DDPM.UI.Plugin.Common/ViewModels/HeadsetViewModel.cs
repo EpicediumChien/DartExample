@@ -17,7 +17,6 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public readonly ILog _log;
         public IDeviceManagerSA _deviceManager;
-        public IShowPluginManager _showPluginManager;
         public DeviceInfoDTP DeviceInfoDTP;
         private Debouncer _debouncerHeadset;
         private Debouncer _debouncerHeadsetPauseMusic;
@@ -32,23 +31,23 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public new event PropertyChangedEventHandler? PropertyChanged;
 
-        public HeadsetViewModel(IShowPluginManager showPluginManager, IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
+        public HeadsetViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
 
             _log = log;
             _deviceManager = deviceManager;
-            _showPluginManager = showPluginManager;
             DeviceInfoDTP = new DeviceInfoDTP();
             //DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += Headset_DTPNotify;
             //DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             DebouncerFfunctionInit();
-            _log!.Info($"[HeadsetViewModel] HeadsetViewModel Start...");
+            _log!.Info($"[HeadsetViewModel] HeadsetViewModel Start ...");
         }
 
         public void UloadHeadset_DTPNotify()
         {
+            _log!.Info($"[HeadsetViewModel] UloadHeadset_DTPNotify ...");
             HeadsetSettingChanged -= HeadsetSettingChanged;
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
@@ -1271,6 +1270,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 DeviceInfoDTP.BusyLight = defaultSettings.BusyLight;
                 DeviceInfoDTP.MicNoiseCancellation = defaultSettings.MicNoiseCancellation;
                 DeviceInfoDTP.Sidetone = defaultSettings.Sidetone;
+                DeviceInfoDTP.SidetoneLevel = defaultSettings.SidetoneLevel;
                 DeviceInfoDTP.VoiceGuidance = defaultSettings.VoiceGuidance;
                 DeviceInfoDTP.SelectedPreset = defaultSettings.SelectedPreset;
                 DeviceInfoDTP.Band1Gain = defaultSettings.Band1Gain;
@@ -1335,6 +1335,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _deviceManager.SetSidetone(DeviceInfoDTP.Sidetone, CurrentDeviceInfo!.ID).Wait();
                     _deviceManager.SetSidetoneLevel(DeviceInfoDTP.SidetoneLevel, CurrentDeviceInfo!.ID).Wait();
                     _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.Sidetone ...................= {DeviceInfoDTP.Sidetone.ToString()}");
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.SidetoneLevel ...................= {DeviceInfoDTP.SidetoneLevel.ToString()}");
                 }
                 else
                 {
@@ -1474,6 +1475,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     DeviceInfoDTP.IsSidetoneSupported = true;
                     DeviceInfoDTP.Sidetone = _deviceManager.GetSidetoneAsync(CurrentDeviceID.ToString()).Result;
                     _log.Info($"[HeadsetViewModel] DTP DeviceInfoDTP.Sidetone ...................= {DeviceInfoDTP.Sidetone.ToString()}");
+
+                    DeviceInfoDTP.SidetoneLevel = _deviceManager.GetSidetoneLevelAsync(CurrentDeviceID.ToString()).Result;
+                    _log.Info($"[HeadsetViewModel] DTP DeviceInfoDTP.SidetoneLevel ...................= {DeviceInfoDTP.SidetoneLevel.ToString()}");
                 }
                 else
                 {
@@ -1605,7 +1609,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 //------------------------------------------------------------------------------------
 
                 //DeviceInfoDTP.BatteryLevel = await _deviceManager.GetHeadsetBatteryLevelAsync(CurrentDeviceID.ToString());
-                DeviceInfoDTP.SidetoneLevel = _deviceManager.GetSidetoneLevelAsync(CurrentDeviceID.ToString()).Result;
+                //DeviceInfoDTP.SidetoneLevel = _deviceManager.GetSidetoneLevelAsync(CurrentDeviceID.ToString()).Result;
                 PairedHostName1 = _deviceManager.GetHeadsetPairedHostName2Async(CurrentDeviceInfo.ID.ToString()).Result;
                 PairedHostName2 = _deviceManager.GetHeadsetPairedHostName3Async(CurrentDeviceInfo.ID.ToString()).Result;
                 UpdateResetToDefault();
@@ -1688,6 +1692,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     DeviceInfoDTP.IsSidetoneSupported = true;
                     DeviceInfoDTP.Sidetone = CurrentDeviceInfo!.Sidetone;
                     _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.Sidetone ...................= {DeviceInfoDTP.Sidetone.ToString()}");
+
+                    DeviceInfoDTP.SidetoneLevel = CurrentDeviceInfo!.SidetoneLevel;
+                    _log.Info($"[HeadsetViewModel] DTH DeviceInfoDTP.SidetoneLevel ...................= {DeviceInfoDTP.SidetoneLevel.ToString()}");
                 }
                 else
                 {
@@ -1871,7 +1878,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     }
                 }
 
-                DeviceInfoDTP.SidetoneLevel = CurrentDeviceInfo!.SidetoneLevel;
+                //DeviceInfoDTP.SidetoneLevel = CurrentDeviceInfo!.SidetoneLevel;
 
                 UpdateResetToDefault();
                 //OnPropertyChanged(nameof(IsRestoreEnable));
@@ -2011,7 +2018,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
                 }
                 _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetIsReadyAsync, false ... {tick}");
-                Thread.Sleep(1000);
+                Task.Delay(1000).Wait();
                 tick++;
             }
 
@@ -2036,7 +2043,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         break;
                     }
                     _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... DTH_IsReady, false ... {tick}");
-                    Thread.Sleep(1000);
+                    Task.Delay(1000).Wait();
                     tick++;
                 }
 
@@ -2051,7 +2058,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
 
             DetectPageShow(model);
-            Thread.Sleep(500);
+            Task.Delay(500).Wait();
             HidePleaseWait();
         }
 
@@ -3700,6 +3707,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 return false;
             if (currentSettings.Sidetone != defaultSettings.Sidetone)
                 return false;
+            if (currentSettings.SidetoneLevel != defaultSettings.SidetoneLevel)
+                return false;
             if (currentSettings.VoiceGuidance != defaultSettings.VoiceGuidance)
                 return false;
             if (currentSettings.SelectedPreset != defaultSettings.SelectedPreset)
@@ -3739,6 +3748,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 BusyLight = true,
                 MicNoiseCancellation = true,
                 Sidetone = true,
+                SidetoneLevel = 1,
                 VoiceGuidance = true,
                 SelectedPreset = 1,
                 Band1Gain = 0,
@@ -3760,6 +3770,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 BusyLight = true,
                 MicNoiseCancellation = true,
                 Sidetone = true,
+                SidetoneLevel = 1,
                 VoiceGuidance = false,
                 SelectedPreset = 1,
                 Band1Gain = 0,
@@ -3781,6 +3792,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 BusyLight = true,
                 MicNoiseCancellation = true,
                 Sidetone = true,
+                SidetoneLevel = 1,
                 VoiceGuidance = true,
                 SelectedPreset = 1,
                 Band1Gain = 0,
@@ -3802,6 +3814,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 BusyLight = true,
                 MicNoiseCancellation = true,
                 Sidetone = true,
+                SidetoneLevel = 1,
                 VoiceGuidance = true,
                 SelectedPreset = 1,
                 Band1Gain = 0,
@@ -3823,6 +3836,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 BusyLight = true,
                 MicNoiseCancellation = true,
                 Sidetone = true,
+                SidetoneLevel = 1,
                 VoiceGuidance = true,
                 SelectedPreset = 1,
                 Band1Gain = 0,
@@ -3934,6 +3948,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool BusyLight { get; set; } = false;
         public bool MicNoiseCancellation { get; set; } = false;
         public bool Sidetone { get; set; } = false;
+        public int SidetoneLevel { get; set; } = 0;
         public bool VoiceGuidance { get; set; } = false;
         public int SelectedPreset { get; set; } = 1;
         public int Band1Gain { get; set; } = 0;

@@ -25,5 +25,7 @@ namespace DDPM.SA.Common.Display
         //Notify to EAPlugin from DeviceManagerPlugin when lastSelectedMonitor_UI is changed
         public const string EACommand_LastSelectedMonitorChanged = "LastSelectedMonitorChanged";
 
+        public const string EACommand_TestMonitorInfoUpdated = "TestMonitorInfoUpdated";
+
     }
 }

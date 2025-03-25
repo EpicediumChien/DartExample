@@ -43,6 +43,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private string _model = "";
         private string _imageFilePath = "";
         private string _imageSFilePath = "";
+        private string _deviceId = "";
         private string _firmwareVersion = "";
         private string _firmwareVersion2 = "";
         private string _rightFrameVisibility = "";
@@ -102,6 +103,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     CurrentVersion = 10;
                 }
             }
+            _log!.Info($"[PeripheralViewModel] PeripheralViewModel Start ...");
         }
 
         public void Unpair()
@@ -861,6 +863,19 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (_firmwareVersion2 != value)
                 {
                     _firmwareVersion2 = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string DeviceID
+        {
+            get => _deviceId;
+            set
+            {
+                if (_deviceId != value)
+                {
+                    _deviceId = value;
                     OnPropertyChanged();
                 }
             }

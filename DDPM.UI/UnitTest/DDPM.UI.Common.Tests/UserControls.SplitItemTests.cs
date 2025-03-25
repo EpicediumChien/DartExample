@@ -26,7 +26,7 @@ namespace DDPM.UI.Common.Tests
     public class SplitItemTests
     {
         private SplitItem? splitItem;
-        private PrivateObject?privateObject;
+        private PrivateObject? privateObject;
         private Mock<IDeviceManagerSA>? deviceManagerSAMock;
 
         [SetUp]
@@ -39,8 +39,8 @@ namespace DDPM.UI.Common.Tests
             var resourceDictionary = new ResourceDictionary();
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
-            deviceManagerSAMock =new Mock<IDeviceManagerSA>();
-            DdpmCommonHelper.DeviceManagerSA=deviceManagerSAMock.Object;
+            deviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
             splitItem = new SplitItem();
             privateObject = new PrivateObject(splitItem);
         }
@@ -57,7 +57,7 @@ namespace DDPM.UI.Common.Tests
         public void TestInnerContent()
         {
             var ISplitAMock = new Mock<ISplit>();
-            splitItem.InnerContent= ISplitAMock.Object;
+            splitItem.InnerContent = ISplitAMock.Object;
             SplitItemViewModel vm = (SplitItemViewModel)privateObject.GetFieldOrProperty("vm");
 
             // Assert
@@ -165,9 +165,9 @@ namespace DDPM.UI.Common.Tests
             Assert.That(splitItem.CellCount, Is.EqualTo(0));
 
             // Act
-            var splitItemViewModel=new SplitItemViewModel();
+            var splitItemViewModel = new SplitItemViewModel();
             var SplitCtrlMock = new Mock<ISplitCtrl>();
-            SplitCtrlMock.Setup(x=>x.CellCount).Returns(1);
+            SplitCtrlMock.Setup(x => x.CellCount).Returns(1);
             var splitCtrl = SplitCtrlMock.Object;
             splitItemViewModel.SplitCtrl = splitCtrl;
             SplitItemViewModel vm = new SplitItemViewModel() { SplitCtrl = splitCtrl };
@@ -251,8 +251,8 @@ namespace DDPM.UI.Common.Tests
         {
             //ISplitCtrl == null
             // Act
-            SplitItem other = new SplitItem() { CustomId= 1 };
-            var result=splitItem.IsEquals(other);
+            SplitItem other = new SplitItem() { CustomId = 1 };
+            var result = splitItem.IsEquals(other);
             // Assert
             Assert.That(result, Is.EqualTo(true));
 
@@ -282,7 +282,7 @@ namespace DDPM.UI.Common.Tests
         public void TestReplaceByEAArgs()
         {
             //ISplitCtrl == null
-            var args = new EAArgs() { SplitJson=new SplitJson(), CellCount = 1, SplitKey = 'A' };
+            var args = new EAArgs() { SplitJson = new SplitJson(), CellCount = 1, SplitKey = 'A' };
             try
             {
                 splitItem.ReplaceByEAArgs(args);
@@ -300,7 +300,7 @@ namespace DDPM.UI.Common.Tests
             splitItemViewModel.SplitCtrl = splitCtrl;
             SplitItemViewModel vm = new SplitItemViewModel() { SplitCtrl = splitCtrl };
             privateObject.SetFieldOrProperty("vm", vm);
-            args = new EAArgs() { SplitJson = new SplitJson(),CellCount = 0,SplitKey='B',CustomName="name",Settings=new List<double>() { 2.2,2.3} };
+            args = new EAArgs() { SplitJson = new SplitJson(), CellCount = 0, SplitKey = 'B', CustomName = "name", Settings = new List<double>() { 2.2, 2.3 } };
             try
             {
                 splitItem.ReplaceByEAArgs(args);
@@ -330,7 +330,7 @@ namespace DDPM.UI.Common.Tests
         public void TestIsHoverable()
         {
             // Act
-            splitItem.IsHoverable=true;
+            splitItem.IsHoverable = true;
             // Assert
             Assert.That(splitItem.IsHoverable, Is.EqualTo(true));
         }
@@ -346,7 +346,7 @@ namespace DDPM.UI.Common.Tests
             //ISplitCtrl != null
             var splitItemViewModel = new SplitItemViewModel();
             var SplitCtrlMock = new Mock<ISplitCtrl>();
-            SplitCtrlMock.Setup(x=>x.IsAddedCustomLayout).Returns(true);
+            SplitCtrlMock.Setup(x => x.IsAddedCustomLayout).Returns(true);
             var splitCtrl = SplitCtrlMock.Object;
             splitItemViewModel.SplitCtrl = splitCtrl;
             SplitItemViewModel vm = new SplitItemViewModel() { SplitCtrl = splitCtrl };
@@ -362,6 +362,17 @@ namespace DDPM.UI.Common.Tests
             splitItem.LayoutID = 1;
             // Assert
             Assert.That(splitItem.LayoutID, Is.EqualTo(1));
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            // Dispose of splitItem after each test
+            if (splitItem != null)
+            {
+                splitItem.Dispose();
+                splitItem = null;
+            }
         }
     }
 }

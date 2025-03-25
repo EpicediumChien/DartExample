@@ -46,7 +46,7 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions.Tests
             deviceManagerSA = deviceManagerSAMock.Object;
             consoleMock = new Mock<IConsole>();
             console = consoleMock.Object;
-            vm = new HeadsetViewModel(showPluginManager, console, log, deviceManagerSA);
+            vm = new HeadsetViewModel(console, log, deviceManagerSA);
             var currentDeviceInfo = new DeviceInfo();
             vm.CurrentDeviceInfo = currentDeviceInfo;
             HeadsetAutomatedActionsRightView = new HeadsetAutomatedActionsRightView(vm);

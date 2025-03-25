@@ -175,11 +175,11 @@ namespace DDPM.UI.Module.Color
             }
 
             DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
-            Thread.Sleep(500);
+            Task.Delay(500).Wait();
 
             // jim add 20240621
             DdpmCommonHelper.DeviceManagerSA.Notify_refresh_app_list();
-            Thread.Sleep(100);
+            Task.Delay(100).Wait();
 
             // jim modify 20240605
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
@@ -208,7 +208,7 @@ namespace DDPM.UI.Module.Color
 
                 index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
                                                       x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                                      x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());              
+                                                      x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
 
                 if (index == -1)
                 {
@@ -381,7 +381,7 @@ namespace DDPM.UI.Module.Color
 
         private void sortByDateButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (sender == null) 
+            if (sender == null)
                 return;
             _isSortByNameFirst = false;
             if (sender is ToggleButton)

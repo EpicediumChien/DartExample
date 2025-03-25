@@ -50,7 +50,7 @@ namespace DDPM.UI.Module.Color
     internal class ColorViewModel : ObservableObject, INotifyPropertyChanged
     {
         #region Log
-        private ILog? _log;
+        private ILog? _log = null;
         public ILog? Log { get; set; }
 
         #endregion Log
@@ -61,14 +61,14 @@ namespace DDPM.UI.Module.Color
         //public RegistryMonitor_ICC registryMonitor_ICC = null;     
 
         // jim mofidy 20240606
-        public ManagementEventWatcher startWatcher = null;
-        public ManagementEventWatcher endProcWatcher = null;
+        public ManagementEventWatcher? startWatcher = null;
+        public ManagementEventWatcher? endProcWatcher = null;
 
         public DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
 
-        private BackgroundWorker? bw;
+        private BackgroundWorker? bw = null;
 
-        public Guid? guid {  get; set; }
+        public Guid? guid { get; set; }
         public IModuleOwner? ModuleOwner { get; set; }
         public ColorModule MyModule { get; set; }
 
@@ -184,7 +184,7 @@ namespace DDPM.UI.Module.Color
             }
         }
 
-        private Visibility isAdvanced_Settings = Visibility.Hidden;
+        private Visibility isAdvanced_Settings = Visibility.Collapsed;
 
         public Visibility IsisAdvanced_Settings
         {
@@ -356,7 +356,7 @@ namespace DDPM.UI.Module.Color
         public bool ColorManagement_isChecked { get; set; } = false;
         public bool ICCprofile_based_Colorpreset_enable { get; set; } = false;
 
-        private Visibility _DCM_Visibility = Visibility.Hidden;
+        private Visibility _DCM_Visibility = Visibility.Collapsed;
 
         public Visibility DCM_Visibility
         {
@@ -691,8 +691,8 @@ namespace DDPM.UI.Module.Color
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsEnabled = true;
-                    ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Hidden;
-                    DCM_Visibility = Visibility.Hidden;
+                    ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Collapsed;
+                    DCM_Visibility = Visibility.Collapsed;
 
                     if (((UXToggleSwitch)(MyModule.GetRightView().FindName("ColorManagement_ToggleSwitch"))).IsChecked == true)
                     {
@@ -895,7 +895,7 @@ namespace DDPM.UI.Module.Color
                 List<AppData> tempList = new List<AppData>();
 
                 ColorPresetSettings config = get_cur_monitor_preset_config(MyModule.SelectedHomeDevice.MonitorInfo, DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result);
-                
+
                 if (Cancelled_RefreshData(e, bwk))
                 {
                     return;
@@ -929,7 +929,7 @@ namespace DDPM.UI.Module.Color
                     }
                     DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
                     DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] WriteColorPresetSettings() called End");
-                    Thread.Sleep(100);
+                    Task.Delay(100).Wait();
 
                     foreach (string key in config.AppInfo.Keys)
                     {
@@ -1195,10 +1195,10 @@ namespace DDPM.UI.Module.Color
 
         private bool Cancelled_RefreshData(DoWorkEventArgs e, BackgroundWorker bw)
         {
-            if (bw.CancellationPending)
+            if (bw != null && bw.CancellationPending)
             {
                 Debug.WriteLine("[InputSource] Cancelled_RefreshData.");
-                _log.Info("[InputSource] Cancelled_RefreshData.");
+                _log?.Info("[InputSource] Cancelled_RefreshData.");
                 e.Cancel = true;
                 return true;
             }
@@ -1207,11 +1207,12 @@ namespace DDPM.UI.Module.Color
 
         public void CallCancel()
         {
-            if (bw.IsBusy)
+            if (bw != null && bw.IsBusy)
             {
-                _log.Info("[InputSource] CallCancel.");
+                _log?.Info("[InputSource] CallCancel.");
                 bw.CancelAsync();
-                DdpmCommonHelper.DeviceManagerSA.CancelVcpTask((Guid)guid);
+                if (guid != null)
+                    DdpmCommonHelper.DeviceManagerSA.CancelVcpTask((Guid)guid);
             }
         }
 
@@ -1700,7 +1701,7 @@ namespace DDPM.UI.Module.Color
 
                 }
                 else
-                    vis_ad = Visibility.Hidden;
+                    vis_ad = Visibility.Collapsed;
 
                 IsisAdvanced_Settings = vis_ad;
             }

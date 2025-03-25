@@ -142,6 +142,11 @@ namespace DDPM.SA.Common.Settings
         {
             return 1 == ReadInt("IsEABrokerRevoked");
         }
+
+        public static bool IsTestMonitorInfoUpdateEnabled()
+        {
+            return 1 == ReadInt("IsTestMonitorInfoUpdateEnabled");
+        }
         #endregion EasyArrange
 
         #region DdpmHomePlgin

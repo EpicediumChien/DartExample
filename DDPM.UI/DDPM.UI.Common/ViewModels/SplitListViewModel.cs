@@ -39,6 +39,14 @@ namespace DDPM.UI.Common.ViewModels
 
         public void ClearList()
         {
+            if (_splitList != null)
+            {
+                foreach (SplitItem spItem in _splitList)
+                {
+                    spItem.Dispose();
+                }
+                _splitList = null;
+            }
             SplitList = new ObservableCollection<SplitItem>();
         }
 

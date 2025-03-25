@@ -123,5 +123,30 @@ namespace DDPM.SA.Common
             }
             return string.Empty;
         }
+
+        public static string GetLocalApplicationData(ILog log)
+        {
+            log?.Info("[GetLocalApplicationData] in ...");
+            string localAppDataPath = string.Empty;
+            try
+            {
+                localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
+                if (string.IsNullOrEmpty(localAppDataPath))
+                {
+                    log?.Info("[GetLocalApplicationData] The path returned is null or empty.");
+                }
+                else
+                {
+                    log?.Info($"[GetLocalApplicationData] The path returned is: {localAppDataPath}");
+                }
+            }
+            catch (Exception ex)
+            {
+                log?.Error("[GetLocalApplicationData] Failed to get the LocalApplicationData path.", ex);
+                localAppDataPath = string.Empty;
+            }
+            return localAppDataPath;
+        }
     }
 }

@@ -11042,10 +11042,16 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     else
                     {
-                        using (StreamReader r = new StreamReader(ss_1[1]))
+                        try
                         {
-                            jsonString = r.ReadToEnd();
-                            r.Close();
+                            using (StreamReader r = new StreamReader(ss_1[1]))
+                            {
+                                jsonString = r.ReadToEnd();
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            writelog($"[CLIDisplayPlugins] ApplyConfiguration failed, exception message: {ex.Message}");
                         }
                     }
                     // modiffy end @ 20241022

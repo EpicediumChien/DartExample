@@ -178,6 +178,80 @@ namespace CLI.Subagent
                 return;
             }
 
+            List<string> DeviceType = new List<string>()
+            {
+                "DISPLAY",
+                "MOUSE",
+                "KEYBOARD",
+                "AUDIO",
+                "PEN",
+                "WEBCAM",
+                "DOCK",
+            };
+
+            List<string> Valid_Option_Name = new List<string>()
+            {
+                "VALUE",
+                "INPUT",
+                "OPCODE",
+            };
+
+            List<string> TargetFeature_WO_Value = new List<string>()
+            {
+                "RESTOREFACTORYDEFAULTS",
+                "RESTORELEVELDEFAULTS",
+                "RESTORECOLORDEFAULTS",
+                "PXPZOOM",
+                "SILENTFWUPDATE",
+                "NETWORKKVMACCESSRESET",
+            };
+
+            idx = commandLineInputs.FindIndex(x => x.Command.Equals("SET"));
+            if (idx >= 0)
+            {
+                //check command line has the option value with set command
+                //int tmp = TargetFeature_WO_Value.FindIndex(x => x.Equals(commandLineInputs[idx].TargetFeature));
+                //Console.WriteLine($"idx: {idx}, option_count: {commandLineInputs[idx].Options.Count}, targetfeature: {commandLineInputs[idx].TargetFeature} {tmp}");
+                if (commandLineInputs[idx].Options.Count <= 0 && TargetFeature_WO_Value.FindIndex(x => x.Equals(commandLineInputs[idx].TargetFeature)) < 0) //set command without option value --> fail
+                {
+                    _exitcode = ICLICommandTable.Response_FormatError();
+                    return;
+                }
+                else
+                {
+                    //check if set command with correct targettype and targetfeature
+                    //Console.WriteLine($"TargetType: {commandLineInputs[idx].TargetType} {commandLineInputs[idx].Options.Count}");
+                    var matchingItems = ICLICommandTable.CLIHelpCommandStructure.FeatureList.Where(dict =>
+                        dict["TargetType"].ToString().Equals(commandLineInputs[idx].TargetType.ToString(), StringComparison.OrdinalIgnoreCase) &&
+                        dict["TargetFeature"].ToString().Equals(commandLineInputs[idx].TargetFeature.ToString(), StringComparison.OrdinalIgnoreCase)).ToList();
+                    //Console.WriteLine($"TargetType: {commandLineInputs[idx].TargetType}, {matchingItems.Count}");
+                    if (matchingItems.Count <= 0) //targettype and targetfeature are not meet defined
+                    {
+                        _exitcode = ICLICommandTable.Response_FormatError();
+                        return;
+                    }
+                    else
+                    {
+                        foreach (var option in commandLineInputs[idx].Options)
+                        {
+                            //check command line has the device type is correct in Firmwareupdate 
+                            //Console.WriteLine($"TargetType: {commandLineInputs[idx].TargetType}, Option value: {option.Option_Value}");
+                            if ((commandLineInputs[idx].TargetFeature.Equals("FIRMWAREUPDATE")) && (DeviceType.FindIndex(x => x.Equals(option.Option_Value)) < 0))
+                            {
+                                _exitcode = ICLICommandTable.Response_FormatError();
+                                return;
+                            }
+                            //Console.WriteLine($"Option_Name: {option.Option_Name}");
+                            if (Valid_Option_Name.FindIndex(x => x.Equals(option.Option_Name)) < 0)
+                            {
+                                _exitcode = ICLICommandTable.Response_FormatError();
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+
             InitializeCliManagerPlugin();
             if (_PluginAvailabilityTrigger_CliManager.WaitOne(TimeSpan.FromSeconds(TIMEOUT_IN_SECONDS)))
             {
