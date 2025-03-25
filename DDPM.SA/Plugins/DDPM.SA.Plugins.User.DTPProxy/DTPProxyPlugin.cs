@@ -14748,6 +14748,47 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return -99;
             }
         }
+
+        public async Task<int> GetAirAudioMaxAllowedPariedHost(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "MaxAllowedPairedHost");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMaxAllowedPariedHost failed for {guid}. WearDetectionQuickPause is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMaxAllowedPariedHost succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMaxAllowedPariedHost failed for {guid}. WearDetectionQuickPause is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMaxAllowedPariedHost failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMaxAllowedPariedHost failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
         #endregion
 
         #region AirAudio Set
