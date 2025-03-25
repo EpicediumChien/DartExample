@@ -912,8 +912,11 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _batteryStatus;
             set
             {
-                _batteryStatus = value;
-                OnPropertyChanged();
+                if (_batteryStatus != value)
+                {
+                    _batteryStatus = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
