@@ -137,6 +137,7 @@
                             <Expander.Content>
                                 <StackPanel>
                                     <!--  RightPartBorder  -->
+                                    <!--20250325 Chewlin for Fix PIMSPIMS-348382 ADD FontFamily="Roboto" -->
                                     <Border Margin="0,20,0,0" Style="{DynamicResource RightPartBorderStyle}">
                                         <StackPanel>
                                             <!--  Row: "Brightness"  -->
@@ -145,6 +146,7 @@
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
+                                                    FontFamily="Roboto"
                                                     Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                     Text="{Binding [Brightness], Source={x:Static lang:LangHelper.Instance}}"
                                                     Focusable="True" KeyboardNavigation.TabIndex="112"
@@ -203,11 +205,13 @@
                                                     TextBlockType="Body2" />
                                             </Grid>
                                             <!--  Row: "Contrast"  -->
+                                            <!--20250325 Chewlin for Fix PIMSPIMS-348382 ADD FontFamily="Roboto" -->
                                             <Grid Height="40">
                                                 <UXControls:UXTextBlock
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
+                                                    FontFamily="Roboto"
                                                     Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                     Text="{Binding [Contrast], Source={x:Static lang:LangHelper.Instance}}"
                                                     Focusable="True" KeyboardNavigation.TabIndex="116"
