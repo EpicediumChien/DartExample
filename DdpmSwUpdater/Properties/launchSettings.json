@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DdpmSwUpdater": {
+      "commandName": "Project",
+      "commandLineArgs": "/fromddpm"
+    }
+  }
+}
