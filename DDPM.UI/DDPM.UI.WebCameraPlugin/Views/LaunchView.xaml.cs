@@ -509,7 +509,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             CheckTestCase();
             //CheckTestCase2();
 
-
+            /*noPresenceFunction = false;
+            _vm.UPD_Visibility = Visibility.Visible;
+            _vm.brdHello_show = Visibility.Visible;
+            _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+            _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;*/
             print_debug("check_PresenceFunction() s22-20250102 14:43 update ver step");
 
             print_debug("check_PresenceFunction() end");
