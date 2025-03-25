@@ -275,9 +275,17 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _log.Info("Calling to DeviceManager.GetGlobalSettingParam()");
                             _globalSettings = _deviceManager.GetGlobalSettingParam().Result;
                             _log.Info("Return from DeviceManager.GetGlobalSettingParam()");
+
+                            if (DdpmCommonHelper.DeviceManagerSA == null)
+                            {
+                                _log.Info("DdpmCommonHelper.DeviceManagerSA null, DdpmCommonHelper.DeviceManagerSA = _deviceManager");
+                                DdpmCommonHelper.DeviceManagerSA = _deviceManager;
+                            }
+
                             //1030 Dean
                             //For Hess to read global setting "_globalSettings"
                             //After "GetDdpmDevicesAsync" the user setting cache is ready "DdpmCommonHelper.Settings_Cache"
+
                             if (DdpmCommonHelper.Settings_Cache == null)// &&
                                 //DdpmCommonHelper.DeviceManagerSA != null)
                             {
@@ -354,8 +362,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             ShowPluginById = true;
                         }
 
-                        _log.Info("Calling GetDdpmDevicesAsync()");
+                        _log.Info("Calling to GetDdpmDevicesAsync()");
                         await GetDdpmDevicesAsync(_deviceManager);
+                        _log.Info("Return from GetDdpmDevicesAsync()");
 
                         //Elapsed= 1 msec
                         _log.Info($"Calling to CheckIfNeedImportSetting_Display()");
