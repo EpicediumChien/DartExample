@@ -1966,7 +1966,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private void DoWork_PleaseWait(string model, AirAudioViewModel vm)
         {
             _log.Info($"[AirAudioViewModel] DoWork_PleaseWait .......");
-            DeviceID = _deviceManager.GetAirAudioDeviceIdAsync(CurrentDeviceID.ToString()).Result;
+            DeviceID = _deviceManager.GetAirAudioSerialNumberAsync(CurrentDeviceID.ToString()).Result;
             FirmwareVersion2 = _deviceManager.GetAirAudioFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
             if (_deviceManager.GetDTPProxyPluginReady().Result)
             {
@@ -1999,7 +1999,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (_waitAirAudioReady)
                 {
                     FirmwareVersion2 = _deviceManager.GetAirAudioFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
-                    DeviceID = _deviceManager.GetAirAudioDeviceIdAsync(CurrentDeviceID.ToString()).Result;
+                    DeviceID = _deviceManager.GetAirAudioSerialNumberAsync(CurrentDeviceID.ToString()).Result;
                     if (FirmwareVersion2 != null && FirmwareVersion2 != "0.0.0.0")
                     {
                         FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
