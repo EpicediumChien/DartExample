@@ -51,13 +51,14 @@
     </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer>
-            <Border Background="Transparent">
-                <StackPanel Orientation="Vertical">
+            <Border Background="Transparent" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}">
+                <StackPanel Orientation="Vertical" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}">
                     <UXControls:UXTextBlock Name="txtCaption" FontFamily="Roboto" FontSize="20" FontWeight="Normal" 
                                             Focusable="True" KeyboardNavigation.TabIndex="31"
                                   Margin="18,14,0,20" Foreground="{DynamicResource AddDeviceTxtCaption_TxtColor}"
                                   VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding [AddDevice.KnM.14], Source={x:Static lang:LangHelper.Instance}}"/>
-                    <Border Name="bdrAlert" Background="{DynamicResource bdrAlert_BgColor}" CornerRadius="4" Width="Auto" Margin="17,2,0,10" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding DongleAlertKnMVisibility}">
+                    <Border Name="bdrAlert" Background="{DynamicResource bdrAlert_BgColor}" CornerRadius="4" HorizontalAlignment="Stretch"
+                            Margin="17,2,16,10" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding DongleAlertKnMVisibility}">
                         <StackPanel Orientation="Horizontal">
                             <Grid VerticalAlignment="top">
                                 <Image x:Name="InfoIcon" Margin="12,0,0,0" Source="/DDPM.UI.Common;component/Resources/alert.png" Stretch="Fill"

@@ -1483,7 +1483,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Features automatically apply during calls 的當地語系化字串。
+        ///   Looks up a localized string similar to Features automatically apply during calls.
         /// </summary>
         internal static string Cardi_3 {
             get {
@@ -1492,7 +1492,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Features automatically apply when you listen to music and other content 的當地語系化字串。
+        ///   Looks up a localized string similar to Features automatically apply when you listen to music and other content.
         /// </summary>
         internal static string Cardi_4 {
             get {
@@ -1501,7 +1501,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Limits your near-end mic noise to create a better audio experience for others 的當地語系化字串。
+        ///   Looks up a localized string similar to Limits your near-end mic noise to create a better audio experience for others.
         /// </summary>
         internal static string Cardi_5 {
             get {
@@ -1510,7 +1510,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Limits far-end mic noise to create a better audio experience for you 的當地語系化字串。
+        ///   Looks up a localized string similar to Limits far-end mic noise to create a better audio experience for you.
         /// </summary>
         internal static string Cardi_6 {
             get {
@@ -1519,7 +1519,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Equalizer adjusts based on chosen preset 的當地語系化字串。
+        ///   Looks up a localized string similar to Equalizer adjusts based on chosen preset.
         /// </summary>
         internal static string Cardi_7 {
             get {
@@ -1528,7 +1528,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Chat 的當地語系化字串。
+        ///   Looks up a localized string similar to Chat.
         /// </summary>
         internal static string Chat {
             get {
@@ -2266,7 +2266,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Device ID 的當地語系化字串。
+        ///   Looks up a localized string similar to Device ID.
         /// </summary>
         internal static string DeviceID {
             get {
@@ -2275,7 +2275,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Devices 的當地語系化字串。
+        ///   Looks up a localized string similar to Devices.
         /// </summary>
         internal static string Devices {
             get {
@@ -5740,7 +5740,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect mouse and keyboard to the rear of the monitor (USB-A). Note: You can also connect other accessories, such as a webcam, with USB..
+        ///   Looks up a localized string similar to Connect mouse and keyboard to the rear of the monitor (USB-A). \rNote: You can also connect other accessories, such as a webcam, with USB..
         /// </summary>
         internal static string Kvm_4 {
             get {
@@ -5767,7 +5767,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect a video cable and USB cable between each PC to the monitor. You can connect up to 4 PCs (computers, gaming consoles, etc.). Select the cable type and assign a name to each source..
+        ///   Looks up a localized string similar to Connect a video cable and USB cable between each PC to the monitor. You can connect up to 4 PCs (computers, gaming consoles, etc.). \r\rSelect the cable type and assign a name to each source..
         /// </summary>
         internal static string Kvm_7 {
             get {

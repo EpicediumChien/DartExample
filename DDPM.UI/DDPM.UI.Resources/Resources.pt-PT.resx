@@ -964,7 +964,7 @@
     <value>Estabelecer ligação aos seus dispositivos</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>É necessário ligar um cabo de vídeo e um cabo USB entre cada PC e\no monitor. Pode ligar até 4 PCs (computadores, consolas\nde jogos, etc.). \r\n\r\nSelecione o tipo de cabo e atribua um nome a cada fonte.</value>
+    <value>É necessário ligar um cabo de vídeo e um cabo USB entre cada PC eo monitor. Pode ligar até 4 PCs (computadores, consolas\nde jogos, etc.). \r\n\r\nSelecione o tipo de cabo e atribua um nome a cada fonte.</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>Alternar entre PCs</value>

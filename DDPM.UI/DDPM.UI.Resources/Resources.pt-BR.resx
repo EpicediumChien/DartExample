@@ -943,7 +943,7 @@
     <value>Conectar o mouse e o teclado</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>No caso do mouse e do teclado, faça a conexão na parte traseira do monitor (USB-A).\n Nota: você também pode conectar outros periféricos USB, como\n a webcam.</value>
+    <value>No caso do mouse e do teclado, faça a conexão na parte traseira do monitor (USB-A).\n Nota: você também pode conectar outros periféricos USB, como a webcam.</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>USB-A</value>
@@ -964,7 +964,7 @@
     <value>Estabelecendo conexão com os seus dispositivos</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>Conecte um cabo de vídeo e um cabo USB entre cada PC e\n o monitor. Você pode conectar até 4 PCs (computadores, consoles\n de jogos etc.). \r\n\r\nSelecione o tipo de cabo e atribua um nome a cada fonte.</value>
+    <value>Conecte um cabo de vídeo e um cabo USB entre cada PC e o monitor. Você pode conectar até 4 PCs (computadores, consoles de jogos etc.). \r\n\r\nSelecione o tipo de cabo e atribua um nome a cada fonte.</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>Alternar entre PCs</value>
