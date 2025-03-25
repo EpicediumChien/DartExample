@@ -943,7 +943,7 @@
     <value>连接鼠标和键盘</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>鼠标和键盘请连接到显示器背面 (USB-A)。\n 提醒：您还可以连接其他 USB 外围设备，例如\n 网络摄像头。</value>
+    <value>鼠标和键盘请连接到显示器背面 (USB-A)。\n 提醒：您还可以连接其他 USB 外围设备，例如 网络摄像头。</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>USB-A</value>
@@ -964,7 +964,7 @@
     <value>连接到您的设备</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>请将每台 PC 之间的视频线缆和 USB 线缆连接到\n显示器。您最多可以连接 4 台 PC（计算机、游戏机\n等）。\r\n\r\n请选择线缆类型并为每个源分配名称。</value>
+    <value>请将每台 PC 之间的视频线缆和 USB 线缆连接到显示器。您最多可以连接 4 台 PC（计算机、游戏机等）。\r\n\r\n请选择线缆类型并为每个源分配名称。</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>在 PC 之间切换</value>

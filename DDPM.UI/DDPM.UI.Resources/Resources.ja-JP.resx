@@ -943,7 +943,7 @@
     <value>マウスと キーボードの接続</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>マウスとキーボードは、モニターの背面(USB-A)に接続します。\nメモ：Webカメラなど他のUSB周辺機器を\n接続することもできます。</value>
+    <value>マウスとキーボードは、モニターの背面(USB-A)に接続します。\nメモ：Webカメラなど他のUSB周辺機器を接続することもできます。</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>USB-A</value>
@@ -964,7 +964,7 @@
     <value>デバイスに 接続しています</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>各パソコンとモニター間のビデオ ケーブルやUSBケーブルを\n接続してください。最大4台のパソコン（コンピューター、ゲーミング \nコンソールなど）を接続できます。\r\n\r\nケーブル タイプを選択し、各ソースに名前を割り当ててください。</value>
+    <value>各パソコンとモニター間のビデオ ケーブルやUSBケーブルを接続してください。最大4台のパソコン（コンピューター、ゲーミング コンソールなど）を接続できます。\r\n\r\nケーブル タイプを選択し、各ソースに名前を割り当ててください。</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>パソコンの切り替え</value>

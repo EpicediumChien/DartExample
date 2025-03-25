@@ -964,7 +964,7 @@
     <value>Łączenie z urządzeniami</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>Podłącz kabel wideo i USB między każdym komputerem\n i monitorem. Możesz podłączyć do 4 komputerów (komputery, konsole\n do gier itp.). \r\n\r\nWybierz typ i przypisz nazwę do każdego źródła.</value>
+    <value>Podłącz kabel wideo i USB między każdym komputerem i monitorem. Możesz podłączyć do 4 komputerów (komputery, konsole do gier itp.). \r\n\r\nWybierz typ i przypisz nazwę do każdego źródła.</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>Przełączanie między komputerami</value>

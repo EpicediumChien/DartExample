@@ -943,7 +943,7 @@
     <value>Connecter la souris et le clavier</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>Connectez la souris et le clavier à l’arrière du moniteur (USB-A).\n Remarque : Vous pouvez également connecter d’autres périphériques USB tels que\nla webcam.</value>
+    <value>Connectez la souris et le clavier à l’arrière du moniteur (USB-A).\n Remarque : Vous pouvez également connecter d’autres périphériques USB tels quela webcam.</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>USB-A</value>
@@ -964,7 +964,7 @@
     <value>Connexion en cours à vos appareils</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>Reliez un câble vidéo et un câble USB entre chaque PC et \n l’écran. Vous pouvez connecter jusqu’à 4 PC (ordinateurs, consoles\n de jeux, etc.). \r\n\r\nSélectionnez le type de câble et attribuez un nom à chaque source.</value>
+    <value>Reliez un câble vidéo et un câble USB entre chaque PC et l’écran. Vous pouvez connecter jusqu’à 4 PC (ordinateurs, consoles de jeux, etc.). \r\n\r\nSélectionnez le type de câble et attribuez un nom à chaque source.</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>Basculer entre les PC</value>

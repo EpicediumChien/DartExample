@@ -943,7 +943,7 @@
     <value>連接滑鼠和鍵盤</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>若為滑鼠和鍵盤，請連接至顯示器背面 (USB-A)。\n請注意：您也可以連接其他 USB 週邊設備，例如\n網路攝影機。</value>
+    <value>若為滑鼠和鍵盤，請連接至顯示器背面 (USB-A)。\n請注意：您也可以連接其他 USB 週邊設備，例如網路攝影機。</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>USB-A</value>
@@ -964,7 +964,7 @@
     <value>連線至您的裝置</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>請將電腦之間的視訊纜線和 USB 纜線連接至\n顯示器。您最多可以連接 4 台 PC (電腦、遊戲\n主控台等)。\r\n\r\n請選取纜線類型，並為每個來源指派一個名稱。</value>
+    <value>請將電腦之間的視訊纜線和 USB 纜線連接至顯示器。您最多可以連接 4 台 PC (電腦、遊戲主控台等)。\r\n\r\n請選取纜線類型，並為每個來源指派一個名稱。</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>在 PC 之間切換</value>
