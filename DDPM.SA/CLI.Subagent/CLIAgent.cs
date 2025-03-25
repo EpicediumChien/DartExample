@@ -214,7 +214,7 @@ namespace CLI.Subagent
             {
                 //check command line has the option value with set command
                 int tmp = TargetFeature_WO_Value.FindIndex(x => x.Equals(commandLineInputs[idx].TargetFeature));
-                Console.WriteLine($"idx: {idx}, option_count: {commandLineInputs[idx].Options.Count}, targetfeature: {commandLineInputs[idx].TargetFeature} {tmp}");
+                //Console.WriteLine($"idx: {idx}, option_count: {commandLineInputs[idx].Options.Count}, targetfeature: {commandLineInputs[idx].TargetFeature} {tmp}");
                 if (commandLineInputs[idx].Options.Count <= 0 && TargetFeature_WO_Value.FindIndex(x => x.Equals(commandLineInputs[idx].TargetFeature)) < 0) //set command without option value --> fail
                 {
                     _exitcode = ICLICommandTable.Response_FormatError();
@@ -223,11 +223,11 @@ namespace CLI.Subagent
                 else
                 {   
                     //check if set command with correct targettype and targetfeature
-                    Console.WriteLine($"TargetType: {commandLineInputs[idx].TargetType} Option Count: {commandLineInputs[idx].Options.Count}");
+                    //Console.WriteLine($"TargetType: {commandLineInputs[idx].TargetType} Option Count: {commandLineInputs[idx].Options.Count}");
                     var matchingItems = ICLICommandTable.CLIHelpCommandStructure.FeatureList.Where(dict =>
                         dict["TargetType"].ToString().Equals(commandLineInputs[idx].TargetType.ToString(), StringComparison.OrdinalIgnoreCase) &&
                         dict["TargetFeature"].ToString().Equals(commandLineInputs[idx].TargetFeature.ToString(), StringComparison.OrdinalIgnoreCase)).ToList();
-                    Console.WriteLine($"TargetType: {commandLineInputs[idx].TargetType}, match: {matchingItems.Count}");
+                    //Console.WriteLine($"TargetType: {commandLineInputs[idx].TargetType}, match: {matchingItems.Count}");
                     if (matchingItems.Count <= 0) //targettype and targetfeature are not meet pre-defined value
                     {
                         _exitcode = ICLICommandTable.Response_FormatError();
@@ -241,12 +241,12 @@ namespace CLI.Subagent
                              
                             
                             string[] ov = option.Option_Value.Split(',');
-                            Console.WriteLine($"Option name: {option.Option_Name} Option value: {option.Option_Value}");
-                            Console.WriteLine($"Option count: {commandLineInputs[idx].Options.Count} ov_length: {ov.Length} ov_count:{ov.Count()}");
+                            //Console.WriteLine($"Option name: {option.Option_Name} Option value: {option.Option_Value}");
+                            //Console.WriteLine($"Option count: {commandLineInputs[idx].Options.Count} ov_length: {ov.Length} ov_count:{ov.Count()}");
                             //check the Option Value of Firmwareupdate, since it will need to support CLI and CMA  commandLineInputs[idx].Options.Count <= 1 && 
                             if ((commandLineInputs[idx].TargetFeature.Equals("FIRMWAREUPDATE")))// && (DeviceType.FindIndex(x => x.Equals(option.Option_Value)) < 0))
                             {
-                                Console.WriteLine($"ov_0: {ov[0]} index: {DeviceType.FindIndex(x => x.Equals(ov[0]))}");
+                                //Console.WriteLine($"ov_0: {ov[0]} index: {DeviceType.FindIndex(x => x.Equals(ov[0]))}");
                                 //if (commandLineInputs[idx].Options.Count <= 1 && !string.IsNullOrEmpty(ov[0]) && (DeviceType.FindIndex(x => x.Equals(ov[0])) < 0))
                                 if (!string.IsNullOrEmpty(ov[0]) && (DeviceType.FindIndex(x => x.Equals(ov[0])) >= 0))
                                 {
@@ -261,7 +261,7 @@ namespace CLI.Subagent
                                 //_exitcode = ICLICommandTable.Response_FormatError();
                                 //return;
                             }
-                            Console.WriteLine($"Option_Name: {option.Option_Name}");
+                            //Console.WriteLine($"Option_Name: {option.Option_Name}");
                             if (Valid_Option_Name.FindIndex(x => x.Equals(option.Option_Name)) < 0)
                             {
                                 _exitcode = ICLICommandTable.Response_FormatError();

@@ -3219,13 +3219,13 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 }
                                 else if (g.LogicalDeviceType == "LogicalWiredAudio" && ss_1[0].ToUpper().Equals("SPEAKER"))
                                 {
-                                    foreach (string m in model)
-                                    {
-                                        if (m.ToString().Equals(g.ModelNumber))
-                                            Console.WriteLine($"------- SAME{m}  {g.ModelNumber} -------");
-                                        else
-                                            Console.WriteLine($"------- DIFFERENT{m}  {g.ModelNumber} -------");
-                                    }
+                                    //foreach (string m in model)
+                                    //{
+                                    //    if (m.ToString().Equals(g.ModelNumber))
+                                    //        Console.WriteLine($"------- SAME{m}  {g.ModelNumber} -------");
+                                    //    else
+                                    //        Console.WriteLine($"------- DIFFERENT{m}  {g.ModelNumber} -------");
+                                    //}
                                     cli_FWU_RESPONSE.Model = g.ModelNumber;
                                     cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
                                     cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
@@ -3234,10 +3234,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 }
                                 else if (g.LogicalDeviceType == "LogicalWiredAudio" && ss_1[0].ToUpper().Equals("SOUNDBAR"))
                                 {
-                                    if (model.ToString().Equals(g.ModelNumber))
-                                        Console.WriteLine($"------- SAME{model}  {g.ModelNumber} -------");
-                                    else
-                                        Console.WriteLine($"------- DIFFERENT{model}  {g.ModelNumber} -------");
+                                    //if (model.ToString().Equals(g.ModelNumber))
+                                    //    Console.WriteLine($"------- SAME{model}  {g.ModelNumber} -------");
+                                    //else
+                                    //    Console.WriteLine($"------- DIFFERENT{model}  {g.ModelNumber} -------");
                                     cli_FWU_RESPONSE.Model = g.ModelNumber;
                                     cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
                                     cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
@@ -3268,7 +3268,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 }
                                 else if (ss_1[0].ToUpper().Equals("AUDIO"))
                                 {
-                                    if (g.ModelNumber.ToString().Equals(commandLineInput.Model.ToString()))
+                                    //if (g.ModelNumber.ToString().Equals(commandLineInput.Model.ToString()))
                                     {
                                         cli_FWU_RESPONSE.Model = g.ModelNumber;
                                         cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
@@ -3276,14 +3276,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber}, ServiceTag: {(string.IsNullOrEmpty(g.DockServiceTag) ? "N/A" : g.DockServiceTag)} Version: {g.FirmwareVersion}");
                                         cli_FWU_RESPONSE.Result = "PASS";
                                     }
-                                    else
-                                    {
-                                        cli_FWU_RESPONSE.Model = g.ModelNumber;
-                                        cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
-                                        cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
-                                        cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber.ToString()}, ServiceTag: {commandLineInput.Model.ToString()}");
-                                        cli_FWU_RESPONSE.Result = "PASS";
-                                    }
+                                    //else
+                                    //{
+                                    //    cli_FWU_RESPONSE.Model = g.ModelNumber;
+                                    //    cli_FWU_RESPONSE.ServiceTag = g.DockServiceTag;
+                                    //    cli_FWU_RESPONSE.FWVersion = g.FirmwareVersion;
+                                    //    cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {g.ModelNumber.ToString()}, ServiceTag: {commandLineInput.Model.ToString()}");
+                                    //    cli_FWU_RESPONSE.Result = "PASS";
+                                    //}
                                 }
 
                             }
