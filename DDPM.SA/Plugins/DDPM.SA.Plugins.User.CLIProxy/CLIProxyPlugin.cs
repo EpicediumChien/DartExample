@@ -405,6 +405,11 @@ namespace DDPM.SA.Plugin.User.CLIManager
             _CliManagerPlugin.CLIDeviceCheckEvent += _CliManagerPlugin_CLIDeviceCheckEvent;
 
             relay_registered = true;
+
+            if (relay_registered)
+            {
+                _CliManagerPlugin.SendNKVMCommand();
+            }
         }
 
         private async Task<string> RunAsyncTimeout(Task task)
