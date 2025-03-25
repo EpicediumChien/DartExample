@@ -30,21 +30,8 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
         {
             InitializeComponent();
             _vm = vm;
-            //InitializeAsync();
             _vm!.SoundbarSettingChanged += SoundbarSettingChanged;
-            //_vm.CheckSpeakerFunc();
             InitializeAsync();
-            Unloaded += SpeakerAudioPresetRightView_UnLoadedStatus;
-            //_vm.Invoke_PleaseWaitAsync(_vm.Model, _vm).Wait();
-        }
-
-        private async void SpeakerAudioPresetRightView_UnLoadedStatus(object sender, RoutedEventArgs e)
-        {
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                _vm!.SoundbarSettingChanged -= SoundbarSettingChanged;
-                _vm._log!.Info("[SpeakerAudioPresetRightView] -= SoundbarSettingChanged ");
-            }
         }
 
         private void SoundbarSettingChanged(object? sender, EventArgs e)
@@ -55,8 +42,6 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
         private async void InitializeAsync()
         {
             _vm._log!.Info("[SpeakerAudioPresetRightView] Before Invoke_PleaseWaitAsync");
-            //await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
-            //_vm._log!.Info("[SpeakerAudioPresetRightView] After Invoke_PleaseWaitAsync");
             if (_vm.SpeakerInfoValueDTP.SpeakerProfile == _vm._default)// || _vm.SpeakerInfoValueDTP.SpeakerProfile == "")
             {
                 if (_vm.IsDTPReady)
