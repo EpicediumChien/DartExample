@@ -899,10 +899,20 @@ namespace DDPM.SA.Common
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
                 }
-                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+
+                try
                 {
-                    sw.WriteLine(DateTime.Now);
-                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                    {
+                        sw.WriteLine(DateTime.Now);
+                        sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    }
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
+#endif
                 }
             }
 //#if DEBUG //Dean 0122 should keep response to console window for CLI
@@ -952,11 +962,21 @@ namespace DDPM.SA.Common
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
                 }
-                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+
+                try
                 {
-                    sw.WriteLine(DateTime.Now);
-                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                    {
+                        sw.WriteLine(DateTime.Now);
+                        sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    }
                 }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
+#endif
+                }                
             }
 //#if DEBUG //Dean 0122 should keep response to console window for CLI
             Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
@@ -1005,11 +1025,21 @@ namespace DDPM.SA.Common
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
                 }
-                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+
+                try
                 {
-                    sw.WriteLine(DateTime.Now);
-                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                    {
+                        sw.WriteLine(DateTime.Now);
+                        sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                    }
                 }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
+#endif
+                }                
             }
 //#if DEBUG //Dean 0122 should keep response to console window for CLI
             Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));

@@ -1040,12 +1040,20 @@ namespace DDPM.UI.Plugin.ViewModels
                             switch (property)
                             {
                                 case "IsHDROnChanged":
-                                    if (bool.TryParse(di.Message, out bool isHDROn) &&
-                                        IsHDROn != isHDROn)
+                                    if (bool.TryParse(di.Message, out bool isHDROn) && di.ID == CurrentDeviceID && IsHDROn != isHDROn)
                                     {
                                         Application.Current.Dispatcher.Invoke(() =>
                                         {
                                             IsHDROn = isHDROn;
+                                        });
+                                    }
+                                    break;
+                                case "IsAutoFramingOnChanged":
+                                    if (bool.TryParse(di.Message, out bool isAFOn) && di.ID == CurrentDeviceID && IsAutoFramingOn != isAFOn)
+                                    {
+                                        Application.Current.Dispatcher.Invoke(() =>
+                                        {
+                                            IsAutoFramingOn = isAFOn;
                                         });
                                     }
                                     break;
@@ -1353,7 +1361,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsAutoFramingOnText));
                     OnPropertyChanged(nameof(PanArrowVisibility));
-                    CurrentProfile.IsAutoFramingOn = value;
+                    //CurrentProfile.IsAutoFramingOn = value;
 
                     //Derek 2024/11/06
                     if (IsAutoFramingOn)
@@ -1615,16 +1623,26 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged(nameof(IsHDROnText));
                     CurrentProfile.IsHDROn = value;
 
-                    new Thread(() =>
+                    //new Thread(() =>
+                    //{
+                    //    Thread.Sleep(3000);
+                    //    AlertVisibility = Visibility.Collapsed;
+
+                    //    //is_hdr_enable = true;
+                    //    is_hdr_enable = usb_hdr_enable;
+                    //    OnPropertyChanged(nameof(hdr_enable));
+
+                    //}).Start();
+                    Task.Run(async () =>
                     {
-                        Thread.Sleep(3000);
+                        await Task.Delay(3000);
                         AlertVisibility = Visibility.Collapsed;
 
                         //is_hdr_enable = true;
                         is_hdr_enable = usb_hdr_enable;
                         OnPropertyChanged(nameof(hdr_enable));
+                    });
 
-                    }).Start();
                 }
                 catch (Exception ex)
                 {
@@ -2314,16 +2332,25 @@ namespace DDPM.UI.Plugin.ViewModels
                         OnPropertyChanged(nameof(hdr_enable));
                         DdpmCommonHelper.DeviceManagerSA?.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), (bool)value);
                         WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
-                        new Thread(() =>
+                        //new Thread(() =>
+                        //{
+                        //    Thread.Sleep(3000);
+                        //    AlertVisibility = Visibility.Collapsed;
+
+                        //    //is_hdr_enable = true;
+                        //    is_hdr_enable = usb_hdr_enable;
+                        //    OnPropertyChanged(nameof(hdr_enable));
+
+                        //}).Start();
+                        Task.Run(async () =>
                         {
-                            Thread.Sleep(3000);
+                            await Task.Delay(3000);
                             AlertVisibility = Visibility.Collapsed;
 
                             //is_hdr_enable = true;
                             is_hdr_enable = usb_hdr_enable;
                             OnPropertyChanged(nameof(hdr_enable));
-
-                        }).Start();
+                        });
                         OnPropertyChanged(nameof(IsHDROnText));
                         break;
                     case "Focus":

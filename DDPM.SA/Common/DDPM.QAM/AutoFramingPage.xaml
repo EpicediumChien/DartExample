@@ -9,81 +9,81 @@
              mc:Ignorable="d" Loaded="UserControl_Loaded"
              Height="72"
              Width="288">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.QAM;component/PluginStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-            <Style TargetType="ToggleButton">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ToggleButton">
-                            <Grid Width="76"
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/DDPM.QAM;component/PluginStyles.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+      <Style TargetType="ToggleButton">
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="ToggleButton">
+              <Grid Width="76"
                                   Height="20">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="40" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" x:Name="SwitchText" Margin="0,5,3,0"
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="40" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" x:Name="SwitchText" Margin="0,5,3,0"
                                            Text="{Binding [OFF], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
                                            MaxWidth="40"
                                            Height="20"
                                            VerticalAlignment="Center"
                                            HorizontalAlignment="Right"
                                            Foreground="{DynamicResource TextBlock_ForegroundColor}" />
-                                <Border Grid.Column="2" x:Name="BackgroundBorder"
+                <Border Grid.Column="2" x:Name="BackgroundBorder"
                                         Width="36"
                                         Height="17"
                                         CornerRadius="9"
                                         Background="#A4B8CD" />
-                                <Ellipse Grid.Column="2" x:Name="SwitchThumb"
+                <Ellipse Grid.Column="2" x:Name="SwitchThumb"
                                          Width="12"
                                          Height="12"
                                          Fill="White"
                                          HorizontalAlignment="Left"
                                          Margin="5,0,0,0" />
 
-                            </Grid>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsChecked"
+              </Grid>
+              <ControlTemplate.Triggers>
+                <Trigger Property="IsChecked"
                                          Value="True">
-                                    <Setter TargetName="BackgroundBorder"
+                  <Setter TargetName="BackgroundBorder"
                                             Property="Background"
                                             Value="#0672CB" />
-                                    <Setter TargetName="SwitchThumb"
+                  <Setter TargetName="SwitchThumb"
                                             Property="HorizontalAlignment"
                                             Value="Right" />
-                                    <Setter TargetName="SwitchThumb"
+                  <Setter TargetName="SwitchThumb"
                                             Property="Margin"
                                             Value="0,0,5,0" />
-                                    <Setter TargetName="SwitchText"
+                  <Setter TargetName="SwitchText"
                                             Property="Text"
-                                            Value="ON" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <Border Background="{DynamicResource Default_SA_QAM_Menu_BackGround}"
+                                            Value="{Binding [ON], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
+                </Trigger>
+              </ControlTemplate.Triggers>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Border Background="{DynamicResource Default_SA_QAM_Menu_BackGround}"
             Height="72"
             CornerRadius="0,0,10,10">
-        <Grid Margin="10,5,10,5">
-            <StackPanel HorizontalAlignment="Left"
+    <Grid Margin="10,5,10,5">
+      <StackPanel HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
-                <Border Background="{StaticResource FakeTransparent}">
-                    <UXControls:UXTextBlock x:Name="tb"  Text="{Binding [AI_Auto_Framing], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+        <Border Background="{StaticResource FakeTransparent}">
+          <UXControls:UXTextBlock x:Name="tb"  Text="{Binding [AI_Auto_Framing], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
                                         FontSize="16"
                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                         TextBlockSemanticColorType="Light"
                                         TextBlockType="Caption" MaxWidth="170"
                                         VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
                                         HorizontalAlignment="Left"/>
-                    <Border.ToolTip>
-                        <!--<ToolTip Placement="Center"  VerticalOffset="40" BorderThickness="0" Margin="0" Padding="0" Visibility="Hidden" 
+          <Border.ToolTip>
+            <!--<ToolTip Placement="Center"  VerticalOffset="40" BorderThickness="0" Margin="0" Padding="0" Visibility="Hidden" 
                                      ToolTipService.HasDropShadow="True" x:Name="tt"
                                      ToolTipService.InitialShowDelay="1000"
                                      ToolTipService.BetweenShowDelay="2000">
@@ -99,43 +99,43 @@
                                 <TextBlock MaxWidth="350" TextWrapping="WrapWithOverflow" Text="{Binding [AI_Auto_Framing], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                             </Border>
                         </ToolTip>-->
-                        <ToolTip Background="Transparent" BorderThickness="0" Placement="Center" VerticalOffset="40" x:Name="tt">
-                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                <Border.Resources>
-                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                </Border.Resources>
-                                <TextBlock Text="{Binding [AI_Auto_Framing], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+            <ToolTip Background="Transparent" BorderThickness="0" Placement="Center" VerticalOffset="40" x:Name="tt">
+              <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                <Border.Resources>
+                  <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                </Border.Resources>
+                <TextBlock Text="{Binding [AI_Auto_Framing], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
                                         MaxWidth="350" TextWrapping="WrapWithOverflow"/>
-                            </Border>
-                        </ToolTip>
-                    </Border.ToolTip>
-                </Border>
-                <Border Background="{StaticResource FakeTransparent}" Width="20" Height="20">
-                    <Path Data="M8 5.05005C8.55228 5.05005 9 4.60233 9 4.05005C9 3.49776 8.55228 3.05005 8 3.05005C7.44772 3.05005 7 3.49776 7 4.05005C7 4.60233 7.44772 5.05005 8 5.05005Z
+              </Border>
+            </ToolTip>
+          </Border.ToolTip>
+        </Border>
+        <Border Background="{StaticResource FakeTransparent}" Width="20" Height="20">
+          <Path Data="M8 5.05005C8.55228 5.05005 9 4.60233 9 4.05005C9 3.49776 8.55228 3.05005 8 3.05005C7.44772 3.05005 7 3.49776 7 4.05005C7 4.60233 7.44772 5.05005 8 5.05005Z
                       M8.75 6.44995H7.25V12.65H8.75V6.44995Z
                       M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"
                       Fill="{DynamicResource Default_SA_QAM_Path_IsTrigger_Color}"
                       Margin="2"
                       VerticalAlignment="Center" />
-                    <Border.ToolTip>
-                        <ToolTip Background="Transparent" BorderThickness="0" Placement="Center" VerticalOffset="40">
-                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                <Border.Resources>
-                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                </Border.Resources>
-                                <TextBlock Text="{Binding [WebCameraSettings.2], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+          <Border.ToolTip>
+            <ToolTip Background="Transparent" BorderThickness="0" Placement="Center" VerticalOffset="40">
+              <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                <Border.Resources>
+                  <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                </Border.Resources>
+                <TextBlock Text="{Binding [WebCameraSettings.2], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
                                         MaxWidth="350" TextWrapping="WrapWithOverflow"/>
-                            </Border>
-                        </ToolTip>
-                    </Border.ToolTip>
-                </Border>
-            </StackPanel>
-            <Grid HorizontalAlignment="Right"
+              </Border>
+            </ToolTip>
+          </Border.ToolTip>
+        </Border>
+      </StackPanel>
+      <Grid HorizontalAlignment="Right"
                   VerticalAlignment="Center">
-                <ToggleButton Width="76" x:Name="MyToggleButton"
+        <ToggleButton Width="76" x:Name="MyToggleButton"
                               Height="20" Click="ToggleButton_Click" 
                               IsChecked="{Binding AutoFramingStatus}"/>
-            </Grid>
-        </Grid>
-    </Border>
+      </Grid>
+    </Grid>
+  </Border>
 </UserControl>

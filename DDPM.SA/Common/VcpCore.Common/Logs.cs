@@ -26,9 +26,18 @@ namespace VcpCore.Common
             { Logg.Info("[INFO] " + DebugMsg); }
             if (!string.IsNullOrEmpty(logPath))
             {
-                using (StreamWriter writer = new StreamWriter(logPath, true))
+                try
                 {
-                    writer.WriteLine($"{DateTime.Now}: {DebugMsg}");
+                    using (StreamWriter writer = new StreamWriter(logPath, true))
+                    {
+                        writer.WriteLine($"{DateTime.Now}: {DebugMsg}");
+                    }
+                }
+                catch(Exception ex)
+                {
+#if DEBUG
+                    Console.WriteLine($"[VcpCore.Common.Logs] DebugMsg failed, message: {ex.Message}");
+#endif
                 }
             }
 #if DEBUG
@@ -37,16 +46,25 @@ namespace VcpCore.Common
         }
 
         public void DebugMsg_1(string DebugMsg)
-        {
+        {            
             string s = $"[{_PluginLogId}][INFO] " + DebugMsg;
             if (Logg != null) // Elie, check if it's null or not.
             { Logg.Info(s); }
             if (!string.IsNullOrEmpty(logPath))
             {
-                using (StreamWriter writer = new StreamWriter(logPath, true))
+                try
                 {
-                    writer.WriteLine($"{DateTime.Now}: {s}");
+                    using (StreamWriter writer = new StreamWriter(logPath, true))
+                    {
+                        writer.WriteLine($"{DateTime.Now}: {s}");
+                    }
                 }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Console.WriteLine($"[VcpCore.Common.Logs] DebugMsg_1 failed, message: {ex.Message}");
+#endif
+                }                
             }
 #if DEBUG
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + s);
@@ -60,10 +78,20 @@ namespace VcpCore.Common
             { Logg.Info(s); }
             if (!string.IsNullOrEmpty(logPath))
             {
-                using (StreamWriter writer = new StreamWriter(logPath, true))
+                try
                 {
-                    writer.WriteLine($"{DateTime.Now}: {DebugMsg}");
+                    using (StreamWriter writer = new StreamWriter(logPath, true))
+                    {
+                        writer.WriteLine($"{DateTime.Now}: {DebugMsg}");
+                    }
                 }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Console.WriteLine($"[VcpCore.Common.Logs] Info failed, message: {ex.Message}");
+#endif
+                }
+                
             }
 #if DEBUG
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + s);
@@ -77,10 +105,19 @@ namespace VcpCore.Common
             { Logg.Error(s); }
             if (!string.IsNullOrEmpty(logPath))
             {
-                using (StreamWriter writer = new StreamWriter(logPath, true))
+                try
                 {
-                    writer.WriteLine($"{DateTime.Now}: {DebugMsg}");
+                    using (StreamWriter writer = new StreamWriter(logPath, true))
+                    {
+                        writer.WriteLine($"{DateTime.Now}: {DebugMsg}");
+                    }
                 }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Console.WriteLine($"[VcpCore.Common.Logs] Info failed, message: {ex.Message}");
+#endif
+                }                
             }
 #if DEBUG
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + s);

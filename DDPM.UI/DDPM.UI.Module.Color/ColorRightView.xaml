@@ -729,7 +729,7 @@
                     </UXControls:UXAlert>
                 </Grid>
 
-                <Border Grid.Row="7" Name="DisableAll"
+                <Border Grid.Row="0" Grid.RowSpan="7" Name="DisableAll"
                         Background="#4C24273C">
                     <Border.Style>
                         <Style TargetType="Border">

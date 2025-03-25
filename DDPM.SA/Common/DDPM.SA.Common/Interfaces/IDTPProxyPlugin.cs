@@ -535,6 +535,7 @@ namespace DDPM.SA.Common
         Task<int> GetAirAudioBatteryLevelLeftAsync(string Guid);
         Task<int> GetAirAudioBatteryLevelRightAsync(string Guid);
         Task<int> GetAirAudioBatteryLevelCaseAsync(string Guid);
+        Task<int>  GetAirAudioMaxAllowedPariedHost(string Guid);
 
         //Task<string> GetAirAudioPairedHostName2Async(string Guid);
         #endregion Get

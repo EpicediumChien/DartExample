@@ -733,7 +733,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         private void DoWork_PleaseWait(object? sender, DoWorkEventArgs e)
         {
             _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait in ... ");
-            Thread.Sleep(1500);
+            Task.Delay(1500).Wait(); //Thread.Sleep(1500);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -744,20 +744,20 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 sc.Status == ServiceControllerStatus.StopPending)
             {
                 PleaseWaitMessage = LangHelper.Instance["Wait_DTH"];// "DellTechHub service is not running";
-                Thread.Sleep(200);
+                Task.Delay(200).Wait(); //Thread.Sleep(200);
                 _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait Wait_DTH {PleaseWaitMessage} ... ");
             }
             while (!IsDeviceManagerReady)
             {
                 PleaseWaitMessage = LangHelper.Instance["Wait_DevMgr"]; //"DDPM.Subagent.DeviceManager is not ready";
-                Thread.Sleep(200);
+                Task.Delay(200).Wait(); //Thread.Sleep(200);
                 _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait Wait_DevMgr {PleaseWaitMessage} ... ");
             }
             int timeoutMsec = 10000;
             while (HomeDeviceCount == 0)
             {
                 PleaseWaitMessage = LangHelper.Instance["Wait_NoDevice"];// "No device detected";
-                Thread.Sleep(500);
+                Task.Delay(500).Wait();
                 _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait Wait_NoDevice {PleaseWaitMessage} ... ");
                 if (sw.ElapsedMilliseconds > timeoutMsec)
                 {

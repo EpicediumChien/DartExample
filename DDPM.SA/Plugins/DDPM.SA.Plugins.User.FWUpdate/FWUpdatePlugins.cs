@@ -981,6 +981,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _IsDownloadAndInsytall = false;
                 return Task.FromResult(fwUpdateInfos);
             }
+            finally
+            {
+                method.Dispose();
+            }
         }
 
         public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay, DeviceType deviceType)

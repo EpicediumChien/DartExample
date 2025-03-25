@@ -127,7 +127,7 @@ namespace DDPM.UI.Module.AddPen_BL
             if (e.StylusDevice.TabletDevice.Type != System.Windows.Input.TabletDeviceType.Stylus)
                 return;
 
-            Thread.Sleep(300);
+            Task.Delay(300).Wait();
 
             if (IsBLE == 1)
             {
