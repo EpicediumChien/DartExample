@@ -453,6 +453,16 @@ namespace DDPM.SA.Common
             return (count > 1);
         }
 
+        // [Checkmarx] Avoid Log Forging
+        private string AvoidLogForging(string inputString)
+        {
+            string logMessage = inputString;
+            logMessage = logMessage.Replace("\n", "").Replace("\r", "");
+            logMessage = System.Security.SecurityElement.Escape(logMessage);
+
+            return logMessage;
+        }
+
         //20241115
         //To support multiple command per command input, it means the command sequence contains /set, /get more than once.
         public List<CommandLineInput> StringProcessing_multi(string[] args)
@@ -507,7 +517,10 @@ namespace DDPM.SA.Common
                 }
                 else
                 {
-                    _Log.Error($"[CLI] input unknown command {command}");
+                    // [Checkmarx] Avoid Log Forging
+                    string logMessage = AvoidLogForging(command);
+
+                    _Log.Error($"[CLI] input unknown command {logMessage}");
                     commandInputs.Add(input);
                     return commandInputs;
                 }
@@ -517,7 +530,10 @@ namespace DDPM.SA.Common
                 string[] str = in_type.Split('=');
                 if (str.Length < 2)
                 {
-                    _Log.Error($"[CLI] 2nd code should be the format like -Display=targetFeature (fail string: {args[start_index + 1]})");
+                    // [Checkmarx] Avoid Log Forging
+                    string logMessage = AvoidLogForging(args[start_index + 1]);
+
+                    _Log.Error($"[CLI] 2nd code should be the format like -Display=targetFeature (fail string: {logMessage})");
                     commandInputs.Add(input);
                     return commandInputs;
                 }

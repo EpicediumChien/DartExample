@@ -24,9 +24,9 @@ namespace DDPM.QAM
             if (DataContext is QAMPageViewModel vm)
             {
                 vm.isStatusChangeByDDPM = false;
-                vm.SetNoneProfile(); //Derek 2025/01/16
                 //DdpmCommonHelper.DeviceManagerSA?.WriteLog($"ToggleButton_Click -> {vm.isStatusChagneByDDPM}");
                 vm.SetAutoFramingStatus();
+                vm.SetNoneProfile(); //Derek 2025/01/16
 
                 //Derek 20250111
                 var textBlock = (TextBlock)MyToggleButton.Template.FindName("SwitchText", MyToggleButton);
@@ -34,7 +34,7 @@ namespace DDPM.QAM
                 {
                     textBlock.Text = vm.AutoFramingStatus ? LangHelper.Instance["ON"] : LangHelper.Instance["OFF"];
                 }
-            }    
+            }
         }
 
         private bool IsTextTruncated()

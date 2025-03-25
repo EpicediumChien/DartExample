@@ -408,7 +408,7 @@ namespace DDPM.UI.Module.Kvm
             int i = 0;
             while (i < 20)
             {
-                Thread.Sleep(2000);
+                Task.Delay(2000).Wait();
                 monitorList = DdpmCommonHelper.DeviceManagerSA.GetMonitors().Result;
                 if (monitorList != null && monitorList.Count > 0)
                 {

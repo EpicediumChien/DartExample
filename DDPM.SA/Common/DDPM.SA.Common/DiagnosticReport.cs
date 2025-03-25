@@ -29,42 +29,46 @@ namespace DDPM.SA.Common
                 if (!string.IsNullOrEmpty(saveFolderPath))
                 {
                     log.Info($"{nameof(SaveLogFile)} saveFolderPath : {saveFolderPath}");
-                    DDPM.SA.Common.Method.Method method = new Method.Method(log);
-                    // 確保資料夾存在
-                    if (!Directory.Exists(saveFolderPath))
-                    {
-                        Directory.CreateDirectory(saveFolderPath);
-                    }
-                    //0913 Bruce Add Security
-                    string FolderInfo;
-                    string PathSymbolicLinInfo;
-                    int count = 0;
-                    bool folderValid = false;
-                    do
-                    {
-                        FolderInfo = string.Empty;
-                        PathSymbolicLinInfo = string.Empty;
-                        folderValid = false;
-                        /*folderValid = !DDPMFileSecurity.IsPathSymbolicLinked(saveFolderPath, out PathSymbolicLinInfo);
-                        if (!folderValid)
+
+
+                    //DDPM.SA.Common.Method.Method method = new Method.Method(log);
+                    using (DDPM.SA.Common.Method.Method method = new Method.Method(log))
+                    {                    
+                        // 確保資料夾存在
+                        if (!Directory.Exists(saveFolderPath))
                         {
-                            log.Info(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + PathSymbolicLinInfo + " Retry:" + (count++));
-                            //Do remove Symbolic Link than delete folder
-                            //Directory.Delete(saveFolderPath, true);
-                            //Directory.CreateDirectory(saveFolderPath);
-                        }*/
-                        // The function call IsPathSymbolicLinked is merged to "IsFolderPathValid"
-                        //folderValid = DDPMFileSecurity.IsFolderPathValid(saveFolderPath, out FolderInfo);// && folderValid;
-                        folderValid = DDPMFileSecurity.ValidateFilePath(saveFolderPath, out FolderInfo); //[Dean 1216] Validate with sanitized string check
-                        if (!folderValid)
-                        {
-                            log.Info(nameof(SaveLogFile) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
-                            /*//Do remove Symbolic Link than delete folder
-                            Directory.Delete(saveFolderPath, true);
-                            Directory.CreateDirectory(saveFolderPath);*/
-                            return (false); //[Dean] don't remove folder to avoid callback attack
+                            Directory.CreateDirectory(saveFolderPath);
                         }
-                    } while (!folderValid && count < 2);
+                        //0913 Bruce Add Security
+                        string FolderInfo;
+                        string PathSymbolicLinInfo;
+                        int count = 0;
+                        bool folderValid = false;
+                        do
+                        {
+                            FolderInfo = string.Empty;
+                            PathSymbolicLinInfo = string.Empty;
+                            folderValid = false;
+                            /*folderValid = !DDPMFileSecurity.IsPathSymbolicLinked(saveFolderPath, out PathSymbolicLinInfo);
+                            if (!folderValid)
+                            {
+                                log.Info(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + PathSymbolicLinInfo + " Retry:" + (count++));
+                                //Do remove Symbolic Link than delete folder
+                                //Directory.Delete(saveFolderPath, true);
+                                //Directory.CreateDirectory(saveFolderPath);
+                            }*/
+                            // The function call IsPathSymbolicLinked is merged to "IsFolderPathValid"
+                            //folderValid = DDPMFileSecurity.IsFolderPathValid(saveFolderPath, out FolderInfo);// && folderValid;
+                            folderValid = DDPMFileSecurity.ValidateFilePath(saveFolderPath, out FolderInfo); //[Dean 1216] Validate with sanitized string check
+                            if (!folderValid)
+                            {
+                                log.Info(nameof(SaveLogFile) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
+                                /*//Do remove Symbolic Link than delete folder
+                                Directory.Delete(saveFolderPath, true);
+                                Directory.CreateDirectory(saveFolderPath);*/
+                                return (false); //[Dean] don't remove folder to avoid callback attack
+                            }
+                        } while (!folderValid && count < 2);
 
                     string programdataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                     string appDataPath = WTSFunction.GetActiveUserLocalAppDataPath(log);
@@ -729,7 +733,7 @@ namespace DDPM.SA.Common
                                     log.Info($"SaveLogFile - No fail info.");
                                 }
 
-                                writer.WriteLine(); // 空一行
+                                    writer.WriteLine(); // 空一行
 
                                 // Fail
                                 writer.WriteLine("=== Fail Info ===");
@@ -837,22 +841,23 @@ namespace DDPM.SA.Common
                             log.Error($"SaveLogFile - Compression : {ex.Message}");
                         }
 
-                        ret = true;
-                        //if (fail_info.Length > 0)
+                            ret = true;
+                            //if (fail_info.Length > 0)
+                            //{
+                            //    //ret = false;
+                            //    log.Error($"SaveLog was failed at following step(s): {fail_info}");
+                            //}
+                        }
+                        catch (Exception ex)
+                        {
+                            log.Error($"{nameof(SaveLogFile)} got exception ({ex.Message})");
+                            ret = false;
+                        }
+                        //if (method != null)
                         //{
-                        //    //ret = false;
-                        //    log.Error($"SaveLog was failed at following step(s): {fail_info}");
+                        //    method.Dispose();
+                        //    method = null;
                         //}
-                    }
-                    catch (Exception ex)
-                    {
-                        log.Error($"{nameof(SaveLogFile)} got exception ({ex.Message})");
-                        ret = false;
-                    }
-                    if (method != null)
-                    {
-                        method.Dispose();
-                        method = null;
                     }
                 }
                 else

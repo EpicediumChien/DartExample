@@ -314,7 +314,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             _log.Info($"[SoundBarViewModel] DoWork_PleaseWait .......");
             // Simulate time-consuming operation
-            Thread.Sleep(500);
+            Task.Delay(500).Wait();
             if (!model.Contains("SB725"))
             {
                 UpdateDTPValue();
@@ -431,13 +431,13 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isEveryLevelChecked = false;
                 _isMinMaxOnlyChecked = true;
             }
-            else if(_isVolumeAdjustmentToneMode == 1)
+            else if (_isVolumeAdjustmentToneMode == 1)
             {
                 _volumeAdjustmentToneStatus = true;
                 _isEveryLevelChecked = true;
                 _isMinMaxOnlyChecked = false;
             }
-            else 
+            else
             {
                 _volumeAdjustmentToneStatus = false;
                 _isEveryLevelChecked = false;
@@ -498,7 +498,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         break;
                 }
             }
-            else if(model == "SB522A")
+            else if (model == "SB522A")
             {
                 switch (btnName)
                 {
@@ -515,7 +515,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         break;
 
                     default:
-                            ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A.png";
+                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A.png";
                         break;
                 }
             }
@@ -542,7 +542,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A_NoLight.png";
                     break;
                 default:
-                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022.png";
+                    ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022.png";
                     break;
             }
         }
@@ -580,7 +580,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 int tick = 0;
                 while (tick < 5)
                 {
-                    Thread.Sleep(1000);
+                    Task.Delay(1000).Wait();
                     fv = _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()).Result;
                     if (fv != null && fv != string.Empty)
                     {
@@ -994,7 +994,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isIntelligentMicNoiseCancellationStatus ? Strings.On : Strings.Off;
         }
 
-        
+
         private bool _supportedMuteSoundNotificationToggleSwitch = true;
         public bool SupportedMuteSoundNotificationToggleSwitch
         {
@@ -1351,7 +1351,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             _log.Info($"[SoundBarViewModel] DoWork_PleaseWait .......");
             // Simulate time-consuming operation
-            Thread.Sleep(500);
+            Task.Delay(500).Wait();
             int sun = 0;
             UpdateDTPValue();
             // Call DetectPageShow
@@ -1482,5 +1482,5 @@ namespace DDPM.UI.Plugin.ViewModels
         //SpeakerInfoValueDTP.IsMidRangeEqualizerSupportedAsync............= True
         //SpeakerInfoValueDTP.IsTrebleEqualizerSupportedAsync.......= True
         //SpeakerInfoValueDTP.GetMuteStatusAsync.......= False
-}
+    }
 }

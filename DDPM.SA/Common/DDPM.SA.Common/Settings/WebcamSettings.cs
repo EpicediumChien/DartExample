@@ -508,7 +508,13 @@ namespace DDPM.SA.Common.Settings
                 log?.Info($"[ExportWebcamSettings] SelectedResolution :{WebcamSettings.SelectedResolution}");
                 WebcamSettings.SelectedcurrentFPS = WebcamSettings.CurrentFPS;
                 string json = JsonConvert.SerializeObject(WebcamSettings, Formatting.Indented);
-                log?.Info($"[ExportWebcamSettings] json json:{json}");
+
+                // [Checkmarx] Avoid Log Forging
+                string logMessage = json;
+                logMessage = logMessage.Replace("\n", "").Replace("\r", "");
+                logMessage = System.Security.SecurityElement.Escape(logMessage);
+
+                log?.Info($"[ExportWebcamSettings] json json:{logMessage}");
                 var fileFolder = target_folder;
                 string info = string.Empty;
                 if (!Directory.Exists(fileFolder))

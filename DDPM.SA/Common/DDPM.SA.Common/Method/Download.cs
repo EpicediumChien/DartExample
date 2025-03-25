@@ -91,7 +91,7 @@ namespace DDPM.SA.Common.Method
                     }
                     HttpClient client = new HttpClient();
                     // 設定逾時
-                    client.Timeout = TimeSpan.FromSeconds(30);
+                    client.Timeout = TimeSpan.FromSeconds(60);
                     // 發送 HTTP GET 請求到指定的 URL
                     HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cts.Token).Result;
                     // 從 URL 中取得回應標頭
@@ -100,7 +100,12 @@ namespace DDPM.SA.Common.Method
                     DownloadFileSize = header.Content.Headers.ContentLength;
                     long? fileSize = DownloadFileSize;
                     _logs?.DebugMsg_1($"{nameof(DownloadFile)} fileSize : {fileSize}");
-                    int timeoutInSeconds = fileSize.HasValue ? (int)(fileSize.Value / 1024 / 1024) * 5 : 30; // 每MB分配5秒
+                    //PIMS-352648 fix download timeout too short issue (5 min)
+                    int timeoutInSeconds = fileSize.HasValue ? (int)(fileSize.Value / 1024) * 5 : 30; // 每MB分配5秒
+                    if (timeoutInSeconds < 300)
+                    {
+                        timeoutInSeconds = 300;
+                    }
                     _logs?.DebugMsg_1($"{nameof(DownloadFile)} timeoutInSeconds : {timeoutInSeconds}");
                     // 設定逾時
                     cts.CancelAfter(TimeSpan.FromSeconds(timeoutInSeconds));
@@ -179,7 +184,7 @@ namespace DDPM.SA.Common.Method
                 {
                     if (CTS != null)
                     {
-                        CTS.CancelAfter(TimeSpan.FromSeconds(60));
+                        CTS.CancelAfter(TimeSpan.FromSeconds(300));
                     }
                 }
                 currentFileSize = DownloadFileStream.Length;

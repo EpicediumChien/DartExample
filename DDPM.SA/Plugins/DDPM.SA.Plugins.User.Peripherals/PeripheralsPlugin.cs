@@ -102,7 +102,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         //private IDeviceManagerSA _DeviceManagerPlugin;
         //private readonly object _PluginConditionLock_DeviceManager = new object();
-        private readonly object _lock = new();
+        //private readonly object _lock = new();
 
         private IDTPProxyPlugin _DTPProxyPlugin = null;
         private ISettingsManagerDev _UserSettingsPlugin = null;
@@ -161,7 +161,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 return await System.Threading.Tasks.Task.Run(() =>
                 {
-                    lock (_lock)
+                    lock (this)
                     {
                         if (_isClientConnected && _deviceHelper != null)
                         {
@@ -1435,7 +1435,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         }*/
         private void ScanDevices()
         {
-            lock (_lock)
+            lock (this)
             {
                 if (CommonFunctions.IsServiceRunning(GlobalDefinitions.DPeMServiceName, Log) && _isClientConnected && _iClient != null && _iDeviceManager != null)
                 {
@@ -2478,7 +2478,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
             if (status == ClientStatus.Connected)
             {
-                lock (_lock)
+                lock (this)
                 {
                     writelog($"_isClientConnected turn true ... ");
                     _isClientConnected = true;
@@ -2518,7 +2518,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
             else
             {
-                lock (_lock)
+                lock (this)
                 {
                     if (_isClientConnected)
                     {
@@ -2666,7 +2666,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             //System.Diagnostics.Debug.WriteLine("ParentPhysicalDevice Added, Id : " + iPhysicalDevice.Id + ", Name : " + iPhysicalDevice.Name);
             writelog("ParentPhysicalDevice Added, Id : " + iPhysicalDevice.Id + ", Name : " + iPhysicalDevice.Name);
 
-            lock (_lock)
+            lock (this)
             {
                 if (_isClientConnected)
                 {
@@ -2745,7 +2745,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         {
             //System.Diagnostics.Debug.WriteLine("LogicalDevice Added, Id : " + iLogicalDevice.Id + ", Name : " + iLogicalDevice.Name);
             writelog("LogicalDevice Added, Id : " + iLogicalDevice.Id + ", Name : " + iLogicalDevice.Name);
-            lock (_lock)
+            lock (this)
             {
                 if (_isClientConnected)
                 {
@@ -2766,7 +2766,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 writelog("ParentPhysicalDevice Removed, Id : " + deviceGuid.ToString());
             }
-            lock (_lock)
+            lock (this)
             {
                 if (_isClientConnected)
                 {
@@ -3775,7 +3775,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         }
         private void IUpdateManager_IsAnyUpdateAvailableChanged(bool isAnyUpdateAvailable)
         {
-            lock (_lock)
+            lock (this)
             {
                 if (_isClientConnected && _iUpdateManager != null)
                 {
@@ -4024,7 +4024,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _logs.DebugMsg_1($"[PeripheralsPlugin] GetFWUpdateInfo done and _updateHelper is no null");
                 return await Task.Run(() =>
                 {
-                    lock (_lock)
+                    lock (this)
                     {
                         if (_isClientConnected && _updateHelper != null)
                         {
