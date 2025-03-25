@@ -1194,9 +1194,16 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryLevel : {deviceInfo.BatteryLevel}");
                             if (deviceInfo.BatteryLevel <= 20)
                             {
-                                fWUErrorCode = FWUErrorCode.DeviceBatteryTooLow;
-                                _notificationStr = $"{currentFWInfo.DeviceName} {currentFWInfo.Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
-                                ret = true;
+                                if (currentFWInfo.DeviceType == DeviceType.LogicalKeyboard || currentFWInfo.DeviceType == DeviceType.LogicalMouse)//Fix PIMS-344498
+                                {
+                                    fWUErrorCode = FWUErrorCode.DeviceBatteryTooLow;
+                                    _notificationStr = $"{currentFWInfo.DeviceName} {currentFWInfo.Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
+                                    ret = true;
+                                }
+                                else
+                                {
+                                    _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} device battery <= 20% but device is no KB or MS so no need stop");
+                                }
                             }
                         }
                     }
