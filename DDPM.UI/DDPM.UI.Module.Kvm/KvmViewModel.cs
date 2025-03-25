@@ -207,8 +207,8 @@ namespace DDPM.UI.Module.Kvm
         public KvmModule KvmModule { get; set; }
         public UInt16 PxPCode { get; set; } = 0;
         public InputSourceFullView inputSourceFullView { get; set; }
-        public Visibility PC3_Visibility { get; set; } = Visibility.Collapsed;
-        public Visibility PC4_Visibility { get; set; } = Visibility.Collapsed;
+        public Visibility PC3_Visibility { get; set; } = Visibility.Visible;
+        public Visibility PC4_Visibility { get; set; } = Visibility.Visible;
         public Visibility Border1Visibility { get; set; } = Visibility.Collapsed;
         public Visibility Border2Visibility { get; set; } = Visibility.Collapsed;
         public Visibility Border3Visibility { get; set; } = Visibility.Collapsed;
