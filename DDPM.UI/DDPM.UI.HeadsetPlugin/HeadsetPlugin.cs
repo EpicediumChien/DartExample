@@ -30,7 +30,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
         internal static readonly Ioc PluginIoc = new();
 
-        private readonly ILog _log;
+        private readonly ILog? _log = null;
         private readonly IConsole _console;
         private readonly IPluginManager _pluginManager;
         private readonly IShowPluginManager _showPluginManager;
@@ -54,7 +54,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             _pluginManager = pluginManager;
             _console = console;
             _log = console.CreateLog("Headset");
-            _log.Info($"{nameof(LaunchView)} - Constructed");
+            _log?.Info($"{nameof(LaunchView)} - Constructed");
 
             CancellationToken = StartupCancellationTokenSource.Token;
             _pluginManager.PluginsStarted += PluginManager_PluginsStarted;
@@ -62,7 +62,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
         private void PluginManager_PluginsStarted(object? sender, PluginsStartedEventArgs pluginsStartedEventArgs)
         {
-            _log.Info($"[HeadsetPlugin] {nameof(PluginManager_PluginsStarted)} started");
+            _log?.Info($"[HeadsetPlugin] {nameof(PluginManager_PluginsStarted)} started");
             try
             {
                 if (_deviceManagerPlugin != null)
@@ -72,7 +72,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
                 if (_deviceManagerPlugin == null)
                 {
-                    _log.Error($"[HeadsetPlugin] {nameof(PluginManager_PluginsStarted)} DeviceManager Plugin is null");
+                    _log?.Error($"[HeadsetPlugin] {nameof(PluginManager_PluginsStarted)} DeviceManager Plugin is null");
                     return;
                 }
 
@@ -88,37 +88,46 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 // Get current condition
                 _ = Task.Run(GetCurrentPeripheralsPluginCondition, CancellationToken);
 
-                _log.Info($"[HeadsetPlugin] {nameof(PluginManager_PluginsStarted)} end");
+                _log?.Info($"[HeadsetPlugin] {nameof(PluginManager_PluginsStarted)} end");
             }
             catch (Exception ex)
             {
-                _log.Error(ex, $"[HeadsetPlugin] PluginManager_PluginsStarted ... failed: {ex.Message}");
+                _log?.Error(ex, $"[HeadsetPlugin] PluginManager_PluginsStarted ... failed: {ex.Message}");
             }
         }
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            _log.Info($"[HeadsetPlugin] {nameof(DeviceManager_DeviceChanged)} in ...");
+            _log?.Info($"[HeadsetPlugin] {nameof(DeviceManager_DeviceChanged)} in ...");
             try
             {
-                if (e.device_peripherals != null && (e.device_peripherals.LogicalDeviceType.Contains("Headset")))
+                if (_viewModel != null)
                 {
-                    if (e.type == DeviceChangedType.Peripherals_UnPlug)
+                    if (e.device_peripherals != null && (e.device_peripherals.LogicalDeviceType.Contains("Headset")))
                     {
-                        if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == _viewModel.CurrentInstanceID.GetHashCode())
+                        if (e.type == DeviceChangedType.Peripherals_UnPlug)
                         {
-                            _viewModel.OnGoBackClicked();
-                            return;
+                            if (e.device_peripherals.ID == _viewModel.CurrentDeviceID && _viewModel.CurrentInstanceID == _viewModel.CurrentInstanceID.GetHashCode())
+                            {
+                                _viewModel.OnGoBackClicked();
+                                return;
+                            }
+                            GetPeripheralsAsync();
                         }
-                        GetPeripheralsAsync();
+                        _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
                     }
-                    _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
+                    _log?.Info($"[HeadsetPlugin] {nameof(DeviceManager_DeviceChanged)} end ...");
                 }
-                _log.Info($"[HeadsetPlugin] {nameof(DeviceManager_DeviceChanged)} end ...");
+                else
+                {
+                    _log?.Info($"[HeadsetPlugin] {nameof(DeviceManager_DeviceChanged)} _viewModel is null.");
+                }
+
+
             }
             catch (Exception ex)
             {
-                _log.Error(ex, $"[HeadsetPlugin] DeviceManager_DeviceChanged ... failed: {ex.Message}");
+                _log?.Error(ex, $"[HeadsetPlugin] DeviceManager_DeviceChanged ... failed: {ex.Message}");
             }
         }
 
@@ -130,13 +139,13 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         private void _peripheralsPluginCondition_PluginConditionChangeHandler(object? sender, EventArgs e)
         {
             _ = Task.Run(GetCurrentPeripheralsPluginCondition, CancellationToken);
-            _log.Info($"[HeadsetPlugin] {nameof(_peripheralsPluginCondition_PluginConditionChangeHandler)} trigger ...");
+            _log?.Info($"[HeadsetPlugin] {nameof(_peripheralsPluginCondition_PluginConditionChangeHandler)} trigger ...");
         }
 
         private async Task GetCurrentPeripheralsPluginCondition()
         {
             await _lock.WaitAsync(CancellationToken);
-            _log.Info($"[HeadsetPlugin] {nameof(GetCurrentPeripheralsPluginCondition)} lock");
+            _log?.Info($"[HeadsetPlugin] {nameof(GetCurrentPeripheralsPluginCondition)} lock");
             try
             {
                 if (_deviceManagerPluginCondition == null)
@@ -146,27 +155,27 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
                 if (pluginCondition is PluginErrorCondition)
                 {
-                    _log.Info($"[HeadsetPlugin] {nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginErrorCondition)}");
+                    _log?.Info($"[HeadsetPlugin] {nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginErrorCondition)}");
                 }
                 else if (pluginCondition is PluginRunningCondition)
                 {
-                    _log.Info($"[HeadsetPlugin] {nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginRunningCondition)}");
+                    _log?.Info($"[HeadsetPlugin] {nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginRunningCondition)}");
                 }
             }
             catch (Exception ex)
             {
-                _log.Error(ex, $"[HeadsetPlugin] GetCurrentPeripheralsPluginCondition ... failed: {ex.Message}");
+                _log?.Error(ex, $"[HeadsetPlugin] GetCurrentPeripheralsPluginCondition ... failed: {ex.Message}");
             }
             finally
             {
                 _lock.Release();
-                _log.Info($"[HeadsetPlugin] {nameof(GetCurrentPeripheralsPluginCondition)} unlock");
+                _log?.Info($"[HeadsetPlugin] {nameof(GetCurrentPeripheralsPluginCondition)} unlock");
             }
         }
 
         private void GetPeripheralsAsync()
         {
-            _log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... in");
+            _log?.Info($"[HeadsetPlugin] GetPeripheralsAsync ... in");
             try
             {
                 if (!SpinWait.SpinUntil(() =>
@@ -179,11 +188,11 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 Task<DeviceHelper> task = _deviceManagerPlugin.GetDevices();
                 _deviceHelper = task.Result;
                 _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
-                _log.Info($"[HeadsetPlugin] GetPeripheralsAsync ... out");
+                _log?.Info($"[HeadsetPlugin] GetPeripheralsAsync ... out");
             }
             catch (Exception ex)
             {
-                _log.Error(ex, $"[HeadsetPlugin] GetPeripheralsAsync ... failed: {ex.Message}");
+                _log?.Error(ex, $"[HeadsetPlugin] GetPeripheralsAsync ... failed: {ex.Message}");
             }
         }
 
@@ -193,7 +202,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         /// <remarks>Below code will be removed when <see cref="IConsole"/> provides the bootstrapper support</remarks>
         private void ConfigureServices()
         {
-            _log.Info($"[HeadsetPlugin] ConfigureServices ... in");
+            _log?.Info($"[HeadsetPlugin] ConfigureServices ... in");
             try
             {
                 if (_isConfigured)
@@ -210,11 +219,11 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
                 _viewModel = (HeadsetViewModel?)PluginIoc.GetService<IPeripheralViewModel>();
                 _isConfigured = true;
-                _log.Info($"[HeadsetPlugin] ConfigureServices ... out");
+                _log?.Info($"[HeadsetPlugin] ConfigureServices ... out");
             }
             catch (Exception ex)
             {
-                _log.Error(ex, $"[HeadsetPlugin] ConfigureServices ... failed: {ex.Message}");
+                _log?.Error(ex, $"[HeadsetPlugin] ConfigureServices ... failed: {ex.Message}");
             }
         }
 
@@ -226,7 +235,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         /// <inheritdoc/>
         public void OnActivated()
         {
-            _log.Info($"[HeadsetPlugin] OnActivated ... in");
+            _log?.Info($"[HeadsetPlugin] OnActivated ... in");
             try
             {
                 if (!IsEventRegistered)
@@ -234,33 +243,33 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     if (_deviceManagerPlugin == null)
                     {
                         _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
-                        _log.Info($"[HeadsetPlugin] OnActivated ... _deviceManagerPlugin null,  FindPlugin again ... ");
+                        _log?.Info($"[HeadsetPlugin] OnActivated ... _deviceManagerPlugin null,  FindPlugin again ... ");
                     }
                     if (_deviceManagerPlugin != null)
                     {
                         _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
                         IsEventRegistered = true;
-                        _log.Info($"[HeadsetPlugin] OnActivated ... _deviceManagerPlugin normal ... ");
+                        _log?.Info($"[HeadsetPlugin] OnActivated ... _deviceManagerPlugin normal ... ");
                     }
                     else
                     {
-                        _log.Info($"[HeadsetPlugin] OnActivated ... _deviceManagerPlugin null,  FindPlugin still failed ... ");
+                        _log?.Info($"[HeadsetPlugin] OnActivated ... _deviceManagerPlugin null,  FindPlugin still failed ... ");
                     }
 
                 }
                 Mouse.OverrideCursor = null;
-                _log.Info($"[HeadsetPlugin] OnActivated ... out");
+                _log?.Info($"[HeadsetPlugin] OnActivated ... out");
             }
             catch (Exception ex)
             {
-                _log.Error(ex, $"[HeadsetPlugin] OnActivated ... failed: {ex.Message}");
+                _log?.Error(ex, $"[HeadsetPlugin] OnActivated ... failed: {ex.Message}");
             }
         }
 
         /// <inheritdoc/>
         public void OnDeactivated()
         {
-            _log.Info($"[HeadsetPlugin] OnDeactivated ... in");
+            _log?.Info($"[HeadsetPlugin] OnDeactivated ... in");
             try
             {
                 if (IsEventRegistered)
@@ -268,32 +277,32 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     if (_deviceManagerPlugin == null)
                     {
                         _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
-                        _log.Info($"[HeadsetPlugin] OnDeactivated ... _deviceManagerPlugin null,  FindPlugin again ... ");
+                        _log?.Info($"[HeadsetPlugin] OnDeactivated ... _deviceManagerPlugin null,  FindPlugin again ... ");
                     }
                     if (_deviceManagerPlugin != null)
                     {
                         _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
                         IsEventRegistered = false;
-                        _log.Info($"[HeadsetPlugin] OnDeactivated ... _deviceManagerPlugin normal ... ");
+                        _log?.Info($"[HeadsetPlugin] OnDeactivated ... _deviceManagerPlugin normal ... ");
                     }
                     else
                     {
-                        _log.Info($"[HeadsetPlugin] OnDeactivated ... _deviceManagerPlugin null,  FindPlugin still failed ... ");
+                        _log?.Info($"[HeadsetPlugin] OnDeactivated ... _deviceManagerPlugin null,  FindPlugin still failed ... ");
                     }
                 }
                 Mouse.OverrideCursor = Cursors.Wait;
-                _log.Info($"[HeadsetPlugin] OnDeactivated ... out");
+                _log?.Info($"[HeadsetPlugin] OnDeactivated ... out");
             }
             catch (Exception ex)
             {
-                _log.Error(ex, $"[HeadsetPlugin] OnDeactivated ... failed: {ex.Message}");
+                _log?.Error(ex, $"[HeadsetPlugin] OnDeactivated ... failed: {ex.Message}");
             }
         }
 
         /// <inheritdoc/>
         public void OnShown(string pluginParameter)
         {
-            _log.Info($"[HeadsetPlugin] OnShown ... in");
+            _log?.Info($"[HeadsetPlugin] OnShown ... in");
             try
             {
                 if (!IsEventRegistered)
@@ -301,36 +310,36 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     if (_deviceManagerPlugin == null)
                     {
                         _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
-                        _log.Info($"[HeadsetPlugin] OnShown ... _deviceManagerPlugin null,  FindPlugin again ... ");
+                        _log?.Info($"[HeadsetPlugin] OnShown ... _deviceManagerPlugin null,  FindPlugin again ... ");
                     }
                     if (_deviceManagerPlugin != null)
                     {
                         _deviceManagerPlugin.DeviceChanged += DeviceManager_DeviceChanged;
                         IsEventRegistered = true;
-                        _log.Info($"[HeadsetPlugin] OnShown ... _deviceManagerPlugin normal ... ");
+                        _log?.Info($"[HeadsetPlugin] OnShown ... _deviceManagerPlugin normal ... ");
                     }
                     else
                     {
-                        _log.Info($"[HeadsetPlugin] OnShown ... _deviceManagerPlugin null,  FindPlugin still failed ... ");
+                        _log?.Info($"[HeadsetPlugin] OnShown ... _deviceManagerPlugin null,  FindPlugin still failed ... ");
                     }
                 }
                 ConfigureServices();
                 GetPeripheralsAsync();
                 if (_viewModel != null && !_viewModel.SetCurrentDevice(pluginParameter)) { }
-                _log.Info($"[HeadsetPlugin] OnShown ... out");
+                _log?.Info($"[HeadsetPlugin] OnShown ... out");
             }
             catch (Exception ex)
             {
-                _log.Error(ex, $"[HeadsetPlugin] OnShown ... failed: {ex.Message}");
+                _log?.Error(ex, $"[HeadsetPlugin] OnShown ... failed: {ex.Message}");
             }
         }
         #endregion Interface IConsolePluginSupportsActivations
 
         ~HeadsetPlugin()
         {
-            _log.Info($"[HeadsetPlugin] ~SoundBarPlugin ... in");
+            _log?.Info($"[HeadsetPlugin] ~SoundBarPlugin ... in");
             _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
-            _log.Info($"[HeadsetPlugin] ~SoundBarPlugin ... out");
+            _log?.Info($"[HeadsetPlugin] ~SoundBarPlugin ... out");
         }
     }
 }

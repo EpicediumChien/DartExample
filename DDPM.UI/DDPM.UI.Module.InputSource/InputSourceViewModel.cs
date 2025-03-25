@@ -40,10 +40,10 @@ namespace DDPM.UI.Module.InputSource
         private InputSourceList _selectInput = new InputSourceList();
         private List<InputSourceList> _inputsList = new List<InputSourceList>();
         private string? _inputImage;
-        private BackgroundWorker? bw;
+        private BackgroundWorker? bw = null;
 
-        public readonly ILog _log;
-        public Guid? guid { get; set; }
+        public readonly ILog? _log = null;
+        public Guid? guid { get; set; } = Guid.NewGuid();
         public IModuleOwner? ModuleOwner { get; set; }
         public InputSourceModule InputSourceModule { get; set; }
 
@@ -143,7 +143,7 @@ namespace DDPM.UI.Module.InputSource
                 NameHColumn = "1";
                 InputTitle = Strings.InputTitle1;
 
-                if (Cancelled_RefreshData(e, bwk)) 
+                if (Cancelled_RefreshData(e, bwk))
                 {
                     return;
                 }
@@ -176,7 +176,7 @@ namespace DDPM.UI.Module.InputSource
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"InputSource caused crash = {ex.Message}");
-                    _log.Info($"InputSource caused crash = {ex.Message}");
+                    _log?.Info($"InputSource caused crash = {ex.Message}");
                     inputList = null;
                     usbUpstream.Clear();
                 }
@@ -205,7 +205,7 @@ namespace DDPM.UI.Module.InputSource
                         return;
                     }
                     Debug.WriteLine($"[InputSourceViewModel]currentInput : " + currentInput);
-                    _log.Info($"[InputSourceViewModel]currentInput : " + currentInput);
+                    _log?.Info($"[InputSourceViewModel]currentInput : " + currentInput);
                     InputSourceModule.SelectedHomeDevice.MonitorInfo.inputSource = currentInput;
                     _selectInput = _inputsList.Find(x => (x.inputSource == currentInput)); //_inputsList.Find(x => (x.inputSource == InputSourceModule.SelectedHomeDevice.MonitorInfo.inputSource));
                 }
@@ -357,8 +357,8 @@ namespace DDPM.UI.Module.InputSource
             if (bw.CancellationPending)
             {
                 Debug.WriteLine("[InputSource] Cancelled_RefreshData.");
-                _log.Info("[InputSource] Cancelled_RefreshData.");
-                e.Cancel= true;
+                _log?.Info("[InputSource] Cancelled_RefreshData.");
+                e.Cancel = true;
                 return true;
             }
             return false;
@@ -366,9 +366,9 @@ namespace DDPM.UI.Module.InputSource
 
         public void CallCancel()
         {
-            if (bw.IsBusy)
+            if (bw != null && bw.IsBusy)
             {
-                _log.Info("[InputSource] CallCancel.");
+                _log?.Info("[InputSource] CallCancel.");
                 bw.CancelAsync();
                 DdpmCommonHelper.DeviceManagerSA.CancelVcpTask((Guid)guid);
             }
@@ -414,7 +414,7 @@ namespace DDPM.UI.Module.InputSource
                 _selectInput = _inputsList.Find(x => (x.inputSource == InputSourceModule.SelectedHomeDevice.MonitorInfo.inputSource));
                 OnPropertyChanged("Items_Selected");
                 OnPropertyChanged("InputsList");
-                DdpmCommonHelper.bInputSourceRenamed = true;                
+                DdpmCommonHelper.bInputSourceRenamed = true;
             }
 
             return Task.CompletedTask;
@@ -512,7 +512,7 @@ namespace DDPM.UI.Module.InputSource
                                 NoGrey = true
                             });
                         }
-                        
+
                         if (!String.IsNullOrEmpty(input.Value.USBUpstream))
                         {
                             int k = 0;
