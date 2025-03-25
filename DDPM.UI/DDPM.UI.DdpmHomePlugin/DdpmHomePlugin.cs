@@ -231,7 +231,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 if (pluginCondition is PluginErrorCondition)
                 {
                     if (_viewModel != null)
+                    {
                         _viewModel.IsDeviceManagerReady = false;
+                        _log.Info($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} _viewModel.IsDeviceManagerReady = false ... ");
+                    }
 
                     _log.Info($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} plugin is in {nameof(PluginErrorCondition)}");
                 }
@@ -249,6 +252,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             if (_viewModel != null)
                             {
                                 _viewModel.IsDeviceManagerReady = true;
+                                _log.Info($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} _viewModel.IsDeviceManagerReady = true ... ");
                                 //Robert_Lin, 2024-12-16 for PleaseWait thread to get devices
                                 _viewModel.DeviceManagerPlugin = _deviceManager;
 
@@ -479,17 +483,17 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 //Robert_Lin, 2024-7-22 log info
                 _log.Info($"@ ChangedProperty=[{e.changedProperty}], ChangedType=[{e.type}] DeviceID=[{e.deviceID}]");
-                if (e.device_peripherals != null)
-                {
+                //if (e.device_peripherals != null)
+                //{
                     // Check and handle new inserted devices
                     //await CheckAndQueueDevice(e.device_peripherals);
-                    _log.Info($"@ DeviceName=[{e.device_peripherals.Name}]");
-                }
+                //    _log.Info($"@ DeviceName=[{e.device_peripherals.Name}]");
+                //}
 
                 // If event Contains Add, then into Walkthrough
                 if (e.changedProperty.ToLower().Contains("add") || e.changedProperty.ToLower().Contains("displaychanged"))
                 {
-                    _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} Start");
+                    _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} {e.changedProperty.ToString()} Start");
                     await CollectAndCompareDevicesAsync();
                     //// Check Queue¡Afirst use device need to show WalkThroughPage
                     if (WalkThroughQueue.Count > 0 && ShowPluginById == false)
@@ -566,6 +570,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         _log.Info($"DdpmHomePlugin._deviceManager_notifyDeviceDisConnecte() skip : e.changedProperty : {e.changedProperty}");
                 }
             }
+            _log.Info("DdpmHomePlugin._deviceManager_DeviceChanged() out ... ");
         }
 
         private void CheckIfNeedImportSetting_Display(List<MonitorInfo> monitorInfos)
@@ -606,6 +611,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         }
                     }
                 }
+                _log.Info($"[DdpmHomePlugin] CheckIfNeedImportSetting_Display Task.Run end ... ");
             });
         }
 
@@ -1701,6 +1707,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 foreach (var device in deviceHelper.deviceInfo)
                 {
+                    _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (device)");
                     // Check color code
                     string _modelNumber = device.ModelNumber;
                     if (device.ModelNumber == "MS700" &&
