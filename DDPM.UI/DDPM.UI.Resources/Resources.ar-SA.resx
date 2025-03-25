@@ -3459,6 +3459,15 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>تعرف على المزيد عن البرنامج</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>لم يتم اكتشاف على أي جهاز</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>أضف جهازك الأول</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>الاتصال</value>
+  </data>
   <data name="WebcamMPS.0" xml:space="preserve">
     <value>للوصول إلى ميزات استشعار التواجد من Microsoft، قم بزيارة إعدادات Windows</value>
   </data>
@@ -3483,19 +3492,13 @@
   <data name="Bootloader.3" xml:space="preserve">
     <value>لتحديث برنامجك الثابت لكي تستعيد الوظائف.</value>
   </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>إجراءات البحث</value>
+  </data>
   <data name="Update_Dock_Alert_2" xml:space="preserve">
     <value>ملاحظة: قد لا تتوفر الأجهزة الطرفية المتصلة بوحدة الإرساء هذه أثناء عملية التحديث</value>
   </data>
-  <data name="NoDeviceDetected" xml:space="preserve">
-    <value>لم يتم اكتشاف على أي جهاز</value>
-  </data>
-  <data name="Add1sDevice" xml:space="preserve">
-    <value>أضف جهازك الأول</value>
-  </data>
-  <data name="Connect" xml:space="preserve">
-    <value>الاتصال</value>
-  </data>
-  <data name="SearchActions" xml:space="preserve">
-    <value>إجراءات البحث</value>
+  <data name="Color.14" xml:space="preserve">
+    <value>الإعداد المسبق للون</value>
   </data>
 </root>

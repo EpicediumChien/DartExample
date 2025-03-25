@@ -1834,6 +1834,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Color Preset.
+        /// </summary>
+        internal static string Color_14 {
+            get {
+                return ResourceManager.GetString("Color.14", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sort By Date.
         /// </summary>
         internal static string Color_2 {
