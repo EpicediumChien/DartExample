@@ -167,8 +167,11 @@ namespace DDPM.SA.Common.Method
             {
                 FailInfo = "Network fail";
                 _logs?.DebugMsg_1(nameof(DownloadFile_OnLocal) + " fail:" + ex.ToString());
-                DownloadFileStream.Close();
                 return false;
+            }
+            finally
+            {
+                DownloadFileStream.Close();
             }
         }
         public double GetProgress()
