@@ -923,25 +923,17 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 if (CurrentDeviceInfo.IsPropertyFocusSupported)
                 {
-                    //task = DdpmCommonHelper.DeviceManagerSA?.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn);
-                    //if (!task.Result)
-                    //{
-                    //    _log.Error("DTP IsFocusOn fail!");
-                    //}
-                    //OnPropertyChanged(nameof(IsFocusOn));
-                    //OnPropertyChanged(nameof(IsFocusOnText));
                     IsFocusOn = CurrentProfile.IsFocusOn;
                     Focus = CurrentProfile.Focus;
-                    //OnPropertyChanged(nameof(Focus));
 
                 }
                 if (CurrentDeviceInfo.IsPropertyFOVSupported)
                 {
-                    task = DdpmCommonHelper.DeviceManagerSA?.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.FieldOfView);
-                    if (!task.Result)
-                    {
-                        _log.Error("DTP SetFieldOfView fail!");
-                    }
+                    //task = DdpmCommonHelper.DeviceManagerSA?.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.FieldOfView);
+                    //if (!task.Result)
+                    //{
+                    //    _log.Error("DTP SetFieldOfView fail!");
+                    //}
                     if (_fOVs[0] == CurrentProfile.FieldOfView)
                     {
                         SetFOV_Selected(0);
@@ -1452,8 +1444,8 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.FieldOfView;
             set
             {
-                if (value == CurrentProfile.FieldOfView)
-                    return;
+                //if (value == CurrentProfile.FieldOfView)
+                //    return;
 
                 if (!isUIHasUpdateByQAM)
                     DdpmCommonHelper.DeviceManagerSA?.SetFieldOfView(CurrentDeviceID.ToString(), value);
