@@ -13068,7 +13068,7 @@ namespace DDPM.CLI.Plugins.Display
             bool supported = false;
 
             writelog("Check monitor is support speaker");
-            Console.WriteLine($"--------TEST---------- {monitor.CapabilityDic.TryGetValue("62", out List<string> value1)} {value1.Count}");
+            //Console.WriteLine($"--------TEST---------- {monitor.CapabilityDic.TryGetValue("62", out List<string> value1)} {value1.Count}");
             //foreach (var test in value1)
             //    Console.WriteLine($"value: {test.ToString()} test: {value1.Count}");
 
