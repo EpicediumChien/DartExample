@@ -90,7 +90,8 @@
     </UserControl.Resources>
     <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <Grid Margin="0,0,0,15">
-            <Border x:Name="MainBorder" CornerRadius="13" Width="520" Margin="0,10,0,0">
+            <!--Elsa 20250325 for PIMS-348388 change Margin="0,10,0,0" to Margin="-13,10,0,0"-->
+            <Border x:Name="MainBorder" CornerRadius="13" Width="520" Margin="-13,10,0,0">
                 <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
                     <Grid>
                         <!-- Derek 0107 for PIMS-335063 change Width="200" to Width="550"  -->
