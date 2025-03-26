@@ -123,7 +123,8 @@ namespace DDPM.SA.Plugins.CMAManager
             return responseString;
 
         }
-        public void writeToFile(string guid, string json)
+        // modified @ 10150326 stephen
+        public string writeToFile(string guid, string json)
         {
 
             try
@@ -135,16 +136,17 @@ namespace DDPM.SA.Plugins.CMAManager
             }
             catch (Exception e)
             {
-                Console.WriteLine("CreateDirectory Exception: " + e.Message);
+                return ("CreateDirectory Exception: " + e.Message);
             }
 
             // add @ 20250220 stephen : fix string tio an object
             listResponse = new List<string>();
             listResponse.Add(json);
 
-            string info = string.Empty;
+            //string info = string.Empty;
             bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listResponse).ToString(), (FILE_PATH + guid + ".txt"), out info);
 
+            return errorMsg;
         }
         /*
          
