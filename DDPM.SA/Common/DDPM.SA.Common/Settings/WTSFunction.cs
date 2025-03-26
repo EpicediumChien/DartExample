@@ -734,5 +734,10 @@ namespace DDPM.SA.Common.Settings
             }
             return obj;
         }
+
+        public static object ImpersonateUser_ReadRegistry_New(string subKey, string keyName)
+        {
+            return ImpersonateUser_ReadRegistry_New(subKey, keyName, null, null);
+        }
     }
 }
