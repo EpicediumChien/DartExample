@@ -369,6 +369,7 @@ namespace NGA.ThickClient
 
         private void RegisterEvents(IConsole console)
         {
+            _log?.Info($"{nameof(MainWindow)} - RegisterEvents in ...");
             console.RegisterForEvent(ConsoleEventNames.MainWindow_SetToBottomWindow, SetToBottomWindow);
             console.RegisterForEvent(ConsoleEventNames.MainWindow_Activate, MainWindowActivate);
 
@@ -376,6 +377,7 @@ namespace NGA.ThickClient
             console.RegisterForEvent("MainWindow.Show", MainWindowShow);
             console.RegisterForEvent("MainWindow.Minimize", MainWindowMinimize);
             console.RegisterForEvent("MainWindow.Normal", MainWindowNormal);
+            _log?.Info($"{nameof(MainWindow)} - RegisterEvents out ...");
         }
 
         private void SetToBottomWindow(object sender, EventManagerArgs e)
@@ -386,43 +388,81 @@ namespace NGA.ThickClient
 
         private void MainWindowActivate(object sender, EventManagerArgs e)
         {
+            _log?.Info($"{nameof(MainWindow)} - MainWindowActivate in ...");
             Dispatcher.Invoke(new Action(() =>
             {
                 this.Activate();
             }));
+            _log?.Info($"{nameof(MainWindow)} - MainWindowActivate out ...");
         }
 
         private void MainWindowHide(object sender, EventManagerArgs e)
         {
-            Dispatcher.Invoke(new Action(() =>
+            _log?.Info($"{nameof(MainWindow)} - MainWindowHide in ...");
+            try
             {
-                this.Hide();
-            }));
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    this.Hide();
+                }));
+                _log?.Info($"{nameof(MainWindow)} - MainWindowHide out ...");
+            }
+            catch (Exception ex)
+            {
+                _log?.Error($"{nameof(MainWindow)} - MainWindowHide Exception: {ex.Message}");
+            }
         }
 
         private void MainWindowShow(object sender, EventManagerArgs e)
         {
-            Dispatcher.Invoke(new Action(() =>
+            _log?.Info($"{nameof(MainWindow)} - MainWindowShow in ...");
+            try
             {
-                this.Show();
-            }));
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    this.Show();
+                }));
+                _log?.Info($"{nameof(MainWindow)} - MainWindowShow out ...");
+            }
+            catch (Exception ex)
+            {
+                _log?.Error($"{nameof(MainWindow)} - MainWindowShow Exception: {ex.Message}");
+            }
         }
 
         private void MainWindowMinimize(object sender, EventManagerArgs e)
         {
-            Dispatcher.Invoke(new Action(() =>
+            _log?.Info($"{nameof(MainWindow)} - MainWindowMinimize in ...");
+            try
             {
-                this.WindowState = WindowState.Minimized;
-            }));
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    this.WindowState = WindowState.Minimized;
+                }));
+                _log?.Info($"{nameof(MainWindow)} - MainWindowMinimize out ...");
+            }
+            catch (Exception ex) 
+            { 
+                _log?.Error($"{nameof(MainWindow)} - MainWindowMinimize Exception: {ex.Message}"); 
+            }
         }
 
         private void MainWindowNormal(object sender, EventManagerArgs e)
         {
-            Dispatcher.Invoke(new Action(() =>
+            _log?.Info($"{nameof(MainWindow)} - MainWindowNormal in ...");
+            try
             {
-                this.WindowState = WindowState.Normal;
-                this.Activate();
-            }));
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    this.WindowState = WindowState.Normal;
+                    this.Activate();
+                }));
+                _log?.Info($"{nameof(MainWindow)} - MainWindowNormal out ...");
+            }
+            catch (Exception ex)
+            {
+                _log?.Error($"{nameof(MainWindow)} - MainWindowNormal Exception: {ex.Message}");
+            }
         }
 
         #endregion
@@ -436,29 +476,40 @@ namespace NGA.ThickClient
         {
             _log?.Info($"{nameof(MainWindow)} - ConsoleWindow_Activated");
             if (_Console != null)
+            {
+                _log?.Info($"{nameof(MainWindow)} - MainWindow_Activate in ...");
                 _Console.RaiseEvent(ConsoleEventNames.MainWindow_Activate, this, new EventManagerArgs());
+                _log?.Info($"{nameof(MainWindow)} - MainWindow_Activate out ...");
+            }
+            _log?.Info($"{nameof(MainWindow)} - ConsoleWindow_Activated out ...");
         }
 
         private void ConsoleWindow_DeActivated(object sender, EventArgs e)
         {
             _log?.Info($"{nameof(MainWindow)} - ConsoleWindow_Deactivated");
             if (_Console != null)
+            {
+                _log?.Info($"{nameof(MainWindow)} - MainWindow_DeActivate in ...");
                 _Console.RaiseEvent(ConsoleEventNames.MainWindow_DeActivate, this, new EventManagerArgs());
+                _log?.Info($"{nameof(MainWindow)} - MainWindow_DeActivate out ...");
+            }
+            _log?.Info($"{nameof(MainWindow)} - ConsoleWindow_Deactivated out ...");
         }
 
         //PIMS-291471 Maximize DDPM app will cover windows taskbar
         //Below solution was provided from Dell DUCA team, Sharap Viswanathan, Karthik 2024-10-30
         //private bool _firstTimeMaximim = true;
         private void MainWIndow_StateChanged(object sender, EventArgs e)
-        {
+        {            
             if (WindowState == WindowState.Maximized)
             {
+                _log?.Info($"{nameof(MainWindow)} - MainWIndow_StateChanged WindowState.Maximized in ...");
                 //Robert_Lin, 2024-12-30 Using Win32.SetWindowsPos solution to fit MainWindow to current screen.WorkingArea
                 //IntPtr hWnd = new WindowInteropHelper(this).Handle;
                 //_SetWindowPos(hWnd, HWND_TOP, (int)screen.WorkingArea.Left, (int)screen.WorkingArea.Top,
                 //     (int)screen.WorkingArea.Width, (int)screen.WorkingArea.Height, SWP_SHOWWINDOW | SWP_ASYNCWINDOWPOS);
                 SetMainWindowSizeToMaximized();
-
+                _log?.Info($"{nameof(MainWindow)} - MainWIndow_StateChanged WindowState.Maximized out ...");
                 //Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
                 // PrimaryScreen Scaling info required because screen workarea when app launched in Secondary montior
                 // gives resolution of Secondary monitor by multiplying the PrimaryScreenScaling ratio
@@ -679,102 +730,111 @@ namespace NGA.ThickClient
 
         private void AdjustWindowPosition(Window window, Screen screen, double factor = 1.0)
         {
-            // Get screen working area
-            var screenWorkingArea = screen.WorkingArea;
+                // Get screen working area
+                var screenWorkingArea = screen.WorkingArea;
 
-            double adjustedLeft = window.Left * factor;
-            // Adjust window position if it goes out of the working area
-            // Adjust X
-            if (screenWorkingArea.Right < (window.Left + window.Width) * factor)
-            {
-                adjustedLeft = screenWorkingArea.Right - window.Width * factor;
-            }
-            else if (screenWorkingArea.Left > window.Left * factor)
-            {
-                //adjustedLeft = screenWorkingArea.Left;
-                // To top right
-                adjustedLeft = screenWorkingArea.Right - window.Width * factor;
-            }
+                double adjustedLeft = window.Left * factor;
+                // Adjust window position if it goes out of the working area
+                // Adjust X
+                if (screenWorkingArea.Right < (window.Left + window.Width) * factor)
+                {
+                    adjustedLeft = screenWorkingArea.Right - window.Width * factor;
+                }
+                else if (screenWorkingArea.Left > window.Left * factor)
+                {
+                    //adjustedLeft = screenWorkingArea.Left;
+                    // To top right
+                    adjustedLeft = screenWorkingArea.Right - window.Width * factor;
+                }
 
-            // Adjust Y
-            double adjustedTop = window.Top * factor;
-            if (screenWorkingArea.Top > window.Top * factor)
-            {
-                adjustedTop = screenWorkingArea.Top;
-            }
-            else if (screenWorkingArea.Bottom < (window.Top + window.Height) * factor)
-            {
-                //adjustedTop = screenWorkingArea.Bottom - window.Height * factor;
-                // To top right
-                adjustedTop = screenWorkingArea.Top;
-            }
+                // Adjust Y
+                double adjustedTop = window.Top * factor;
+                if (screenWorkingArea.Top > window.Top * factor)
+                {
+                    adjustedTop = screenWorkingArea.Top;
+                }
+                else if (screenWorkingArea.Bottom < (window.Top + window.Height) * factor)
+                {
+                    //adjustedTop = screenWorkingArea.Bottom - window.Height * factor;
+                    // To top right
+                    adjustedTop = screenWorkingArea.Top;
+                }
 
-            // Apply the adjusted position
-            window.Left = adjustedLeft / factor;
-            window.Top = adjustedTop / factor;
+                // Apply the adjusted position
+                window.Left = adjustedLeft / factor;
+                window.Top = adjustedTop / factor;
         }
 
         private void EnsureWindowIsVisible(Window window)
         {
-            //Derek 10/26
-            Int16 width = (Int16?)System.Windows.Application.Current?.TryFindResource("breakPoint") ?? 0;
-            Int16 height = (Int16?)System.Windows.Application.Current?.TryFindResource("minHeight") ?? 0;
-
-            // Get the PresentationSource for the window
-            double factor = GetScalingFactor(window);
-
-            // Get the window's current position
-            var windowTopLeft = new System.Drawing.Point(
-                (int)window.Left,
-                (int)window.Top);
-
-            var (actualWidth, actualHeight, workingWidth, workingHeight) = GetScreenResolution(this);
-
-            Debug.WriteLine($"Screen Resolution: {actualWidth / factor}x{actualHeight / factor}\n" +
-                            $"Working Area: {workingWidth}x{workingHeight}");
-            DdpmCommonHelper.WriteUILog($"Screen Resolution: {actualWidth / factor}x{actualHeight / factor}\n" +
-                                        $"Working Area: {workingWidth}x{workingHeight}");
-            workingWidth = workingWidth / factor;
-            workingHeight = workingHeight / factor;
-
-            // Get the window's position and size
-            var windowRect = new System.Drawing.Rectangle(
-                (int)window.Left,
-                (int)window.Top,
-                (int)window.Width,
-                (int)window.Height);
-            // Find the screen containing the window
-            var screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle); // Default to primary screen
-
-            var workingArea = screen.WorkingArea;
-
-            bool isOutOfBounds = window.Left + window.Width - 200 < workingArea.Left / factor
-                    || window.Top + 64 < workingArea.Top / factor
-                    || window.Left + window.Width > workingArea.Right / factor
-                    || window.Top + 64 > workingArea.Bottom / factor;
-
-            this.MinWidth = width;
-            this.MinHeight = height;
-
-            // Resize the window
-
-            if (width > workingWidth)
+            _log?.Info($"{nameof(MainWindow)} - EnsureWindowIsVisible in ...");
+            try
             {
-                this.MinWidth = workingWidth;
-                this.Width = workingWidth;
-                isOutOfBounds = true;
+                //Derek 10/26
+                Int16 width = (Int16?)System.Windows.Application.Current?.TryFindResource("breakPoint") ?? 0;
+                Int16 height = (Int16?)System.Windows.Application.Current?.TryFindResource("minHeight") ?? 0;
+
+                // Get the PresentationSource for the window
+                double factor = GetScalingFactor(window);
+
+                // Get the window's current position
+                var windowTopLeft = new System.Drawing.Point(
+                    (int)window.Left,
+                    (int)window.Top);
+
+                var (actualWidth, actualHeight, workingWidth, workingHeight) = GetScreenResolution(this);
+
+                Debug.WriteLine($"Screen Resolution: {actualWidth / factor}x{actualHeight / factor}\n" +
+                                $"Working Area: {workingWidth}x{workingHeight}");
+                DdpmCommonHelper.WriteUILog($"Screen Resolution: {actualWidth / factor}x{actualHeight / factor}\n" +
+                                            $"Working Area: {workingWidth}x{workingHeight}");
+                workingWidth = workingWidth / factor;
+                workingHeight = workingHeight / factor;
+
+                // Get the window's position and size
+                var windowRect = new System.Drawing.Rectangle(
+                    (int)window.Left,
+                    (int)window.Top,
+                    (int)window.Width,
+                    (int)window.Height);
+                // Find the screen containing the window
+                var screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle); // Default to primary screen
+
+                var workingArea = screen.WorkingArea;
+
+                bool isOutOfBounds = window.Left + window.Width - 200 < workingArea.Left / factor
+                        || window.Top + 64 < workingArea.Top / factor
+                        || window.Left + window.Width > workingArea.Right / factor
+                        || window.Top + 64 > workingArea.Bottom / factor;
+
+                this.MinWidth = width;
+                this.MinHeight = height;
+
+                // Resize the window
+
+                if (width > workingWidth)
+                {
+                    this.MinWidth = workingWidth;
+                    this.Width = workingWidth;
+                    isOutOfBounds = true;
+                }
+
+                if (height > workingHeight)
+                {
+                    this.MinHeight = workingHeight;
+                    this.Height = workingHeight;
+                    isOutOfBounds = true;
+                }
+
+                if (isOutOfBounds)
+                {
+                    AdjustWindowPosition(window, screen, factor);
+                }
+                _log?.Info($"{nameof(MainWindow)} - EnsureWindowIsVisible out ...");
             }
-
-            if (height > workingHeight)
+            catch (Exception ex)
             {
-                this.MinHeight = workingHeight;
-                this.Height = workingHeight;
-                isOutOfBounds = true;
-            }
-
-            if (isOutOfBounds)
-            {
-                AdjustWindowPosition(window, screen, factor);
+                _log?.Error($"{nameof(MainWindow)} - EnsureWindowIsVisible exception: {ex.Message}");
             }
         }
 

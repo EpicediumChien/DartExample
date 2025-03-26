@@ -393,6 +393,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<string> CheckisShowSynchronize(IDisplayService _displayManagerPlugin, List<MonitorInfo> moLists, MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)//PIMS-285802 PIMS-285804
         {
+            WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize in ... ");
             if (moLists == null || _displayManagerPlugin == null)
                 return Task.FromResult("null");
 
@@ -402,13 +403,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Re-Check isShowSynchronize
             if (moLists.Count > 1)//Only check if there is more than one monitor.
             {
+                WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize Monitor Count = {moLists.Count} ... ");
                 if (alsSynchronizeList.Count == 0)
                 {
                     alsSynchronizeList = _displayManagerPlugin.GetAllExistAlsConfig().Result;
-                }
+                }              
                 //It is mean over 2 monitors.
                 else if (alsSynchronizeList.Count == 2)//Test case for 2 monitors
                 {
+                    WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize ALS Monitor Count = 2 ... ");
                     //25 Test Scenario : 2 same monitors with ALS Function
                     if (alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName &&
                         alsSynchronizeList[0].isSupportALS == 2 &&
@@ -502,6 +505,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 else if (alsSynchronizeList.Count == 3)//Test case for 3 monitors
                 {
+                    WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize ALS Monitor Count = 3 ... ");
                     //0x12 = non Luminance
                     //22 Test Scenario : 2 monitors with Brightness/Contrast and 1 monitor with Luminance
                     if (CheckLuminanceMonitorCount(moLists) == 2)
@@ -584,6 +588,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 else//Test case for 4 monitors
                 {
+                    WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize ALS Monitor Count = 4 ... ");
                     //24 Test Scenario : 2 monitors with Brightness/Contrast and 2 monitors with Luminance
                     if (CheckLuminanceMonitorCount(moLists) == 2)
                     {
@@ -630,6 +635,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else//It is mean only 1 monitors.
             {
+                WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize Monitor Count = 1 ... ");
                 //3 Test Scenario : Non UP series Monitor does not support ALS
                 if (!alsSynchronizeList[0].ModelName.Contains("UP") && alsSynchronizeList[0].isSupportALS == 0)
                 {
@@ -664,13 +670,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool CheckALSOnOff(List<ALSConfig> aLSList)
         {
             bool _isAlSON = false;
-            foreach (var als in aLSList)
+            try
             {
-                if (als.isAutoBrightness == true || als.isAutoColorTemp == true)
+                for (int i = 0; i < aLSList.Count; i++)
                 {
-                    _isAlSON = true;
-                    break;
+                    if (aLSList[i].isAutoBrightness == true || aLSList[i].isAutoColorTemp == true)
+                    {
+                        _isAlSON = true;
+                        break;
+                    }
                 }
+            }
+            catch (Exception e) 
+            {
+                WriteLog($"[DisplayDeviceHelper] CheckALSOnOff Exception: {e.Message}");
             }
             return _isAlSON;
         }
@@ -682,15 +695,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private int CheckLuminanceMonitorCount(List<MonitorInfo> moLists)
         {
             int _isLuminanceCount = 0;
-            if (moLists != null)
+            try
             {
-                foreach (var hd in moLists)
+                for (int i = 0; i < moLists.Count; i++)
                 {
-                    if (!hd.CapabilityDic.ContainsKey("12"))
+                    if (moLists[i].CapabilityDic.ContainsKey("12"))
                     {
                         _isLuminanceCount++;
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                WriteLog($"[DisplayDeviceHelper] CheckLuminanceMonitorCount Exception: {e.Message}");
             }
             return _isLuminanceCount;
         }
@@ -703,10 +720,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private int CheckALSMonitorCount(List<ALSConfig> aLSList)
         {
             int _isMutliAlsMonitorCount = 0;
-            foreach (var als in aLSList)
+            try
             {
-                if (als.isSupportALS == 2)
-                    _isMutliAlsMonitorCount++;
+                for (int i = 0; i < aLSList.Count; i++)
+                {
+                    if (aLSList[i].isSupportALS == 2)
+                        _isMutliAlsMonitorCount++;
+                }
+            }
+            catch (Exception e)
+            {
+                WriteLog($"[DisplayDeviceHelper] CheckALSMonitorCount Exception: {e.Message}");
             }
             return _isMutliAlsMonitorCount;
         }
