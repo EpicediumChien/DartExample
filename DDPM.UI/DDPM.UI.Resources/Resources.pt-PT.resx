@@ -964,7 +964,7 @@
     <value>Estabelecer ligação aos seus dispositivos</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>É necessário ligar um cabo de vídeo e um cabo USB entre cada PC e\no monitor. Pode ligar até 4 PCs (computadores, consolas\nde jogos, etc.). \r\n\r\nSelecione o tipo de cabo e atribua um nome a cada fonte.</value>
+    <value>É necessário ligar um cabo de vídeo e um cabo USB entre cada PC eo monitor. Pode ligar até 4 PCs (computadores, consolas\nde jogos, etc.). \r\n\r\nSelecione o tipo de cabo e atribua um nome a cada fonte.</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>Alternar entre PCs</value>
@@ -3462,6 +3462,15 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Saiba mais sobre o software</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>NENHUM DISPOSITIVO DETETADO</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>Adicione o seu primeiro dispositivo</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Ligar</value>
+  </data>
   <data name="WebcamMPS.0" xml:space="preserve">
     <value>Para aceder às funcionalidades de Deteção de Presença da Microsoft, visite as Definições do Windows</value>
   </data>
@@ -3470,7 +3479,7 @@
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
     <value>Para aceder às funcionalidades de deteção de presença, utilize a ligação abaixo para transferir o firmware da câmara Web compatível</value>
-	  </data>
+  </data>
   <data name="Bootloader" xml:space="preserve">
     <value>Carregador de arranque</value>
   </data>
@@ -3486,19 +3495,13 @@
   <data name="Bootloader.3" xml:space="preserve">
     <value>para atualizar o firmware para restaurar a funcionalidade.</value>
   </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>Ações de pesquisa</value>
+  </data>
   <data name="Update_Dock_Alert_2" xml:space="preserve">
     <value>Nota: os periféricos ligados a esta estação de ancoragem podem não estar disponíveis durante o processo de atualização.</value>
   </data>
-  <data name="NoDeviceDetected" xml:space="preserve">
-    <value>NENHUM DISPOSITIVO DETETADO</value>
-  </data>
-  <data name="Add1sDevice" xml:space="preserve">
-    <value>Adicione o seu primeiro dispositivo</value>
-  </data>
-  <data name="Connect" xml:space="preserve">
-    <value>Ligar</value>
-  </data>
-  <data name="SearchActions" xml:space="preserve">
-    <value>Ações de pesquisa</value>
+  <data name="Color.14" xml:space="preserve">
+    <value>Predefinição de Cor</value>
   </data>
 </root>

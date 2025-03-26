@@ -22,6 +22,7 @@ using Microsoft;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -293,6 +294,13 @@ namespace DDPM.SA.Plugin.CLIManager
                             WriteLog($"WriteITConfigData Enable_Display_NetworkKVM: {data.Enable_Display_NetworkKVM} Entry");
                             result = _SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Enable_Display_NetworkKVM" }).Result;
                             WriteLog("WriteITConfigData Enable_Display_NetworkKVM Exit");
+                        }
+                        else if (commandLineInput.Options[0].Option_Value == "ENABLE")
+                        {
+                            data.Lock_Display_NetworkKVM = false;
+                            WriteLog($"WriteITConfigData Lock_Display_NetworkKVM: {data.Lock_Display_NetworkKVM} Entry");
+                            result = _SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Lock_Display_NetworkKVM" }).Result;
+                            WriteLog("WriteITConfigData Lock_Display_NetworkKVM Exit");
                         }
                         else
                         {
@@ -765,6 +773,8 @@ namespace DDPM.SA.Plugin.CLIManager
 
         private (int code, string result) EntryNetworkKVM(string command)
         {
+            DDPMITConfig data;
+            var tmp = RetrieveITSettings(out data);
             WriteLog($"EntryNetworkKVM({command}) Entry");
             var validOptions = new List<string> { "ON", "OFF" };
 
@@ -833,7 +843,7 @@ namespace DDPM.SA.Plugin.CLIManager
                 }
             }
             else if (_commandLineInput.Command == "GET" && _commandLineInput.Options.Count == 0)
-            {
+            {             
                 var commandResult = RunDDMCommand($"/get {command}");
 
                 if (command == "NETWORKKVM")
@@ -844,24 +854,32 @@ namespace DDPM.SA.Plugin.CLIManager
                             retcode = true;
                             response.Result = "PASS";
                             response.Value = "ENABLE, ON";
+                            data.Lock_Display_NetworkKVM = false;
+                            data.Enable_Display_NetworkKVM = true;
                             break;
 
                         case 0x0010:
                             retcode = true;
                             response.Result = "PASS";
                             response.Value = "DISABLE, ON";
+                            data.Lock_Display_NetworkKVM = true;
+                            data.Enable_Display_NetworkKVM = true;
                             break;
 
                         case 0x0100:
                             retcode = true;
                             response.Result = "PASS";
                             response.Value = "ENABLE, OFF";
+                            data.Lock_Display_NetworkKVM = false;
+                            data.Enable_Display_NetworkKVM = false;
                             break;
 
                         case 0x0000:
                             retcode = true;
                             response.Result = "PASS";
                             response.Value = "DISABLE, OFF";
+                            data.Lock_Display_NetworkKVM = true;
+                            data.Enable_Display_NetworkKVM = false;
                             break;
 
                         default:
@@ -871,6 +889,8 @@ namespace DDPM.SA.Plugin.CLIManager
                             response.Value = commandResult.value;
                             break;
                     }
+                    _SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Enable_Display_NetworkKVM" });
+                    _SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Lock_Display_NetworkKVM" });
                 }
                 else
                 {

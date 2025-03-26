@@ -1872,7 +1872,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return -1;
             }
         }
-
+        public async Task<int> GetAirAudioMaxAllowedPariedHost(string Guid)
+        {
+            try
+            {
+                var result = await DTPService.GetAirAudioMaxAllowedPariedHost(Guid);
+                if (result != -1)
+                    writelog($"GetAirAudioMaxAllowedPariedHost Success");
+                else
+                    writelog($"GetAirAudioMaxAllowedPariedHost Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"GetAirAudioMaxAllowedPariedHost failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
         public async Task<bool> SetFactoryResetAsyncValueForAirAudioAsync(string Guid, bool newValue)
         {
             try

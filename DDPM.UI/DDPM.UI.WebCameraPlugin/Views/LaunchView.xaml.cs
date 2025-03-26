@@ -489,25 +489,31 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             //檢查是否為dell電腦
             is_DellPc = check_DellPc();
-
+            //by pass DTP to Get UPD Support by FW
+            print_debug("is_EsiSupport:" + is_EsiSupport);
             is_SUT_internal_presence_sensor = check_SUT_internal_presence_sensor();
             var fv = _vm.CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
             string FirmwareVersion2 = fv.Contains('.') == true ? fv : $"{fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
-            bool NotNeedtoUpdate = new Version(FirmwareVersion2).CompareTo(new Version("0.0.9.1")) > 0 ? true : false;
-            //is_EsiSupport = is_EsiSupport && NotNeedtoUpdate;
-            print_debug("is_EsiSupport:" + is_EsiSupport);
+            //by pass DTP to Get UPD Support by FW
+            bool CheckWebCamFwUPD = new Version(FirmwareVersion2).CompareTo(new Version("0.0.9.2")) <= 0 ? true : new Version(FirmwareVersion2).Equals(new Version("0.0.9.4")) == true ? true : false;
+            is_EsiSupport = CheckWebCamFwUPD;
+            print_debug("CheckWebCamFwUPD:" + CheckWebCamFwUPD);
             print_debug("is_WindwosHelloSupport:" + is_WindwosHelloSupport);
             print_debug("is_camera_dell7:" + is_camera_dell7);
             print_debug("is_WindowsVer_OK:" + is_WindowsVer_OK);
             print_debug("is_DellPc:" + is_DellPc);
             print_debug("is_SUT_internal_presence_sensor:" + is_SUT_internal_presence_sensor);
             print_debug("AllSupportedResolutions:" + AllSupportedResolutions);
-            print_debug("NotNeedtoUpdate:" + NotNeedtoUpdate);
+            print_debug("NotNeedtoUpdate:" + CheckWebCamFwUPD);
             print_debug("check_PresenceFunction() s0 model-" + model);
             CheckTestCase();
             //CheckTestCase2();
 
-
+            /*noPresenceFunction = false;
+            _vm.UPD_Visibility = Visibility.Visible;
+            _vm.brdHello_show = Visibility.Visible;
+            _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+            _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;*/
             print_debug("check_PresenceFunction() s22-20250102 14:43 update ver step");
 
             print_debug("check_PresenceFunction() end");
@@ -532,7 +538,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.MPS_Setting_Visibility = Visibility.Collapsed;//內建電腦MPS
             _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;//FW Update
             CheckSupportWindowsHello(is_WindwosHelloSupport ? Visibility.Visible : Visibility.Collapsed);
-
+            //2A
+            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK && is_SUT_internal_presence_sensor)
+            {
+                print_debug("TestCase 2A");
+                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                return;
+            }
             //1A
             if (is_DellPc && is_EsiSupport && !is_WindowsVer_OK && is_SUT_internal_presence_sensor)
             {
@@ -541,19 +553,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 CheckSupportWindowsHello(Visibility.Visible); //隱藏人物偵測區windows hello設定連結
                 return;
             }
-            //1B
-            if (!is_DellPc && is_EsiSupport && !is_WindowsVer_OK && !is_SUT_internal_presence_sensor)
+            //6A
+            if (is_DellPc && is_EsiSupport && !is_WindowsVer_OK && !is_SUT_internal_presence_sensor)
             {
-                print_debug("TestCase 1B");
-                noPresenceFunction = true;
-                return;
-            }
-
-            //2A
-            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK && is_SUT_internal_presence_sensor)
-            {
-                print_debug("TestCase 2A");
-                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                print_debug("TestCase 6A");
+                _vm.UPD_Visibility = Visibility.Visible;
+                CheckSupportWindowsHello(Visibility.Visible); //隱藏人物偵測區windows hello設定連結
                 return;
             }
             //5A
@@ -570,8 +575,23 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
                 return;
             }
-            //4A?
-            if (is_DellPc && !is_EsiSupport && !is_WindowsVer_OK && is_SUT_internal_presence_sensor)
+            //6B
+            if (is_DellPc && !is_EsiSupport && !is_WindowsVer_OK && !is_SUT_internal_presence_sensor)
+            {
+                print_debug("TestCase 6B");
+                noPresenceFunction = true;
+                return;
+            }
+            //==========DDPMW-1770=====
+            //5B
+            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK && is_SUT_internal_presence_sensor)
+            {
+                print_debug("TestCase 5B");
+                _vm.MPS_Setting_Visibility = Visibility.Visible;
+                return;
+            }
+            //4A
+            if (is_DellPc && !is_EsiSupport && !is_WindowsVer_OK && !is_SUT_internal_presence_sensor)
             {
                 print_debug("TestCase 4A");
                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
@@ -586,26 +606,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             }
 
-            //5B
-            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK && is_SUT_internal_presence_sensor)
+            //1B
+            if (!is_DellPc && is_EsiSupport && !is_WindowsVer_OK && !is_SUT_internal_presence_sensor)
             {
-                print_debug("TestCase 5B");
-                _vm.MPS_Setting_Visibility = Visibility.Visible;
-                return;
-            }
-            //6A
-            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK && !is_SUT_internal_presence_sensor)
-            {
-                print_debug("TestCase 6A");
-                _vm.UPD_Visibility = Visibility.Visible;
-                CheckSupportWindowsHello(Visibility.Visible); //隱藏人物偵測區windows hello設定連結
-                return;
-            }
-
-            //3B
-            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK && !is_SUT_internal_presence_sensor)
-            {
-                print_debug("TestCase 3B");
+                print_debug("TestCase 1B");
                 noPresenceFunction = true;
                 return;
             }
@@ -616,27 +620,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 noPresenceFunction = true;
                 return;
             }
-            //6B
-            if (is_DellPc && !is_EsiSupport && !is_WindowsVer_OK && !is_SUT_internal_presence_sensor)
+            //3B
+            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK && !is_SUT_internal_presence_sensor)
             {
-                print_debug("TestCase 6B");
+                print_debug("TestCase 3B");
                 noPresenceFunction = true;
                 return;
             }
-            ////6C1
-            //if (!is_DellPc && is_EsiSupport && !is_SUT_internal_presence_sensor)
-            //{
-            //    print_debug("TestCase 6C1");
-            //    noPresenceFunction = true;
-            //    return;
-            //}
-            ////6C2
-            //if (is_camera_dell7 && !is_DellPc && !is_EsiSupport && !is_SUT_internal_presence_sensor)
-            //{
-            //    print_debug("TestCase 6C2");
-            //    noPresenceFunction = true;
-            //    return;
-            //}
             print_debug("TestCase Default");
             noPresenceFunction = true;
         }
@@ -695,7 +685,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return true;
 
             string model = WinVersion.GetComputerModel();
-            if (model != null && (model.Contains("Latitude 7350", StringComparison.OrdinalIgnoreCase) || model.Contains("XPS 9345", StringComparison.OrdinalIgnoreCase))) /*|| model.Contains("XPS 13 9345", StringComparison.OrdinalIgnoreCase)*/
+            if (model != null && (model.Contains("Latitude 7350", StringComparison.OrdinalIgnoreCase) ||
+                model.Contains("XPS 9345", StringComparison.OrdinalIgnoreCase) ||
+                model.Contains("XPS 13 9350", StringComparison.OrdinalIgnoreCase) ||
+                (model.Contains("XPS", StringComparison.OrdinalIgnoreCase) &&
+                  model.Contains("9350", StringComparison.OrdinalIgnoreCase))))
             {
                 return true;
             }

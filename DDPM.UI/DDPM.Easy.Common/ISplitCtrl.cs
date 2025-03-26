@@ -295,9 +295,11 @@ namespace DDPM.Easy.Common
             PngBitmapEncoder pngEnc = new PngBitmapEncoder();
             pngEnc.Frames.Add(bmpFrame);
 
-            FileStream fs = new FileStream(pathName, FileMode.Create, FileAccess.Write, FileShare.None);
-            pngEnc.Save(fs);
-            fs.Close();
+            using(FileStream fs = new FileStream(pathName, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                pngEnc.Save(fs);
+            }
+            
             return true;
         }
         #endregion Bitmap - Currently is not used in DDPM

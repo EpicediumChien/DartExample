@@ -231,7 +231,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 if (pluginCondition is PluginErrorCondition)
                 {
                     if (_viewModel != null)
+                    {
                         _viewModel.IsDeviceManagerReady = false;
+                        _log.Info($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} _viewModel.IsDeviceManagerReady = false ... ");
+                    }
 
                     _log.Info($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} plugin is in {nameof(PluginErrorCondition)}");
                 }
@@ -249,6 +252,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             if (_viewModel != null)
                             {
                                 _viewModel.IsDeviceManagerReady = true;
+                                _log.Info($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} _viewModel.IsDeviceManagerReady = true ... ");
                                 //Robert_Lin, 2024-12-16 for PleaseWait thread to get devices
                                 _viewModel.DeviceManagerPlugin = _deviceManager;
 
@@ -259,13 +263,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _deviceManager.UIUpdateNotify += _deviceManager_UIUpdateNotify;
                             _deviceManager.MonitorinfoUpdated += _deviceManager_MonitorinfoUpdated;
 
-                            //Move to call from OnActivated( ) => Failed, it's called too late
-                            //So uncommented below code
-                            //Task.Run(async () => await GetDdpmDevicesAsync(_deviceManager));
-
                             //Elapsed= 4, 2 msec
                             //Robert_Lin, 2024-6-21 UI shown, tell VCPCore to increase polling rate to 0x52
-                            //Derek_Du, 2024-10-21 add send process ID to SA
                             _log.Info("Calling to DeviceManager.Reset0x52TimerTick(2000)");
                             Task delayTask = _deviceManager.Reset0x52TimerTick(2000, Process.GetCurrentProcess().Id);
 
@@ -273,26 +272,26 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _log.Info("Calling to DeviceManager.ReceiveTelemetryInfo(AppSession,AppStarted)");
                             _deviceManager.ReceiveTelemetryInfo("AppSession", "AppStarted", Telementry_Frequency.RealTime);
 
-                            //Elapsed= 484, 316, 314 msec
-                            _log.Info("Calling GetDdpmDevicesAsync()");
-                            await GetDdpmDevicesAsync(_deviceManager);
-                            //CloseQAMIfExist();
                             await CheckIfNeedNavigateToSettingPageByQAMOSD();  //Derek 1217 for QAM PIMS-332041
-
-                            //Elapsed= 1, 1 msec
-                            //_log.Info("Calling CloseQAMIfExist()");
-                            //CloseQAMIfExist();
 
                             //Elapsed= 2 msec
                             //1030 get global settings for telemetry consent page using
                             _log.Info("Calling to DeviceManager.GetGlobalSettingParam()");
                             _globalSettings = _deviceManager.GetGlobalSettingParam().Result;
                             _log.Info("Return from DeviceManager.GetGlobalSettingParam()");
+
+                            if (DdpmCommonHelper.DeviceManagerSA == null)
+                            {
+                                _log.Info("DdpmCommonHelper.DeviceManagerSA null, DdpmCommonHelper.DeviceManagerSA = _deviceManager");
+                                DdpmCommonHelper.DeviceManagerSA = _deviceManager;
+                            }
+
                             //1030 Dean
                             //For Hess to read global setting "_globalSettings"
                             //After "GetDdpmDevicesAsync" the user setting cache is ready "DdpmCommonHelper.Settings_Cache"
-                            if (DdpmCommonHelper.Settings_Cache == null &&
-                                DdpmCommonHelper.DeviceManagerSA != null)
+
+                            if (DdpmCommonHelper.Settings_Cache == null)// &&
+                                //DdpmCommonHelper.DeviceManagerSA != null)
                             {
                                 //Elapsed= 2 msec
                                 _log.Info("Calling to ReadDDPMSettings()");
@@ -301,47 +300,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             }
                             if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null && _viewModel != null)
                             {
-                                // << 241108 added by Hess to delete setting file at first time
-                                /*if (!DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage)
-                                {
-                                    var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions");
-                                    if (Directory.Exists(fileFolder))
-                                    {
-                                        _log.Info($"Delete Directory: {fileFolder}");
-                                        Directory.Delete(fileFolder, true);
-                                    }
-
-                                    fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
-                                    if (Directory.Exists(fileFolder))
-                                    {
-                                        _log.Info($"Delete Directory: {fileFolder}");
-                                        Directory.Delete(fileFolder, true);
-                                    }
-                                }*/
-                                // >>
-
                                 if (!_globalSettings.isSetTelemetryOverInstaller)
                                 {
                                     _log.Info("Invoking ShowConsent()");
-                                    //_viewModel.ShowConsent();
                                     await CheckAndQueueDevice("CONSENT_PAGE", "CONSENT_PAGE", null);
-                                    //DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage = true;
-                                    //_log.Info("Calling to WriteDDPMSettings()");
-                                    //DdpmCommonHelper.WriteDDPMSettings(DdpmCommonHelper.Settings_Cache);
-                                    //_log.Info("Return from WriteDDPMSettings()");
                                 }
                             }
-
-                            //Robert_Lin, 2024-12-16 never be true, comment-out
-                            //if (_deviceManager == null)
-                            //{
-                            //    //Robert_Lin, 2024-12-16 fix
-                            //    //NEW:
-                            //    _log.Error($"{nameof(PluginManager_PluginsStarted)} IDeviceManagerSA Plugin is null");
-                            //    //OLD:
-                            //    //_log.Error($"{nameof(PluginManager_PluginsStarted)} ISettingsManagerDev Plugin is null");
-                            //    return;
-                            //}
 
                             // Add DDPM walk through before walk through page constructed
                             _log.Info($"Calling to CheckAndQueueDevice(DDPM,DDPM,null)");
@@ -355,7 +319,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                             //Elapsed= 3692, 392 msec
                             //Robert_Lin, 2024-12-18, PIMS-316225 DDPM take > 10sec to show Home Page on Launch after restart
-                            //  Move below code into a background task
+                            //Move below code into a background task
                             //Robert_Lin 2024-8-2 DDPMW-579, If there is any FW/SW update available,
                             //then the Gear icon on masthead will show breathe & glow animation.
                             //Call once
@@ -379,7 +343,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                         //Elapsed= 1, 1 msec
                                         _log.Info("Calling to GlowEffect_Trigger()");
                                         _iconGear.GlowEffect_Trigger();
-                                        //_iconGear.GlowEffect_Start();
                                     }
                                     else
                                     {
@@ -403,14 +366,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             ShowPluginById = true;
                         }
 
+                        _log.Info("Calling to GetDdpmDevicesAsync()");
+                        await GetDdpmDevicesAsync(_deviceManager);
+                        _log.Info("Return from GetDdpmDevicesAsync()");
+
                         //Elapsed= 1 msec
                         _log.Info($"Calling to CheckIfNeedImportSetting_Display()");
                         _monitorCache.Clear();
                         _monitorCache = _monitorInfos;
                         CheckIfNeedImportSetting_Display(_monitorInfos);
                         _log.Info($"Return from CheckIfNeedImportSetting_Display()");
-
-                        //await DDPMInfoSAHomepageIsReady();
                     }
                 }
             }
@@ -418,7 +383,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 var message = $"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} failed with error - {ex.Message}";
                 _log.Error(ex, message);
-                //throw new NotificationPluginException(message);
             }
             finally
             {
@@ -519,17 +483,17 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 //Robert_Lin, 2024-7-22 log info
                 _log.Info($"@ ChangedProperty=[{e.changedProperty}], ChangedType=[{e.type}] DeviceID=[{e.deviceID}]");
-                if (e.device_peripherals != null)
-                {
+                //if (e.device_peripherals != null)
+                //{
                     // Check and handle new inserted devices
                     //await CheckAndQueueDevice(e.device_peripherals);
-                    _log.Info($"@ DeviceName=[{e.device_peripherals.Name}]");
-                }
+                //    _log.Info($"@ DeviceName=[{e.device_peripherals.Name}]");
+                //}
 
                 // If event Contains Add, then into Walkthrough
                 if (e.changedProperty.ToLower().Contains("add") || e.changedProperty.ToLower().Contains("displaychanged"))
                 {
-                    _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} Start");
+                    _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} {e.changedProperty.ToString()} Start");
                     await CollectAndCompareDevicesAsync();
                     //// Check Queue¡Afirst use device need to show WalkThroughPage
                     if (WalkThroughQueue.Count > 0 && ShowPluginById == false)
@@ -606,6 +570,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         _log.Info($"DdpmHomePlugin._deviceManager_notifyDeviceDisConnecte() skip : e.changedProperty : {e.changedProperty}");
                 }
             }
+            _log.Info("DdpmHomePlugin._deviceManager_DeviceChanged() out ... ");
         }
 
         private void CheckIfNeedImportSetting_Display(List<MonitorInfo> monitorInfos)
@@ -646,6 +611,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         }
                     }
                 }
+                _log.Info($"[DdpmHomePlugin] CheckIfNeedImportSetting_Display Task.Run end ... ");
             });
         }
 
@@ -1741,6 +1707,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 foreach (var device in deviceHelper.deviceInfo)
                 {
+                    _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (device)");
                     // Check color code
                     string _modelNumber = device.ModelNumber;
                     if (device.ModelNumber == "MS700" &&

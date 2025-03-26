@@ -943,7 +943,7 @@
     <value>マウスと キーボードの接続</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>マウスとキーボードは、モニターの背面(USB-A)に接続します。\nメモ：Webカメラなど他のUSB周辺機器を\n接続することもできます。</value>
+    <value>マウスとキーボードは、モニターの背面(USB-A)に接続します。\nメモ：Webカメラなど他のUSB周辺機器を接続することもできます。</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>USB-A</value>
@@ -964,7 +964,7 @@
     <value>デバイスに 接続しています</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>各パソコンとモニター間のビデオ ケーブルやUSBケーブルを\n接続してください。最大4台のパソコン（コンピューター、ゲーミング \nコンソールなど）を接続できます。\r\n\r\nケーブル タイプを選択し、各ソースに名前を割り当ててください。</value>
+    <value>各パソコンとモニター間のビデオ ケーブルやUSBケーブルを接続してください。最大4台のパソコン（コンピューター、ゲーミング コンソールなど）を接続できます。\r\n\r\nケーブル タイプを選択し、各ソースに名前を割り当ててください。</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>パソコンの切り替え</value>
@@ -3459,6 +3459,15 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>ソフトウェアに関する詳細情報</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>検出されたデバイスはありません</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>最初のデバイスを追加</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>接続</value>
+  </data>
   <data name="WebcamMPS.0" xml:space="preserve">
     <value>Microsoftプレゼンス センシング機能にアクセスするには、Windowsの設定にアクセスします。</value>
   </data>
@@ -3483,19 +3492,13 @@
   <data name="Bootloader.3" xml:space="preserve">
     <value>機能を復元するためにファームウェアをアップデートします。</value>
   </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>検索アクション</value>
+  </data>
   <data name="Update_Dock_Alert_2" xml:space="preserve">
     <value>メモ：このドッキング ステーションに接続されている周辺機器は、アップデート プロセス中に使用できない場合があります。</value>
   </data>
-  <data name="NoDeviceDetected" xml:space="preserve">
-    <value>検出されたデバイスはありません</value>
-  </data>
-  <data name="Add1sDevice" xml:space="preserve">
-    <value>最初のデバイスを追加</value>
-  </data>
-  <data name="Connect" xml:space="preserve">
-    <value>接続</value>
-  </data>
-  <data name="SearchActions" xml:space="preserve">
-    <value>検索アクション</value>
+  <data name="Color.14" xml:space="preserve">
+    <value>ラー プリセット</value>
   </data>
 </root>

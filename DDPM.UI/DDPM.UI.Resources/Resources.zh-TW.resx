@@ -943,7 +943,7 @@
     <value>連接滑鼠和鍵盤</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>若為滑鼠和鍵盤，請連接至顯示器背面 (USB-A)。\n請注意：您也可以連接其他 USB 週邊設備，例如\n網路攝影機。</value>
+    <value>若為滑鼠和鍵盤，請連接至顯示器背面 (USB-A)。\n請注意：您也可以連接其他 USB 週邊設備，例如網路攝影機。</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>USB-A</value>
@@ -964,7 +964,7 @@
     <value>連線至您的裝置</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>請將電腦之間的視訊纜線和 USB 纜線連接至\n顯示器。您最多可以連接 4 台 PC (電腦、遊戲\n主控台等)。\r\n\r\n請選取纜線類型，並為每個來源指派一個名稱。</value>
+    <value>請將電腦之間的視訊纜線和 USB 纜線連接至顯示器。您最多可以連接 4 台 PC (電腦、遊戲主控台等)。\r\n\r\n請選取纜線類型，並為每個來源指派一個名稱。</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>在 PC 之間切換</value>
@@ -3459,6 +3459,15 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>深入瞭解軟體</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>偵測不到任何裝置</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>新增第一個裝置</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>連線</value>
+  </data>
   <data name="WebcamMPS.0" xml:space="preserve">
     <value>如需存取 Microsoft 在場感應功能，請造訪 Windows 設定</value>
   </data>
@@ -3467,7 +3476,7 @@
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
     <value>如需存取在場感應功能，請使用以下連結下載相容的網路攝影機韌體</value>
-	  </data>
+  </data>
   <data name="Bootloader" xml:space="preserve">
     <value>開機載入器</value>
   </data>
@@ -3483,19 +3492,13 @@
   <data name="Bootloader.3" xml:space="preserve">
     <value>來更新韌體以還原功能。</value>
   </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>搜尋動作</value>
+  </data>
   <data name="Update_Dock_Alert_2" xml:space="preserve">
     <value>備註：在更新過程中，連接到此擴充基座的周邊設備可能無法使用</value>
   </data>
-  <data name="NoDeviceDetected" xml:space="preserve">
-    <value>偵測不到任何裝置</value>
-  </data>
-  <data name="Add1sDevice" xml:space="preserve">
-    <value>新增第一個裝置</value>
-  </data>
-  <data name="Connect" xml:space="preserve">
-    <value>連線</value>
-  </data>
-  <data name="SearchActions" xml:space="preserve">
-    <value>搜尋動作</value>
+  <data name="Color.14" xml:space="preserve">
+    <value>色彩預設</value>
   </data>
 </root>

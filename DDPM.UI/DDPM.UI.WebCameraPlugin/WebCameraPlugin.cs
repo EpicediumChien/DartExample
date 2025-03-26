@@ -268,10 +268,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             }
                             break;
                         case "Webcam_SerialNumberChanged":
-                        {
-                            //??
-                        }
-                        break;
+                            {
+                                //??
+                            }
+                            break;
                         //case "Webcam_IsHDROnChanged":
                         //{
                         //    if (!event_param.TryGetValue("NewValue", out var NewValue))
@@ -288,7 +288,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //            _viewModel.IsHDROn = false;
                         //        //_viewModel!.IsSettingProfile = false;
                         //    });
-                        //    //HDR SIWTCH®É­Ô,»Ý­n­«¸mCAMERA,¤¤¶¡»Ý­n¤@¬qªì©l¤Æ®É¶¡¬ù1¬í
+                        //    //HDR SIWTCHï¿½É­ï¿½,ï¿½Ý­nï¿½ï¿½ï¿½mCAMERA,ï¿½ï¿½ï¿½ï¿½ï¿½Ý­nï¿½@ï¿½qï¿½ï¿½lï¿½Æ®É¶ï¿½ï¿½ï¿½1ï¿½ï¿½
                         //    //_viewModel!.mre.Set();
                         //    Thread.Sleep(1000);
                         //    _viewModel!.mre.Set();
@@ -662,19 +662,24 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("[WebCameraPlugin] [Webcam_Esi_IsCameraSensorCoveredChanged] NewValue cannot be found in event_param");
                                     return;
                                 }
 
                                 if (NewValue.ToLower() == "true")
                                 {
                                     var _globalSettings = DdpmCommonHelper.DeviceManagerSA!.GetGlobalSettingParam().Result;
+                                    DdpmCommonHelper.WriteUILog($"[WebCameraPlugin][Webcam_Esi_IsCameraSensorCoveredChanged] Webcam_WB7022_Presence_Detection_Sensor_Cover_State={_globalSettings.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State}");
 
                                     // check if show OSD for Presence Detection Sensor Cover
                                     if (_globalSettings.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State)
                                     {
-                                        DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.Fingerprint);
-                                        _viewModel.IsChecked_Snooze = false; // jim 20241221 add for ©MDPeM ¦æ¬°¹ï»ô 
+                                        if (DdpmCommonHelper.DeviceManagerSA != null)
+                                        {
+                                            DdpmCommonHelper.DeviceManagerSA.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.Fingerprint);
+                                            DdpmCommonHelper.WriteUILog($"[WebCameraPlugin][Webcam_Esi_IsCameraSensorCoveredChanged] show OSD");
+                                            _viewModel.IsChecked_Snooze = false; // jim 20241221 add for ï¿½MDPeM ï¿½æ¬°ï¿½ï¿½ï¿½ 
+                                        }
                                     }
                                 }
                             }

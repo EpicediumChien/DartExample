@@ -816,7 +816,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public string Model2 { get; set; } = "";
 
         //public string? DeviceInfo { get; set; }
-        public Guid CurrentDeviceID { get; set; }
+        public Guid CurrentDeviceID { get; set; } = Guid.NewGuid();
         public int CurrentInstanceID { get; set; }
         public bool IsCollabsKeysSupported { get; set; }
         public bool IsIlluminationSupported { get; set; }

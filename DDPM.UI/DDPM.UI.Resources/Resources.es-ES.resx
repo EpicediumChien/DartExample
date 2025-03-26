@@ -943,7 +943,7 @@
     <value>Conectar ratón y teclado</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>Para el ratón y el teclado, conéctelos a la parte trasera del monitor (USB-A)\nNota: También puede conectar otros periféricos USB como una\n cámara web.</value>
+    <value>Para el ratón y el teclado, conéctelos a la parte trasera del monitor (USB-A)\nNota: También puede conectar otros periféricos USB como una cámara web.</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>USB-A</value>
@@ -964,7 +964,7 @@
     <value>Conexión a sus dispositivos</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>Conecte un cable de vídeo y un cable USB entre cada PC y\n el monitor. Puede conectar hasta 4 PC (ordenadores, consolas\nde juegos, etc.). \r\n\r\nSeleccione el tipo de cable y asigne un nombre a cada fuente.</value>
+    <value>Conecte un cable de vídeo y un cable USB entre cada PC y el monitor. Puede conectar hasta 4 PC (ordenadores, consolas\nde juegos, etc.). \r\n\r\nSeleccione el tipo de cable y asigne un nombre a cada fuente.</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>Cambiar entre PC</value>
@@ -3459,6 +3459,15 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Más información sobre el software</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>NO SE HA DETECTADO NINGÚN DISPOSITIVO</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>Añada su primer dispositivo</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Conectar</value>
+  </data>
   <data name="WebcamMPS.0" xml:space="preserve">
     <value>Para acceder a las funciones de detección de presencia de Microsoft, visite Configuración de Windows</value>
   </data>
@@ -3483,19 +3492,13 @@
   <data name="Bootloader.3" xml:space="preserve">
     <value>para actualizar el firmware con el fin de restaurar la funcionalidad.</value>
   </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>Buscar acciones</value>
+  </data>
   <data name="Update_Dock_Alert_2" xml:space="preserve">
     <value>Nota: Es posible que los periféricos conectados a esta estación de acoplamiento no estén disponibles durante el proceso de actualización.</value>
   </data>
-  <data name="NoDeviceDetected" xml:space="preserve">
-    <value>NO SE HA DETECTADO NINGÚN DISPOSITIVO</value>
-  </data>
-  <data name="Add1sDevice" xml:space="preserve">
-    <value>Añada su primer dispositivo</value>
-  </data>
-  <data name="Connect" xml:space="preserve">
-    <value>Conectar</value>
-  </data>
-  <data name="SearchActions" xml:space="preserve">
-    <value>Buscar acciones</value>
+  <data name="Color.14" xml:space="preserve">
+    <value>Preajuste de color</value>
   </data>
 </root>

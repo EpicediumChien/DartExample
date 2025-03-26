@@ -582,9 +582,10 @@ namespace DDPM.UI.Common
             PngBitmapEncoder pngEnc = new PngBitmapEncoder();
             pngEnc.Frames.Add(bmpFrame);
 
-            FileStream fs = new FileStream(pathName, FileMode.Create, FileAccess.Write, FileShare.None);
-            pngEnc.Save(fs);
-            fs.Close();
+            using (FileStream fs = new FileStream(pathName, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                pngEnc.Save(fs);
+            }                      
             return true;
         }
 
