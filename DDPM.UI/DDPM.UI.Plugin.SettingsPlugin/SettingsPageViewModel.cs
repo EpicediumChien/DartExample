@@ -231,7 +231,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     OnPropertyChanged("IsBusy_UpdatePage");
                     return;
                 }
-                SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false, true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, true).Result);
+                SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, true).Result);
                 RefreshUI();
             }
             catch (Exception ex)
@@ -504,7 +504,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 return;
             }
             Log?.Info($"CheckUpdate start");
-            SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false, true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, true).Result);
+            SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, true).Result);
             RefreshUI();
             Log?.Info($"CheckUpdate done");
         }

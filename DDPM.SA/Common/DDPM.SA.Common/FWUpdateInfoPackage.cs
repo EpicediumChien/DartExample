@@ -126,6 +126,7 @@ namespace DDPM.SA.Common
         public string Connectivity { get; set; } = string.Empty;
         public string Update_date { get; set; } = string.Empty;
         public string Available_date { get; set; } = string.Empty;
+        public string UpdateTime { get; set; } = string.Empty;
 
         public bool Equals(FWUpdateInfo fwUpdateInfo)
         {
@@ -185,6 +186,8 @@ namespace DDPM.SA.Common
         public string ServiceTag { get; set; }
         public string SupplierID { get; set; }
         public string D_Ctrl { get; set; }
+        [JsonPropertyName("UpdateTime")]
+        public string UpdateTime { get; set; }
     }
 
     /// <summary>
@@ -215,5 +218,7 @@ namespace DDPM.SA.Common
         /// 安裝時使用，獲取安裝進度
         /// </summary>
         public double ProcessProgress { get; set; } = 0.0;
+        public bool IsDisplay { get; set; } = false;
+        public string UpdateTime { get; set; } = string.Empty;
     }
 }

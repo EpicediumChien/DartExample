@@ -142,6 +142,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         private Timer _checkUODTimer;
         private Timer _timerTimeOut;
         private string _notificationStr = "";
+        private string _notificationTitle = "";
         private FWUErrorCode _updateErrorCode;
         private bool _IsShowNotify = true;
         string _ProgressLogPath = string.Empty;
@@ -422,11 +423,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <param name="updateHelper">IL的更新資訊</param>
         /// <param name="isShowNotify">是否顯示右下角通知圖示</param>
         /// <returns>回傳更新資訊包</returns>
-        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, List<DeviceInfo> deviceInfos, bool isShowNotify, DisplayUpdateHelper displayUpdateHelper, bool reScan)
+        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, List<DeviceInfo> deviceInfos, DisplayUpdateHelper displayUpdateHelper, bool reScan)
         {
             if (reScan && !_IsDownloadAndInsytall)
             {
-                CheckUpdate(updateHelper, deviceInfos, isShowNotify, displayUpdateHelper);
+                CheckUpdate(updateHelper, deviceInfos, displayUpdateHelper);
             }
             return Task.FromResult(_fWUpdateInfoPackage);
         }
@@ -437,9 +438,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <param name="updateHelper">IL的更新資訊</param>
         /// <param name="isShowNotify">是否顯示右下角通知圖示</param>
         /// <returns>回傳裝置資訊表(如果有需強制安裝更新的話，該裝置資訊表會被寫入對應裝置的安裝結果)</returns>
-        private void CheckUpdate(UpdateHelper updateHelper, List<DeviceInfo> deviceInfos, bool isShowNotify, DisplayUpdateHelper displayUpdateHelper)
+        private void CheckUpdate(UpdateHelper updateHelper, List<DeviceInfo> deviceInfos, DisplayUpdateHelper displayUpdateHelper)
         {
-            _IsShowNotify = isShowNotify;
             _logs.DebugMsg_1(nameof(CheckUpdate) + " start");
             _fWUpdateInfoPackage = new FWUpdateInfoPackage();
             try
@@ -583,6 +583,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 SupplierID = deviceSupplierID,
                                 InstanceId = updateHelper.UpdateItems[i].InstanceId,
                                 Connectivity = deviceConnectivity,
+                                UpdateTime = "",
                                 Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss"),
                                 ServiceTag = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
                                      updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : "",
@@ -635,6 +636,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 IsDisplay = true,
                                 SupplierID = displayUpdateHelper.Firmwares[i].SupplierID,
                                 D_Ctrl = displayUpdateHelper.Firmwares[i].D_Ctrl,
+                                UpdateTime = displayUpdateHelper.Firmwares[i].UpdateTime,
                                 Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss")
                             };
                             _logs.DebugMsg_1($"Display _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
@@ -678,10 +680,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// </summary>
         /// <param name="fwUpdateInfos">更新的裝置資訊表</param>
         /// <returns>回傳裝置資訊表(在這個方法裡將原本傳入的裝置資訊表，再寫入對應裝置的下載安裝的結果碼)</returns>
-        public Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, List<DeviceInfo> currentDevice, int IODongleCountGen3AgoCount, bool isUITrigger, string installPath)
+        public Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, List<DeviceInfo> currentDevice, int IODongleCountGen3AgoCount, bool isUITrigger, bool isShowNotify, string installPath)
         {
             _IsDownloadAndInsytall = true;
             _IsUITrigger = isUITrigger;
+            _IsShowNotify = isShowNotify;
             originalDirectory = DDPMFileSecurity.SanitizePath(Directory.GetCurrentDirectory(), out string info);
             _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} DDPMFileSecurity.SanitizePath info : {info}");
             Method method = new Method(_logs);
@@ -693,6 +696,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         DeviceName = fwUpdateInfos[0].DeviceName,
                         Model = fwUpdateInfos[0].Model,
+                        IsDisplay = fwUpdateInfos[0].IsDisplay,
+                        UpdateTime = fwUpdateInfos[0].UpdateTime,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                         ProcessName = "Downloading",
                         ProcessProgress = 0,
@@ -722,6 +727,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         DeviceName = fwUpdateInfos[i].DeviceName,
                         Model = fwUpdateInfos[i].Model,
+                        IsDisplay=fwUpdateInfos[i].IsDisplay,
+                        UpdateTime = fwUpdateInfos[i].UpdateTime,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                         ProcessName = "Downloading",
                         ProcessProgress = 0,
@@ -770,6 +777,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         return Task.FromResult(fwUpdateInfos);
                     }
                     _notificationStr = "";
+                    _notificationTitle = "";
                     _fWUpdateInfo = fwUpdateInfos[i];
                     _updateErrorCode = FWUErrorCode.Unknow;
                     fwUpdateInfos[i].FWUErrorCode = _updateErrorCode;
@@ -855,6 +863,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             DeviceName = fwUpdateInfos[i].DeviceName,
                             Model = fwUpdateInfos[i].Model,
+                            IsDisplay = fwUpdateInfos[i].IsDisplay,
+                            UpdateTime = fwUpdateInfos[i].UpdateTime,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                             ProcessName = "Downloading",
                             ProcessProgress = 100,
@@ -926,15 +936,35 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 fwUpdateInfos[i].FWUErrorCode = Install(fwUpdateInfos[i]);
                                 fwUpdateInfos[i].Update_date = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
                             }
+                            //_notificationStr = $"{_notificationStr.Replace("[XXXXXX]", $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model}")}";
+                            _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {_notificationStr}";
                             if (fwUpdateInfos[i].FWUErrorCode == FWUErrorCode.NoError)
                             {
-                                _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {_notificationStr}";
-                                NotificationFWupdate(LangHelper.Instance["FW_info"], _notificationStr);
+                                if (_IsUITrigger)
+                                {
+                                    NotificationFWupdate(LangHelper.Instance["Success"], _notificationStr);
+                                }
+                                else//for CLI
+                                {
+                                    _notificationStr = LangHelper.Instance["Update_successful_body"].Replace("[XXXXXX]", $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model}");
+                                    NotificationFWupdate(LangHelper.Instance["Update_successful"], _notificationStr);
+                                }
                             }
                             else
                             {
-                                _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {_notificationStr}";
-                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                                if (_IsUITrigger)
+                                {
+                                    if (string.IsNullOrWhiteSpace(_notificationTitle))
+                                    {
+                                        _notificationTitle = LangHelper.Instance["Error"];
+                                    }
+                                    NotificationFWupdate(_notificationTitle, _notificationStr);
+                                }
+                                else//for CLI
+                                {
+                                    _notificationStr = LangHelper.Instance["Update_failed_body"].Replace("[XXXXXX]", $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model}");
+                                    NotificationFWupdate(LangHelper.Instance["Update_failed"], _notificationStr);
+                                }
                             }
                         }
                     }
@@ -1125,6 +1155,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     DeviceName = _fWUpdateInfo.DeviceName,
                     Model = _fWUpdateInfo.Model,
+                    IsDisplay = _fWUpdateInfo.IsDisplay,
+                    UpdateTime = _fWUpdateInfo.UpdateTime,
                     TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                     ProcessName = "Downloading",
                     ProcessProgress = download.GetProgress(),
@@ -1411,6 +1443,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             DeviceName = _fWUpdateInfo.DeviceName,
                             Model = _fWUpdateInfo.Model,
+                            IsDisplay = _fWUpdateInfo.IsDisplay,
+                            UpdateTime = _fWUpdateInfo.UpdateTime,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                             ProcessName = "Installing",
                             ProcessProgress = progress,
@@ -1422,6 +1456,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         DeviceName = _fWUpdateInfo.DeviceName,
                         Model = _fWUpdateInfo.Model,
+                        IsDisplay = _fWUpdateInfo.IsDisplay,
+                        UpdateTime = _fWUpdateInfo.UpdateTime,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                         ProcessName = "Installing",
                         ProcessProgress = 0,
@@ -1500,6 +1536,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             {
                                 DeviceName = _fWUpdateInfo.DeviceName,
                                 Model = _fWUpdateInfo.Model,
+                                IsDisplay = _fWUpdateInfo.IsDisplay,
+                                UpdateTime = _fWUpdateInfo.UpdateTime,
                                 TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                                 ProcessName = "Installing",
                                 ProcessProgress = 50,
@@ -1552,6 +1590,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                         {
                                             DeviceName = _fWUpdateInfo.DeviceName,
                                             Model = _fWUpdateInfo.Model,
+                                            IsDisplay = _fWUpdateInfo.IsDisplay,
+                                            UpdateTime = _fWUpdateInfo.UpdateTime,
                                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                                             ProcessName = "A2 Firmware update successful",
                                         };
@@ -1612,28 +1652,30 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _logs.DebugMsg_1($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} exitCode : {exitCode}");
                     if (fwUpdateInfo.IsDisplay)
                     {
-                        if (exitCode == 0)
-                        {
-                            _updateErrorCode = FWUErrorCode.NoError;
-                            _notificationStr = LangHelper.Instance["A2_Firmware_update_successful"];
-                        }
-                        else
-                        {
-                            switch (exitCode)
-                            {
-                                case 3:
-                                    _updateErrorCode = FWUErrorCode.DeviceDisconnected;
-                                    break;
-                                case 4:
-                                    _updateErrorCode = FWUErrorCode.FirmwareUpdatNotSupportedForThisDevice;
-                                    break;
-                                default:
-                                    _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
-                                    break;
-                            }
-                            _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
-                            _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Firmware update unsuccessful: code:{exitCode} = {_updateErrorCode.ToString()}");
-                        }
+                        _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {fwUpdateInfo.Model} exitCode : {exitCode}");
+                        CheckDisplayErrorCode(exitCode);
+                        //if (exitCode == 0)
+                        //{
+                        //    _updateErrorCode = FWUErrorCode.NoError;
+                        //    _notificationStr = LangHelper.Instance["A2_Firmware_update_successful"];
+                        //}
+                        //else
+                        //{
+                        //    switch (exitCode)
+                        //    {
+                        //        case 3:
+                        //            _updateErrorCode = FWUErrorCode.DeviceDisconnected;
+                        //            break;
+                        //        case 4:
+                        //            _updateErrorCode = FWUErrorCode.FirmwareUpdatNotSupportedForThisDevice;
+                        //            break;
+                        //        default:
+                        //            _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
+                        //            break;
+                        //    }
+                        //    _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                        //    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Firmware update unsuccessful: code:{exitCode} = {_updateErrorCode.ToString()}");
+                        //}
                     }
                     else
                     {
@@ -1675,6 +1717,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             DeviceName = _fWUpdateInfo.DeviceName,
                             Model = _fWUpdateInfo.Model,
+                            IsDisplay = _fWUpdateInfo.IsDisplay,
+                            UpdateTime = _fWUpdateInfo.UpdateTime,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                             ProcessName = ret_2
                         };
@@ -1787,6 +1831,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     DeviceName = _fWUpdateInfo.DeviceName,
                     Model = _fWUpdateInfo.Model,
+                    IsDisplay = _fWUpdateInfo.IsDisplay,
+                    UpdateTime = _fWUpdateInfo.UpdateTime,
                     TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                     ProcessName = "Timeout",
                     ProcessProgress = _timeOutCount,
@@ -1805,6 +1851,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     DeviceName = _fWUpdateInfo.DeviceName,
                     Model = _fWUpdateInfo.Model,
+                    IsDisplay = _fWUpdateInfo.IsDisplay,
+                    UpdateTime = _fWUpdateInfo.UpdateTime,
                     TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                     ProcessName = "A2 Firmware update successful",
                 };
@@ -1888,10 +1936,21 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             {
                                 DeviceName = _fWUpdateInfo.DeviceName,
                                 Model = _fWUpdateInfo.Model,
+                                IsDisplay = _fWUpdateInfo.IsDisplay,
+                                UpdateTime = _fWUpdateInfo.UpdateTime,
                                 TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                                 ProcessName = "M1"
                             };
-                            sendMessageToEvent(updateProgressInfo);
+                            if (_IsUITrigger)
+                            {
+                                sendMessageToEvent(updateProgressInfo);
+                            }
+                            else//for CLI
+                            {
+                                string s = LangHelper.Instance["Update_in_progress_body"].Replace("[XXXXXX]", $"{_fWUpdateInfo.DeviceName} ({_fWUpdateInfo.Model})");
+                                s += $"\r\n{LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"]}";
+                                NotificationFWupdate(LangHelper.Instance["Update_in_progress"], s);
+                            }
                             //NotificationFWupdate(LangHelper.Instance["FW_info"], LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"]);
                             _logs.DebugMsg_1("Get M1:Please double click mouse left button to start firmware update");
                         }
@@ -1908,10 +1967,21 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             {
                                 DeviceName = _fWUpdateInfo.DeviceName,
                                 Model = _fWUpdateInfo.Model,
+                                IsDisplay = _fWUpdateInfo.IsDisplay,
+                                UpdateTime = _fWUpdateInfo.UpdateTime,
                                 TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                                 ProcessName = "M2"
                             };
-                            sendMessageToEvent(updateProgressInfo);
+                            if (_IsUITrigger)
+                            {
+                                sendMessageToEvent(updateProgressInfo);
+                            }
+                            else//for CLI
+                            {
+                                string s = LangHelper.Instance["Update_in_progress_body"].Replace("[XXXXXX]", $"{_fWUpdateInfo.DeviceName} ({_fWUpdateInfo.Model})");
+                                s += $"\r\n{LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"]}";
+                                NotificationFWupdate(LangHelper.Instance["Update_in_progress"], s);
+                            }
                             //NotificationFWupdate(LangHelper.Instance["FW_info"], LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"]);
                             _logs.DebugMsg_1("Get M2:Please press \"U\" key on keyboard to start firmware update");
                         }
@@ -1953,6 +2023,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             DeviceName = _fWUpdateInfo.DeviceName,
                             Model = _fWUpdateInfo.Model,
+                            IsDisplay = _fWUpdateInfo.IsDisplay,
+                            UpdateTime = _fWUpdateInfo.UpdateTime,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                             ProcessName = "A0 Device connected",
                         };
@@ -1965,6 +2037,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             DeviceName = _fWUpdateInfo.DeviceName,
                             Model = _fWUpdateInfo.Model,
+                            IsDisplay = _fWUpdateInfo.IsDisplay,
+                            UpdateTime = _fWUpdateInfo.UpdateTime,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                             ProcessName = "A1 Firmware update started",
                         };
@@ -1979,6 +2053,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             DeviceName = _fWUpdateInfo.DeviceName,
                             Model = _fWUpdateInfo.Model,
+                            IsDisplay = _fWUpdateInfo.IsDisplay,
+                            UpdateTime = _fWUpdateInfo.UpdateTime,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                             ProcessName = "A2 Firmware update successful",
                         };
@@ -2025,6 +2101,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             {
                                 DeviceName = _fWUpdateInfo.DeviceName,
                                 Model = _fWUpdateInfo.Model,
+                                IsDisplay = _fWUpdateInfo.IsDisplay,
+                                UpdateTime = _fWUpdateInfo.UpdateTime,
                                 TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                                 ProcessName = "Error Code:" + errorCodeNode.InnerText,
                             };
@@ -2066,6 +2144,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             DeviceName = _fWUpdateInfo.DeviceName,
                             Model = _fWUpdateInfo.Model,
+                            IsDisplay = _fWUpdateInfo.IsDisplay,
+                            UpdateTime = _fWUpdateInfo.UpdateTime,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                             ProcessName = "A2 Firmware update successful",
                         };
@@ -2150,6 +2230,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         DeviceName = _fWUpdateInfo.DeviceName,
                         Model = _fWUpdateInfo.Model,
+                        IsDisplay = _fWUpdateInfo.IsDisplay,
+                        UpdateTime = _fWUpdateInfo.UpdateTime,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                         ProcessName = "Installing",
                         ProcessProgress = int.Parse(progressNode.InnerText),
@@ -2184,6 +2266,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         DeviceName = _fWUpdateInfo.DeviceName,
                         Model = _fWUpdateInfo.Model,
+                        IsDisplay = _fWUpdateInfo.IsDisplay,
+                        UpdateTime = _fWUpdateInfo.UpdateTime,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                         ProcessName = "Timeout",
                         ProcessProgress = _fwTimeOutCount,
@@ -2240,9 +2324,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         private void sendMessageToEvent(UpdateProgressInfo fWUpdateInfo)
         {
-            ProgressUpdate_Notify?.AsyncFireAndForget(this, fWUpdateInfo, System.Threading.CancellationToken.None);
-            _logs.DebugMsg_1($"sendMessageToEvent {fWUpdateInfo.DeviceName} {fWUpdateInfo.Model} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
-            WriteLog($"{DateTime.Now}--DeviceName : {fWUpdateInfo.DeviceName} Model : {fWUpdateInfo.Model} to ver : {fWUpdateInfo.TheLatestVersion} ProcessName : {fWUpdateInfo.ProcessName}...{fWUpdateInfo.ProcessProgress}%");
+            if (_IsShowNotify)
+            {
+                ProgressUpdate_Notify?.AsyncFireAndForget(this, fWUpdateInfo, System.Threading.CancellationToken.None);
+            }
+            _logs.DebugMsg_1($"sendMessageToEvent _IsShowNotify : {_IsShowNotify}, {fWUpdateInfo.DeviceName} {fWUpdateInfo.Model} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
+            WriteLog($"_IsShowNotify : {_IsShowNotify}, {DateTime.Now}--DeviceName : {fWUpdateInfo.DeviceName} Model : {fWUpdateInfo.Model} to ver : {fWUpdateInfo.TheLatestVersion} ProcessName : {fWUpdateInfo.ProcessName}...{fWUpdateInfo.ProcessProgress}%");
         }
         private void WriteLog(string s)
         {
@@ -2741,7 +2828,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             {
                                 object[] parameters = new object[] { ModelName, ServiceTag, UpgPath, callback, EnableDebugMode };
 
-                                // Step 6: Invoke the method
+                                // Step 5: Invoke the method
                                 methodInfo.Invoke(instance, parameters);
 
                                 ret = true;
@@ -2773,66 +2860,73 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         }
         private void CheckDisplayErrorCode(int errorCode)
         {
+            _notificationTitle = $"{LangHelper.Instance["Error"]} {errorCode}";
             switch (errorCode)
             {
                 case 0:
                     _updateErrorCode = FWUErrorCode.NoError;
+                    _notificationTitle = LangHelper.Instance["Success"];
                     _notificationStr = LangHelper.Instance["A2_Firmware_update_successful"];
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Get errorCode : {errorCode}:Success");
                     break;
                 case 1:
                 case 2:
                     _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
-                    _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                    _notificationStr = LangHelper.Instance["Display_FWU_Error_1"];
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Get errorCode : {errorCode}:Firmware utility package issue, may due to the file corrupted. ");
                     break;
                 case 5:
+                    //case 12:
+                    _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
+                    _notificationStr = LangHelper.Instance["Display_FWU_Error_5"];
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Get errorCode : {errorCode}:The firmware update encountered an error. To resolve this issue, disconnect and reconnect the USB cable and power cycle the monitor. Then, retry the firmware update.");
+                    break;
                 case 12:
                     _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
-                    _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
-                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Get errorCode : {errorCode}:The firmware update encountered an error. To resolve this issue, disconnect and reconnect the USB cable and power cycle the monitor. Then, retry the firmware update. ");
+                    _notificationStr = LangHelper.Instance["Display_FWU_Error_12"];
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Get errorCode : {errorCode}:Monitor restart failed. Ask the user to power cycle the monitor and retry if the firmware is outdated.");
                     break;
                 case 7:
                 case 8:
                     _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
-                    _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                    _notificationStr = LangHelper.Instance["Display_FWU_Error_7"];
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Get errorCode : {errorCode}:The firmware update was unsuccessful. The firmware code has been erased, and verification of the firmware code failed.");
                     break;
                 case 3:
                 case 4:
                     _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
-                    _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                    _notificationStr = LangHelper.Instance["Display_FWU_Error_3"];
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Get errorCode : {errorCode}:The firmware update utility is unable to establish communication with the monitor. Please reconnect the USB cable and power cycle the monitor before attempting the firmware update again.");
                     break;
                 case 9:
                     _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
-                    _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                    _notificationStr = LangHelper.Instance["Display_FWU_Error_9"];
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Get errorCode : {errorCode}:The downloaded package version is older than the firmware version running in the monitor. Monitor firmware updated.");
                     break;
                 case 10:
                     _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
-                    _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                    _notificationStr = LangHelper.Instance["Display_FWU_Error_10"];
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Get errorCode : {errorCode}:The Firmware Utility may currently be active. This indicates that another instance of the Firmware Update is running. Please close the Firmware Update utility.");
                     break;
                 case 201:
                     _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
-                    _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                    _notificationStr = LangHelper.Instance["Display_FWU_Error_201"];
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Get errorCode : {errorCode}:The update may take up to xx minutes. Keep the device powered on and connected during this time.");
                     break;
                 case 501:
                     _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
-                    _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                    _notificationStr = LangHelper.Instance["Display_FWU_Error_501"];
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Get errorCode : {errorCode}:Firmware version detected on monitor is not an official release");
                     break;
                 case 61:
                 case 62:
                     _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
-                    _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                    _notificationStr = LangHelper.Instance["Display_FWU_Error_61"];
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Get errorCode : {errorCode}:Firmware update failed. If it continues, contact Dell support.");
                     break;
                 default:
                     _updateErrorCode = FWUErrorCode.Unknow;
-                    _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                    _notificationStr = LangHelper.Instance["Display_FWU_Error_Other"];
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Get errorCode : {errorCode}:The firmware update was unsuccessful.");
                     break;
             }

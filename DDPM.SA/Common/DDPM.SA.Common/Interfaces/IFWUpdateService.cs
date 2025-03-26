@@ -20,8 +20,8 @@ namespace DDPM.SA.Common
         event EventHandler<List<FWUpdateInfo>> DownloadAndInstall_Result_Notify;
         //Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, bool isShowNotify, bool isForce, bool isDefer, List<DeviceType> deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper);
         //Task<List<FWUpdateInfo>> CheckUpdate(UpdateHelper updateHelper, bool isShowNotify, List<DeviceType> deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper);
-        Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, List<DeviceInfo> deviceInfos, bool isShowNotify, DisplayUpdateHelper displayUpdateHelper, bool reScan);
-        Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, List<DeviceInfo> currentDevice, int IODongleCountGen3AgoCount, bool isUITrigger, string installPath);
+        Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, List<DeviceInfo> deviceInfos, DisplayUpdateHelper displayUpdateHelper, bool reScan);
+        Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, List<DeviceInfo> currentDevice, int IODongleCountGen3AgoCount, bool isUITrigger, bool isShowNotify, string installPath);
         Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay, DeviceType deviceType);
         Task<bool> RestartService();
 
