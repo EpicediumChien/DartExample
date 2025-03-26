@@ -146,7 +146,7 @@ namespace DDPM.SA.Plugins.CMAManager
             //string info = string.Empty;
             bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listResponse).ToString(), (FILE_PATH + guid + ".txt"), out info);
 
-            return errorMsg;
+            return ("DDPMFileSecurity.SetJsonContentFromSerializedString = " + write + " ; " + errorMsg);
         }
         /*
          
