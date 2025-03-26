@@ -238,13 +238,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     //Robert_Lin, 2024-8-7, The list has been sorted in PrepareXXX(), so should not call to RefreshCollectionView()
                     //Robert_Lin, 2024-6-22, to fix the issue the WebCam not been sorted (expect arranged after monitors)
                     //RefreshCollectionView();
+                    _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos out ... ");
                 }
                 catch (Exception ex)
                 {
                     _log.Error($"[DdpmHomePageViewModel] PrepareMonitorInfos Exception: {ex.Message}");
                 }
             }
-            _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos out ... ");
         }
 
         public void PrepareDeviceInfos(List<DeviceInfo> deviceInfos)
@@ -566,13 +566,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     //Robert_Lin, 2024-7-10, we don't need the CollectionView, we sort in List<HomeDevice> directly.
                     //Robert_Lin, 2024-6-22, to fix the issue the WebCam not been sorted (expect arranged after monitors)
                     //RefreshCollectionView();
+                    _log.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos out ... ");
                 }
                 catch (Exception ex)
                 {
                     _log.Error($"[DdpmHomePageViewModel] PrepareDeviceInfos Exception: {ex.Message}");
                 }
             }
-            _log.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos out ... ");
         }
         public void ResetDevices()
         {
