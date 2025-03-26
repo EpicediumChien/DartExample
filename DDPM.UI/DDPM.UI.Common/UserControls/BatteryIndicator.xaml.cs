@@ -1,5 +1,6 @@
 ﻿using DDPM.UI.Common.UserControls;
 using Dell.Client.Framework.UX.WPF.Controls;
+using DPeMPublic.Common.Enums;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Windows;
@@ -137,10 +138,15 @@ namespace DDPM.UI.Common
             {
                 level = "0";
             }
-            BitmapImage bitmapImage = new BitmapImage(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Battery{charging}{level}.png", UriKind.Relative));
+            //BitmapImage bitmapImage = new BitmapImage(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Battery{charging}{level}.png", UriKind.Relative));
             BatteryLevelText.Text = level == "0" ? "" : BatteryLevel.ToString("##0") + "%";
             Debug.WriteLine($"Battery{charging}{level}");
-            BatteryImage.Source = bitmapImage;
+            //BatteryImage.Source = bitmapImage;
+            if (BatteryStatus == "Idle")
+            {
+                charging = "0";
+                level = "0";
+            }
 
             //Robert_Lin, 2024-11-29, LightMode, use a ContentControl to replace Image
             BatteryIcon = (ControlTemplate)this.TryFindResource($"icon_Battery{charging}{level}");
