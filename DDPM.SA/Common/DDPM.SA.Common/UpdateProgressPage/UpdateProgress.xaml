@@ -183,8 +183,14 @@
             <StackPanel Orientation="Vertical"
                         Grid.Row="6">
                 <Alert:AlertBase Margin="5"
+                                 AlertType="Warning"
+                                 Message="{Binding [Update_Display_Alert], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                                 Visibility="{Binding DisplayAlertVisibility}"
+                                 Height="93" />
+                <Alert:AlertBase Margin="5"
                                  AlertType="Info"
-                                 Message="{Binding [UpdateProgressMsg], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                                 Message="{Binding BaseAlertMessage}"
+                                 Visibility="{Binding BaseAlertVisibility}"
                                  Height="53" />
                 <Alert:AlertBase Margin="5"
                                  AlertType="Info"

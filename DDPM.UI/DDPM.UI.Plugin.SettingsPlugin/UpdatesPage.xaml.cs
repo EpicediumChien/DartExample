@@ -88,7 +88,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 if (vm.FWUpdateInfoPackage.FWUpdateInfo.Count > 0)
                 {
                     _log?.Info("CallFWU DownloadAndInstall go");
-                    List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo, true, "").Result;
+                    List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo, true, true, "").Result;
                     _log?.Info("CallFWU DownloadAndInstall finish");
 
                 }

@@ -5875,7 +5875,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 if (firmwares_item != null)
                                 {
                                     firmwares_item.id = model;
-                                    _logs.DebugMsg($"[DisplayMangerPlugin] model : {model}");
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} model : {model}");
                                     if (firmwares_item.url.Contains("%2"))
                                     {
                                         firmwares_item.url = firmwares_item.url.Replace("%2", GlobalDefinitions.percent_two_url);// "https://downloads.dell.com");
@@ -5900,6 +5900,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} {firmwares_item.id} Platform no supported. currentPlatform:{currentPlatform} ");
                                             continue;
                                         }
+                                    }
+                                    if (!string.IsNullOrEmpty(data[model].UpdateTime))
+                                    {
+                                        firmwares_item.UpdateTime = data[model].UpdateTime;
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] firmwares_item.UpdateTime : {firmwares_item.UpdateTime}");
+                                    }
+                                    else
+                                    {
+                                        firmwares_item.UpdateTime = "";
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] data[{model}].UpdateTime is null");
                                     }
                                     int newVersion = -1;
                                     int oldVersion = -1;

@@ -135,7 +135,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                 }
                 if (commandLineInput.Command.Equals("SET") &&
-                    commandLineInput.TargetType.Equals("DOCK") && 
+                    commandLineInput.TargetType.Equals("DOCK") &&
                     commandLineInput.TargetFeature.Equals("SILENTFWUPDATE"))
                 {
                     //switch (commandLineInput.TargetFeature)
@@ -155,7 +155,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                 if (commandLineInput.Command.Equals("SET"))
                 {
-                    if (commandLineInput.TargetType.Equals("APP") && 
+                    if (commandLineInput.TargetType.Equals("APP") &&
                         commandLineInput.TargetFeature.Equals("UPDATE"))
                     {
                         //switch (commandLineInput.TargetFeature)
@@ -176,7 +176,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 }
                 else if (commandLineInput.Command.Equals("GET"))
                 {
-                    if (commandLineInput.TargetType.Equals("APP") && 
+                    if (commandLineInput.TargetType.Equals("APP") &&
                         commandLineInput.TargetFeature.Equals("UPDATE"))
                     {
                         //switch (commandLineInput.TargetFeature)
@@ -194,7 +194,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         //}
                     }
                 }
-                if (commandLineInput.Command.Equals("GET") && commandLineInput.TargetType.Equals("APP") && 
+                if (commandLineInput.Command.Equals("GET") && commandLineInput.TargetType.Equals("APP") &&
                     commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION"))
                 {
                     //switch (commandLineInput.TargetFeature)
@@ -211,8 +211,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                     return result;
                     //}
                 }
-                if (commandLineInput.Command.Equals("SET") && 
-                    commandLineInput.TargetType.Equals("APP") && 
+                if (commandLineInput.Command.Equals("SET") &&
+                    commandLineInput.TargetType.Equals("APP") &&
                     commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION"))
                 {
                     //switch (commandLineInput.TargetFeature)
@@ -1493,9 +1493,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                     });
                     writelog("SetPeripheralProperty: MICSWITCH" + (retcode ? "SUCCESS" : "FAIL"));
                     return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
-                    //taskB = _devMgr.SetIsMicEnumerationOn;
-                    //RunTaskD(bl);
-                    //return (int)CLI_ExitCode.success;
+                //taskB = _devMgr.SetIsMicEnumerationOn;
+                //RunTaskD(bl);
+                //return (int)CLI_ExitCode.success;
 
                 case "HDR":
                     writelog("SetPeripheralProperty: HDR Entry");
@@ -1589,7 +1589,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            if (val == 50 || val == 60 || val == 1 || val ==2)
+                            if (val == 50 || val == 60 || val == 1 || val == 2)
                             {
                                 if (val == 50)
                                     val = 1;
@@ -1619,14 +1619,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                     default:
                                                         break;
                                                 }
-                                            }                                            
+                                            }
                                         }
-                                        catch(Exception ex)
+                                        catch (Exception ex)
                                         {
                                             x.Value = "Interface return null";
                                             writelog("SetPeripheralProperty: _devMgr.GetAntiFlicker FAIL, message: " + ex.Message);
                                         }
-                                          
+
                                         //x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                                         x.Message = "N/A";
                                     }
@@ -2291,8 +2291,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 //var findDevice = false;
                                                 //if (!_AllInfoMonitors.Any(x => x.FwVersion.ToUpper().Equals(ss_min[0].ToUpper())))
                                                 //{
-                                                    miniver = ss_min[0];
-                                                    //fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => x.FwVersion.ToUpper().Equals(ss_min[0].ToUpper())).ToList();
+                                                miniver = ss_min[0];
+                                                //fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => x.FwVersion.ToUpper().Equals(ss_min[0].ToUpper())).ToList();
                                                 //    findDevice = true;
                                                 //}
                                                 //if (!findDevice)
@@ -2520,7 +2520,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                     return NoDeviceConnectResponse(commandLineInput);
                                                 }
                                             }
-                                        }                                       
+                                        }
                                         else if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("MINIVERSION"))
                                         {
                                             string[] ss_min = commandLineInput.Options[i].Option_Value.Split(",");
@@ -2532,11 +2532,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 var findDevice = false;
                                                 //foreach (var g in deviceInfoList)
                                                 //{
-                                                    //if (g.FirmwareVersion.ToUpper() != ss_min[0].ToUpper())
-                                                    //{
-                                                        miniver = ss_min[0];
-                                                        //fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.FirmwareVersion.Equals(ss_min[0], StringComparison.OrdinalIgnoreCase)).ToList();
-                                                        //findDevice = true;
+                                                //if (g.FirmwareVersion.ToUpper() != ss_min[0].ToUpper())
+                                                //{
+                                                miniver = ss_min[0];
+                                                //fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.FirmwareVersion.Equals(ss_min[0], StringComparison.OrdinalIgnoreCase)).ToList();
+                                                //findDevice = true;
                                                 //    }
                                                 //}
                                                 //if (!findDevice)
@@ -3106,7 +3106,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 List<DeviceInfo> deviceInfoList = null;
                 deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
                 string[] ss_1 = null;
-                List <DeviceType> deviceTypes = new List<DeviceType>();
+                List<DeviceType> deviceTypes = new List<DeviceType>();
                 if (commandLineInput.Options.Count > 0)
                 {
                     deviceTypes = SetDevice(commandLineInput).deviceTypes;
@@ -3141,7 +3141,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 }
                 else
                 {
-                    FWUpdateInfoPackage allFWUpdateInfo = _devMgr.GetFWUpdateInfo(isShowInfo, true).Result;
+                    FWUpdateInfoPackage allFWUpdateInfo = _devMgr.GetFWUpdateInfo(true).Result;
                     var fwUpdateInfoPackage = Filter(allFWUpdateInfo, guid, serviceTag, model, miniver, deviceTypes);
 
                     var allFWUpdateResponseInfos = fwUpdateInfoPackage.FWUpdateInfo
@@ -3306,7 +3306,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                         fwUpdateDeviceInfos.Where(_ => !fwUpdateInfoPackage.FWUpdateInfo.Select(x => x.DeviceId.Replace("{", "").Replace("}", "")).Contains(_.ID.ToString()))
                                            .ToList()
-                                           .ForEach(_ => 
+                                           .ForEach(_ =>
                                            {
                                                var msg = $"No updates available: {_.ModelNumber}" + $" ServiceTag: {(!string.IsNullOrWhiteSpace(_.DockServiceTag) ? _.DockServiceTag : "N/A")}" + $" to Version: {_.FirmwareVersion}";
                                                cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
@@ -3314,7 +3314,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                         Task.Run(new Action(() =>
                         {
-                            retFWUpdateInfos = _devMgr.DownloadAndInstall(fwUpdateInfoPackage.FWUpdateInfo).Result;
+                            retFWUpdateInfos = _devMgr.DownloadAndInstall(fwUpdateInfoPackage.FWUpdateInfo, false, isShowInfo).Result;
 
                             foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
                             {
@@ -3387,7 +3387,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 }
                 else
                 {
-                    FWUpdateInfoPackage allFWUpdateInfo = _devMgr.GetFWUpdateInfo(isShowInfo, true).Result;
+                    FWUpdateInfoPackage allFWUpdateInfo = _devMgr.GetFWUpdateInfo(true).Result;
                     var fwUpdateInfoPackage = Filter(allFWUpdateInfo, null, null, model, miniver, null);
 
                     var allFWUpdateResponseInfos = fwUpdateInfoPackage.FWUpdateInfo
@@ -3447,7 +3447,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                     Task.Run(new Action(() =>
                     {
-                        retFWUpdateInfos = _devMgr.DownloadAndInstall(fwUpdateInfoPackage.FWUpdateInfo).Result;
+                        retFWUpdateInfos = _devMgr.DownloadAndInstall(fwUpdateInfoPackage.FWUpdateInfo, false, isShowInfo).Result;
 
                         foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
                         {
@@ -3878,7 +3878,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         }
                                         Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
                                         ret = true;
-                                    }                                   
+                                    }
                                     else
                                     {
                                         writelog("FWUpdate_Line 3938");
@@ -3890,14 +3890,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     writelog("FWUpdate_Line 3944");
                                     somethingError = true;
                                 }
-                            }                            
+                            }
                             else
                             {
                                 writelog("FWUpdate_Line 3950");
                                 somethingError = true;
                             }
                             if (noupdtae)
-                            {                               
+                            {
                                 _GlobalSettingParam = _devMgr.GetGlobalSettingParam().Result;
                                 cLI_SWU_RESPONSE.SWname = "DDPM";
                                 cLI_SWU_RESPONSE.SWVersion = $"[{_GlobalSettingParam.GlobalSetting_About.SWVersion}]";
@@ -4072,7 +4072,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         {
                             SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, false).Result;
                             Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
-                            if (swUpdateInfoPackage.SWUpdateInfo.Count == 0) 
+                            if (swUpdateInfoPackage.SWUpdateInfo.Count == 0)
                             {
                                 _GlobalSettingParam = _devMgr.GetGlobalSettingParam().Result;
                                 cLI_SWU_RESPONSE.SWname = "DDPM";
@@ -4088,7 +4088,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 cLI_SWU_RESPONSE.SWUpdateRESPONSE.AddRange(swUpdateInfoPackage.SWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.SoftwareName} to Version:{_.TheLatestVersion}"));
                                 //cLI_SWU_RESPONSE.Result = "PASS";
                                 ret = true;
-                            }                           
+                            }
                             //_devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, installPath);
                         }
                         else
