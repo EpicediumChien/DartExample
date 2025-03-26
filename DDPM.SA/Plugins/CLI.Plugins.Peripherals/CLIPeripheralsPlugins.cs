@@ -2173,6 +2173,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             bool _record_soundbar = false;
             bool _recode_pen = false;
             bool _recode_dongle = false;
+            bool _dock_dilent = false;
 
             string miniver = null;
             List<string> model = null;
@@ -2211,7 +2212,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                             dockNoCommaOption.Option_Value = dockNoCommaOption.Option_Value + ",FILEPATH";
                         }
                     }
-
+                    _dock_dilent = true;
                     commandLineInput.Options.Insert(0, new CommandType_Option("VALUE", "DOCK,FORCEWITHNONOTICE"));
                 }
                 #endregion
@@ -2223,6 +2224,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                     if (!commandLineInput.Options[0].Option_Value.Contains(','))
                     {
                         commandLineInput.Options[0].Option_Value += ",FORCEWITHNOTICE";
+                    }
+                    else if(_dock_dilent)
+                    {
+                        commandLineInput.Options.Insert(0, new CommandType_Option("VALUE", "DOCK,FORCEWITHNONOTICE"));
                     }
                     else
                     {
