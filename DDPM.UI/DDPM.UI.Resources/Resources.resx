@@ -948,7 +948,7 @@
     <value>Connect Mouse and Keyboard</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>Connect mouse and keyboard to the rear of the monitor (USB-A). Note: You can also connect other accessories, such as a webcam, with USB.</value>
+    <value>Connect mouse and keyboard to the rear of the monitor (USB-A). \rNote: You can also connect other accessories, such as a webcam, with USB.</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>USB-A</value>
@@ -969,7 +969,7 @@
     <value>Connecting to your devices</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>Connect a video cable and USB cable between each PC to the monitor. You can connect up to 4 PCs (computers, gaming consoles, etc.). Select the cable type and assign a name to each source.</value>
+    <value>Connect a video cable and USB cable between each PC to the monitor. You can connect up to 4 PCs (computers, gaming consoles, etc.). \r\rSelect the cable type and assign a name to each source.</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>Switch between PCs</value>
@@ -3602,5 +3602,8 @@
   <data name="Update_Webcam_Alert2" xml:space="preserve">
     <value>This update will enable presence sensing controls through Microsoft settings in systems: Win 11 22H2 or higher, and with OS build
 22621 or higher</value>
+  </data>
+  <data name="Color.14" xml:space="preserve">
+    <value>Color Preset</value>
   </data>
 </root>

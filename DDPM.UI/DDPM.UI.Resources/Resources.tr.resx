@@ -943,7 +943,7 @@
     <value>Fareyi ve Klavyeyi Bağlama</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>Fare ve Klavye için monitörün arkasına (USB-A) bağlayın.\n Not: Web\n Kamerası gibi diğer USB Çevre Birimlerini de bağlayabilirsiniz.</value>
+    <value>Fare ve Klavye için monitörün arkasına (USB-A) bağlayın.\n Not: Web Kamerası gibi diğer USB Çevre Birimlerini de bağlayabilirsiniz.</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>USB-A</value>
@@ -964,7 +964,7 @@
     <value>Aygıtlarınıza bağlanma</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>Lütfen her bir PC'den\n monitöre bir video kablosu ve USB kablosu bağlayın. En fazla 4 cihaz (bilgisayarlar, oyun\n konsolları vb.) bağlayabilirsiniz.\r\n\r\nLütfen her bağlantı için kablo türünü seçin ve her kaynağa bir ad atayın.</value>
+    <value>Lütfen her bir PC'den monitöre bir video kablosu ve USB kablosu bağlayın. En fazla 4 cihaz (bilgisayarlar, oyun konsolları vb.) bağlayabilirsiniz.\r\n\r\nLütfen her bağlantı için kablo türünü seçin ve her kaynağa bir ad atayın.</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>Bilgisayarlar arasında geçiş yapma</value>
@@ -3464,6 +3464,15 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Yazılım için daha fazla bilgi edinin</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>AYGIT ALGILANMADI</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>İlk aygıtınızı ekleyin</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Bağla</value>
+  </data>
   <data name="WebcamMPS.0" xml:space="preserve">
     <value>Microsoft Kişi Algılama özelliklerine erişmek için Windows Ayarları'nı ziyaret edin</value>
   </data>
@@ -3472,7 +3481,7 @@
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
     <value>Kişi algılama özelliklerine erişmek için uyumlu web kamerası bellenimini indirmek üzere aşağıdaki bağlantıyı kullanın</value>
-	  </data>
+  </data>
   <data name="Bootloader" xml:space="preserve">
     <value>Önyükleyici</value>
   </data>
@@ -3488,19 +3497,13 @@
   <data name="Bootloader.3" xml:space="preserve">
     <value>tıklayın.</value>
   </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>Arama eylemleri</value>
+  </data>
   <data name="Update_Dock_Alert_2" xml:space="preserve">
     <value>Not: Bu bağlantı istasyonuna bağlı çevre birimleri güncelleştirme işlemi sırasında kullanılamayabilir.</value>
   </data>
-  <data name="NoDeviceDetected" xml:space="preserve">
-    <value>AYGIT ALGILANMADI</value>
-  </data>
-  <data name="Add1sDevice" xml:space="preserve">
-    <value>İlk aygıtınızı ekleyin</value>
-  </data>
-  <data name="Connect" xml:space="preserve">
-    <value>Bağla</value>
-  </data>
-  <data name="SearchActions" xml:space="preserve">
-    <value>Arama eylemleri</value>
+  <data name="Color.14" xml:space="preserve">
+    <value>Renk Ön Ayarı</value>
   </data>
 </root>

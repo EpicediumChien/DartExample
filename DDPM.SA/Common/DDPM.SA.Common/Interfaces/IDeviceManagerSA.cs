@@ -14,6 +14,7 @@ namespace DDPM.SA.Common
 {
     public enum DeviceChangedType
     {
+        None = -1,
         Display_SettingsChange = 0,
         Display_PlugIn = 1,
         Display_UnPlug = 2,
@@ -26,11 +27,11 @@ namespace DDPM.SA.Common
 
     public class DeviceChangedEventArgs : EventArgs
     {
-        public string deviceID { get; set; } //for display point to serial number, for peripherals point to Guid
-        public DeviceChangedType type { get; set; }
+        public string deviceID { get; set; } = string.Empty;//for display point to serial number, for peripherals point to Guid
+        public DeviceChangedType type { get; set; } = DeviceChangedType.None;
         public MonitorInfo device_display { get; set; }
         public DeviceInfo device_peripherals { get; set; }
-        public string changedProperty { get; set; }
+        public string changedProperty { get; set; } = string.Empty;
     }
 
     public class UpdateUINotify : EventArgs

@@ -2173,10 +2173,12 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-
+    <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" FontSize=14 -->
     <Style x:Key="Button_WhiteFrame" TargetType="Button">
         <Setter Property="Foreground" Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
         <Setter Property="Background" Value="{DynamicResource PartBorderColor}" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">

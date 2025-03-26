@@ -943,7 +943,7 @@
     <value>Connectez la souris et le clavier</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>Pour la souris et le clavier, connectez-les à l’arrière du moniteur (USB-A). Note : Vous pouvez également connecter d’autres périphériques USB tels que la caméra Web.</value>
+    <value>Pour la souris et le clavier, connectez-les à l’arrière du moniteur (USB-A). \nNote : Vous pouvez également connecter d’autres périphériques USB tels que la caméra Web.</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>Port USB-A</value>
@@ -964,7 +964,7 @@
     <value>Connexion à vos appareils</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>Veuillez connecter un câble vidéo et un câble USB entre chaque PC et le moniteur. Vous pouvez connecter jusqu’à quatre PC (ordinateurs, consoles de jeu, etc.). Veuillez sélectionner le type de câble et attribuer un nom à chaque source.</value>
+    <value>Veuillez connecter un câble vidéo et un câble USB entre chaque PC et le moniteur. Vous pouvez connecter jusqu’à quatre PC (ordinateurs, consoles de jeu, etc.). \r\n\r\Veuillez sélectionner le type de câble et attribuer un nom à chaque source.</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>Passez d’un PC à l’autre</value>
@@ -3459,6 +3459,15 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>En savoir plus sur le logiciel</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>AUCUN APPAREIL DÉTECTÉ</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>Ajouter votre premier appareil</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Connecter</value>
+  </data>
   <data name="WebcamMPS.0" xml:space="preserve">
     <value>Pour accéder aux fonctionnalités de détection de présence de Microsoft, visitez les paramètres de Windows.</value>
   </data>
@@ -3483,19 +3492,13 @@
   <data name="Bootloader.3" xml:space="preserve">
     <value>pour mettre à jour votre micrologiciel afin de restaurer la fonctionnalité.</value>
   </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>Actions de recherche</value>
+  </data>
   <data name="Update_Dock_Alert_2" xml:space="preserve">
     <value>Remarque : Les périphériques connectés à cette station d’accueil peuvent ne pas être disponibles pendant le processus de mise à jour</value>
   </data>
-  <data name="NoDeviceDetected" xml:space="preserve">
-    <value>AUCUN APPAREIL DÉTECTÉ</value>
-  </data>
-  <data name="Add1sDevice" xml:space="preserve">
-    <value>Ajouter votre premier appareil</value>
-  </data>
-  <data name="Connect" xml:space="preserve">
-    <value>Connecter</value>
-  </data>
-  <data name="SearchActions" xml:space="preserve">
-    <value>Actions de recherche</value>
+  <data name="Color.14" xml:space="preserve">
+    <value>Préréglage de couleur</value>
   </data>
 </root>

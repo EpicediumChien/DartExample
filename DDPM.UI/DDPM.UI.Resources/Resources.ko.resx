@@ -964,7 +964,7 @@
     <value>디바이스에 연결하는 중</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>비디오 케이블과 USB 케이블을 각 PC와\n 모니터 사이에 연결하십시오. 최대 4대의 PC(컴퓨터, 게이밍\n 콘솔 등)를 연결할 수 있습니다. \r\n\r\n케이블 유형을 선택하고 각 소스에 이름을 지정하십시오.</value>
+    <value>비디오 케이블과 USB 케이블을 각 PC와 모니터 사이에 연결하십시오. 최대 4대의 PC(컴퓨터, 게이밍 콘솔 등)를 연결할 수 있습니다. \r\n\r\n케이블 유형을 선택하고 각 소스에 이름을 지정하십시오.</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>PC 간 전환</value>
@@ -3459,6 +3459,15 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>소프트웨어에 대해 자세히 알아보기</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>감지된 디바이스 없음</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>첫 번째 디바이스 추가</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>연결</value>
+  </data>
   <data name="WebcamMPS.0" xml:space="preserve">
     <value>Microsoft 존재 감지 기능을 사용하려면 Windows 설정으로 이동하십시오.</value>
   </data>
@@ -3467,7 +3476,7 @@
   </data>
   <data name="ColorMsg.1" xml:space="preserve">
     <value>존재 감지 기능을 사용하려면 아래 링크를 사용하여 호환되는 웹캠 펌웨어를 다운로드하십시오.</value>
-	  </data>
+  </data>
   <data name="Bootloader" xml:space="preserve">
     <value>부트로더</value>
   </data>
@@ -3483,19 +3492,13 @@
   <data name="Bootloader.3" xml:space="preserve">
     <value>를 클릭하여 펌웨어를 업데이트하고 기능을 복원합니다.</value>
   </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>검색 작업</value>
+  </data>
   <data name="Update_Dock_Alert_2" xml:space="preserve">
     <value>참고: 업데이트 프로세스 중에 이 도크에 연결된 주변 기기를 사용하지 못할 수 있습니다.</value>
   </data>
-  <data name="NoDeviceDetected" xml:space="preserve">
-    <value>감지된 디바이스 없음</value>
-  </data>
-  <data name="Add1sDevice" xml:space="preserve">
-    <value>첫 번째 디바이스 추가</value>
-  </data>
-  <data name="Connect" xml:space="preserve">
-    <value>연결</value>
-  </data>
-  <data name="SearchActions" xml:space="preserve">
-    <value>검색 작업</value>
+  <data name="Color.14" xml:space="preserve">
+    <value>색상 사전 설정</value>
   </data>
 </root>

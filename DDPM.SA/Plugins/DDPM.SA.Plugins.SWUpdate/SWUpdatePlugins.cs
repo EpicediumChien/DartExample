@@ -271,6 +271,7 @@ namespace DDPM.SA.Plugins.SWUpdate
         public Task<List<SWUpdateInfo>> DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUITrigger, string installPath)
         {
             Method method = new Method(_logs);
+
             try
             {
                 _IsUITrigger = isUITrigger;
@@ -466,12 +467,10 @@ namespace DDPM.SA.Plugins.SWUpdate
                     }
                 }
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " done");
-                method.Dispose();
                 return Task.FromResult(swUpdateInfos);
             }
             catch (Exception ex)
             {
-                method.Dispose();
                 foreach (SWUpdateInfo deviceInfo in swUpdateInfos)
                 {
                     deviceInfo.SWUErrorCode = SWUErrorCode.NetworkDisconnection;
@@ -480,6 +479,10 @@ namespace DDPM.SA.Plugins.SWUpdate
                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " Error：Update failed due to network error. Try again. ex:" + ex.Message); // 輸出錯誤訊息
                 return Task.FromResult(swUpdateInfos);
+            }
+            finally
+            {
+                method.Dispose();
             }
         }
 

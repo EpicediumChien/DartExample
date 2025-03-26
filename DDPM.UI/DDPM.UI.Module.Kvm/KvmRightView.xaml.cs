@@ -218,6 +218,7 @@ namespace DDPM.UI.Module.Kvm
                     }
                     //vm.isNKVM = false;
                     //vm.isNoKVM = false;
+                    vm.LockSendNoKVM = false;
                 }
                 else
                 {
@@ -247,6 +248,7 @@ namespace DDPM.UI.Module.Kvm
                 //vm.isOnNoKVM(false);
                 //vm.NoKVMisON = false;
                 vm.LoadnewLeftView(true);
+                vm.LockSendNoKVM = false;
             }
         }
 
@@ -270,6 +272,7 @@ namespace DDPM.UI.Module.Kvm
                 //{
                 //    vm.isNoKVM = true;
                 //}
+                vm._log?.Info("[SelectNoKVM]LockSendNoKVM is " + vm.LockSendNoKVM.ToString());
                 if (!vm.LockSendNoKVM)
                 {
                     vm.isOnNoKVM(true);

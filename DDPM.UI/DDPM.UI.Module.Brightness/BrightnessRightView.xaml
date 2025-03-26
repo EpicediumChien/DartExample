@@ -137,6 +137,7 @@
                             <Expander.Content>
                                 <StackPanel>
                                     <!--  RightPartBorder  -->
+                                    <!--20250325 Chewlin for Fix PIMSPIMS-348382 ADD FontFamily="Roboto" -->
                                     <Border Margin="0,20,0,0" Style="{DynamicResource RightPartBorderStyle}">
                                         <StackPanel>
                                             <!--  Row: "Brightness"  -->
@@ -145,6 +146,7 @@
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
+                                                    FontFamily="Roboto"
                                                     Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                     Text="{Binding [Brightness], Source={x:Static lang:LangHelper.Instance}}"
                                                     Focusable="True" KeyboardNavigation.TabIndex="112"
@@ -203,11 +205,13 @@
                                                     TextBlockType="Body2" />
                                             </Grid>
                                             <!--  Row: "Contrast"  -->
+                                            <!--20250325 Chewlin for Fix PIMSPIMS-348382 ADD FontFamily="Roboto" -->
                                             <Grid Height="40">
                                                 <UXControls:UXTextBlock
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
+                                                    FontFamily="Roboto"
                                                     Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                     Text="{Binding [Contrast], Source={x:Static lang:LangHelper.Instance}}"
                                                     Focusable="True" KeyboardNavigation.TabIndex="116"
@@ -1188,6 +1192,7 @@
                                                             <RowDefinition MinHeight="24" />
                                                             <RowDefinition Height="40" />
                                                         </Grid.RowDefinitions>
+                                                        <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
                                                         <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="155" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom" -->
                                                         <UXControls:UXTextBlock
                                                             MaxWidth="155"
@@ -1196,6 +1201,7 @@
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Bottom"
                                                             FontSize="16"
+                                                            FontFamily="Roboto"
                                                             Name="labelPreset1Name"
                                                             Focusable="True" KeyboardNavigation.TabIndex="131"
                                                             Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
@@ -1233,6 +1239,7 @@
                                                             <ColumnDefinition Width="70" />
                                                             <ColumnDefinition Width="Auto" />
                                                         </Grid.ColumnDefinitions>
+                                                        <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
                                                         <!-- Elsa 20250113 For PIMS [PIMS-333699]add Width="190" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom" change FontSize="16" to FontSize="15"-->
                                                         <UXControls:UXTextBlock
                                                             Width="190"
@@ -1243,6 +1250,7 @@
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Bottom"
                                                             FontSize="15"
+                                                            FontFamily="Roboto"
                                                             Name="labelStartTime1"
                                                             Focusable="True" KeyboardNavigation.TabIndex="133"
                                                             Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
@@ -1286,8 +1294,8 @@
                                                             </ComboBox.ItemTemplate>
                                                         </UXControls:UXComboBox>
 
-
-                                                            <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="60" TextWrapping="WrapWithOverflow" change FontSize="16" to FontSize="15" -->
+                                                        <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
+                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="60" TextWrapping="WrapWithOverflow" change FontSize="16" to FontSize="15" -->
                                                         <UXControls:UXTextBlock
                                                             Width="60"
                                                             TextWrapping="WrapWithOverflow"
@@ -1296,6 +1304,7 @@
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Center"
                                                             FontSize="15"
+                                                            FontFamily="Roboto"
                                                             Focusable="True" KeyboardNavigation.TabIndex="136"
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             Text="{Binding [AM], Source={x:Static lang:LangHelper.Instance}}"
@@ -1318,12 +1327,13 @@
                                                             <ColumnDefinition Width="116" />
                                                             <ColumnDefinition Width="Auto" />
                                                         </Grid.ColumnDefinitions>
-
+                                                        <!--20250324 Chewlin for Fix PIMS-348382 ADD VerticalAlignment="Center" FontFamily="Roboto" -->
                                                         <StackPanel
                                                             Grid.Row="0"
                                                             Grid.Column="0"
                                                             Grid.ColumnSpan="2"
-                                                            Orientation="Horizontal">
+                                                            Orientation="Horizontal" 
+                                                            VerticalAlignment="Center">
                                                             <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="140" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom"-->
                                                             <UXControls:UXTextBlock
                                                                 Width="140"
@@ -1331,6 +1341,7 @@
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Bottom"
                                                                 FontSize="16"
+                                                                FontFamily="Roboto"
                                                                 Name="labelTransitionLength1"
                                                                 Focusable="True" KeyboardNavigation.TabIndex="137"
                                                                 Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
@@ -1346,15 +1357,16 @@
                                                                 VerticalAlignment="Center"
                                                                 Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                                                 Stretch="Uniform">
-                                                                <Image.ToolTip>
-                                                                    <ToolTip>
+                                                            <!--20250324 Chewlin for Fix PIMS-348382 Fix Tooltip issue ADD Placement="Top" HorizontalOffset="0" VerticalOffset="12", HorizontalAlignment="Left" MaxWidth="272" TextWrapping="WrapWithOverflow"-->
+                                                            <Image.ToolTip>
+                                                                <ToolTip Placement="Top" HorizontalOffset="0" VerticalOffset="12">
                                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                                             <Border.Resources>
                                                                                 <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                                             </Border.Resources>
                                                                             <StackPanel>
                                                                                 <StackPanel Orientation="Horizontal">
-                                                                                    <TextBlock Text="{Binding [Brightness.17], Source={x:Static lang:LangHelper.Instance}}" />
+                                                                                <TextBlock Text="{Binding [Brightness.17], Source={x:Static lang:LangHelper.Instance}}" HorizontalAlignment="Left" MaxWidth="272" TextWrapping="WrapWithOverflow"/>
                                                                                 </StackPanel>
                                                                             </StackPanel>
                                                                         </Border>
@@ -1381,13 +1393,14 @@
                                                                 </DataTemplate>
                                                             </ComboBox.ItemTemplate>
                                                         </UXControls:UXComboBox>
-
-                                                        <UXControls:UXTextBlock
+                                                    <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
+                                                    <UXControls:UXTextBlock
                                                             Grid.Row="1"
                                                             Grid.Column="1"
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Center"
                                                             FontSize="16"
+                                                            FontFamily="Roboto"
                                                             Focusable="True" KeyboardNavigation.TabIndex="140" KeyboardNavigation.TabNavigation="Continue"
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             Text="{Binding [Min], Source={x:Static lang:LangHelper.Instance}}"
@@ -1398,12 +1411,14 @@
 
                                                 <!--  Row: "Brightness"  -->
                                                 <!-- Elsa 20250113 For PIMS [PIMS-333699] add Margin="0,20,0,-20" -->
+                                                <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
                                                 <Grid Height="40">
                                                     <UXControls:UXTextBlock                                       
                                                         Margin="0,20,0,-20"
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
+                                                        FontFamily="Roboto"
                                                         Name="labelPreset1Brightness"
                                                         Focusable="True" KeyboardNavigation.TabIndex="141"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
@@ -1460,12 +1475,14 @@
 
                                                 <!--  Row: "Contrast"  -->
                                                 <!-- Elsa 20250113 For PIMS [PIMS-333699] add Margin="0,16,0,0" -->
+                                                <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
                                                 <Grid Height="40">
                                                     <UXControls:UXTextBlock
                                                         Margin="0,16,0,0"
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
+                                                        FontFamily="Roboto"
                                                         Name="labelPreset1Contrast"
                                                         Focusable="True" KeyboardNavigation.TabIndex="145"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
@@ -1596,6 +1613,7 @@
                                                             <RowDefinition MinHeight="24" />
                                                             <RowDefinition Height="40" />
                                                         </Grid.RowDefinitions>
+                                                        <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
                                                         <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="155" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom"-->
                                                         <UXControls:UXTextBlock
                                                             Width="155"
@@ -1604,6 +1622,7 @@
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Bottom"
                                                             FontSize="16"
+                                                            FontFamily="Roboto"
                                                             Focusable="True" KeyboardNavigation.TabIndex="151"
                                                             Name="labelPreset2Name"
                                                             Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
@@ -1642,6 +1661,7 @@
                                                             <ColumnDefinition Width="70" />
                                                             <ColumnDefinition Width="Auto" />
                                                         </Grid.ColumnDefinitions>
+                                                        <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
                                                         <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="190" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom" -->
                                                         <UXControls:UXTextBlock
                                                             Width="190"
@@ -1652,6 +1672,7 @@
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Bottom"
                                                             FontSize="16"
+                                                            FontFamily="Roboto"
                                                             Name="labelPreset2StartTime"
                                                             Focusable="True" KeyboardNavigation.TabIndex="153"
                                                             Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
@@ -1696,6 +1717,7 @@
                                                             </DataTemplate>
                                                         </ComboBox.ItemTemplate>
                                                         </UXControls:UXComboBox>
+                                                        <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
                                                         <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="190" TextWrapping="WrapWithOverflow" change FontSize="16" to FontSize="15"-->
                                                         <UXControls:UXTextBlock
                                                             TextWrapping="WrapWithOverflow"
@@ -1705,6 +1727,7 @@
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Center"
                                                             FontSize="15"
+                                                            FontFamily="Roboto"
                                                             Focusable="True" KeyboardNavigation.TabIndex="156"       
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             Text="{Binding [PM], Source={x:Static lang:LangHelper.Instance}}"
@@ -1727,12 +1750,13 @@
                                                             <ColumnDefinition Width="116" />
                                                             <ColumnDefinition Width="Auto" />
                                                         </Grid.ColumnDefinitions>
-
+                                                    <!--20250324 Chewlin for Fix PIMS-348382 ADD VerticalAlignment="Center" FontFamily="Roboto" -->
                                                         <StackPanel
                                                             Grid.Row="0"
                                                             Grid.Column="0"
                                                             Grid.ColumnSpan="2"
-                                                            Orientation="Horizontal">
+                                                            Orientation="Horizontal" 
+                                                            VerticalAlignment="Center">
                                                             <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="140" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom"-->
                                                             <UXControls:UXTextBlock
                                                                 Width="140"
@@ -1740,6 +1764,7 @@
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Bottom"
                                                                 FontSize="16"
+                                                                FontFamily="Roboto"
                                                                 Name="labelTransitionLength2"
                                                                 Focusable="True" KeyboardNavigation.TabIndex="157"
                                                                 Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
@@ -1755,15 +1780,16 @@
                                                                 VerticalAlignment="Center"
                                                                 Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                                                 Stretch="Uniform">
-                                                                <Image.ToolTip>
-                                                                    <ToolTip>
+                                                            <!--20250324 Chewlin for Fix PIMS-348382 Fix Tooltip issue ADD Placement="Top" HorizontalOffset="0" VerticalOffset="12", HorizontalAlignment="Left" MaxWidth="272" TextWrapping="WrapWithOverflow"-->
+                                                            <Image.ToolTip>
+                                                                <ToolTip Placement="Top" HorizontalOffset="0" VerticalOffset="12">
                                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                                             <Border.Resources>
                                                                                 <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                                             </Border.Resources>
                                                                             <StackPanel>
                                                                                 <StackPanel Orientation="Horizontal">
-                                                                                    <TextBlock Text="{Binding [Brightness.17], Source={x:Static lang:LangHelper.Instance}}" />
+                                                                                <TextBlock Text="{Binding [Brightness.17], Source={x:Static lang:LangHelper.Instance}}" HorizontalAlignment="Left" MaxWidth="272" TextWrapping="WrapWithOverflow" />
                                                                                 </StackPanel>
                                                                             </StackPanel>
                                                                         </Border>
@@ -1792,13 +1818,14 @@
                                                                 </DataTemplate>
                                                             </ComboBox.ItemTemplate>
                                                         </UXControls:UXComboBox>
-
+                                                    <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
                                                         <UXControls:UXTextBlock
                                                             Grid.Row="1"
                                                             Grid.Column="1"
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Center"
                                                             FontSize="16"
+                                                            FontFamily="Roboto"
                                                             Focusable="True" KeyboardNavigation.TabIndex="160"
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             Text="{Binding [Min], Source={x:Static lang:LangHelper.Instance}}"
@@ -1809,12 +1836,14 @@
 
                                                 <!--  Row: "Brightness"  -->
                                                 <!-- Elsa 20250113 For PIMS [PIMS-333699] add Margin="0,20,0,-20" -->
+                                                <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
                                                 <Grid Height="40">
                                                     <UXControls:UXTextBlock
                                                         Margin="0,20,0,-20"
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
+                                                        FontFamily="Roboto"
                                                         Name="labelPreset2Brightness"
                                                         Focusable="True" KeyboardNavigation.TabIndex="161"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
@@ -1870,12 +1899,14 @@
 
                                                 <!--  Row: "Contrast"  -->
                                                 <!-- Elsa 20250113 For PIMS [PIMS-333699] add Margin="0,16,0,0" -->
+                                                <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
                                                 <Grid Height="40">
                                                     <UXControls:UXTextBlock
                                                         Margin="0,16,0,0"
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
+                                                        FontFamily="Roboto"
                                                         Name="labelPreset2Contrast"
                                                         Focusable="True" KeyboardNavigation.TabIndex="165"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"

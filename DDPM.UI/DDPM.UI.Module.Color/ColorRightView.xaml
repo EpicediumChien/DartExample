@@ -156,7 +156,7 @@
                                                 <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
 
-                                            <UXControls:UXTextBlock Text="{Binding [Color.6], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" FontSize="16"
+                                            <UXControls:UXTextBlock Text="{Binding [Color.14], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" FontSize="16"
                                                                     TextBlockType="Display1"
                                                                     Name="labelColorManualProfile" Focusable="True"
                                                                     KeyboardNavigation.TabIndex="115"

@@ -12145,7 +12145,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     var value = GetPropertyValue(_airaudioInterfaceType, commodity, "SerialNumber");
                     writelog($"[DTPProxyPlugin] [AirAudio] GetSerialNumberAsync succeeded for {guid}");
-                    return value == null ? "" : (string)value;
+                    return value == null ? null : (string)value;
                 }
 
                 writelog($"[DTPProxyPlugin] [AirAudio] GetSerialNumberAsync failed: Could not retrieve commodity interface for {guid}");

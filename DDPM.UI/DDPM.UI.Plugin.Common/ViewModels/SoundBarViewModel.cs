@@ -45,6 +45,8 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void UloadSpeaker_DTPNotify()
         {
+            _log!.Info($"[SoundBarViewModel] UloadSpeaker_DTPNotify in ...");
+            SoundbarSettingChanged -= SoundbarSettingChanged;
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify -= Speaker_DTPNotify;
@@ -53,6 +55,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void ExecuteDebouncedAction(object param)
         {
+            _log!.Info($"[SoundBarViewModel] ExecuteDebouncedAction in ...");
             _isRestoreEnable = false;
             if (param is string mode)
             {

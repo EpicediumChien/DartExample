@@ -110,7 +110,7 @@
                 </Grid>
 
                 <!-- Buttons -->
-                <Grid Grid.Column="0" Margin="72,532, 0, 0">
+                <Grid Grid.Column="0" Margin="72,532, 0, 76">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
