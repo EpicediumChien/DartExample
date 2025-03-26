@@ -75,8 +75,8 @@ namespace DDPM.UI.Common.Tests
             var moduleGroup = new ModuleGroup();
             var privateObjecta = new PrivateObject(moduleGroup);
             privateObjecta.SetFieldOrProperty("_headers", _headers);
-            var moduleGroups = new List<ModuleGroup>() { moduleGroup } ;
-            deviceBasePageViewModel.ModuleGroups= moduleGroups;
+            var moduleGroups = new List<ModuleGroup>() { moduleGroup };
+            deviceBasePageViewModel.ModuleGroups = moduleGroups;
 
             // Assert
             Assert.That(deviceBasePageViewModel.ModuleGroups, Is.EqualTo(moduleGroups));
@@ -91,7 +91,7 @@ namespace DDPM.UI.Common.Tests
             var moduleGroup = new ModuleGroup();
             var privateObjecta = new PrivateObject(moduleGroup);
             privateObjecta.SetFieldOrProperty("_headers", _headers);
-            var moduleGroups = new List<ModuleGroup>() { moduleGroup,moduleGroup };
+            var moduleGroups = new List<ModuleGroup>() { moduleGroup, moduleGroup };
             deviceBasePageViewModel.ModuleGroups = moduleGroups;
             deviceBasePageViewModel.GroupSelectedIndex = -1;
             // Assert
@@ -120,7 +120,7 @@ namespace DDPM.UI.Common.Tests
             var moduleGroups = new List<ModuleGroup>() { moduleGroup };
             deviceBasePageViewModel.ModuleGroups = moduleGroups;
             // Assert
-            Assert.That(deviceBasePageViewModel.GroupCount, Is.EqualTo(1));      
+            Assert.That(deviceBasePageViewModel.GroupCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -136,7 +136,7 @@ namespace DDPM.UI.Common.Tests
             // Assert
             Assert.That(deviceBasePageViewModel.SelectedGroup, Is.EqualTo(null));
 
-            moduleGroups = new List<ModuleGroup>() { moduleGroup,moduleGroup};
+            moduleGroups = new List<ModuleGroup>() { moduleGroup, moduleGroup };
             deviceBasePageViewModel.ModuleGroups = moduleGroups;
             var _vbarItems = new List<VbarItem1>() { new VbarItem1(), new VbarItem1() };
             privateObject.SetFieldOrProperty("_vbarItems", _vbarItems);
@@ -172,7 +172,7 @@ namespace DDPM.UI.Common.Tests
             var moduleGroup = new ModuleGroup() { GroupName = "groupName" };
             var privateObjecta = new PrivateObject(moduleGroup);
             privateObjecta.SetFieldOrProperty("_headers", _headers);
-            var moduleGroups = new List<ModuleGroup>() {new ModuleGroup(),new ModuleGroup(), moduleGroup };
+            var moduleGroups = new List<ModuleGroup>() { new ModuleGroup(), new ModuleGroup(), moduleGroup };
             deviceBasePageViewModel.ModuleGroups = moduleGroups;
             result = deviceBasePageViewModel.FindGroupIndexByGroupName("groupName");
             Assert.That(result, Is.EqualTo(2));
@@ -237,7 +237,7 @@ namespace DDPM.UI.Common.Tests
             var _headers = new ObservableCollection<RightViewHeader>() { new RightViewHeader(1, "text") { DdpmModule = dDdpmModuleMock.Object } };
             var moduleGroup = new ModuleGroup();
             var privateObjecta = new PrivateObject(moduleGroup);
-            privateObjecta.SetFieldOrProperty("_headers", _headers);    
+            privateObjecta.SetFieldOrProperty("_headers", _headers);
             var moduleGroups = new List<ModuleGroup>() { moduleGroup, moduleGroup };
             deviceBasePageViewModel.ModuleGroups = moduleGroups;
             var _vbarItems = new List<VbarItem1>() { new VbarItem1(), new VbarItem1() };
@@ -263,7 +263,7 @@ namespace DDPM.UI.Common.Tests
 
             //SelectedGroup != null
             var dDdpmModuleMock = new Mock<IDdpmModule>();
-            dDdpmModuleMock.Setup(x=>x.GetLeftView()).Returns(deviceBasePageViewModel.DefaultLeftView);
+            dDdpmModuleMock.Setup(x => x.GetLeftView()).Returns(deviceBasePageViewModel.DefaultLeftView);
             var _headers = new ObservableCollection<RightViewHeader>() { new RightViewHeader(1, "text") { DdpmModule = dDdpmModuleMock.Object } };
             var moduleGroup = new ModuleGroup();
             var privateObjecta = new PrivateObject(moduleGroup);
@@ -301,13 +301,13 @@ namespace DDPM.UI.Common.Tests
             Assert.That(deviceBasePageViewModel.RightView, Is.EqualTo(deviceBasePageViewModel.DefaultLeftView));
 
             var ModuleOwnerMock = new Mock<IModuleOwner>();
-            DdpmCommonHelper.ModuleOwner=ModuleOwnerMock.Object;
-            ModuleOwnerMock.Setup(x=>x.SelectedHomeDevice).Returns(new HomeDevice());
-            var DeviceManagerSAMock=new Mock<IDeviceManagerSA>();
-            DdpmCommonHelper.DeviceManagerSA=DeviceManagerSAMock.Object;
+            DdpmCommonHelper.ModuleOwner = ModuleOwnerMock.Object;
+            ModuleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            var DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA = DeviceManagerSAMock.Object;
             DeviceManagerSAMock.Setup(x => x.GetHDRStatus(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(true));
-            ModuleOwnerMock.Setup(x => x.HomeDevices).Returns(new List<HomeDevice>() { new HomeDevice(), new HomeDevice() });  
-            _headers = new ObservableCollection<RightViewHeader>() { new RightViewHeader(1, "text") {ModuleType=typeof(BrightnessModule) } };
+            ModuleOwnerMock.Setup(x => x.HomeDevices).Returns(new List<HomeDevice>() { new HomeDevice(), new HomeDevice() });
+            _headers = new ObservableCollection<RightViewHeader>() { new RightViewHeader(1, "text") { ModuleType = typeof(BrightnessModule) } };
             moduleGroup = new ModuleGroup();
             privateObjecta = new PrivateObject(moduleGroup);
             privateObjecta.SetFieldOrProperty("_headers", _headers);
@@ -348,7 +348,7 @@ namespace DDPM.UI.Common.Tests
         public void TestHomeDevices()
         {
             var homeDevices = new List<HomeDevice>();
-            deviceBasePageViewModel.HomeDevices= homeDevices;
+            deviceBasePageViewModel.HomeDevices = homeDevices;
             Assert.That(deviceBasePageViewModel.HomeDevices, Is.EqualTo(homeDevices));
         }
 
@@ -359,7 +359,7 @@ namespace DDPM.UI.Common.Tests
             deviceBasePageViewModel.SelectedHomeDevice = selectedHomeDevice;
             Assert.That(deviceBasePageViewModel.SelectedHomeDevice, Is.EqualTo(selectedHomeDevice));
 
-            privateObject.SetFieldOrProperty("_selectedHomeDevice", new HomeDevice() { MonitorInfo=new MonitorInfo()});
+            privateObject.SetFieldOrProperty("_selectedHomeDevice", new HomeDevice() { MonitorInfo = new MonitorInfo() });
             deviceBasePageViewModel.SelectedHomeDevice = selectedHomeDevice;
             Assert.That(deviceBasePageViewModel.SelectedHomeDevice, Is.EqualTo(selectedHomeDevice));
         }
@@ -369,7 +369,7 @@ namespace DDPM.UI.Common.Tests
         {
             Assert.That(deviceBasePageViewModel.HomeDeviceCount, Is.EqualTo(0));
 
-            deviceBasePageViewModel.HomeDevices = new List<HomeDevice>() { new HomeDevice(),new HomeDevice()};
+            deviceBasePageViewModel.HomeDevices = new List<HomeDevice>() { new HomeDevice(), new HomeDevice() };
             Assert.That(deviceBasePageViewModel.HomeDeviceCount, Is.EqualTo(2));
         }
 
@@ -448,8 +448,8 @@ namespace DDPM.UI.Common.Tests
             var DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA = DeviceManagerSAMock.Object;
             DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
-            var ddpmModuleMock=new Mock<IDdpmModule>();
-            var _headers = new ObservableCollection<RightViewHeader>() { new RightViewHeader(1, "text") { DdpmModule=ddpmModuleMock.Object} };
+            var ddpmModuleMock = new Mock<IDdpmModule>();
+            var _headers = new ObservableCollection<RightViewHeader>() { new RightViewHeader(1, "text") { DdpmModule = ddpmModuleMock.Object } };
             var moduleGroup = new ModuleGroup();
             var privateObjecta = new PrivateObject(moduleGroup);
             privateObjecta.SetFieldOrProperty("_headers", _headers);
@@ -476,7 +476,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestActiveModule()
         {
-            var ddpmModuleMock=new Mock<IDdpmModule>();
+            var ddpmModuleMock = new Mock<IDdpmModule>();
             var activeModule = ddpmModuleMock.Object;
             deviceBasePageViewModel.ActiveModule = activeModule;
             Assert.That(deviceBasePageViewModel.ActiveModule, Is.EqualTo(activeModule));
@@ -507,18 +507,18 @@ namespace DDPM.UI.Common.Tests
             }
 
             //SelectedHomeDevice != null
-            deviceBasePageViewModel.SelectedHomeDevice = new HomeDevice() { MonitorInfo = new MonitorInfo() { CapabilityDic = new Dictionary<string, List<string>>() { {"JE",new List<string>() {"E9" } } } } };
+            deviceBasePageViewModel.SelectedHomeDevice = new HomeDevice() { MonitorInfo = new MonitorInfo() { CapabilityDic = new Dictionary<string, List<string>>() { { "JE", new List<string>() { "E9" } } } } };
             var ddpmModuleMock = new Mock<IDdpmModule>();
             ddpmModuleMock.Setup(x => x.ModuleName).Returns("PipPbpModule");
 
-            var _headers = new ObservableCollection<RightViewHeader>() {new RightViewHeader(0,"texta"), new RightViewHeader(1, "textb") { DdpmModule = ddpmModuleMock.Object } };
+            var _headers = new ObservableCollection<RightViewHeader>() { new RightViewHeader(0, "texta"), new RightViewHeader(1, "textb") { DdpmModule = ddpmModuleMock.Object } };
             _headers[0].ModuleType = typeof(HomeDevice);
             _headers[1].ModuleType = typeof(HomeDevice);
-            var moduleGroup = new ModuleGroup() { HeaderSelectedIndex = 1 ,GroupName= "KVM" ,VbarText= "KVMVbarText" };            
+            var moduleGroup = new ModuleGroup() { HeaderSelectedIndex = 1, GroupName = "KVM", VbarText = "KVMVbarText" };
             var privateObjecta = new PrivateObject(moduleGroup);
             privateObjecta.SetFieldOrProperty("_headers", _headers);
             var moduleGroups = new List<ModuleGroup>() { new ModuleGroup() { HeaderSelectedIndex = 1, GroupName = "Gaming", VbarText = "GamingVbarText" }, moduleGroup };
-            var _vbarItems = new List<VbarItem1>() { new VbarItem1() { Text = "GamingVbarText" }, new VbarItem1() {Text= "KVMVbarText" } };
+            var _vbarItems = new List<VbarItem1>() { new VbarItem1() { Text = "GamingVbarText" }, new VbarItem1() { Text = "KVMVbarText" } };
             privateObject.SetFieldOrProperty("_vbarItems", _vbarItems);
             privateObject.SetFieldOrProperty("_moduleGroups", moduleGroups);
             deviceBasePageViewModel.GroupSelectedIndex = 1;
@@ -548,7 +548,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestHandleDdcCiOffEvent()
         {
-            var _vbarItems = new List<VbarItem1>() { new VbarItem1() { Text = "GamingVbarText",Visibility= Visibility.Collapsed }, new VbarItem1() { Text = "KVMVbarText" } };
+            var _vbarItems = new List<VbarItem1>() { new VbarItem1() { Text = "GamingVbarText", Visibility = Visibility.Collapsed }, new VbarItem1() { Text = "KVMVbarText" } };
             privateObject.SetFieldOrProperty("_vbarItems", _vbarItems);
             var moduleGroups = new List<ModuleGroup>() { new ModuleGroup() { HeaderSelectedIndex = 1, GroupName = "EasyArrange", VbarText = "EasyArrangeText" } };
             privateObject.SetFieldOrProperty("_moduleGroups", moduleGroups);
@@ -594,7 +594,7 @@ namespace DDPM.UI.Common.Tests
         public void TestInitLog()
         {
             var myConsoleMock = new Mock<IConsole>();
-            DdpmCommonHelper.MyConsole=myConsoleMock.Object;
+            DdpmCommonHelper.MyConsole = myConsoleMock.Object;
             try
             {
                 deviceBasePageViewModel.InitLog();
@@ -625,8 +625,8 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestGotoHomepage()
         {
-            var myConsoleMock=new Mock<IConsole>();
-            DdpmCommonHelper.MyConsole= myConsoleMock.Object;
+            var myConsoleMock = new Mock<IConsole>();
+            DdpmCommonHelper.MyConsole = myConsoleMock.Object;
             try
             {
                 deviceBasePageViewModel.GotoHomepage();
@@ -638,6 +638,14 @@ namespace DDPM.UI.Common.Tests
             }
         }
 
-
+        [TearDown]
+        public void TearDown()
+        {
+            if (deviceBasePageViewModel != null)
+            {
+                deviceBasePageViewModel.Dispose();
+                deviceBasePageViewModel = null;
+            }
+        }
     }
 }

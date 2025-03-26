@@ -176,7 +176,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestSetLockModuleGroup()
         {
-            var deviceBasePageViewModel = new DeviceBasePageViewModel() { ModuleGroups = new List<ModuleGroup>() { new ModuleGroup() , new ModuleGroup() } };
+            var deviceBasePageViewModel = new DeviceBasePageViewModel() { ModuleGroups = new List<ModuleGroup>() { new ModuleGroup(), new ModuleGroup() } };
             var privateobject = new PrivateObject(deviceBasePageViewModel);
             privateObject.SetFieldOrProperty("viewModel", deviceBasePageViewModel);
             var result = deviceBasePage.SetLockModuleGroup(Constants.GroupName_InputSource, true);
@@ -187,6 +187,19 @@ namespace DDPM.UI.Common.Tests
             result = deviceBasePage.SetLockModuleGroup(Constants.GroupName_InputSource, true);
             Assert.That(result, Is.EqualTo(true));
         }
+
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (deviceBasePage != null)
+            {
+                deviceBasePage.Dispose();
+                deviceBasePage = null;
+            }
+        }
+
+
 
     }
 }
