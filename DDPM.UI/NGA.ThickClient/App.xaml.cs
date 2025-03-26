@@ -8,6 +8,7 @@
 
 #endregion
 
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
@@ -180,6 +181,7 @@ namespace NGA.ThickClient
         }
 
         //return 1 is light mode, others is dark mode
+        //20250326 Dean: solve the problem that UI can't get value if launched with system account
         int GetSystemTheme()
         {
             string key = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
@@ -198,7 +200,25 @@ namespace NGA.ThickClient
             }
             catch (Exception ex)
             {
-                EventLogHelper.WriteEventLog($"{string.Format(NGA.Resources.Resources.MYDELL_APP_THICKCLIENT_CONSOLE_WINDOWTEXT, NGA.Resources.Resources.ApplicationName)} - Unable to get system theme. {ex}", EventLogEntryType.Error);
+                EventLogHelper.WriteEventLog($"{string.Format(NGA.Resources.Resources.MYDELL_APP_THICKCLIENT_CONSOLE_WINDOWTEXT, NGA.Resources.Resources.ApplicationName)} - Unable to get system theme. {ex}", EventLogEntryType.Warning);
+
+                try
+                {
+                    object o = WTSFunction.ImpersonateUser_ReadRegistry_New(key, value);
+                    ret = 0;
+                    if (o != null)
+                    {
+                        ret = (int)o;
+                    }
+                    else
+                    {
+                        EventLogHelper.WriteEventLog($"{string.Format(NGA.Resources.Resources.MYDELL_APP_THICKCLIENT_CONSOLE_WINDOWTEXT, NGA.Resources.Resources.ApplicationName)} - Unable to get system theme. {ex}", EventLogEntryType.Error);
+                    }
+                }
+                catch (Exception ex2)
+                {
+                    EventLogHelper.WriteEventLog($"{string.Format(NGA.Resources.Resources.MYDELL_APP_THICKCLIENT_CONSOLE_WINDOWTEXT, NGA.Resources.Resources.ApplicationName)} - Unable to get system theme. {ex2}", EventLogEntryType.Error);
+                }
             }
 
             return ret;
