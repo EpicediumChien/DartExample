@@ -5822,14 +5822,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} check CA is skip");
             }
-            List<MonitorInfo> monitorInfos = new List<MonitorInfo>();
-            monitorInfos = GetMonitors().Result;
+            List<MonitorInfo> monitorInfos = GetMonitors().Result;
             using (HttpClient client = new HttpClient())
             {
                 try
                 {
                     _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} get jsonContent");
-                    client.Timeout = TimeSpan.FromSeconds(5);
+                    client.Timeout = TimeSpan.FromSeconds(60);
                     HttpResponseMessage response = client.GetAsync(display_FWU_URL + "version_sha256.json").Result;
                     response.EnsureSuccessStatusCode();
                     string jsonContent = response.Content.ReadAsStringAsync().Result;
