@@ -13,6 +13,7 @@ using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,8 +21,13 @@ using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Common.ViewModels
 {
-    public class DeviceBasePageViewModel : ObservableObject, IModuleOwner
+    public class DeviceBasePageViewModel : ObservableObject, IModuleOwner, IDisposable
     {
+        #region Private memebrs
+        //To prevent Dispose() is called multiple times
+        private bool _isDisposed = false;
+        #endregion
+
         #region ctor
         public DeviceBasePageViewModel()
         {
@@ -36,6 +42,38 @@ namespace DDPM.UI.Common.ViewModels
             DdpmCommonHelper.BitmapImageUpdated += OnVBarThemeChange;
         }
         #endregion ctor
+
+        #region Dispose and Destructor
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    // 釋放託管資源
+
+                }
+
+                // 釋放非託管資源
+                //if (unmanagedResource != IntPtr.Zero)
+                //{
+                //    // 釋放資源
+                //    unmanagedResource = IntPtr.Zero;
+                //}
+
+                _isDisposed = true;
+            }
+        }
+        ~DeviceBasePageViewModel()
+        {
+            Dispose(false);
+        }
+        #endregion
 
         #region ModuleGroups
 

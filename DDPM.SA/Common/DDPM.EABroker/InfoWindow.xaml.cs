@@ -468,5 +468,11 @@ namespace DDPM.EABroker
                 _vm.SendEANotifyToUI(eaArgs);
             }
         }
+
+        private void makeExceptionButton_Click(object sender, RoutedEventArgs e)
+        {
+            _vm.WriteLog("MakeExceptionButton_Click");
+            throw new Exception("MakeExceptionButton_Click");
+        }
     }
 }

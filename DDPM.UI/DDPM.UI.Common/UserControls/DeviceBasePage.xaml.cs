@@ -20,8 +20,9 @@ namespace DDPM.UI.Common.UserControls
     /// <summary>
     /// Interaction logic for DeviceBasePage.xaml
     /// </summary>
-    public partial class DeviceBasePage : UserControl
+    public partial class DeviceBasePage : UserControl, IDisposable
     {
+        #region Private members
         private readonly ILog _log;
         private Stopwatch _stopwatch = new Stopwatch();
 
@@ -34,6 +35,11 @@ namespace DDPM.UI.Common.UserControls
         private readonly Int16 rightGridWidth = 660;
         private bool isFirstEntryNonLandingMode = true;
 
+        //To prevent Dispose() is called multiple times
+        private bool _isDisposed = false; 
+        #endregion
+
+        #region Ctor
         public DeviceBasePage()
         {
             InitializeComponent();
@@ -60,6 +66,42 @@ namespace DDPM.UI.Common.UserControls
             // Set the input method to English for the entire UserControl
             InputMethod.SetPreferredImeState(this, InputMethodState.Off);
         }
+        #endregion
+
+        #region Dispose and Destructor
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    // 釋放託管資源
+                    _stopwatch?.Stop();
+                    _stopwatch = null;
+                    viewModel = null;
+
+                }
+
+                // 釋放非託管資源
+                //if (unmanagedResource != IntPtr.Zero)
+                //{
+                //    // 釋放資源
+                //    unmanagedResource = IntPtr.Zero;
+                //}
+
+                _isDisposed = true;
+            }
+        }
+        ~DeviceBasePage()
+        {
+            Dispose(false);
+        }
+        #endregion
 
         private void OnRightViewHeaderChanged(object sender, RoutedEventArgs e)
         {
