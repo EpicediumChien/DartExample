@@ -136,250 +136,284 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         /// <param name="monitorInfos"></param>
         public void PrepareMonitorInfos(List<MonitorInfo> monitorInfos)
         {
-
+            _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos in ... ");
             lock (_LockList)
             {
-                //Robert_Lin 2024-5-16 This method should be called once, provide all
-                //monitor in this call. So it will clear original list at first
-                //Original code, which will append.
-                //List<HomeDevice> tempList = new List<HomeDevice>(HomeDevices.ToList());
-                //New code, which will replace with new list
-                List<HomeDevice> tempList = new List<HomeDevice>();
-
-                //Workaround to build a tempList then assign to ViewModel.HomeDevices
-                //To avoid exception (unknown reason)
-
-                foreach (MonitorInfo mi in monitorInfos)
+                try
                 {
-                    //Workaround to get InputSource of Dell Monitor
-                    //
-                    //byte b_vcpcode = Convert.ToByte("60", 16);
-                    //string currentInput = ""; //DdpmCommonHelper.DeviceManagerSA.GetCurrentInput(mi, b_vcpcode, 0).Result;
+                    //Robert_Lin 2024-5-16 This method should be called once, provide all
+                    //monitor in this call. So it will clear original list at first
+                    //Original code, which will append.
+                    //List<HomeDevice> tempList = new List<HomeDevice>(HomeDevices.ToList());
+                    //New code, which will replace with new list
+                    List<HomeDevice> tempList = new List<HomeDevice>();
 
-                    //Robert_Lin, 2024-12-27 provide ILog to HomeDevice, so it can write log 
-                    HomeDevice dev = new HomeDevice(_log)
-                    {
-                        DeviceName = mi.AliasDeviceName,
-                        DeviceCategory = eDeviceCategory.Display,
-                        MonitorInfo = mi,
-                        //Text1 = currentInput,
-                        //Robert_Lin, 2024-9-30, Comment-out after phase in Monitor Product images
-                        //DeviceImage = mi.modelName.ToUpper().StartsWith("G") ? DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/G.png") : mi.modelName.ToUpper().StartsWith("AW") ? DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/AW.png") : DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Display.png")
-                    };
+                    //Workaround to build a tempList then assign to ViewModel.HomeDevices
+                    //To avoid exception (unknown reason)
 
-                    //Robert_Lin, 2024-11-20 PIMS-302436, Show the user input name to replace InputCable
-                    //Robert_Lin 2025-2-16 Add null check
-                    //NEW:
-                    if (DdpmCommonHelper.DeviceManagerSA != null)
+                    foreach (MonitorInfo mi in monitorInfos)
                     {
-                        //END of NEW
-                        //OLD:
-                        Dictionary<string, InputInfo> inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(mi).Result;
-                        if (inputList != null)
+                        _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos {mi.AliasDeviceName} ... ");
+                        //Workaround to get InputSource of Dell Monitor
+                        //
+                        //byte b_vcpcode = Convert.ToByte("60", 16);
+                        //string currentInput = ""; //DdpmCommonHelper.DeviceManagerSA.GetCurrentInput(mi, b_vcpcode, 0).Result;
+
+                        //Robert_Lin, 2024-12-27 provide ILog to HomeDevice, so it can write log 
+                        HomeDevice dev = new HomeDevice(_log)
                         {
-                            InputInfo mainInput;
-                            if (inputList.TryGetValue(mi.inputCable, out mainInput))
+                            DeviceName = mi.AliasDeviceName,
+                            DeviceCategory = eDeviceCategory.Display,
+                            MonitorInfo = mi,
+                            //Text1 = currentInput,
+                            //Robert_Lin, 2024-9-30, Comment-out after phase in Monitor Product images
+                            //DeviceImage = mi.modelName.ToUpper().StartsWith("G") ? DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/G.png") : mi.modelName.ToUpper().StartsWith("AW") ? DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/AW.png") : DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Display.png")
+                        };
+
+                        //Robert_Lin, 2024-11-20 PIMS-302436, Show the user input name to replace InputCable
+                        //Robert_Lin 2025-2-16 Add null check
+                        //NEW:
+                        if (DdpmCommonHelper.DeviceManagerSA != null)
+                        {
+                            //END of NEW
+                            //OLD:
+                            Dictionary<string, InputInfo> inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(mi).Result;
+                            if (inputList != null)
                             {
-                                dev.InputName = mainInput.InputName;
+                                _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos inputList != null ... ");
+                                InputInfo mainInput;
+                                if (inputList.TryGetValue(mi.inputCable, out mainInput))
+                                {
+                                    dev.InputName = mainInput.InputName;
+                                }
+                            }
+                            else
+                            {
+                                _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos inputList == null ... ");
                             }
                         }
-                    }
-                    //
-                    ///////////////////////////////////////////////////////////////////////////////
+                        //
+                        ///////////////////////////////////////////////////////////////////////////////
 
-                    //2024-6-20 Robert_Lin, check if any some model already in list
-                    List<HomeDevice> sameModel = tempList.FindAll(x => x.IsSameModel(dev));
-                    if (sameModel.Any())
-                    {
-                        //Assign InstanceNo
-                        int instanceNo = 1;
-                        foreach (HomeDevice hd in sameModel)
+                        //2024-6-20 Robert_Lin, check if any some model already in list
+                        List<HomeDevice> sameModel = tempList.FindAll(x => x.IsSameModel(dev));
+                        if (sameModel.Any())
                         {
-                            hd.InstanceNo = instanceNo;
-                            instanceNo++;
+                            _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos sameModel ... ");
+                            //Assign InstanceNo
+                            int instanceNo = 1;
+                            foreach (HomeDevice hd in sameModel)
+                            {
+                                hd.InstanceNo = instanceNo;
+                                instanceNo++;
+                            }
+                            dev.InstanceNo = instanceNo;
                         }
-                        dev.InstanceNo = instanceNo;
+
+                        //_homeDevices.Add(dev);
+                        tempList.Add(dev);
+
+                        //2024-5-8 Robert_Lin to validate RWD in HomePage, limit the device count=1
+                        //break;
                     }
 
-                    //_homeDevices.Add(dev);
-                    tempList.Add(dev);
+                    //Robert_Lin, 2024-7-10, Sort by DisplayName
+                    tempList.Sort((x, y) => x.DisplayName.CompareTo(y.DisplayName));
 
-                    //2024-5-8 Robert_Lin to validate RWD in HomePage, limit the device count=1
-                    //break;
+                    //Assign SortOrder
+                    int orderBase = (int)eDeviceCategory.Display;
+                    int orderIndex = 0;
+                    const int orderMul = 10;
+                    foreach (HomeDevice dev in tempList)
+                    {
+                        dev.SortOrder = orderBase + orderMul * orderIndex;
+                        orderIndex++;
+                    }
+                    _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos {tempList.Count} ... ");
+                    //OnPropertyChanged("HomeDevices");
+                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        HomeDevices = new ObservableCollection<HomeDevice>(tempList);
+                    });
+                    //Robert_Lin, 2024-8-7, The list has been sorted in PrepareXXX(), so should not call to RefreshCollectionView()
+                    //Robert_Lin, 2024-6-22, to fix the issue the WebCam not been sorted (expect arranged after monitors)
+                    //RefreshCollectionView();
                 }
-
-                //Robert_Lin, 2024-7-10, Sort by DisplayName
-                tempList.Sort((x, y) => x.DisplayName.CompareTo(y.DisplayName));
-
-                //Assign SortOrder
-                int orderBase = (int)eDeviceCategory.Display;
-                int orderIndex = 0;
-                const int orderMul = 10;
-                foreach (HomeDevice dev in tempList)
+                catch (Exception ex)
                 {
-                    dev.SortOrder = orderBase + orderMul * orderIndex;
-                    orderIndex++;
+                    _log.Error($"[DdpmHomePageViewModel] PrepareMonitorInfos Exception: {ex.Message}");
                 }
-
-                //OnPropertyChanged("HomeDevices");
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    HomeDevices = new ObservableCollection<HomeDevice>(tempList);
-                });
-                //Robert_Lin, 2024-8-7, The list has been sorted in PrepareXXX(), so should not call to RefreshCollectionView()
-                //Robert_Lin, 2024-6-22, to fix the issue the WebCam not been sorted (expect arranged after monitors)
-                //RefreshCollectionView();
             }
+            _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos out ... ");
         }
 
         public void PrepareDeviceInfos(List<DeviceInfo> deviceInfos)
         {
+            _log.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos in ... ");
             lock (_LockPeripheralList)
             {
-                //Robert_Lin 2024-7-10 modify for HomePage Sort and Grouping
-                //Sort the deviceInfos with DeviceInfo.Name (HomeDevice.TooltipModelName)
-                deviceInfos.Sort((x, y) => x.Name.CompareTo(y.Name));
-
-                //Determine the SortOrder in the foreach loop.
-                //Each Category have their index, would be in order of ModelNumber
-                int idxWebcam = 0, idxKB = 0, idxMouse = 0,
-                    idxPen = 0, idxHeadset = 0, idxSpeaker = 0, idxDock = 0, idxBootloader = 0, idxAirAudio = 0;
-
-                //Robert_Lin 2024-5-16 This method should be called once, provide all
-                //monitor in this call. So it will clear original list at first
-                //Original code, which will append.
-                List<HomeDevice> tempList = new List<HomeDevice>(HomeDevices.ToList());
-                //New code, which will replace with new list
-                //List<HomeDevice> tempList = new List<HomeDevice>();
-
-                IsPandoraPaired = false;
-                foreach (DeviceInfo di in deviceInfos)
+                try
                 {
-                    //Check if duplicate device is existing in list already
-                    HomeDevice? dupDev = tempList.Find(x => x.IsSamePeripheralDevice(di));
-                    if (dupDev != null)
+                    //Robert_Lin 2024-7-10 modify for HomePage Sort and Grouping
+                    //Sort the deviceInfos with DeviceInfo.Name (HomeDevice.TooltipModelName)
+                    deviceInfos.Sort((x, y) => x.Name.CompareTo(y.Name));
+
+                    //Determine the SortOrder in the foreach loop.
+                    //Each Category have their index, would be in order of ModelNumber
+                    int idxWebcam = 0, idxKB = 0, idxMouse = 0,
+                        idxPen = 0, idxHeadset = 0, idxSpeaker = 0, idxDock = 0, idxBootloader = 0, idxAirAudio = 0;
+
+                    //Robert_Lin 2024-5-16 This method should be called once, provide all
+                    //monitor in this call. So it will clear original list at first
+                    //Original code, which will append.
+                    List<HomeDevice> tempList = new List<HomeDevice>(HomeDevices.ToList());
+                    //New code, which will replace with new list
+                    //List<HomeDevice> tempList = new List<HomeDevice>();
+
+                    IsPandoraPaired = false;
+                    foreach (DeviceInfo di in deviceInfos)
                     {
-                        if (_log != null)
+                        _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos foreach start ... ");
+                        //Check if duplicate device is existing in list already
+                        HomeDevice? dupDev = tempList.Find(x => x.IsSamePeripheralDevice(di));
+                        if (dupDev != null)
                         {
-                            _log.Info($"Duplication Peripheral found! GUID=[{di.PhyscialDeviceID}], Type=[{di.Type}], Name={di.Name}");
-                            _log.Info($"DeviceToBeAdded:  Name=[{di.Name}], Type=[{di.Type}], PhyscialDeviceID=[{di.PhyscialDeviceID}]");
-                            _log.Info($"DeviceDuplicated: Name=[{dupDev.DeviceInfo.Name}], Type=[{dupDev.DeviceInfo.Type}], PhyscialDeviceID=[{dupDev.DeviceInfo.PhyscialDeviceID}]");
-                        }
-                        continue;
-                    }
-
-                    if (!di.IsConnected)
-                        continue;
-
-                    //Robert_Lin, 2024-12-27 provide ILog to HomeDevice, so it can write log 
-                    HomeDevice dev = new HomeDevice(_log)
-                    {
-                        DeviceName = di.DeviceName,
-                        DeviceInfo = di
-                    };
-
-                    //2024-6-20, Peripherals DeviceImage will be determined by HomeDevice internally.
-                    //Upper owner just set DeviceInfo to HomeDevice can trigger it to load the product image.
-
-                    //Apply device category
-                    DeviceType devType = di.Type;
-                    if (EOLKBList.Contains(di.Name))
-                    {
-                        dev.DeviceCategory = eDeviceCategory.KB;
-                        dev.SortOrder = (int)dev.DeviceCategory + idxKB;
-                        idxKB++;
-                    }
-                    else if (EOLMouseList.Contains(di.Name))
-                    {
-                        dev.DeviceCategory = eDeviceCategory.Mouse;
-                        dev.SortOrder = (int)dev.DeviceCategory + idxMouse;
-                        idxKB++;
-                    }
-                    else if (devType.ToString().Contains("Keyboard"))
-                    {
-                        dev.DeviceCategory = eDeviceCategory.KB;
-                        //dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_KB900.png");
-                        dev.SortOrder = (int)dev.DeviceCategory + idxKB;
-                        idxKB++;
-                    }
-                    else if (devType.ToString().Contains("Mouse"))
-                    {
-                        dev.DeviceCategory = eDeviceCategory.Mouse;
-                        dev.SortOrder = (int)dev.DeviceCategory + idxMouse;
-                        idxMouse++;
-                        //dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Mouse.png");
-                    }
-                    // 240722 Added by Hess to support Pen
-                    else if (devType.ToString().Contains("Pen"))
-                    {
-                        dev.DeviceCategory = eDeviceCategory.Pen;
-                        dev.SortOrder = (int)dev.DeviceCategory + idxPen;
-                        idxPen++;
-                        if (di.ModelNumber == "PN5122W")
-                            IsPandoraPaired = true;
-                    }
-                    //0710 Jim 修改WebCamera
-                    else if (devType.ToString().Contains("Webcam"))
-                    {
-                        string imagepath = "";
-                        switch (di.ModelNumber)
-                        {
-                            case "WB7022":   // external webcamera
-                                imagepath = "Resources/WebCamModel_WB7022_Small.png";
-                                break;
-
-                            case "WB5023":   // external webcamera
-                                imagepath = "Resources/WebCamModel_WB5023_Small.png";
-                                break;
-
-                            case "WB3023":    // external webcamera
-                                imagepath = "Resources/WebCamModel_WB3023_Small.png";
-                                break;
-
-                            case "U3224KB": // internal webcamera
-                                imagepath = "Resources/WebCamModel_U3224KB_Small.png";
-                                break;
-
-                            case "U3224KBA": // internal webcamera
-                                imagepath = "Resources/WebCamModel_U3224KB_Small.png";
-                                break;
-
-                            case "P2424HEB": //internal webcamera
-                                imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
-                                break;
-
-                            case "P2724DEB": //internal webcamera
-                                imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
-                                break;
-
-                            case "P3424WEB": //internal webcamera
-                                imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
-                                break;
-
-                            case "U3223QZ": //internal webcamera
-                                imagepath = "Resources/WebCamModel_U3223QZ_Small.png";
-                                break;
-
-                            default:
-                                imagepath = "Resources/WebCamera.png";
-                                break;
-                        }
-
-                        dev.DeviceCategory = eDeviceCategory.Webcam;
-                        dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath);
-                        //dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_WB7022.png");
-
-                        //Robert_Lin, 2024-7-10, Find if any integrated Monitor (Same ModelNumber)
-                        //We cannot identify which Webcam is integrated with which Monitor, so we find the first.
-                        string webCamModel = di.ModelNumber;
-                        HomeDevice? integratedMonitor = tempList.Find(x => (x.DeviceCategory == eDeviceCategory.Display) && (x.IsSameModel(webCamModel)));
-                        if (integratedMonitor != null)
-                        {
-                            if (integratedMonitor.MonitorInfo != null)
+                            if (_log != null)
                             {
-                                dev.MonitorIndexOfIntegratedPeripheral = integratedMonitor.MonitorInfo.Index;
-                                dev.SortOrder = integratedMonitor.SortOrder + 1 + idxWebcam;
-                                idxWebcam++;
+                                _log.Info($"Duplication Peripheral found! GUID=[{di.PhyscialDeviceID}], Type=[{di.Type}], Name={di.Name}");
+                                _log.Info($"DeviceToBeAdded:  Name=[{di.Name}], Type=[{di.Type}], PhyscialDeviceID=[{di.PhyscialDeviceID}]");
+                                _log.Info($"DeviceDuplicated: Name=[{dupDev.DeviceInfo.Name}], Type=[{dupDev.DeviceInfo.Type}], PhyscialDeviceID=[{dupDev.DeviceInfo.PhyscialDeviceID}]");
+                            }
+                            continue;
+                        }
+
+                        if (!di.IsConnected)
+                        {
+                            _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos {di.Name} is not connected ... ");
+                            continue;
+                        }
+
+                        //Robert_Lin, 2024-12-27 provide ILog to HomeDevice, so it can write log 
+                        HomeDevice dev = new HomeDevice(_log)
+                        {
+                            DeviceName = di.DeviceName,
+                            DeviceInfo = di
+                        };
+
+                        //2024-6-20, Peripherals DeviceImage will be determined by HomeDevice internally.
+                        //Upper owner just set DeviceInfo to HomeDevice can trigger it to load the product image.
+
+                        //Apply device category
+                        DeviceType devType = di.Type;
+                        if (EOLKBList.Contains(di.Name))
+                        {
+                            _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos EOLKBL {di.Name} ... ");
+                            dev.DeviceCategory = eDeviceCategory.KB;
+                            dev.SortOrder = (int)dev.DeviceCategory + idxKB;
+                            idxKB++;
+                        }
+                        else if (EOLMouseList.Contains(di.Name))
+                        {
+                            _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos EOLMouse {di.Name} ... ");
+                            dev.DeviceCategory = eDeviceCategory.Mouse;
+                            dev.SortOrder = (int)dev.DeviceCategory + idxMouse;
+                            idxKB++;
+                        }
+                        else if (devType.ToString().Contains("Keyboard"))
+                        {
+                            _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos Keyboard ... ");
+                            dev.DeviceCategory = eDeviceCategory.KB;
+                            //dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_KB900.png");
+                            dev.SortOrder = (int)dev.DeviceCategory + idxKB;
+                            idxKB++;
+                        }
+                        else if (devType.ToString().Contains("Mouse"))
+                        {
+                            _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos Mouse ... ");
+                            dev.DeviceCategory = eDeviceCategory.Mouse;
+                            dev.SortOrder = (int)dev.DeviceCategory + idxMouse;
+                            idxMouse++;
+                            //dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Mouse.png");
+                        }
+                        // 240722 Added by Hess to support Pen
+                        else if (devType.ToString().Contains("Pen"))
+                        {
+                            _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos Pen ... ");
+                            dev.DeviceCategory = eDeviceCategory.Pen;
+                            dev.SortOrder = (int)dev.DeviceCategory + idxPen;
+                            idxPen++;
+                            if (di.ModelNumber == "PN5122W")
+                                IsPandoraPaired = true;
+                        }
+                        //0710 Jim 修改WebCamera
+                        else if (devType.ToString().Contains("Webcam"))
+                        {
+                            _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos Webcam ... ");
+                            string imagepath = "";
+                            switch (di.ModelNumber)
+                            {
+                                case "WB7022":   // external webcamera
+                                    imagepath = "Resources/WebCamModel_WB7022_Small.png";
+                                    break;
+
+                                case "WB5023":   // external webcamera
+                                    imagepath = "Resources/WebCamModel_WB5023_Small.png";
+                                    break;
+
+                                case "WB3023":    // external webcamera
+                                    imagepath = "Resources/WebCamModel_WB3023_Small.png";
+                                    break;
+
+                                case "U3224KB": // internal webcamera
+                                    imagepath = "Resources/WebCamModel_U3224KB_Small.png";
+                                    break;
+
+                                case "U3224KBA": // internal webcamera
+                                    imagepath = "Resources/WebCamModel_U3224KB_Small.png";
+                                    break;
+
+                                case "P2424HEB": //internal webcamera
+                                    imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
+                                    break;
+
+                                case "P2724DEB": //internal webcamera
+                                    imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
+                                    break;
+
+                                case "P3424WEB": //internal webcamera
+                                    imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
+                                    break;
+
+                                case "U3223QZ": //internal webcamera
+                                    imagepath = "Resources/WebCamModel_U3223QZ_Small.png";
+                                    break;
+
+                                default:
+                                    imagepath = "Resources/WebCamera.png";
+                                    break;
+                            }
+
+                            dev.DeviceCategory = eDeviceCategory.Webcam;
+                            dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath);
+                            //dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_WB7022.png");
+
+                            //Robert_Lin, 2024-7-10, Find if any integrated Monitor (Same ModelNumber)
+                            //We cannot identify which Webcam is integrated with which Monitor, so we find the first.
+                            string webCamModel = di.ModelNumber;
+                            HomeDevice? integratedMonitor = tempList.Find(x => (x.DeviceCategory == eDeviceCategory.Display) && (x.IsSameModel(webCamModel)));
+                            if (integratedMonitor != null)
+                            {
+                                if (integratedMonitor.MonitorInfo != null)
+                                {
+                                    dev.MonitorIndexOfIntegratedPeripheral = integratedMonitor.MonitorInfo.Index;
+                                    dev.SortOrder = integratedMonitor.SortOrder + 1 + idxWebcam;
+                                    idxWebcam++;
+                                }
+                                else
+                                {
+                                    dev.SortOrder = (int)dev.DeviceCategory + idxWebcam;
+                                    idxWebcam++;
+                                }
                             }
                             else
                             {
@@ -387,151 +421,158 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                                 idxWebcam++;
                             }
                         }
-                        else
+                        //0614 Bruce 新增Dock UI
+                        else if (devType.ToString().ToUpper().Contains("DOCK") ||
+                            (devType.ToString().ToUpper().Contains("23")))
                         {
-                            dev.SortOrder = (int)dev.DeviceCategory + idxWebcam;
-                            idxWebcam++;
-                        }
-                    }
-                    //0614 Bruce 新增Dock UI
-                    else if (devType.ToString().ToUpper().Contains("DOCK") ||
-                        (devType.ToString().ToUpper().Contains("23")))
-                    {
-                        dev.DeviceCategory = eDeviceCategory.Dock;
-                        ImageSource dockImg = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/{di.ModelNumber}.png");
+                            _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos DOCK/23 ... ");
+                            dev.DeviceCategory = eDeviceCategory.Dock;
+                            ImageSource dockImg = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/{di.ModelNumber}.png");
 
-                        if (dockImg != null)
-                            dev.DeviceImage = dockImg;
-                        else
+                            if (dockImg != null)
+                                dev.DeviceImage = dockImg;
+                            else
+                            {
+                                // Elie, we set a WD25.png as Dock default picture.
+                                dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/WD25.png");
+                                ;
+                            }
+
+                            dev.SortOrder = (int)dev.DeviceCategory + idxDock;
+                            idxDock++;
+                        }
+                        //0618 Wayn 新增HeadSet
+                        else if (devType.ToString().ToUpper().Contains("HEADSET"))
                         {
-                            // Elie, we set a WD25.png as Dock default picture.
-                            dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/WD25.png");
-                            ;
-                        }
+                            _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos HEADSET ... ");
+                            string imagepath = "";
+                            switch (di.ModelNumber)
+                            {
+                                case "WL7024":
+                                    imagepath = "Resources/Images/WL7024.png";
+                                    break;
 
-                        dev.SortOrder = (int)dev.DeviceCategory + idxDock;
-                        idxDock++;
-                    }
-                    //0618 Wayn 新增HeadSet
-                    else if (devType.ToString().ToUpper().Contains("HEADSET"))
-                    {
-                        string imagepath = "";
-                        switch (di.ModelNumber)
+                                case "WL5024":
+                                    imagepath = "Resources/Images/WL5024.png";
+                                    break;
+
+                                case "WH5024":
+                                    imagepath = "Resources/Images/WH5024.png";
+                                    break;
+
+                                case "WL3024":
+                                    imagepath = "Resources/Images/WL3024.png";
+                                    break;
+
+                                case "WH3024":
+                                    imagepath = "Resources/Images/WH3024.png";
+                                    break;
+                                default:
+                                    imagepath = "Resources/Images/WL7024.png";
+                                    break;
+                            }
+                            dev.DeviceCategory = eDeviceCategory.Headset;
+                            dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath, "DDPM.UI.Resources");
+                            dev.SortOrder = (int)dev.DeviceCategory + idxHeadset;
+                            idxHeadset++;
+                        }
+                        else if (devType.ToString().ToUpper().Contains("LOGICALAIRAUDIO"))
                         {
-                            case "WL7024":
-                                imagepath = "Resources/Images/WL7024.png";
-                                break;
-
-                            case "WL5024":
-                                imagepath = "Resources/Images/WL5024.png";
-                                break;
-
-                            case "WH5024":
-                                imagepath = "Resources/Images/WH5024.png";
-                                break;
-
-                            case "WL3024":
-                                imagepath = "Resources/Images/WL3024.png";
-                                break;
-
-                            case "WH3024":
-                                imagepath = "Resources/Images/WH3024.png";
-                                break;
-                            default:
-                                imagepath = "Resources/Images/WL7024.png";
-                                break;
+                            _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos LOGICALAIRAUDIO ... ");
+                            string imagepath = "";
+                            switch (di.ModelNumber)
+                            {
+                                case "SP325":
+                                    imagepath = "Resources/Speaker_SP325.png";
+                                    break;
+                                case "SL525":
+                                    imagepath = "Resources/Speaker_SL525.png";
+                                    break;
+                                case "SB725":
+                                    imagepath = "Resources/Speaker_SB725.png";
+                                    break;
+                                default:
+                                    imagepath = "Resources/Speaker_SB725.png";
+                                    break;
+                            }
+                            dev.DeviceCategory = eDeviceCategory.AirAudio;
+                            dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath);
+                            dev.SortOrder = (int)dev.DeviceCategory + idxAirAudio;
+                            idxAirAudio++;
                         }
-                        dev.DeviceCategory = eDeviceCategory.Headset;
-                        dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath, "DDPM.UI.Resources");
-                        dev.SortOrder = (int)dev.DeviceCategory + idxHeadset;
-                        idxHeadset++;
-                    }
-                    else if (devType.ToString().ToUpper().Contains("LOGICALAIRAUDIO"))
-                    {
-                        string imagepath = "";
-                        switch (di.ModelNumber)
+                        //0726 Wayn 新增Soundbar/Speaker LogicalWiredAudio
+                        else if (devType.ToString().ToUpper().Contains("LOGICALWIREDAUDIO"))
                         {
-                            case "SP325":
-                                imagepath = "Resources/Speaker_SP325.png";
-                                break;
-                            case "SL525":
-                                imagepath = "Resources/Speaker_SL525.png";
-                                break;
-                            case "SB725":
-                                imagepath = "Resources/Speaker_SB725.png";
-                                break;
-                            default:
-                                imagepath = "Resources/Speaker_SB725.png";
-                                break;
+                            _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos LOGICALWIREDAUDIO ... ");
+                            string imagepath = "";
+                            switch (di.ModelNumber)
+                            {
+                                case "SP3022":
+                                    imagepath = "Resources/Images/Speaker_SP3022.png";
+                                    break;
+
+                                case "SB522A":
+                                    imagepath = "Resources/Images/Speaker_SB522A.png";
+                                    break;
+                                default:
+                                    imagepath = "Resources/Images/Speaker_SP3022.png";
+                                    break;
+                            }
+                            dev.DeviceCategory = eDeviceCategory.Soundbar;
+                            dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath, "DDPM.UI.Resources");
+                            dev.SortOrder = (int)dev.DeviceCategory + idxSpeaker;
+                            idxSpeaker++;
                         }
-                        dev.DeviceCategory = eDeviceCategory.AirAudio;
-                        dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath);
-                        dev.SortOrder = (int)dev.DeviceCategory + idxAirAudio;
-                        idxAirAudio++;
-                    }
-                    //0726 Wayn 新增Soundbar/Speaker LogicalWiredAudio
-                    else if (devType.ToString().ToUpper().Contains("LOGICALWIREDAUDIO"))
-                    {
-                        string imagepath = "";
-                        switch (di.ModelNumber)
+                        //0211 Bruce 新增Bootloader UI
+                        else if (devType.Equals(DeviceType.PhysicalBootloader) ||
+                            devType.Equals(DeviceType.LogicalBootloader))
                         {
-                            case "SP3022":
-                                imagepath = "Resources/Images/Speaker_SP3022.png";
-                                break;
-
-                            case "SB522A":
-                                imagepath = "Resources/Images/Speaker_SB522A.png";
-                                break;
-                            default:
-                                imagepath = "Resources/Images/Speaker_SP3022.png";
-                                break;
+                            _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos PhysicalBootloader/LogicalBootloader ... ");
+                            dev.DeviceCategory = eDeviceCategory.Bootloader;
+                            System.Windows.Media.Color textColor = Colors.White;
+                            dev.DeviceModel = di.ModelNumber;
+                            dev.SortOrder = (int)dev.DeviceCategory + idxBootloader;
                         }
-                        dev.DeviceCategory = eDeviceCategory.Soundbar;
-                        dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath, "DDPM.UI.Resources");
-                        dev.SortOrder = (int)dev.DeviceCategory + idxSpeaker;
-                        idxSpeaker++;
-                    }
-                    //0211 Bruce 新增Bootloader UI
-                    else if (devType.Equals(DeviceType.PhysicalBootloader) ||
-                        devType.Equals(DeviceType.LogicalBootloader))
-                    {
-                        dev.DeviceCategory = eDeviceCategory.Bootloader;
-                        System.Windows.Media.Color textColor = Colors.White;
-                        dev.DeviceModel = di.ModelNumber;
-                        dev.SortOrder = (int)dev.DeviceCategory + idxBootloader;
-                    }
 
-                    //Robert_Lin, 2024-8-6, assign InstanceNo for the new adding device (dev)
-                    //
-                    List<HomeDevice> sameModel = tempList.FindAll(x => x.IsSamePeripheralModel(dev));
-                    if (sameModel.Any())
-                    {
-                        //Assign InstanceNo
-                        int instanceNo = 1;
-                        foreach (HomeDevice hd in sameModel)
+                        //Robert_Lin, 2024-8-6, assign InstanceNo for the new adding device (dev)
+                        //
+                        List<HomeDevice> sameModel = tempList.FindAll(x => x.IsSamePeripheralModel(dev));
+                        if (sameModel.Any())
                         {
-                            hd.InstanceNo = instanceNo;
-                            instanceNo++;
+                            _log.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos sameModel ... ");
+                            //Assign InstanceNo
+                            int instanceNo = 1;
+                            foreach (HomeDevice hd in sameModel)
+                            {
+                                hd.InstanceNo = instanceNo;
+                                instanceNo++;
+                            }
+                            dev.InstanceNo = instanceNo;
                         }
-                        dev.InstanceNo = instanceNo;
-                    }
 
-                    //_homeDevices.Add(dev);
-                    tempList.Add(dev);
+                        //_homeDevices.Add(dev);
+                        tempList.Add(dev);
+                    }
+                    //OnPropertyChanged("HomeDevices");
+
+                    //Sort the list with SortOrder
+                    _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos {tempList.Count} ... ");
+                    tempList.Sort((x, y) => x.SortOrder.CompareTo(y.SortOrder));
+                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        HomeDevices = new ObservableCollection<HomeDevice>(tempList);
+                    });
+
+                    //Robert_Lin, 2024-7-10, we don't need the CollectionView, we sort in List<HomeDevice> directly.
+                    //Robert_Lin, 2024-6-22, to fix the issue the WebCam not been sorted (expect arranged after monitors)
+                    //RefreshCollectionView();
                 }
-                //OnPropertyChanged("HomeDevices");
-
-                //Sort the list with SortOrder
-                tempList.Sort((x, y) => x.SortOrder.CompareTo(y.SortOrder));
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                catch (Exception ex)
                 {
-                    HomeDevices = new ObservableCollection<HomeDevice>(tempList);
-                });
-
-                //Robert_Lin, 2024-7-10, we don't need the CollectionView, we sort in List<HomeDevice> directly.
-                //Robert_Lin, 2024-6-22, to fix the issue the WebCam not been sorted (expect arranged after monitors)
-                //RefreshCollectionView();
+                    _log.Error($"[DdpmHomePageViewModel] PrepareDeviceInfos Exception: {ex.Message}");
+                }
             }
+            _log.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos out ... ");
         }
         public void ResetDevices()
         {
