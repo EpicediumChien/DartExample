@@ -495,7 +495,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             var fv = _vm.CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
             string FirmwareVersion2 = fv.Contains('.') == true ? fv : $"{fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
             //by pass DTP to Get UPD Support by FW
-            bool CheckWebCamFwUPD = new Version(FirmwareVersion2).CompareTo(new Version("0.0.9.2")) <=0 ?true: new Version(FirmwareVersion2).Equals(new Version("0.0.9.4")) == true? true:false;
+            bool CheckWebCamFwUPD = new Version(FirmwareVersion2).CompareTo(new Version("0.0.9.2")) <= 0 ? true : new Version(FirmwareVersion2).Equals(new Version("0.0.9.4")) == true ? true : false;
             is_EsiSupport = CheckWebCamFwUPD;
             print_debug("CheckWebCamFwUPD:" + CheckWebCamFwUPD);
             print_debug("is_WindwosHelloSupport:" + is_WindwosHelloSupport);
@@ -605,7 +605,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
                 return;
             }
-           
+
             //1B
             if (!is_DellPc && is_EsiSupport && !is_WindowsVer_OK && !is_SUT_internal_presence_sensor)
             {
@@ -685,7 +685,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return true;
 
             string model = WinVersion.GetComputerModel();
-            if (model != null && (model.Contains("Latitude 7350", StringComparison.OrdinalIgnoreCase) || model.Contains("XPS 9345", StringComparison.OrdinalIgnoreCase) || model.Contains("XPS 13 9350", StringComparison.OrdinalIgnoreCase) || (model.Contains("XPS", StringComparison.OrdinalIgnoreCase)&&model.Contains("9350", StringComparison.OrdinalIgnoreCase))))
+            if (model != null && (model.Contains("Latitude 7350", StringComparison.OrdinalIgnoreCase) ||
+                model.Contains("XPS 9345", StringComparison.OrdinalIgnoreCase) ||
+                model.Contains("XPS 13 9350", StringComparison.OrdinalIgnoreCase) ||
+                (model.Contains("XPS", StringComparison.OrdinalIgnoreCase) &&
+                  model.Contains("9350", StringComparison.OrdinalIgnoreCase))))
             {
                 return true;
             }
