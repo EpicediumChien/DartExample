@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Text;
 using DDPM.UI.Resources.Helper;
+using Windows.ApplicationModel.VoiceCommands;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -715,9 +716,13 @@ namespace DDPM.UI.Plugin.ViewModels
             //KeyboardAction = (KeyboardActions)ActionList.ImportActionList(eDeviceCategory.KB, Model);
             KeyboardAction = (KeyboardActions)ActionList.ImportActionList(eDeviceCategory.KB, Model, CurrentDeviceID.ToString());
 
-            //foreach(var keyAction in KeyboardActions.KeyActions.Values) {
-            //  keyAction.AssignedAction = new AssignedAction(keyAction.DefaultActionID + 1);
-            //}
+            if (KeyboardAction.IsFirstTime)
+            {
+                if (Model == "KB900")
+                    SetKB900Default();
+                KeyboardAction.IsFirstTime = false;
+                ActionList.ExportActionList(KeyboardAction, Model);
+            }
 
             KeyboardAction.KeyActions.Keys.ToList().ForEach(x => RefreshKeyImageFile(x.ToString()));
             CheckRestoreStatus();
@@ -733,10 +738,12 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(IsPgDownVisible));
             OnPropertyChanged(nameof(IsAllKeysVisible));
             OnPropertyChanged(nameof(IsRestoreEnable));
-
-            //ActionList.ExportActionList(KeyboardActions, Model, CurrentInstanceID);
         }
 
+        private void SetKB900Default()
+        {
+
+        }
         public bool IsF8Visible
         {
             get

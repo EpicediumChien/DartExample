@@ -171,6 +171,7 @@ namespace DDPM.UI.Common
     {
         public Dictionary<KeyName, SelectedAction> KeyActions = new();
         public bool IsCollaborationChecked = false;
+        public bool IsFirstTime = true;
 
         public KeyboardActions()
         { }
