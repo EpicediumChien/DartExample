@@ -94,40 +94,47 @@ namespace DDPM.UI.Common.Models
             get => _monitorInfo;
             set
             {
-                _log?.Info($"[HomeDevice] MonitorInfo in ... ");
-                SetProperty(ref _monitorInfo, value);
-                //    MonitorIndicator indicator = new MonitorIndicator()
-                //    {
-                //        InputSource = "HDMI"
-                //    };
-                //    StatusIndicator = indicator;
-                UpdateBatteryIndicator();
-
-                //2024-6-20 Get the model from capability string
-                string model = string.IsNullOrWhiteSpace(_monitorInfo.modelName) ? GetModelFromMonitorCapabilityString(_monitorInfo.CapabilityString) : _monitorInfo.modelName;
-                //If fail to get mode from CapabilityString, then use AliasDeviceName instead
-                if (String.IsNullOrEmpty(model))
+                try
                 {
-                    _monitorModelName = _monitorInfo.AliasDeviceName;
-                }
-                else
-                {
-                    _monitorModelName = model;
-                }
+                    _log?.Info($"[HomeDevice] MonitorInfo in ... ");
+                    SetProperty(ref _monitorInfo, value);
+                    //    MonitorIndicator indicator = new MonitorIndicator()
+                    //    {
+                    //        InputSource = "HDMI"
+                    //    };
+                    //    StatusIndicator = indicator;
+                    UpdateBatteryIndicator();
 
-                //Robert_Lin, 2024-9-30 Add Monitor Product Images
-                DetermineMonitorImage();
-                _log?.Info($"[HomeDevice] MonitorInfo DetermineMonitorImage finfish ... ");
-                //Robert_lin, 2024-11-14 add Pxp Capapbilies check support
-                InitPipPbpCaps();
-                _log?.Info($"[HomeDevice] MonitorInfo InitPipPbpCaps finfish ... ");
-                //Robert_Lin 2025-3-20 refresh the tooltip info
-                OnPropertyChanged("TooltipModelName");
-                _log?.Info($"[HomeDevice] MonitorInfo TooltipModelName finfish ... ");
-                OnPropertyChanged("DeviceInfoToolTipText");
-                _log?.Info($"[HomeDevice] MonitorInfo DeviceInfoToolTipText finfish ... ");
-                OnPropertyChanged("DisplayName");
-                _log?.Info($"[HomeDevice] MonitorInfo out ... ");
+                    //2024-6-20 Get the model from capability string
+                    string model = string.IsNullOrWhiteSpace(_monitorInfo.modelName) ? GetModelFromMonitorCapabilityString(_monitorInfo.CapabilityString) : _monitorInfo.modelName;
+                    //If fail to get mode from CapabilityString, then use AliasDeviceName instead
+                    if (String.IsNullOrEmpty(model))
+                    {
+                        _monitorModelName = _monitorInfo.AliasDeviceName;
+                    }
+                    else
+                    {
+                        _monitorModelName = model;
+                    }
+
+                    //Robert_Lin, 2024-9-30 Add Monitor Product Images
+                    DetermineMonitorImage();
+                    _log?.Info($"[HomeDevice] MonitorInfo DetermineMonitorImage finfish ... ");
+                    //Robert_lin, 2024-11-14 add Pxp Capapbilies check support
+                    InitPipPbpCaps();
+                    _log?.Info($"[HomeDevice] MonitorInfo InitPipPbpCaps finfish ... ");
+                    //Robert_Lin 2025-3-20 refresh the tooltip info
+                    OnPropertyChanged("TooltipModelName");
+                    _log?.Info($"[HomeDevice] MonitorInfo TooltipModelName finfish ... ");
+                    OnPropertyChanged("DeviceInfoToolTipText");
+                    _log?.Info($"[HomeDevice] MonitorInfo DeviceInfoToolTipText finfish ... ");
+                    OnPropertyChanged("DisplayName");
+                    _log?.Info($"[HomeDevice] MonitorInfo out ... ");
+                }
+                catch (Exception ex)
+                {
+                    _log?.Error($"[HomeDevice] MonitorInfo Exception: {ex.Message}");
+                }
             }
         }
 
@@ -136,6 +143,8 @@ namespace DDPM.UI.Common.Models
             get => _deviceInfo;
             set
             {
+                try
+                {
                     _log!.Info($"[HomeDevice] DeviceInfo in ... ");
                     SetProperty(ref _deviceInfo, value);
                     //BatteryIndicator indicator = new BatteryIndicator();
@@ -153,6 +162,11 @@ namespace DDPM.UI.Common.Models
                     //StatusIndicator = indicator;
                     UpdateBatteryIndicator();
                     _log!.Info($"[HomeDevice] DeviceInfo out ... ");
+                }
+                catch (Exception ex)
+                {
+                    _log!.Error($"[HomeDevice] DeviceInfo Exception: {ex.Message}");
+                }
             }
         }
 
