@@ -4,8 +4,6 @@ using Dell.TechHub.Sdk.Common.Utilities.Extensions;
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
-using System.Windows;
 
 namespace DDPM.OSDs
 {

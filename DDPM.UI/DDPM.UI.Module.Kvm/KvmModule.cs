@@ -107,6 +107,7 @@ namespace DDPM.UI.Module.Kvm
             else
             {
                 vm.Invoke_RefreshData();
+                vm.Invoke_RefreshHotkeySettings();
             }
         }
 

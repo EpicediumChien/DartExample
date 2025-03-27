@@ -57,14 +57,12 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
 using static DdmLibrary.Utility.KVM;
 using static DDPM.SA.Common.Telementry_GeneralFunction;
 using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
-using static DDPM.SA.Plugins.User.DeviceManager.PeripheralAirAudioHelper;
 using IDs = DDPM.SA.Common.IDs;
 using Point = System.Windows.Point;
 
@@ -14063,6 +14061,42 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Debug.WriteLine($"SaveHotkeySetting:GetInputSourceHotKeyDataAndSaveNewBack mo is null ");
                 }
             }
+            //03/27 testCase:Change hotkey in Input source - "Change PIP Position" will be updated in USB KVM > Hotkey > "Change PIP Position". 
+            if (info.Job.Equals(HotkeyType.ChangePIPPosition))
+            {
+                //clear KVM Change PIP Position hotkey if exist
+                saveList.ElementAtOrDefault(0).HotkeyInfo.ForEach(x =>
+                {
+                    if (x.Job.Equals(HotkeyType.KvmChangePIPPosition))
+                        x.Hotkey.Clear();
+                });
+            }
+            if (info.Job.Equals(HotkeyType.KvmChangePIPPosition))
+            {
+                //save as inputsource [Change PIP Position] hotkey and clear self
+                HotkeyInfo ChangePIPPositionhotkeyInfo = saveList.ElementAtOrDefault(0).HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.ChangePIPPosition));
+                if (saveList.ElementAtOrDefault(0).HotkeyInfo.Any(x => x.Job.Equals(HotkeyType.ChangePIPPosition)))
+                {
+                    saveList.ElementAtOrDefault(0).HotkeyInfo.ForEach(x =>
+                    {
+                        if (x.Job.Equals(HotkeyType.ChangePIPPosition))
+                        {
+                            x.Hotkey = hotkeys;
+                        }
+                    });
+                }
+                else
+                {
+                    saveList.ElementAtOrDefault(0).HotkeyInfo.Add(new HotkeyInfo()
+                    {
+                        Job = HotkeyType.ChangePIPPosition,
+                        Description = "ChangePIPPosition",
+                        Hotkey = hotkeys,
+                        InputSource = info.InputSource
+                    });
+                }
+                saveList.ElementAtOrDefault(0).HotkeyInfo.RemoveAll(x => x.Job.Equals(HotkeyType.KvmChangePIPPosition));
+            }
             if (WriteHotkeySettings(saveList).Result &&
                 _NKVMPlugin != null && info.Job != HotkeyType.NkvmConflict)
             {
@@ -14413,6 +14447,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", false);*/
             //test
+            //CallQAM_UI(this);
             /*ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Headset, "Dell Multi-Device Headset - MS5320W");
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Mouse, "Dell Multi-Device Mouse - MS5320W");
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
@@ -16430,7 +16465,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<(HotkeySettings, List<HotkeyData>)> ReadCurrentHotkey(MonitorInfo mo)//EDID monitorEdid)
         {
-            List<HotkeySettings> read = _SettingsPlugin.ReadHotkeySettings().Result;
+            List<HotkeySettings> read = _SettingsPlugin.ReadHotkeySettings().Result ?? new List<HotkeySettings>();
             //HotkeySettings hotkeySettings = read.Where(x => x.ModelName.Equals(monitorEdid.ModelName) && x.SerialNumber.Equals(monitorEdid.SerialNumber)).SingleOrDefault();
             HotkeySettings localHotkeySettings = read.SingleOrDefault(x => x.ModelName.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
 
@@ -18255,7 +18290,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             string tmpMuteGuid = Guid.NewGuid().ToString();
-                                            _OSD_Controler.ShowMultipleOSD(tmpMuteGuid, OSDType_Device.Mute, oSDType_Op, string.Empty, Content + LangHelper.Instance["is_muted"]);
+                                            _OSD_Controler.ShowMultipleOSD(tmpMuteGuid, OSDType_Device.Mute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_muted"]);
                                             await Task.Run(async () =>
                                             {
                                                 await Task.Delay(3000);
@@ -18275,7 +18310,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         {
 
                                             string tmpUnMuteGuid = Guid.NewGuid().ToString();
-                                            _OSD_Controler.ShowMultipleOSD(tmpUnMuteGuid, OSDType_Device.UnMute, oSDType_Op, string.Empty, Content + LangHelper.Instance["is_Unmuted"]);
+                                            _OSD_Controler.ShowMultipleOSD(tmpUnMuteGuid, OSDType_Device.UnMute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_Unmuted"]);
                                             await Task.Run(async () =>
                                             {
                                                 await Task.Delay(3000);

@@ -673,6 +673,16 @@ namespace DDPM.UI.Module.Kvm
                                     break;
                             }
                         }
+                        //03/27 testCase:Change hotkey in Input source - "Change PIP Position" will be updated in USB KVM > Hotkey > "Change PIP Position". 
+                        HotkeyInfo? inputSrcHotkeyInfo = curHotkey.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.ChangePIPPosition));
+                        if (inputSrcHotkeyInfo != null && inputSrcHotkeyInfo.KeyCode != VirtualKey.None)
+                        {
+                            //show key text to KvmChangePIPPosition textbox
+                            List<VirtualKey> hotkeys = inputSrcHotkeyInfo.Hotkey;
+                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                            hotkeys.Clear();
+                            ChangePipKey = swHortcutText;
+                        }
 
                         if (selectedHomeDevice != null && selectedHomeDevice.HasCapability_PipPbp)
                         {
@@ -2687,6 +2697,31 @@ namespace DDPM.UI.Module.Kvm
             catch (Exception ex)
             {
                 _log?.Error(ex, "[FinishtoSetPCs] exception");
+            }
+        }
+
+        public void UpdateHotkeyData(MonitorInfo monitorInfo, List<InputSourceObj> inputList)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                Task.Run(() =>
+                {
+                    //HomeDevice? selectedHomeDevice = KvmModule?.SelectedHomeDevice;
+                    var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(monitorInfo).Result;
+                    HotkeySettings curHotkey = temp.Item1;
+                    HotkeyInfo? hotkeyInfo = curHotkey.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.KvmSwitchInputSource));
+                    if (hotkeyInfo != null && hotkeyInfo.KeyCode != VirtualKey.None)
+                    {
+                        //update inputsource
+                        hotkeyInfo.InputSource.Clear();
+                        inputList.ForEach(x => hotkeyInfo.InputSource.Add(x));
+                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(monitorInfo, hotkeyInfo).Result;
+                        if (!saveSettings)
+                        {
+                            DdpmCommonHelper.WriteUILog($"[USBKVM] USBKVM => edit input source,Update Hotkey Data fail.");
+                        }
+                    }
+                });
             }
         }
 

@@ -1,19 +1,13 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
-using Dell.TechHub.Sdk.Common.Utilities.Extensions;
-using MS.WindowsAPICodePack.Internal;
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 using VcpCore.Common;
-using static DDPM.RemoteManagement.Common.Interfaces.Params;
 using static DDPM.SA.Common.ICLICommandTable;
 using Convert = System.Convert;
 
