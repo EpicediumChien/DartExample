@@ -177,6 +177,7 @@ namespace DDPM.Easy.Common
             }
         }
 
+        //Unused, do not use and UnitTest
         public void AddChild(UIElement ele)
         {
             childGrid.Children.Add(ele);

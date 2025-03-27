@@ -261,12 +261,23 @@ namespace DDPM.EABroker
             {
                 
                 double extendedFrameBoundsHorz = 3;
-                rcArrange.Inflate(6+ extendedFrameBoundsHorz, 6);
+
+                rcArrange.Inflate(6, 3);
+                double arrWidth = rcArrange.Width;
+                double arrHeight = rcArrange.Height;
+                rcArrange.X -= extendedFrameBoundsHorz;
+                rcArrange.Width += extendedFrameBoundsHorz;
 
                 //To prevent the rcArrange acrouss screen boundary after Inflated
                 if (_vm.WorkScreen != null)
                 {
-                    //Check if Left border across screen boundary?
+                    //Check top, do not out of screen working area
+                    if (rcArrange.Top < _vm.WorkScreen.WorkingArea.Top)
+                    {
+               //         rcArrange.Y = _vm.WorkScreen.WorkingArea.Top;
+
+                    }
+                    //Check if Left border across screen boundary? (Unused section)
                     int scrLeft = _vm.WorkScreen.Bounds.Left;
                     if ((rcArrange.Left < scrLeft) && (rcArrange.Right > scrLeft))
                     {
@@ -277,10 +288,11 @@ namespace DDPM.EABroker
                         //rcArrange.Width -= dx;
                         //NEW:
                         double dx = scrLeft - rcArrange.Left;
-                        double w = rcArrange.Width - dx;
-                        rcArrange.X = scrLeft;
-                        if (w >= 0)
-                            rcArrange.Width = w;
+                        //Change - to +
+                        double w = rcArrange.Width + dx;
+                    //    rcArrange.X = scrLeft;
+                        //if (w >= 0)
+                        //    rcArrange.Width = w;
                     }
                 }
             }

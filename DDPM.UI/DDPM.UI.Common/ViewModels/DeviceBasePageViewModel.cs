@@ -56,6 +56,19 @@ namespace DDPM.UI.Common.ViewModels
                 if (disposing)
                 {
                     // 釋放託管資源
+                    foreach(ModuleGroup mg in ModuleGroups)
+                    {
+                        mg.Dispose();
+                    }
+                    ModuleGroups.Clear();
+
+                    foreach(VbarItem1 vb1 in VbarItems)
+                    {
+                        vb1.Dispose();
+                    }
+                    VbarItems.Clear();
+
+                    RightViewHeaders.Clear();
 
                 }
 
@@ -65,6 +78,10 @@ namespace DDPM.UI.Common.ViewModels
                 //    // 釋放資源
                 //    unmanagedResource = IntPtr.Zero;
                 //}
+
+
+                //Below is done in UnloadEvents()
+                //DdpmCommonHelper.BitmapImageUpdated -= OnVBarThemeChange;
 
                 _isDisposed = true;
             }
@@ -616,7 +633,16 @@ namespace DDPM.UI.Common.ViewModels
                     //Robert_Lin, 2024-11-15 Show the OSD-Product on the selected Monitor
                     if ((DdpmCommonHelper.DeviceManagerSA != null) && (_selectedHomeDevice != null))
                     {
-                        DdpmCommonHelper.DeviceManagerSA.ShowOSD(_selectedHomeDevice.MonitorInfo, OSDType.DisplayChanged);
+                        //Robert_Lin 2025-3-26 add try-catch to each IDeviceManagerSA calls
+                        try
+                        {
+                            DdpmCommonHelper.DeviceManagerSA.ShowOSD(_selectedHomeDevice.MonitorInfo, OSDType.DisplayChanged);
+                        }
+                        catch (Exception ex1)
+                        {
+
+                            throw;
+                        }
                     }                    
                 }
             }
@@ -753,7 +779,14 @@ namespace DDPM.UI.Common.ViewModels
                 DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null &&
                 DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
             {
-                DdpmCommonHelper.DeviceManagerSA.SetLastSelectedMonitorFromUI(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+                try
+                {
+                    DdpmCommonHelper.DeviceManagerSA.SetLastSelectedMonitorFromUI(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+                }
+                catch (Exception ex1)
+                {
+                    WriteLog("@HandleSelectedHomeDeviceChanged, Call DeviceManagerSA.SetLastSelectedMonitorFromUI() causes exception", ex1);
+                }
             }
             
 
@@ -1041,6 +1074,20 @@ namespace DDPM.UI.Common.ViewModels
         {
             if (_log != null)
                 _log.Info(msg);
+        }
+        public void WriteLog(string msg, Exception? ex=null)
+        {
+            if (_log != null)
+            {
+                if (ex != null)
+                {
+                    _log.Error(ex, msg);
+                }
+                else
+                {
+                    _log.Info(msg);
+                }
+            }
         }
         #endregion
 

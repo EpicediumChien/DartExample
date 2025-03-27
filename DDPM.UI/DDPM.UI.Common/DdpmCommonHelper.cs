@@ -1770,6 +1770,22 @@ namespace DDPM.UI.Common
                 WriteUILog($"[Set_GlobalSettings] set ({nameof(property)}) to {data}: result({result})");
             });
         }
+
+        //Robert_Lin 2025-3-27 for tracking the memory usage
+        /// <summary>
+        /// Return current process memory usage in MB. To output to string can reference below example:
+        /// _log?.Info($"Memory usage: {DdpmCommonHelper.GetProcessMemoryUsageMB():F2} MB");
+        /// </summary>
+        /// <returns></returns>
+        public static double GetProcessMemoryUsageMB()
+        {
+            using (Process process = Process.GetCurrentProcess())
+            {
+                long usageBytes = process.WorkingSet64;
+                double usageMB = usageBytes / (1024.0 * 1024.0);
+                return usageMB;
+            }
+        }
     }
 
     public class BindingProxy : Freezable
@@ -1790,4 +1806,5 @@ namespace DDPM.UI.Common
             return new BindingProxy();
         }
     }
+
 }
