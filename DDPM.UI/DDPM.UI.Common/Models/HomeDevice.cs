@@ -51,7 +51,7 @@ namespace DDPM.UI.Common.Models
         {
             NormalWidth = 400;
             _log = log;
-            _log!.Info("[HomeDevice] HomeDevice Constructor ... ");
+            WriteLog("[HomeDevice] HomeDevice Constructor ... ");
             ////Register a handler for BitmapImageUpdated for Theme changed. Will update the image resources
             //DdpmCommonHelper.BitmapImageUpdated += bitmapImageUpdate_OnThemeChanged;
         }
@@ -96,7 +96,7 @@ namespace DDPM.UI.Common.Models
             {
                 try
                 {
-                    _log?.Info($"[HomeDevice] MonitorInfo in ... ");
+                    WriteLog($"[HomeDevice] MonitorInfo in ... ");
                     SetProperty(ref _monitorInfo, value);
                     //    MonitorIndicator indicator = new MonitorIndicator()
                     //    {
@@ -119,21 +119,21 @@ namespace DDPM.UI.Common.Models
 
                     //Robert_Lin, 2024-9-30 Add Monitor Product Images
                     DetermineMonitorImage();
-                    _log?.Info($"[HomeDevice] MonitorInfo DetermineMonitorImage finfish ... ");
+                    WriteLog($"[HomeDevice] MonitorInfo DetermineMonitorImage finfish ... ");
                     //Robert_lin, 2024-11-14 add Pxp Capapbilies check support
                     InitPipPbpCaps();
-                    _log?.Info($"[HomeDevice] MonitorInfo InitPipPbpCaps finfish ... ");
+                    WriteLog($"[HomeDevice] MonitorInfo InitPipPbpCaps finfish ... ");
                     //Robert_Lin 2025-3-20 refresh the tooltip info
                     OnPropertyChanged("TooltipModelName");
-                    _log?.Info($"[HomeDevice] MonitorInfo TooltipModelName finfish ... ");
+                    WriteLog($"[HomeDevice] MonitorInfo TooltipModelName finfish ... ");
                     OnPropertyChanged("DeviceInfoToolTipText");
-                    _log?.Info($"[HomeDevice] MonitorInfo DeviceInfoToolTipText finfish ... ");
+                    WriteLog($"[HomeDevice] MonitorInfo DeviceInfoToolTipText finfish ... ");
                     OnPropertyChanged("DisplayName");
-                    _log?.Info($"[HomeDevice] MonitorInfo out ... ");
+                    WriteLog($"[HomeDevice] MonitorInfo out ... ");
                 }
                 catch (Exception ex)
                 {
-                    _log?.Error($"[HomeDevice] MonitorInfo Exception: {ex.Message}");
+                    WriteLog($"[HomeDevice] MonitorInfo Exception : ", ex);
                 }
             }
         }
@@ -145,7 +145,7 @@ namespace DDPM.UI.Common.Models
             {
                 try
                 {
-                    _log!.Info($"[HomeDevice] DeviceInfo in ... ");
+                    WriteLog($"[HomeDevice] DeviceInfo in ... ");
                     SetProperty(ref _deviceInfo, value);
                     //BatteryIndicator indicator = new BatteryIndicator();
                     if (_deviceInfo != null)
@@ -156,16 +156,16 @@ namespace DDPM.UI.Common.Models
 
                         //2024-6-20 Determine the DeviceImage internally
                         DeterminePeripheralDeviceImage();
-                        _log!.Info($"[HomeDevice] DeviceInfo DetermineMonitorImage finfish ... ");
+                        WriteLog($"[HomeDevice] DeviceInfo DetermineMonitorImage finfish ... ");
                     }
 
                     //StatusIndicator = indicator;
                     UpdateBatteryIndicator();
-                    _log!.Info($"[HomeDevice] DeviceInfo out ... ");
+                    WriteLog($"[HomeDevice] DeviceInfo out ... ");
                 }
                 catch (Exception ex)
                 {
-                    _log!.Error($"[HomeDevice] DeviceInfo Exception: {ex.Message}");
+                    WriteLog($"[HomeDevice] DeviceInfo Exception : ", ex);
                 }
             }
         }
@@ -256,7 +256,7 @@ namespace DDPM.UI.Common.Models
                 }
                 catch (Exception ex)
                 {
-                    _log!.Error($"[HomeDevice] ServiceTag Exception: {ex.Message}");
+                    WriteLog($"[HomeDevice] ServiceTag Exception : ", ex);
                     return "(N/A)";
                 }
             }
@@ -317,7 +317,7 @@ namespace DDPM.UI.Common.Models
                 }
                 catch (Exception ex)
                 {
-                    _log!.Error($"[HomeDevice] DeviceInfoToolTipText Exception: {ex.Message}");
+                    WriteLog($"[HomeDevice] DeviceInfoToolTipText Exception : ", ex);
                     return "";
                 }
             }
@@ -497,7 +497,7 @@ namespace DDPM.UI.Common.Models
                 }
                 catch (Exception ex)
                 {
-                    _log!.Error($"[HomeDevice] TooltipModelName Exception: {ex.Message}");
+                    WriteLog($"[HomeDevice] TooltipModelName Exception : ", ex);
                     return string.Empty;
                 }
             }
@@ -835,7 +835,7 @@ namespace DDPM.UI.Common.Models
             }
             catch (Exception ex)
             {
-                WriteLog($"@HomeDevice.DeterminePeripheralDeviceImage, LoadLineArtResource: Exception", ex);
+                WriteLog($"@HomeDevice.DeterminePeripheralDeviceImage, LoadLineArtResource: Exception : ", ex);
             }
         }
 
@@ -898,7 +898,7 @@ namespace DDPM.UI.Common.Models
             }
             catch (Exception ex)
             {
-                WriteLog($"@HomeDevice.DetermineMonitorImage, Exception", ex);
+                WriteLog($"@HomeDevice.DetermineMonitorImage, Exception : ", ex);
             }
 
             //Step_2, We will load and show the LineArt image
@@ -916,7 +916,7 @@ namespace DDPM.UI.Common.Models
             }
             catch (Exception ex1)
             {
-                WriteLog($"@HomeDevice.DetermineMonitorImage, LoadLineArtResource: Exception", ex1);
+                WriteLog($"@HomeDevice.DetermineMonitorImage, LoadLineArtResource: Exception : ", ex1);
             }
 
 
@@ -1364,7 +1364,7 @@ namespace DDPM.UI.Common.Models
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"[HomeDevice] SetBLConnectionStatus_Mouse Exception : {ex.Message}");
+                WriteLog($"[HomeDevice] SetBLConnectionStatus_Mouse Exception : ", ex);
             }
         }
 
@@ -1590,7 +1590,7 @@ namespace DDPM.UI.Common.Models
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"[HomeDevice] SetBLConnectionStatus_Audio Exception : {ex.Message}");
+                WriteLog($"[HomeDevice] SetBLConnectionStatus_Audio Exception : ", ex);
             }
         }
 
@@ -1897,7 +1897,7 @@ namespace DDPM.UI.Common.Models
                     }
                     catch (Exception e)
                     {
-                        string errMsg = e.Message;
+                        WriteLog($"[HomeDevice] HasCapability_NetworkKvm Exception : ", e);
                     }
                 }
                 return false;
