@@ -58,7 +58,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         #endregion Variables
 
-        public DeviceInfo? CurrentDeviceInfo;
+        public DeviceInfo CurrentDeviceInfo = new();
 
         public ICommand GoBackClickedCommand { get; private set; }
         public ICommand ShowInfoClickedCommand { get; private set; }
@@ -223,9 +223,12 @@ namespace DDPM.UI.Plugin.ViewModels
                             CurrentDeviceID = info.ID;
                     }
                 }
-                CurrentDeviceInfo = di;
                 if (di == null)
+                {
+                    CurrentDeviceInfo = new();
                     return false;
+                }
+                CurrentDeviceInfo = di;
             }
             else
             {
@@ -459,7 +462,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         {
                             case "BatteryStatusChanged":
                                 BatteryStatus = di.BatteryStatus;
-                                CurrentDeviceInfo!.BatteryStatus = di.BatteryStatus;
+                                CurrentDeviceInfo.BatteryStatus = di.BatteryStatus;
                                 break;
                             case "DeviceNameChanged":
                                 Name = di.Name.Replace(Model, "").Trim();
@@ -467,7 +470,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                             case "BatteryLevelChanged":
                                 BatteryLevel = di.BatteryLevel;
-                                CurrentDeviceInfo!.BatteryLevel = di.BatteryLevel;
+                                CurrentDeviceInfo.BatteryLevel = di.BatteryLevel;
                                 //if (BatteryLevel == -1)
                                 //    SetCurrentDevice(CurrentDeviceID.ToString());
                                 //else
@@ -496,11 +499,11 @@ namespace DDPM.UI.Plugin.ViewModels
         {
 #if DEBUG
             StringBuilder localDeviceInfo = new();
-            if (CurrentDeviceInfo!.Name.ToUpper().Contains("HEADSET"))
+            if (CurrentDeviceInfo.Name.ToUpper().Contains("HEADSET"))
             {
-                localDeviceInfo.Append($"ID : {CurrentDeviceInfo!.ID}");
+                localDeviceInfo.Append($"ID : {CurrentDeviceInfo.ID}");
                 localDeviceInfo.Append(Environment.NewLine);
-                localDeviceInfo.Append($"IsReady : {CurrentDeviceInfo!.IsReady}");
+                localDeviceInfo.Append($"IsReady : {CurrentDeviceInfo.IsReady}");
                 localDeviceInfo.Append(Environment.NewLine);
                 localDeviceInfo.Append($"PhyscialDeviceID : {CurrentDeviceInfo.PhyscialDeviceID}");
                 localDeviceInfo.Append(Environment.NewLine);
@@ -587,9 +590,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 localDeviceInfo.Append($"WearDetection : {CurrentDeviceInfo.WearDetection}");
                 localDeviceInfo.Append(Environment.NewLine);
             }
-            else if (CurrentDeviceInfo!.Name.ToUpper().Contains("SPEAKER"))
+            else if (CurrentDeviceInfo.Name.ToUpper().Contains("SPEAKER"))
             {
-                localDeviceInfo.Append($"ID : {CurrentDeviceInfo!.ID}");
+                localDeviceInfo.Append($"ID : {CurrentDeviceInfo.ID}");
                 localDeviceInfo.Append(Environment.NewLine);
                 localDeviceInfo.Append($"PhyscialDeviceID : {CurrentDeviceInfo.PhyscialDeviceID}");
                 localDeviceInfo.Append(Environment.NewLine);
@@ -652,7 +655,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             else
             {
-                localDeviceInfo.Append($"ID : {CurrentDeviceInfo!.ID}");
+                localDeviceInfo.Append($"ID : {CurrentDeviceInfo.ID}");
                 localDeviceInfo.Append(Environment.NewLine);
                 localDeviceInfo.Append($"PhyscialDeviceID : {CurrentDeviceInfo.PhyscialDeviceID}");
                 localDeviceInfo.Append(Environment.NewLine);
