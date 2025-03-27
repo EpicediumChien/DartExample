@@ -327,7 +327,11 @@ namespace nsWinEventHook
 
                 _MoveWindow(hWnd, (int)rect.Left, (int)rect.Top,
                     (int)rect.Width, (int)rect.Height, true);
-                
+
+
+                _SetWindowPos(hWnd, HWND_TOP, (int)rect.Left, (int)rect.Top,
+                    (int)rect.Width, (int)rect.Height, SWP_SHOWWINDOW | SWP_NOSIZE);
+
                 //Robert_Lin, 2024-12-10 The final solution to fix the issue cannot set window position with smaller height
                 _SetWindowPos(hWnd, HWND_TOP, (int)rect.Left, (int)rect.Top,
                     (int)rect.Width, (int)rect.Height, SWP_SHOWWINDOW|SWP_NOMOVE);

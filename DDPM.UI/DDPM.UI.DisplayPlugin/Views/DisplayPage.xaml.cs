@@ -31,6 +31,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using VcpCore.Common;
 
 namespace DDPM.UI.Plugin.DisplayPlugin.Views
@@ -38,8 +39,9 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
     /// <summary>
     /// Interaction logic for DisplayPage.xaml
     /// </summary>
-    public partial class DisplayPage : UserControl
+    public partial class DisplayPage : UserControl, IDisposable
     {
+        #region Private members
         private IDisplayPageViewModel? _ivm;
         private ILog? _log;
 
@@ -47,6 +49,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         private readonly DisplayViewModel _vmDisplay;
 
         private readonly IDeviceManagerSA? _deviceManagerSA;
+        private bool _isDisposed = false;
+        #endregion
 
         #region Init
 
@@ -124,14 +128,15 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             }
         }
 
-        ~DisplayPage()
-        {
-            if (_deviceManagerSA != null)
-            {
-                _deviceManagerSA.DDCCIStatuschanged -= _deviceManagerSA_DDCCIStatuschanged;
-                _deviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
-            }
-        }
+        //Move into Exit region
+        //~DisplayPage()
+        //{
+        //    if (_deviceManagerSA != null)
+        //    {
+        //        _deviceManagerSA.DDCCIStatuschanged -= _deviceManagerSA_DDCCIStatuschanged;
+        //        _deviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+        //    }
+        //}
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -857,6 +862,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
 
         private void OnLeftArrowClick(object sender, RoutedEventArgs e)
         {
+            _log?.Info($"@DisplayPage.OnLeftArrowClick, MemoryUsage: {DdpmCommonHelper.GetProcessMemoryUsageMB():F2} MB");
             //Return to DdpmHomePage
             IConsole? console = DisplayPlugin.PluginIoc.GetService<IConsole>();
             console?.ShowHomePage();
@@ -1002,7 +1008,54 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             _log?.Info("DisplayPage.UserControl_Unloaded");
+            Dispose();
+            _log?.Info("DisplayPage.UserControl_Unloaded exit");
         }
-        #endregion
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    // 釋放託管資源
+                    if (_ivm != null)
+                    {
+                        _ivm.VbarItemClickCommand = null;
+
+                    }
+
+                    basePage.LeftArrowClick -= OnLeftArrowClick;
+                    basePage.Dispose();
+
+                    if (_deviceManagerSA != null)
+                    {
+                        _deviceManagerSA.DDCCIStatuschanged -= _deviceManagerSA_DDCCIStatuschanged;
+                        _deviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+
+                    }
+  
+                }
+
+                // 釋放非託管資源
+                //if (unmanagedResource != IntPtr.Zero)
+                //{
+                //    // 釋放資源
+                //    unmanagedResource = IntPtr.Zero;
+                //}
+
+                _isDisposed = true;
+            }
+        }
+        ~DisplayPage()
+        {
+            Dispose(false);
+        }
+        #endregion Exit
     }
 }

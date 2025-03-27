@@ -3,11 +3,16 @@ using DDPM.UI.Interfaces;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace DDPM.UI.Common
 {
-    public class ModuleGroup
+    public class ModuleGroup : IDisposable
     {
+        #region Private members
+        private bool _isDisposed = false;
+        #endregion
+
         #region Module Group Data
 
         public string GroupName { get; set; } = "";
@@ -166,6 +171,66 @@ namespace DDPM.UI.Common
             return idxModule;
         }
         #endregion //Find
+
+        #region Dispose and Destructor
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    // 釋放託管資源
+                    if (GroupIcon is BitmapImage bitmapImage)
+                    {
+                        bitmapImage.StreamSource?.Close();
+                        GroupIcon = null;
+                    }
+
+                    if (VbarIcon is BitmapImage vbarBitmapImage)
+                    {
+                        vbarBitmapImage.StreamSource?.Close();
+                        VbarIcon = null;
+                    }
+
+                    //Risk section. header.DdpModule may not be disposed here!
+                    foreach (RightViewHeader header in _headers)
+                    {
+                        if (header.DdpmModule != null)
+                        {
+                            //Robert_Lin 2025-3-26, reblow comment will be removed (let it execute) when all DdpmModules implemet IDisposable.
+                            //header.DdpmModule.Dispose();
+                            //Or alternatve with safe check
+                            if (header.DdpmModule is IDisposable disposableModule)
+                            {
+                                disposableModule.Dispose();
+                            }
+                        }
+                    }
+                    //RightViewHeader has no data need to dispose, just clear the list
+                    _headers.Clear();
+
+                }
+
+                // 釋放非託管資源
+                //if (unmanagedResource != IntPtr.Zero)
+                //{
+                //    // 釋放資源
+                //    unmanagedResource = IntPtr.Zero;
+                //}
+
+                _isDisposed = true;
+            }
+        }
+        ~ModuleGroup()
+        {
+            Dispose(false);
+        }
+        #endregion Dispose and Destructor
 
     }
 }

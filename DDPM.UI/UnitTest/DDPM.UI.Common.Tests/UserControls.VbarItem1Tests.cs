@@ -134,5 +134,16 @@ namespace DDPM.UI.Common.Tests
                 Assert.Fail("not invoked");
             }
         }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (vbarItem1 != null)
+            {
+                vbarItem1.Dispose();
+                vbarItem1 = null;
+            }
+        }
+
     }
 }
