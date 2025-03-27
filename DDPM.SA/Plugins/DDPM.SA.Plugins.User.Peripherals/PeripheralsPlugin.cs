@@ -2744,7 +2744,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private void IPhysicalDevice_DeviceAddedEvent(ILogicalDevice iLogicalDevice)
         {
             //System.Diagnostics.Debug.WriteLine("LogicalDevice Added, Id : " + iLogicalDevice.Id + ", Name : " + iLogicalDevice.Name);
-            writelog("LogicalDevice Added, Id : " + iLogicalDevice.Id + ", Name : " + iLogicalDevice.Name);
+            if (string.IsNullOrEmpty(iLogicalDevice.Name))
+                writelog("LogicalDevice Added, Id : " + iLogicalDevice.Id + ", Name : NULL (iLogicalDevice.Name)");
+            else
+                writelog("LogicalDevice Added, Id : " + iLogicalDevice.Id + ", Name : " + iLogicalDevice.Name);
+
             lock (this)
             {
                 if (_isClientConnected)
