@@ -39,6 +39,7 @@ namespace VcpCore.Common
         public string D_Ctrl { get; set; } = string.Empty;
         public double scalingFactor { get; set; } = 0x0;
         public uint cPhysicalMonitors_index { get; set; } = 0x0;
+        public bool IsSupportDisplay { get; set; } = false;
 
         public override bool Equals(object obj)
         {
@@ -65,9 +66,10 @@ namespace VcpCore.Common
             //    bool b13 = (ImageFileName == other.ImageFileName);
             //    bool b14 = (SupplierID == other.SupplierID);
             //    bool b15 = (D_Ctrl == other.D_Ctrl);
-            //    bool b16 = (EqualityComparer<EDID>.Default.Equals(edid, other.edid));
+            //    bool b16 = (edid.Equals(other.edid));
+            //    bool b17 = (IsSupportDisplay == other.IsSupportDisplay);
 
-            //    return (b0 && b1 && b2 && b3 && b4 && b5 && b6 && b7 && b8 && b9 && b10 && b11 && b12 && b13 && b14 && b15 && b16);
+            //    return (b0 && b1 && b2 && b3 && b4 && b5 && b6 && b7 && b8 && b9 && b10 && b11 && b12 && b13 && b14 && b15 && b16 && b17);
             //}
             //else
             //    return b0;
@@ -88,7 +90,8 @@ namespace VcpCore.Common
                    (ImageFileName == other.ImageFileName) &&
                    (SupplierID == other.SupplierID) &&
                    (D_Ctrl == other.D_Ctrl) &&
-                   (EqualityComparer<EDID>.Default.Equals(edid, other.edid));
+                   (IsSupportDisplay == other.IsSupportDisplay) &&
+                   (edid.Equals(other.edid));
         }
 
         //If override Equals, need to implement GetHashCode also
@@ -112,6 +115,7 @@ namespace VcpCore.Common
                 SupplierID,
                 D_Ctrl,
                 edid,
+                IsSupportDisplay,
             }.GetHashCode();
         }
     }
