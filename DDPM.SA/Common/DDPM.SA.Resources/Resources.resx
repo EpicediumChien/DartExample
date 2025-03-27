@@ -601,7 +601,7 @@
     <value>The update may take up to [XXXXXX] minutes. Keep the device powered on and connected during this time.</value>
   </data>
   <data name="Update_in_progress_body" xml:space="preserve">
-    <value>[XXXXXX] has a firmware update in progress. During update, device may be intermittently available. Do not disconnect the device during the update.</value>
+    <value>[XXXXXX] has a firmware update in progress. Availability may be intermittent. Do not disconnect the device during the update. </value>
   </data>
   <data name="Update_successful_body" xml:space="preserve">
     <value>Firmware of [XXXXXX] updated successfully</value>
@@ -617,5 +617,11 @@
   </data>
   <data name="Update_in_progress" xml:space="preserve">
     <value>Update in progress</value>
+  </data>
+  <data name="Software_update_successful" xml:space="preserve">
+    <value>Software update successful</value>
+  </data>
+  <data name="Software_update_failed" xml:space="preserve">
+    <value>Software update failed</value>
   </data>
 </root>
