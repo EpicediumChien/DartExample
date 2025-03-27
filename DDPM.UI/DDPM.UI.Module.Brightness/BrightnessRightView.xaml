@@ -89,7 +89,8 @@
                                     </Grid>
                                 </Grid>
                                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                    <TextBlock FontFamily="Roboto" FontSize="13" Focusable="True" KeyboardNavigation.TabIndex="101">
+                                    <TextBlock FontFamily="Roboto" FontSize="13" Focusable="True" KeyboardNavigation.TabIndex="101"
+                                               Foreground="{DynamicResource DefaultTheme_TxtColor}">
                                         <Run Text="{Binding [Brightness.1], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                                         <Hyperlink Click="Hyperlink_Click">
                                             <Run Text="{Binding [Brightness.2], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
@@ -1352,7 +1353,6 @@
                                                             <Image
                                                                 Width="16"
                                                                 Height="16"
-                                                                Margin="10,0"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Center"
                                                                 Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"

@@ -133,7 +133,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         else
                             WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Error devManagerSA not initialized.");
                         WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] export path : " + exportpath);
-                        //
+#if DEBUG
+                        FileInfo fi = new FileInfo(path);
+                        Console.WriteLine(fi.Exists); // 同樣是 false 時，更可能是權限或磁碟問題
+#endif
                         if (File.Exists(exportpath))
                         {
                             WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Checked exported file exists!");
