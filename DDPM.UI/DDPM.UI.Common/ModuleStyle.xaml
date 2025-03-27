@@ -276,6 +276,14 @@
         </Canvas>
     </ControlTemplate>
 
+    <!-- Icon Play -->
+    <ControlTemplate x:Key="icon_Play" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+            <Path Data="M15.5 7.00012L3.499999 13.9283L3.5 0.0719184L15.5 7.00012Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}"/>
+        </Canvas>
+    </ControlTemplate>
+
     <!-- Icon Pause -->
     <ControlTemplate x:Key="icon_Pause" TargetType="ContentControl">
         <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
@@ -2322,6 +2330,8 @@
     <SolidColorBrush x:Key="Webcam_UndoRedo_BkColor" Color="#99193457"/>
     <SolidColorBrush x:Key="Webcam_UndoRedo_DisableBkColor" Color="#80596067"/>
     <SolidColorBrush x:Key="Webcam_UndoRedo_DisableFgColor" Color="#80F5F6F7"/>
+    <SolidColorBrush x:Key="Webcam_Countdown321_BkColor" Color="#FF132F54"/>
+    <SolidColorBrush x:Key="Webcam_Countdown321_BdColor" Color="#FF081A33"/>
     <!-- #endregion Webcam -->
 
     <!-- #region DDPM.SA.Common.Popup.PopupBase Robert_Lin 2024-12-2 -->

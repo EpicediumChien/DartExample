@@ -264,7 +264,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //grdPreview.Visibility = _vm.WebcamGrid ? Visibility.Visible : Visibility.Hidden;
                 _vm.VbarItemClickCommand = new RelayCommand<VbarItem1>(OnVbarItemClicked!);
                 BuildModuleGroups();
-                DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             }
             catch (Exception ex)
             {
@@ -273,10 +272,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             DdpmCommonHelper.WriteUILog($"Webcam UI LaunchView End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
         }
 
-        private void OnUnloaded(object sender, RoutedEventArgs e)
-        {
-            DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
-        }
         private void OnWebcamCloseEvent(object sender, EventManagerArgs e)
         {
             DdpmCommonHelper.WriteUILog($"[WebcamPlugin][OnWebcamCloseEvent] event MainWindow_Force_Camera_Unlock received");
@@ -354,22 +349,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         ~LaunchView()
         {
-            DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
             DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify -= DeviceManagerSA_UIUpdateNotify;
-        }
-
-        private void ImageUpdate(OSThemeEnum oSThemeEnum)
-        {
-            ArrowLeft.Source = null;
-            ArrowLeft.Source = (BitmapImage)System.Windows.Application.Current.Resources["Arrow_Left"];
-            if (oSThemeEnum == OSThemeEnum.Dark)
-            {
-                playImg.Fill = Brushes.White;
-            }
-            else
-            {
-                playImg.Fill = new BrushConverter().ConvertFromString("#0E0E0E") as SolidColorBrush; ;
-            }
         }
 
         //private void DeviceManagerSA_DeviceChanged(object? sender, DeviceChangedEventArgs e)
@@ -3070,6 +3050,29 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void txbName_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             e.Handled = e.Key == Key.Enter;
+        }
+
+        private void Window_ContentRendered(object sender, EventArgs e)
+        {
+            // Assumes MyViewbox is your Viewbox, and it has 1 child element
+            if (largeImage.Child is FrameworkElement child)
+            {
+                // Original size before scaling
+                double originalWidth = child.ActualWidth;
+                double originalHeight = child.ActualHeight;
+
+                // Scaled size (i.e., Viewbox render size inside Border)
+                double viewboxWidth = largeImage.ActualWidth;
+                double viewboxHeight = largeImage.ActualHeight;
+
+                // Compute scale
+                double scaleX = viewboxWidth / originalWidth;
+                double scaleY = viewboxHeight / originalHeight;
+
+                double uniformScale = Math.Min(scaleX, scaleY);
+
+                Console.WriteLine($"Scale: {uniformScale:F3} (X: {scaleX:F3}, Y: {scaleY:F3})");
+            }
         }
     }
 }

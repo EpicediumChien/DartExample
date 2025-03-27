@@ -95,7 +95,7 @@
                                             <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
                                         </Border.Resources>
                                         <StackPanel>
-                                            <TextBlock Style="{StaticResource InfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
+                                            <TextBlock Text="{Binding FirmwareVersion2}" />
                                         </StackPanel>
                                     </Border>
                                 </ToolTip>
