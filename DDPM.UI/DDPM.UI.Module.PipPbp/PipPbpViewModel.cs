@@ -573,14 +573,12 @@ namespace DDPM.UI.Module.PipPbp
             }
 
             //Robert_Lin 2025-2-25, for Loading performance improvement.
-            if (_bwRefreshData != null)
+            if (_bwRefreshData != null && 
+                _bwRefreshData.CancellationPending)
             {
-                if (_bwRefreshData.CancellationPending)
-                {
-                    LogInfo("Worker_RefreshInputSourceList(), Step=[FindMainInput], cancellation is detected.");
-                    e.Cancel = true;
-                    return;
-                }
+                LogInfo("Worker_RefreshInputSourceList(), Step=[FindMainInput], cancellation is detected.");
+                e.Cancel = true;
+                return;
             }
 
             //Get Sub inputs

@@ -613,14 +613,14 @@ namespace DDPM.UI.Module.Kvm
             _log?.Info("[KvmViewModel] Invoke_RefreshHotkeySettings start");
             DateTime entryUSBKVM = DateTime.Now;
             _log?.Info($"[Invoke_RefreshHotkeySettings Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
-            BackgroundWorker bw = new BackgroundWorker()
+            BackgroundWorker m_bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
                 WorkerSupportsCancellation = false
             };
-            bw.DoWork += DoWork_RefreshHotkeyData;
-            bw.RunWorkerCompleted += RunWorkerCompleted_RefreshHotkeyData;
-            bw.RunWorkerAsync(); //myArg is the optional argument
+            m_bw.DoWork += DoWork_RefreshHotkeyData;
+            m_bw.RunWorkerCompleted += RunWorkerCompleted_RefreshHotkeyData;
+            m_bw.RunWorkerAsync(); //myArg is the optional argument
             _log?.Info("[KvmViewModel] Invoke_RefreshHotkeySettings end");
             entryUSBKVM = DateTime.Now;
             _log?.Info($"[Invoke_RefreshHotkeySettings Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
@@ -2057,12 +2057,12 @@ namespace DDPM.UI.Module.Kvm
 
         private void OnPipTogglePositionClicked()
         {
-            BackgroundWorker bw = new BackgroundWorker()
+            BackgroundWorker m_bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
                 WorkerSupportsCancellation = false
             };
-            bw.DoWork += delegate
+            m_bw.DoWork += delegate
             {
                 //UInt16 capCode = SelectedSplitItem.ISplit.PbpCapabilityCode;
                 if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -2070,12 +2070,12 @@ namespace DDPM.UI.Module.Kvm
                     DdpmCommonHelper.DeviceManagerSA.TogglePipPosition(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
                 }
             };
-            bw.RunWorkerCompleted += delegate
+            m_bw.RunWorkerCompleted += delegate
             {
                 IsBusy = false;
             };
             IsBusy = true;
-            bw.RunWorkerAsync();
+            m_bw.RunWorkerAsync();
         }
         #endregion Determine if Toggle between positons button enabled/disabled
 
@@ -2442,14 +2442,14 @@ namespace DDPM.UI.Module.Kvm
 
         public void NKVMOpenUI()
         {
-            BackgroundWorker bw = new BackgroundWorker()
+            BackgroundWorker m_bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
                 WorkerSupportsCancellation = false
             };
-            bw.DoWork += NKVMOpenUI_Dowork;
-            bw.RunWorkerCompleted += NKVMOpenUI_Done;
-            bw.RunWorkerAsync();
+            m_bw.DoWork += NKVMOpenUI_Dowork;
+            m_bw.RunWorkerCompleted += NKVMOpenUI_Done;
+            m_bw.RunWorkerAsync();
             IsBusy = true;
             OnPropertyChanged("IsBusy");
         }
