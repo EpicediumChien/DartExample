@@ -1087,6 +1087,24 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Software update failed.
+        /// </summary>
+        internal static string Software_update_failed {
+            get {
+                return ResourceManager.GetString("Software_update_failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Software update successful.
+        /// </summary>
+        internal static string Software_update_successful {
+            get {
+                return ResourceManager.GetString("Software_update_successful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Software update unsuccessful..
         /// </summary>
         internal static string Software_update_unsuccessful {
@@ -1294,7 +1312,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [XXXXXX] has a firmware update in progress. During update, device may be intermittently available. Do not disconnect the device during the update..
+        ///   Looks up a localized string similar to [XXXXXX] has a firmware update in progress. Availability may be intermittent. Do not disconnect the device during the update. .
         /// </summary>
         internal static string Update_in_progress_body {
             get {
