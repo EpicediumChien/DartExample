@@ -785,41 +785,38 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 Log?.Info($"DeviceChanged deviceChangedEventArgs.deviceID : {deviceChangedEventArgs.deviceID}");
                 foreach (UIUpdateInfo uiUpdateInfo in Critical_UpdateList_UI)
                 {
-                    if (uiUpdateInfo.FWUpdateInfo != null && !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId))
+                    if (uiUpdateInfo.FWUpdateInfo != null && 
+                        !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId) && 
+                        uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
                     {
-                        if (uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
-                        {
-                            ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
-                            uiUpdateInfo.Refresh();
-                            OnPropertyChanged("Critical_UpdateList_UI");
-                            return;
-                        }
+                        ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
+                        uiUpdateInfo.Refresh();
+                        OnPropertyChanged("Critical_UpdateList_UI");
+                        return;
                     }
                 }
                 foreach (UIUpdateInfo uiUpdateInfo in Recommended_UpdateList_UI)
                 {
-                    if (uiUpdateInfo.FWUpdateInfo != null && !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId))
+                    if (uiUpdateInfo.FWUpdateInfo != null && 
+                        !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId) && 
+                        uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
                     {
-                        if (uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
-                        {
-                            ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
-                            uiUpdateInfo.Refresh();
-                            OnPropertyChanged("Recommended_UpdateList_UI");
-                            return;
-                        }
+                        ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
+                        uiUpdateInfo.Refresh();
+                        OnPropertyChanged("Recommended_UpdateList_UI");
+                        return;
                     }
                 }
                 foreach (UIUpdateInfo uiUpdateInfo in Optional_UpdateList_UI)
                 {
-                    if (uiUpdateInfo.FWUpdateInfo != null && !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId))
+                    if (uiUpdateInfo.FWUpdateInfo != null && 
+                        !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId) && 
+                        uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
                     {
-                        if (uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
-                        {
-                            ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
-                            uiUpdateInfo.Refresh();
-                            OnPropertyChanged("Optional_UpdateList_UI");
-                            return;
-                        }
+                        ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
+                        uiUpdateInfo.Refresh();
+                        OnPropertyChanged("Optional_UpdateList_UI");
+                        return;
                     }
                 }
             }
