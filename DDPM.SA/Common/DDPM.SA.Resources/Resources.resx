@@ -558,4 +558,64 @@
   <data name="Update_Display_Alert" xml:space="preserve">
     <value>Update may take an estimated 10 to 30 minutes to complete, depending on your monitor model and setup (for example, type of connection). It may take longer if you are updating multiple monitors of the same model. Don’t power off your display or disconnect cables while the update is downloading.</value>
   </data>
+  <data name="Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="Firmware_updated" xml:space="preserve">
+    <value>Firmware updated.</value>
+  </data>
+  <data name="Display_FWU_Error_1" xml:space="preserve">
+    <value>Firmware update was unsuccessful due to a firmware utility package issue. The file may be corrupted.</value>
+  </data>
+  <data name="Display_FWU_Error_3" xml:space="preserve">
+    <value>The firmware update encountered an error. To resolve this issue, disconnect and reconnect the USB cable and power cycle the monitor. Then, retry the firmware update.</value>
+  </data>
+  <data name="Display_FWU_Error_5" xml:space="preserve">
+    <value>The firmware update encountered an error. To resolve this issue, disconnect and reconnect the USB cable and  power cycle the monitor. Then, retry the firmware update.</value>
+  </data>
+  <data name="Display_FWU_Error_7" xml:space="preserve">
+    <value>The firmware update was unsuccessful. The firmware code has been erased, and verification of the firmware code failed.</value>
+  </data>
+  <data name="Display_FWU_Error_9" xml:space="preserve">
+    <value>Your monitor’s firmware is the latest version.</value>
+  </data>
+  <data name="Display_FWU_Error_10" xml:space="preserve">
+    <value>Another instance of the Firmware Update utility may be running. Close one instance of the utility to proceed.</value>
+  </data>
+  <data name="Display_FWU_Error_12" xml:space="preserve">
+    <value>Another instance of the Firmware Update utility may be running. Close one instance of the utility to proceed.</value>
+  </data>
+  <data name="Display_FWU_Error_201" xml:space="preserve">
+    <value>The update may take up to xx minutes. Keep your monitor powered on and connected during the update.</value>
+  </data>
+  <data name="Display_FWU_Error_501" xml:space="preserve">
+    <value>The firmware version detected on your monitor is not an official release.</value>
+  </data>
+  <data name="Display_FWU_Error_61" xml:space="preserve">
+    <value>The firmware update encountered an error. To resolve this issue, disconnect and reconnect the USB cable and power cycle the monitor. Then, retry the firmware update.</value>
+  </data>
+  <data name="Display_FWU_Error_Other" xml:space="preserve">
+    <value>The firmware update was unsuccesful.</value>
+  </data>
+  <data name="Update_Display_Alert_2" xml:space="preserve">
+    <value>The update may take up to [XXXXXX] minutes. Keep the device powered on and connected during this time.</value>
+  </data>
+  <data name="Update_in_progress_body" xml:space="preserve">
+    <value>[XXXXXX] has a firmware update in progress. During update, device may be intermittently available. Do not disconnect the device during the update.</value>
+  </data>
+  <data name="Update_successful_body" xml:space="preserve">
+    <value>Firmware of [XXXXXX] updated successfully</value>
+  </data>
+  <data name="Update_failed_body" xml:space="preserve">
+    <value>Firmware of [XXXXXX] failed to update</value>
+  </data>
+  <data name="Update_successful" xml:space="preserve">
+    <value>Update successful</value>
+  </data>
+  <data name="Update_failed" xml:space="preserve">
+    <value>Update failed</value>
+  </data>
+  <data name="Update_in_progress" xml:space="preserve">
+    <value>Update in progress</value>
+  </data>
 </root>

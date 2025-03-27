@@ -1537,13 +1537,31 @@
 
                                                 <!--  Row: Buttons  -->
                                                 <Grid>
+                                                    <Grid.Resources>
+                                                        <Style TargetType="UXControls:UXButton">
+                                                            <Setter Property="Foreground" Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="Button">
+                                                                        <Border CornerRadius="2" Background="#00FFFFFF"
+                                                                            BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}"
+                                                                            BorderThickness="1" Padding="31.5, 8">
+                                                                            <!-- Set your desired corner radius here -->
+                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                        </Border>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </Grid.Resources>
                                                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                                         <!-- Elsa 20250113 For PIMS [PIMS-333699] change Width="173" to MinWidth="173" -->
                                                         <UXControls:UXButton
                                                             Name="PR1_Preview_UXButton"
+                                                            FontSize="14"
                                                             MinWidth="173"
                                                             Height="40"
-                                                            Padding="24,8"
+                                                            Padding="31.5,8"
                                                             KeyboardNavigation.TabIndex="149"
                                                             ButtonSemanticColorType="Neutral"
                                                             ButtonType="Secondary"
@@ -1943,12 +1961,29 @@
 
                                                 <!--  Row: Buttons  -->
                                                 <Grid>
+                                                    <Grid.Resources>
+                                                        <Style TargetType="UXControls:UXButton">
+                                                            <Setter Property="Foreground" Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="Button">
+                                                                        <Border CornerRadius="2" Background="#00FFFFFF"
+                                                                            BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}"
+                                                                            BorderThickness="1" Padding="31.5, 8">
+                                                                            <!-- Set your desired corner radius here -->
+                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                        </Border>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </Grid.Resources>
                                                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                                         <UXControls:UXButton
                                                             Name="PR2_Preview_UXButton"
                                                             Width="173"
                                                             Height="40"
-                                                            Padding="24,8"
+                                                            Padding="31.5,8"
                                                             ButtonSemanticColorType="Neutral"
                                                             ButtonType="Secondary"
                                                             KeyboardNavigation.TabIndex="169"

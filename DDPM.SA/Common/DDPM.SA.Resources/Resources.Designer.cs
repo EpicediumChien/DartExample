@@ -313,6 +313,105 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Firmware update was unsuccessful due to a firmware utility package issue. The file may be corrupted..
+        /// </summary>
+        internal static string Display_FWU_Error_1 {
+            get {
+                return ResourceManager.GetString("Display_FWU_Error_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Another instance of the Firmware Update utility may be running. Close one instance of the utility to proceed..
+        /// </summary>
+        internal static string Display_FWU_Error_10 {
+            get {
+                return ResourceManager.GetString("Display_FWU_Error_10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Another instance of the Firmware Update utility may be running. Close one instance of the utility to proceed..
+        /// </summary>
+        internal static string Display_FWU_Error_12 {
+            get {
+                return ResourceManager.GetString("Display_FWU_Error_12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The update may take up to xx minutes. Keep your monitor powered on and connected during the update..
+        /// </summary>
+        internal static string Display_FWU_Error_201 {
+            get {
+                return ResourceManager.GetString("Display_FWU_Error_201", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The firmware update encountered an error. To resolve this issue, disconnect and reconnect the USB cable and power cycle the monitor. Then, retry the firmware update..
+        /// </summary>
+        internal static string Display_FWU_Error_3 {
+            get {
+                return ResourceManager.GetString("Display_FWU_Error_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The firmware update encountered an error. To resolve this issue, disconnect and reconnect the USB cable and  power cycle the monitor. Then, retry the firmware update..
+        /// </summary>
+        internal static string Display_FWU_Error_5 {
+            get {
+                return ResourceManager.GetString("Display_FWU_Error_5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The firmware version detected on your monitor is not an official release..
+        /// </summary>
+        internal static string Display_FWU_Error_501 {
+            get {
+                return ResourceManager.GetString("Display_FWU_Error_501", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The firmware update encountered an error. To resolve this issue, disconnect and reconnect the USB cable and power cycle the monitor. Then, retry the firmware update..
+        /// </summary>
+        internal static string Display_FWU_Error_61 {
+            get {
+                return ResourceManager.GetString("Display_FWU_Error_61", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The firmware update was unsuccessful. The firmware code has been erased, and verification of the firmware code failed..
+        /// </summary>
+        internal static string Display_FWU_Error_7 {
+            get {
+                return ResourceManager.GetString("Display_FWU_Error_7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your monitor’s firmware is the latest version..
+        /// </summary>
+        internal static string Display_FWU_Error_9 {
+            get {
+                return ResourceManager.GetString("Display_FWU_Error_9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The firmware update was unsuccesful..
+        /// </summary>
+        internal static string Display_FWU_Error_Other {
+            get {
+                return ResourceManager.GetString("Display_FWU_Error_Other", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display P3.
         /// </summary>
         internal static string Display_P3 {
@@ -493,6 +592,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Firmware updated..
+        /// </summary>
+        internal static string Firmware_updated {
+            get {
+                return ResourceManager.GetString("Firmware_updated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to FPS Game.
         /// </summary>
         internal static string FPS_Game {
@@ -637,7 +745,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to is Unmuted.
+        ///   Looks up a localized string similar to is unmuted.
         /// </summary>
         internal static string is_Unmuted {
             get {
@@ -1024,6 +1132,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Success.
+        /// </summary>
+        internal static string Success {
+            get {
+                return ResourceManager.GetString("Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SW info.
         /// </summary>
         internal static string SW_info {
@@ -1114,11 +1231,38 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The update may take up to [XXXXXX] minutes. Keep the device powered on and connected during this time..
+        /// </summary>
+        internal static string Update_Display_Alert_2 {
+            get {
+                return ResourceManager.GetString("Update_Display_Alert_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to update download cancel, because PC battery too low..
         /// </summary>
         internal static string update_download_cancel {
             get {
                 return ResourceManager.GetString("update_download_cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update failed.
+        /// </summary>
+        internal static string Update_failed {
+            get {
+                return ResourceManager.GetString("Update_failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firmware of [XXXXXX] failed to update.
+        /// </summary>
+        internal static string Update_failed_body {
+            get {
+                return ResourceManager.GetString("Update_failed_body", resourceCulture);
             }
         }
         
@@ -1137,6 +1281,42 @@ namespace DDPM.SA.Resources {
         internal static string update_failed_with_unknown_error {
             get {
                 return ResourceManager.GetString("update_failed_with_unknown_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update in progress.
+        /// </summary>
+        internal static string Update_in_progress {
+            get {
+                return ResourceManager.GetString("Update_in_progress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [XXXXXX] has a firmware update in progress. During update, device may be intermittently available. Do not disconnect the device during the update..
+        /// </summary>
+        internal static string Update_in_progress_body {
+            get {
+                return ResourceManager.GetString("Update_in_progress_body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update successful.
+        /// </summary>
+        internal static string Update_successful {
+            get {
+                return ResourceManager.GetString("Update_successful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firmware of [XXXXXX] updated successfully.
+        /// </summary>
+        internal static string Update_successful_body {
+            get {
+                return ResourceManager.GetString("Update_successful_body", resourceCulture);
             }
         }
         

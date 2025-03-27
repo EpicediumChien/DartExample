@@ -753,6 +753,9 @@ namespace DDPM.SA.Plugins.CMAManager
 
 
                     response.writeToFile(gid, args.notification);
+
+                    // add @ 20250326 stephen
+                    WriteLog("[CMA] runCommandTask response.writeToFile getErrorMsg()= " + response.getErrorMsg());
                 }
                 // add end @ 20250121
 
@@ -1185,11 +1188,20 @@ namespace DDPM.SA.Plugins.CMAManager
                 string sid = string.Empty;
 
                 CmdResponse cmdResponse = new CmdResponse(data.Guid, true, null);
+
+                // add @ 20250326 stephen
+                WriteLog("[CMA] UpdateFwStatus() Response cmdResponse.getErrorMsg() = " + cmdResponse.getErrorMsg());
+
+
                 if (cmdResponse.getErrorMsg().Equals("success"))
                 {
                     WriteLog("[CMA] UpdateFwStatus() Response cmdResponse.getErrorMsg() = success");
                     InfoResponse infoResponse = new InfoResponse(cmdResponse.getData(), false);
                     sid = infoResponse.sid;
+                    // add @ 20250326 stephen
+                    // add @ 20250326 stephen
+                    WriteLog("[CMA] UpdateFwStatus() Response cmdResponse.getErrorMsg() = " + cmdResponse.getErrorMsg());
+
                 }
 
 

@@ -77,7 +77,7 @@ namespace DDPM.UI.Plugin.ViewModels
             //{
             //    FirmwareVersion2 += $" {CurrentDeviceInfo.DockServiceTag}";
             //}
-            FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(false, false).Result;
+            FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(false).Result;
             _isEnableUpdate = false;
             foreach (FWUpdateInfo fWUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
             {

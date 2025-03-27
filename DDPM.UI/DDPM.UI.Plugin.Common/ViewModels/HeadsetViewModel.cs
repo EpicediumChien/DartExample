@@ -25,6 +25,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private Debouncer _debouncerHeadsetSidetoneCheck;
         public event EventHandler<EventArgs> HeadsetSettingChanged;
         public event EventHandler<EventArgs> HeadsetGroupChanged;
+        public event EventHandler<EventArgs> BtnRestoreChanged;
         public bool _waitHeadsetReady_DTP;
         public bool _waitHeadsetReady_DTH;
         #endregion Variables
@@ -1014,6 +1015,11 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isRestoreEnable = true;
             else
                 _isRestoreEnable = false;
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                BtnRestoreChanged?.Invoke(this, EventArgs.Empty);
+            });
+
         }
 
         public override void OnPropertyChanged([CallerMemberName] string propertyName = "")
