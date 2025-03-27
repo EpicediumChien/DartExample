@@ -2749,17 +2749,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 {
                     ScanDevices();
 
-                    var di = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == iLogicalDevice.Id.ToString());
-                    if (di != null)
-                    {
-                        DeviceChangedEventArgs _EventArgs = new()
-                        {
-                            type = DeviceChangedType.Peripherals_PlugIn,
-                            device_peripherals = di,
-                            changedProperty = "LogicalDeviceAdded"
-                        };
-                        OnNotify(_EventArgs);
-                    }
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_PlugIn;
+                    _EventArgs.device_peripherals = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == iLogicalDevice.Id.ToString());
+                    _EventArgs.changedProperty = "LogicalDeviceAdded";
+                    OnNotify(_EventArgs);
                 }
             }
         }
