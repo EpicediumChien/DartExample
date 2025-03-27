@@ -136,8 +136,8 @@
     <value>Firmware Version</value>
   </data>
   <data name="DeviceID" xml:space="preserve">
-   <value>Device ID</value>
- </data>
+    <value>Device ID</value>
+  </data>
   <data name="Gaming" xml:space="preserve">
     <value>Gaming</value>
   </data>
@@ -3541,7 +3541,7 @@
   </data>
   <data name="Cardi.7" xml:space="preserve">
     <value>Equalizer adjusts based on chosen preset</value>
-  </data>	
+  </data>
   <data name="CustomizeScrollTiltLCaption" xml:space="preserve">
     <value>Customize Scroll Tilt Left</value>
   </data>
@@ -3605,5 +3605,8 @@
   </data>
   <data name="Color.14" xml:space="preserve">
     <value>Color Preset</value>
+  </data>
+  <data name="HDR" xml:space="preserve">
+    <value>HDR</value>
   </data>
 </root>

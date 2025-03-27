@@ -117,7 +117,7 @@
                                   Visibility="{Binding SupportedHDR}"
                                   IsEnabled="{Binding HDREnable}"
                                   Opacity="{Binding HDROpacity}">
-                                <UXControls:UXTextBlock Text="{Binding [SmartHDR], Source={x:Static lang:LangHelper.Instance}}"
+                                <UXControls:UXTextBlock Text="{Binding [HDR], Source={x:Static lang:LangHelper.Instance}}"
                                                         FontSize="16"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                         TextBlockSemanticColorType="Light"

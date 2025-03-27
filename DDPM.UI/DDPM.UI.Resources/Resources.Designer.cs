@@ -4462,6 +4462,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to HDR.
+        /// </summary>
+        internal static string HDR {
+            get {
+                return ResourceManager.GetString("HDR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to HDRPeak1000.
         /// </summary>
         internal static string HDRPeak1000 {
