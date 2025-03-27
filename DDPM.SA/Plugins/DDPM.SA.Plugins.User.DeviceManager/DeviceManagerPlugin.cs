@@ -886,7 +886,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else
             {
-                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, blICCProfile, savelPath).Result;
+                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m.modelName, m.DisplayName, blICCProfile, savelPath).Result;
             }
 
             return Task.FromResult(_ICC_Metadata);
@@ -1942,7 +1942,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CheckICCProfileScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)//Bruce 02/10 added timer to check icm
+        /*private void CheckICCProfileScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)//Bruce 02/10 added timer to check icm
         {
             writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} start");
             if (_ColorPresetPlugin != null && _SettingsPlugin != null)
@@ -1958,7 +1958,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} _ColorPresetPlugin is null");
             }
             writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} done");
-        }
+        }*/
 
         #endregion
 
@@ -12324,18 +12324,48 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //    _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, token);
                 //}
                 DisplayFWCheck();
+
+                //Dean20250327 move icc check from OnDeviceChanged to here
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        List<MonitorInfo> tmp = new List<MonitorInfo>();
+                        tmp.AddRange(_AllInfoMonitors);//when processing the icc, the list may change cause exception
+                        foreach (var monitor in tmp)
+                        {
+                            if (_ColorPresetPlugin != null)//Bruce 02/10 added display In/Out to check icm
+                            {
+                                writelog($"[OnDeviceChanged]: _ColorPresetPlugin.DownloadICCData go ({_AllInfoMonitors.Count})");
+
+                                _ColorPresetPlugin.DownloadICCData(monitor.modelName, monitor.DisplayName, true, "", true).Wait();
+                                writelog($"[OnDeviceChanged]: _ColorPresetPlugin.DownloadICCData done");
+
+                            }
+                            else
+                                writelog($"[OnDeviceChanged]: _ColorPresetPlugin is null, skip DownloadICCData({monitor.modelName})");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        writelog($"[OnDeviceChanged]: _ColorPresetPlugin.DownloadICCData exception: {ex.Message}");
+                    }
+                });
+
                 //for USB KVM auto switch kb ms
                 foreach (var monitor in _AllInfoMonitors)
                 {
                     if (monitor.CapabilityDic.ContainsKey("E9") && monitor.CapabilityDic.ContainsKey("E7"))
                         Task.Run(() => updatePBPModeStatus(monitor, "E9")).ConfigureAwait(false);
-                    if (_ColorPresetPlugin != null && _SettingsPlugin != null)//Bruce 02/10 added display In/Out to check icm
-                    {
-                        writelog($"OnDeviceChanged: _ColorPresetPlugin.DownloadICCData go");
-                        _ColorPresetPlugin.DownloadICCData(monitor, true).Wait();
-                        writelog($"OnDeviceChanged: _ColorPresetPlugin.DownloadICCData done");
-                    }
-                }
+                    //if (_ColorPresetPlugin != null)//Bruce 02/10 added display In/Out to check icm
+                    //{
+                    //    writelog($"OnDeviceChanged: _ColorPresetPlugin.DownloadICCData go");
+                    //    _ColorPresetPlugin.DownloadICCData(monitor, true).Wait();
+                    //    writelog($"OnDeviceChanged: _ColorPresetPlugin.DownloadICCData done");
+                    //}
+                    //else
+                    //    writelog($"OnDeviceChanged: _ColorPresetPlugin is null, skip DownloadICCData({monitor.modelName})");
+                }                
             }
         }
 
@@ -12534,17 +12564,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void show_displays_changed(object sender, DisplaychangedEventArgs e)
         {
-            // add @ 20250305 stephen
+            // add @ 20250305 stephen, if e.count == -1 means only catch a display changed event, not trigger from vcp core
             if (e.count < 0)
             {
-                writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin, but count < 0 *****");
+                writelog($"Receive Displaychanged Event Notify from DisplayManagerPlugin, but count < 0 ({e.count}) *****");
                 OnDisplaychanged(e);
                 return;
             }
             // add @ 20250305 stephen
 
-            writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin");
-            writelog("Send out Displaychanged Event Notify from DeviceMangerPlugin");
+            //if GetMonitors() already return right list, this function won't be called
+            //it means if vcp core find the different monitor then this call will be triggered
+            writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin");           
 
             _AllInfoMonitors = (e.monitors).ToList();
 
@@ -12557,6 +12588,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             DisplaychangedEventArgs _displaychangedEventArgs = new DisplaychangedEventArgs();
             _displaychangedEventArgs.count = e.count;
             _displaychangedEventArgs.monitors = e.monitors.ToList();
+
+            writelog("Send out Displaychanged Event Notify from DeviceMangerPlugin");
             OnDisplaychanged(_displaychangedEventArgs);
 
             if (e.monitors.Count > 0)
@@ -12575,19 +12608,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }).ConfigureAwait(false);
             }
         }
-
-        /*private void show_colorpreset(object sender, VCPchangedEventArgs e)
-        {
-            writelog("Receive VcpChanged Event Notify from ColorPresetPlugin");
-            writelog("Send out VcpChanged Event Notify from ColorPresetPlugin");
-
-            VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
-            _VCPchangedEventArgs.vcpcode = e.vcpcode;
-            _VCPchangedEventArgs.value = e.value;
-            //0607 Bruce 因VCPChange事件需要取得螢幕資訊故請Jarvis新增這段變數 代為新增
-            _VCPchangedEventArgs.monitor = e.monitor;
-            OnVCPchanged(_VCPchangedEventArgs);
-        }*/
 
         private void show_peripheralsNotify(object sender, DeviceChangedEventArgs e)
         {

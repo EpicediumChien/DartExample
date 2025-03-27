@@ -46,7 +46,7 @@ namespace DDPM.SA.Common
 
         Task<Dictionary<string, InstalledAppInfo>> GetInstalledAppsList(bool isReload = false);
 
-        Task<IIC_Metadata> DownloadICCData(MonitorInfo m, bool blICCProfile = false, string savelPath = "", bool UpdateMetadata = false);
+        Task<IIC_Metadata> DownloadICCData(string modelName, string displayName, bool blICCProfile = false, string savelPath = "", bool UpdateMetadata = false);
 
 
         Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name);
