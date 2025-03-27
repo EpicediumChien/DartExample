@@ -12251,6 +12251,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         protected virtual void OnDeviceChanged(MonitorInfo mo, DeviceInfo di, DeviceChangedType type, CancellationToken token, string changedProperty = "")
         {
+            writelog($"[DeviceMangerPlugin] OnDeviceChanged {type.ToString()}, {changedProperty}");
             DeviceChangedEventArgs _EventArgs = new DeviceChangedEventArgs();
             if (_UpdateProgress != null && _FWUpdatePlugin != null)
             {
@@ -12280,7 +12281,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             if (changedProperty != "DisplayChanged" && type == DeviceChangedType.Peripherals_PlugIn)
+            {
                 CheckDeviceFirstTimesToConnect(mo, di);
+                writelog($"OnDeviceChanged: CheckDeviceFirstTimesToConnect out ... ");
+            }
 
             if (type == DeviceChangedType.Display_UnPlug)//Bruce 0224 add. If the dock has multiple connections, send a Display event to force the UI to return to home.
             {
@@ -12319,9 +12323,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     CheckUODFWUInfoPackage(true);
                 });
             }
-            else if (changedProperty.ToLower().Contains("remove"))
-            {
-            }
+            //else if (changedProperty.ToLower().Contains("remove"))
+            //{
+            //}
             else if ((string.Compare(changedProperty, "DisplayChanged", true) == 0))
             {
                 //if (_NKVMPlugin != null)
@@ -12596,8 +12600,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void show_peripheralsNotify(object sender, DeviceChangedEventArgs e)
         {
-            writelog("Receive Notify Event from PeripheralsPlugin");
-            writelog("Send out Notify Event from DeviceMangerPlugin");
+            writelog($"Send out Notify Event from DeviceMangerPlugin 1 : {e.type.ToString()}, {e.changedProperty}");
 
             OnPeripheralsNotify(e);
             OnDeviceChanged(null, e.device_peripherals, e.type, CancellationToken.None, e.changedProperty);
@@ -12605,7 +12608,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void show_peripheralsUpdateNotify(object sender, bool e)
         {
-            writelog("Receive UpdateNotify Event from PeripheralsPlugin");
             writelog("Send out UpdateNotify Event from DeviceMangerPlugin");
 
             OnPeripheralsUpdateNotify(e);
