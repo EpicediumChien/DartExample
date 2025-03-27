@@ -150,7 +150,7 @@ namespace NetworkKVM.Plugins
                 {
                     _logs.DebugMsg("[CreatNewNamedpipe] Named pipe is Disconnected.");
                     Disconnect();
-                    Thread.Sleep(1000);
+                    Task.Delay(1000).Wait();
                     cts = new CancellationTokenSource();
                     CancellationToken token = cts.Token;
                     _ = Task.Run(async () => await NamedPipeServer_UI(token));
@@ -214,7 +214,7 @@ namespace NetworkKVM.Plugins
                     {
                         _logs.DebugMsg("[UpdateMonitorInfo] do disconnect(1).");
                         Disconnect();
-                        Thread.Sleep(1000);
+                        Task.Delay(1000).Wait();
                         isMonintorChange = true;
                         _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(1).");
                         _ = Task.Run(async () => await NamedPipeServer(token));
@@ -251,7 +251,7 @@ namespace NetworkKVM.Plugins
                         {
                             _logs.DebugMsg("[UpdateMonitorInfo] do disconnect(2).");
                             Disconnect();
-                            Thread.Sleep(1000);
+                            Task.Delay(1000).Wait();
                             isMonintorChange = true;
                             //_runloop = true;
                             _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(2).");
@@ -288,7 +288,7 @@ namespace NetworkKVM.Plugins
                     //        {
                     //            _logs.DebugMsg("[UpdateMonitorInfo] do disconnect(3).");
                     //            Disconnect();
-                    //            Thread.Sleep(1000);
+                    //            Task.Delay(1000).Wait();
                     //            isMonintorChange = true;
                     //            //_runloop = true;
                     //            _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(4).");
@@ -323,7 +323,7 @@ namespace NetworkKVM.Plugins
                     //        {
                     //            _logs.DebugMsg("[UpdateMonitorInfo] do disconnect(4).");
                     //            Disconnect();
-                    //            Thread.Sleep(1000);
+                    //            Task.Delay(1000).Wait();
                     //            isMonintorChange = true;
                     //            //_runloop = true;
                     //            _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(6).");
@@ -354,7 +354,7 @@ namespace NetworkKVM.Plugins
                         {
                             _logs.DebugMsg("[UpdateMonitorInfo] do disconnect(4).");
                             Disconnect();
-                            Thread.Sleep(1000);
+                            Task.Delay(1000).Wait();
                             isMonintorChange = true;
                             //_runloop = true;
                             _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(6).");
@@ -999,7 +999,7 @@ namespace NetworkKVM.Plugins
         //    catch (System.Exception ex)
         //    {
         //        Trace.WriteLine($"ERROR : Run NKVM ==> {ex.ToString()}");
-        //        Thread.Sleep(1000);
+        //        Task.Delay(1000).Wait();
         //    }
         //    return Task.CompletedTask;
         //}
@@ -1039,7 +1039,7 @@ namespace NetworkKVM.Plugins
                         Trace.WriteLine($"ERROR : Run NKVM ==> {ex.ToString()}");
                         //_logs.DebugMsg($"ERROR : Run NKVM ==> {ex.ToString()}");
                         WriteLog($"ERROR : Run NKVM ==> {ex.ToString()}", log_type.error);
-                        Thread.Sleep(1000);
+                        Task.Delay(1000).Wait();
                         Disconnect();
                         return Task.FromResult(false);
                     }
@@ -1248,11 +1248,11 @@ namespace NetworkKVM.Plugins
                                     //_logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
                                     WriteLog($"[NetworkKVM] Failed to connect {ex.Message}", log_type.error);
                                     Disconnect();
-                                    Thread.Sleep(1000);
+                                    Task.Delay(1000).Wait();
                                     _AllInfoMonitors = GetMonitors().Result;
                                     if (CreateNamedPipe_init())
                                     {
-                                        Thread.Sleep(500);
+                                        Task.Delay(500).Wait();
                                     }
                                 }
                             }
@@ -1260,14 +1260,14 @@ namespace NetworkKVM.Plugins
                         else
                         {
                             //i++;
-                            Thread.Sleep(500);
+                            Task.Delay(500).Wait();
                         }
                     }
                     else
                     {
                         _logs.DebugMsg("pipeServer is null");
                         //Disconnect();
-                        //Thread.Sleep(1000);
+                        //Task.Delay(1000).Wait();
                         _AllInfoMonitors = GetMonitors().Result;
                         break; // 2024-12-13 Elie, break infinite loop when it doesn't support NKVM.
                     }
@@ -1364,16 +1364,16 @@ namespace NetworkKVM.Plugins
                                     //_logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
                                     WriteLog($"[NetworkKVM] Failed to connect {ex.Message}", log_type.error);
                                     Disconnect();
-                                    Thread.Sleep(1000);
+                                    Task.Delay(1000).Wait();
                                     _AllInfoMonitors = GetMonitors().Result;
                                     if (CreateNamedPipe())
                                     {
-                                        Thread.Sleep(500);
+                                        Task.Delay(500).Wait();
                                     }
                                     //else
                                     //{
                                     //    //i++;
-                                    //    Thread.Sleep(500);
+                                    //    Task.Delay(500).Wait();
                                     //}
                                 }
                             }
@@ -1381,14 +1381,14 @@ namespace NetworkKVM.Plugins
                         else
                         {
                             //i++;
-                            Thread.Sleep(500);
+                            Task.Delay(500).Wait();
                         }
                     }
                     else
                     {
                         _logs.DebugMsg("pipeServer is null");
                         //Disconnect();
-                        //Thread.Sleep(1000);
+                        //Task.Delay(1000).Wait();
                         _AllInfoMonitors = GetMonitors().Result;
                         break;
                     }
@@ -1542,7 +1542,7 @@ namespace NetworkKVM.Plugins
                 _logs.DebugMsg($"[NetworkKVM] Client Security Fail....({info})");
                 namedpipe_Fail++;
                 Disconnect();
-                Thread.Sleep(1000);
+                Task.Delay(1000).Wait();
                 CreateNamedPipe_init();
             }
 #endif
@@ -1632,8 +1632,8 @@ namespace NetworkKVM.Plugins
                     {
                         bytesRead = await pipeServer.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
                     }
-                    catch (Exception ex) 
-                    { 
+                    catch (Exception ex)
+                    {
                         //_logs.DebugMsg("[NetworkKVM] ReadAsync failed, message: " + ex.Message);
                         WriteLog($"ReadAsync failed, message: " + ex.Message, log_type.error);
                         return string.Empty;

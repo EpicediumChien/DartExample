@@ -31,6 +31,7 @@ using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.
 using Console = System.Console;
 using Convert = System.Convert;
 using IDs = DDPM.SA.Common.IDs;
+using Task = System.Threading.Tasks.Task;
 
 namespace DDPM.CLI.Plugins.Display
 {
@@ -241,8 +242,8 @@ namespace DDPM.CLI.Plugins.Display
                 return result;
             }
 
-            if (commandLineInput.Options.Count > 0 && 
-                commandLineInput.Options[0].Option_Value.Equals("Display", StringComparison.OrdinalIgnoreCase) && 
+            if (commandLineInput.Options.Count > 0 &&
+                commandLineInput.Options[0].Option_Value.Equals("Display", StringComparison.OrdinalIgnoreCase) &&
                 !input_param_validation(devMgr, commandLineInput, ref result))
             {
                 return result;
@@ -6822,7 +6823,7 @@ namespace DDPM.CLI.Plugins.Display
                         MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
                         if (mo == null)
                         {
-                            Thread.Sleep(5000);
+                            Task.Delay(5000).Wait();
                             _AllInfoMonitors = _devMgr.GetMonitors().Result;
                             break;
                         }
@@ -7045,7 +7046,7 @@ namespace DDPM.CLI.Plugins.Display
                     bool flag = true;
                     while (flag && count < 1000)
                     {
-                        Thread.Sleep(3000);
+                        Task.Delay(3000).Wait();
                         _AllInfoMonitors = devMgr.GetMonitors().Result;
                         var serviceTag = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == monitorInfo.edid.ServiceTag);
                         if (serviceTag != null)
@@ -11049,7 +11050,7 @@ namespace DDPM.CLI.Plugins.Display
                                 jsonString = r.ReadToEnd();
                             }
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             writelog($"[CLIDisplayPlugins] ApplyConfiguration failed, exception message: {ex.Message}");
                         }
@@ -12573,7 +12574,7 @@ namespace DDPM.CLI.Plugins.Display
                             else if (commandLineInput.Model != null && commandLineInput.Model.Count > 0 && !string.IsNullOrEmpty(commandLineInput.Model[0].ToString()))
                             {
                                 var math = _deviceinfo.FindAll(x => x.ModelNumber.ToString().Equals(commandLineInput.Model[0].ToString(), StringComparison.OrdinalIgnoreCase));
-                                if (math.Count != 0 )
+                                if (math.Count != 0)
                                 {
                                     mathdevs.AddRange(math);
                                     foreach (var device in mathdevs)
@@ -13088,8 +13089,8 @@ namespace DDPM.CLI.Plugins.Display
                 //if (value.Count > 1)
                 //{
 
-                    writelog("Monitor is support speaker");
-                    supported = true;
+                writelog("Monitor is support speaker");
+                supported = true;
                 //}
             }
             else
@@ -13455,7 +13456,7 @@ namespace DDPM.CLI.Plugins.Display
                 retcode = false;
                 output = "No Monitor found";
                 return (retcode, output);
-            }              
+            }
         }
         private bool _display_changed = false;
         private void DevMgr_Displaychanged(object sender, DisplaychangedEventArgs e)
@@ -13483,11 +13484,11 @@ namespace DDPM.CLI.Plugins.Display
             if (commandLineInput.Command == "SET")
             {
                 //if (commandLineInput.DeviceIndex.Count <= 0 && commandLineInput.ServiceTag.Count <= 0 && commandLineInput.Model.Count <= 0)
-                if(_monitorIndeies.Count > 1)
+                if (_monitorIndeies.Count > 1)
                 {
                     bool flag = true;
                     var serviceTagList = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).Distinct().ToList();
-                    
+
                     List<string> swapIsDone = new List<string>();
                     int count = 0;
                     while (flag && count < 1000)
@@ -13500,7 +13501,7 @@ namespace DDPM.CLI.Plugins.Display
                             MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
                             if (mo == null)
                             {
-                                Thread.Sleep(5000);
+                                Task.Delay(5000).Wait();
                                 _AllInfoMonitors = _devMgr.GetMonitors().Result;
                                 Console.WriteLine($"Anf_New Monitor count {_AllInfoMonitors.Count}");
                                 break;
@@ -13533,7 +13534,7 @@ namespace DDPM.CLI.Plugins.Display
                                             int timeout_count = 0;
                                             while (_display_changed == false)
                                             {
-                                                Thread.Sleep(1000);
+                                                Task.Delay(1000).Wait();
                                                 //check all monitors
 
                                                 if (timeout_count++ > 20)
@@ -13602,7 +13603,7 @@ namespace DDPM.CLI.Plugins.Display
                         count++;
                     }
                 }
-                else if( _monitorIndeies.Count == 1)
+                else if (_monitorIndeies.Count == 1)
                 {
                     foreach (int idx in _monitorIndeies)
                     {
@@ -13627,7 +13628,7 @@ namespace DDPM.CLI.Plugins.Display
                                     switch (commandLineInput.Options[0].Option_Value.ToUpper())
                                     {
                                         case "OFF":
-                                            writelog($"PowerSetting D6 set off");                                           
+                                            writelog($"PowerSetting D6 set off");
                                             retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x05").Result;
                                             //cli_Response.Value = commandLineInput.Options[0].Option_Value;                                           
                                             break;
@@ -13652,7 +13653,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                             break;
                                     }
-                                    Sleep(3000);
+                                    Task.Delay(3000).Wait();
                                 }
                                 else
                                     somethingfail |= 0x10;
@@ -13694,7 +13695,7 @@ namespace DDPM.CLI.Plugins.Display
                     System.Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(rsp, Formatting.Indented);
                 }
-                
+
             }
             else if (commandLineInput.Command == "GET")
             {
@@ -15444,7 +15445,7 @@ namespace DDPM.CLI.Plugins.Display
 
                 CLIActionEvent += OnCLINKVMv2;
                 await devMgr.GetNKVMStatus();
-                Sleep(10000);
+                Task.Delay(10000).Wait();
 
 
                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
@@ -16459,7 +16460,7 @@ namespace DDPM.CLI.Plugins.Display
                 cli_FWU_RESPONSE.FWUpdateRESPONSE.Clear();
                 do
                 {
-                    Thread.Sleep(100);
+                    Task.Delay(100).Wait();
                 } while (retFWUpdateInfos == null);
                 bool b = true;
                 foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
@@ -16509,7 +16510,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     do
                     {
-                        Thread.Sleep(100);
+                        Task.Delay(100).Wait();
                     } while (retFWUpdateInfos == null);
                     foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
                     {

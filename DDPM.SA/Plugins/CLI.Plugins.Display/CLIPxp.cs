@@ -524,12 +524,12 @@ namespace CLI.Plugins.Display
                         string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
                         if (!String.IsNullOrWhiteSpace(stIsDone))
                             continue;
-                        Thread.Sleep(5000);
+                        Task.Delay(5000).Wait();
                         _AllInfoMonitors = _devMgr.GetMonitors().Result;
                         MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
                         if (mo == null)
                         {
-                            Thread.Sleep(5000);
+                            Task.Delay(5000).Wait();
                             _AllInfoMonitors = _devMgr.GetMonitors().Result;
                             break;
                         }
@@ -538,7 +538,7 @@ namespace CLI.Plugins.Display
                             isOK = _devMgr.SetPbpMode(mo, 0x00).Result;
                             if (!isOK)
                             {
-                                Thread.Sleep(5000);
+                                Task.Delay(5000).Wait();
                                 _AllInfoMonitors = _devMgr.GetMonitors().Result;
                                 break;
                             }
@@ -549,7 +549,7 @@ namespace CLI.Plugins.Display
                         flag = false;
                     count++;
                 }
-                //Thread.Sleep(5000);
+                //Task.Delay(5000).Wait();
             }
             if (_cmdLineInput.Options.Count == 2)
             {
@@ -562,12 +562,12 @@ namespace CLI.Plugins.Display
                         string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
                         if (!String.IsNullOrWhiteSpace(stIsDone))
                             continue;
-                        Thread.Sleep(5000);
+                        Task.Delay(5000).Wait();
                         _AllInfoMonitors = _devMgr.GetMonitors().Result;
                         MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
                         if (mo == null)
                         {
-                            Thread.Sleep(5000);
+                            Task.Delay(5000).Wait();
                             _AllInfoMonitors = _devMgr.GetMonitors().Result;
                             break;
                         }
@@ -612,7 +612,7 @@ namespace CLI.Plugins.Display
                             if (!isOK)
                             {
                                 isOK = false;
-                                Thread.Sleep(5000);
+                                Task.Delay(5000).Wait();
                                 _AllInfoMonitors = _devMgr.GetMonitors().Result;
                                 break;
                             }
@@ -636,12 +636,12 @@ namespace CLI.Plugins.Display
                     string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
                     if (!String.IsNullOrWhiteSpace(stIsDone))
                         continue;
-                    Thread.Sleep(5000);
+                    Task.Delay(5000).Wait();
                     _AllInfoMonitors = _devMgr.GetMonitors().Result;
                     MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
                     if (mo == null)
                     {
-                        Thread.Sleep(5000);
+                        Task.Delay(5000).Wait();
                         _AllInfoMonitors = _devMgr.GetMonitors().Result;
                         break;
                     }
@@ -651,7 +651,7 @@ namespace CLI.Plugins.Display
                         isPass = _devMgr.SetPbpMode(mo, (UInt16)pxpModeObj.ModeCode).Result;
                         if (!isPass)
                         {
-                            Thread.Sleep(5000);
+                            Task.Delay(5000).Wait();
                             _AllInfoMonitors = _devMgr.GetMonitors().Result;
                             break;
                         }
@@ -695,12 +695,12 @@ namespace CLI.Plugins.Display
                         string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
                         if (!String.IsNullOrWhiteSpace(stIsDone))
                             continue;
-                        Thread.Sleep(5000);
+                        Task.Delay(5000).Wait();
                         _AllInfoMonitors = _devMgr.GetMonitors().Result;
                         MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
                         if (mo == null)
                         {
-                            Thread.Sleep(5000);
+                            Task.Delay(5000).Wait();
                             _AllInfoMonitors = _devMgr.GetMonitors().Result;
                             break;
                         }
@@ -722,7 +722,7 @@ namespace CLI.Plugins.Display
                                 if (!isOK)
                                 {
                                     isOK = false;
-                                    Thread.Sleep(5000);
+                                    Task.Delay(5000).Wait();
                                     _AllInfoMonitors = _devMgr.GetMonitors().Result;
                                     break;
                                 }

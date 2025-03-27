@@ -134,7 +134,7 @@ namespace DDPM.EABroker
 
             while (added <= 0)
             {
-                Thread.Sleep(10);
+                Task.Delay(10).Wait();
             }
         }
         #endregion

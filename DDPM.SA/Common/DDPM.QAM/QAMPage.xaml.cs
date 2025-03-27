@@ -264,7 +264,7 @@ namespace DDPM.QAM
 
         //    while (true)
         //    {
-        //        Thread.Sleep(1000);
+        //        Task.Delay(1000).Wait();
         //        ++i;
 
         //        //wait for homepage is available

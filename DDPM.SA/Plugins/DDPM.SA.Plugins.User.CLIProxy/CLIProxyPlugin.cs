@@ -482,7 +482,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         IDeviceManagerSA _devMgr = _DevManagerPlugin;
                         var _AllInfoMonitors = _devMgr.GetMonitors().Result;
                         List<DeviceInfo> _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
-                        List<CLIEventResult> cliEventResults = new List<CLIEventResult>();
+                        //List<CLIEventResult> cliEventResults = new List<CLIEventResult>();
                         List<CLI_PeripheralRESPONSE> cliPeripheralEventResults = new List<CLI_PeripheralRESPONSE>();
                         var total_result = "";
                         if (_AllInfoMonitors.Count > 0)
@@ -499,7 +499,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                                 e.commandLineInput.TargetFeature = str;
                                 cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
                                 total_result += $"\n{cliEventResult.serialize_Json_response}";
-                                Thread.Sleep(5000);
+                                Task.Delay(5000).Wait();
                             }
                         }
                         _deviceinfo.ForEach(x =>
@@ -548,7 +548,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                                 msg.Message = result;
                             }
                             cliPeripheralEventResults.Add(msg);
-                            Thread.Sleep(5000);
+                            Task.Delay(5000).Wait();
                         });
                         total_result += $"\n{JsonConvert.SerializeObject(cliPeripheralEventResults, Formatting.Indented)}";
 
@@ -954,7 +954,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 .Show(toast =>
                 {
                     toast.ExpirationTime = DateTime.Now.AddSeconds(300);
-                }               
+                }
                 );
         }
         public void showToast(string id, string header, string msg)
@@ -1026,7 +1026,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 if (arg.Contains("value"))
                 {
                     string[] rootArg = arg.Split('=');
-                    
+
                     foreach (string subAge in rootArg)
                     {
                         if (subAge.Contains("defer") || subAge.Contains("force"))
@@ -1062,7 +1062,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             continue;
                         }
                     }
-                    
+
 
                 }
             }

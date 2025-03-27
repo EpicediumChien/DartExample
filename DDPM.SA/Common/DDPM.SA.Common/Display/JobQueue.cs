@@ -27,7 +27,7 @@ namespace DDPM.SA.Common.Display
                         }
                         else
                         {
-                            Thread.Sleep(100);
+                            Task.Delay(100).Wait();
                         };
                     }
                     catch (Exception ex)
@@ -65,7 +65,7 @@ namespace DDPM.SA.Common.Display
         {
             bool rst = SystemParametersInfo(uAction, uParam, ref lpvParam, fWinIni);
 
-            if(!rst)
+            if (!rst)
             {
 #if DEBUG
                 Console.WriteLine("[JobQueue] SystemParametersInfo failed.");

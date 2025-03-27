@@ -1194,7 +1194,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //write back to settings
             //r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
 
-            //Thread.Sleep(100);
+            //Task.Delay(100).Wait();
             //}
 
             Trace.WriteLine("reqKey (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory) = " + _GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory);
@@ -1435,7 +1435,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //write back to settings
             r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
 
-            Thread.Sleep(100);
+            Task.Delay(100).Wait();
             */
 
             //show OSD over colorpreset plugin
@@ -1496,7 +1496,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //write back to settings
             //r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
 
-            //Thread.Sleep(100);
+            //Task.Delay(100).Wait();
 
             //show OSD over colorpreset plugin
             //_ColorPresetPlugin.ShowOSD_ColoPreset(m, ColorPreset_Name);
@@ -1593,7 +1593,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var read = _SettingsPlugin.ReadColorPresetSettings().Result;
             var temp = _ColorPresetPlugin.AddColorPresetForMonitorConfig(m, AppName, ColorPreset_Name, ability, read).Result;
             _SettingsPlugin.WriteColorPresetSettings(temp);
-            Thread.Sleep(100);
+            Task.Delay(100).Wait();
 
             return Task.FromResult(true);
         }
@@ -1617,7 +1617,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             var temp = _ColorPresetPlugin.ChangeColorPresetForMonitorConfig(_AllInfoMonitors[Convert.ToInt32(index_monitor)], AppName, ColorPreset_Name, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
             _SettingsPlugin.WriteColorPresetSettings(temp);
-            Thread.Sleep(100);
+            Task.Delay(100).Wait();
 
             return;
         }
@@ -1640,7 +1640,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             var temp = _ColorPresetPlugin.DeleteColorPresetForMonitorConfig(_AllInfoMonitors[Convert.ToInt32(index_monitor)], AppName, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
             _SettingsPlugin.WriteColorPresetSettings(temp);
-            Thread.Sleep(100);
+            Task.Delay(100).Wait();
 
             return;
         }
@@ -6379,7 +6379,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     writelog($"CloseDDPM Error:{ex.Message}");
                 }
-                Thread.Sleep(5000);
+                Task.Delay(5000).Wait();
                 try
                 {
                     writelog($"RunDDPM start");
@@ -10478,7 +10478,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 writelog($"[DeviceMangerPlugin] SaveGlobalSettingParam False...");
                             }
                         }
-                        Thread.Sleep(1000);
+                        Task.Delay(1000).Wait();
                     }
                 });
                 obj = new Object();
@@ -12307,12 +12307,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //}
 
                 //0909 Bruce move to add and remove
-                var thread = new Thread(() =>
+                //var thread = new Thread(() =>
+                //{
+                //    //CheckUpdate();
+                //    CheckUODFWUInfoPackage(true);
+                //});
+                //thread.Start();
+                Task.Run(() =>
                 {
                     //CheckUpdate();
                     CheckUODFWUInfoPackage(true);
                 });
-                thread.Start();
             }
             else if (changedProperty.ToLower().Contains("remove"))
             {
@@ -13108,7 +13113,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         }
                                     }
                                 }
-                                Thread.Sleep(1000);
+                                Task.Delay(1000).Wait();
                                 loopCount++;
                                 writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - Peripherals Plugin is in a running condition");
                                 writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - WalkThrough GetDevices {loopCount.ToString()}");
@@ -16389,7 +16394,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var tmp = colorPresetSettings;
             //write back to settings
             r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
-            Thread.Sleep(100);
+            Task.Delay(100).Wait();
             //}
             return Task.FromResult(r);
         }
@@ -16412,7 +16417,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var tmp = hotkeySettings;
             //write back to settings
             r = _SettingsPlugin.WriteHotkeySettings(tmp).Result;
-            Thread.Sleep(100);
+            Task.Delay(100).Wait();
             if (r)
             {
                 ToNKVM_HotKeys(tmp);
@@ -16447,7 +16452,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var tmp = powerNapSettings;
             //write back to settings
             r = _SettingsPlugin.WritePowerNapSettings(tmp).Result;
-            Thread.Sleep(100);
+            Task.Delay(100).Wait();
             //}
             return Task.FromResult(r);
         }*/
