@@ -151,8 +151,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     //Workaround to build a tempList then assign to ViewModel.HomeDevices
                     //To avoid exception (unknown reason)
 
-                    foreach (MonitorInfo mi in monitorInfos)
+                    for (int i = 0; i < monitorInfos.Count; i++)
                     {
+                        MonitorInfo mi = monitorInfos[i];
                         _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos {mi.AliasDeviceName} ... ");
                         //Workaround to get InputSource of Dell Monitor
                         //
@@ -169,12 +170,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             //Robert_Lin, 2024-9-30, Comment-out after phase in Monitor Product images
                             //DeviceImage = mi.modelName.ToUpper().StartsWith("G") ? DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/G.png") : mi.modelName.ToUpper().StartsWith("AW") ? DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/AW.png") : DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Display.png")
                         };
-
+                        _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos after new HomeDevice(_log) ... ");
                         //Robert_Lin, 2024-11-20 PIMS-302436, Show the user input name to replace InputCable
                         //Robert_Lin 2025-2-16 Add null check
                         //NEW:
                         if (DdpmCommonHelper.DeviceManagerSA != null)
                         {
+                            _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos DeviceManagerSA != null ... ");
                             //END of NEW
                             //OLD:
                             Dictionary<string, InputInfo> inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(mi).Result;
@@ -185,6 +187,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                                 if (inputList.TryGetValue(mi.inputCable, out mainInput))
                                 {
                                     dev.InputName = mainInput.InputName;
+                                    _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos InputName : {dev.InputName} ... ");
                                 }
                             }
                             else
@@ -194,20 +197,27 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         }
                         //
                         ///////////////////////////////////////////////////////////////////////////////
-
+                        _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos after check DeviceManagerSA ... ");
                         //2024-6-20 Robert_Lin, check if any some model already in list
                         List<HomeDevice> sameModel = tempList.FindAll(x => x.IsSameModel(dev));
+
                         if (sameModel.Any())
                         {
-                            _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos sameModel ... ");
+                            _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos sameModel true ... ");
                             //Assign InstanceNo
                             int instanceNo = 1;
-                            foreach (HomeDevice hd in sameModel)
+                            for (int j = 0; j < sameModel.Count; j++)
                             {
+                                HomeDevice hd = sameModel[j];
                                 hd.InstanceNo = instanceNo;
                                 instanceNo++;
+                                _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos sameModel for j = {j}, {hd.MonitorInfo.AliasDeviceName}, instanceNo = {instanceNo} ... ");
                             }
                             dev.InstanceNo = instanceNo;
+                        }
+                        else
+                        {
+                            _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos sameModel false ... ");
                         }
 
                         //_homeDevices.Add(dev);
@@ -215,19 +225,22 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
                         //2024-5-8 Robert_Lin to validate RWD in HomePage, limit the device count=1
                         //break;
+                        _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos for i = {i} ... ");
                     }
 
                     //Robert_Lin, 2024-7-10, Sort by DisplayName
                     tempList.Sort((x, y) => x.DisplayName.CompareTo(y.DisplayName));
-
+                    _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos after tempList Sort ... ");
                     //Assign SortOrder
                     int orderBase = (int)eDeviceCategory.Display;
                     int orderIndex = 0;
                     const int orderMul = 10;
-                    foreach (HomeDevice dev in tempList)
+                    for (int k = 0; k < tempList.Count; k++)
                     {
+                        HomeDevice dev = tempList[k];
                         dev.SortOrder = orderBase + orderMul * orderIndex;
                         orderIndex++;
+                        _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos tempList for k = {k}, orderIndex = {orderIndex} ... ");
                     }
                     _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos {tempList.Count} ... ");
                     //OnPropertyChanged("HomeDevices");
@@ -271,9 +284,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     //List<HomeDevice> tempList = new List<HomeDevice>();
 
                     IsPandoraPaired = false;
-                    foreach (DeviceInfo di in deviceInfos)
+                    for (int i = 0; i < deviceInfos.Count; i++)
                     {
-                        _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos foreach start ... ");
+                        DeviceInfo di = deviceInfos[i];
+                        _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos {di.ModelNumber} ... ");
                         //Check if duplicate device is existing in list already
                         HomeDevice? dupDev = tempList.Find(x => x.IsSamePeripheralDevice(di));
                         if (dupDev != null)
@@ -299,7 +313,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             DeviceName = di.DeviceName,
                             DeviceInfo = di
                         };
-
+                        _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos after HomeDevice(_log) ... ");
                         //2024-6-20, Peripherals DeviceImage will be determined by HomeDevice internally.
                         //Upper owner just set DeviceInfo to HomeDevice can trigger it to load the product image.
 
@@ -395,6 +409,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
                             dev.DeviceCategory = eDeviceCategory.Webcam;
                             dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath);
+                            _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos after GetImageSourceFromCommonResource ... ");
                             //dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_WB7022.png");
 
                             //Robert_Lin, 2024-7-10, Find if any integrated Monitor (Same ModelNumber)
@@ -542,10 +557,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             _log.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos sameModel ... ");
                             //Assign InstanceNo
                             int instanceNo = 1;
-                            foreach (HomeDevice hd in sameModel)
+                            for (int j = 0; j < sameModel.Count; j++)
                             {
+                                HomeDevice hd = sameModel[j];
                                 hd.InstanceNo = instanceNo;
                                 instanceNo++;
+                                _log.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos sameModel for j = {j}, {hd.DeviceInfo!.ModelNumber}, instanceNo = {instanceNo} ... ");
                             }
                             dev.InstanceNo = instanceNo;
                         }
@@ -555,9 +572,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     }
                     //OnPropertyChanged("HomeDevices");
 
-                    //Sort the list with SortOrder
-                    _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos {tempList.Count} ... ");
+                    //Sort the list with SortOrder                   
                     tempList.Sort((x, y) => x.SortOrder.CompareTo(y.SortOrder));
+                    _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos after tempList.Sort, count = {tempList.Count} ... ");
                     System.Windows.Application.Current.Dispatcher.Invoke(() =>
                     {
                         HomeDevices = new ObservableCollection<HomeDevice>(tempList);

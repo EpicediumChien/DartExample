@@ -748,112 +748,119 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private async Task GetDdpmDevicesAsync(IDeviceManagerSA deviceManager, DeviceChangedEventArgs e = null, string condition = "all")
         {
-            _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync {condition} in ...");
-            if (!SpinWait.SpinUntil(() =>
-            (_IDeviceManagerPluginCondition is IFrameworkPluginConditionNotification), TimeSpan.FromMinutes(2)))
+            try
             {
-                Console.WriteLine("Could not establish communication with DeviceManager plugin!!");
-                _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Could not establish communication with DeviceManager plugin!!");
-                return;
-            }
-            _log.Info("[DdpmHomePlugin] GetDdpmDevicesAsync is invoked");
-
-            //_displayService = await deviceManager.GetDisplayServiceInterface(); Robert0502
-            if (deviceManager != null)
-            {
-                DdpmCommonHelper.DeviceManagerSA = deviceManager;
-                DdpmCommonHelper.Log = this._log;//assign this log for global using
-                DdpmCommonHelper.ReadDDPMSettings(true);//.Settings_Cache = deviceManager.ReloadAppConfigData().Result;
-                //List<MonitorInfo> monitorInfos = deviceManager.GetMonitors().Result;
-                if (condition.Equals("all") || condition.Equals("displaychanged"))
+                _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync {condition} in ...");
+                if (!SpinWait.SpinUntil(() =>
+                (_IDeviceManagerPluginCondition is IFrameworkPluginConditionNotification), TimeSpan.FromMinutes(2)))
                 {
-                    _monitorInfos = deviceManager.GetMonitors().Result;
-                    _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Monitor count is ${_monitorInfos.Count}");
+                    Console.WriteLine("Could not establish communication with DeviceManager plugin!!");
+                    _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Could not establish communication with DeviceManager plugin!!");
+                    return;
                 }
-                if (condition.Equals("all") || !condition.Equals("displaychanged"))
+                _log.Info("[DdpmHomePlugin] GetDdpmDevicesAsync is invoked");
+
+                //_displayService = await deviceManager.GetDisplayServiceInterface(); Robert0502
+                if (deviceManager != null)
                 {
-                    DeviceHelper deviceHelper = deviceManager.GetDevices().Result;
-                    if (deviceHelper == null || deviceHelper.deviceInfo.Count <= 0)
+                    DdpmCommonHelper.DeviceManagerSA = deviceManager;
+                    DdpmCommonHelper.Log = this._log;//assign this log for global using
+                    DdpmCommonHelper.ReadDDPMSettings(true);//.Settings_Cache = deviceManager.ReloadAppConfigData().Result;
+                                                            //List<MonitorInfo> monitorInfos = deviceManager.GetMonitors().Result;
+                    if (condition.Equals("all") || condition.Equals("displaychanged"))
                     {
-                        deviceHelper = deviceManager.GetDevices(true).Result;
-                        _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Peripheral count is ${deviceHelper.deviceInfo.Count}");
+                        _monitorInfos = deviceManager.GetMonitors().Result;
+                        _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Monitor count is ${_monitorInfos.Count}");
                     }
-                    //List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
-                    _deviceInfos = new List<DeviceInfo>();
-                    if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
+                    if (condition.Equals("all") || !condition.Equals("displaychanged"))
                     {
-                        _deviceInfos = deviceHelper.deviceInfo;
+                        DeviceHelper deviceHelper = deviceManager.GetDevices().Result;
+                        if (deviceHelper == null || deviceHelper.deviceInfo.Count <= 0)
+                        {
+                            deviceHelper = deviceManager.GetDevices(true).Result;
+                            _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Peripheral count is ${deviceHelper.deviceInfo.Count}");
+                        }
+                        //List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
+                        _deviceInfos = new List<DeviceInfo>();
+                        if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
+                        {
+                            _deviceInfos = deviceHelper.deviceInfo;
+                        }
+                        _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Peripheral count is ${_deviceInfos.Count}");
                     }
-                    _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Peripheral count is ${_deviceInfos.Count}");
-                }
-                _ = Task.Run(() =>
-                {
-                    _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Task.Run {_isConfigured.ToString()} ...");
-                    while (!_isConfigured)
-                        ;
-                    _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Task.Run {_isConfigured.ToString()} ...");
-                    Interfaces.IDdpmHomePageViewModel? viewModel = PluginIoc.GetService<Interfaces.IDdpmHomePageViewModel>();
-                    if (viewModel != null)
+                    _ = Task.Run(() =>
                     {
-                        //Robert_Lin, 2024-12-16, PIMS-329606 Observe no device connected manu flash on disconnect - connect device.
-                        //To prevent "Add your first device" (flash) show, we will show Please wait before clear all devices
-                        viewModel.IsPleaseWaitVisible = true;
-                        _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync IsPleaseWaitVisible true ...");
-
-                        viewModel.ResetDevices();
-
-                        _log.Info("[DdpmHomePlugin] GetDdpmDevicesAsync Adding Monitors to HomePageViewModel...");
-
-                        viewModel.PrepareMonitorInfos(_monitorInfos);
-
-                        _log.Info("[DdpmHomePlugin] GetDdpmDevicesAsync Adding Periphrals to HomePageViewModel...");
-                        viewModel.PrepareDeviceInfos(_deviceInfos);
-
-                        //Robert_Lin, 2024-8-5 for PIMS-289060, display a "Please wait" UI before devices ready
-                        if (viewModel.HomeDevices.Count == 0)
+                        _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Task.Run {_isConfigured.ToString()} ...");
+                        while (!_isConfigured)
+                            ;
+                        _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Task.Run {_isConfigured.ToString()} ...");
+                        Interfaces.IDdpmHomePageViewModel? viewModel = PluginIoc.GetService<Interfaces.IDdpmHomePageViewModel>();
+                        if (viewModel != null)
                         {
                             //Robert_Lin, 2024-12-16, PIMS-329606 Observe no device connected manu flash on disconnect - connect device.
-                            //Invoke_PleaseWait() will set IsPleaseWaitVisible=true again, and reset to false, when device count>0
-                            // or time out.
-                            //The "PleaseWait" UI will be displayed and auto closed after timeout (=12 sec)
-                            _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Invoke_PleaseWait");
-                            viewModel.Invoke_PleaseWait();
-                            //Robert_Lin, 2025-1-7, the DDPMDebug.txt solution will be removed, use DevSettings instaed.
-                            //NEW:
-                            if (DevSettings.DdpmHomeAddFakeMonitorIfHomeDevicesEmpty())
-                            {
-                                //Add a Fake monitor to the listView of Homepage
-                                _viewModel?.AddFakeMonitorToListView();
-                                _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync AddFakeMonitorToListView");
-                            }
-                            //OLD:
-                            ////Robert_Lin, 2024-11-9 for Developer debug, check if C:\temp\DDPMDebug.txt contains
-                            ////[DDPMDebug]
-                            ////HomePlugin.GetDdpmDevicesAsync.AddFakeMonitorIfEmpty=1
-                            //if (File.Exists(@"C:\temp\DDPMDebug.txt"))
-                            //{
-                            //    if (User32.IniReadInt("DDPMDebug", "HomePlugin.GetDdpmDevicesAsync.AddFakeMonitorIfEmpty", 0, @"C:\temp\DDPMDebug.txt") == 1)
-                            //    {
-                            //        //Add a Fake monitor to the listView of Homepage
-                            //        _viewModel?.AddFakeMonitorToListView();
-                            //    }
-                            //}
+                            //To prevent "Add your first device" (flash) show, we will show Please wait before clear all devices
+                            viewModel.IsPleaseWaitVisible = true;
+                            _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync IsPleaseWaitVisible true ...");
 
+                            viewModel.ResetDevices();
+
+                            _log.Info("[DdpmHomePlugin] GetDdpmDevicesAsync Adding Monitors to HomePageViewModel...");
+
+                            viewModel.PrepareMonitorInfos(_monitorInfos);
+
+                            _log.Info("[DdpmHomePlugin] GetDdpmDevicesAsync Adding Periphrals to HomePageViewModel...");
+                            viewModel.PrepareDeviceInfos(_deviceInfos);
+
+                            //Robert_Lin, 2024-8-5 for PIMS-289060, display a "Please wait" UI before devices ready
+                            if (viewModel.HomeDevices.Count == 0)
+                            {
+                                //Robert_Lin, 2024-12-16, PIMS-329606 Observe no device connected manu flash on disconnect - connect device.
+                                //Invoke_PleaseWait() will set IsPleaseWaitVisible=true again, and reset to false, when device count>0
+                                // or time out.
+                                //The "PleaseWait" UI will be displayed and auto closed after timeout (=12 sec)
+                                _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Invoke_PleaseWait");
+                                viewModel.Invoke_PleaseWait();
+                                //Robert_Lin, 2025-1-7, the DDPMDebug.txt solution will be removed, use DevSettings instaed.
+                                //NEW:
+                                if (DevSettings.DdpmHomeAddFakeMonitorIfHomeDevicesEmpty())
+                                {
+                                    //Add a Fake monitor to the listView of Homepage
+                                    _viewModel?.AddFakeMonitorToListView();
+                                    _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync AddFakeMonitorToListView");
+                                }
+                                //OLD:
+                                ////Robert_Lin, 2024-11-9 for Developer debug, check if C:\temp\DDPMDebug.txt contains
+                                ////[DDPMDebug]
+                                ////HomePlugin.GetDdpmDevicesAsync.AddFakeMonitorIfEmpty=1
+                                //if (File.Exists(@"C:\temp\DDPMDebug.txt"))
+                                //{
+                                //    if (User32.IniReadInt("DDPMDebug", "HomePlugin.GetDdpmDevicesAsync.AddFakeMonitorIfEmpty", 0, @"C:\temp\DDPMDebug.txt") == 1)
+                                //    {
+                                //        //Add a Fake monitor to the listView of Homepage
+                                //        _viewModel?.AddFakeMonitorToListView();
+                                //    }
+                                //}
+
+                            }
+                            else
+                            {
+                                viewModel.IsPleaseWaitVisible = false;
+                                _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync IsPleaseWaitVisible false ...");
+                                viewModel.DumpDevicesToLog();
+                            }
                         }
-                        else
-                        {
-                            viewModel.IsPleaseWaitVisible = false;
-                            _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync IsPleaseWaitVisible false ...");
-                            viewModel.DumpDevicesToLog();
-                        }
-                    }
-                });
+                    });
+                }
+                else
+                {
+                    _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync IDeviceManagerSA is null");
+                }
+                _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync out ... ");
             }
-            else
+            catch (Exception ex)
             {
-                _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync IDeviceManagerSA is null");
+                _log.Error($"[DdpmHomePlugin] GetDdpmDevicesAsync  Exception: {ex.Message}");
             }
-            _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync out ... ");
         }
 
         /// <summary>
