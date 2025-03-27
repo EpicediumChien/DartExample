@@ -39,7 +39,7 @@ namespace DDPM.SA.Common.Settings
                 {
                     try
                     {
-                        client.Timeout = TimeSpan.FromSeconds(5);
+                        client.Timeout = TimeSpan.FromSeconds(60);
                         HttpResponseMessage response = client.GetAsync(SW_URL + "SWMetaData.json").Result;
                         response.EnsureSuccessStatusCode();
                         string fileContent = response.Content.ReadAsStringAsync().Result;
@@ -181,7 +181,7 @@ namespace DDPM.SA.Common.Settings
                 {
                     try
                     {
-                        client.Timeout = TimeSpan.FromSeconds(5);
+                        client.Timeout = TimeSpan.FromSeconds(60);
                         HttpResponseMessage response = client.GetAsync(SW_URL + "AppUpdates.json").Result;
                         response.EnsureSuccessStatusCode();
                         string fileContent = response.Content.ReadAsStringAsync().Result;

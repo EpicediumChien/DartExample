@@ -1040,6 +1040,19 @@ namespace DDPM.SA.Plugin.CLIManager
             WriteLog($"NetworkKVMAccessReset({command}) Exit");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
+
+        public Task SendNKVMCommand()
+        {
+            WriteLog("SendNKVMCommand...");
+            CommandLineInput commandLine = new CommandLineInput();
+            commandLine.TargetType = "DISPLAY";
+            commandLine.TargetFeature = "NETWORKKVM";
+            commandLine.Command = "GET";
+            commandLine.isITCommands = true;
+            
+            CLIEventResult rst = PerformCommandLineRelay(commandLine).Result;
+            return Task.CompletedTask;
+        }
         #endregion
 
         #region Defer Implement
