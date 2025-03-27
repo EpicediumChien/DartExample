@@ -11,7 +11,6 @@ using DDPM.SA.Common;
 using Microsoft.VisualBasic.Logging;
 using VcpCore.Common;
 using IndiLogic.DPeM.Broker;
-using Microsoft.Win32;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -58,8 +57,7 @@ namespace DDPM.SA.Common.Settings
         //public string CurrentResolution { get => Resolutions[SelectedResolution]; }
         //public string CurrentFPS { get => SelectedFPSs[SelectedResolution]; }
 
-        public string CurrentResolution
-        {
+        public string CurrentResolution {
             get
             {
                 if (Resolutions.TryGetValue(SelectedResolution, out var key))
@@ -72,13 +70,12 @@ namespace DDPM.SA.Common.Settings
         }
         public string CurrentFPS
         {
-            get
+            get 
             {
-                if (SelectedFPSs.TryGetValue(SelectedResolution, out var key))
+                if (SelectedFPSs.TryGetValue(SelectedResolution, out var key)) 
                 {
                     return key;
-                }
-                else
+                }else
                     return "30";
             }
         }
@@ -366,23 +363,7 @@ namespace DDPM.SA.Common.Settings
                         break;
                 }
                 log?.Error($"if (presetProfiles != null) {PresetProfiles.Keys}");
-
-                string regPath = $@"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Global";
-                string regKey = $"isAnalyticsEnabled";
-                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(regPath))
-                {
-                    if (key != null)
-                    {
-                        object value = key.GetValue(regKey);
-
-                        if (value != null)
-                        { SetDPeMDefaultSettings(presetProfiles, PresetProfiles, log); }
-                    }
-                }
-                //var isAnalyticsFirstLaunchDone = devMgr.ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Global", "isAnalyticsEnabled");
-                //if (isAnalyticsFirstLaunchDone != null)
-                //{ SetDPeMDefaultSettings(presetProfiles, PresetProfiles, log); }
-
+                SetDPeMDefaultSettings(presetProfiles, PresetProfiles, log);
                 var HasNewDefault = CustomProfiles.Values.Any(x => x.Name.Contains(di.ProfileName)) && WebcamProfileNames.Any(y => y == di.ProfileName);
                 SelectedProfileName = di.ProfileName != string.Empty ? HasNewDefault == true ? di.ProfileName + "*" : di.ProfileName : "Default";
             }

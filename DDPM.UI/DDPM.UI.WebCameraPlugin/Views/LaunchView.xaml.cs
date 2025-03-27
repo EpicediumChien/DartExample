@@ -352,20 +352,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify -= DeviceManagerSA_UIUpdateNotify;
         }
 
-        private void ImageUpdate(OSThemeEnum oSThemeEnum)
-        {
-            ArrowLeft.Source = null;
-            ArrowLeft.Source = (BitmapImage)System.Windows.Application.Current.Resources["Arrow_Left"];
-            if (oSThemeEnum == OSThemeEnum.Dark)
-            {
-                playImg.Fill = Brushes.White;
-            }
-            else
-            {
-                playImg.Fill = new BrushConverter().ConvertFromString("#0E0E0E") as SolidColorBrush;
-            }
-        }
-
         //private void DeviceManagerSA_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         //{
         //    DdpmCommonHelper.WriteUILog($"catch event DeviceManagerSA_DeviceChanged");
@@ -1661,8 +1647,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             try
             {
-                if (_vm?.MediaFrameReader != null)
-                    _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
+                _vm.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
             }
             catch (Exception ex)
             {
