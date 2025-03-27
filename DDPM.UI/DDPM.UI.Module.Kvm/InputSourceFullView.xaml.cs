@@ -77,6 +77,32 @@ namespace DDPM.UI.Module.Kvm
             if (vm != null)
             {
                 vm.FinishtoSetPCs();
+                List<InputSourceObj> inputList = new List<InputSourceObj>();
+                string inputSource1 = vm.PC1Inputs_Selected.Type;
+                if (!string.IsNullOrEmpty(inputSource1))
+                {
+                    inputList.Add(new InputSourceObj(inputSource1));
+                }
+                string inputSource2 = vm.PC2Inputs_Selected.Type;
+                if (!string.IsNullOrEmpty(inputSource2))
+                {
+                    inputList.Add(new InputSourceObj(inputSource2));
+                }
+                string inputSource3 = vm.PC3Inputs_Selected.Type;
+                if (!string.IsNullOrEmpty(inputSource3))
+                {
+                    inputList.Add(new InputSourceObj(inputSource3));
+                }
+                string inputSource4 = vm.PC4Inputs_Selected.Type;
+                if (!string.IsNullOrEmpty(inputSource4))
+                {
+                    inputList.Add(new InputSourceObj(inputSource4));
+                }
+                HomeDevice? selectedHomeDevice = vm.KvmModule?.SelectedHomeDevice;
+                if (selectedHomeDevice != null && selectedHomeDevice.MonitorInfo != null)
+                {
+                    vm.UpdateHotkeyData(selectedHomeDevice.MonitorInfo, inputList);
+                }
                 //Return to DdpmHomePage
                 //IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
                 //console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
@@ -278,7 +304,7 @@ namespace DDPM.UI.Module.Kvm
                     GridTxt_Row3.FontSize -= 2;
                     txtRowMinWidth = GetLongestWordPixelLength(GridTxt_Row3.Text, typeface, GridTxt_Row3.FontSize);
                 }
-                else if(GridTxt_Row3.FontSize < gridTxt_Row3_DefaultFontSize)
+                else if (GridTxt_Row3.FontSize < gridTxt_Row3_DefaultFontSize)
                 {
                     // Bigger
                     txtRowMinWidth = GetLongestWordPixelLength(GridTxt_Row3.Text, typeface, GridTxt_Row3.FontSize + 2);
