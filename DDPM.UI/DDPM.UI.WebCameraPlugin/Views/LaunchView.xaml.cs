@@ -368,7 +368,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             else
             {
-                playImg.Fill = new BrushConverter().ConvertFromString("#0E0E0E") as SolidColorBrush; ;
+                playImg.Fill = new BrushConverter().ConvertFromString("#0E0E0E") as SolidColorBrush;
+                ;
             }
         }
 
@@ -1667,7 +1668,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             try
             {
-                _vm.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
+                if (_vm?.MediaFrameReader != null)
+                    _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
             }
             catch (Exception ex)
             {
