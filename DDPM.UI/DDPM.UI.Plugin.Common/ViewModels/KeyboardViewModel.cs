@@ -742,7 +742,12 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void SetKB900Default()
         {
-
+            var isAnalyticsFirstLaunchDone = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, @"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Global", "isAnalyticsEnabled");
+            if (isAnalyticsFirstLaunchDone == null)
+            {
+                IsCollaborationBlinkEffectEnable = true;
+                IsCollaborationDoubleTapEnable = true;
+            }
         }
         public bool IsF8Visible
         {
