@@ -1127,7 +1127,7 @@ namespace DDPM.SA.Plugin.CLIManager
             Max_Count = 0;
             for (Max_Count = 0; Max_Count <= MAX_DEFER_WAIT_TIME_SEC; Max_Count++)
             {
-                Thread.Sleep(1000);
+                Task.Delay(1000).Wait();
                 // check defer response
                 WriteLog("@@ CLIManagerPlugin::checkToastResult Sleep(1000)");
                 WriteLog($"@@ CLIManagerPlugin::checkToastResult deferResponse.ContainsKey({key}) = " + deferResponse.ContainsKey(key));
@@ -1136,7 +1136,7 @@ namespace DDPM.SA.Plugin.CLIManager
                 {
                     //if end user select defer within 5 min
                     WriteLog("@@ CLIManagerPlugin::checkToastResult deferResponse.ContainsKey " + key);
-                    Thread.Sleep(1000);
+                    Task.Delay(1000).Wait();
 
                     if (deferResponse[key])
                     {
@@ -1186,7 +1186,7 @@ namespace DDPM.SA.Plugin.CLIManager
             Max_Count = 0;
             for (Max_Count = 0; Max_Count <= MAX_DEFER_WAIT_TIME_SEC; Max_Count++)
             {
-                Thread.Sleep(1000);
+                Task.Delay(1000).Wait();
                 if (deferResponse.ContainsKey(did))
                 {
                     if (deferResponse[did])
@@ -1250,11 +1250,11 @@ namespace DDPM.SA.Plugin.CLIManager
 
             for (int i = 0; i < MAX_SECOND_WAIT_RESULT; i++)
             {
-                Thread.Sleep(1000);
+                Task.Delay(1000).Wait();
                 WriteLog($"CLIManagerPlugin::checkDeviceConnResult wait = {i} ");
                 if (resultReset)
                 {
-                    Thread.Sleep(1000);
+                    Task.Delay(1000).Wait();
                     if (!resultDeviceConn)
                     {
                         FwJobControlPanel.addToSchedule(item);

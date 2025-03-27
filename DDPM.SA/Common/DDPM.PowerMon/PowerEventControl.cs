@@ -170,7 +170,7 @@ namespace DDPM.PowerMon
             int count = 0;
             while (!_pwr_Mon.isWindowLoaded && count <= 10000)//wait 10 sec
             {
-                Thread.Sleep(1000);
+                Task.Delay(1000).Wait();
                 count += 1000;
             }
             if (count >= 10000)

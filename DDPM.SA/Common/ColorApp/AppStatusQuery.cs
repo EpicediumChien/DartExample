@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using static DDPM.ColorApp.WindowFocusWatcher;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -144,7 +145,7 @@ namespace DDPM.ColorApp
                 moveWatcher?.Dispose();
                 focusWatcher = null;
                 moveWatcher = null;
-            }            
+            }
         }
 
         public static AppStatusQuery GetInstance(ILog log)
@@ -239,7 +240,7 @@ namespace DDPM.ColorApp
 
                     for (int i = 0; i < 4; i++)
                     {
-                        Thread.Sleep(1000);
+                        Task.Delay(1000).Wait();
                         forgroundProcess = Process.GetProcessById(GetWindowProcessId(Native._GetForegroundWindow()));
                         forgroundProcess = GetRealProcess(forgroundProcess);
 

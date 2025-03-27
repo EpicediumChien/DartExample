@@ -93,7 +93,7 @@ namespace DDPM.EABroker
         //WorkWindows
         private List<EAWorkWindow> _workWindows = new List<EAWorkWindow>();
         private int _workWindowUsedCount = 0;
-        private bool _isWorkUIEnabled = true;        
+        private bool _isWorkUIEnabled = true;
         private ObservableCollection<string> _workWinCellInfos = new ObservableCollection<string>();
         private string _workWinsInfoText = ""; //Multiple lines info
 
@@ -204,7 +204,7 @@ namespace DDPM.EABroker
         public List<MonitorInfo>? GetMonitorsFromDeviceName(string deviceName)
         {
             List<MonitorInfo>? monitors = GetMonitors();
-            if (monitors == null) 
+            if (monitors == null)
                 return null;
 
             //Find all monitors which have the same DeviceName (DisplayName)
@@ -293,12 +293,12 @@ namespace DDPM.EABroker
             {
                 MonitorInfo? mi = _AllMonitors.Find(x => x.modelName.Equals(lastMonitorRecord.ModelName) && x.edid.ServiceTag.Equals(lastMonitorRecord.ServiceTag));
                 if (mi != null)
-                    return mi; 
+                    return mi;
             }
             if (IsSpanScreenWorking)
             {
                 MonitorInfo? spanMo = _spanScreen.GetPrimaryMonitor();
-                if (spanMo != null) 
+                if (spanMo != null)
                     return spanMo;
             }
             return _AllMonitors[0];
@@ -525,7 +525,7 @@ namespace DDPM.EABroker
         /// <returns></returns>
         public CellObj? DetermineHoveringCellObj(int x, int y)
         {
-            
+
             CellObj? hoveringCell = null;
             HoveringWindow = "";
 
@@ -627,7 +627,7 @@ namespace DDPM.EABroker
                 SetProperty(ref _hoveringCellObj, value);
                 OnPropertyChanged("HoveringCell");
 
-                if (isChanged && HoveringCellObjChanged != null) 
+                if (isChanged && HoveringCellObjChanged != null)
                 {
                     Task.Run(() => HoveringCellObjChanged.Invoke(this, _hoveringCellObj));
                 }
@@ -649,7 +649,7 @@ namespace DDPM.EABroker
         public bool IsOnlyShift
         {
             get => _isOnlyShift;
-            set 
+            set
             {
                 SetProperty(ref _isOnlyShift, value);
                 OnPropertyChanged("IsAwsWindowVisible");
@@ -831,7 +831,7 @@ namespace DDPM.EABroker
                 {
                     WriteLog("new EAWorkWindow causes EXCEPTION", eW);
                 }
- 
+
                 added++;
                 System.Windows.Threading.Dispatcher.Run();
             });
@@ -841,7 +841,7 @@ namespace DDPM.EABroker
 
             while (added <= 0)
             {
-                Thread.Sleep(10);
+                Task.Delay(10).Wait();
             }
         }
 
@@ -854,7 +854,7 @@ namespace DDPM.EABroker
             RefreshScreenScale();
 
             //Clear InUsed flag for all WorkWindows
-            foreach(EAWorkWindow workWindow in _workWindows)
+            foreach (EAWorkWindow workWindow in _workWindows)
             {
                 if (workWindow != null)
                     workWindow.IsUsed = false;
@@ -919,7 +919,8 @@ namespace DDPM.EABroker
             //Redo this method by raise a "DisplaySettingsChanged" event
             if (System.Windows.Forms.Screen.AllScreens.Length >= 2 && WorkWindowUsedCount == 0)
             {
-                System.Threading.Timer timer1 = new System.Threading.Timer((obj) => {
+                System.Threading.Timer timer1 = new System.Threading.Timer((obj) =>
+                {
                     _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
                 }, null, 2000, Timeout.Infinite);
             }
@@ -927,7 +928,7 @@ namespace DDPM.EABroker
         }
 
         //(v2)Robert_Lin, 2024-11-18, new version consider when SpanScreen is ON
-        public void RefreshWorkWindows(bool isInit=false)
+        public void RefreshWorkWindows(bool isInit = false)
         {
             WriteLog("@ ArrangeVM.RefreshWorkWindows()");
             bool isSupportNonDellMonitors = false;
@@ -1005,7 +1006,7 @@ namespace DDPM.EABroker
                 {
                     //Remove the WorkWindow of the SpanScreen
                     EAWorkWindow? workForSpan = _workWindows.FirstOrDefault(x => x.IsWorkForSpanScreen);
-                    if (workForSpan != null) 
+                    if (workForSpan != null)
                     {
                         workForSpan.ResetToUnused();
                     }
@@ -1089,7 +1090,8 @@ namespace DDPM.EABroker
             if (System.Windows.Forms.Screen.AllScreens.Length >= 2 &&
                 WorkWindowUsedCount == 0)
             {
-                System.Threading.Timer timer1 = new System.Threading.Timer((obj) => {
+                System.Threading.Timer timer1 = new System.Threading.Timer((obj) =>
+                {
                     _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
                 }, null, 2000, Timeout.Infinite);
             }
@@ -1227,7 +1229,7 @@ namespace DDPM.EABroker
                     }
                 }
                 added++;
- 
+
                 //Robert_Lin 2025-3-19, AwsWindow.Window_Closeing() will call Dispatcher.InvokeShutdown() to exit from below Run() loop.
                 System.Windows.Threading.Dispatcher.Run();
             });
@@ -1237,7 +1239,7 @@ namespace DDPM.EABroker
 
             while (added <= 0)
             {
-                Thread.Sleep(10);
+                Task.Delay(10).Wait();
             }
         }
 
@@ -1356,7 +1358,7 @@ namespace DDPM.EABroker
         public ISplitCtrl AwsIcon3
         {
             get => _awsIcon3;
-            set 
+            set
             {
                 SetProperty(ref _awsIcon3, value);
                 OnPropertyChanged("AwsIcon3Info");
@@ -1380,7 +1382,7 @@ namespace DDPM.EABroker
                 bool isChanged = (_hoveringAwsIcon != value);
                 SetProperty(ref _hoveringAwsIcon, value);
                 OnPropertyChanged("HoveringAwsIconText");
-                if (isChanged && HoveringAwsIconChanged != null) 
+                if (isChanged && HoveringAwsIconChanged != null)
                 {
                     Task.Run(() => HoveringAwsIconChanged.Invoke(this, _hoveringAwsIcon));
                 }
@@ -1423,13 +1425,13 @@ namespace DDPM.EABroker
 
             }
             return false;
-       }
+        }
 
         public bool AreAwsIconsLoaded
         {
             get
             {
-                return (_awsIcon1 != null) && (_awsIcon2 != null) && (_awsIcon3 != null) && (_awsIcon4 != null);   
+                return (_awsIcon1 != null) && (_awsIcon2 != null) && (_awsIcon3 != null) && (_awsIcon4 != null);
             }
         }
         /// <summary>
@@ -1452,7 +1454,7 @@ namespace DDPM.EABroker
             splitCtrl.SplitMode = splitMode;
             if ((spJson.CellCount == 0) && (spJson.SplitKey == 'B'))
             {
-                SplitCtrl0B spctrl0B = (SplitCtrl0B) splitCtrl;
+                SplitCtrl0B spctrl0B = (SplitCtrl0B)splitCtrl;
                 if (splitMode == eSplitModes.AWS)
                 {
                     splitMode = eSplitModes.Work;
@@ -1643,14 +1645,14 @@ namespace DDPM.EABroker
         //"w0" : WorkWindows[0]; "w1" : WorkWindows[1], ...
         //"aws : AWS Window
 
-        public string HoveringWindow 
+        public string HoveringWindow
         {
             get => _hoveringWindow;
-            set 
+            set
             {
                 SetProperty(ref _hoveringWindow, value);
                 OnPropertyChanged("IsAwsBuddyWindowVisible");
-            } 
+            }
         }
         #endregion
 
@@ -1721,7 +1723,7 @@ namespace DDPM.EABroker
             {
                 if ((screenId >= 1) && (screenId <= Screen.AllScreens.Length))
                 {
-                    Screen targetScreen = Screen.AllScreens[screenId-1];
+                    Screen targetScreen = Screen.AllScreens[screenId - 1];
                     if (!targetScreen.Equals(_workScreen))
                     {
                         double xWorkScreen = 0;
@@ -1775,7 +1777,7 @@ namespace DDPM.EABroker
         #region Telemetry
         public void SendTelemetry_EasyArrangeLayout()
         {
-            if (_easyArrangeService != null && 
+            if (_easyArrangeService != null &&
                 HoveringSplit != null)
             {
                 MonitorInfo? monitorInfo = null;
@@ -1866,8 +1868,8 @@ namespace DDPM.EABroker
         /// </summary>
         public bool IsSpanEnabled
         {
-            get 
-            { 
+            get
+            {
                 if (_spanScreen != null)
                 {
                     return _spanScreen.IsSpanEnabled;
@@ -1977,7 +1979,7 @@ namespace DDPM.EABroker
         #endregion
 
         #region SetEAWindowPos
-        public Rect SetEAWindowPos(IntPtr hWnd, Rect rcArrange, Rectangle? workingArea=null)
+        public Rect SetEAWindowPos(IntPtr hWnd, Rect rcArrange, Rectangle? workingArea = null)
         {
             if (workingArea == null && WorkScreen != null)
             {

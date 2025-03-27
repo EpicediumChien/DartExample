@@ -1320,7 +1320,7 @@ namespace DDPM.SA.Plugins.CMAManager
             }
 
             // add @ 20250206 stephen
-            Thread.Sleep(3000);
+            Task.Delay(3000).Wait();
 
             // add @ 20250204 stephen
             WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed isDoFwJobChecking = " + isDoFwJobChecking);
@@ -1804,7 +1804,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
             }
 
-            Thread.Sleep(30000);
+            Task.Delay(30000).Wait();
             isDoFwJobChecking = false;
         }
     }

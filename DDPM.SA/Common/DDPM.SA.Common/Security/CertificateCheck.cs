@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using VcpCore.Common;
 
 namespace DDPM.SA.Common.Security
@@ -180,7 +181,7 @@ namespace DDPM.SA.Common.Security
                             _logs?.DebugMsg_1("[CheckURLCACertificate] error:" + ex.Message.ToString());
                             flag = false;
                             _logs?.DebugMsg_1(string.Format("[CheckURLCACertificate] error, retry:" + num));
-                            Thread.Sleep(1000);
+                            Task.Delay(1000).Wait();
                         }
                         num--;
                     }
@@ -313,7 +314,7 @@ namespace DDPM.SA.Common.Security
                     _logs?.DebugMsg_1("GetResponse error:" + ex.Message.ToString());
                     flag = false;
                     _logs?.DebugMsg_1(string.Format("GetResponse error, retry:" + num));
-                    Thread.Sleep(1000);
+                    Task.Delay(1000).Wait();
                 }
                 num--;
             }

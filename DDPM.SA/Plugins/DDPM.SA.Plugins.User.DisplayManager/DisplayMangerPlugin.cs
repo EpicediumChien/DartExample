@@ -3605,7 +3605,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 ret = _DisplayPropertiesPlugin.SetHDRStatus(monitorInfos.edid, onoff).Result;
                 if (ret == false)
                 {
-                    Thread.Sleep(1000);
+                    Task.Delay(1000).Wait();
                 }
                 count++;
             } while (ret == false && count < 10);

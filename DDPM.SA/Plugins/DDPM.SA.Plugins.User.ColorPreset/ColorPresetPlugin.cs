@@ -63,19 +63,19 @@ namespace ColorPreset.Plugins
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private List<string> _supported_preset = new List<string>();
 
-        private List<string> HDR_ColorPresetNameList = new List<string>() { 
-            "Standard HDR", 
-            "Movie HDR", 
-            "Game HDR", 
-            "Vivid HDR", 
-            "Desktop", 
-            "Reference", 
-            "Multiscreen Match", 
-            "DisplayHDR", 
-            "HDR10", 
-            "HLG", 
-            "Custom Color HDR", 
-            "HDR Peak 1000" 
+        private List<string> HDR_ColorPresetNameList = new List<string>() {
+            "Standard HDR",
+            "Movie HDR",
+            "Game HDR",
+            "Vivid HDR",
+            "Desktop",
+            "Reference",
+            "Multiscreen Match",
+            "DisplayHDR",
+            "HDR10",
+            "HLG",
+            "Custom Color HDR",
+            "HDR Peak 1000"
         };
         private List<string> ColorPresetSupportList = new List<string>();
         private List<string> ColorPresetSupportList_ = new List<string>();
@@ -436,7 +436,7 @@ namespace ColorPreset.Plugins
                 }
 
                 _SettingsPlugin.WriteColorPresetSettings(config);
-                Thread.Sleep(100);
+                Task.Delay(100).Wait();
 
                 if (newWindowThread_AutoSetColorPresetForMonitorConfig == null)
                 {
@@ -486,7 +486,7 @@ namespace ColorPreset.Plugins
                 }
 
                 _SettingsPlugin.WriteColorPresetSettings(config);
-                Thread.Sleep(100);
+                Task.Delay(100).Wait();
 
                 // jim modify 20240605
                 if (newWindowThread_AutoSetColorPresetForMonitorConfig != null &&
@@ -521,7 +521,7 @@ namespace ColorPreset.Plugins
                 }
 
                 _SettingsPlugin.WriteColorPresetSettings(config);
-                Thread.Sleep(100);
+                Task.Delay(100).Wait();
 
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType == (int)ColorManagementRunType.Bymonitor)
                 {
@@ -581,7 +581,7 @@ namespace ColorPreset.Plugins
                 }
 
                 _SettingsPlugin.WriteColorPresetSettings(config);
-                Thread.Sleep(100);
+                Task.Delay(100).Wait();
 
                 if (_ICC_Metadata.Is_Support_ICC_DeviceName &&
                     registryMonitor_ICC != null)
@@ -610,7 +610,7 @@ namespace ColorPreset.Plugins
                 }
 
                 _SettingsPlugin.WriteColorPresetSettings(config);
-                Thread.Sleep(100);
+                Task.Delay(100).Wait();
 
                 if (_ICC_Metadata.Is_Support_ICC_DeviceName)
                 {
@@ -655,7 +655,7 @@ namespace ColorPreset.Plugins
                 }
 
                 _SettingsPlugin.WriteColorPresetSettings(config);
-                Thread.Sleep(100);
+                Task.Delay(100).Wait();
 
                 if (_ICC_Metadata.Is_Support_ICC_DeviceName &&
                     _ICC_Metadata._match_ICC_DeviceName != null)
@@ -1340,7 +1340,7 @@ namespace ColorPreset.Plugins
                             }
 
                             // PIMS-327395 jim 20241212 add
-                            if (string.Equals(m.modelName, "G2724D", StringComparison.OrdinalIgnoreCase) || 
+                            if (string.Equals(m.modelName, "G2724D", StringComparison.OrdinalIgnoreCase) ||
                                 string.Equals(m.modelName, "G3223D", StringComparison.OrdinalIgnoreCase))
                                 ColorPresetSupportList_.Add("sRGB");
                         }
@@ -1372,7 +1372,7 @@ namespace ColorPreset.Plugins
             }
             else
             {
-                ColorPresetSupportList_.RemoveAll(r => HDR_ColorPresetNameList.Any(a => a == r));               
+                ColorPresetSupportList_.RemoveAll(r => HDR_ColorPresetNameList.Any(a => a == r));
             }
 
             index = 0;
@@ -1411,7 +1411,7 @@ namespace ColorPreset.Plugins
                 int index = get_index_of_json_config_for_cur_monitor(m);
 
 
-                if (index >= 0) 
+                if (index >= 0)
                 {
                     if (colorPresetRunType == (int)ColorPresetRunType.Manual)
                     {
@@ -1434,7 +1434,7 @@ namespace ColorPreset.Plugins
                 }
 
                 _SettingsPlugin.WriteColorPresetSettings(config);
-                Thread.Sleep(100);
+                Task.Delay(100).Wait();
 
                 if (index >= 0 &&
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status == (int)ColorManagementStatus.On &&
@@ -1725,7 +1725,7 @@ namespace ColorPreset.Plugins
 
                     toastContentBuilder.Show(); // 顯示Toast通知
                     writelog("[CallPopup], popup Show.");
-                    Thread.Sleep(5000);
+                    Task.Delay(5000).Wait();
                     if (!userClosedPopup)
                     {
                         writelog("[CallPopup], is no user closed popup.");
