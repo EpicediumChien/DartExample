@@ -18248,7 +18248,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             string tmpMuteGuid = Guid.NewGuid().ToString();
-                                            _OSD_Controler.ShowMultipleOSD(tmpMuteGuid, OSDType_Device.Mute, oSDType_Op, string.Empty, Content + LangHelper.Instance["is_muted"]);
+                                            _OSD_Controler.ShowMultipleOSD(tmpMuteGuid, OSDType_Device.Mute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_muted"]);
                                             await Task.Run(async () =>
                                             {
                                                 await Task.Delay(3000);
@@ -18268,7 +18268,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         {
 
                                             string tmpUnMuteGuid = Guid.NewGuid().ToString();
-                                            _OSD_Controler.ShowMultipleOSD(tmpUnMuteGuid, OSDType_Device.UnMute, oSDType_Op, string.Empty, Content + LangHelper.Instance["is_Unmuted"]);
+                                            _OSD_Controler.ShowMultipleOSD(tmpUnMuteGuid, OSDType_Device.UnMute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_Unmuted"]);
                                             await Task.Run(async () =>
                                             {
                                                 await Task.Delay(3000);
