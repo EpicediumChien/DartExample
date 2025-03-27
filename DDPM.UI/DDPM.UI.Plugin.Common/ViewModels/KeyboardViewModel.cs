@@ -13,7 +13,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Text;
 using DDPM.UI.Resources.Helper;
-using Windows.ApplicationModel.VoiceCommands;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -163,33 +162,41 @@ namespace DDPM.UI.Plugin.ViewModels
             InitializeKey();
             if (CurrentDeviceInfo!.IsCollabsKeysSupported)
             {
-                if (KeyboardAction.IsCollaborationChecked)
-                {
-                    IsCollaborationDoubleTapEnable = CurrentDeviceInfo.IsCollaborationDoubleTapEnable;
-                    IsCollaborationKeyEnable = CurrentDeviceInfo.IsCollaborationKeyEnable;
-                    IsCollabShadowVisible = !IsCollaborationKeyEnable;
-                    IsCollaborationCameraEnable = CurrentDeviceInfo.IsCollaborationCameraEnable;
-                    IsCollaborationScreenShareEnable = CurrentDeviceInfo.IsCollaborationScreenShareEnable;
-                    IsCollaborationChatEnable = CurrentDeviceInfo.IsCollaborationChatEnable;
-                    IsCollaborationMicEnable = CurrentDeviceInfo.IsCollaborationMicEnable;
-                    IsCollaborationBlinkEffectEnable = CurrentDeviceInfo.IsCollaborationBlinkEffectEnable;
-                }
-                else
-                {
-                    IsCollaborationDoubleTapEnable = true;
-                    IsCollaborationKeyEnable = true;
-                    IsCollabShadowVisible = false;
-                    IsCollaborationCameraEnable = true;
-                    IsCollaborationScreenShareEnable = true;
-                    IsCollaborationChatEnable = true;
-                    IsCollaborationMicEnable = true;
-                    IsCollaborationBlinkEffectEnable = true;
-                    IsCollaborationBlinkEffectEnable = false;
-                    IsCollaborationDoubleTapEnable = true;
-                    IsCollaborationDoubleTapEnable = false;
-                    KeyboardAction.IsCollaborationChecked = true;
-                    ActionList.ExportActionList(KeyboardAction, Model);
-                }
+                IsCollaborationDoubleTapEnable = CurrentDeviceInfo.IsCollaborationDoubleTapEnable;
+                IsCollaborationKeyEnable = CurrentDeviceInfo.IsCollaborationKeyEnable;
+                IsCollabShadowVisible = !IsCollaborationKeyEnable;
+                IsCollaborationCameraEnable = CurrentDeviceInfo.IsCollaborationCameraEnable;
+                IsCollaborationScreenShareEnable = CurrentDeviceInfo.IsCollaborationScreenShareEnable;
+                IsCollaborationChatEnable = CurrentDeviceInfo.IsCollaborationChatEnable;
+                IsCollaborationMicEnable = CurrentDeviceInfo.IsCollaborationMicEnable;
+                IsCollaborationBlinkEffectEnable = CurrentDeviceInfo.IsCollaborationBlinkEffectEnable;
+                //if (KeyboardAction.IsCollaborationChecked)
+                //{
+                //    IsCollaborationDoubleTapEnable = CurrentDeviceInfo.IsCollaborationDoubleTapEnable;
+                //    IsCollaborationKeyEnable = CurrentDeviceInfo.IsCollaborationKeyEnable;
+                //    IsCollabShadowVisible = !IsCollaborationKeyEnable;
+                //    IsCollaborationCameraEnable = CurrentDeviceInfo.IsCollaborationCameraEnable;
+                //    IsCollaborationScreenShareEnable = CurrentDeviceInfo.IsCollaborationScreenShareEnable;
+                //    IsCollaborationChatEnable = CurrentDeviceInfo.IsCollaborationChatEnable;
+                //    IsCollaborationMicEnable = CurrentDeviceInfo.IsCollaborationMicEnable;
+                //    IsCollaborationBlinkEffectEnable = CurrentDeviceInfo.IsCollaborationBlinkEffectEnable;
+                //}
+                //else
+                //{
+                //    IsCollaborationDoubleTapEnable = true;
+                //    IsCollaborationKeyEnable = true;
+                //    IsCollabShadowVisible = false;
+                //    IsCollaborationCameraEnable = true;
+                //    IsCollaborationScreenShareEnable = true;
+                //    IsCollaborationChatEnable = true;
+                //    IsCollaborationMicEnable = true;
+                //    IsCollaborationBlinkEffectEnable = true;
+                //    IsCollaborationBlinkEffectEnable = false;
+                //    IsCollaborationDoubleTapEnable = true;
+                //    IsCollaborationDoubleTapEnable = false;
+                //    KeyboardAction.IsCollaborationChecked = true;
+                //    ActionList.ExportActionList(KeyboardAction, Model);
+                //}
             }
 
             if (CurrentDeviceInfo.IsIlluminationSupported)
@@ -716,13 +723,9 @@ namespace DDPM.UI.Plugin.ViewModels
             //KeyboardAction = (KeyboardActions)ActionList.ImportActionList(eDeviceCategory.KB, Model);
             KeyboardAction = (KeyboardActions)ActionList.ImportActionList(eDeviceCategory.KB, Model, CurrentDeviceID.ToString());
 
-            if (KeyboardAction.IsFirstTime)
-            {
-                if (Model == "KB900")
-                    SetKB900Default();
-                KeyboardAction.IsFirstTime = false;
-                ActionList.ExportActionList(KeyboardAction, Model);
-            }
+            //foreach(var keyAction in KeyboardActions.KeyActions.Values) {
+            //  keyAction.AssignedAction = new AssignedAction(keyAction.DefaultActionID + 1);
+            //}
 
             KeyboardAction.KeyActions.Keys.ToList().ForEach(x => RefreshKeyImageFile(x.ToString()));
             CheckRestoreStatus();
@@ -738,17 +741,10 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(IsPgDownVisible));
             OnPropertyChanged(nameof(IsAllKeysVisible));
             OnPropertyChanged(nameof(IsRestoreEnable));
+
+            //ActionList.ExportActionList(KeyboardActions, Model, CurrentInstanceID);
         }
 
-        private void SetKB900Default()
-        {
-            var isAnalyticsFirstLaunchDone = DdpmCommonHelper.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, @"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Global", "isAnalyticsEnabled");
-            if (isAnalyticsFirstLaunchDone == null)
-            {
-                IsCollaborationBlinkEffectEnable = true;
-                IsCollaborationDoubleTapEnable = true;
-            }
-        }
         public bool IsF8Visible
         {
             get
