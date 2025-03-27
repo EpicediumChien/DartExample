@@ -40,7 +40,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="0,0,0,15">
-        <Border CornerRadius="13" Width="520" Margin="0,10,0,0">
+        <!--Elsa 20250325 for PIMS-348388 change Margin="0,10,0,0" to Margin="-13,10,0,0"-->
+        <Border CornerRadius="13" Width="520" Margin="-13,10,0,0">
             <StackPanel Orientation="Vertical">
                 <StackPanel x:Name="spAlert" Orientation="Vertical">
                     <Border Name="bdrAlert1" Background="#364861" CornerRadius="4" Margin="16,23,16,-9" BorderThickness="7,0,0,0" BorderBrush="#0E92F2" MouseEnter="MessageBox_MouseEnter" MouseLeave="MessageBox_MouseLeave" Visibility="Collapsed">

@@ -30,6 +30,9 @@ namespace DDPM.SA.Common.UpdateProgressPage
         private bool _Progress_IsAnimated;
         private string _AlertMessage;
         private Visibility _AlertVisibility = Visibility.Collapsed;
+        private string _BaseAlertMessage;
+        private Visibility _BaseAlertVisibility = Visibility.Collapsed;
+        private Visibility _DisplayAlertVisibility = Visibility.Collapsed;
         private string _ProgressStr_2_Color;
         ManagementEventWatcher watcher;
         Logs _Logs;
@@ -134,6 +137,34 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 OnPropertyChanged(nameof(AlertVisibility));
             }
         }
+        public string BaseAlertMessage
+        {
+            get { return _BaseAlertMessage; }
+            set
+            {
+                _BaseAlertMessage = value;
+                OnPropertyChanged(nameof(BaseAlertMessage));
+            }
+        }
+
+        public Visibility BaseAlertVisibility
+        {
+            get { return _BaseAlertVisibility; }
+            set
+            {
+                _BaseAlertVisibility = value;
+                OnPropertyChanged(nameof(BaseAlertVisibility));
+            }
+        }
+        public Visibility DisplayAlertVisibility
+        {
+            get { return _DisplayAlertVisibility; }
+            set
+            {
+                _DisplayAlertVisibility = value;
+                OnPropertyChanged(nameof(DisplayAlertVisibility));
+            }
+        }
         public BitmapSource ProgressBarImage { get; set; }
         public string TextForeground { get; set; }
 
@@ -223,6 +254,26 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 UpdateSubTitle = LangHelper.Instance["Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed"];
             }
             UpdateVersion = $"{LangHelper.Instance["Version"]} {e.TheLatestVersion}";
+            if (e.IsDisplay)
+            {
+                if (string.IsNullOrEmpty(e.UpdateTime))
+                {
+                    DisplayAlertVisibility = Visibility.Visible;
+                    BaseAlertVisibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    BaseAlertMessage = $"{LangHelper.Instance["Update_Display_Alert_2"].Replace("[XXXXXX]", $"{e.UpdateTime}")}";
+                    BaseAlertVisibility = Visibility.Visible;
+                    DisplayAlertVisibility = Visibility.Collapsed;
+                }
+            }
+            else
+            {
+                BaseAlertMessage = $"{LangHelper.Instance["UpdateProgressMsg"]}";
+                BaseAlertVisibility = Visibility.Visible;
+                DisplayAlertVisibility = Visibility.Collapsed;
+            }
             if (e.ProcessName.Equals("Installing"))
             {
                 isInstalling = true;

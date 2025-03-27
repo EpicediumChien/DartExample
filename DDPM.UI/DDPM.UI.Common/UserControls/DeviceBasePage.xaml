@@ -399,7 +399,8 @@
 
                         <!-- RightFrame -->
                         <Grid x:Name="RightGrid" HorizontalAlignment="Right" MinWidth="660">
-                            <Border CornerRadius="13" Margin="10,0,0,20" Padding="16,0" 
+                        <!--Elsa 20250325 for PIMS-348388 change Margin="10,0,0,20" to Margin="4,15,0,20"-->
+                            <Border CornerRadius="13" Margin="4,15,0,20" Padding="16,0" 
                                     Background="{DynamicResource RightBaseBkColor}">
                                 <Grid>
                                     <Grid.RowDefinitions>

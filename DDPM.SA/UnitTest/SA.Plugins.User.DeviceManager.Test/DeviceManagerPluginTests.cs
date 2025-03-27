@@ -1638,7 +1638,7 @@ namespace SA.Plugins.User.DeviceManager.Test
         [Test]
         public void TestGetFWUpdateInfo()
         {
-            Assert.IsNotNull(deviceMangerPlugin.GetFWUpdateInfo(true, false), $"GetFWUpdateInfo() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.GetFWUpdateInfo(false), $"GetFWUpdateInfo() returns null");
 
             //_PeripheralsPlugin != null && _FWUpdatePlugin != null
             // Setup
@@ -1649,7 +1649,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
 
             // Execute and Verify
-            Assert.IsNotNull(deviceMangerPlugin.GetFWUpdateInfo(true, false), $"GetFWUpdateInfo() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.GetFWUpdateInfo(false), $"GetFWUpdateInfo() returns null");
         }
 
         [Test]
@@ -1658,10 +1658,10 @@ namespace SA.Plugins.User.DeviceManager.Test
             // Setup
             var _FWUpdatePluginMock = new Mock<IFWUpdateService>();
             privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
-            _FWUpdatePluginMock.Setup(x => x.DownloadAndInstall(It.IsAny<List<FWUpdateInfo>>(), It.IsAny<List<DeviceInfo>>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string>())).Returns(Task.FromResult(new List<FWUpdateInfo>()));
+            _FWUpdatePluginMock.Setup(x => x.DownloadAndInstall(It.IsAny<List<FWUpdateInfo>>(), It.IsAny<List<DeviceInfo>>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<string>())).Returns(Task.FromResult(new List<FWUpdateInfo>()));
 
             // Execute and Verify
-            Assert.IsNotNull(deviceMangerPlugin.DownloadAndInstall(new List<FWUpdateInfo>(), false, ""), $"DownloadAndInstall() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.DownloadAndInstall(new List<FWUpdateInfo>(), false, false, ""), $"DownloadAndInstall() returns null");
         }
 
         [Test]

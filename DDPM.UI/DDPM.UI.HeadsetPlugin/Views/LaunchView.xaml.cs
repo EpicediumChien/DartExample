@@ -111,6 +111,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     Loaded += LaunchView_LoadedStatus;
                     Unloaded += LaunchView_UnLoadedStatus;
                     _vm!.HeadsetGroupChanged += HeadsetGroupChanged;
+                    _vm!.BtnRestoreChanged += BtnRestoreChanged;
                 }
             }
             DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView Constructor ... end ");
@@ -122,6 +123,20 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 vbarList.ItemsSource = null;
                 vbarList.ItemsSource = _vm!.VbarItems;
                 DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView HeadsetGroupChanged SupportedAnswerCalls false");
+        }
+
+        private void BtnRestoreChanged(object? sender, EventArgs e)
+        {
+            if (!_vm.IsRestoreEnable)
+            {
+                btnRestore.Visibility = Visibility.Visible;
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView BtnRestoreChanged IsRestoreEnable Visible");
+            }
+            else
+            {
+                btnRestore.Visibility = Visibility.Collapsed;
+                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView BtnRestoreChanged IsRestoreEnable Collapsed");
+            }
         }
 
         private void LaunchView_UnLoadedStatus(object sender, RoutedEventArgs e)
@@ -136,6 +151,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             {
                 _vm.UloadHeadset_DTPNotify();
                 _vm!.HeadsetGroupChanged -= HeadsetGroupChanged;
+                _vm!.BtnRestoreChanged -= BtnRestoreChanged;
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
                     DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
@@ -169,14 +185,14 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             {
                 _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
                 DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
-                if (!_vm.IsRestoreEnable)
-                {
-                    btnRestore.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    btnRestore.Visibility = Visibility.Collapsed;
-                }
+                //if (!_vm.IsRestoreEnable)
+                //{
+                //    btnRestore.Visibility = Visibility.Visible;
+                //}
+                //else
+                //{
+                //    btnRestore.Visibility = Visibility.Collapsed;
+                //}
                 DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView_LoadedStatus ... out ");
             }
             catch (Exception ex)

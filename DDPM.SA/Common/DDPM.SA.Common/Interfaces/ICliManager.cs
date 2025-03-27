@@ -99,6 +99,9 @@ namespace DDPM.SA.Common
         void sendToastResult(string defer_id, bool isDefer); // add @ 20241210 stephen
         void sendDeviceCheckResult(bool result); // add @ 20250116 stephen
 
+        //0325 Jason add to CLI get NKVM enable/disable
+        Task SendNKVMCommand();
+
         event EventHandler<CLIEventArgs> CLIActionEvent;
         event EventHandler<CLIEventToastArgs> CLIToastEvent;    // add @ 20241210 stephen
         event EventHandler<CLIEventDeviceConnArgs> CLIDeviceCheckEvent;    // add @ 20250116 stephen

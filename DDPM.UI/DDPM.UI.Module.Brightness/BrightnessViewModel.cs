@@ -1169,19 +1169,23 @@ namespace DDPM.UI.Module.Brightness
                 case "C":
                     IsSynchronizeDisabled = false;
                     isShowSynchronize = Visibility.Visible;
+                    DdpmCommonHelper.WriteUILog($"[BrightnessViewModel] Synchronize between monitors is displayed and not greyed out with default is OFF");
                     break;
 
                 case "D":
                     IsSynchronizeDisabled = true;
                     isShowSynchronize = Visibility.Visible;
+                    DdpmCommonHelper.WriteUILog($"[BrightnessViewModel] Synchronize between monitors is displayed but greyed out");
                     break;
 
                 case "E":
                     isShowSynchronize = Visibility.Collapsed;
+                    DdpmCommonHelper.WriteUILog($"[BrightnessViewModel] Synchronize between monitors is NOT displayed");
                     break;
 
                 default:
                     isShowSynchronize = Visibility.Visible;
+                    DdpmCommonHelper.WriteUILog($"[BrightnessViewModel] Synchronize between monitors is displayed and not greyed out with default is OFF");
                     break;
             };
             NotifyPropertyChanged("isShowSynchronize");

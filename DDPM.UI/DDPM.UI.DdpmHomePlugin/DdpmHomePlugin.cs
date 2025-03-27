@@ -517,7 +517,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //2024-6-20 move refresh device form HomeView to here
                     //_ = Task.Run(GetDdpmDevicesAsync(_deviceManager));
                     if (_deviceManager != null)
+                    {
+                        _log.Info($"[DdpmHomePlugin] _deviceManager_DeviceChanged call GetDdpmDevicesAsync ... ");
                         _ = GetDdpmDevicesAsync(_deviceManager, e, e.changedProperty.ToLower());
+                        _log.Info($"[DdpmHomePlugin] _deviceManager_DeviceChanged return GetDdpmDevicesAsync ... ");
+                    }
 
                     if (e.type == DeviceChangedType.NotifyOnly && WalkThroughQueue.Count == 0)
                     {
@@ -744,14 +748,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private async Task GetDdpmDevicesAsync(IDeviceManagerSA deviceManager, DeviceChangedEventArgs e = null, string condition = "all")
         {
-            _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync in ...");
+            _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync {condition} in ...");
             if (!SpinWait.SpinUntil(() =>
             (_IDeviceManagerPluginCondition is IFrameworkPluginConditionNotification), TimeSpan.FromMinutes(2)))
             {
                 Console.WriteLine("Could not establish communication with DeviceManager plugin!!");
+                _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Could not establish communication with DeviceManager plugin!!");
                 return;
             }
-            _log.Info("GetDdpmDevicesAsync is invoked");
+            _log.Info("[DdpmHomePlugin] GetDdpmDevicesAsync is invoked");
 
             //_displayService = await deviceManager.GetDisplayServiceInterface(); Robert0502
             if (deviceManager != null)
@@ -763,7 +768,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 if (condition.Equals("all") || condition.Equals("displaychanged"))
                 {
                     _monitorInfos = deviceManager.GetMonitors().Result;
-                    _log.Info($"Monitor count is ${_monitorInfos.Count}");
+                    _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Monitor count is ${_monitorInfos.Count}");
                 }
                 if (condition.Equals("all") || !condition.Equals("displaychanged"))
                 {
@@ -771,6 +776,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     if (deviceHelper == null || deviceHelper.deviceInfo.Count <= 0)
                     {
                         deviceHelper = deviceManager.GetDevices(true).Result;
+                        _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Peripheral count is ${deviceHelper.deviceInfo.Count}");
                     }
                     //List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
                     _deviceInfos = new List<DeviceInfo>();
@@ -778,7 +784,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     {
                         _deviceInfos = deviceHelper.deviceInfo;
                     }
-                    _log.Info($"Peripheral count is ${_deviceInfos.Count}");
+                    _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Peripheral count is ${_deviceInfos.Count}");
                 }
                 _ = Task.Run(() =>
                 {
@@ -796,11 +802,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                         viewModel.ResetDevices();
 
-                        _log.Info("Adding Monitors to HomePageViewModel...");
+                        _log.Info("[DdpmHomePlugin] GetDdpmDevicesAsync Adding Monitors to HomePageViewModel...");
 
                         viewModel.PrepareMonitorInfos(_monitorInfos);
 
-                        _log.Info("Adding Periphrals to HomePageViewModel...");
+                        _log.Info("[DdpmHomePlugin] GetDdpmDevicesAsync Adding Periphrals to HomePageViewModel...");
                         viewModel.PrepareDeviceInfos(_deviceInfos);
 
                         //Robert_Lin, 2024-8-5 for PIMS-289060, display a "Please wait" UI before devices ready
@@ -818,6 +824,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             {
                                 //Add a Fake monitor to the listView of Homepage
                                 _viewModel?.AddFakeMonitorToListView();
+                                _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync AddFakeMonitorToListView");
                             }
                             //OLD:
                             ////Robert_Lin, 2024-11-9 for Developer debug, check if C:\temp\DDPMDebug.txt contains
@@ -1371,7 +1378,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //Get FW avaiable count
             //Check SW avaiable count
             _log.Info("Calling to GetFWUpdateInfo()");
-            FWUpdateInfoPackage fwUpdateInfoPackage = devMgr.GetFWUpdateInfo(false, true).Result;
+            FWUpdateInfoPackage fwUpdateInfoPackage = devMgr.GetFWUpdateInfo(true).Result;
             _log.Info("Calling to SW_GetSWUpdateInfo()");
             SWUpdateInfoPackage sWUpdateInfoPackage = devMgr.SW_GetSWUpdateInfo(false, true).Result;
             _log.Info("Return from SW_GetSWUpdateInfo()");
@@ -1450,7 +1457,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (_deviceManager != null)
             {
                 //Get FW/SW update count
-                FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(false, true).Result;
+                FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(true).Result;
                 SWUpdateInfoPackage sWUpdateInfoPackage = _deviceManager.SW_GetSWUpdateInfo(false, true).Result;
 
                 int newSwCount = 0;

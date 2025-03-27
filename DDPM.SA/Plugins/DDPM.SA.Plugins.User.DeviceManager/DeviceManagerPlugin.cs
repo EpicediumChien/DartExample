@@ -6039,7 +6039,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _FWUpdatePlugin.setFWUpdateInfoPackage(pkg);
         }
 
-        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify, bool reScan)
+        public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool reScan)
         {
             writelog("[DeviceMangerPlugin] GetFWUpdateInfo start");
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null && _SettingsPlugin != null)
@@ -6075,13 +6075,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 writelog("[DeviceMangerPlugin] _FWUpdatePlugin.GetFWUpdateInfo go");
                 ResetTimer();
-                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, deviceInfos, isShowNotify, displayUpdateHelper, reScan).Result);
+                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, deviceInfos, displayUpdateHelper, reScan).Result);
             }
             writelog("[DeviceMangerPlugin] GetFWUpdateInfo done, But all obj is null");
             return Task.FromResult(new FWUpdateInfoPackage());
         }
 
-        public Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, bool isUITrigger = false, string installPath = "")
+        public Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, bool isUITrigger = false, bool isShowNotify = true, string installPath = "")
         {
             writelog("[DeviceMangerPlugin] DownloadAndInstall start");
             writelog($"[DeviceMangerPlugin] DownloadAndInstall isUITrigger : {isUITrigger}");
@@ -6111,7 +6111,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 CallUpdateProgressUI().Wait();
             }
             writelog($"[DeviceMangerPlugin] _FWUpdatePlugin.DownloadAndInstall go");
-            List<FWUpdateInfo> tmpFWUpdateInfos = _FWUpdatePlugin.DownloadAndInstall(fwUpdateInfos, deviceInfo, ioDongleCount_Gen3Ago, isUITrigger, installPath).Result;
+            List<FWUpdateInfo> tmpFWUpdateInfos = _FWUpdatePlugin.DownloadAndInstall(fwUpdateInfos, deviceInfo, ioDongleCount_Gen3Ago, isUITrigger, isShowNotify, installPath).Result;
             _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
             if (_UpdateProgress != null)
             {
@@ -6506,7 +6506,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(false);
             try
             {
-                FWUpdateInfoPackage fwUpdateInfos = _FWUpdatePlugin.GetFWUpdateInfo(updateHelper, deviceInfos, false, localDisplayUpdateHelper, true).Result;
+                FWUpdateInfoPackage fwUpdateInfos = _FWUpdatePlugin.GetFWUpdateInfo(updateHelper, deviceInfos, localDisplayUpdateHelper, true).Result;
                 return Task.FromResult(true);
             }
             catch (Exception ex)
@@ -6619,6 +6619,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         toastContentBuilder.AddArgument(title);
                         toastContentBuilder.AddText(title);
                         toastContentBuilder.AddText(info);
+                        toastContentBuilder.AddButton(LangHelper.Instance["Ok"], ToastActivationType.Background, "");
                     }
                     ClosePopup();
                     writelog("[CallPopup], popup Show.");
@@ -6654,7 +6655,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ResetTimer();
             if (_SettingsPlugin != null)
             {
-                GetFWUpdateInfo(false, true).Wait();
+                GetFWUpdateInfo(true).Wait();
                 SW_GetSWUpdateInfo(false).Wait();
             }
             else
@@ -8567,7 +8568,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 WriteRegistryData(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater", "");
                                 writelog($"[DeleteDdpmSwUpdaterFolder], WriteRegistryData.");
                             }
-                        }                        
+                        }
                     }
                     else
                     {
@@ -17493,7 +17494,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"{nameof(CopyFile)} end");
                 return false;
             }
-            
+
         }
 
         //Robert_Lin, 2024-10-11, added

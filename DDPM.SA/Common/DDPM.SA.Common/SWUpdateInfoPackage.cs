@@ -81,9 +81,9 @@ namespace DDPM.SA.Common
     {
         NoError = 0,
         DeviceDisconnected = 1,
-        FirmwareUpdateFailed = 2,
-        FirmwareUpdatNotSupportedForThisDevice = 3,
-        FirmwareUpdateTimeout = 4,
+        SoftwareUpdateFailed = 2,
+        SoftwareUpdatNotSupportedForThisDevice = 3,
+        SoftwareUpdateTimeout = 4,
         PCBatteryTooLow = 5,
         ConnectMultipleDocks = 6,
         NetworkDisconnection = 7,
@@ -95,6 +95,41 @@ namespace DDPM.SA.Common
         NamedPipeServerIsNoSafe = 13,
         FileCheckFail = 14,
         ServiceNotRunning = 15,
+
+        #region InstallScript error code
+        ERROR_SUCCESS_REBOOT_REQUIRED = 3010,
+        ERROR_SUCCESS_REBOOT_INITIATED = 1641,
+        /// <summary>
+        /// 0x80042000
+        /// </summary>
+        ISERR_SETUP_CANCELED = 16,
+        /// <summary>
+        /// 0x80040708
+        /// </summary>
+        CheckPrivileges = 17,
+        GenericError = -5001,
+        Failed_reading_media_header = -5002,
+        Failed_installing_kernel = -5003,
+        Failed_starting_kernel = -5004,
+        Failed_opening_CAB = -5005,
+        Failed_installing_support = -5006,
+        Failed_setting_text_substitution = -5007,
+        Failed_initializing_installation_information = -5008,
+        Failed_getting_installation_driver = -5009,
+        Failed_initializing_properties = -5010,
+        Failed_running_installation_driver = -5011,
+        Failed_uninstalling_support = -5012,
+        Failed_to_extract_file_from_setup_boot_file = -5013,
+        Failed_to_download_file = -5014,
+        Could_not_clone_the_installation = -5017,
+        Failed_starting_the_setup_launcher = -6001,
+        Failed_finding_the_setup_launcher = -6002,
+        Failed_loading_the_setup_launcher = -6003,
+        Failed_verifying_the_signature_of_setup_launcher = -6004,
+        Failed_installing_the_setup_launcher_to_proper_location = -6005,
+        Failed_extracting_setup_launcher = -6006,
+        #endregion InstallScript error code 
+
         Unknow = 99
     }
 

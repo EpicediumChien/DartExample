@@ -136,7 +136,7 @@ namespace DDPM.UI.Plugin.Common.Tests
             // Assert
             Assert.That(result, Is.EqualTo(false));
 
-            deviceManagerSAMock.Setup(x => x.GetFWUpdateInfo(It.IsAny<bool>(), It.IsAny<bool>())).Returns(Task.FromResult(new FWUpdateInfoPackage() {FWUpdateInfo=new List<FWUpdateInfo>() { new FWUpdateInfo() { DeviceId=""},new FWUpdateInfo() { DeviceId= "{3c6863f9-d8d6-4045-9403-8c3ace7df488}" } } }));
+            deviceManagerSAMock.Setup(x => x.GetFWUpdateInfo(It.IsAny<bool>())).Returns(Task.FromResult(new FWUpdateInfoPackage() {FWUpdateInfo=new List<FWUpdateInfo>() { new FWUpdateInfo() { DeviceId=""},new FWUpdateInfo() { DeviceId= "{3c6863f9-d8d6-4045-9403-8c3ace7df488}" } } }));
             privateObject.SetFieldOrProperty("_deviceManager", deviceManagerSAMock.Object);           
             dockPageViewModel.DeviceInfos = new Dictionary<Guid, DeviceInfo>() { { new Guid(), new DeviceInfo() }, { new Guid(guid), new DeviceInfo() { ModelNumber = "KB740",Name= "HEADSET", FirmwareVersion = "AA", PhysicalDeviceType = DeviceType.PhysicalWebcam, PhysicalDeviceFirmwareVersion="A0" , DockPackageFwVersion = "DockPackageFwVersion", DockServiceTag = "DockServiceTag" } } };
             result = dockPageViewModel.SetCurrentDevice("3c6863f9-d8d6-4045-9403-8c3ace7df488");

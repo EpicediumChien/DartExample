@@ -81,6 +81,7 @@ namespace DdpmSwUpdater
         private string? _applicationName;
         bool _SkipSHA = false;
         int _CurrentProcess = 0;
+        int _CurrentMini = 1;
         int _CurrentProcessLimit = 10;
         Timer _processTimer = new Timer();
         #region Events
@@ -130,11 +131,11 @@ namespace DdpmSwUpdater
             }
             else
             {
-                swUpdateInfos.Add(new SWUpdateInfo()
-                {
-                    SoftwareName = "DDPM",
+            swUpdateInfos.Add(new SWUpdateInfo()
+            {
+                SoftwareName = "DDPM",
                     SWUErrorCode = SWUErrorCode.FileCheckFail
-                });
+            });
                 return Task.FromResult(swUpdateInfos);
             }
             LogManage.LogMessage($"swUpdateInfos ok");
@@ -340,15 +341,15 @@ namespace DdpmSwUpdater
                                 swUpdateInfos[i].InstallPaths = exeFilePath;
                                 swUpdateInfos[i].SWUErrorCode = Install(swUpdateInfos[i]);
                             }
-                            LogManage.LogMessage($"Install done");
+                LogManage.LogMessage($"Install done");
                             if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
-                            {
-                                NotificationFWupdate(LangHelper.Instance["SW_info"], _notificationStr);
-                            }
-                            else
-                            {
-                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                            }
+                {
+                    NotificationFWupdate(LangHelper.Instance["SW_info"], _notificationStr);
+                }
+                else
+                {
+                    NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                }
                         }
                     }
                     catch (Exception ex)
@@ -734,14 +735,7 @@ namespace DdpmSwUpdater
                     }
                 }
                 LogManage.LogMessage(swUpdateInfo.SoftwareName + nameof(Install) + " exit code : " + exitCode);
-                if (exitCode == 0)
-                {
-                    _updateErrorCode = SWUErrorCode.NoError;
-                }
-                else
-                {
-                    _updateErrorCode = SWUErrorCode.Unknow;
-                }
+                CheckErrorCode(exitCode);
                 CancelRegEvent();
                 return _updateErrorCode;
             }
@@ -974,6 +968,7 @@ namespace DdpmSwUpdater
         private void InstallingProcessTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
             LogManage.LogMessage($"InstallingProcessTimer_Elapsed _CurrentProcess :{_CurrentProcess}");
+            LogManage.LogMessage($"InstallingProcessTimer_Elapsed _CurrentMini :{_CurrentMini}");
             LogManage.LogMessage($"InstallingProcessTimer_Elapsed _CurrentProcessLimit :{_CurrentProcessLimit}");
             if (_CurrentProcess < _CurrentProcessLimit)
             {
@@ -988,7 +983,15 @@ namespace DdpmSwUpdater
             }
             if (_processTimer != null)
             {
-                float difference = (float)_CurrentProcess / (float)_CurrentProcessLimit;
+                float difference = 0;
+                if (_CurrentProcess > _CurrentMini)
+                {
+                    difference = (float)_CurrentProcess / (float)_CurrentProcessLimit;
+                }
+                else
+                {
+                    difference = (float)_CurrentProcess / (float)_CurrentMini;
+                }
                 LogManage.LogMessage($"InstallingProcessTimer_Elapsed difference :{difference}");
                 if (difference <= 0.75)
                 {
@@ -1006,7 +1009,129 @@ namespace DdpmSwUpdater
                 {
                     _processTimer.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
                 }
+                if (_CurrentMini >= 100)
+                {
+                    _processTimer.Interval = TimeSpan.FromSeconds(0.3).TotalMilliseconds;
+                }
                 LogManage.LogMessage($"InstallingProcessTimer_Elapsed _processTimer.Interval :{_processTimer.Interval}");
+            }
+        }
+        private void CheckErrorCode(int errorCode)
+        {
+            _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+            switch (errorCode)
+            {
+                case 3010:
+                    _updateErrorCode = SWUErrorCode.ERROR_SUCCESS_REBOOT_REQUIRED;
+                    _notificationStr = "";
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : The installation required a restart but the installation is not initiating the restart. In this case, the installation completed with BATCH_INSTALL set to a non-zero value, but the System function was not called. Note that Setup.exe returns this value only if the installation was successful and was not cancelled (that is, the installation did not end via the abort keyword). Otherwise, the appropriate error value or ISERR_SETUP_CANCELED is returned. The constant for this return value is ERROR_SUCCESS_REBOOT_REQUIRED.");
+                    break;
+                case 1641:
+                    _updateErrorCode = SWUErrorCode.ERROR_SUCCESS_REBOOT_INITIATED;
+                    _notificationStr = "";
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : ERROR_SUCCESS_REBOOT_INITIATED.");
+                    break;
+                case 0:
+                    _updateErrorCode = SWUErrorCode.NoError;
+                    _notificationStr = "";
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : successful");
+                    break;
+                case -2147482112:
+                    _updateErrorCode = SWUErrorCode.ISERR_SETUP_CANCELED;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : The installation exited with the abort keyword because the end user canceled the installation. The constant for this return value is ISERR_SETUP_CANCELED.");
+                    break;
+                case -2147221160:
+                    _updateErrorCode = SWUErrorCode.CheckPrivileges;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Unable to create required engine components. Check whether you have appropriate privileges to create COM components.");
+                    break;
+                case -5001:
+                    _updateErrorCode = SWUErrorCode.GenericError;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Generic error.");
+                    break;
+                case -5002:
+                    _updateErrorCode = SWUErrorCode.Failed_reading_media_header;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed reading media header.");
+                    break;
+                case -5003:
+                    _updateErrorCode = SWUErrorCode.Failed_installing_kernel;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed installing kernel.");
+                    break;
+                case -5004:
+                    _updateErrorCode = SWUErrorCode.Failed_starting_kernel;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed starting kernel.");
+                    break;
+                case -5005:
+                    _updateErrorCode = SWUErrorCode.Failed_opening_CAB;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed opening CAB.");
+                    break;
+                case -5006:
+                    _updateErrorCode = SWUErrorCode.Failed_installing_support;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed installing support.");
+                    break;
+                case -5007:
+                    _updateErrorCode = SWUErrorCode.Failed_setting_text_substitution;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed setting text substitution.");
+                    break;
+                case -5008:
+                    _updateErrorCode = SWUErrorCode.Failed_initializing_installation_information;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed initializing installation information.");
+                    break;
+                case -5009:
+                    _updateErrorCode = SWUErrorCode.Failed_getting_installation_driver;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed getting installation driver.");
+                    break;
+                case -5010:
+                    _updateErrorCode = SWUErrorCode.Failed_initializing_properties;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed initializing properties.");
+                    break;
+                case -5011:
+                    _updateErrorCode = SWUErrorCode.Failed_running_installation_driver;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed running installation driver.");
+                    break;
+                case -5012:
+                    _updateErrorCode = SWUErrorCode.Failed_uninstalling_support;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed uninstalling support.");
+                    break;
+                case -5013:
+                    _updateErrorCode = SWUErrorCode.Failed_to_extract_file_from_setup_boot_file;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed to extract file from setup boot file.");
+                    break;
+                case -5014:
+                    _updateErrorCode = SWUErrorCode.Failed_to_download_file;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed to download file (occurs only when saving installation files during an Internet installation).");
+                    break;
+                case -5017:
+                    _updateErrorCode = SWUErrorCode.Could_not_clone_the_installation;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Could not clone the installation.");
+                    break;
+                case -6001:
+                    _updateErrorCode = SWUErrorCode.Failed_starting_the_setup_launcher;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed starting the setup launcher.");
+                    break;
+                case -6002:
+                    _updateErrorCode = SWUErrorCode.Failed_finding_the_setup_launcher;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed finding the setup launcher.");
+                    break;
+                case -6003:
+                    _updateErrorCode = SWUErrorCode.Failed_loading_the_setup_launcher;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed loading the setup launcher.");
+                    break;
+                case -6004:
+                    _updateErrorCode = SWUErrorCode.Failed_verifying_the_signature_of_setup_launcher;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed verifying the signature of setup launcher.");
+                    break;
+                case -6005:
+                    _updateErrorCode = SWUErrorCode.Failed_installing_the_setup_launcher_to_proper_location;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed installing the setup launcher to proper location.");
+                    break;
+                case -6006:
+                    _updateErrorCode = SWUErrorCode.Failed_extracting_setup_launcher;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Failed extracting setup launcher.");
+                    break;
+                default:
+                    _updateErrorCode = SWUErrorCode.Unknow;
+                    LogManage.LogMessage($"Get errorCode : {errorCode} : Unknow.");
+                    break;
             }
         }
         private void ResetTimer()
