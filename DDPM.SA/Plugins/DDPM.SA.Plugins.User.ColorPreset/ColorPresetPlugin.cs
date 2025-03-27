@@ -1975,7 +1975,7 @@ namespace ColorPreset.Plugins
         /// </summary>
         /// <param name="m">Monitor Info</param>
         /// <returns> Run Deserialize ICC.json後的 object   </returns>
-        public Task<IIC_Metadata> DownloadICCData(MonitorInfo m, bool blICCProfile = false, string savelPath = "", bool UpdateMetadata = false)
+        public Task<IIC_Metadata> DownloadICCData(string modelName , string displayName , bool blICCProfile = false, string savelPath = "", bool UpdateMetadata = false)
         {
             writelog("ColorPresetPlugin DownloadICCData requested ...");
             try
@@ -2092,9 +2092,9 @@ namespace ColorPreset.Plugins
                         writelog($" Model name = {kvp.Key}");
                     }
 
-                    writelog($"m.modelName = {m.modelName} ");
+                    writelog($"m.modelName = {modelName} ");
 
-                    var lookup = _ICC_Metadata._support_ICC_DeviceName.FirstOrDefault(x => x.Key.Equals(m.modelName, StringComparison.OrdinalIgnoreCase));
+                    var lookup = _ICC_Metadata._support_ICC_DeviceName.FirstOrDefault(x => x.Key.Equals(modelName, StringComparison.OrdinalIgnoreCase));
 
                     if (lookup.Key != null)
                     {
@@ -2102,20 +2102,20 @@ namespace ColorPreset.Plugins
                         _ICC_Metadata._match_ICC_DeviceName = lookup.Value;
                         _ICC_Metadata.Is_Support_ICC_DeviceName = true;
 
-                        writelog($"[DownloadICCData] DeviceName = {m.modelName} is Support ICC.");
+                        writelog($"[DownloadICCData] DeviceName = {modelName} is Support ICC.");
                     }
                     else
                     {
                         _ICC_Metadata._match_ICC_DeviceName.Clear();
                         _ICC_Metadata.Is_Support_ICC_DeviceName = false;
 
-                        writelog($"[DownloadICCData] DeviceName = {m.modelName} is not Support ICC.");
+                        writelog($"[DownloadICCData] DeviceName = {modelName} is not Support ICC.");
                     }
 
                     if (blICCProfile)
                     {
                         int count = _ICC_Metadata._match_ICC_DeviceName.Count;
-                        str_url_prefix += m.modelName;
+                        str_url_prefix += modelName;
                         str_url_prefix += @"/";
 
                         //info = string.Empty;
@@ -2148,7 +2148,17 @@ namespace ColorPreset.Plugins
                                         writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha512 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA512} mismatch!");
                                         continue;
                                     }
-                                    MonitorProfile.IntsallMonitorProfile(m.DisplayName, strFilePath);
+                                    try
+                                    {
+                                        if (!MonitorProfile.IntsallMonitorProfile(displayName, strFilePath))
+                                        {
+                                            writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile install failed!");
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile install failed! {ex.Message}");
+                                    }
                                 }
                                 else
                                 {

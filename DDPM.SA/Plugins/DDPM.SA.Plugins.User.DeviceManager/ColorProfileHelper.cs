@@ -114,7 +114,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 WriteLog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} _AllInfoMonitors.Count : {mos.Count}");
                 for (int i = 0; i < mos.Count; i++)
                 {
-                    _colorPreset.DownloadICCData(mos[i], true, "", true).Wait();
+                    _colorPreset.DownloadICCData(mos[i].modelName, mos[i].DisplayName, true, "", true).Wait();
                 }
             }
             else
@@ -141,7 +141,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 isDownloadingICC = true;
                 WriteLog($"{nameof(PreDownloadICC)} DownloadICCData go, newMontor : {newMontor.modelName}");
 
-                _colorPreset.DownloadICCData(/*_AllInfoMonitors[i]*/newMontor, true, "", isNeedPreDownloadingICC).Wait();
+                _colorPreset.DownloadICCData(newMontor.modelName, newMontor.DisplayName, true, "", isNeedPreDownloadingICC).Wait();
 
                 if (isNeedPreDownloadingICC)
                 {
