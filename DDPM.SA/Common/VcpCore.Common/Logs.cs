@@ -17,6 +17,7 @@ namespace VcpCore.Common
 
         public Logs(ILog Logx, string PluginLogId)
         { Logg = Logx; _PluginLogId = PluginLogId; }
+
         public Logs(string logPathx, string PluginLogId)
         { logPath = logPathx; _PluginLogId = PluginLogId; }
 
@@ -33,7 +34,7 @@ namespace VcpCore.Common
                         writer.WriteLine($"{DateTime.Now}: {DebugMsg}");
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
 #if DEBUG
                     Console.WriteLine($"[VcpCore.Common.Logs] DebugMsg failed, message: {ex.Message}");
@@ -46,7 +47,7 @@ namespace VcpCore.Common
         }
 
         public void DebugMsg_1(string DebugMsg)
-        {            
+        {
             string s = $"[{_PluginLogId}][INFO] " + DebugMsg;
             if (Logg != null) // Elie, check if it's null or not.
             { Logg.Info(s); }
@@ -64,7 +65,7 @@ namespace VcpCore.Common
 #if DEBUG
                     Console.WriteLine($"[VcpCore.Common.Logs] DebugMsg_1 failed, message: {ex.Message}");
 #endif
-                }                
+                }
             }
 #if DEBUG
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + s);
@@ -91,7 +92,6 @@ namespace VcpCore.Common
                     Console.WriteLine($"[VcpCore.Common.Logs] Info failed, message: {ex.Message}");
 #endif
                 }
-                
             }
 #if DEBUG
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + s);
@@ -117,7 +117,7 @@ namespace VcpCore.Common
 #if DEBUG
                     Console.WriteLine($"[VcpCore.Common.Logs] Info failed, message: {ex.Message}");
 #endif
-                }                
+                }
             }
 #if DEBUG
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + s);
