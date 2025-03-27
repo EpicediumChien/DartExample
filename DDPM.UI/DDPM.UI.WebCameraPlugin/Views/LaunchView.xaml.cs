@@ -369,7 +369,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             else
             {
                 playImg.Fill = new BrushConverter().ConvertFromString("#0E0E0E") as SolidColorBrush;
-                ;
             }
         }
 
