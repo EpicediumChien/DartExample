@@ -438,6 +438,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //
                     if (dev != null)
                     {
+                        //Robert_Lin 2025-3-27 to log all user's action (mouse click)
+                        _ddpmHomePageViewModel?.Log.Info($"HomeDevice is clicked, Category=[{dev.DeviceCategory}], DisplayName=[{dev.DisplayName}]");
                         NavigateToDeviceLandingPage(dev);
                     }
 
@@ -952,7 +954,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             if (_ddpmHomePageViewModel != null)
             {
-                _ddpmHomePageViewModel.Log.Info("DdpmHomePage.RenderingDown() is called.");
+                _ddpmHomePageViewModel.Log.Info($"DdpmHomePage.RenderingDown() is called. MemoryUsage={DdpmCommonHelper.GetProcessMemoryUsageMB():F2} MB");
             }
             //RefreshListViewItemWidth();
 

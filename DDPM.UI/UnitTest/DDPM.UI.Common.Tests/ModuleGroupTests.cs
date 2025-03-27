@@ -105,5 +105,16 @@ namespace DDPM.UI.Common.Tests
             Assert.That(result, Is.EqualTo(headers[0]));
         }
 
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (moduleGroup != null)
+            {
+                moduleGroup.Dispose();
+                moduleGroup = null;
+            }
+        }
+
     }
 }

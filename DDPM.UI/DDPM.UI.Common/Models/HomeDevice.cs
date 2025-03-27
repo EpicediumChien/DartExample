@@ -1946,7 +1946,7 @@ namespace DDPM.UI.Common.Models
             if (!mask.Contains("inputSource", StringComparison.OrdinalIgnoreCase) && mi1.inputSource != mi2.inputSource)
                 return false;
             if (!mask.Contains("edid", StringComparison.OrdinalIgnoreCase) && //!EqualityComparer<EDID>.Equals(mi1.edid, mi2.edid))
-                (mi1.edid.Equals(mi2.edid)))
+                (!mi1.edid.Equals(mi2.edid)))
                 return false;
 
             return true;
