@@ -22,10 +22,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using Screen = System.Windows.Forms.Screen;
 using ResourceManager = Dell.Client.Framework.UX.WPF.ResourceManager.ResourceManager;
-using System.Reflection.Metadata;
-using System.Windows.Forms;
 using System.Windows.Automation.Peers;
-using System.Windows.Media;
 
 namespace NGA.ThickClient
 {
@@ -93,12 +90,7 @@ namespace NGA.ThickClient
         /// <param name="formBuilder"></param>
         /// <param name="args"></param>
         public MainWindow(IFormBuilderBase formBuilder, string[]? args = null) : base(formBuilder, args)
-        {
-            //From MSDN: https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.renderoptions.processrendermode?view=net-6.0
-            //Use the ProcessRenderMode property to force software rendering for the current process.
-            //You can avoid many rendering issues that occur in WPF applications and that are caused by external issues if you change your preference to software rendering.
-            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
-            
+        {        
             var logCreator = formBuilder.GetSubsystem<ILogFactory>();
             if (logCreator != null)
             {
@@ -630,19 +622,6 @@ namespace NGA.ThickClient
         #region Move to new position event
         private void RaiseEvent_MoveToNewPosition(bool isMovedByHotkey = false)
         {
-            //Robert_Lin, 2024-12-20 To show ProductName OSD on the target screen
-            if (_Console != null)
-            {
-                EventManagerArgs args = new EventManagerArgs();
-                if (isMovedByHotkey)
-                {
-                    Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
-                    args.Tag = screen.DeviceName;
-                }
-                _Console.RaiseEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, this, args);
-            }
-            NotifyNarratorToRecalculateUI();
-        }
             try
             {
                 //Robert_Lin, 2024-12-20 To show ProductName OSD on the target screen
