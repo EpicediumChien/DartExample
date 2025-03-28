@@ -126,6 +126,9 @@ namespace DDPM.SA.Plugins.CMAManager
         // modified @ 20250326 stephen
         public string writeToFile(string guid, string json)
         {
+            if (json == null) {
+                return "parameter error: json string is null";
+            }
 
             try
             {
@@ -145,19 +148,23 @@ namespace DDPM.SA.Plugins.CMAManager
                 return ("CreateDirectory Exception: " + e.Message);
             }
 
-            // add @ 20250220 stephen : fix string to an object
+/*            // add @ 20250220 stephen : fix string to an object
             listResponse = new List<string>();
-            listResponse.Add(json);
+            listResponse.Add(json);*/
 
             try
             {
-                //string info = string.Empty;
-                bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listResponse).ToString(), (FILE_PATH + guid + ".txt"), out errorMsg);
+                List<string> listResponse = new List<string> { json };
+                string jsonString = JToken.FromObject(listResponse).ToString();
+                bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(jsonString, System.IO.Path.Combine(FILE_PATH, guid + ".txt"), out errorMsg);
+                return "DDPMFileSecurity.SetJsonContentFromSerializedString = " + write + " ; " + errorMsg;
 
-                return ("DDPMFileSecurity.SetJsonContentFromSerializedString = " + write + " ; " + errorMsg);
+/*                bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listResponse).ToString(), (FILE_PATH + guid + ".txt"), out errorMsg);
+
+                return ("DDPMFileSecurity.SetJsonContentFromSerializedString = " + write + " ; " + errorMsg);*/
             }
             catch (Exception e) {
-                return ("SetJsonContentFromSerializedString Exception: " + e.ToString());
+                return ("Serialization or File Write Exception: " + e.ToString());
             }
         }
         /*
