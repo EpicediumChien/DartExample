@@ -516,6 +516,8 @@ namespace DDPM.UI.Module.Kvm
 
         public bool LockSendNoKVM { get; set; } = false;
 
+        public Visibility ArrowinFullscreen {  get; set; } = Visibility.Collapsed;
+
         #region Hotkey
 
         private string _kvmHotkeyTooltip = LangHelper.Instance["None"];
@@ -997,7 +999,7 @@ namespace DDPM.UI.Module.Kvm
                 directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
                 string strFullPath = string.Format("{0}\\Plugins\\NKVM\\{1}", directory, GlobalDefinitions.DDMExeName);
 
-                if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result /*&& File.Exists(strFullPath)*/)
+                if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result && File.Exists(strFullPath))
                 {
                     SupportNKVM = Visibility.Visible;
                     OnPropertyChanged("SupportNKVM");
@@ -1429,6 +1431,7 @@ namespace DDPM.UI.Module.Kvm
                         if (mi.CapabilityDic.ContainsKey("E9"))
                         {
                             _log?.Info("[KvmViewModel]Have 0xE9");
+                            
                             if (!isScreenPartition)
                             {
                                 string _pxpString = string.Empty;
@@ -2988,6 +2991,12 @@ namespace DDPM.UI.Module.Kvm
                     DdpmCommonHelper.DeviceManagerSA.CancelVcpTask(guid.Value);
                 }
             }
+        }
+
+        public void UpdateArrow(bool isshow)
+        {
+            ArrowinFullscreen = Visibility.Visible;
+            OnPropertyChanged("ArrowinFullscreen");
         }
 
         #region Event
