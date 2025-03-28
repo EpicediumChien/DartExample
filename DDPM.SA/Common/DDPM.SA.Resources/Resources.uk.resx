@@ -132,9 +132,6 @@
   <data name="Network_fail" xml:space="preserve">
     <value>Збій мережі</value>
   </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>Не вдалося оновити систему через помилку мережі. Спробуй ще раз.</value>
-  </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>Мікропрограму докстанції завантажено. Від’єднайте докстанцію для застосування мікропрограми й знову під’єднайте її за 1 хвилину.</value>
   </data>
@@ -236,12 +233,6 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>Помилка тайм-ауту</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>Двічі клацніть лівою кнопкою миші, щоб розпочати оновлення мікропрограми</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Натисніть клавішу U на клавіатурі, щоб розпочати оновлення мікропрограми</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Пристрій під’єднано</value>

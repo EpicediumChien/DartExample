@@ -1051,7 +1051,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to s.
+        ///   Looks up a localized string similar to Seconds.
         /// </summary>
         internal static string Seconds {
             get {
@@ -1258,6 +1258,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please connect your monitor using the USB upstream port to avoid errors during the firmware update process.
+        /// </summary>
+        internal static string Update_Display_Alert_3 {
+            get {
+                return ResourceManager.GetString("Update_Display_Alert_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to update download cancel, because PC battery too low..
         /// </summary>
         internal static string update_download_cancel {
@@ -1285,7 +1294,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update failed due to network error. Please try again..
+        ///   Looks up a localized string similar to Update failed due to network error. Try again..
         /// </summary>
         internal static string Update_failed_due_to_network_error {
             get {

@@ -133,7 +133,7 @@
     <value>Network fail</value>
   </data>
   <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>Update failed due to network error. Please try again.</value>
+    <value>Update failed due to network error. Try again.</value>
   </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>Dock FW is loaded. Disconnect dock for completing FW application and reconnect dock after 1 min.</value>
@@ -550,7 +550,7 @@
     <value>Multiple docks are detected. Keep only one dock connected to prevent damage to your dock(s).</value>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value>s</value>
+    <value>Seconds</value>
   </data>
   <data name="Multiple_docks_are_detected3" xml:space="preserve">
     <value>Multiple docks detected. Keep only one dock connected to prevent damage to your docks. Restart the PC, then connect only one dock.</value>
@@ -623,5 +623,8 @@
   </data>
   <data name="Software_update_failed" xml:space="preserve">
     <value>Software update failed</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>Please connect your monitor using the USB upstream port to avoid errors during the firmware update process</value>
   </data>
 </root>

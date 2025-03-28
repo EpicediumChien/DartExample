@@ -132,9 +132,6 @@
   <data name="Network_fail" xml:space="preserve">
     <value>Errore di rete</value>
   </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>Aggiornamento non riuscito a causa di un errore di rete. Riprovare.</value>
-  </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>Il firmware del dock è caricato. Scollegare il dock per completare l'applicazione del firmware e ricollegarlo dopo 1 min.</value>
   </data>
@@ -236,12 +233,6 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>Errore di timeout</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>Cliccare due volte con il pulsante sinistro del mouse per avviare l'aggiornamento del firmware</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Premere il tasto "U" sulla tastiera per avviare l'aggiornamento del firmware</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Dispositivo connesso</value>

@@ -132,9 +132,6 @@
   <data name="Network_fail" xml:space="preserve">
     <value>Błąd sieci</value>
   </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>Aktualizacja nie powiodła się z powodu błędu sieci. Spróbuj ponownie.</value>
-  </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>Oprogramowanie wewnętrzne stacji dokującej jest załadowane. Odłącz stację dokującą w celu zakończenia aplikacji oprogramowania wewnętrznego, a następnie podłącz ją ponownie po 1 minucie.</value>
   </data>
@@ -236,12 +233,6 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>Błąd przekroczenia limitu czasu</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>Kliknij dwukrotnie lewym przyciskiem myszy, aby rozpocząć aktualizację oprogramowania układowego</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Naciśnij klawisz „U” na klawiaturze, aby rozpocząć aktualizację oprogramowania wewnętrznego</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Urządzenie podłączone</value>
