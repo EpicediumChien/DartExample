@@ -123,7 +123,7 @@ namespace DDPM.SA.Plugins.CMAManager
             return responseString;
 
         }
-        // modified @ 10150326 stephen
+        // modified @ 20250326 stephen
         public string writeToFile(string guid, string json)
         {
 
@@ -133,13 +133,19 @@ namespace DDPM.SA.Plugins.CMAManager
                 {
                     System.IO.Directory.CreateDirectory(FILE_PATH);
                 }
+
+                // add @ 20250327 stephen
+                if (!DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(FILE_PATH, out errorMsg))
+                {
+                    return ("[writeToFile] SetFolderPermissions_UserReadAndExecute failed: " + errorMsg);
+                }
             }
             catch (Exception e)
             {
                 return ("CreateDirectory Exception: " + e.Message);
             }
 
-            // add @ 20250220 stephen : fix string tio an object
+            // add @ 20250220 stephen : fix string to an object
             listResponse = new List<string>();
             listResponse.Add(json);
 
@@ -626,7 +632,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 response = response + "\"marketingname\":\"" + marketingname + "\",";
                 response = response + "\"serialnumber\":\"" + serialnumber + "\",";
                 response = response + "\"fwversion\":\"" + fwversion + "\",";
-                response = response + "\"fwupdateresponse\":[\"" + fwupdateresponse + "\"]";
+                response = response + "\"fwupdateresponse\":[" + fwupdateresponse + "]";
                 response = response + "}";
 
 
