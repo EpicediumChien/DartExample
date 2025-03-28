@@ -3612,4 +3612,19 @@
   <data name="Update_Display_Alert_3" xml:space="preserve">
     <value>Please connect your monitor using the USB upstream port to avoid errors during the firmware update process</value>
   </data>
+  <data name="UnableToLoadDdpm" xml:space="preserve">
+    <value>Unable to load Dell Display and Peripheral Manager app at the moment. Please close the app and try again.</value>
+  </data>
+  <data name="InputValidationTooltip.1" xml:space="preserve">
+    <value>Use a maximum of {0} characters</value>
+  </data>
+  <data name="InputValidationTooltip.2" xml:space="preserve">
+    <value>Only use alpha-numeric characters and the following special characters {0}</value>
+  </data>
+  <data name="InputValidationTooltip.3" xml:space="preserve">
+    <value>The file path either has exceeded the maximum of 260 characters, uses a reserved file name, or has invalid characters &amp;lt; &amp;gt; : " / \ | ?</value>
+  </data>
+  <data name="InputValidationTooltip.4" xml:space="preserve">
+    <value>Enter only a full URL path, not a relative path</value>
+  </data>
 </root>
