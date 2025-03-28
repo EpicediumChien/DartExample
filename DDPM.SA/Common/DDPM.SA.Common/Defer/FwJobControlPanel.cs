@@ -34,27 +34,55 @@ namespace DDPM.SA.Common.Defer
         public static void removeItems(int count)
         {
             listFwJob.RemoveRange(0, count);
-            writeToFile();
+            try
+            {
+                writeToFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("writeToFile() exception: " + ex.ToString());
+            }
         }
 
         public static void removeItem(string item)
         {
             listFwJob.Remove(item);
-            writeToFile();
+            try
+            {
+                writeToFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("writeToFile() exception: " + ex.ToString());
+            }
         }
 
         public static void addToSchedule(DeferItem item)
         {
             //loadFile();
             listFwJob.Add(item.ToString());
-            writeToFile();
+            try
+            {
+                writeToFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("writeToFile() exception: " + ex.ToString());
+            }
         }
 
         public static void addToSchedule(string item)
         {
             //loadFile();
             listFwJob.Add(item);
-            writeToFile();
+            try
+            {
+                writeToFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("writeToFile() exception: " + ex.ToString());
+            }
         }
 
         // Add Error handling.

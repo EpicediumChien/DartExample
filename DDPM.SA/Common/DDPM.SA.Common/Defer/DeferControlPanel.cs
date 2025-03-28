@@ -45,25 +45,52 @@ namespace DDPM.SA.Common.Defer
         public static void removeItems(int count)
         {
             listDefer.RemoveRange(0, count);
-            writeToFile();
+            try {
+                writeToFile();
+            }
+            catch (Exception ex) {
+                Console.WriteLine("writeToFile() exception: " + ex.ToString());
+            }
+
         }
 
         public static void removeItem(string item)
         {
             listDefer.Remove(item);
-            writeToFile();
+            try
+            {
+                writeToFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("writeToFile() exception: " + ex.ToString());
+            }
         }
 
         public static void addToSchedule(DeferItem item)
         {
             listDefer.Add(item.ToString());
-            writeToFile();
+            try
+            {
+                writeToFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("writeToFile() exception: " + ex.ToString());
+            }
         }
 
         public static void addToSchedule(string item)
         {
             listDefer.Add(item);
-            writeToFile();
+            try
+            {
+                writeToFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("writeToFile() exception: " + ex.ToString());
+            }
         }
 
         private static void loadFile()
