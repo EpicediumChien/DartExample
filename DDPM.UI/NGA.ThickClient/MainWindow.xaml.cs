@@ -15,7 +15,6 @@ using Dell.Client.Framework.UX.WPF.Console;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
 using Microsoft.Win32;
-using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -26,6 +25,7 @@ using ResourceManager = Dell.Client.Framework.UX.WPF.ResourceManager.ResourceMan
 using System.Reflection.Metadata;
 using System.Windows.Forms;
 using System.Windows.Automation.Peers;
+using System.Windows.Media;
 
 namespace NGA.ThickClient
 {
@@ -94,24 +94,24 @@ namespace NGA.ThickClient
         /// <param name="args"></param>
         public MainWindow(IFormBuilderBase formBuilder, string[]? args = null) : base(formBuilder, args)
         {
+            //From MSDN: https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.renderoptions.processrendermode?view=net-6.0
+            //Use the ProcessRenderMode property to force software rendering for the current process.
+            //You can avoid many rendering issues that occur in WPF applications and that are caused by external issues if you change your preference to software rendering.
+            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+            
             var logCreator = formBuilder.GetSubsystem<ILogFactory>();
-
             if (logCreator != null)
             {
                 _log = logCreator.CreateLogger("MAINWIN", typeof(MainWindow));
                 _log.Info("DDPM MainWindow ctor");
             }
-
             InitializeComponent();
             DataContext = this;
             SubscribeMainWindowEvents();
-
             if (System.Windows.Application.Current?.TryFindResource("DefaultWindowHeight") is double height)
                 WindowHeight = height;
-
             if (System.Windows.Application.Current?.TryFindResource("DefaultWindowWidth") is double width)
                 WindowWidth = width;
-
             UxLocalizationManager.Instance = new()
             {
                 ResourceManager = NGA.Resources.Resources.ResourceManager
@@ -186,15 +186,21 @@ namespace NGA.ThickClient
 
         private void UXSystemParametersChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-
-            if (e.PropertyName == nameof(UXSystemParameters.Instance.OSTheme))
+            try
             {
-                //update dark/light mode
-                DdpmCommonHelper.updateMergedDictionaries(resourceManager);
+                if (e.PropertyName == nameof(UXSystemParameters.Instance.OSTheme))
+                {
+                    //update dark/light mode
+                    DdpmCommonHelper.updateMergedDictionaries(resourceManager);
+                }
+                if (e.PropertyName != nameof(UXSystemParameters.Instance.HighContrast))
+                    return;
+                OnApplyTemplate();
             }
-            if (e.PropertyName != nameof(UXSystemParameters.Instance.HighContrast))
-                return;
-            OnApplyTemplate();
+            catch (Exception ex)
+            {
+                _log?.Error($"{nameof(MainWindow)} - UXSystemParametersChanged Exception: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -204,45 +210,53 @@ namespace NGA.ThickClient
         /// <param name="isCenterOfScreen">boolean value to make window appear center of screen</param>
         private void AdjustWindowSizeBasedOnMonitor(bool isCenterOfScreen = false)
         {
-            if (WindowState == WindowState.Maximized)
+            _log?.Info($"{nameof(MainWindow)} - AdjustWindowSizeBasedOnMonitor in ...");
+            try
             {
-                SetMainWindowSizeToMaximized();
-                return;
-            }
-            Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
-            DdpmCommonHelper.IsMainWindowAtPrimaryScreen = screen.Primary;
+                if (WindowState == WindowState.Maximized)
+                {
+                    SetMainWindowSizeToMaximized();
+                    return;
+                }
+                Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
+                DdpmCommonHelper.IsMainWindowAtPrimaryScreen = screen.Primary;
 
-            //2024-5-8 Robert_Lin, to support resizeable MainWindow,
-            //Sharap Viswanathan, Karthik suggest to comment out the method
-            if (_isMainWindowResizable)
+                //2024-5-8 Robert_Lin, to support resizeable MainWindow,
+                //Sharap Viswanathan, Karthik suggest to comment out the method
+                if (_isMainWindowResizable)
+                {
+                    double screenHeight;
+                    double screenWidth;
+                    //Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
+                    // PrimaryScreen Scaling info required because screen workarea when app launched in Secondary montior
+                    // gives resolution of Secondary monitor by multiplying the PrimaryScreenScaling ratio
+                    var primaryScreenScalingRatio = Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
+
+                    if (screen.Primary)
+                    {
+                        screenHeight = SystemParameters.WorkArea.Height;
+                        screenWidth = SystemParameters.WorkArea.Width;
+                    }
+                    else
+                    {
+                        screenHeight = screen.WorkingArea.Height / primaryScreenScalingRatio;
+                        screenWidth = screen.WorkingArea.Width / primaryScreenScalingRatio;
+                    }
+
+                    AdjustWindowSize(screenHeight, screenWidth);
+                    if (isCenterOfScreen)
+                    {
+                        double screenLeft = screen.Primary ? SystemParameters.WorkArea.Left : (screen.WorkingArea.Left / primaryScreenScalingRatio);
+                        double screenTop = screen.Primary ? SystemParameters.WorkArea.Top : (screen.WorkingArea.Top / primaryScreenScalingRatio);
+                        MoveWindowToCenter(screenLeft, screenTop, screenWidth, screenHeight);
+                    }
+                }
+                _log?.Info($"{nameof(MainWindow)} - AdjustWindowSizeBasedOnMonitor out ...");
+            }
+            catch (Exception ex)
             {
-                double screenHeight;
-                double screenWidth;
-                //Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
-                // PrimaryScreen Scaling info required because screen workarea when app launched in Secondary montior
-                // gives resolution of Secondary monitor by multiplying the PrimaryScreenScaling ratio
-                var primaryScreenScalingRatio = Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
-
-                if (screen.Primary)
-                {
-                    screenHeight = SystemParameters.WorkArea.Height;
-                    screenWidth = SystemParameters.WorkArea.Width;
-                }
-                else
-                {
-                    screenHeight = screen.WorkingArea.Height / primaryScreenScalingRatio;
-                    screenWidth = screen.WorkingArea.Width / primaryScreenScalingRatio;
-                }
-
-                AdjustWindowSize(screenHeight, screenWidth);
-                if (isCenterOfScreen)
-                {
-                    double screenLeft = screen.Primary ? SystemParameters.WorkArea.Left : (screen.WorkingArea.Left / primaryScreenScalingRatio);
-                    double screenTop = screen.Primary ? SystemParameters.WorkArea.Top : (screen.WorkingArea.Top / primaryScreenScalingRatio);
-                    MoveWindowToCenter(screenLeft, screenTop, screenWidth, screenHeight);
-                }
+                _log?.Error($"{nameof(MainWindow)} - AdjustWindowSizeBasedOnMonitor Exception: {ex.Message}");
             }
-
         }
 
         /// <summary>
@@ -255,39 +269,46 @@ namespace NGA.ThickClient
         /// <param name="screenWidth">Usable screenWidth</param>
         private void AdjustWindowSize(double screenHeight, double screenWidth)
         {
-            //2024-5-8 Robert_Lin, to support resizeable MainWindow,
-            //Sharap Viswanathan, Karthik suggest to comment out the method
-            if (_isMainWindowResizable)
+            try
             {
-                screenHeight *= UsableHeightPercentage;
-                screenWidth *= UsableWidthPercentage;
-                if (screenHeight > 0 && screenHeight < WindowHeight)
+                //2024-5-8 Robert_Lin, to support resizeable MainWindow,
+                //Sharap Viswanathan, Karthik suggest to comment out the method
+                if (_isMainWindowResizable)
                 {
-                    MinHeight = screenHeight;
-                    Height = screenHeight;
-                    var calculatedWidth = screenHeight / HeightWidthRatio;
-                    if (calculatedWidth > screenWidth)
-                        calculatedWidth = screenWidth;
-                    MinWidth = calculatedWidth;
-                    Width = calculatedWidth;
+                    screenHeight *= UsableHeightPercentage;
+                    screenWidth *= UsableWidthPercentage;
+                    if (screenHeight > 0 && screenHeight < WindowHeight)
+                    {
+                        MinHeight = screenHeight;
+                        Height = screenHeight;
+                        var calculatedWidth = screenHeight / HeightWidthRatio;
+                        if (calculatedWidth > screenWidth)
+                            calculatedWidth = screenWidth;
+                        MinWidth = calculatedWidth;
+                        Width = calculatedWidth;
+                    }
+                    else if (screenWidth > 0 && screenWidth < WindowWidth)
+                    {
+                        MinWidth = screenWidth;
+                        Width = screenWidth;
+                        var calculatedHeight = screenWidth * HeightWidthRatio;
+                        if (calculatedHeight > screenHeight)
+                            calculatedHeight = screenHeight;
+                        MinHeight = calculatedHeight;
+                        Height = calculatedHeight;
+                    }
+                    else
+                    {
+                        MinHeight = WindowHeight;
+                        Height = WindowHeight;
+                        MinWidth = WindowWidth;
+                        Width = WindowWidth;
+                    }
                 }
-                else if (screenWidth > 0 && screenWidth < WindowWidth)
-                {
-                    MinWidth = screenWidth;
-                    Width = screenWidth;
-                    var calculatedHeight = screenWidth * HeightWidthRatio;
-                    if (calculatedHeight > screenHeight)
-                        calculatedHeight = screenHeight;
-                    MinHeight = calculatedHeight;
-                    Height = calculatedHeight;
-                }
-                else
-                {
-                    MinHeight = WindowHeight;
-                    Height = WindowHeight;
-                    MinWidth = WindowWidth;
-                    Width = WindowWidth;
-                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Error($"{nameof(MainWindow)} - AdjustWindowSize Exception: {ex.Message}");
             }
         }
 
@@ -296,17 +317,26 @@ namespace NGA.ThickClient
         /// </summary>
         private void ReAdjustWindowSize()
         {
-            //2024-5-8 Robert_Lin, to support resizeable MainWindow,
-            //Sharap Viswanathan, Karthik suggest to comment out the method
-            if (_isMainWindowResizable)
+            _log?.Info($"{nameof(MainWindow)} - ReAdjustWindowSize in ...");
+            try
             {
-                if (Screen.AllScreens.Length > 1)
-                    AdjustWindowSizeBasedOnMonitor(true);
-                else
+                //2024-5-8 Robert_Lin, to support resizeable MainWindow,
+                //Sharap Viswanathan, Karthik suggest to comment out the method
+                if (_isMainWindowResizable)
                 {
-                    AdjustWindowSize(SystemParameters.WorkArea.Height, SystemParameters.WorkArea.Width);
-                    MoveWindowToCenter(SystemParameters.WorkArea.Left, SystemParameters.WorkArea.Top, SystemParameters.WorkArea.Width, SystemParameters.WorkArea.Height);
+                    if (Screen.AllScreens.Length > 1)
+                        AdjustWindowSizeBasedOnMonitor(true);
+                    else
+                    {
+                        AdjustWindowSize(SystemParameters.WorkArea.Height, SystemParameters.WorkArea.Width);
+                        MoveWindowToCenter(SystemParameters.WorkArea.Left, SystemParameters.WorkArea.Top, SystemParameters.WorkArea.Width, SystemParameters.WorkArea.Height);
+                    }
                 }
+                _log?.Info($"{nameof(MainWindow)} - ReAdjustWindowSize out ...");
+            }
+            catch (Exception ex)
+            {
+                _log?.Error($"{nameof(MainWindow)} - ReAdjustWindowSize Exception: {ex.Message}");
             }
         }
 
@@ -319,8 +349,15 @@ namespace NGA.ThickClient
         /// <param name="screenHeight">screen height</param>
         private void MoveWindowToCenter(double screenLeft, double screenTop, double screenWidth, double screenHeight)
         {
-            this.Left = (screenLeft + (screenWidth - this.Width) / 2);
-            this.Top = (screenTop + (screenHeight - this.Height) / 2);
+            try
+            {
+                this.Left = (screenLeft + (screenWidth - this.Width) / 2);
+                this.Top = (screenTop + (screenHeight - this.Height) / 2);
+            }
+            catch (Exception ex)
+            {
+                _log?.Error($"{nameof(MainWindow)} - MoveWindowToCenter Exception: {ex.Message}");
+            }
         }
 
         #endregion
@@ -383,8 +420,17 @@ namespace NGA.ThickClient
 
         private void SetToBottomWindow(object sender, EventManagerArgs e)
         {
-            IntPtr hWnd = new WindowInteropHelper(this).Handle;
-            _SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+            _log?.Info($"{nameof(MainWindow)} - SetToBottomWindow in ...");
+            try
+            {
+                IntPtr hWnd = new WindowInteropHelper(this).Handle;
+                _SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+                _log?.Info($"{nameof(MainWindow)} - SetToBottomWindow out ...");
+            }
+            catch (Exception ex)
+            {
+                _log?.Error($"{nameof(MainWindow)} - SetToBottomWindow Exception: {ex.Message}");
+            }
         }
 
         private void MainWindowActivate(object sender, EventManagerArgs e)
@@ -501,56 +547,65 @@ namespace NGA.ThickClient
         //Below solution was provided from Dell DUCA team, Sharap Viswanathan, Karthik 2024-10-30
         //private bool _firstTimeMaximim = true;
         private void MainWIndow_StateChanged(object sender, EventArgs e)
-        {            
-            if (WindowState == WindowState.Maximized)
+        {
+            _log?.Info($"{nameof(MainWindow)} - MainWIndow_StateChanged in ...");
+            try
             {
-                _log?.Info($"{nameof(MainWindow)} - MainWIndow_StateChanged WindowState.Maximized in ...");
-                //Robert_Lin, 2024-12-30 Using Win32.SetWindowsPos solution to fit MainWindow to current screen.WorkingArea
-                //IntPtr hWnd = new WindowInteropHelper(this).Handle;
-                //_SetWindowPos(hWnd, HWND_TOP, (int)screen.WorkingArea.Left, (int)screen.WorkingArea.Top,
-                //     (int)screen.WorkingArea.Width, (int)screen.WorkingArea.Height, SWP_SHOWWINDOW | SWP_ASYNCWINDOWPOS);
-                SetMainWindowSizeToMaximized();
-                _log?.Info($"{nameof(MainWindow)} - MainWIndow_StateChanged WindowState.Maximized out ...");
-                //Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
-                // PrimaryScreen Scaling info required because screen workarea when app launched in Secondary montior
-                // gives resolution of Secondary monitor by multiplying the PrimaryScreenScaling ratio
-                //if (Screen.PrimaryScreen == null) return;
-                /*
-                // this logic is required for secondary monitor scaling ratio calculation
-                var primaryScreenScalingRatio = Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
-                double screenHeight;
-                double screenWidth;
-                if (screen.Primary)
+                if (WindowState == WindowState.Maximized)
                 {
-                    screenHeight = SystemParameters.WorkArea.Height;
-                    screenWidth = SystemParameters.WorkArea.Width;
+                    _log?.Info($"{nameof(MainWindow)} - MainWIndow_StateChanged WindowState.Maximized in ...");
+                    //Robert_Lin, 2024-12-30 Using Win32.SetWindowsPos solution to fit MainWindow to current screen.WorkingArea
+                    //IntPtr hWnd = new WindowInteropHelper(this).Handle;
+                    //_SetWindowPos(hWnd, HWND_TOP, (int)screen.WorkingArea.Left, (int)screen.WorkingArea.Top,
+                    //     (int)screen.WorkingArea.Width, (int)screen.WorkingArea.Height, SWP_SHOWWINDOW | SWP_ASYNCWINDOWPOS);
+                    SetMainWindowSizeToMaximized();
+                    _log?.Info($"{nameof(MainWindow)} - MainWIndow_StateChanged WindowState.Maximized out ...");
+                    //Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
+                    // PrimaryScreen Scaling info required because screen workarea when app launched in Secondary montior
+                    // gives resolution of Secondary monitor by multiplying the PrimaryScreenScaling ratio
+                    //if (Screen.PrimaryScreen == null) return;
+                    /*
+                    // this logic is required for secondary monitor scaling ratio calculation
+                    var primaryScreenScalingRatio = Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
+                    double screenHeight;
+                    double screenWidth;
+                    if (screen.Primary)
+                    {
+                        screenHeight = SystemParameters.WorkArea.Height;
+                        screenWidth = SystemParameters.WorkArea.Width;
+                    }
+                    else
+                    {
+                        screenHeight = screen.WorkingArea.Height / primaryScreenScalingRatio;
+                        screenWidth = screen.WorkingArea.Width / primaryScreenScalingRatio;
+                    }
+
+                    this.MaxWidth = screenWidth;
+                    this.MaxHeight = screenHeight;
+                    */
+
+
+                    //RefreshWindowTaskbar();
+
+                    //Robert_Lin, 2024-12-2 workaround, I found the firstime maximized will also has a
+                    //glass-effect on taskbar. so force it restore to normal then maximized again.
+                    //if (_firstTimeMaximim)
+                    //{
+                    //    _firstTimeMaximim = false;
+                    //    WindowState = WindowState.Normal;
+                    //    WindowState = WindowState.Maximized;
+                    //}
+
+                    //int x = screen.WorkingArea.Left + (int)screenWidth / 2;
+                    //int y = screen.WorkingArea.Top + (int)screenHeight / 2;
+                    //SetCursorPos(x, y);
+                    //DoMouseClick();
                 }
-                else
-                {
-                    screenHeight = screen.WorkingArea.Height / primaryScreenScalingRatio;
-                    screenWidth = screen.WorkingArea.Width / primaryScreenScalingRatio;
-                }
-
-                this.MaxWidth = screenWidth;
-                this.MaxHeight = screenHeight;
-                */
-
-
-                //RefreshWindowTaskbar();
-
-                //Robert_Lin, 2024-12-2 workaround, I found the firstime maximized will also has a
-                //glass-effect on taskbar. so force it restore to normal then maximized again.
-                //if (_firstTimeMaximim)
-                //{
-                //    _firstTimeMaximim = false;
-                //    WindowState = WindowState.Normal;
-                //    WindowState = WindowState.Maximized;
-                //}
-
-                //int x = screen.WorkingArea.Left + (int)screenWidth / 2;
-                //int y = screen.WorkingArea.Top + (int)screenHeight / 2;
-                //SetCursorPos(x, y);
-                //DoMouseClick();
+                _log?.Info($"{nameof(MainWindow)} - MainWIndow_StateChanged out ...");
+            }
+            catch (Exception ex)
+            {
+                _log?.Error($"{nameof(MainWindow)} - MainWIndow_StateChanged Exception: {ex.Message}");
             }
         }
 
@@ -558,10 +613,19 @@ namespace NGA.ThickClient
         //PIMS-291471 Maximize DDPM app will cover windows taskbar
         private void SetMainWindowSizeToMaximized()
         {
-            IntPtr hWnd = new WindowInteropHelper(this).Handle;
-            Screen screen = Screen.FromHandle(hWnd);
-            _SetWindowPos(hWnd, HWND_TOP, (int)screen.WorkingArea.Left, (int)screen.WorkingArea.Top,
-                 (int)screen.WorkingArea.Width, (int)screen.WorkingArea.Height, SWP_SHOWWINDOW | SWP_ASYNCWINDOWPOS);
+            _log?.Info($"{nameof(MainWindow)} - SetMainWindowSizeToMaximized in ...");
+            try
+            {
+                IntPtr hWnd = new WindowInteropHelper(this).Handle;
+                Screen screen = Screen.FromHandle(hWnd);
+                _SetWindowPos(hWnd, HWND_TOP, (int)screen.WorkingArea.Left, (int)screen.WorkingArea.Top,
+                     (int)screen.WorkingArea.Width, (int)screen.WorkingArea.Height, SWP_SHOWWINDOW | SWP_ASYNCWINDOWPOS);
+                _log?.Info($"{nameof(MainWindow)} - SetMainWindowSizeToMaximized out ...");
+            }
+            catch (Exception ex)
+            {
+                _log?.Error($"{nameof(MainWindow)} - SetMainWindowSizeToMaximized Exception: {ex.Message}");
+            }         
         }
         #region Move to new position event
         private void RaiseEvent_MoveToNewPosition(bool isMovedByHotkey = false)
@@ -578,6 +642,25 @@ namespace NGA.ThickClient
                 _Console.RaiseEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, this, args);
             }
             NotifyNarratorToRecalculateUI();
+        }
+            try
+            {
+                //Robert_Lin, 2024-12-20 To show ProductName OSD on the target screen
+                if (_Console != null)
+                {
+                    EventManagerArgs args = new EventManagerArgs();
+                    if (isMovedByHotkey)
+                    {
+                        Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
+                        args.Tag = screen.DeviceName;
+                    }
+                    _Console.RaiseEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, this, args);
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Error($"{nameof(MainWindow)} - RaiseEvent_MoveToNewPosition Exception: {ex.Message}");
+            }
         }
         #endregion  Move to new position event
 
@@ -692,46 +775,64 @@ namespace NGA.ThickClient
 
         public (double Width, double Height, double WorkingWidth, double WorkingHeight) GetScreenResolution(Window window)
         {
-            // Get the top-left position of the window
-            var windowPosition = new System.Drawing.Point(
-                (int)(window.Left + window.Width / 2),
-                (int)(window.Top + window.Height / 2));
+            try
+            {
+                // Get the top-left position of the window
+                var windowPosition = new System.Drawing.Point(
+                    (int)(window.Left + window.Width / 2),
+                    (int)(window.Top + window.Height / 2));
 
-            // Find the screen containing the window
-            var screen = Screen.FromPoint(windowPosition);
+                // Find the screen containing the window
+                var screen = Screen.FromPoint(windowPosition);
 
-            // Get screen resolution and working area
-            var screenBounds = screen.Bounds;
-            var workingArea = screen.WorkingArea;
+                // Get screen resolution and working area
+                var screenBounds = screen.Bounds;
+                var workingArea = screen.WorkingArea;
 
-            return (
-                Width: screenBounds.Width,
-                Height: screenBounds.Height,
-                WorkingWidth: workingArea.Width,
-                WorkingHeight: workingArea.Height
-            );
+                return (
+                    Width: screenBounds.Width,
+                    Height: screenBounds.Height,
+                    WorkingWidth: workingArea.Width,
+                    WorkingHeight: workingArea.Height
+                );
+            }
+            catch (Exception ex)
+            {
+                _log?.Error($"{nameof(MainWindow)} - GetScreenResolution exception: {ex.Message}");
+                return (0, 0, 0, 0);
+            }
         }
 
         private double GetScalingFactor(Window window)
         {
-            // Get the PresentationSource for the window
-            var source = PresentationSource.FromVisual(window);
-
-            if (source != null && source.CompositionTarget != null)
+            try
             {
-                // Get the matrix that represents the DPI scaling
-                var transform = source.CompositionTarget.TransformToDevice;
+                // Get the PresentationSource for the window
+                var source = PresentationSource.FromVisual(window);
 
-                // Extract the scaling factors (X)
-                return transform.M11;
+                if (source != null && source.CompositionTarget != null)
+                {
+                    // Get the matrix that represents the DPI scaling
+                    var transform = source.CompositionTarget.TransformToDevice;
+
+                    // Extract the scaling factors (X)
+                    return transform.M11;
+                }
+
+                // Default scaling is 1.0 (100%)
+                return 1.0;
             }
-
-            // Default scaling is 1.0 (100%)
-            return 1.0;
+            catch (Exception ex)
+            {
+                _log?.Error($"{nameof(MainWindow)} - GetScalingFactor exception: {ex.Message}");
+                return 1.0;
+            }
         }
 
         private void AdjustWindowPosition(Window window, Screen screen, double factor = 1.0)
         {
+            try
+            {
                 // Get screen working area
                 var screenWorkingArea = screen.WorkingArea;
 
@@ -765,6 +866,11 @@ namespace NGA.ThickClient
                 // Apply the adjusted position
                 window.Left = adjustedLeft / factor;
                 window.Top = adjustedTop / factor;
+            }
+            catch (Exception ex)
+            {
+                _log?.Error($"{nameof(MainWindow)} - AdjustWindowPosition exception: {ex.Message}");
+            }
         }
 
         private void EnsureWindowIsVisible(Window window)
