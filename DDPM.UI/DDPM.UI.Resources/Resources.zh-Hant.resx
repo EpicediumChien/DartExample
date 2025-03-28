@@ -2512,10 +2512,10 @@
     <value>提供快速存取會議控制項。切換\n開啟/關閉鍵將於 Microsoft Teams 或 Zoom 通話時，\n在鍵盤上顯示或隱藏這些按鍵。</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
-    <value>在會議通話中出現新的聊天訊息時啟用閃爍\n效果</value>
+    <value>在會議通話中出現新的聊天訊息時啟用閃爍效果</value>
   </data>
   <data name="Collab.4" xml:space="preserve">
-    <value>請連續輕觸兩下 (而非一下) 來啟動鍵盤上的\n圖示</value>
+    <value>請連續輕觸兩下 (而非一下) 來啟動鍵盤上的圖示</value>
   </data>
   <data name="Collab.5" xml:space="preserve">
     <value>深入瞭解</value>
