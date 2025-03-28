@@ -18,14 +18,13 @@ using Dell.UnifiedAgent.RemotePlugin.Client.Console;
 using Microsoft.Win32;
 using NGA.ThickClient.Interfaces;
 using NGA.ThickClientCore;
-using System.Data.OleDb;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
+using System.Windows.Interop;
+using System.Windows.Media;
 using Constants = NGA.Common.Constants;
 
 namespace NGA.ThickClient
@@ -87,7 +86,14 @@ namespace NGA.ThickClient
         /// Constructor
         /// </summary>
         public App() : base(NGA.Resources.Resources.ResourceManager, ThickClientUniqueGuid) { }
-
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            //From MSDN: https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.renderoptions.processrendermode?view=net-6.0
+            //Use the ProcessRenderMode property to force software rendering for the current process.
+            //You can avoid many rendering issues that occur in WPF applications and that are caused by external issues if you change your preference to software rendering.
+            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+            base.OnStartup(e);
+        }
         /// <summary>
         /// Configures the ConsoleConfig.
         /// </summary>
