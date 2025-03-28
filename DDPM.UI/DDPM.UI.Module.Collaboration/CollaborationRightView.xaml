@@ -12,222 +12,221 @@
              mc:Ignorable="d"
              Unloaded="UserControl_Unloaded"
              d:DesignHeight="647" d:DesignWidth="520">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-            <Style x:Key="BroderStyle1" TargetType="Border">
-                <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
-                <Setter Property="Width" Value="230" />
-                <Setter Property="Height" Value="56" />
-            </Style>
-            <Style x:Key="BroderStyle2" TargetType="Border">
-                <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
-                <Setter Property="Width" Value="250" />
-                <Setter Property="Height" Value="56" />
-            </Style>
-            <Style x:Key="TextStyle1" TargetType="UXControls:UXTextBlock">
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="FontFamily" Value="Roboto" />
-                <Setter Property="FontWeight" Value="Medium" />
-                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
-            </Style>
-            <Style x:Key="ToggleStyle1" TargetType="UXControls:UXToggleSwitch">
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="FontFamily" Value="Roboto" />
-                <Setter Property="FontWeight" Value="Normal" />
-                <Setter Property="Foreground" Value="White" />
-            </Style>
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <Grid Margin="0,0,0,15">
-        <!--Elsa 20250325 for PIMS-348388 change Margin="0,10,0,0" to Margin="-13,10,0,0"-->
-        <Border CornerRadius="13" Width="520" Margin="-13,10,0,0">
-            <StackPanel Orientation="Vertical">
-                <StackPanel x:Name="spAlert" Orientation="Vertical">
-                    <Border Name="bdrAlert1" Background="#364861" CornerRadius="4" Margin="16,23,16,-9" BorderThickness="7,0,0,0" BorderBrush="#0E92F2" MouseEnter="MessageBox_MouseEnter" MouseLeave="MessageBox_MouseLeave" Visibility="Collapsed">
-                        <StackPanel Orientation="Horizontal">
-                            <Image x:Name="InfoIcon" Margin="12,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+      <Style x:Key="BroderStyle1" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
+        <Setter Property="Width" Value="230" />
+        <Setter Property="Height" Value="56" />
+      </Style>
+      <Style x:Key="BroderStyle2" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
+        <Setter Property="Width" Value="250" />
+        <Setter Property="Height" Value="56" />
+      </Style>
+      <Style x:Key="TextStyle1" TargetType="UXControls:UXTextBlock">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+      </Style>
+      <Style x:Key="ToggleStyle1" TargetType="UXControls:UXToggleSwitch">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="White" />
+      </Style>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Grid Margin="0,0,0,15">
+    <Border CornerRadius="13" Width="520" Margin="0,10,10,0">
+      <StackPanel Orientation="Vertical">
+        <StackPanel x:Name="spAlert" Orientation="Vertical">
+          <Border Name="bdrAlert1" Background="#364861" CornerRadius="4" Margin="16,23,16,-9" BorderThickness="7,0,0,0" BorderBrush="#0E92F2" MouseEnter="MessageBox_MouseEnter" MouseLeave="MessageBox_MouseLeave" Visibility="Collapsed">
+            <StackPanel Orientation="Horizontal">
+              <Image x:Name="InfoIcon" Margin="12,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
                                VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
-                            </Image>
-                            <UXControls:UXTextBlock Name="txtMessage" FontSize="14" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap" Width="416" Focusable="True"
+              </Image>
+              <UXControls:UXTextBlock Name="txtMessage" FontSize="14" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap" Width="416" Focusable="True"
                                                 VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,16,0,13" LineHeight="21" Padding="2,3,10,2">
-                                <Run Name="txtAlert1" FontFamily="Roboto" FontWeight="Normal" AutomationProperties.Name="naAlert" Text="{Binding [Collaboration.5], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"/>
-                            </UXControls:UXTextBlock>
-                            <Image x:Name="CloseIcon" Source="/DDPM.UI.Common;component/Resources/Close.png" Stretch="Fill" Focusable="True"
+                <Run Name="txtAlert1" FontFamily="Roboto" FontWeight="Normal" AutomationProperties.Name="naAlert" Text="{Binding [Collaboration.5], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"/>
+              </UXControls:UXTextBlock>
+              <Image x:Name="CloseIcon" Source="/DDPM.UI.Common;component/Resources/Close.png" Stretch="Fill" Focusable="True"
                                    VerticalAlignment="Center" HorizontalAlignment="Right" Width="15" Height="15" MouseLeftButtonDown="CloseDescription1" Cursor="Hand">
-                            </Image>
-                        </StackPanel>
-                    </Border>
-                    <Border Name="bdrAlert2" Background="{DynamicResource DefaultThemeRightViewAlertBkColor}" CornerRadius="4" Margin="16,23,16,-9" BorderThickness="7,0,0,0" BorderBrush="#0E92F2" MouseEnter="MessageBox_MouseEnter" MouseLeave="MessageBox_MouseLeave" Visibility="Collapsed">
-                        <StackPanel Orientation="Horizontal">
-                            <Image x:Name="InfoIcon2" Margin="12,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
+              </Image>
+            </StackPanel>
+          </Border>
+          <Border Name="bdrAlert2" Background="{DynamicResource DefaultThemeRightViewAlertBkColor}" CornerRadius="4" Margin="16,23,16,-9" BorderThickness="7,0,0,0" BorderBrush="#0E92F2" MouseEnter="MessageBox_MouseEnter" MouseLeave="MessageBox_MouseLeave" Visibility="Collapsed">
+            <StackPanel Orientation="Horizontal">
+              <Image x:Name="InfoIcon2" Margin="12,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
                                VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
-                            </Image>
-                            <UXControls:UXTextBlock Name="txtMessage2" FontSize="14" Background="Transparent" Foreground="#F5F6F7" TextWrapping="Wrap" Width="416" Focusable="True"
+              </Image>
+              <UXControls:UXTextBlock Name="txtMessage2" FontSize="14" Background="Transparent" Foreground="#F5F6F7" TextWrapping="Wrap" Width="416" Focusable="True"
                                                 VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,16,0,13" LineHeight="21" Padding="2,3,10,2">
-                                <Run Name="txtAlert2" FontFamily="Roboto" FontWeight="Normal" AutomationProperties.Name="naAlert"/>
-                                <Run Name="txtLearnMore2" FontFamily="Roboto" Foreground="#31A2E3" FontWeight="Bold" Cursor="Hand" TextDecorations="Underline" KeyDown="txtLearnMore1_KeyDown" MouseLeftButtonDown="LearnMore_Click" Focusable="True" KeyboardNavigation.TabIndex="1" KeyboardNavigation.IsTabStop="True" Text="{Binding [LearnMore], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"/>
-                            </UXControls:UXTextBlock>
-                            <Image x:Name="CloseIcon2" Source="/DDPM.UI.Common;component/Resources/Close.png" Stretch="Fill" Focusable="True"
+                <Run Name="txtAlert2" FontFamily="Roboto" FontWeight="Normal" AutomationProperties.Name="naAlert"/>
+                <Run Name="txtLearnMore2" FontFamily="Roboto" Foreground="#31A2E3" FontWeight="Bold" Cursor="Hand" TextDecorations="Underline" KeyDown="txtLearnMore1_KeyDown" MouseLeftButtonDown="LearnMore_Click" Focusable="True" KeyboardNavigation.TabIndex="1" KeyboardNavigation.IsTabStop="True" Text="{Binding [LearnMore], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"/>
+              </UXControls:UXTextBlock>
+              <Image x:Name="CloseIcon2" Source="/DDPM.UI.Common;component/Resources/Close.png" Stretch="Fill" Focusable="True"
                                    VerticalAlignment="Center" HorizontalAlignment="Right" Width="15" Height="15" MouseLeftButtonDown="CloseDescription2" Cursor="Hand">
-                            </Image>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Grid Margin="0,8,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="374" />
-                            <ColumnDefinition Width="130" />
-                        </Grid.ColumnDefinitions>
-                        <Grid Grid.Column="0">
-                            <StackPanel Orientation="Horizontal">
-                                <UXControls:UXTextBlock Name="txtCollabsCaption" FontSize="20" FontFamily="Roboto"
+              </Image>
+            </StackPanel>
+          </Border>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <Grid Margin="0,8,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="374" />
+              <ColumnDefinition Width="130" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+              <StackPanel Orientation="Horizontal">
+                <UXControls:UXTextBlock Name="txtCollabsCaption" FontSize="20" FontFamily="Roboto"
                                                         Margin="16,24,0,0" FontWeight="Normal" AutomationProperties.Name="nattt"
                                                         TextBlockType="Caption" MouseEnter="MessageBox_MouseEnter"
                                                         VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding [Collaboration.0], Source={x:Static lang:LangHelper.Instance}}"/>
-                                <Image Margin="9,28,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Uniform"
+                <Image Margin="9,28,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Uniform"
                                        VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="16" Height="16">
-                                    <Image.ToolTip>
-                                        <ToolTip Placement="Left" VerticalOffset="8" HorizontalOffset="6">
-                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                <Border.Resources>
-                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                                </Border.Resources>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Name="txtCollabsTooltip" TextWrapping="WrapWithOverflow" MaxWidth="350" Text="{Binding [Collaboration.1], Source={x:Static lang:LangHelper.Instance}}"/>
-                                                </StackPanel>
-                                            </Border>
-                                        </ToolTip>
-                                    </Image.ToolTip>
-                                </Image>
-                            </StackPanel>
-                        </Grid>
-                        <Grid Grid.Column="1">
-                            <UXControls:UXToggleSwitch Name="tsCollaboration" Margin="0,28,0,0" IsChecked="{Binding IsCollaborationKeyEnable}" VerticalContentAlignment="Center" Checked="Collaboration_Checked" Unchecked="Collaboration_Unchecked"
+                  <Image.ToolTip>
+                    <ToolTip Placement="Left" VerticalOffset="8" HorizontalOffset="6">
+                      <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                        <Border.Resources>
+                          <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                        </Border.Resources>
+                        <StackPanel Orientation="Horizontal">
+                          <TextBlock Name="txtCollabsTooltip" TextWrapping="WrapWithOverflow" MaxWidth="350" Text="{Binding [Collaboration.1], Source={x:Static lang:LangHelper.Instance}}"/>
+                        </StackPanel>
+                      </Border>
+                    </ToolTip>
+                  </Image.ToolTip>
+                </Image>
+              </StackPanel>
+            </Grid>
+            <Grid Grid.Column="1">
+              <UXControls:UXToggleSwitch Name="tsCollaboration" Margin="0,28,0,0" IsChecked="{Binding IsCollaborationKeyEnable}" VerticalContentAlignment="Center" Checked="Collaboration_Checked" Unchecked="Collaboration_Unchecked"
                                                        Content="{Binding IsCollaborationKeyEnableText}" Foreground="{DynamicResource DefaultTheme_TxtColor}" FontFamily="Roboto" FontSize="16" FontWeight="Normal"
                                                        VerticalAlignment="Center" HorizontalAlignment="Right" />
-                        </Grid>
-                    </Grid>
-                </StackPanel>
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,23,0,0">
-                        <Grid>
-                            <Border Style="{StaticResource BroderStyle1}" Margin="10,0,0,0">
-                                <Grid>
-                                    <StackPanel Orientation="Horizontal">
-                                        <!-- <Image Margin="16,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Video.png" Stretch="Uniform" HorizontalAlignment="Left"
+            </Grid>
+          </Grid>
+        </StackPanel>
+        <StackPanel>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,23,0,0">
+            <Grid>
+              <Border Style="{StaticResource BroderStyle1}" Margin="10,0,0,0">
+                <Grid>
+                  <StackPanel Orientation="Horizontal">
+                    <!-- <Image Margin="16,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Video.png" Stretch="Uniform" HorizontalAlignment="Left"
                                                Width="20" Height="14">
                                         </Image> -->
-                                        <ContentControl Margin="10,0,0,0" Template="{StaticResource icon_Video}" Width="18" Height="16" HorizontalAlignment="Left" Foreground="{DynamicResource DefaultTheme_PathColor}" />
-                                        <UXControls:UXTextBlock Name="txtVideo" Style="{StaticResource TextStyle1}" Margin="8,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"/>
-                                    </StackPanel>
-                                    <Grid Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}">
-                                        <UXControls:UXToggleSwitch IsChecked="{Binding IsCollaborationCameraEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                    <ContentControl Margin="10,0,0,0" Template="{StaticResource icon_Video}" Width="18" Height="16" HorizontalAlignment="Left" Foreground="{DynamicResource DefaultTheme_PathColor}" />
+                    <UXControls:UXTextBlock Name="txtVideo" Style="{StaticResource TextStyle1}" Margin="8,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"/>
+                  </StackPanel>
+                  <Grid Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}">
+                    <UXControls:UXToggleSwitch IsChecked="{Binding IsCollaborationCameraEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
                                                 Foreground="{DynamicResource DefaultTheme_TxtColor}" FontFamily="Roboto" FontSize="16" FontWeight="Normal"
                                                 Content="{Binding IsCollaborationCameraEnableText}" IsEnabled="{Binding CameraToggleEnabled}" />
-                                    </Grid>
-                                </Grid>
-                            </Border>
-                            <Border Name="bdrVideoShadow" Background="#60132F54" Margin="10,0,0,0" Visibility="{Binding IsCollabShadowVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
-                        </Grid>
-                        <Grid>
-                            <Border Name="bdrShare" Style="{StaticResource BroderStyle2}" Margin="10,0,0,0">
-                                <Grid >
-                                    <StackPanel  Orientation="Horizontal">
-                                        <!-- <Image Margin="16,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Share.png" Stretch="Uniform" VerticalAlignment="Center"
+                  </Grid>
+                </Grid>
+              </Border>
+              <Border Name="bdrVideoShadow" Background="#60132F54" Margin="10,0,0,0" Visibility="{Binding IsCollabShadowVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+            </Grid>
+            <Grid>
+              <Border Name="bdrShare" Style="{StaticResource BroderStyle2}" Margin="10,0,0,0">
+                <Grid >
+                  <StackPanel  Orientation="Horizontal">
+                    <!-- <Image Margin="16,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Share.png" Stretch="Uniform" VerticalAlignment="Center"
                                                Width="19" Height="20" HorizontalAlignment="Left">
                                         </Image> -->
-                                        <ContentControl Margin="10,0,0,0" Template="{StaticResource icon_Share}" Width="18" Height="16" HorizontalAlignment="Left" Foreground="{DynamicResource DefaultTheme_PathColor}" />
-                                        <UXControls:UXTextBlock Name="txtShare" Style="{StaticResource TextStyle1}" Margin="8,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding [Share], Source={x:Static lang:LangHelper.Instance}}"/>
-                                        <Image Margin="8,0,0,0" Name="imgLock" Source="/DDPM.UI.Common;component/Resources/Lock.png" Stretch="Uniform" VerticalAlignment="Center"
+                    <ContentControl Margin="10,0,0,0" Template="{StaticResource icon_Share}" Width="18" Height="16" HorizontalAlignment="Left" Foreground="{DynamicResource DefaultTheme_PathColor}" />
+                    <UXControls:UXTextBlock Name="txtShare" Style="{StaticResource TextStyle1}" Margin="8,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding [Share], Source={x:Static lang:LangHelper.Instance}}"/>
+                    <Image Margin="8,0,0,0" Name="imgLock" Source="/DDPM.UI.Common;component/Resources/Lock.png" Stretch="Uniform" VerticalAlignment="Center"
                                                Width="19" Height="20" HorizontalAlignment="Left" Visibility="Collapsed">
-                                            <Image.ToolTip>
-                                                <ToolTip>
-                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                        <Border.Resources>
-                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                                        </Border.Resources>
-                                                        <StackPanel>
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
-                                                            </StackPanel>
-                                                        </StackPanel>
-                                                    </Border>
-                                                </ToolTip>
-                                            </Image.ToolTip>
-                                        </Image>
-                                    </StackPanel>
-                                    <Grid Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}">
-                                        <UXControls:UXToggleSwitch Name="tsShare" IsChecked="{Binding IsCollaborationScreenShareEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                      <Image.ToolTip>
+                        <ToolTip>
+                          <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                            <Border.Resources>
+                              <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                            </Border.Resources>
+                            <StackPanel>
+                              <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                              </StackPanel>
+                            </StackPanel>
+                          </Border>
+                        </ToolTip>
+                      </Image.ToolTip>
+                    </Image>
+                  </StackPanel>
+                  <Grid Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}">
+                    <UXControls:UXToggleSwitch Name="tsShare" IsChecked="{Binding IsCollaborationScreenShareEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
                                                                    Foreground="{DynamicResource DefaultTheme_TxtColor}" FontFamily="Roboto" FontSize="16" FontWeight="Normal"
                                                                    Content="{Binding IsCollaborationScreenShareEnableText}" IsEnabled="{Binding CameraToggleEnabled}" />
-                                    </Grid>
-                                </Grid>
-                            </Border>
-                            <Border Background="#60132F54" Margin="10,0,0,0" Visibility="{Binding IsCollabShadowVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
-                        </Grid>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,16,0,0">
-                        <Grid>
-                            <Border Style="{StaticResource BroderStyle1}" Margin="10,0,0,0">
-                                <Grid>
-                                    <StackPanel Orientation="Horizontal">
-                                        <!--<Image Margin="17,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/ChatC.png" Stretch="Uniform"
+                  </Grid>
+                </Grid>
+              </Border>
+              <Border Background="#60132F54" Margin="10,0,0,0" Visibility="{Binding IsCollabShadowVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+            </Grid>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,16,0,0">
+            <Grid>
+              <Border Style="{StaticResource BroderStyle1}" Margin="10,0,0,0">
+                <Grid>
+                  <StackPanel Orientation="Horizontal">
+                    <!--<Image Margin="17,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/ChatC.png" Stretch="Uniform"
                                                Width="18" Height="16" VerticalAlignment="Center" HorizontalAlignment="Left">
                                         </Image>-->
-                                        <ContentControl Margin="10,0,0,0" Template="{StaticResource icon_Chat}" Width="18" Height="16" HorizontalAlignment="Left" Foreground="{DynamicResource DefaultTheme_PathColor}" />
-                                        <UXControls:UXTextBlock Name="txtChat" Style="{StaticResource TextStyle1}" Margin="8,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding [Chat], Source={x:Static lang:LangHelper.Instance}}"/>
-                                    </StackPanel>
-                                    <Grid Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}">
-                                        <UXControls:UXToggleSwitch Margin="8,0,0,0" IsChecked="{Binding IsCollaborationChatEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                    <ContentControl Margin="10,0,0,0" Template="{StaticResource icon_Chat}" Width="18" Height="16" HorizontalAlignment="Left" Foreground="{DynamicResource DefaultTheme_PathColor}" />
+                    <UXControls:UXTextBlock Name="txtChat" Style="{StaticResource TextStyle1}" Margin="8,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding [Chat], Source={x:Static lang:LangHelper.Instance}}"/>
+                  </StackPanel>
+                  <Grid Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}">
+                    <UXControls:UXToggleSwitch Margin="8,0,0,0" IsChecked="{Binding IsCollaborationChatEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
                                                                    Foreground="{DynamicResource DefaultTheme_TxtColor}" FontFamily="Roboto" FontSize="16" FontWeight="Normal"
                                                                    Content="{Binding IsCollaborationChatEnableText}" IsEnabled="{Binding ChatToggleEnabled}" />
-                                    </Grid>
-                                </Grid>
-                            </Border>
-                            <Border Background="#60132F54" Margin="10,0,0,0" Visibility="{Binding IsCollabShadowVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
-                        </Grid>
-                        <Grid>
-                            <Border Style="{StaticResource BroderStyle2}" Margin="10,0,0,0">
-                                <Grid>
-                                    <StackPanel  Orientation="Horizontal">
-                                        <!--<Image Margin="10,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Mic.png" Stretch="Uniform"
+                  </Grid>
+                </Grid>
+              </Border>
+              <Border Background="#60132F54" Margin="10,0,0,0" Visibility="{Binding IsCollabShadowVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+            </Grid>
+            <Grid>
+              <Border Style="{StaticResource BroderStyle2}" Margin="10,0,0,0">
+                <Grid>
+                  <StackPanel  Orientation="Horizontal">
+                    <!--<Image Margin="10,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Mic.png" Stretch="Uniform"
                                                Width="28" Height="28" VerticalAlignment="Center" HorizontalAlignment="Left">
                                         </Image>-->
-                                        <ContentControl Margin="10,0,0,0" Template="{StaticResource icon_Mic}" Width="18" Height="16" HorizontalAlignment="Left" Foreground="{DynamicResource DefaultTheme_PathColor}" />
-                                        <UXControls:UXTextBlock Name="txtMic" Style="{StaticResource TextStyle1}" Margin="8,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding [Mic], Source={x:Static lang:LangHelper.Instance}}"/>
-                                    </StackPanel>
-                                    <Grid Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}">
-                                        <UXControls:UXToggleSwitch IsChecked="{Binding IsCollaborationMicEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                    <ContentControl Margin="10,0,0,0" Template="{StaticResource icon_Mic}" Width="18" Height="16" HorizontalAlignment="Left" Foreground="{DynamicResource DefaultTheme_PathColor}" />
+                    <UXControls:UXTextBlock Name="txtMic" Style="{StaticResource TextStyle1}" Margin="8,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding [Mic], Source={x:Static lang:LangHelper.Instance}}"/>
+                  </StackPanel>
+                  <Grid Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}">
+                    <UXControls:UXToggleSwitch IsChecked="{Binding IsCollaborationMicEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
                                                                    Foreground="{DynamicResource DefaultTheme_TxtColor}" FontFamily="Roboto" FontSize="16" FontWeight="Normal"
                                                                    Content="{Binding IsCollaborationMicEnableText}" IsEnabled="{Binding MicToggleEnabled}" />
-                                    </Grid>
-                                </Grid>
-                            </Border>
-                            <Border Background="#60132F54" Margin="10,0,0,0" Visibility="{Binding IsCollabShadowVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
-                        </Grid>
-                    </StackPanel>
-                </StackPanel>
-                <StackPanel VerticalAlignment="top" HorizontalAlignment="Left" Margin="10,12,0,0">
-                    <Border CornerRadius="6" Width="490" Margin="0,5,0,0">
-                        <Grid VerticalAlignment="top">
-                            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="0,18,0,0">
-                                <UXControls:UXCheckBox Margin="10,0,0,0" Width="470" Height="50" IsChecked="{Binding IsCollaborationBlinkEffectEnable}" VerticalContentAlignment="Center"
+                  </Grid>
+                </Grid>
+              </Border>
+              <Border Background="#60132F54" Margin="10,0,0,0" Visibility="{Binding IsCollabShadowVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+            </Grid>
+          </StackPanel>
+        </StackPanel>
+        <StackPanel VerticalAlignment="top" HorizontalAlignment="Left" Margin="10,12,0,0">
+          <Border CornerRadius="6" Width="490" Margin="0,5,0,0">
+            <Grid VerticalAlignment="top">
+              <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="0,18,0,0">
+                <UXControls:UXCheckBox Margin="10,0,0,0" Width="470" Height="50" IsChecked="{Binding IsCollaborationBlinkEffectEnable}" VerticalContentAlignment="Center"
                                                        IsEnabled="{Binding BlinkEffectToggleEnabled}"
                                                        Name="cbCollaborationBlinkEffectText" BorderThickness="0" Foreground="{DynamicResource DefaultTheme_TxtColor}" FontFamily="Roboto"
                                                        VerticalAlignment="Top" HorizontalAlignment="Left" FontWeight="Light" Content="{Binding [Collaboration.3], Source={x:Static lang:LangHelper.Instance}}"/>
-                                <UXControls:UXCheckBox Margin="10,8,0,0" Width="470" Height="50" IsChecked="{Binding IsCollaborationDoubleTapEnable}" VerticalContentAlignment="Center"
+                <UXControls:UXCheckBox Margin="10,8,0,0" Width="470" Height="50" IsChecked="{Binding IsCollaborationDoubleTapEnable}" VerticalContentAlignment="Center"
                                                        IsEnabled="{Binding DoubleTapToggleEnabled}"
                                                        Name="cbCollaborationDoubleTapText" BorderThickness="0" Foreground="{DynamicResource DefaultTheme_TxtColor}" FontFamily="Roboto"
                                                        VerticalAlignment="Top" HorizontalAlignment="Left" FontWeight="Light" Content="{Binding [Collaboration.4], Source={x:Static lang:LangHelper.Instance}}"/>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                    <Border Background="#60132F54" CornerRadius="6" VerticalAlignment="Top" Margin="0,5,0,0"
+              </StackPanel>
+            </Grid>
+          </Border>
+          <Border Background="#60132F54" CornerRadius="6" VerticalAlignment="Top" Margin="0,5,0,0"
                             Visibility="{Binding IsCollabShadowVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
-                </StackPanel>
-            </StackPanel>
-        </Border>
-    </Grid>
+        </StackPanel>
+      </StackPanel>
+    </Border>
+  </Grid>
 </UserControl>

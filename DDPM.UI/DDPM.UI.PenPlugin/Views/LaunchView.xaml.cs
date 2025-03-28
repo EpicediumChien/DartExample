@@ -22,7 +22,7 @@ namespace DDPM.UI.Plugin.PenPlugin
     {
         private readonly PenViewModel? _vm;
 
-        private readonly int[] _rightFrameWidth = { 0, 533, 333 };
+        private readonly int[] _rightFrameWidth = { 0, 530, 330 };
 
         public LaunchView()
         {
@@ -139,7 +139,7 @@ namespace DDPM.UI.Plugin.PenPlugin
                         new Point(61, 410),
                         new Point(0, 466)
                     };
-                    PolyB.Points = new PointCollection 
+                    PolyB.Points = new PointCollection
                     {
                         new Point(0, 540),
                         new Point(620, 540),
@@ -157,7 +157,7 @@ namespace DDPM.UI.Plugin.PenPlugin
                     this.Resources["B2Width"] = 55.0;
                     this.Resources["B2Height"] = 46.0;
 
-                    PolyT.Points = new PointCollection 
+                    PolyT.Points = new PointCollection
                     {
                        new Point(0, 0),
                         new Point(620, 0),
@@ -166,7 +166,7 @@ namespace DDPM.UI.Plugin.PenPlugin
                         new Point(52, 422),
                         new Point(0, 475)
                     };
-                    PolyB.Points = new PointCollection 
+                    PolyB.Points = new PointCollection
                     {
                         new Point(0, 540),
                         new Point(620, 540),

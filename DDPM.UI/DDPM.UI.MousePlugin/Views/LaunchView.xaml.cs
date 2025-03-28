@@ -29,7 +29,7 @@ namespace DDPM.UI.Plugin.MousePlugin
     public partial class LaunchView : UserControl
     {
         private readonly MouseViewModel? _vm;
-        private readonly int[] _rightFrameWidth = { 0, 533, 333 };
+        private readonly int[] _rightFrameWidth = { 0, 530, 330 };
         private readonly Style ConnectionStyle1 = new();
         private readonly Style ConnectionStyle2 = new();
         private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
