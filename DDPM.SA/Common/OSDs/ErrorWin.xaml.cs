@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -41,8 +42,12 @@ namespace DDPM.OSDs
             Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
             if (!stayOpen)
             {
-                this.WindowState = WindowState.Maximized;
-                this.Topmost = true;
+                /*this.WindowState = WindowState.Maximized;
+                this.Topmost = true;*/
+                this.Left = 1;
+                this.Top = 1;
+                this.Width = Screen.PrimaryScreen!.WorkingArea.Width;
+                this.Height = Screen.PrimaryScreen.WorkingArea.Height;
                 InvokeFadeOutAnimation();
 
                 /*time = TimeSpan.FromMilliseconds(3000);

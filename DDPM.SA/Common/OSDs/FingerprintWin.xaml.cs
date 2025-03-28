@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
@@ -25,8 +26,12 @@ namespace DDPM.OSDs
             System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
             Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
 
-            this.WindowState = WindowState.Maximized;
-            this.Topmost = true;
+            /*this.WindowState = WindowState.Maximized;
+            this.Topmost = true;*/
+            this.Left = 1;
+            this.Top = 1;
+            this.Width = Screen.PrimaryScreen!.WorkingArea.Width;
+            this.Height = Screen.PrimaryScreen.WorkingArea.Height;
 
             InvokeFadeOutAnimation();
 
