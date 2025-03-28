@@ -132,9 +132,6 @@
   <data name="Network_fail" xml:space="preserve">
     <value>Falla de red</value>
   </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>La actualización falló debido a un error de red. Vuelva a intentarlo.</value>
-  </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>La carga del firmware (FW) de la estación de acoplamiento se ha completado satisfactoriamente. Desconecte la estación de acoplamiento para completar la aplicación del firmware y vuelva a conectarla después de 1 minuto.</value>
   </data>
@@ -236,12 +233,6 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>Error de tiempo de espera agotado</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>Haga doble clic con el botón izquierdo del mouse para iniciar la actualización del firmware</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Presione la tecla "U" en el teclado para iniciar la actualización del firmware</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Dispositivo conectado</value>

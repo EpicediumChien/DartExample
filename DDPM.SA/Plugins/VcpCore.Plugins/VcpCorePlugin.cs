@@ -51,6 +51,37 @@ namespace VcpCore.Plugins
     [PublishedUnelevatedInterface(new[] { typeof(IVcpCoreService) })]
     public class VcpCorePlugin : BaseAgentPlugin, IDisposableObservable, IVcpCoreService
     {
+        public enum log_type
+        {
+            info = 0,
+            error
+        }
+
+        /// <summary>
+        /// //
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="log_type">0 means info, others means error</param>
+        private void WriteLog(string text, log_type log_type = log_type.info,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
+        {
+            if (string.IsNullOrEmpty(text))
+                text = "";
+            text = $"[VcpCorePlugin] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
+#if DEBUG
+            Console.WriteLine(text);
+#endif
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
+        }
+
         #region Private Members
 
         private const string pluginName = "VcpCorePlugin";
@@ -340,7 +371,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception e)
             {
-                _logs.DebugMsg("[VcpCorePlugin] Re-GetMonitors Exception : " + e.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] Re-GetMonitors Exception : " + e.Message);
+                WriteLog("Re-GetMonitors Exception : " + e.Message, log_type.error);
                 return new List<MonitorInfo>();
             }
         }
@@ -376,7 +408,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg($"[VcpCorePlugin] VcpCorePlugin MultiCommandRun exception : {ex.Message} ...");
+                //_logs.DebugMsg($"[VcpCorePlugin] VcpCorePlugin MultiCommandRun exception : {ex.Message} ...");
+                WriteLog($"VcpCorePlugin MultiCommandRun exception : {ex.Message} ...", log_type.error);
                 return _multiCommands;
             }
 
@@ -975,7 +1008,8 @@ namespace VcpCore.Plugins
                     }
                     catch (Exception e)
                     {
-                        _logs.DebugMsg($"[VcpCorePlugin] --Task.Run ...GetResultObjectAsync is an exception-- ({e.Message})");
+                        //_logs.DebugMsg($"[VcpCorePlugin] --Task.Run ...GetResultObjectAsync is an exception-- ({e.Message})");
+                        WriteLog($"--Task.Run ...GetResultObjectAsync is an exception-- ({e.Message})", log_type.error);
                         return null;
                     }
                     finally
@@ -988,7 +1022,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] GetResultObjectAsync ex: " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] GetResultObjectAsync ex: " + ex.Message);
+                WriteLog("GetResultObjectAsync ex: " + ex.Message, log_type.error);
                 return null;
             }
         }
@@ -1251,7 +1286,9 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork Exception : " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork Exception : " + ex.Message);
+                WriteLog("TaskQueueExecutorDoWork Exception : " + ex.Message, log_type.error);
+
                 _TaskQueue = new TaskLockQueue<ParameterType>();
                 _TaskQueueResult = new ResultLockPool();
                 _CancelhashSet.Clear();
@@ -1321,7 +1358,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetCapabilitiesString_ ex: " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetCapabilitiesString_ ex: " + ex.Message);
+                WriteLog("[QueueTrigger] GetCapabilitiesString_ ex: " + ex.Message, log_type.error);
                 return string.Empty;
             }
         }
@@ -1500,7 +1538,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetVCPCapabilities_ ex: " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetVCPCapabilities_ ex: " + ex.Message);
+                WriteLog("[QueueTrigger] GetVCPCapabilities_ ex: " + ex.Message, log_type.error);
                 return string.Empty;
             }
         }
@@ -1542,7 +1581,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetVCPCapability_ ex: " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetVCPCapability_ ex: " + ex.Message);
+                WriteLog("[QueueTrigger] GetVCPCapability_ ex: " + ex.Message, log_type.error);
                 return null;
             }
         }
@@ -1733,7 +1773,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetVCPCapability_ ex: " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetVCPCapability_ ex: " + ex.Message);
+                WriteLog("[QueueTrigger] GetVCPCapability_ ex: " + ex.Message, log_type.error);
                 return null;
             }
         }
@@ -1790,7 +1831,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] SetVCPCapability_ ex: " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] SetVCPCapability_ ex: " + ex.Message);
+                WriteLog("[QueueTrigger] SetVCPCapability_ ex: " + ex.Message, log_type.error);
                 return false;
             }
         }
@@ -1955,7 +1997,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] SetVCPCapability_ ex: " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] SetVCPCapability_ ex: " + ex.Message);
+                WriteLog("[QueueTrigger] SetVCPCapability_ ex: " + ex.Message, log_type.error);
                 return false;
             }
         }
@@ -2010,7 +2053,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Initialize0x52toEmpty_ ex: " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Initialize0x52toEmpty_ ex: " + ex.Message);
+                WriteLog("[QueueTrigger] Initialize0x52toEmpty_ ex: " + ex.Message, log_type.error);
             }
         }
 

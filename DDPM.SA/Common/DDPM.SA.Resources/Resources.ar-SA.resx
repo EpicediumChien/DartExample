@@ -132,9 +132,6 @@
   <data name="Network_fail" xml:space="preserve">
     <value>فشل الشبكة</value>
   </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>فشل التحديث بسبب خطأ في الشبكة. حاول مرة أخرى.</value>
-  </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>تم تحميل برنامج وحدة الإرساء الثابت. افصل وحدة الإرساء لإكمال تطبيق البرنامج الثابت وأعد توصيل وحدة الإرساء بعد دقيقة واحدة.</value>
   </data>
@@ -236,12 +233,6 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>خطأ انتهاء المهلة</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>يُرجى النقر نقرًا مزدوجًا على زر الماوس الأيسر لبدء تحديث البرنامج الثابت</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>يُرجى الضغط على مفتاح "‏" على لوحة المفاتيح لبدء تحديث البرنامج الثابت</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>تم توصيل الجهاز</value>
