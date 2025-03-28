@@ -119,10 +119,17 @@ namespace DDPM.SA.Common.Defer
                 Console.WriteLine("CreateDirectory Exception: " + e.Message);
             }
 
-            
-            bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listDefer).ToString(), (FILE_PATH + FILE_NAME), out info);
 
-            Console.WriteLine(write);
+            try
+            {
+                bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listDefer).ToString(), (FILE_PATH + FILE_NAME), out info);
+                Console.WriteLine(write);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("SetJsonContentFromSerializedString Exception: " + e.Message);
+                throw (new Exception("SetJsonContentFromSerializedString Exception:" + e.Message));
+            }
 
             //File.WriteAllLines(FILE_PATH + FILE_NAME, listDefer.ToArray());
         }

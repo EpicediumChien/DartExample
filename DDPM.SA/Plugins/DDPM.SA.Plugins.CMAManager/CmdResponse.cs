@@ -149,10 +149,16 @@ namespace DDPM.SA.Plugins.CMAManager
             listResponse = new List<string>();
             listResponse.Add(json);
 
-            //string info = string.Empty;
-            bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listResponse).ToString(), (FILE_PATH + guid + ".txt"), out errorMsg);
+            try
+            {
+                //string info = string.Empty;
+                bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listResponse).ToString(), (FILE_PATH + guid + ".txt"), out errorMsg);
 
-            return ("DDPMFileSecurity.SetJsonContentFromSerializedString = " + write + " ; " + errorMsg);
+                return ("DDPMFileSecurity.SetJsonContentFromSerializedString = " + write + " ; " + errorMsg);
+            }
+            catch (Exception e) {
+                return ("SetJsonContentFromSerializedString Exception: " + e.ToString());
+            }
         }
         /*
          
