@@ -13,6 +13,7 @@ using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,8 +21,13 @@ using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Common.ViewModels
 {
-    public class DeviceBasePageViewModel : ObservableObject, IModuleOwner
+    public class DeviceBasePageViewModel : ObservableObject, IModuleOwner, IDisposable
     {
+        #region Private memebrs
+        //To prevent Dispose() is called multiple times
+        private bool _isDisposed = false;
+        #endregion
+
         #region ctor
         public DeviceBasePageViewModel()
         {
@@ -36,6 +42,55 @@ namespace DDPM.UI.Common.ViewModels
             DdpmCommonHelper.BitmapImageUpdated += OnVBarThemeChange;
         }
         #endregion ctor
+
+        #region Dispose and Destructor
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    // 釋放託管資源
+                    foreach(ModuleGroup mg in ModuleGroups)
+                    {
+                        mg.Dispose();
+                    }
+                    ModuleGroups.Clear();
+
+                    foreach(VbarItem1 vb1 in VbarItems)
+                    {
+                        vb1.Dispose();
+                    }
+                    VbarItems.Clear();
+
+                    RightViewHeaders.Clear();
+
+                }
+
+                // 釋放非託管資源
+                //if (unmanagedResource != IntPtr.Zero)
+                //{
+                //    // 釋放資源
+                //    unmanagedResource = IntPtr.Zero;
+                //}
+
+
+                //Below is done in UnloadEvents()
+                //DdpmCommonHelper.BitmapImageUpdated -= OnVBarThemeChange;
+
+                _isDisposed = true;
+            }
+        }
+        ~DeviceBasePageViewModel()
+        {
+            Dispose(false);
+        }
+        #endregion
 
         #region ModuleGroups
 
@@ -578,7 +633,16 @@ namespace DDPM.UI.Common.ViewModels
                     //Robert_Lin, 2024-11-15 Show the OSD-Product on the selected Monitor
                     if ((DdpmCommonHelper.DeviceManagerSA != null) && (_selectedHomeDevice != null))
                     {
-                        DdpmCommonHelper.DeviceManagerSA.ShowOSD(_selectedHomeDevice.MonitorInfo, OSDType.DisplayChanged);
+                        //Robert_Lin 2025-3-26 add try-catch to each IDeviceManagerSA calls
+                        try
+                        {
+                            DdpmCommonHelper.DeviceManagerSA.ShowOSD(_selectedHomeDevice.MonitorInfo, OSDType.DisplayChanged);
+                        }
+                        catch (Exception ex1)
+                        {
+
+                            throw;
+                        }
                     }                    
                 }
             }
@@ -715,7 +779,14 @@ namespace DDPM.UI.Common.ViewModels
                 DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null &&
                 DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
             {
-                DdpmCommonHelper.DeviceManagerSA.SetLastSelectedMonitorFromUI(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+                try
+                {
+                    DdpmCommonHelper.DeviceManagerSA.SetLastSelectedMonitorFromUI(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+                }
+                catch (Exception ex1)
+                {
+                    WriteLog("@HandleSelectedHomeDeviceChanged, Call DeviceManagerSA.SetLastSelectedMonitorFromUI() causes exception", ex1);
+                }
             }
             
 
@@ -1003,6 +1074,20 @@ namespace DDPM.UI.Common.ViewModels
         {
             if (_log != null)
                 _log.Info(msg);
+        }
+        public void WriteLog(string msg, Exception? ex=null)
+        {
+            if (_log != null)
+            {
+                if (ex != null)
+                {
+                    _log.Error(ex, msg);
+                }
+                else
+                {
+                    _log.Info(msg);
+                }
+            }
         }
         #endregion
 

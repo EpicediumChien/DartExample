@@ -251,6 +251,7 @@ if not %errorlevel% == 0 goto SA_CleanFail
 dotnet.exe build -c %build_type% -v minimal /p:Framework="net8.0" /p:platform=%build_arch% /p:EnableWindowsTargeting=true /p:DebugSymbols=false /p:DebugType=None ".\DDPM.SA.sln"
 echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto SA_Fail
+xcopy ".\dll\LSTDDPM" ".\bin\DDPM.Subagent.User\%build_type%\net8.0-windows10.0.19041.0" /Y
 Echo --------------------------------------------------
 Echo [Copy common Dlls to DDPM.UI project to reference]
 Echo --------------------------------------------------

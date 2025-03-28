@@ -1,9 +1,11 @@
-﻿using Dell.Client.Framework.UX.WPF.Controls;
+﻿using DDPM.SA.Common;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Common.UserControls
@@ -11,9 +13,12 @@ namespace DDPM.UI.Common.UserControls
     /// <summary>
     /// Interaction logic for VbarItem1.xaml
     /// </summary>
-    public partial class VbarItem1 : UserControl
+    public partial class VbarItem1 : UserControl, IDisposable
     {
+        #region Private members
+        private bool _isDisposed = false;
         private VbarItemViewModel vm = new VbarItemViewModel();
+        #endregion
         public int Id => vm.Id;
 
         #region Ctor
@@ -385,5 +390,34 @@ namespace DDPM.UI.Common.UserControls
             }
             #endregion
         }
+
+        #region Dispose and Destructor
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    // 釋放託管資源
+                    vm = null;
+
+                }
+
+                // 釋放非託管資源
+
+                _isDisposed = true;
+            }
+        }
+        ~VbarItem1()
+        {
+            Dispose(false);
+        }
+        #endregion Dispose and Destructor
+
     }
 }

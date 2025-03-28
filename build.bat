@@ -102,16 +102,18 @@ echo Clean SA
 :: dotnet clean .\Display001\CommModule\AwCommModule.sln /p:platform="x64" /p:configuration=%ConfigType%
 :: msbuild .\DDPM.SA\DDPM.SA.sln /t:clean /p:platform=%build_arch% /p:configuration=%ConfigType%
 dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.SA\DDPM.SA.sln"
-
 if errorlevel 1 goto errorSA
+
 :: pause
 echo Build SA
 dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.SA\DDPM.SA.sln"
+:: msbuild .\DDPM.SA\DDPM.SA.sln  /p:platform=%build_arch% /p:configuration=%ConfigType%
+if errorlevel 1 goto errorSA
+
 xcopy "%Dir_Subagent_CommonDll%\*.*" "%Dir_UI_CommonDll%\" /Y /S /Q
 xcopy "%Dir_Subagent_CommonDll%\DDPM.SA.Common.*" "%RootDir%\DdpmSwUpdater\CommonDll\" /Y /S /Q
 xcopy "%Dir_Subagent_CommonDll%\VcpCore.Common.*" "%RootDir%\DdpmSwUpdater\CommonDll\" /Y /S /Q
-:: msbuild .\DDPM.SA\DDPM.SA.sln  /p:platform=%build_arch% /p:configuration=%ConfigType%
-if errorlevel 1 goto errorSA
+
 echo *************************************
 echo BUILD SA SUCCESS
 echo BUILD SA SUCCESS

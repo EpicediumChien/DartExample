@@ -184,11 +184,10 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
                     return 1.0;
                 if (values.Length > 1
                     && values[0] is bool isChecked
-                    && values[1] is bool quickPauseStatus)
-                {
-                    if (isChecked && quickPauseStatus)
-                        return 1.0;
-                }
+                    && values[1] is bool quickPauseStatus && 
+                    isChecked && 
+                    quickPauseStatus)
+                    return 1.0;
                 return 0.6;
             }
             catch (Exception ex)

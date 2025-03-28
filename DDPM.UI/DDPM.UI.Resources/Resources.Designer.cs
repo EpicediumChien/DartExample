@@ -4462,6 +4462,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to HDR.
+        /// </summary>
+        internal static string HDR {
+            get {
+                return ResourceManager.GetString("HDR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to HDRPeak1000.
         /// </summary>
         internal static string HDRPeak1000 {
@@ -8328,6 +8337,15 @@ namespace DDPM.UI.Resources {
         internal static string Update_Display_Alert {
             get {
                 return ResourceManager.GetString("Update_Display_Alert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please connect your monitor using the USB upstream port to avoid errors during the firmware update process.
+        /// </summary>
+        internal static string Update_Display_Alert_3 {
+            get {
+                return ResourceManager.GetString("Update_Display_Alert_3", resourceCulture);
             }
         }
         

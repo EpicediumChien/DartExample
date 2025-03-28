@@ -61,6 +61,8 @@
 
 
             <uiCommon:StringEmptyToVisibilityConverter x:Key="StringEmptyToVisibilityConverter" />
+            <!--20250326 Chewlin for PIMS-348209 ADD HorizontalOffsetToolTipConverter -->
+            <uiCommon:HorizontalOffsetToolTipConverter x:Key="HorizontalOffsetToolTipConverter" />
             
             <!-- Border Style of Normal State -->
             <Style x:Key="SplitItemBorder_Normal" TargetType="Border">
@@ -110,8 +112,11 @@
     -->
     <Grid Background="{StaticResource FakeTransparent}" MouseLeftButtonDown="rootGrid_MouseLeftButtonDown"
           >
+        <!--20250327 Chewlin for PIMS-348209 Add MaxWidth="272" Placement="top" VerticalOffset="-5" HorizontalOffset="{Binding RelativeSource={RelativeSource Self},
+                   Path=ActualWidth, Converter={StaticResource HorizontalOffsetToolTipConverter}}"-->
         <Grid.ToolTip>
-            <ToolTip Visibility="{Binding ToolTipText, Converter={StaticResource StringEmptyToVisibilityConverter}}">
+            <ToolTip MaxWidth="272" Placement="top" VerticalOffset="-5" HorizontalOffset="{Binding RelativeSource={RelativeSource Self},
+                   Path=ActualWidth, Converter={StaticResource HorizontalOffsetToolTipConverter}}" Visibility="{Binding ToolTipText, Converter={StaticResource StringEmptyToVisibilityConverter}}">
                 <!-- Robert_Lin, 2025-1-9 SplitItem Tooltip outerborder will apply DDPM standard style 
                 OLD:
                <Border Background="{DynamicResource Tooltip_BkColor}"
@@ -125,10 +130,10 @@
                             <Setter Property="FontSize" Value="12" />
                         </Style>
                     </Border.Resources>-->
-
+                    <!--20250326 Chewlin for PIMS-348209 Add HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"-->
                     <StackPanel>
                         <TextBlock Text="{Binding ToolTipText}"
-                                   Style="{StaticResource Tooltip_TextBlockStyle}"/>
+                                   Style="{StaticResource Tooltip_TextBlockStyle}" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow" />
                     </StackPanel>
                 </Border>
             </ToolTip>

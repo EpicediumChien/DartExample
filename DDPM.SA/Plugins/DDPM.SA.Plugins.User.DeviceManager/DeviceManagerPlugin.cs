@@ -57,14 +57,12 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
 using static DdmLibrary.Utility.KVM;
 using static DDPM.SA.Common.Telementry_GeneralFunction;
 using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
-using static DDPM.SA.Plugins.User.DeviceManager.PeripheralAirAudioHelper;
 using IDs = DDPM.SA.Common.IDs;
 using Point = System.Windows.Point;
 
@@ -886,7 +884,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else
             {
-                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m, blICCProfile, savelPath).Result;
+                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m.modelName, m.DisplayName, blICCProfile, savelPath).Result;
             }
 
             return Task.FromResult(_ICC_Metadata);
@@ -1194,7 +1192,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //write back to settings
             //r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
 
-            //Thread.Sleep(100);
+            //Task.Delay(100).Wait();
             //}
 
             Trace.WriteLine("reqKey (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory) = " + _GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory);
@@ -1435,7 +1433,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //write back to settings
             r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
 
-            Thread.Sleep(100);
+            Task.Delay(100).Wait();
             */
 
             //show OSD over colorpreset plugin
@@ -1496,7 +1494,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //write back to settings
             //r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
 
-            //Thread.Sleep(100);
+            //Task.Delay(100).Wait();
 
             //show OSD over colorpreset plugin
             //_ColorPresetPlugin.ShowOSD_ColoPreset(m, ColorPreset_Name);
@@ -1593,7 +1591,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var read = _SettingsPlugin.ReadColorPresetSettings().Result;
             var temp = _ColorPresetPlugin.AddColorPresetForMonitorConfig(m, AppName, ColorPreset_Name, ability, read).Result;
             _SettingsPlugin.WriteColorPresetSettings(temp);
-            Thread.Sleep(100);
+            Task.Delay(100).Wait();
 
             return Task.FromResult(true);
         }
@@ -1617,7 +1615,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             var temp = _ColorPresetPlugin.ChangeColorPresetForMonitorConfig(_AllInfoMonitors[Convert.ToInt32(index_monitor)], AppName, ColorPreset_Name, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
             _SettingsPlugin.WriteColorPresetSettings(temp);
-            Thread.Sleep(100);
+            Task.Delay(100).Wait();
 
             return;
         }
@@ -1640,7 +1638,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             var temp = _ColorPresetPlugin.DeleteColorPresetForMonitorConfig(_AllInfoMonitors[Convert.ToInt32(index_monitor)], AppName, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
             _SettingsPlugin.WriteColorPresetSettings(temp);
-            Thread.Sleep(100);
+            Task.Delay(100).Wait();
 
             return;
         }
@@ -1942,7 +1940,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CheckICCProfileScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)//Bruce 02/10 added timer to check icm
+        /*private void CheckICCProfileScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)//Bruce 02/10 added timer to check icm
         {
             writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} start");
             if (_ColorPresetPlugin != null && _SettingsPlugin != null)
@@ -1958,7 +1956,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} _ColorPresetPlugin is null");
             }
             writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} done");
-        }
+        }*/
 
         #endregion
 
@@ -6379,7 +6377,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     writelog($"CloseDDPM Error:{ex.Message}");
                 }
-                Thread.Sleep(5000);
+                Task.Delay(5000).Wait();
                 try
                 {
                     writelog($"RunDDPM start");
@@ -10478,7 +10476,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 writelog($"[DeviceMangerPlugin] SaveGlobalSettingParam False...");
                             }
                         }
-                        Thread.Sleep(1000);
+                        Task.Delay(1000).Wait();
                     }
                 });
                 obj = new Object();
@@ -12251,6 +12249,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         protected virtual void OnDeviceChanged(MonitorInfo mo, DeviceInfo di, DeviceChangedType type, CancellationToken token, string changedProperty = "")
         {
+            writelog($"[DeviceMangerPlugin] OnDeviceChanged {type.ToString()}, {changedProperty}");
             DeviceChangedEventArgs _EventArgs = new DeviceChangedEventArgs();
             if (_UpdateProgress != null && _FWUpdatePlugin != null)
             {
@@ -12280,7 +12279,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             if (changedProperty != "DisplayChanged" && type == DeviceChangedType.Peripherals_PlugIn)
+            {
                 CheckDeviceFirstTimesToConnect(mo, di);
+                writelog($"OnDeviceChanged: CheckDeviceFirstTimesToConnect out ... ");
+            }
 
             if (type == DeviceChangedType.Display_UnPlug)//Bruce 0224 add. If the dock has multiple connections, send a Display event to force the UI to return to home.
             {
@@ -12307,16 +12309,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //}
 
                 //0909 Bruce move to add and remove
-                var thread = new Thread(() =>
+                //var thread = new Thread(() =>
+                //{
+                //    //CheckUpdate();
+                //    CheckUODFWUInfoPackage(true);
+                //});
+                //thread.Start();
+                Task.Run(() =>
                 {
                     //CheckUpdate();
                     CheckUODFWUInfoPackage(true);
                 });
-                thread.Start();
             }
-            else if (changedProperty.ToLower().Contains("remove"))
-            {
-            }
+            //else if (changedProperty.ToLower().Contains("remove"))
+            //{
+            //}
             else if ((string.Compare(changedProperty, "DisplayChanged", true) == 0))
             {
                 //if (_NKVMPlugin != null)
@@ -12324,18 +12331,48 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //    _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, token);
                 //}
                 DisplayFWCheck();
+
+                //Dean20250327 move icc check from OnDeviceChanged to here
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        List<MonitorInfo> tmp = new List<MonitorInfo>();
+                        tmp.AddRange(_AllInfoMonitors);//when processing the icc, the list may change cause exception
+                        foreach (var monitor in tmp)
+                        {
+                            if (_ColorPresetPlugin != null)//Bruce 02/10 added display In/Out to check icm
+                            {
+                                writelog($"[OnDeviceChanged]: _ColorPresetPlugin.DownloadICCData go ({_AllInfoMonitors.Count})");
+
+                                _ColorPresetPlugin.DownloadICCData(monitor.modelName, monitor.DisplayName, true, "", true).Wait();
+                                writelog($"[OnDeviceChanged]: _ColorPresetPlugin.DownloadICCData done");
+
+                            }
+                            else
+                                writelog($"[OnDeviceChanged]: _ColorPresetPlugin is null, skip DownloadICCData({monitor.modelName})");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        writelog($"[OnDeviceChanged]: _ColorPresetPlugin.DownloadICCData exception: {ex.Message}");
+                    }
+                });
+
                 //for USB KVM auto switch kb ms
                 foreach (var monitor in _AllInfoMonitors)
                 {
                     if (monitor.CapabilityDic.ContainsKey("E9") && monitor.CapabilityDic.ContainsKey("E7"))
                         Task.Run(() => updatePBPModeStatus(monitor, "E9")).ConfigureAwait(false);
-                    if (_ColorPresetPlugin != null && _SettingsPlugin != null)//Bruce 02/10 added display In/Out to check icm
-                    {
-                        writelog($"OnDeviceChanged: _ColorPresetPlugin.DownloadICCData go");
-                        _ColorPresetPlugin.DownloadICCData(monitor, true).Wait();
-                        writelog($"OnDeviceChanged: _ColorPresetPlugin.DownloadICCData done");
-                    }
-                }
+                    //if (_ColorPresetPlugin != null)//Bruce 02/10 added display In/Out to check icm
+                    //{
+                    //    writelog($"OnDeviceChanged: _ColorPresetPlugin.DownloadICCData go");
+                    //    _ColorPresetPlugin.DownloadICCData(monitor, true).Wait();
+                    //    writelog($"OnDeviceChanged: _ColorPresetPlugin.DownloadICCData done");
+                    //}
+                    //else
+                    //    writelog($"OnDeviceChanged: _ColorPresetPlugin is null, skip DownloadICCData({monitor.modelName})");
+                }                
             }
         }
 
@@ -12534,17 +12571,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void show_displays_changed(object sender, DisplaychangedEventArgs e)
         {
-            // add @ 20250305 stephen
+            // add @ 20250305 stephen, if e.count == -1 means only catch a display changed event, not trigger from vcp core
             if (e.count < 0)
             {
-                writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin, but count < 0 *****");
+                writelog($"Receive Displaychanged Event Notify from DisplayManagerPlugin, but count < 0 ({e.count}) *****");
                 OnDisplaychanged(e);
                 return;
             }
             // add @ 20250305 stephen
 
-            writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin");
-            writelog("Send out Displaychanged Event Notify from DeviceMangerPlugin");
+            //if GetMonitors() already return right list, this function won't be called
+            //it means if vcp core find the different monitor then this call will be triggered
+            writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin");           
 
             _AllInfoMonitors = (e.monitors).ToList();
 
@@ -12557,6 +12595,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             DisplaychangedEventArgs _displaychangedEventArgs = new DisplaychangedEventArgs();
             _displaychangedEventArgs.count = e.count;
             _displaychangedEventArgs.monitors = e.monitors.ToList();
+
+            writelog("Send out Displaychanged Event Notify from DeviceMangerPlugin");
             OnDisplaychanged(_displaychangedEventArgs);
 
             if (e.monitors.Count > 0)
@@ -12576,23 +12616,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        /*private void show_colorpreset(object sender, VCPchangedEventArgs e)
-        {
-            writelog("Receive VcpChanged Event Notify from ColorPresetPlugin");
-            writelog("Send out VcpChanged Event Notify from ColorPresetPlugin");
-
-            VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
-            _VCPchangedEventArgs.vcpcode = e.vcpcode;
-            _VCPchangedEventArgs.value = e.value;
-            //0607 Bruce 因VCPChange事件需要取得螢幕資訊故請Jarvis新增這段變數 代為新增
-            _VCPchangedEventArgs.monitor = e.monitor;
-            OnVCPchanged(_VCPchangedEventArgs);
-        }*/
-
         private void show_peripheralsNotify(object sender, DeviceChangedEventArgs e)
         {
-            writelog("Receive Notify Event from PeripheralsPlugin");
-            writelog("Send out Notify Event from DeviceMangerPlugin");
+            writelog($"Send out Notify Event from DeviceMangerPlugin 1 : {e.type.ToString()}, {e.changedProperty}");
 
             OnPeripheralsNotify(e);
             OnDeviceChanged(null, e.device_peripherals, e.type, CancellationToken.None, e.changedProperty);
@@ -12600,7 +12626,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void show_peripheralsUpdateNotify(object sender, bool e)
         {
-            writelog("Receive UpdateNotify Event from PeripheralsPlugin");
             writelog("Send out UpdateNotify Event from DeviceMangerPlugin");
 
             OnPeripheralsUpdateNotify(e);
@@ -13108,7 +13133,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         }
                                     }
                                 }
-                                Thread.Sleep(1000);
+                                Task.Delay(1000).Wait();
                                 loopCount++;
                                 writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - Peripherals Plugin is in a running condition");
                                 writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - WalkThrough GetDevices {loopCount.ToString()}");
@@ -14056,6 +14081,42 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Debug.WriteLine($"SaveHotkeySetting:GetInputSourceHotKeyDataAndSaveNewBack mo is null ");
                 }
             }
+            //03/27 testCase:Change hotkey in Input source - "Change PIP Position" will be updated in USB KVM > Hotkey > "Change PIP Position". 
+            if (info.Job.Equals(HotkeyType.ChangePIPPosition))
+            {
+                //clear KVM Change PIP Position hotkey if exist
+                saveList.ElementAtOrDefault(0).HotkeyInfo.ForEach(x =>
+                {
+                    if (x.Job.Equals(HotkeyType.KvmChangePIPPosition))
+                        x.Hotkey.Clear();
+                });
+            }
+            if (info.Job.Equals(HotkeyType.KvmChangePIPPosition))
+            {
+                //save as inputsource [Change PIP Position] hotkey and clear self
+                HotkeyInfo ChangePIPPositionhotkeyInfo = saveList.ElementAtOrDefault(0).HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.ChangePIPPosition));
+                if (saveList.ElementAtOrDefault(0).HotkeyInfo.Any(x => x.Job.Equals(HotkeyType.ChangePIPPosition)))
+                {
+                    saveList.ElementAtOrDefault(0).HotkeyInfo.ForEach(x =>
+                    {
+                        if (x.Job.Equals(HotkeyType.ChangePIPPosition))
+                        {
+                            x.Hotkey = hotkeys;
+                        }
+                    });
+                }
+                else
+                {
+                    saveList.ElementAtOrDefault(0).HotkeyInfo.Add(new HotkeyInfo()
+                    {
+                        Job = HotkeyType.ChangePIPPosition,
+                        Description = "ChangePIPPosition",
+                        Hotkey = hotkeys,
+                        InputSource = info.InputSource
+                    });
+                }
+                saveList.ElementAtOrDefault(0).HotkeyInfo.RemoveAll(x => x.Job.Equals(HotkeyType.KvmChangePIPPosition));
+            }
             if (WriteHotkeySettings(saveList).Result &&
                 _NKVMPlugin != null && info.Job != HotkeyType.NkvmConflict)
             {
@@ -14406,6 +14467,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", false);*/
             //test
+            //CallQAM_UI(this);
             /*ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Headset, "Dell Multi-Device Headset - MS5320W");
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Mouse, "Dell Multi-Device Mouse - MS5320W");
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
@@ -16389,7 +16451,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var tmp = colorPresetSettings;
             //write back to settings
             r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
-            Thread.Sleep(100);
+            Task.Delay(100).Wait();
             //}
             return Task.FromResult(r);
         }
@@ -16412,7 +16474,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var tmp = hotkeySettings;
             //write back to settings
             r = _SettingsPlugin.WriteHotkeySettings(tmp).Result;
-            Thread.Sleep(100);
+            Task.Delay(100).Wait();
             if (r)
             {
                 ToNKVM_HotKeys(tmp);
@@ -16423,7 +16485,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<(HotkeySettings, List<HotkeyData>)> ReadCurrentHotkey(MonitorInfo mo)//EDID monitorEdid)
         {
-            List<HotkeySettings> read = _SettingsPlugin.ReadHotkeySettings().Result;
+            List<HotkeySettings> read = _SettingsPlugin.ReadHotkeySettings().Result ?? new List<HotkeySettings>();
             //HotkeySettings hotkeySettings = read.Where(x => x.ModelName.Equals(monitorEdid.ModelName) && x.SerialNumber.Equals(monitorEdid.SerialNumber)).SingleOrDefault();
             HotkeySettings localHotkeySettings = read.SingleOrDefault(x => x.ModelName.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
 
@@ -16447,7 +16509,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var tmp = powerNapSettings;
             //write back to settings
             r = _SettingsPlugin.WritePowerNapSettings(tmp).Result;
-            Thread.Sleep(100);
+            Task.Delay(100).Wait();
             //}
             return Task.FromResult(r);
         }*/
@@ -18248,7 +18310,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             string tmpMuteGuid = Guid.NewGuid().ToString();
-                                            _OSD_Controler.ShowMultipleOSD(tmpMuteGuid, OSDType_Device.Mute, oSDType_Op, string.Empty, Content + LangHelper.Instance["is_muted"]);
+                                            _OSD_Controler.ShowMultipleOSD(tmpMuteGuid, OSDType_Device.Mute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_muted"]);
                                             await Task.Run(async () =>
                                             {
                                                 await Task.Delay(3000);
@@ -18268,7 +18330,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         {
 
                                             string tmpUnMuteGuid = Guid.NewGuid().ToString();
-                                            _OSD_Controler.ShowMultipleOSD(tmpUnMuteGuid, OSDType_Device.UnMute, oSDType_Op, string.Empty, Content + LangHelper.Instance["is_Unmuted"]);
+                                            _OSD_Controler.ShowMultipleOSD(tmpUnMuteGuid, OSDType_Device.UnMute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_Unmuted"]);
                                             await Task.Run(async () =>
                                             {
                                                 await Task.Delay(3000);

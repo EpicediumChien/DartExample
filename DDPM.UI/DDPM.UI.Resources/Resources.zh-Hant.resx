@@ -3501,4 +3501,7 @@
   <data name="Color.14" xml:space="preserve">
     <value>色彩預設</value>
   </data>
+  <data name="HDR" xml:space="preserve">
+    <value>HDR</value>
+  </data>
 </root>

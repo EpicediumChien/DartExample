@@ -217,7 +217,7 @@ namespace DDPM.SA.Common.Defer
                 listFwJob = new List<string>();
             }
 
-            //Thread.Sleep(1000);
+            //Task.Delay(1000).Wait();
         }
 
         private static void writeToFile()

@@ -210,7 +210,7 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
                 {
                     if (IsDisposed) break;
                     countx++;
-                    Thread.Sleep(250);
+                    Task.Delay(250).Wait();
                 } while (_WaitTag && countx < 40);
 
                 _logs.DebugMsg_1("_WaitTag result " + _WaitTag.ToString());

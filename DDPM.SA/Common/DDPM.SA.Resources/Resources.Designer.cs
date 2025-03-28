@@ -1087,6 +1087,24 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Software update failed.
+        /// </summary>
+        internal static string Software_update_failed {
+            get {
+                return ResourceManager.GetString("Software_update_failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Software update successful.
+        /// </summary>
+        internal static string Software_update_successful {
+            get {
+                return ResourceManager.GetString("Software_update_successful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Software update unsuccessful..
         /// </summary>
         internal static string Software_update_unsuccessful {
@@ -1240,6 +1258,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please connect your monitor using the USB upstream port to avoid errors during the firmware update process.
+        /// </summary>
+        internal static string Update_Display_Alert_3 {
+            get {
+                return ResourceManager.GetString("Update_Display_Alert_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to update download cancel, because PC battery too low..
         /// </summary>
         internal static string update_download_cancel {
@@ -1267,7 +1294,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update failed due to network error. Please try again..
+        ///   Looks up a localized string similar to Update failed due to network error. Try again..
         /// </summary>
         internal static string Update_failed_due_to_network_error {
             get {
@@ -1294,7 +1321,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [XXXXXX] has a firmware update in progress. During update, device may be intermittently available. Do not disconnect the device during the update..
+        ///   Looks up a localized string similar to [XXXXXX] has a firmware update in progress. Availability may be intermittent. Do not disconnect the device during the update. .
         /// </summary>
         internal static string Update_in_progress_body {
             get {

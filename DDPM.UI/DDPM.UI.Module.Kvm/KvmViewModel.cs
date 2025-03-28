@@ -615,14 +615,14 @@ namespace DDPM.UI.Module.Kvm
             _log?.Info("[KvmViewModel] Invoke_RefreshHotkeySettings start");
             DateTime entryUSBKVM = DateTime.Now;
             _log?.Info($"[Invoke_RefreshHotkeySettings Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
-            BackgroundWorker bw = new BackgroundWorker()
+            BackgroundWorker m_bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
                 WorkerSupportsCancellation = false
             };
-            bw.DoWork += DoWork_RefreshHotkeyData;
-            bw.RunWorkerCompleted += RunWorkerCompleted_RefreshHotkeyData;
-            bw.RunWorkerAsync(); //myArg is the optional argument
+            m_bw.DoWork += DoWork_RefreshHotkeyData;
+            m_bw.RunWorkerCompleted += RunWorkerCompleted_RefreshHotkeyData;
+            m_bw.RunWorkerAsync(); //myArg is the optional argument
             _log?.Info("[KvmViewModel] Invoke_RefreshHotkeySettings end");
             entryUSBKVM = DateTime.Now;
             _log?.Info($"[Invoke_RefreshHotkeySettings Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
@@ -674,6 +674,16 @@ namespace DDPM.UI.Module.Kvm
                                     ChangePipKey = swHortcutText;
                                     break;
                             }
+                        }
+                        //03/27 testCase:Change hotkey in Input source - "Change PIP Position" will be updated in USB KVM > Hotkey > "Change PIP Position". 
+                        HotkeyInfo? inputSrcHotkeyInfo = curHotkey.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.ChangePIPPosition));
+                        if (inputSrcHotkeyInfo != null && inputSrcHotkeyInfo.KeyCode != VirtualKey.None)
+                        {
+                            //show key text to KvmChangePIPPosition textbox
+                            List<VirtualKey> hotkeys = inputSrcHotkeyInfo.Hotkey;
+                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                            hotkeys.Clear();
+                            ChangePipKey = swHortcutText;
                         }
 
                         if (selectedHomeDevice != null && selectedHomeDevice.HasCapability_PipPbp)
@@ -2050,12 +2060,12 @@ namespace DDPM.UI.Module.Kvm
 
         private void OnPipTogglePositionClicked()
         {
-            BackgroundWorker bw = new BackgroundWorker()
+            BackgroundWorker m_bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
                 WorkerSupportsCancellation = false
             };
-            bw.DoWork += delegate
+            m_bw.DoWork += delegate
             {
                 //UInt16 capCode = SelectedSplitItem.ISplit.PbpCapabilityCode;
                 if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -2063,12 +2073,12 @@ namespace DDPM.UI.Module.Kvm
                     DdpmCommonHelper.DeviceManagerSA.TogglePipPosition(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
                 }
             };
-            bw.RunWorkerCompleted += delegate
+            m_bw.RunWorkerCompleted += delegate
             {
                 IsBusy = false;
             };
             IsBusy = true;
-            bw.RunWorkerAsync();
+            m_bw.RunWorkerAsync();
         }
         #endregion Determine if Toggle between positons button enabled/disabled
 
@@ -2435,14 +2445,14 @@ namespace DDPM.UI.Module.Kvm
 
         public void NKVMOpenUI()
         {
-            BackgroundWorker bw = new BackgroundWorker()
+            BackgroundWorker m_bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
                 WorkerSupportsCancellation = false
             };
-            bw.DoWork += NKVMOpenUI_Dowork;
-            bw.RunWorkerCompleted += NKVMOpenUI_Done;
-            bw.RunWorkerAsync();
+            m_bw.DoWork += NKVMOpenUI_Dowork;
+            m_bw.RunWorkerCompleted += NKVMOpenUI_Done;
+            m_bw.RunWorkerAsync();
             IsBusy = true;
             OnPropertyChanged("IsBusy");
         }
@@ -2690,6 +2700,31 @@ namespace DDPM.UI.Module.Kvm
             catch (Exception ex)
             {
                 _log?.Error(ex, "[FinishtoSetPCs] exception");
+            }
+        }
+
+        public void UpdateHotkeyData(MonitorInfo monitorInfo, List<InputSourceObj> inputList)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                Task.Run(() =>
+                {
+                    //HomeDevice? selectedHomeDevice = KvmModule?.SelectedHomeDevice;
+                    var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(monitorInfo).Result;
+                    HotkeySettings curHotkey = temp.Item1;
+                    HotkeyInfo? hotkeyInfo = curHotkey.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.KvmSwitchInputSource));
+                    if (hotkeyInfo != null && hotkeyInfo.KeyCode != VirtualKey.None)
+                    {
+                        //update inputsource
+                        hotkeyInfo.InputSource.Clear();
+                        inputList.ForEach(x => hotkeyInfo.InputSource.Add(x));
+                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(monitorInfo, hotkeyInfo).Result;
+                        if (!saveSettings)
+                        {
+                            DdpmCommonHelper.WriteUILog($"[USBKVM] USBKVM => edit input source,Update Hotkey Data fail.");
+                        }
+                    }
+                });
             }
         }
 

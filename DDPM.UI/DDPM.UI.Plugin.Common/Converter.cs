@@ -183,4 +183,20 @@ namespace DDPM.UI.Plugin.Common
         }
     }
 
+    //20250327 Chewlin for Easy Arrange layout ToolTip HorizontalOffset dynamic regulation
+    public class HorizontalOffsetToolTipConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+                return 0;
+            else
+                return (Double)value / 2 * (-1) + 44;
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
 }

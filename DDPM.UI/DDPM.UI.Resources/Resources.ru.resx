@@ -3505,4 +3505,7 @@
   <data name="Color.14" xml:space="preserve">
     <value>Цветовая предустановка</value>
   </data>
+  <data name="HDR" xml:space="preserve">
+    <value>HDR</value>
+  </data>
 </root>

@@ -50,12 +50,14 @@
                                 <Viewbox Width="16" Height="16"  Margin="5,0,0,0" Stretch="Uniform">
                                     <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
                                         <Grid.ToolTip>
-                                            <ToolTip Placement="Center" VerticalOffset="45">
+                                            <!--20250327 Chewlin for PIMS-348209 ADD MaxWidth="272" HorizontalOffset="0" and change Placement="Center" to "Top" change VerticalOffset="45" to "12" -->
+                                            <ToolTip MaxWidth="272" Placement="Top" HorizontalOffset="0" VerticalOffset="12">
                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                     <Grid>
+                                                        <!--20250327 Chewlin for PIMS-348209 ADD HorizontalAlignment="Left" change TextWrapping=Wrap to "WrapWithOverflow" MaxWidth="350" to 272 -->
                                                         <TextBlock Name="hotkeyRecentTooltipText"
                                                                Style="{StaticResource Tooltip_TextBlockStyle}"
-                                                               TextWrapping="Wrap" MaxWidth="350"/>
+                                                               HorizontalAlignment="Left" TextWrapping="WrapWithOverflow" MaxWidth="272"/>
                                                     </Grid>
                                                 </Border>
                                             </ToolTip>
@@ -191,13 +193,15 @@
                                 <Viewbox Width="16" Height="16"  Margin="16,0,0,0" Stretch="Uniform">
                                     <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
                                         <Grid.ToolTip>
-                                            <ToolTip Placement="Left">
+                                            <!--20250327 Chewlin for PIMS-348209 ADD MaxWidth="272"  HorizontalOffset="0" VerticalOffset="12" change Placement=Left to "Top" -->
+                                            <ToolTip MaxWidth="272" Placement="Top" HorizontalOffset="0" VerticalOffset="12">
                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}"
                                                    MaxWidth="360">
+                                                    <!--20250327 Chewlin for PIMS-348209 ADD HorizontalAlignment="Left" TextWrapping="WrapWithOverflow" change MaxWidth="350" to 272-->
                                                     <Grid>
                                                         <TextBlock Name="applicationWindowSnapTooltipText"
                                                               Style="{StaticResource Tooltip_TextBlockStyle}"
-                                                              TextWrapping="WrapWithOverflow" MaxWidth="350"/>
+                                                              HorizontalAlignment="Left" TextWrapping="WrapWithOverflow" MaxWidth="272"/>
                                                     </Grid>
                                                 </Border>
                                             </ToolTip>

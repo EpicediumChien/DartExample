@@ -2559,12 +2559,13 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 !string.IsNullOrEmpty(ss_mod[1]))
                                             {
                                                 var findDevice = false;
+                                                string NewModel = JudgmentList.ModelRename(ss_mod[0].ToUpper());
                                                 foreach (var g in deviceInfoList)
                                                 {
-                                                    if (g.ModelNumber.ToUpper() == ss_mod[0].ToUpper())
+                                                    if (g.ModelNumber.ToUpper() == NewModel)
                                                     {
-                                                        model = new List<string> { ss_mod[0] };
-                                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.ModelNumber.Equals(ss_mod[0], StringComparison.OrdinalIgnoreCase)).ToList();
+                                                        model = new List<string> { NewModel };
+                                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.ModelNumber.Equals(NewModel, StringComparison.OrdinalIgnoreCase)).ToList();
                                                         findDevice = true;
                                                     }
                                                 }
@@ -2791,17 +2792,46 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 }
 
                                                 if (commandLineInput.Model.Count > 0)
-                                                {
-                                                    if (model == null)
+                                                {                                            
+                                                    string newModel = String.Empty;
+                                                    bool findDevices = false;
+                                                    foreach (string Model in commandLineInput.Model)
                                                     {
-                                                        model = commandLineInput.Model;
+                                                        newModel = JudgmentList.ModelRename(Model.ToString().ToUpper());
+                                                        if (model == null)
+                                                        {
+                                                            foreach (var dev_info in deviceInfoList)
+                                                            {
+                                                                if (dev_info.ModelNumber.ToString().ToUpper().Equals(newModel))
+                                                                {
+                                                                    List<string> tempList = new List<string> { newModel };
+                                                                    model = tempList;
+                                                                    findDevices = true;
+                                                                    //Console.WriteLine($"------------- models: {model[0]} -------------");
+                                                                }
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            foreach (var dev_info in deviceInfoList)
+                                                            {
+                                                                if (dev_info.ModelNumber.ToString().ToUpper().Equals(newModel))
+                                                                {
+                                                                    //Console.WriteLine($"------------- models: {model[0]} -------------");
+                                                                    //model.AddRange(commandLineInput.Model);
+                                                                    model.Add(newModel);
+                                                                    model = model.Select(x => x.ToUpper()).Distinct().ToList();
+                                                                    findDevices = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        if (!findDevices)
+                                                        {
+                                                            return NoDeviceConnectResponse(commandLineInput);
+                                                        }
+                                                        //Console.WriteLine($"------------- models: {model[0]}-------------");
+                                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => model.Contains(x.ModelNumber, StringComparer.OrdinalIgnoreCase)).ToList();
                                                     }
-                                                    else
-                                                    {
-                                                        model.AddRange(commandLineInput.Model);
-                                                        model = model.Select(x => x.ToLower()).Distinct().ToList();
-                                                    }
-                                                    fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => model.Contains(x.ModelNumber, StringComparer.OrdinalIgnoreCase)).ToList();
                                                 }
                                                 if (commandLineInput.ServiceTag.Count > 0)
                                                 {
@@ -2845,6 +2875,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                                 ret = false;
                                                                 break;
                                                         }
+                                                        
                                                         var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, fwUpdateDeviceInfos, isUod, installPath, isShowInfo, isForce, guid, model, miniver, isDefer, serviceTag);
                                                         result.ExitCode = fwupdate.code;
                                                         result.serialize_Json_response = fwupdate.result;

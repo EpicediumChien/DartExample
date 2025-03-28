@@ -785,41 +785,38 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 Log?.Info($"DeviceChanged deviceChangedEventArgs.deviceID : {deviceChangedEventArgs.deviceID}");
                 foreach (UIUpdateInfo uiUpdateInfo in Critical_UpdateList_UI)
                 {
-                    if (uiUpdateInfo.FWUpdateInfo != null && !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId))
+                    if (uiUpdateInfo.FWUpdateInfo != null && 
+                        !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId) && 
+                        uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
                     {
-                        if (uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
-                        {
-                            ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
-                            uiUpdateInfo.Refresh();
-                            OnPropertyChanged("Critical_UpdateList_UI");
-                            return;
-                        }
+                        ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
+                        uiUpdateInfo.Refresh();
+                        OnPropertyChanged("Critical_UpdateList_UI");
+                        return;
                     }
                 }
                 foreach (UIUpdateInfo uiUpdateInfo in Recommended_UpdateList_UI)
                 {
-                    if (uiUpdateInfo.FWUpdateInfo != null && !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId))
+                    if (uiUpdateInfo.FWUpdateInfo != null && 
+                        !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId) && 
+                        uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
                     {
-                        if (uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
-                        {
-                            ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
-                            uiUpdateInfo.Refresh();
-                            OnPropertyChanged("Recommended_UpdateList_UI");
-                            return;
-                        }
+                        ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
+                        uiUpdateInfo.Refresh();
+                        OnPropertyChanged("Recommended_UpdateList_UI");
+                        return;
                     }
                 }
                 foreach (UIUpdateInfo uiUpdateInfo in Optional_UpdateList_UI)
                 {
-                    if (uiUpdateInfo.FWUpdateInfo != null && !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId))
+                    if (uiUpdateInfo.FWUpdateInfo != null && 
+                        !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId) && 
+                        uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
                     {
-                        if (uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
-                        {
-                            ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
-                            uiUpdateInfo.Refresh();
-                            OnPropertyChanged("Optional_UpdateList_UI");
-                            return;
-                        }
+                        ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
+                        uiUpdateInfo.Refresh();
+                        OnPropertyChanged("Optional_UpdateList_UI");
+                        return;
                     }
                 }
             }
@@ -906,6 +903,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public string UXAlertItemMessage { get; set; }
         public Visibility UXAlertItemVisibility_2 { get; set; }
         public string UXAlertItemMessage_2 { get; set; }
+        public Visibility UXAlertItemVisibility_3 { get; set; }
+        public string UXAlertItemMessage_3 { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -930,102 +929,116 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             UXAlertItemMessage = "";
             UXAlertItemVisibility_2 = Visibility.Collapsed;
             UXAlertItemMessage_2 = "";
+            UXAlertItemVisibility_3 = Visibility.Collapsed;
+            UXAlertItemMessage_3 = "";
             bool? deviceBatteryLow = false;
-            if (deviceInfos != null && !fwUpdateInfo.IsDisplay)
+            if (!fwUpdateInfo.IsDisplay)
             {
-                DeviceInfo? deviceInfo = deviceInfos.Find(o => o.ID.ToString().Equals(fwUpdateInfo.DeviceId.Replace("{", "").Replace("}", "")));
-                Debug.WriteLine($"deviceInfo is null : {(deviceInfo == null ? "Yes" : "No")}");
-                if (deviceInfo != null)
+                if (deviceInfos != null)
                 {
-                    Debug.WriteLine($"deviceInfos.IsBatteryLevelSupported : {deviceInfo.IsBatteryLevelSupported}");
-                    if (deviceInfo.IsBatteryLevelSupported)
+                    DeviceInfo? deviceInfo = deviceInfos.Find(o => o.ID.ToString().Equals(fwUpdateInfo.DeviceId.Replace("{", "").Replace("}", "")));
+                    Debug.WriteLine($"deviceInfo is null : {(deviceInfo == null ? "Yes" : "No")}");
+                    if (deviceInfo != null)
                     {
-                        Debug.WriteLine($"deviceInfos.BatteryStatus : {deviceInfo.BatteryStatus}");
-                        Debug.WriteLine($"deviceInfos.BatteryLevel : {deviceInfo.BatteryLevel}");
-                        if (deviceInfo.BatteryLevel <= 20 && deviceInfo.BatteryLevel >= 0)
+                        Debug.WriteLine($"deviceInfos.IsBatteryLevelSupported : {deviceInfo.IsBatteryLevelSupported}");
+                        if (deviceInfo.IsBatteryLevelSupported)
                         {
-                            deviceBatteryLow = true;
-                        }
-                        else if (deviceInfo.BatteryLevel < 0)
-                        {
-                            deviceBatteryLow = null;
+                            Debug.WriteLine($"deviceInfos.BatteryStatus : {deviceInfo.BatteryStatus}");
+                            Debug.WriteLine($"deviceInfos.BatteryLevel : {deviceInfo.BatteryLevel}");
+                            if (deviceInfo.BatteryLevel <= 20 && deviceInfo.BatteryLevel >= 0)
+                            {
+                                deviceBatteryLow = true;
+                            }
+                            else if (deviceInfo.BatteryLevel < 0)
+                            {
+                                deviceBatteryLow = null;
+                            }
                         }
                     }
                 }
-            }
-            switch (fwUpdateInfo.DeviceType)
-            {
-                case DeviceType.PhysicalDongle:
-                    if (fwUpdateInfo.DeviceName.ToLower().Equals(GlobalDefinitions.Dongle_BeforeGen2_Name.ToLower()) && IODongle > 1)
-                    {
-                        UXAlertItemVisibility = Visibility.Visible;
-                        UXAlertItemMessage = LangHelper.Instance["Update_Firmware_update_of_multiple_USB_wireless_receivers"];
-                    }
-                    break;
-                case DeviceType.LogicalMouse:
-
-                    if (deviceBatteryLow == true)
-                    {
-                        UXAlertItemVisibility = Visibility.Visible;
-                        UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
-                    }
-                    else if (deviceBatteryLow == null)
-                    {
-                        UXAlertItemVisibility = Visibility.Visible;
-                        UXAlertItemMessage = LangHelper.Instance["Update_Mouse_Alert"];
-                    }
-                    break;
-
-                case DeviceType.LogicalKeyboard:
-                    if (deviceBatteryLow == true)
-                    {
-                        UXAlertItemVisibility = Visibility.Visible;
-                        UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
-                    }
-                    else if (deviceBatteryLow == null)
-                    {
-                        UXAlertItemVisibility = Visibility.Visible;
-                        UXAlertItemMessage = LangHelper.Instance["Update_Mouse_Alert"];
-                    }
-                    break;
-
-                case DeviceType.LogicalDock:
-                case DeviceType.PhysicalWiredDock:
-                    UXAlertItemVisibility = Visibility.Visible;
-                    UXAlertItemMessage = LangHelper.Instance["Update_Dock_Alert_2"];
-                    using (BatteryInfo batteryInfo = new BatteryInfo())
-                    {
-                        batteryInfo.GetBatteryInfo(out var battery);
-                        if (battery.BatteryLifePercent <= 10)
+                switch (fwUpdateInfo.DeviceType)
+                {
+                    case DeviceType.PhysicalDongle:
+                        if (fwUpdateInfo.DeviceName.ToLower().Equals(GlobalDefinitions.Dongle_BeforeGen2_Name.ToLower()) && IODongle > 1)
                         {
-                            UXAlertItemVisibility_2 = Visibility.Visible;
-                            UXAlertItemMessage_2 = LangHelper.Instance["Update_PCBatteryLow_Alert"];
+                            UXAlertItemVisibility = Visibility.Visible;
+                            UXAlertItemMessage = LangHelper.Instance["Update_Firmware_update_of_multiple_USB_wireless_receivers"];
                         }
-                    }
-                    break;
+                        break;
+                    case DeviceType.LogicalMouse:
 
-                case DeviceType.PhysicalPen:
-                case DeviceType.LogicalPen:
-                    if (deviceBatteryLow == true)
-                    {
+                        if (deviceBatteryLow == true)
+                        {
+                            UXAlertItemVisibility = Visibility.Visible;
+                            UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
+                        }
+                        else if (deviceBatteryLow == null)
+                        {
+                            UXAlertItemVisibility = Visibility.Visible;
+                            UXAlertItemMessage = LangHelper.Instance["Update_Mouse_Alert"];
+                        }
+                        break;
+
+                    case DeviceType.LogicalKeyboard:
+                        if (deviceBatteryLow == true)
+                        {
+                            UXAlertItemVisibility = Visibility.Visible;
+                            UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
+                        }
+                        else if (deviceBatteryLow == null)
+                        {
+                            UXAlertItemVisibility = Visibility.Visible;
+                            UXAlertItemMessage = LangHelper.Instance["Update_Mouse_Alert"];
+                        }
+                        break;
+
+                    case DeviceType.LogicalDock:
+                    case DeviceType.PhysicalWiredDock:
                         UXAlertItemVisibility = Visibility.Visible;
-                        UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
-                    }
-                    break;
-                case DeviceType.LogicalWebcam:
-                case DeviceType.PhysicalWebcam:
-                    if (fwUpdateInfo.Model.Contains("7022"))
-                    {
-                        UXAlertItemVisibility = Visibility.Visible;
-                        UXAlertItemMessage = LangHelper.Instance["Update_Webcam_Alert"];
-                    }
-                    break;
-                default:
-                    UXAlertItemVisibility = Visibility.Collapsed;
-                    UXAlertItemMessage = "";
-                    UXAlertItemVisibility_2 = Visibility.Collapsed;
-                    UXAlertItemMessage_2 = "";
-                    break;
+                        UXAlertItemMessage = LangHelper.Instance["Update_Dock_Alert_2"];
+                        using (BatteryInfo batteryInfo = new BatteryInfo())
+                        {
+                            batteryInfo.GetBatteryInfo(out var battery);
+                            if (battery.BatteryLifePercent <= 10)
+                            {
+                                UXAlertItemVisibility_2 = Visibility.Visible;
+                                UXAlertItemMessage_2 = LangHelper.Instance["Update_PCBatteryLow_Alert"];
+                            }
+                        }
+                        break;
+
+                    case DeviceType.PhysicalPen:
+                    case DeviceType.LogicalPen:
+                        if (deviceBatteryLow == true)
+                        {
+                            UXAlertItemVisibility = Visibility.Visible;
+                            UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
+                        }
+                        break;
+                    case DeviceType.LogicalWebcam:
+                    case DeviceType.PhysicalWebcam:
+                        if (fwUpdateInfo.Model.Contains("7022"))
+                        {
+                            UXAlertItemVisibility = Visibility.Visible;
+                            UXAlertItemMessage = LangHelper.Instance["Update_Webcam_Alert"];
+                        }
+                        break;
+                    default:
+                        UXAlertItemVisibility = Visibility.Collapsed;
+                        UXAlertItemMessage = "";
+                        UXAlertItemVisibility_2 = Visibility.Collapsed;
+                        UXAlertItemMessage_2 = "";
+                        break;
+                }
+            }
+            else
+            {
+                UXAlertItemVisibility = Visibility.Collapsed;
+                UXAlertItemMessage = "";
+                UXAlertItemVisibility_2 = Visibility.Collapsed;
+                UXAlertItemMessage_2 = "";
+                UXAlertItemVisibility_3 = Visibility.Visible;
+                UXAlertItemMessage_3 = LangHelper.Instance["Update_Display_Alert"];
             }
             foreach (DeviceType s in CriticalUpdates)
             {
@@ -1079,7 +1092,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             this.IsCheckUpdate = true;
             this.IsEnableCheckBox = false;
             UXAlertItemVisibility = Visibility.Collapsed;
+            UXAlertItemMessage = "";
             UXAlertItemVisibility_2 = Visibility.Collapsed;
+            UXAlertItemMessage_2 = "";
+            UXAlertItemVisibility_3 = Visibility.Collapsed;
+            UXAlertItemMessage_3 = "";
             UpdateInfo = $"{LangHelper.Instance["Software_update"]} {swUpdateInfo.TheLatestVersion} - {swUpdateInfo.SoftwareName}";
         }
         public void Refresh()
@@ -1091,6 +1108,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             OnPropertyChanged(nameof(UXAlertItemMessage));
             OnPropertyChanged(nameof(UXAlertItemVisibility_2));
             OnPropertyChanged(nameof(UXAlertItemMessage_2));
+            OnPropertyChanged(nameof(UXAlertItemVisibility_3));
+            OnPropertyChanged(nameof(UXAlertItemMessage_3));
         }
     }
 }

@@ -51,6 +51,7 @@ namespace DDPM.UI.Common.Models
         {
             NormalWidth = 400;
             _log = log;
+            WriteLog("[HomeDevice] HomeDevice Constructor ... ");
             ////Register a handler for BitmapImageUpdated for Theme changed. Will update the image resources
             //DdpmCommonHelper.BitmapImageUpdated += bitmapImageUpdate_OnThemeChanged;
         }
@@ -93,38 +94,47 @@ namespace DDPM.UI.Common.Models
             get => _monitorInfo;
             set
             {
-                SetProperty(ref _monitorInfo, value);
-                //    MonitorIndicator indicator = new MonitorIndicator()
-                //    {
-                //        InputSource = "HDMI"
-                //    };
-                //    StatusIndicator = indicator;
-                UpdateBatteryIndicator();
-
-                //2024-6-20 Get the model from capability string
-                string model = string.IsNullOrWhiteSpace(_monitorInfo.modelName) ? GetModelFromMonitorCapabilityString(_monitorInfo.CapabilityString) : _monitorInfo.modelName;
-                //If fail to get mode from CapabilityString, then use AliasDeviceName instead
-                if (String.IsNullOrEmpty(model))
+                try
                 {
-                    _monitorModelName = _monitorInfo.AliasDeviceName;
+                    WriteLog($"[HomeDevice] MonitorInfo in ... ");
+                    SetProperty(ref _monitorInfo, value);
+                    //    MonitorIndicator indicator = new MonitorIndicator()
+                    //    {
+                    //        InputSource = "HDMI"
+                    //    };
+                    //    StatusIndicator = indicator;
+                    UpdateBatteryIndicator();
+
+                    //2024-6-20 Get the model from capability string
+                    string model = string.IsNullOrWhiteSpace(_monitorInfo.modelName) ? GetModelFromMonitorCapabilityString(_monitorInfo.CapabilityString) : _monitorInfo.modelName;
+                    //If fail to get mode from CapabilityString, then use AliasDeviceName instead
+                    if (String.IsNullOrEmpty(model))
+                    {
+                        _monitorModelName = _monitorInfo.AliasDeviceName;
+                    }
+                    else
+                    {
+                        _monitorModelName = model;
+                    }
+
+                    //Robert_Lin, 2024-9-30 Add Monitor Product Images
+                    DetermineMonitorImage();
+                    WriteLog($"[HomeDevice] MonitorInfo DetermineMonitorImage finfish ... ");
+                    //Robert_lin, 2024-11-14 add Pxp Capapbilies check support
+                    InitPipPbpCaps();
+                    WriteLog($"[HomeDevice] MonitorInfo InitPipPbpCaps finfish ... ");
+                    //Robert_Lin 2025-3-20 refresh the tooltip info
+                    OnPropertyChanged("TooltipModelName");
+                    WriteLog($"[HomeDevice] MonitorInfo TooltipModelName finfish ... ");
+                    OnPropertyChanged("DeviceInfoToolTipText");
+                    WriteLog($"[HomeDevice] MonitorInfo DeviceInfoToolTipText finfish ... ");
+                    OnPropertyChanged("DisplayName");
+                    WriteLog($"[HomeDevice] MonitorInfo out ... ");
                 }
-                else
+                catch (Exception ex)
                 {
-                    _monitorModelName = model;
+                    WriteLog($"[HomeDevice] MonitorInfo Exception : ", ex);
                 }
-
-                //Robert_Lin, 2024-9-30 Add Monitor Product Images
-                DetermineMonitorImage();
-
-                //Robert_lin, 2024-11-14 add Pxp Capapbilies check support
-                InitPipPbpCaps();
-
-                //Robert_Lin 2025-3-20 refresh the tooltip info
-                OnPropertyChanged("TooltipModelName");
-                OnPropertyChanged("DeviceInfoToolTipText");
-
-
-                OnPropertyChanged("DisplayName");
             }
         }
 
@@ -133,20 +143,30 @@ namespace DDPM.UI.Common.Models
             get => _deviceInfo;
             set
             {
-                SetProperty(ref _deviceInfo, value);
-                //BatteryIndicator indicator = new BatteryIndicator();
-                if (_deviceInfo != null)
+                try
                 {
-                    //indicator.ConnectionType = _deviceInfo?.PhysicalDeviceType == "PhysicalDongle" ? "Dongle" : "Bluetooth";
-                    //indicator.BatteryLevel = (double) (_deviceInfo.BatteryLevel < 0 ? 0 : _deviceInfo.BatteryLevel);
-                    //indicator.BatteryStatus = _deviceInfo.BatteryStatus;
+                    WriteLog($"[HomeDevice] DeviceInfo in ... ");
+                    SetProperty(ref _deviceInfo, value);
+                    //BatteryIndicator indicator = new BatteryIndicator();
+                    if (_deviceInfo != null)
+                    {
+                        //indicator.ConnectionType = _deviceInfo?.PhysicalDeviceType == "PhysicalDongle" ? "Dongle" : "Bluetooth";
+                        //indicator.BatteryLevel = (double) (_deviceInfo.BatteryLevel < 0 ? 0 : _deviceInfo.BatteryLevel);
+                        //indicator.BatteryStatus = _deviceInfo.BatteryStatus;
 
-                    //2024-6-20 Determine the DeviceImage internally
-                    DeterminePeripheralDeviceImage();
+                        //2024-6-20 Determine the DeviceImage internally
+                        DeterminePeripheralDeviceImage();
+                        WriteLog($"[HomeDevice] DeviceInfo DetermineMonitorImage finfish ... ");
+                    }
+
+                    //StatusIndicator = indicator;
+                    UpdateBatteryIndicator();
+                    WriteLog($"[HomeDevice] DeviceInfo out ... ");
                 }
-
-                //StatusIndicator = indicator;
-                UpdateBatteryIndicator();
+                catch (Exception ex)
+                {
+                    WriteLog($"[HomeDevice] DeviceInfo Exception : ", ex);
+                }
             }
         }
 
@@ -221,14 +241,22 @@ namespace DDPM.UI.Common.Models
         {
             get
             {
-                if (MonitorInfo != null)
+                try
                 {
-                    //Robert_lin 2025-1-21 Debug info
-                    //string debugInfo = $"({MonitorInfo.DisplayName})";
-                    return MonitorInfo.edid.ServiceTag;
+                    if (MonitorInfo != null)
+                    {
+                        //Robert_lin 2025-1-21 Debug info
+                        //string debugInfo = $"({MonitorInfo.DisplayName})";
+                        return MonitorInfo.edid.ServiceTag;
+                    }
+                    else
+                    {
+                        return "(N/A)";
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
+                    WriteLog($"[HomeDevice] ServiceTag Exception : ", ex);
                     return "(N/A)";
                 }
             }
@@ -287,9 +315,9 @@ namespace DDPM.UI.Common.Models
                     text += " " + MfgDate;                              // "Manufactured Jan 2024"
                     return text;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
+                    WriteLog($"[HomeDevice] DeviceInfoToolTipText Exception : ", ex);
                     return "";
                 }
             }
@@ -309,161 +337,169 @@ namespace DDPM.UI.Common.Models
         {
             get
             {
-                if (DeviceInfo != null)
+                try
                 {
-                    //Robert_Lin, 2024-12-24, Checked with BruceChuang below can be commented-out
-                    //if (DeviceInfo.Name.ToUpper().Contains("WD19S"))
-                    //{
-                    //    return DeviceInfo.Name.Replace("_", " ");
-                    //}
+                    if (DeviceInfo != null)
+                    {
+                        //Robert_Lin, 2024-12-24, Checked with BruceChuang below can be commented-out
+                        //if (DeviceInfo.Name.ToUpper().Contains("WD19S"))
+                        //{
+                        //    return DeviceInfo.Name.Replace("_", " ");
+                        //}
 
-                    //Robert_Lin, 2024-12-24, from Alex MC Yen
-                    // "R19 IL, 將所有的 DeviceName 都沒有加上 model number
-                    // 意思是有我們要另外去抓 model number，自已加在 homepage的 hover tooltip 囉"
-                    //例外情形: EOL models 的 Model 會已經包含在 Name 的中間, 例如: ""
-                    //已經將 EOL Peripheral models 集中在 DdpmCommonHelper.IsPeripheralEOLModel(model)
-                    //
-                    //Logic:
-                    // If the peripheral is EOL then
-                    //    Show "{Name}"
-                    // Else
-                    //    Some of Keyboard/Mouse need to convert ModelNumber to model
-                    //    Show "{Name} + " {model}"
-                    //NEW Code:
-                    if (DDPM.SA.Common.UI.SAUICommonHelper.IsPeripheralEOLModel(DeviceInfo.ModelNumber))//change function source from SA, collect all related function together
-                    {
-                        //EOL 的 Keyboard/Mouse, Name已包含 {ModelNumber}, homepage tooltip 直接顯示 {Name}
-                        return DeviceInfo.Name;
-                    }
-                    else //Not EOL
-                    {
-                        string model = DeviceInfo.ModelNumber;
-                        //以下 Keyboard/Mouse 的 Model 需要轉換
-                        //DDPM.SA.Common(JudgmentList.cs)也有一份，如有修改再麻煩通知Bruce，謝謝
-                        switch (DeviceInfo.ModelNumber)
+                        //Robert_Lin, 2024-12-24, from Alex MC Yen
+                        // "R19 IL, 將所有的 DeviceName 都沒有加上 model number
+                        // 意思是有我們要另外去抓 model number，自已加在 homepage的 hover tooltip 囉"
+                        //例外情形: EOL models 的 Model 會已經包含在 Name 的中間, 例如: ""
+                        //已經將 EOL Peripheral models 集中在 DdpmCommonHelper.IsPeripheralEOLModel(model)
+                        //
+                        //Logic:
+                        // If the peripheral is EOL then
+                        //    Show "{Name}"
+                        // Else
+                        //    Some of Keyboard/Mouse need to convert ModelNumber to model
+                        //    Show "{Name} + " {model}"
+                        //NEW Code:
+                        if (DDPM.SA.Common.UI.SAUICommonHelper.IsPeripheralEOLModel(DeviceInfo.ModelNumber))//change function source from SA, collect all related function together
                         {
-                            //Keyboard
-                            case "KB740":
-                            case "KB7120W":
-                                model = "KB740";
-                                break;
-                            case "KB500":
-                            case "KB3121W":
-                                model = "KB500";
-                                break;
-                            case "KB700":
-                            case "KB7221W":
-                                model = "KB700";
-                                break;
-
-                            //Mouse
-                            case "MS300":
-                            case "MS3121W":
-                                model = "MS300";
-                                break;
-
-                            //Default
-                            default:
-                                //model = deviceInfo.ModelNumber;
-                                break;
-                        } //switch(deviceInfo.ModelNumber)
-
-                        // Jim 20250205 modify PIMS-318236
-                        //if ( model == "U3224KB" || model == "U3224KBA")//model == "P2424HEB" || model == "P2724DEB" |||| model == "P3424WEB"  || model == "U3223QZ" )
-                        //    return DDPM.SA.Common.UI.SAUICommonHelper.MappingName(model, DeviceInfo.Name);
-                        //else
-                        return DDPM.SA.Common.UI.SAUICommonHelper.MappingWebCamName(model, DeviceInfo.Name) + $" {model}";
-                    }
-
-                    //OLD Code:
-                    /*
-                    //Robert_Lin, 2024-11-22, [PIMS-316846], DeviceName is "MouseSettings" so it seems that should be
-                    // Name="Dell Pro Premium Mouse" + ModelNumber="MS900" => "Dell Pro Premium Mouse MS900"
-                    //Based on Indilogic reply:
-                    //Gayathri Iyer1(INDILOGIC) added a comment - 11/Nov/24 10:37 AM
-                    //Hess Cheng(WISTRON) DPeM core provides two properties: DeviceName and ModelNumber.Please combine both to show in the UI. 
-
-                    //Robert_Lin, 2024-11-22, Only Keyboard/Mouse need to combine {Name}+{Model}
-                    //Other peripheals will display {Name} only, because Indilogical has combine {Model} inside {Name}
-
-                    if ((DeviceCategory == eDeviceCategory.Mouse) ||
-                        (DeviceCategory == eDeviceCategory.KB) || 
-                        (DeviceCategory == eDeviceCategory.Headset) ||
-                        (DeviceCategory == eDeviceCategory.Soundbar)) 
-                    {
-                        string model = DeviceInfo.ModelNumber;
-                        //[#PeripheralModelMap] This mapping table has a duplicate code in
-                        //1 DdpmCommonHelpers.cs    DeterminePeripheralProductImageFileName()
-                        //2 HomeDevices             TooltipModelName property
-                        //3 PeripheralViewModel.cs  MappingModel()
-                        //If you need to modify, please also modify them.
-                        switch (DeviceInfo.ModelNumber)
+                            //EOL 的 Keyboard/Mouse, Name已包含 {ModelNumber}, homepage tooltip 直接顯示 {Name}
+                            return DeviceInfo.Name;
+                        }
+                        else //Not EOL
                         {
-                            //Keyboard
-                            case "KB740":
-                            case "KB7120W":
-                                model = "KB740";
-                                break;
-                            case "KB500":
-                            case "KB3121W":
-                                model = "KB500";
-                                break;
-                            case "KB700":
-                            case "KB7221W":
-                                model = "KB700";
-                                break;
+                            string model = DeviceInfo.ModelNumber;
+                            //以下 Keyboard/Mouse 的 Model 需要轉換
+                            //DDPM.SA.Common(JudgmentList.cs)也有一份，如有修改再麻煩通知Bruce，謝謝
+                            switch (DeviceInfo.ModelNumber)
+                            {
+                                //Keyboard
+                                case "KB740":
+                                case "KB7120W":
+                                    model = "KB740";
+                                    break;
+                                case "KB500":
+                                case "KB3121W":
+                                    model = "KB500";
+                                    break;
+                                case "KB700":
+                                case "KB7221W":
+                                    model = "KB700";
+                                    break;
 
-                            //Mouse
-                            case "MS300":
-                            case "MS3121W":
-                                model = "MS300";
-                                break;
+                                //Mouse
+                                case "MS300":
+                                case "MS3121W":
+                                    model = "MS300";
+                                    break;
 
-                            //Default
-                            default:
-                                //model = deviceInfo.ModelNumber;
-                                break;
-                        } //switch(deviceInfo.ModelNumber)
+                                //Default
+                                default:
+                                    //model = deviceInfo.ModelNumber;
+                                    break;
+                            } //switch(deviceInfo.ModelNumber)
 
-                        return DeviceInfo.Name + $" {model}";
-                    }
-                    else
-                    {
-                        return DeviceInfo.Name;
-                    }
-                    //END of Robert_Lin, 2024-12-24
-                    */
-                    //Robert_Lin, 2024-11-20, [PIMS-316846] change the tooltip on homepage to DeviceName
-                    //return DeviceInfo.DeviceName;
-                    //return DeviceInfo.Name; 
-                }
-                else if (MonitorInfo != null)
-                {
-                    //Robert_lin 2025-1-21 Debug info
-                    //string debugInfo = $"({MonitorInfo.DisplayName})";
-                    //Robert_Lin, 2024-8-29 comment out for DDPMW-2094
-                    //Robert_Lin, 2024-6-20, change to DisplayName (with (instanceNo)
-                    //return MonitorInfo.AliasDeviceName;
-                    //return DisplayName;
+                            // Jim 20250205 modify PIMS-318236
+                            //if ( model == "U3224KB" || model == "U3224KBA")//model == "P2424HEB" || model == "P2724DEB" |||| model == "P3424WEB"  || model == "U3223QZ" )
+                            //    return DDPM.SA.Common.UI.SAUICommonHelper.MappingName(model, DeviceInfo.Name);
+                            //else
+                            return DDPM.SA.Common.UI.SAUICommonHelper.MappingWebCamName(model, DeviceInfo.Name) + $" {model}";
+                        }
 
-                    //Robert_Lin, 2024-9-9, per Dell Villavicencio, Kathia added a comment - 06/Sep/24 5:18 AM
-                    //Tooltip show "{MarketName} {InstanceNo}"
-                    //
-                    //Robert_Lin, 2024-8-29, for DDPMW-2094 Update DDPM 2.0 Display Frontend for NPI; Non-NPI TBD
-                    //For NPI models, MonitorInfo.MarketName will provide the name to show
-                    //Otherwise (Non-NPI), MonitorInfo.MarketName will be empty, will show DisplayName (Model + instanceNo)
-                    if (string.IsNullOrWhiteSpace(MonitorInfo.MarketingName))
-                        return DisplayName;
-                    else
-                    {
-                        //If the InstanceNo is 0
-                        if (InstanceNo == 0)
-                            return MonitorInfo.MarketingName;
+                        //OLD Code:
+                        /*
+                        //Robert_Lin, 2024-11-22, [PIMS-316846], DeviceName is "MouseSettings" so it seems that should be
+                        // Name="Dell Pro Premium Mouse" + ModelNumber="MS900" => "Dell Pro Premium Mouse MS900"
+                        //Based on Indilogic reply:
+                        //Gayathri Iyer1(INDILOGIC) added a comment - 11/Nov/24 10:37 AM
+                        //Hess Cheng(WISTRON) DPeM core provides two properties: DeviceName and ModelNumber.Please combine both to show in the UI. 
+
+                        //Robert_Lin, 2024-11-22, Only Keyboard/Mouse need to combine {Name}+{Model}
+                        //Other peripheals will display {Name} only, because Indilogical has combine {Model} inside {Name}
+
+                        if ((DeviceCategory == eDeviceCategory.Mouse) ||
+                            (DeviceCategory == eDeviceCategory.KB) || 
+                            (DeviceCategory == eDeviceCategory.Headset) ||
+                            (DeviceCategory == eDeviceCategory.Soundbar)) 
+                        {
+                            string model = DeviceInfo.ModelNumber;
+                            //[#PeripheralModelMap] This mapping table has a duplicate code in
+                            //1 DdpmCommonHelpers.cs    DeterminePeripheralProductImageFileName()
+                            //2 HomeDevices             TooltipModelName property
+                            //3 PeripheralViewModel.cs  MappingModel()
+                            //If you need to modify, please also modify them.
+                            switch (DeviceInfo.ModelNumber)
+                            {
+                                //Keyboard
+                                case "KB740":
+                                case "KB7120W":
+                                    model = "KB740";
+                                    break;
+                                case "KB500":
+                                case "KB3121W":
+                                    model = "KB500";
+                                    break;
+                                case "KB700":
+                                case "KB7221W":
+                                    model = "KB700";
+                                    break;
+
+                                //Mouse
+                                case "MS300":
+                                case "MS3121W":
+                                    model = "MS300";
+                                    break;
+
+                                //Default
+                                default:
+                                    //model = deviceInfo.ModelNumber;
+                                    break;
+                            } //switch(deviceInfo.ModelNumber)
+
+                            return DeviceInfo.Name + $" {model}";
+                        }
                         else
-                            return MonitorInfo.MarketingName + $" ({InstanceNo})";
+                        {
+                            return DeviceInfo.Name;
+                        }
+                        //END of Robert_Lin, 2024-12-24
+                        */
+                        //Robert_Lin, 2024-11-20, [PIMS-316846] change the tooltip on homepage to DeviceName
+                        //return DeviceInfo.DeviceName;
+                        //return DeviceInfo.Name; 
                     }
+                    else if (MonitorInfo != null)
+                    {
+                        //Robert_lin 2025-1-21 Debug info
+                        //string debugInfo = $"({MonitorInfo.DisplayName})";
+                        //Robert_Lin, 2024-8-29 comment out for DDPMW-2094
+                        //Robert_Lin, 2024-6-20, change to DisplayName (with (instanceNo)
+                        //return MonitorInfo.AliasDeviceName;
+                        //return DisplayName;
+
+                        //Robert_Lin, 2024-9-9, per Dell Villavicencio, Kathia added a comment - 06/Sep/24 5:18 AM
+                        //Tooltip show "{MarketName} {InstanceNo}"
+                        //
+                        //Robert_Lin, 2024-8-29, for DDPMW-2094 Update DDPM 2.0 Display Frontend for NPI; Non-NPI TBD
+                        //For NPI models, MonitorInfo.MarketName will provide the name to show
+                        //Otherwise (Non-NPI), MonitorInfo.MarketName will be empty, will show DisplayName (Model + instanceNo)
+                        if (string.IsNullOrWhiteSpace(MonitorInfo.MarketingName))
+                            return DisplayName;
+                        else
+                        {
+                            //If the InstanceNo is 0
+                            if (InstanceNo == 0)
+                                return MonitorInfo.MarketingName;
+                            else
+                                return MonitorInfo.MarketingName + $" ({InstanceNo})";
+                        }
+                    }
+                    return DeviceCategory.ToString();
                 }
-                return DeviceCategory.ToString();
+                catch (Exception ex)
+                {
+                    WriteLog($"[HomeDevice] TooltipModelName Exception : ", ex);
+                    return string.Empty;
+                }
             }
         }
         #endregion Tooltip info
@@ -741,12 +777,14 @@ namespace DDPM.UI.Common.Models
         #region DetermineDeviceImage - Robert_Lin 2024-6-20 added
         private void DeterminePeripheralDeviceImage()
         {
+            WriteLog($"@HomeDevice.DeterminePeripheralDeviceImage in ... ");
             //Robert_Lin, 2024-11-16, PIMS-295748, "MS300" no image at homepage
             //move this code to DDPM.UI.Common/DdpmCommonHelper
             string imageFileName = DdpmCommonHelper.DeterminePeripheralProductImageFileName(DeviceInfo);
             //If fail to get the image will show the info, so we can easily to see the information
             if (!String.IsNullOrEmpty(imageFileName))
             {
+                WriteLog($"@HomeDevice.DeterminePeripheralDeviceImage imageFileName not null ... ");
                 string assemblyName = "DDPM.UI.Resources";
                 ImageSource? imgSource = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{imageFileName}.png", assemblyName);
                 if (DeviceInfo?.Type == DeviceType.LogicalNotSupported)
@@ -797,7 +835,7 @@ namespace DDPM.UI.Common.Models
             }
             catch (Exception ex)
             {
-                WriteLog($"@HomeDevice.DeterminePeripheralDeviceImage, LoadLineArtResource: Exception", ex);
+                WriteLog($"@HomeDevice.DeterminePeripheralDeviceImage, LoadLineArtResource: Exception : ", ex);
             }
         }
 
@@ -806,53 +844,61 @@ namespace DDPM.UI.Common.Models
         /// </summary>
         private void DetermineMonitorImage()
         {
-            if (MonitorInfo == null)
-                return;
-
-            bool isLineArt = true;
-            string imageFileName = "Lineart";
-            string assemblyName = "DDPM.UI.Resources";
-
-            //Robert_Lin, 2024-12-27 PIMS-336412 DUT icon will be invisible in DDPM main page
-            //Analysis: if the ImageFileName="S2422HGF", but the image file is not found in Resource
-            //          then the DeviceImage will not be assign value, so the image will be shown.
-            //NEW Code:
-            //Step_1, if ImageFileName is not empty,not "LineArt", and load successful then
-            //        load and show the image file
-            if (!String.IsNullOrWhiteSpace(MonitorInfo.ImageFileName))
+            try
             {
-                //The filename will come from MonitorInfo.ImageFileName
-                //The ImageFileName will not have extention file name
-                //(for example, ImageFileName="U4323QE"), we need to append ".PNG"
-                imageFileName = MonitorInfo.ImageFileName;
+                if (MonitorInfo == null)
+                    return;
 
-                //If the ImageFileName is NOT "LineArt" then load image from Resources
-                if (!imageFileName.Equals("LINEART", StringComparison.OrdinalIgnoreCase))
+                bool isLineArt = true;
+                string imageFileName = "Lineart";
+                string assemblyName = "DDPM.UI.Resources";
+
+                //Robert_Lin, 2024-12-27 PIMS-336412 DUT icon will be invisible in DDPM main page
+                //Analysis: if the ImageFileName="S2422HGF", but the image file is not found in Resource
+                //          then the DeviceImage will not be assign value, so the image will be shown.
+                //NEW Code:
+                //Step_1, if ImageFileName is not empty,not "LineArt", and load successful then
+                //        load and show the image file
+                if (!String.IsNullOrWhiteSpace(MonitorInfo.ImageFileName))
                 {
-                    //Try to load image from DDPM.UI.Resources project (assembly), Path="/Resources/Monitor/"
-                    ImageSource? imgSource = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Monitors/{imageFileName}.png", assemblyName);
-                    //If the image can be loaded (and not LineArt) then assign to DeviceImage to show
-                    if (imgSource != null)
+                    WriteLog($"@HomeDevice.DetermineMonitorImage imageFileName not null ... ");
+                    //The filename will come from MonitorInfo.ImageFileName
+                    //The ImageFileName will not have extention file name
+                    //(for example, ImageFileName="U4323QE"), we need to append ".PNG"
+                    imageFileName = MonitorInfo.ImageFileName;
+
+                    //If the ImageFileName is NOT "LineArt" then load image from Resources
+                    if (!imageFileName.Equals("LINEART", StringComparison.OrdinalIgnoreCase))
                     {
-                        DeviceImage = imgSource;
-                        WriteLog($"@HomeDevice.DetermineMonitorImage, Model={MonitorInfo.modelName}, ImageFileName={MonitorInfo.ImageFileName}, LoadImageFromResources=OK");
-                        return;
+                        //Try to load image from DDPM.UI.Resources project (assembly), Path="/Resources/Monitor/"
+                        ImageSource? imgSource = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Monitors/{imageFileName}.png", assemblyName);
+                        //If the image can be loaded (and not LineArt) then assign to DeviceImage to show
+                        if (imgSource != null)
+                        {
+                            DeviceImage = imgSource;
+                            WriteLog($"@HomeDevice.DetermineMonitorImage, Model={MonitorInfo.modelName}, ImageFileName={MonitorInfo.ImageFileName}, LoadImageFromResources=OK");
+                            return;
+                        }
+                        else
+                        {
+                            //The ImageFileName is not empty or LineArt, however it fail to load from Resources
+                            //So we will show the LineArt image
+                            WriteLog($"@HomeDevice.DetermineMonitorImage, Model={MonitorInfo.modelName}, ImageFileName={MonitorInfo.ImageFileName}, LoadImageFromResources=Error");
+                        }
                     }
                     else
                     {
-                        //The ImageFileName is not empty or LineArt, however it fail to load from Resources
-                        //So we will show the LineArt image
-                        WriteLog($"@HomeDevice.DetermineMonitorImage, Model={MonitorInfo.modelName}, ImageFileName={MonitorInfo.ImageFileName}, LoadImageFromResources=Error");
+                        WriteLog($"@HomeDevice.DetermineMonitorImage, Model={MonitorInfo.modelName}, ImageFileName={MonitorInfo.ImageFileName}");
                     }
                 }
                 else
                 {
-                    WriteLog($"@HomeDevice.DetermineMonitorImage, Model={MonitorInfo.modelName}, ImageFileName={MonitorInfo.ImageFileName}");
+                    WriteLog($"@HomeDevice.DetermineMonitorImage, Model={MonitorInfo.modelName}, ImageFileName=(empty)");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                WriteLog($"@HomeDevice.DetermineMonitorImage, Model={MonitorInfo.modelName}, ImageFileName=(empty)");
+                WriteLog($"@HomeDevice.DetermineMonitorImage, Exception : ", ex);
             }
 
             //Step_2, We will load and show the LineArt image
@@ -870,7 +916,7 @@ namespace DDPM.UI.Common.Models
             }
             catch (Exception ex1)
             {
-                WriteLog($"@HomeDevice.DetermineMonitorImage, LoadLineArtResource: Exception", ex1);
+                WriteLog($"@HomeDevice.DetermineMonitorImage, LoadLineArtResource: Exception : ", ex1);
             }
 
 
@@ -1318,7 +1364,7 @@ namespace DDPM.UI.Common.Models
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"[HomeDevice] SetBLConnectionStatus_Mouse Exception : {ex.Message}");
+                WriteLog($"[HomeDevice] SetBLConnectionStatus_Mouse Exception : ", ex);
             }
         }
 
@@ -1544,7 +1590,7 @@ namespace DDPM.UI.Common.Models
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"[HomeDevice] SetBLConnectionStatus_Audio Exception : {ex.Message}");
+                WriteLog($"[HomeDevice] SetBLConnectionStatus_Audio Exception : ", ex);
             }
         }
 
@@ -1851,7 +1897,7 @@ namespace DDPM.UI.Common.Models
                     }
                     catch (Exception e)
                     {
-                        string errMsg = e.Message;
+                        WriteLog($"[HomeDevice] HasCapability_NetworkKvm Exception : ", e);
                     }
                 }
                 return false;
@@ -1946,7 +1992,7 @@ namespace DDPM.UI.Common.Models
             if (!mask.Contains("inputSource", StringComparison.OrdinalIgnoreCase) && mi1.inputSource != mi2.inputSource)
                 return false;
             if (!mask.Contains("edid", StringComparison.OrdinalIgnoreCase) && //!EqualityComparer<EDID>.Equals(mi1.edid, mi2.edid))
-                (mi1.edid.Equals(mi2.edid)))
+                (!mi1.edid.Equals(mi2.edid)))
                 return false;
 
             return true;

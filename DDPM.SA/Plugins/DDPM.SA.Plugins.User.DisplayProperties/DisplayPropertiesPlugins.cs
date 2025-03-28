@@ -128,7 +128,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         /// <param name="monitorInfo">螢幕資訊</param>
         /// <returns>支援的解析度列表</returns>
         public Task<DisplayPropertiesInfo> GetDisplaySupportedProperties(MonitorInfo monitorInfo)
-        {                
+        {
             using (HDRSetting hDRSetting = new HDRSetting())
             {
                 try
@@ -159,7 +159,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     _logs?.DebugMsg_1($"{nameof(GetDisplaySupportedProperties)} error : {ex.Message}");
                     return Task.FromResult(new DisplayPropertiesInfo());
                 }
-            }                
+            }
         }
 
         /// <summary>
@@ -512,7 +512,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             if (monitorInfos1.Count >= 2)
             {
                 _SetDisplayConfig(0, IntPtr.Zero, 0, IntPtr.Zero, (uint)(SetDisplayConfigFlags.SDC_APPLY | SetDisplayConfigFlags.SDC_TOPOLOGY_EXTEND));
-                Thread.Sleep(1000);
+                Task.Delay(1000).Wait();
             }
         }
 
@@ -697,7 +697,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         GetOptimalScreenResolution(monitorInfo, resolution, currentOrientation))
                     {
                         resolution.isRecommended = true;
-                        found_Recommended = true;                        
+                        found_Recommended = true;
                     }
                     if (!found_Current &&
                         resolution.Equals(currentProperties))

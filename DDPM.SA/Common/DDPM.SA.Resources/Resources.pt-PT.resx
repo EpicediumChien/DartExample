@@ -132,9 +132,6 @@
   <data name="Network_fail" xml:space="preserve">
     <value>Falha de rede</value>
   </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>Falha ao atualizar devido a um erro de rede. Tente novamente.</value>
-  </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>O firmware da estação de ancoragem está carregado. Desligue a estação de ancoragem para concluir a aplicação do firmware e volte a ligar a estação de ancoragem após 1 minuto.</value>
   </data>
@@ -236,12 +233,6 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>Erro de tempo limite</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>Clique duas vezes no botão esquerdo do rato para iniciar a atualização do firmware</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Prima a tecla "U" no teclado para iniciar a atualização do firmware</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Dispositivo ligado</value>

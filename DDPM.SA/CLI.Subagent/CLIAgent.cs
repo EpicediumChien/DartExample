@@ -221,7 +221,7 @@ namespace CLI.Subagent
                     return;
                 }
                 else
-                {   
+                {
                     //check if set command with correct targettype and targetfeature
                     //Console.WriteLine($"TargetType: {commandLineInputs[idx].TargetType} Option Count: {commandLineInputs[idx].Options.Count}");
                     var matchingItems = ICLICommandTable.CLIHelpCommandStructure.FeatureList.Where(dict =>
@@ -238,8 +238,8 @@ namespace CLI.Subagent
                         //check if Option Value meet requirement
                         foreach (var option in commandLineInputs[idx].Options) //check each option value
                         {
-                             
-                            
+
+
                             string[] ov = option.Option_Value.Split(',');
                             //Console.WriteLine($"Option name: {option.Option_Name} Option value: {option.Option_Value}");
                             //Console.WriteLine($"Option count: {commandLineInputs[idx].Options.Count} ov_length: {ov.Length} ov_count:{ov.Count()}");
@@ -507,7 +507,7 @@ namespace CLI.Subagent
 
         private bool IsNotSupportDeferCommand(CommandLineInput commandLineInput)
         {
-            var notSupportTargetFeatures = new List<string> { "SILENTFWUPDATE", "UPDATESOURCELOCATION", "IMPORTSETTINGS", "TELEMETRYCONSENT", "INAPPUPDATE"};
+            var notSupportTargetFeatures = new List<string> { "SILENTFWUPDATE", "UPDATESOURCELOCATION", "IMPORTSETTINGS", "TELEMETRYCONSENT", "INAPPUPDATE" };
 
             if (commandLineInput.Options.Count > 0 &&
                 commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITHNOTICE")) &&
@@ -520,9 +520,9 @@ namespace CLI.Subagent
                 !commandLineInput.Options.Any(_ => _.Option_Value.Contains("FORCEWITHNONOTICE")) &&
                 notSupportTargetFeatures.Any(_ => _.Equals(commandLineInput.TargetFeature)))
             {
-                    commandLineInput.Options[0].Option_Value += ",FORCEWITHNONOTICE";
+                commandLineInput.Options[0].Option_Value += ",FORCEWITHNONOTICE";
             }
-                return false;
+            return false;
         }
 
         private bool IsSWUpdate(CommandLineInput commandLineInput)
@@ -614,7 +614,7 @@ namespace CLI.Subagent
             }
 
 
-            //Thread.Sleep(5000);
+            //Task.Delay(5000).Wait();
         }
         #endregion
 

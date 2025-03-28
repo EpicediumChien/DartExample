@@ -83,6 +83,7 @@
                         <Button Content="Edit Overlap" Click="editOverlapButton_Click"/>
                         <Button Name="testMonitorInfoUpdateButton" Content="Test MonitorInfo Update" 
                                 Click="testMonitorInfoUpdate_Click" Margin="4,0" Visibility="Collapsed"/>
+                        <Button Content="Make exception" Click="makeExceptionButton_Click"/>
                     </WrapPanel>
                 </StackPanel>
             </TabItem>

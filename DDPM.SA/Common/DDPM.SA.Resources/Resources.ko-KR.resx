@@ -132,9 +132,6 @@
   <data name="Network_fail" xml:space="preserve">
     <value>네트워크 장애</value>
   </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>네트워크 오류로 인해 업데이트에 실패했습니다. 다시 시도하십시오.</value>
-  </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>도크 FW가 로드되었습니다. FW 애플리케이션을 완료하기 위해 도크를 분리하고 1분 후에 도크를 다시 연결하십시오.</value>
   </data>
@@ -236,12 +233,6 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>시간 초과 오류</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>마우스 왼쪽 버튼을 두 번 클릭하여 펌웨어 업데이트를 시작하십시오.</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>펌웨어 업데이트를 시작하려면 키보드의 "U" 키를 누르십시오.</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>디바이스 연결됨</value>
