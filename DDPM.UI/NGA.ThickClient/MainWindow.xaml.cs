@@ -25,6 +25,7 @@ using Screen = System.Windows.Forms.Screen;
 using ResourceManager = Dell.Client.Framework.UX.WPF.ResourceManager.ResourceManager;
 using System.Reflection.Metadata;
 using System.Windows.Forms;
+using System.Windows.Automation.Peers;
 
 namespace NGA.ThickClient
 {
@@ -576,6 +577,7 @@ namespace NGA.ThickClient
                 }
                 _Console.RaiseEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, this, args);
             }
+            NotifyNarratorToRecalculateUI();
         }
         #endregion  Move to new position event
 
@@ -837,6 +839,29 @@ namespace NGA.ThickClient
                 _log?.Error($"{nameof(MainWindow)} - EnsureWindowIsVisible exception: {ex.Message}");
             }
         }
+
+        #region Narrator
+        /// <summary>
+        /// Notify Narrator to recalculate the UI coordinates.
+        /// It's called when the main window move to another screen.
+        /// This method is designed for MainWindow only. If you would like use it from
+        /// other UI elements (Page, UserCOntrol,...), please remove the comments of
+        /// 'Find the main window' section in this method. And change 'this' to 'mainWindow'
+        /// </summary>
+        private void NotifyNarratorToRecalculateUI()
+        {
+            //// Find the main window
+            //var mainWindow = Application.Current.MainWindow;
+            //if (mainWindow == null) return;
+
+            // Get the AutomationPeer for the main window
+            var peer = UIElementAutomationPeer.FromElement(this) ?? UIElementAutomationPeer.CreatePeerForElement(this);
+            if (peer == null) return;
+
+            // Raise the AutomationPropertyChangedEvent to notify Narrator
+            peer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
+        }        
+        #endregion Narrator
 
     }
 }

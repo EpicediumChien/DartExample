@@ -5371,6 +5371,42 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use a maximum of {0} characters.
+        /// </summary>
+        internal static string InputValidationTooltip_1 {
+            get {
+                return ResourceManager.GetString("InputValidationTooltip.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only use alpha-numeric characters and the following special characters {0}.
+        /// </summary>
+        internal static string InputValidationTooltip_2 {
+            get {
+                return ResourceManager.GetString("InputValidationTooltip.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file path either has exceeded the maximum of 260 characters, uses a reserved file name, or has invalid characters &amp;lt; &amp;gt; : &quot; / \ | ?.
+        /// </summary>
+        internal static string InputValidationTooltip_3 {
+            get {
+                return ResourceManager.GetString("InputValidationTooltip.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter only a full URL path, not a relative path.
+        /// </summary>
+        internal static string InputValidationTooltip_4 {
+            get {
+                return ResourceManager.GetString("InputValidationTooltip.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Intel® Graphics Command Center.
         /// </summary>
         internal static string IntelGraphicsCommandCenter {
@@ -8283,6 +8319,15 @@ namespace DDPM.UI.Resources {
         internal static string UI_Orientation_3 {
             get {
                 return ResourceManager.GetString("UI_Orientation.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to load Dell Display and Peripheral Manager app at the moment. Please close the app and try again..
+        /// </summary>
+        internal static string UnableToLoadDdpm {
+            get {
+                return ResourceManager.GetString("UnableToLoadDdpm", resourceCulture);
             }
         }
         
