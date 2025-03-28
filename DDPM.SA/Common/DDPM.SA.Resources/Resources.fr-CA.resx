@@ -132,9 +132,6 @@
   <data name="Network_fail" xml:space="preserve">
     <value>Défaillance du réseau</value>
   </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>La mise à jour a échoué en raison d’une erreur de réseau. Veuillez réessayer.</value>
-  </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>Le micrologiciel de la station d’accueil est chargé. Débranchez la station d’accueil pour finir d’appliquer le micrologiciel et rebranchez-la après une minute.</value>
   </data>
@@ -236,12 +233,6 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>Erreur de temporisation</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>Veuillez double-cliquer sur le bouton gauche de la souris pour lancer la mise à jour du micrologiciel</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Appuyez sur la touche "U" du clavier pour lancer la mise à jour du micrologiciel</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Appareil connecté</value>
