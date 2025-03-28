@@ -18448,7 +18448,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     try
                                     {
                                         _OSD_Controler.DisplayChanged_CloseWindow(null, null);
-                                        _OSD_Controler.DisplayChanged_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                        _OSD_Controler.DisplayChanged_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX));
                                     }
                                     catch (Exception ex)
                                     {
