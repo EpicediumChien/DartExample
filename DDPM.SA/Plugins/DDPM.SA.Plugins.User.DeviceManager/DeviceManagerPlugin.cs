@@ -12372,7 +12372,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //}
                     //else
                     //    writelog($"OnDeviceChanged: _ColorPresetPlugin is null, skip DownloadICCData({monitor.modelName})");
-                }                
+                }
             }
         }
 
@@ -12582,7 +12582,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             //if GetMonitors() already return right list, this function won't be called
             //it means if vcp core find the different monitor then this call will be triggered
-            writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin");           
+            writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin");
 
             _AllInfoMonitors = (e.monitors).ToList();
 

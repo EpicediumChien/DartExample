@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -42,8 +43,12 @@ namespace DDPM.OSDs
 
             //if (!string.IsNullOrWhiteSpace(showString))
             {
-                this.WindowState = WindowState.Maximized;
-                this.Topmost = true;
+                /*this.WindowState = WindowState.Maximized;
+                this.Topmost = true;*/
+                this.Left = 1;
+                this.Top = 1;
+                this.Width = Screen.PrimaryScreen!.WorkingArea.Width;
+                this.Height = Screen.PrimaryScreen.WorkingArea.Height;
 
                 //Derek 1209 OSD don't need to auto close
                 //time = TimeSpan.FromMilliseconds(5000);
