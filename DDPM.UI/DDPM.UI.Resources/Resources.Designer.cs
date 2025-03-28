@@ -8341,6 +8341,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please connect your monitor using the USB upstream port to avoid errors during the firmware update process.
+        /// </summary>
+        internal static string Update_Display_Alert_3 {
+            get {
+                return ResourceManager.GetString("Update_Display_Alert_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ensure only one dock is connected to your system. Devices connected to dock may not be available during update..
         /// </summary>
         internal static string Update_Dock_Alert {

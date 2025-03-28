@@ -132,9 +132,6 @@
   <data name="Network_fail" xml:space="preserve">
     <value>Netzwerkausfall</value>
   </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>Update aufgrund eines Netzwerkfehlers fehlgeschlagen. Wiederholen.</value>
-  </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>Die Dockingstation-FW ist geladen. Trennen Sie die Dockingstation zum Abschließen der Firmwareanwendung und schließen Sie sie nach 1 Minute wieder an.</value>
   </data>
@@ -236,12 +233,6 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>Timeout-Fehler</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>Mit der linken Maustaste doppelklicken, um das Firmware-Update zu starten</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Die Taste "U" auf der Tastatur drücken, um das Firmwareupdate zu starten</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Gerät verbunden</value>
