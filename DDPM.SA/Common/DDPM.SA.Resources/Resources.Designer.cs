@@ -1051,7 +1051,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Seconds.
+        ///   Looks up a localized string similar to s.
         /// </summary>
         internal static string Seconds {
             get {
