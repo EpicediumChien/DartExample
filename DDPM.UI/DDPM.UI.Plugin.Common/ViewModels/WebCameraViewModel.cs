@@ -42,7 +42,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                return $"{Delay} seconds";
+                return $"{Delay} {LangHelper.Instance["WebCameraPresenceDetection.12"]}";
             }
         }
     }
@@ -56,7 +56,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                return $"{SnoozeLength} minutes";
+                return $"{SnoozeLength} {LangHelper.Instance["WebCameraPresenceDetection.13"]}";
             }
         }
     }
