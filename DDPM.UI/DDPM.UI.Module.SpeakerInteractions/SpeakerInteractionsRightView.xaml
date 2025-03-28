@@ -88,7 +88,7 @@
       </LinearGradientBrush>
     </ResourceDictionary>
   </UserControl.Resources>
-  <Grid Width="470" Margin="0,0,0,20">
+  <Grid Margin="0,0,0,20">
     <Border CornerRadius="13" Width="470" Margin="0,10,10,20">
       <StackPanel Orientation="Vertical" Margin="16">
 
