@@ -698,43 +698,33 @@ namespace DDPM.UI.Module.Color
                 DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] CheckNightLightScheduler() call");
                 DdpmCommonHelper.DeviceManagerSA.CheckNightLightScheduler();
 
-                // -- begin add jim 20240604
-                SupportColorPresets = new List<string>();
                 // Jim 20250120 add more log
-                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] ReadColorPreset() called Begin");
-                SupportColorPresets = DdpmCommonHelper.DeviceManagerSA.ReadColorPreset(MyModule.SelectedHomeDevice.MonitorInfo).Result;
-                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] ReadColorPreset() called End");
+                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] ReadColorPreset() call Begin");
+                SupportColorPresets = DdpmCommonHelper.DeviceManagerSA.ReadColorPreset(MyModule.SelectedHomeDevice.MonitorInfo).Result;//cache in user SA           
+                if (Cancelled_RefreshData(e, bwk))
+                {
+                    return;
+                }
 
-                //Dean 0612 add
-                // Jim 20250120 add more log
-                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] ReadCurrentColorPreset() called Begin");
+                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] ReadCurrentColorPreset() call");
+                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, (Guid)guid, Priority.High).Result;               
+
                 if (Cancelled_RefreshData(e, bwk))
                 {
                     return;
                 }
-                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, (Guid)guid, Priority.High).Result;
-                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] ReadCurrentColorPreset() called End");
+                // Jim 20250120 add more log
+                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] Sync_ColorPresetName() call");
                 string strSync_CurrentColorPreset = string.Empty;
-                //strSync_CurrentColorPreset = Sync_CurrentColorPreset(curPreset);
-                // Jim 20250120 add more log
-                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] Sync_ColorPresetName() called Begin");
-                if (Cancelled_RefreshData(e, bwk))
-                {
-                    return;
-                }
                 strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
-                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] Sync_ColorPresetName() called End");
 
                 ColorPresets_ItemsCollection = new List<string>();
-
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     foreach (string info in SupportColorPresets)
                     {
                         ColorPresets_ItemsCollection.Add(new string(info));
                     }
-
-                    //Dean 0612 add
                     if (!string.IsNullOrEmpty(strSync_CurrentColorPreset))
                     {
                         int idx = ColorPresets_ItemsCollection.FindIndex(x => x.ToUpper().Equals(strSync_CurrentColorPreset.ToUpper()));
@@ -743,18 +733,12 @@ namespace DDPM.UI.Module.Color
                             UpdateColorPresetSelectedIndex(idx);
                         }
                     }
-                    //End
                 }));
-                // -- end
-
-                //Jim, 20240819, Fixed for applist increase repeatedly when change a different Monitor.
-                //Test_AddAppCollectionData.GetInstance().AppsList.Clear();
                 if (Cancelled_RefreshData(e, bwk))
                 {
                     return;
                 }
-                List<AppData> tempList = new List<AppData>();
-
+                //Jim, 20240819, Fixed for applist increase repeatedly when change a different Monitor.
                 ColorPresetSettings config = get_cur_monitor_preset_config(MyModule.SelectedHomeDevice.MonitorInfo, DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result);
 
                 if (Cancelled_RefreshData(e, bwk))
@@ -792,6 +776,8 @@ namespace DDPM.UI.Module.Color
                     DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] WriteColorPresetSettings() called End");
                     Task.Delay(100).Wait();
 
+                    List<AppData> tempList = new List<AppData>();
+
                     foreach (string key in config.AppInfo.Keys)
                     {
                         if (Cancelled_RefreshData(e, bwk))
@@ -800,7 +786,6 @@ namespace DDPM.UI.Module.Color
                         }
 
                         ColorPresetSettings_AppInfo value = config.AppInfo[key];
-
                         string strColorPresetName = string.Empty;
 
                         if (SmartHDR_ON)
@@ -838,15 +823,11 @@ namespace DDPM.UI.Module.Color
                             DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] Sync_ColorPresetName() called End");
                         }
 
-                        int pIdx = SupportColorPresets.FindIndex(x =>
-                                            x.Trim() == strSync_CurrentColorPreset.Trim());
-
-                        Visibility vis = (key.Trim() == "Desktop Application" || key.Trim() == "UWP Application") ?
-                            Visibility.Collapsed : Visibility.Visible;
-
+                        int pIdx = SupportColorPresets.FindIndex(x => x.Trim() == strSync_CurrentColorPreset.Trim());
                         if (pIdx <= 0)
                             pIdx = 0;
 
+                        Visibility vis = (key.Trim() == "Desktop Application" || key.Trim() == "UWP Application") ? Visibility.Collapsed : Visibility.Visible;
                         if (Cancelled_RefreshData(e, bwk))
                         {
                             return;
