@@ -3612,4 +3612,7 @@
   <data name="Update_Display_Alert_3" xml:space="preserve">
     <value>Please connect your monitor using the USB upstream port to avoid errors during the firmware update process</value>
   </data>
+  <data name="ErrorMsg.0" xml:space="preserve">
+    <value>Unable to load Dell Display and Peripheral Manager app at the moment. Please close the app and try again.</value>
+  </data>
 </root>

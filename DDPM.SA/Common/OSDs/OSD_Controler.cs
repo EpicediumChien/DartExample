@@ -275,12 +275,15 @@ namespace DDPM.OSDs
             }
         }
 
-        public void DisplayChanged_ShowWindow(string Content, double Top, double Left)
+        public void DisplayChanged_ShowWindow(string Content, double Top, double Left, double width, double height)
         {
             DisplayChangedWinx = new DisplayChangedWin(Content);
             DisplayChangedWinx.Closed += DisplayChanged_CloseWindow;
-            DisplayChangedWinx.Top = Top;
-            DisplayChangedWinx.Left = Left;
+            DisplayChangedWinx.Top = Top + 1;
+            DisplayChangedWinx.Left = Left + 1;
+            DisplayChangedWinx.Width = width - 2;
+            DisplayChangedWinx.Height = height - 2;
+
             DisplayChangedWinx.ShowWindow();
         }
 

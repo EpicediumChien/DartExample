@@ -4120,6 +4120,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to load Dell Display and Peripheral Manager app at the moment. Please close the app and try again..
+        /// </summary>
+        internal static string ErrorMsg_0 {
+            get {
+                return ResourceManager.GetString("ErrorMsg.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Align Center.
         /// </summary>
         internal static string Excel_1 {
