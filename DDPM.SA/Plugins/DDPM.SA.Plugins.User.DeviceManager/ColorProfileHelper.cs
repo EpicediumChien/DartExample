@@ -3,6 +3,7 @@ using Dell.Client.Framework.Common;
 using Dell.UnifiedAgent.DellTechHubSettings;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Documents;
 using VcpCore.Common;
@@ -10,6 +11,15 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
+    public class MonitorPresetCache
+    {
+        public string modelName { get; set; } = string.Empty;
+        public string displayName { get; set; } = string.Empty;
+        public string serviceTag { get; set; } = string.Empty;
+        public bool isHDROn { get; set; } = false;
+        public List<string> preset_list { get; set; } = new List<string>();
+    }        
+
     public class ColorProfileHelper : IDisposable
     {
         private bool isDisposed = false;
@@ -17,6 +27,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private IDeviceManagerSA _devMgr = null;
         private IColorPresetSA _colorPreset = null;
         private bool firstTimeDone = false;
+        private List<MonitorPresetCache> preset_cache = new List<MonitorPresetCache>();
 
         #region definition from device manager to here
         /// <summary>
@@ -36,6 +47,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return;
             }
             WriteLog("Do dispose");
+
+            //internal data object clear
+            if (preset_cache.Count > 0)
+            {
+                foreach (var item in preset_cache)
+                {
+                    item.preset_list.Clear();
+                    item.preset_list = null;
+                }
+                preset_cache.Clear();
+            }
+            preset_cache = null;
 
             //outside object clear
             _log = null;
@@ -151,6 +174,73 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             WriteLog($"{nameof(PreDownloadICC)} done");
         }
+
+        public Task<DDPM.SA.Common.IIC_Metadata> DownloadICCData(MonitorInfo m, bool blICCProfile = false, string savelPath = "")
+        {
+            DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
+
+            if (_colorPreset == null)
+            {
+                WriteLog("null _ColorPresetPlugin in [DownloadICCData]");
+                return Task.FromResult(_ICC_Metadata);
+            }
+            else
+            {
+                _ICC_Metadata = _colorPreset.DownloadICCData(m.modelName, m.DisplayName, blICCProfile, savelPath).Result;
+            }
+
+            return Task.FromResult(_ICC_Metadata);
+        }
+
+        #region Color Preset cache management
+        //check if new then add to cache
+        public void AddPresetListToCache(MonitorInfo mo, bool isHDR_On, List<string> PresetList)
+        {
+            if (mo == null)
+                return;
+            int idx = preset_cache.FindIndex(x => x.serviceTag.Equals(mo.edid.ServiceTag, StringComparison.OrdinalIgnoreCase) &&
+                                                  x.modelName.Equals(mo.modelName, StringComparison.OrdinalIgnoreCase) &&
+                                                  x.isHDROn == isHDR_On);
+            if (idx < 0)
+            {
+                MonitorPresetCache mpc = new MonitorPresetCache();
+                mpc.displayName = mo.DisplayName;
+                mpc.modelName = mo.modelName;
+                mpc.serviceTag = mo.edid.ServiceTag;
+                mpc.preset_list = PresetList;
+                mpc.isHDROn = isHDR_On;
+                preset_cache.Add(mpc);
+            }
+            else
+            {
+                //if display name changed or HDR different, might means monitor changed
+                //remove old one and add new one
+                if (!preset_cache[idx].displayName.Equals(mo.DisplayName, StringComparison.OrdinalIgnoreCase) ||
+                    preset_cache[idx].isHDROn != isHDR_On)
+                {
+                    preset_cache.RemoveAt(idx);
+                    MonitorPresetCache mpc = new MonitorPresetCache();
+                    mpc.displayName = mo.DisplayName;
+                    mpc.modelName = mo.modelName;
+                    mpc.serviceTag = mo.edid.ServiceTag;
+                    mpc.isHDROn = isHDR_On;
+                    mpc.preset_list = PresetList;
+                    preset_cache.Add(mpc);
+                }
+            }
+        }
+
+        public MonitorPresetCache GetPresetListFromCache(MonitorInfo mo, bool isHDR_On)
+        {
+            if (mo == null)
+                return null;
+            MonitorPresetCache mpc = preset_cache.Find(x => x.serviceTag.Equals(mo.edid.ServiceTag, StringComparison.OrdinalIgnoreCase) &&
+                                                            x.modelName.Equals(mo.modelName, StringComparison.OrdinalIgnoreCase) &&
+                                                            x.displayName.Equals(mo.DisplayName, StringComparison.OrdinalIgnoreCase) &&
+                                                            x.isHDROn == isHDR_On);
+            return mpc;
+        }
+        #endregion
 
         private void WriteLog(string text,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
