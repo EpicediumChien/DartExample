@@ -8341,7 +8341,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Please connect your monitor using the USB upstream port to avoid errors during the firmware update process.
         /// </summary>
         internal static string Update_Display_Alert_3 {
             get {

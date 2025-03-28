@@ -3610,6 +3610,6 @@
     <value>HDR</value>
   </data>
   <data name="Update_Display_Alert_3" xml:space="preserve">
-    <value></value>
+    <value>Please connect your monitor using the USB upstream port to avoid errors during the firmware update process</value>
   </data>
 </root>
