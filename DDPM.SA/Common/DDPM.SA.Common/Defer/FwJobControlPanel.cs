@@ -148,7 +148,14 @@ namespace DDPM.SA.Common.Defer
                 }
             }
 
-            writeToFile();
+            try
+            {
+                writeToFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("writeToFile() exception: " + ex.ToString());
+            }
 
             return deferItems;
         }
