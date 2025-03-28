@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DDPM.Easy.Common
 {
@@ -475,5 +463,29 @@ namespace DDPM.Easy.Common
             }
         }
 
+        //Derek 2025/03/28
+        private void uc_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (canvas != null)
+            {
+                // 从父容器移除 Canvas
+                //if (MainStackPanel.Children.Contains(canvas))
+                //{
+                //    MainStackPanel.Children.Remove(canvas);
+                //}
+
+                // 清理子元素
+                canvas.Children.Clear();
+
+                // 解除数据绑定（如果有）
+                BindingOperations.ClearAllBindings(canvas);
+
+                // 移除事件处理程序（如果有）
+                // 这里需要根据实际添加的事件处理程序进行移除
+
+                // 释放引用
+                canvas = null;
+            }
+        }
     }
 }

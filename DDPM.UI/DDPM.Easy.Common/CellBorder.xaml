@@ -26,7 +26,7 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="0">
                     <TextBlock x:Name="memoryTB" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource DefaultTheme_TxtColor}"
-                               d:Text="2"/>
+                               d:Text="2" Background="Red"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1">
                     <Image x:Name="memoryImage" Grid.Column="1" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,0,0,0"/>

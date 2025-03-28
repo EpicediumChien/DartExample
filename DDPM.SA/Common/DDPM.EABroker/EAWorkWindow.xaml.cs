@@ -1,23 +1,11 @@
 ﻿using DDPM.Easy.Common;
 using DDPM.SA.Common.Display;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using VcpCore.Common;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Rectangle = System.Drawing.Rectangle;
 using Window = System.Windows.Window;
 
@@ -160,6 +148,35 @@ namespace DDPM.EABroker
         #endregion
 
         #region [Input] Working SplitCtrl
+        private void ReleaseSplitCtrls()
+        {
+            if (splitCtrl.Content != null)
+            {
+                // 释放资源
+                if (splitCtrl.Content is FrameworkElement contentElement)
+                {
+                    // 这里可以添加更多资源释放逻辑，例如取消事件订阅等
+                }
+
+                // 清空 ContentControl 的内容
+                splitCtrl.Content = null;
+            }
+
+            if (fadeOutCtrl.Content != null)
+            {
+                // 释放资源
+                if (fadeOutCtrl.Content is FrameworkElement contentElement)
+                {
+                    // 这里可以添加更多资源释放逻辑，例如取消事件订阅等
+                }
+                // 清空 ContentControl 的内容
+                fadeOutCtrl.Content = null;
+            }
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
+
         public bool SetWorkingSplit(SplitJson splitJson, bool showFadeOut=false)
         {
             this.Dispatcher.Invoke(() =>
@@ -167,6 +184,9 @@ namespace DDPM.EABroker
                 Rect rcScreen = new Rect();
                 int cellCount = splitJson.CellCount;
                 char splitKey = splitJson.SplitKey;
+
+                //Derek 2025/03/28 release previous resource
+                ReleaseSplitCtrls();
 
                 if ((cellCount == 0) && (splitKey == 'A'))
                 {
