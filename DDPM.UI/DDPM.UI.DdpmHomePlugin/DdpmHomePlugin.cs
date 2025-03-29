@@ -818,14 +818,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _monitorInfos = deviceManager.GetMonitors().Result;
                             _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync GetMonitors count is ${_monitorInfos.Count}");
                         }
-                        _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Monitor count is ${_monitorInfos.Count}");
-
                         if (_deviceInfos == null)
                         {
                             _deviceInfos = deviceManager!.GetDevices().Result.deviceInfo;
                             _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync GetDevices count is ${_deviceInfos.Count}");
                         }
-                        _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Devices count is ${_deviceInfos.Count}");
+                        _log.Info($"[Walkthrough] CollectAndCompareDevicesAsync, monitor count:{_monitorInfos.Count.ToString()}, device count : {_deviceInfos.Count.ToString()}");
                     }
                     _ = Task.Run(() =>
                     {
