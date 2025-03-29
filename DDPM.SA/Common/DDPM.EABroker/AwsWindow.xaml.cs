@@ -1,21 +1,10 @@
 ﻿using DDPM.Easy.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
-using Dell.Client.Framework.Common;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using VcpCore.Common;
 
 namespace DDPM.EABroker
@@ -765,7 +754,7 @@ namespace DDPM.EABroker
             return null;
         }
 
-        public Screen HoveringScreen { get; set; }
+        public Screen? HoveringScreen { get; set; } = null;
         public Rect CalculateHoveringCellArrangeRect()
         {
             if (_vm.WorkScreen == null)
@@ -801,7 +790,7 @@ namespace DDPM.EABroker
 
         public void RefreshCellRects(int flag = 0)
         {
-            Dispatcher.BeginInvoke(new Action(() =>
+            _ = Dispatcher.BeginInvoke(new Action(() =>
             {
                 Dispatcher_RefreshCellRects(flag);
 
@@ -1011,10 +1000,16 @@ namespace DDPM.EABroker
 
             if (!_areCellRectsRefreshed && flag == 0)
             {
-                System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(0); }, null, 100, Timeout.Infinite);
+                _vm.WriteLog($"Create timer for RefreshCellRects(0)");
+                //Derek 2025/03/29 move timer object to class member for resource release
+                //System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(0); }, null, 100, Timeout.Infinite);
+
+                timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(0); }, null, 100, Timeout.Infinite);
             }
             _vm.OnPropertyChanged_AwsIconInfos();
         }
+        //Derek 2025/03/29
+        System.Threading.Timer? timer1 = null;
 
         private bool UI_RefreshAwsIconCellRects(ISplitCtrl awsIcon)
         {
@@ -1081,7 +1076,7 @@ namespace DDPM.EABroker
             if (!isVisible)
                 return;
 
-            Dispatcher.BeginInvoke(new Action(() =>
+            _ = Dispatcher.BeginInvoke(new Action(() =>
             {
                 //Get the Screen of the cursor
                 Screen showScreen = _vm.GetScreenFromCursor();
@@ -1121,7 +1116,7 @@ namespace DDPM.EABroker
             if (!_vm.IsAwsWindowVisible)
                 return;
 
-            Dispatcher.BeginInvoke(new Action(() =>
+            _ = Dispatcher.BeginInvoke(new Action(() =>
             {
 
                 _vm.WriteLog($"@ AwsWindow.HandleWorkScreenChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
@@ -1154,7 +1149,7 @@ namespace DDPM.EABroker
         #region Icon0 - Monitors
         private void RefreshIcon0()
         {
-            Dispatcher.BeginInvoke(new Action(() =>
+            _ = Dispatcher.BeginInvoke(new Action(() =>
             {
                 //if (_vm.AwsIcon0 != null)
                 //{
@@ -1168,7 +1163,7 @@ namespace DDPM.EABroker
                 System.Drawing.Rectangle rcVirtualScreen = SystemInformation.VirtualScreen;
                 if ((rcVirtualScreen.Width <= 0) || (rcVirtualScreen.Height <= 0))
                     return;
-                
+
                 double cxView = 1.000;
                 double cyView = 1.000;
                 double ratioX = icon0Canvas.ActualWidth / (double)rcVirtualScreen.Width;
@@ -1252,7 +1247,7 @@ namespace DDPM.EABroker
 
         private void HoverCellInAwsIcon0(string hoverName)
         {
-            Dispatcher.BeginInvoke(new Action(() =>
+            _ = Dispatcher.BeginInvoke(new Action(() =>
             {
                 foreach (var item in icon0Canvas.Children)
                 {
@@ -1387,17 +1382,40 @@ namespace DDPM.EABroker
             }
         }
 
-        public void OnWindowStartMoving()
-        {
-            //RefreshIcon0();
-        }
+        //Derek 2025/03/29 remove it due to no one use it
+        //public void OnWindowStartMoving()
+        //{
+        //    //RefreshIcon0();
+        //}
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            _vm.WriteLog($"Awswindows Window_Closing start, sender = {sender.ToString()}");
+
+            try
             {
-                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+                HoveringScreen = null;
+
+                timer1?.Dispose();
+                timer1 = null;
+
+                if (_vm != null)
+                {
+                    _vm.AwsWindowVisibilityChanged -= HandleAwsWindowVisibilityChanged;
+                    _vm.WorkScreenChanged -= HandleWorkScreenChanged;
+                }
+
+
+                if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+                {
+                    System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+                }
             }
+            catch (Exception ex)
+            {
+                _vm.WriteLog($"Awswindows Window_Closing catch excepton {ex.Message}");
+            }
+            
         }
     }
 }

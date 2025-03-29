@@ -11,21 +11,10 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Microsoft.Extensions.DependencyInjection;
-using nsWinEventHook;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Controls.Ribbon;
-using System.Windows.Forms;
-using System.Windows.Media.Animation;
 using VcpCore.Common;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using IDs = DDPM.SA.Common.IDs;
 using DDPM.SA.Common.Telemetry;
-using static VcpCore.Common.User32;
-using System.Text;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
@@ -118,7 +107,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #endregion Constructor
  
-         #region IDisposableObservable Support
+        #region IDisposableObservable Support
 
         /// <summary>
         /// To detect redundant calls
@@ -1780,8 +1769,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //thread.SetApartmentState(ApartmentState.STA);
             //thread.Start();
 
-            //if (_displayManagerPlugin != null)
-            //    _displayManagerPlugin.Displaychanged -= _displayManagerPlugin_Displaychanged;
+            if (_displayManagerPlugin != null)
+                _displayManagerPlugin.Displaychanged -= _displayManagerPlugin_Displaychanged;
+
             _agent.UnregisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
             if (_eaBroker != null)
             {

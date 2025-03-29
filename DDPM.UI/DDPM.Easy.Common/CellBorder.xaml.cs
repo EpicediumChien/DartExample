@@ -43,6 +43,19 @@ namespace DDPM.Easy.Common
         {
             this.Drop -= OnDrop;
             this.Unloaded -= OnUnloaded;
+
+            //Derek 2025/03/28
+            ReleaseBorderBrushResource();
+        }
+
+        private void ReleaseBorderBrushResource()
+        {
+
+            SetValue(BorderBrushProperty, null);
+            SetValue(BkBrushProperty, null);
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         private string _cellName = "";

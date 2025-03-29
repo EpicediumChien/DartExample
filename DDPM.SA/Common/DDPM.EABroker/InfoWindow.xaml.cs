@@ -95,6 +95,8 @@ namespace DDPM.EABroker
             _winEventHook.OnEndMoving -= OnWindowEndMovingProc;
             _winEventHook.OnLocationChanged -= OnLocationChangedProc;
             _winEventHook.OnForegroundWindowChanged -= OnForegroundWindowChangedProc;
+
+            _winEventHook.Unhook(); //Derek 2025/03/28
         }
         #endregion Window Event Hook
 
