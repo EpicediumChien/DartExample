@@ -88,7 +88,7 @@ namespace DDPM.OSDs
                     });
                 }
                 OSDMainWin.adjustOSDWin(args);
-                Debug.WriteLine($"OSDMainWin!.OSDWins.Count========{OSDMainWin!.OSDWins.Count}");
+                //Debug.WriteLine($"OSDMainWin!.OSDWins.Count========{OSDMainWin!.OSDWins.Count}");
                 OSDMainWin.ShowWindow();
             }
         }

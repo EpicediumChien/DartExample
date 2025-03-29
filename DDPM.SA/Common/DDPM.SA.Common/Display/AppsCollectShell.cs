@@ -10,6 +10,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Threading.Tasks;
+
 
 namespace DDPM.SA.Common
 {
@@ -83,11 +85,11 @@ namespace DDPM.SA.Common
 
         private static readonly string fileName = "InstalledAppInfo.json";
 
-        private static string DatafilePath = storageFolder + "\\AppLibrary\\" + fileName; 
+        private static string DatafilePath = storageFolder + "\\AppLibrary\\" + fileName;
 
         private static readonly string iconFolder = storageFolder + "\\AppLibrary\\Icons";
 
-        private Thread ThthSaveAppDataFile;
+        //private Thread ThthSaveAppDataFile;
 
         private static AppListDictionary INSTANCE = null;
 
@@ -125,11 +127,27 @@ namespace DDPM.SA.Common
             _log?.Info($"[AppListDictionary] {message}");
         }
 
+        //public void SaveInstalledAppInfo_Thread()
+        //{
+        //    ThthSaveAppDataFile = new Thread(SaveInstalledAppInfo);
+        //    ThthSaveAppDataFile.Start();
+        //}
         public void SaveInstalledAppInfo_Thread()
         {
-            ThthSaveAppDataFile = new Thread(SaveInstalledAppInfo);
-            ThthSaveAppDataFile.Start();
+            Task.Run(() =>
+            {
+                try
+                {
+                    SaveInstalledAppInfo();
+                }
+                catch (Exception ex)
+                {
+                    _log?.Info($"SaveInstalledAppInfo_Thread, An error occurred: {ex.Message}");
+                }
+            });
         }
+
+
 
         public void SaveInstalledAppInfo()
         {
@@ -138,13 +156,13 @@ namespace DDPM.SA.Common
                 string text = Serialization.Serialize(AppInstallsList);
                 if (text.Length > 0)
                 {
-                    if(!DDPMFileSecurity.ValidateFilePath(DatafilePath, out string info))
+                    if (!DDPMFileSecurity.ValidateFilePath(DatafilePath, out string info))
                     {
                         WriteLog($"[SaveInstalledAppInfo] ValidateFilePath with fail: {info}");
                         return;
                     }
                     //File.WriteAllText(DatafilePath, text);
-                    if(!DDPMFileSecurity.SetJsonContentFromSerializedString(text, DatafilePath, out info))
+                    if (!DDPMFileSecurity.SetJsonContentFromSerializedString(text, DatafilePath, out info))
                     {
                         WriteLog($"[SaveInstalledAppInfo] write file failed: {info}");
                     }
@@ -215,7 +233,7 @@ namespace DDPM.SA.Common
             //use default Icon folder
 
             _log = log;
-            tmpAppListDictionary?.SetLogObj(_log);            
+            tmpAppListDictionary?.SetLogObj(_log);
         }
 
         public AppsCollectShell(string icon_folder, ILog log = null)
@@ -347,7 +365,7 @@ namespace DDPM.SA.Common
                         DateTime lastAccessTime = f.CreationTime;//.LastAccessTime;
                         if (!File.Exists(IconFolder + text + ".png"))
                         {
-                            if(canSave)
+                            if (canSave)
                                 System.Drawing.Icon.ExtractAssociatedIcon(value)!.ToBitmap().Save(IconFolder + text + ".png");
                             //logger.WriteLog($"[ColorApp][FindAppsbyShell] Save icon to [{IconFolder}{text}.png] (Desktop)");
                         }
@@ -412,7 +430,7 @@ namespace DDPM.SA.Common
                         bitmap.UnlockBits(bitmapData);
                         if (!File.Exists(IconFolder + filename + ".png"))
                         {
-                            if(canSave)
+                            if (canSave)
                                 bitmap.Save(IconFolder + filename + ".png");
                             //logger.WriteLog($"[ColorApp][FindAppsbyShell] Save icon to [{IconFolder}{filename}.png] (UWP)");
                         }
@@ -497,7 +515,7 @@ namespace DDPM.SA.Common
                         tmpAppListDictionary.AppInstallsList.Remove(key2);
                     }
                 }
-                catch(Exception ee)
+                catch (Exception ee)
                 {
                     WriteLog($"[FlashAppByShell][sorting2] exception: {ee.Message}");
                 }

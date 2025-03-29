@@ -10430,14 +10430,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     var type = assembly.GetExportedTypes()
                                        .FirstOrDefault(t => t.FullName.Equals($"Dell.TechHub.Commodity.Peripheral.{commodityName}", StringComparison.OrdinalIgnoreCase));
-                    Debug.WriteLine($"\n{assembly.FullName}, {assembly.Location}");
+                    //Debug.WriteLine($"\n{assembly.FullName}, {assembly.Location}");
                     if (type is not null)
                         return type;
                 }
                 catch (Exception ex)
                 {
                     writelog($"Failed to get exported type from assembly {assembly.FullName}:{ex}");
-                    Debug.WriteLine($"\n{ex}");
+                    //Debug.WriteLine($"\n{ex}");
                 }
             }
             return null;
@@ -10449,12 +10449,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($" GetCommodityInterfaceInstanceAsync_itemID : {_itemID} methodInfo :{methodInfo.Name}");
                 dynamic rawResult = methodInfo.Invoke(_commSdk, new object[] { _itemID, new CancellationTokenSource().Token });
-                Debug.WriteLine($"rawResult: {rawResult}");
+                //Debug.WriteLine($"rawResult: {rawResult}");
                 return rawResult is null ? null : (ICommodity)await rawResult;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"\nError handling {methodInfo.MemberType}'s {_itemID} item.\n{ex}");
+                //Debug.WriteLine($"\nError handling {methodInfo.MemberType}'s {_itemID} item.\n{ex}");
                 writelog($"\nError handling {methodInfo.MemberType}'s {_itemID} item.\n{ex}");
                 return null;
             }
