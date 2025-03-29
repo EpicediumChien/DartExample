@@ -69,7 +69,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private readonly WebCameraViewModel _vm;
 
-        private readonly int[] _rightFrameWidth = new int[] { 0, 483, 483, 483, 483, 483 };
+        private readonly int[] _rightFrameWidth = new int[] { 0, 480, 480, 480, 480, 480 };
         private readonly string CameraControl = LangHelper.Instance["Camera.0"];
         private readonly string ColorandImage = LangHelper.Instance["Camera.1"];
         private readonly string PresenceDetection = LangHelper.Instance["Camera.2"];
@@ -1647,7 +1647,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             try
             {
-                _vm.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
+                if (_vm?.MediaFrameReader != null)
+                    _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
             }
             catch (Exception ex)
             {
@@ -1656,8 +1657,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             try
             {
-                _vm.ProfilePropertyChanged -= ProfilePropertyChanged;
-                _vm.WebcamSettingChanged -= WebcamSettingChanged;
+                if (_vm != null)
+                {
+                    _vm.ProfilePropertyChanged -= ProfilePropertyChanged;
+                    _vm.WebcamSettingChanged -= WebcamSettingChanged;
+                }
             }
             catch (Exception ex)
             {

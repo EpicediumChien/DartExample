@@ -872,21 +872,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #region ColorPreset implementation
-
         public Task<DDPM.SA.Common.IIC_Metadata> DownloadICCData(MonitorInfo m, bool blICCProfile = false, string savelPath = "")
         {
-            DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
-
-            if (_ColorPresetPlugin == null)
-            {
-                writelog("null _ColorPresetPlugin in [DownloadICCData]");
-                return Task.FromResult(_ICC_Metadata);
-            }
-            else
-            {
-                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m.modelName, m.DisplayName, blICCProfile, savelPath).Result;
-            }
-
+            DDPM.SA.Common.IIC_Metadata _ICC_Metadata = _ColorProfileHelper?.DownloadICCData(m, blICCProfile, savelPath).Result ?? new IIC_Metadata();
             return Task.FromResult(_ICC_Metadata);
         }
 
@@ -894,6 +882,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             //Log.Info($"ReadColorPreset requested ...");
             writelog("ColorPresetPlugin received ReadColorPreset requested ...");
+            bool SmartHDR_ON = GetHDRStatus(m).Result;
+            MonitorPresetCache mpc = _ColorProfileHelper?.GetPresetListFromCache(m, SmartHDR_ON);
+            if (mpc != null)
+            {
+                return Task.FromResult(mpc.preset_list);
+            }
+
             List<string> multiColorPreset = new List<string>();
             // 20240619 jim add check
             if (_SupportedColorPreset != null)
@@ -915,9 +910,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         // 20240619 jim add one retry
                         if (string.IsNullOrEmpty(VCP_capbility))
-                            VCP_capbility = GetVCPCapabilities(m).Result;
-
-                        bool SmartHDR_ON = GetHDRStatus(m).Result;
+                            VCP_capbility = GetVCPCapabilities(m).Result;                        
 
                         _SupportedColorPreset = _ColorPresetPlugin.ReadColorPreset(m, VCP_capbility, SmartHDR_ON).Result;
                         //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
@@ -928,6 +921,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 }
             }
+
+            //add to cache
+            if(multiColorPreset.Count > 0)
+                _ColorProfileHelper?.AddPresetListToCache(m, SmartHDR_ON, multiColorPreset);
 
             return Task.FromResult(multiColorPreset);
         }
@@ -14293,15 +14290,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         break;
 
                     case OSDType_Device.Keyboard:
-                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Keyboard, state);
+                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)), oSDType, OSDType_Device.Keyboard, state);
                         break;
 
                     case OSDType_Device.Mouse:
-                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Mouse, state);
+                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)), oSDType, OSDType_Device.Mouse, state);
                         break;
 
                     case OSDType_Device.Headset:
-                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Headset, state);
+                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)), oSDType, OSDType_Device.Headset, state);
                         break;
                 }
                 _latestBatterylowContent = string.Empty;
@@ -18310,7 +18307,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             string tmpMuteGuid = Guid.NewGuid().ToString();
-                                            _OSD_Controler.ShowMultipleOSD(tmpMuteGuid, OSDType_Device.Mute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_muted"]);
+                                            _OSD_Controler.ShowMultipleOSD(tmpMuteGuid, OSDType_Device.Mute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_muted"], ((Screen.PrimaryScreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             await Task.Run(async () =>
                                             {
                                                 await Task.Delay(3000);
@@ -18330,7 +18327,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         {
 
                                             string tmpUnMuteGuid = Guid.NewGuid().ToString();
-                                            _OSD_Controler.ShowMultipleOSD(tmpUnMuteGuid, OSDType_Device.UnMute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_Unmuted"]);
+                                            _OSD_Controler.ShowMultipleOSD(tmpUnMuteGuid, OSDType_Device.UnMute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_Unmuted"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             await Task.Run(async () =>
                                             {
                                                 await Task.Delay(3000);
@@ -18355,7 +18352,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {B70715F8-9DF6-440F-B5BE-A48336A4B261}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "B70715F8-9DF6-440F-B5BE-A48336A4B261" : guid.ToString(), OSDType_Device.Headset, oSDType_Op, Content, LangHelper.Instance["Battery_Low"]);
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "B70715F8-9DF6-440F-B5BE-A48336A4B261" : guid.ToString(), OSDType_Device.Headset, oSDType_Op, Content, LangHelper.Instance["Battery_Low"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             /*  if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Headset))
                                               {
                                                   _latestBatterylowContent = Content;
@@ -18374,7 +18371,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {377C7B36-ED5B-446F-93A6-3418F0447836}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "377C7B36-ED5B-446F-93A6-3418F0447836" : guid.ToString(), OSDType_Device.Keyboard, oSDType_Op, Content, LangHelper.Instance["Battery_Low"]);
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "377C7B36-ED5B-446F-93A6-3418F0447836" : guid.ToString(), OSDType_Device.Keyboard, oSDType_Op, Content, LangHelper.Instance["Battery_Low"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             /*if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Keyboard))
                                             {
                                                 //when keyboard battery low, press CapsLock/ScrollLock/NumLockLock combine with
@@ -18394,7 +18391,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {1D5E64AD-212C-4364-AF84-BA1C95723ED7}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "1D5E64AD-212C-4364-AF84-BA1C95723ED7" : guid.ToString(), OSDType_Device.Mouse, oSDType_Op, Content, LangHelper.Instance["Battery_Low"]);
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "1D5E64AD-212C-4364-AF84-BA1C95723ED7" : guid.ToString(), OSDType_Device.Mouse, oSDType_Op, Content, LangHelper.Instance["Battery_Low"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             /*if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Mouse))
                                             {
                                                 _latestBatterylowContent = Content;
@@ -18413,7 +18410,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {9239EAA6-660D-4DC5-B141-937D3AB0C3EF}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "9239EAA6-660D-4DC5-B141-937D3AB0C3EF" : guid.ToString(), OSDType_Device.Pen, oSDType_Op, Content, LangHelper.Instance["Battery_Low"]);
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "9239EAA6-660D-4DC5-B141-937D3AB0C3EF" : guid.ToString(), OSDType_Device.Pen, oSDType_Op, Content, LangHelper.Instance["Battery_Low"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
 
                                             /* if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Pen))
                                               {
@@ -18434,7 +18431,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     try
                                     {
                                         _OSD_Controler.StartRecording_CloseWindow(null, null);
-                                        _OSD_Controler.StartRecording_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                        _OSD_Controler.StartRecording_ShowWindow(Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                     }
                                     catch (Exception ex)
                                     {
@@ -18448,7 +18445,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     try
                                     {
                                         _OSD_Controler.DisplayChanged_CloseWindow(null, null);
-                                        _OSD_Controler.DisplayChanged_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                        _OSD_Controler.DisplayChanged_ShowWindow(Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                     }
                                     catch (Exception ex)
                                     {
@@ -18462,7 +18459,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     try
                                     {
                                         _OSD_Controler.WalkAwayLock_CloseWindow(null, null);
-                                        _OSD_Controler.WalkAwayLock_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                        _OSD_Controler.WalkAwayLock_ShowWindow(Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                     }
                                     catch (Exception ex)
                                     {
@@ -18481,7 +18478,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             if (_OSD_Controler.ExistMultipleOSD())
                                             {
                                                 //default guid {4C24C783-3E8B-4FED-81ED-70CBE7DA43DD}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "4C24C783-3E8B-4FED-81ED-70CBE7DA43DD" : guid.ToString(), OSDType_Device.ScrollLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_On"]);
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "4C24C783-3E8B-4FED-81ED-70CBE7DA43DD" : guid.ToString(), OSDType_Device.ScrollLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                                 await Task.Run(async () =>
                                                 {
                                                     await Task.Delay(1000);
@@ -18491,7 +18488,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             else
                                             {
                                                 //_OSD_Controler.ScrollLockOn_CloseWindow();
-                                                _OSD_Controler.ScrollLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                _OSD_Controler.ScrollLockOn_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             }
                                         }
                                         else
@@ -18499,7 +18496,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             if (_OSD_Controler.ExistMultipleOSD())
                                             {
                                                 //default guid {99EACE23-6309-44AD-91F6-D55915D2D41E}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "99EACE23-6309-44AD-91F6-D55915D2D41E" : guid.ToString(), OSDType_Device.ScrollLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_Off"]);
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "99EACE23-6309-44AD-91F6-D55915D2D41E" : guid.ToString(), OSDType_Device.ScrollLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                                 await Task.Run(async () =>
                                                 {
                                                     await Task.Delay(1000);
@@ -18509,7 +18506,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             else
                                             {
                                                 //_OSD_Controler.ScrollLockOff_CloseWindow();
-                                                _OSD_Controler.ScrollLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                _OSD_Controler.ScrollLockOff_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             }
                                         }
 
@@ -18539,7 +18536,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             if (_OSD_Controler.ExistMultipleOSD())
                                             {
                                                 //default guid {288AB64E-4730-41C1-9681-A3DF934F1FDA}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "288AB64E-4730-41C1-9681-A3DF934F1FDA" : guid.ToString(), OSDType_Device.NumLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_On"]);
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "288AB64E-4730-41C1-9681-A3DF934F1FDA" : guid.ToString(), OSDType_Device.NumLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                                 await Task.Run(async () =>
                                                 {
                                                     await Task.Delay(1000);
@@ -18549,7 +18546,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             else
                                             {
                                                 //_OSD_Controler.NumLockOn_CloseWindow();
-                                                _OSD_Controler.NumLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                _OSD_Controler.NumLockOn_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             }
 
                                         }
@@ -18558,7 +18555,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             if (_OSD_Controler.ExistMultipleOSD())
                                             {
                                                 //default guid {41F5E9F5-0537-4404-BCD8-3612803F09BF}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "41F5E9F5-0537-4404-BCD8-3612803F09BF" : guid.ToString(), OSDType_Device.NumLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_Off"]);
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "41F5E9F5-0537-4404-BCD8-3612803F09BF" : guid.ToString(), OSDType_Device.NumLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                                 await Task.Run(async () =>
                                                 {
                                                     await Task.Delay(1000);
@@ -18568,7 +18565,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             else
                                             {
                                                 //_OSD_Controler.NumLockOff_CloseWindow();
-                                                _OSD_Controler.NumLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                _OSD_Controler.NumLockOff_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             }
                                         }
 
@@ -18589,7 +18586,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             if (_OSD_Controler.ExistMultipleOSD())
                                             {
                                                 //default guid {1B97890A-B1D9-4372-9B09-AC04893C9B39}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "1B97890A-B1D9-4372-9B09-AC04893C9B39" : guid.ToString(), OSDType_Device.CapsLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_On"]);
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "1B97890A-B1D9-4372-9B09-AC04893C9B39" : guid.ToString(), OSDType_Device.CapsLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                                 await Task.Run(async () =>
                                                 {
                                                     await Task.Delay(1000);
@@ -18599,7 +18596,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             else
                                             {
                                                 //_OSD_Controler.CapsLockOn_CloseWindow();
-                                                _OSD_Controler.CapsLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                _OSD_Controler.CapsLockOn_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             }
                                         }
                                         else
@@ -18607,7 +18604,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             if (_OSD_Controler.ExistMultipleOSD())
                                             {
                                                 //default guid {C88641DE-92EC-493F-A398-7CB664FDC563}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "C88641DE-92EC-493F-A398-7CB664FDC563" : guid.ToString(), OSDType_Device.CapsLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_Off"]);
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "C88641DE-92EC-493F-A398-7CB664FDC563" : guid.ToString(), OSDType_Device.CapsLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                                 await Task.Run(async () =>
                                                 {
                                                     await Task.Delay(1000);
@@ -18617,7 +18614,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             else
                                             {
                                                 //_OSD_Controler.CapsLockOff_CloseWindow();
-                                                _OSD_Controler.CapsLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                _OSD_Controler.CapsLockOff_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             }
                                         }
 
@@ -18637,7 +18634,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         //default guid {E746E618-1419-4F56-99D4-72D705AF9DA7}
                                         string tmpFingerPrintGuid = Guid.Empty.Equals(guid) ? "E746E618-1419-4F56-99D4-72D705AF9DA7" : guid.ToString();
-                                        _OSD_Controler.ShowMultipleOSD(tmpFingerPrintGuid, OSDType_Device.FingerPrint, oSDType_Op, string.Empty, LangHelper.Instance["Presence_detection_sensor_is_covered"]);
+                                        _OSD_Controler.ShowMultipleOSD(tmpFingerPrintGuid, OSDType_Device.FingerPrint, oSDType_Op, string.Empty, LangHelper.Instance["Presence_detection_sensor_is_covered"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                         await Task.Run(async () =>
                                         {
                                             await Task.Delay(5000);
@@ -18659,7 +18656,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     try
                                     {
                                         _OSD_Controler.EasyMemory_CloseWindow(null, null);
-                                        _OSD_Controler.EasyMemory_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                        _OSD_Controler.EasyMemory_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                     }
                                     catch (Exception ex)
                                     {
@@ -18687,7 +18684,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     try
                                     {
                                         Debug.WriteLine($"title={title},Content={Content}");
-                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.FW, oSDType_Op, title, Content);
+                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.FW, oSDType_Op, title, Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                         /* _OSD_Controler.Error_CloseWindow(null, null);
                                          _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
                                     }
@@ -18706,7 +18703,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {C563A281-26EB-4DCD-8642-EC7498108266}
-                                            _OSD_Controler.ShowMultipleOSD("C563A281-26EB-4DCD-8642-EC7498108266", OSDType_Device.QAM, oSDType_Op, LangHelper.Instance["QAM_OSD_Msg"], LangHelper.Instance["Go_to_Widget_Settings"]);
+                                            _OSD_Controler.ShowMultipleOSD("C563A281-26EB-4DCD-8642-EC7498108266", OSDType_Device.QAM, oSDType_Op, LangHelper.Instance["QAM_OSD_Msg"], LangHelper.Instance["Go_to_Widget_Settings"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             /*_OSD_Controler.QAMHotKeyWin_CloseWindow();
                                             _OSD_Controler.QAMHotKeyWin_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
                                             await Task.Run(async () =>
@@ -18742,7 +18739,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {1233BBAF-348B-4498-8051-DB0E53004AAB}
-                                            _OSD_Controler.ShowMultipleOSD("1233BBAF-348B-4498-8051-DB0E53004AAB", OSDType_Device.Keyboard, oSDType_Op, Content, "");
+                                            _OSD_Controler.ShowMultipleOSD("1233BBAF-348B-4498-8051-DB0E53004AAB", OSDType_Device.Keyboard, oSDType_Op, Content, "", ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
 
                                             /*_OSD_Controler.CollaborationNotAvailableWin_CloseWindow();
                                             _OSD_Controler.CollaborationNotAvailableWin_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/

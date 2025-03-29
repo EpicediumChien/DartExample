@@ -33,10 +33,6 @@ namespace DDPM.OSDs
                 /*this.WindowState = WindowState.Maximized;
                 this.Topmost = true;*/
                 this.ShowStringText.Text = showString;
-                this.Left = 1;
-                this.Top = 1;
-                this.Width = Screen.PrimaryScreen!.WorkingArea.Width;
-                this.Height = Screen.PrimaryScreen.WorkingArea.Height;
 
                 //PIMS-322110 250123 updated by Hwe
                 /*time = TimeSpan.FromMilliseconds(3000);

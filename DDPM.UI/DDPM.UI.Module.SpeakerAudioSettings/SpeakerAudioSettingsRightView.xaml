@@ -12,181 +12,181 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="655" d:DesignWidth="470">
-    <UserControl.Resources>
-        <ResourceDictionary>
+  <UserControl.Resources>
+    <ResourceDictionary>
 
-            <LinearGradientBrush x:Key="PressedBackground" StartPoint="0,0" EndPoint="1,0">
-                <GradientStop Color="#0672CB" Offset="0.0" />
-                <GradientStop Color="#0078D4" Offset="0.46" />
-                <GradientStop Color="#6E69CF" Offset="1.1831" />
-            </LinearGradientBrush>
-            <LinearGradientBrush x:Key="PressedBorderBrush" StartPoint="0,0" EndPoint="1,0">
-                <GradientStop Color="#55B4FD" Offset="0.0045" />
-                <GradientStop Color="#6E69CF" Offset="1.0" />
-            </LinearGradientBrush>
+      <LinearGradientBrush x:Key="PressedBackground" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#0672CB" Offset="0.0" />
+        <GradientStop Color="#0078D4" Offset="0.46" />
+        <GradientStop Color="#6E69CF" Offset="1.1831" />
+      </LinearGradientBrush>
+      <LinearGradientBrush x:Key="PressedBorderBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#55B4FD" Offset="0.0045" />
+        <GradientStop Color="#6E69CF" Offset="1.0" />
+      </LinearGradientBrush>
 
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <Grid x:Name="MainGrid" Width="470">
-            <!--Elsa 20250325 for PIMS-348388 change Margin="0,10,0,0" to Margin="-13,10,0,0"-->
-            <Border x:Name="MainBorder" CornerRadius="13" Width="470" Height="auto"  Margin="-13,10,0,0">
-                <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
-                    <Grid VerticalAlignment="Top" Margin="0,0,0,15">
-                        <!--Elsa 20250320 for PIMS-348395 change Margin="0,0,0,0" to Margin="0,0,0,-8" add AudioSettingsBorder and AudioSettingsStackPanel -->
-                        <Border x:Name="AudioSettingsBorder" CornerRadius="6" Width="438" Height="Auto" VerticalAlignment="Top">
-                            <StackPanel x:Name="AudioSettingsStackPanel" Orientation="Vertical">
-                                <Border x:Name="MainContentBorder" Style="{DynamicResource RightGroupBorderStyleForHeadset}" CornerRadius="6" Width="438" Height="auto" VerticalAlignment="Top" Margin="0,0,0,-8">
-                                    <StackPanel x:Name="MainContentStackPanel" Orientation="Vertical" Margin="0,20,0,10">
-                                        <Grid>
-                                            <!--Chewlin 20250108 change Width="200" to Width="280" Fix ES language Audio Setting Title Clipping issue(No Pims Number) -->
-                                            <UXControls:UXTextBlock x:Name="txtCaption" Style="{DynamicResource ModuleCaptionStyle}" Text="{Binding [AudioSettings], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="{DynamicResource TextBlock_ForegroundColor}" Height="28" Width="280" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,8,20,16" />
-                                        </Grid>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-                                            <!--Chewlin 20250107 for PIMS-334384 Add TextTrimming="CharacterEllipsis" Width="220" -->
-                                            <!--Chewlin 20250210 for PIMS-334384 Change Width="220" to MaxWidth="220" -->
-                                            <!--Elsa 20250319 for PIMS-348398 add FontWeight="SemiBold" -->
-                                            <UXControls:UXTextBlock x:Name="IntelligentMicNoiseCancellationText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [SpeakerAudioSettings.0], Source={x:Static lang:LangHelper.Instance}}" TextTrimming="CharacterEllipsis" MaxWidth="220" Margin="16,16,0,10" />
-                                            <Image x:Name="IntelligentMicNoiseCancellationImage" Grid.Column="1" Width="16" Height="16" Margin="8,8,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
-                                                <Image.ToolTip>
-                                                    <!--Chwewlin 20250210 fix Speakerphone AudioSetting ToolTip over the e DDPM page border issue  ADD Placement="Left" VerticalOffset="30" HorizontalOffset="30"-->
-                                                    <ToolTip Placement="Left" VerticalOffset="30" HorizontalOffset="30">
-                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <Border.Resources>
-                                                                <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                                            </Border.Resources>
-                                                            <StackPanel>
-                                                                <StackPanel Orientation="Horizontal">
-                                                                    <TextBlock Text="{Binding IntelligentMicNoiseCancellationToolTip}" />
-                                                                </StackPanel>
-                                                            </StackPanel>
-                                                        </Border>
-                                                    </ToolTip>
-                                                </Image.ToolTip>
-                                            </Image>
-                                            <!--Elsa 20250319 for PIMS-348398 add FontFamily="Roboto" -->
-                                            <UXControls:UXToggleSwitch x:Name="IntelligentMicNoiseCancellationToggleSwitch" FontFamily="Roboto" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=IntelligentMicNoiseCancellation_String, FallbackValue='OFF'}" IsChecked="{Binding Path=IntelligentMicNoiseCancellationStatus}" IsEnabled="{Binding Path=SupportedIntelligentMicNoiseCancellationToggleSwitch}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,8,20,0" />
-                                        </Grid>
-
-                                        <StackPanel x:Name="SubContentStackPanel" Orientation="Vertical">
-
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <!--Elsa 20250319 for PIMS-348398 add FontWeight="SemiBold"  -->
-                                                <UXControls:UXTextBlock x:Name="MuteSoundNotificationText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [SpeakerAudioSettings.1], Source={x:Static lang:LangHelper.Instance}}" Margin="16,16,0,10" />
-                                                <Image x:Name="MuteSoundNotificationImage" Grid.Column="1" Width="16" Height="16" Margin="8,8,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
-                                                    <Image.ToolTip>
-                                                        <!--Chwewlin 20250210 fix Speakerphone AudioSetting ToolTip over the DDPM page border issue  ADD Placement="Left" VerticalOffset="30" HorizontalOffset="30"-->
-                                                        <ToolTip Placement="Left" VerticalOffset="30" HorizontalOffset="30">
-                                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                                <Border.Resources>
-                                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                                                </Border.Resources>
-                                                                <StackPanel>
-                                                                    <StackPanel Orientation="Horizontal">
-                                                                        <TextBlock Text="{Binding MuteSoundNotificationToolTip}" />
-                                                                    </StackPanel>
-                                                                </StackPanel>
-                                                            </Border>
-                                                        </ToolTip>
-                                                    </Image.ToolTip>
-                                                </Image>
-                                                <!--Elsa 20250319 for PIMS-348398 add FontFamily="Roboto" -->
-                                                <UXControls:UXToggleSwitch x:Name="MuteSoundNotificationToggleSwitch" FontFamily="Roboto" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=MuteSoundNotification_String, FallbackValue='OFF'}" IsChecked="{Binding Path=MuteSoundNotificationStatus}" IsEnabled="{Binding Path=SupportedMuteSoundNotificationToggleSwitch}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,8,20,0" />
-                                            </Grid>
-
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <!--Elsa 20250319 for PIMS-348398 add FontWeight="SemiBold"  -->
-                                                <UXControls:UXTextBlock x:Name="VolumeAdjustmentToneText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="{Binding [SpeakerAudioSettings.2], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="16,16,0,0" />
-                                                <Image x:Name="VolumeAdjustmentToneImage" Grid.Column="1" Width="16" Height="16" Margin="8,8,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
-                                                    <Image.ToolTip>
-                                                        <!--Chwewlin 20250210 fix Speakerphone AudioSetting ToolTip over the DDPM page border issue  ADD Placement="Left" VerticalOffset="30" HorizontalOffset="30"-->
-                                                        <ToolTip Placement="Left" VerticalOffset="30" HorizontalOffset="30">
-                                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                                <Border.Resources>
-                                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                                                </Border.Resources>
-                                                                <StackPanel>
-                                                                    <StackPanel Orientation="Horizontal">
-                                                                        <TextBlock Text="{Binding VolumeAdjustmentToneToolTip}" />
-                                                                    </StackPanel>
-                                                                </StackPanel>
-                                                            </Border>
-                                                        </ToolTip>
-                                                    </Image.ToolTip>
-                                                </Image>
-                                                <!--Elsa 20250319 for PIMS-348398 add FontFamily="Roboto" -->
-                                                <UXControls:UXToggleSwitch x:Name="VolumeAdjustmentToneToggleSwitch" FontFamily="Roboto" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=VolumeAdjustmentTone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=VolumeAdjustmentToneStatus}" IsEnabled="{Binding Path=SupportedolumeAdjustmentToneToggleSwitch}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,16,20,0" />
-                                            </Grid>
-
-                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,16,0,8">
-                                                <!--Chewlin 20250108 for PIMS-334385 Change Height form 30 to 38-->
-                                                <UXControls:UXToggleSwitch x:Name="EveryLevelButton" BorderThickness="1.5" Width="203" Height="38" Margin="0,0,0,8" IsEnabled="{Binding ElementName=VolumeAdjustmentToneStatus}" IsChecked="{Binding IsEveryLevelChecked, Mode=TwoWay}">
-                                                    <UXControls:UXToggleSwitch.Template>
-                                                        <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                            <Border x:Name="EveryLevelButtonBorder" BorderThickness="1.5,1.5,0,1.5" CornerRadius="4,0,0,4">
-                                                                <Grid>
-                                                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                        <UXControls:UXTextBlock x:Name="EveryLevelButtonBorderTxt" Text="{Binding [SpeakerAudioSettings.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
-                                                                    </StackPanel>
-                                                                </Grid>
-                                                            </Border>
-                                                            <ControlTemplate.Triggers>
-                                                                <Trigger Property="IsChecked" Value="True">
-                                                                    <Setter TargetName="EveryLevelButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
-                                                                    <Setter TargetName="EveryLevelButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                                                                    <Setter TargetName="EveryLevelButtonBorderTxt" Property="Foreground" Value="White" />
-                                                                </Trigger>
-                                                            </ControlTemplate.Triggers>
-                                                        </ControlTemplate>
-                                                    </UXControls:UXToggleSwitch.Template>
-                                                </UXControls:UXToggleSwitch>
-                                                <!--Chewlin 20250108 for PIMS-334385 Change Height form 30 to 38-->
-                                                <UXControls:UXToggleSwitch x:Name="MinMaxOnlyButton" BorderThickness="1.5" Width="203" Height="38" Margin="0,0,0,8" IsEnabled="{Binding ElementName=VolumeAdjustmentToneStatus}" IsChecked="{Binding IsMinMaxOnlyChecked, Mode=TwoWay}">
-                                                    <UXControls:UXToggleSwitch.Template>
-                                                        <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                            <Border x:Name="MinMaxOnlyButtonBorder" BorderThickness="0,1.5,1.5,1.5" CornerRadius="0,4,4,0">
-                                                                <Grid>
-                                                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                        <!--Chewlin 20250108 for PIMS-334385 ADD TextWrapping="Wrap"-->
-                                                                        <UXControls:UXTextBlock x:Name="MinMaxOnlyButtonBorderTxt" Text="{Binding [SpeakerAudioSettings.4], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
-                                                                    </StackPanel>
-                                                                </Grid>
-                                                            </Border>
-                                                            <ControlTemplate.Triggers>
-                                                                <Trigger Property="IsChecked" Value="True">
-                                                                    <Setter TargetName="MinMaxOnlyButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
-                                                                    <Setter TargetName="MinMaxOnlyButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                                                                    <Setter TargetName="MinMaxOnlyButtonBorderTxt" Property="Foreground" Value="White" />
-                                                                </Trigger>
-                                                            </ControlTemplate.Triggers>
-                                                        </ControlTemplate>
-                                                    </UXControls:UXToggleSwitch.Template>
-                                                </UXControls:UXToggleSwitch>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </StackPanel>
-                                </Border>
-                            </StackPanel>
-                        </Border>
+      <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <Grid x:Name="MainGrid">
+      <!--Elsa 20250325 for PIMS-348388 change Margin="0,10,0,0" to Margin="-13,10,0,0"-->
+      <Border x:Name="MainBorder" CornerRadius="13" Width="470" Height="auto"  Margin="0,10,10,0">
+        <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
+          <Grid VerticalAlignment="Top" Margin="0,0,0,15">
+            <!--Elsa 20250320 for PIMS-348395 change Margin="0,0,0,0" to Margin="0,0,0,-8" add AudioSettingsBorder and AudioSettingsStackPanel -->
+            <Border x:Name="AudioSettingsBorder" CornerRadius="6" Width="438" Height="Auto" VerticalAlignment="Top">
+              <StackPanel x:Name="AudioSettingsStackPanel" Orientation="Vertical">
+                <Border x:Name="MainContentBorder" Style="{DynamicResource RightGroupBorderStyleForHeadset}" CornerRadius="6" Width="438" Height="auto" VerticalAlignment="Top" Margin="0,0,0,-8">
+                  <StackPanel x:Name="MainContentStackPanel" Orientation="Vertical" Margin="0,20,0,10">
+                    <Grid>
+                      <!--Chewlin 20250108 change Width="200" to Width="280" Fix ES language Audio Setting Title Clipping issue(No Pims Number) -->
+                      <UXControls:UXTextBlock x:Name="txtCaption" Style="{DynamicResource ModuleCaptionStyle}" Text="{Binding [AudioSettings], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="{DynamicResource TextBlock_ForegroundColor}" Height="28" Width="280" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,8,20,16" />
                     </Grid>
-                </StackPanel>
+                    <Grid>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                      </Grid.ColumnDefinitions>
+                      <!--Chewlin 20250107 for PIMS-334384 Add TextTrimming="CharacterEllipsis" Width="220" -->
+                      <!--Chewlin 20250210 for PIMS-334384 Change Width="220" to MaxWidth="220" -->
+                      <!--Elsa 20250319 for PIMS-348398 add FontWeight="SemiBold" -->
+                      <UXControls:UXTextBlock x:Name="IntelligentMicNoiseCancellationText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [SpeakerAudioSettings.0], Source={x:Static lang:LangHelper.Instance}}" TextTrimming="CharacterEllipsis" MaxWidth="220" Margin="16,16,0,10" />
+                      <Image x:Name="IntelligentMicNoiseCancellationImage" Grid.Column="1" Width="16" Height="16" Margin="8,8,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                        <Image.ToolTip>
+                          <!--Chwewlin 20250210 fix Speakerphone AudioSetting ToolTip over the e DDPM page border issue  ADD Placement="Left" VerticalOffset="30" HorizontalOffset="30"-->
+                          <ToolTip Placement="Left" VerticalOffset="30" HorizontalOffset="30">
+                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                              <Border.Resources>
+                                <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                              </Border.Resources>
+                              <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                  <TextBlock Text="{Binding IntelligentMicNoiseCancellationToolTip}" />
+                                </StackPanel>
+                              </StackPanel>
+                            </Border>
+                          </ToolTip>
+                        </Image.ToolTip>
+                      </Image>
+                      <!--Elsa 20250319 for PIMS-348398 add FontFamily="Roboto" -->
+                      <UXControls:UXToggleSwitch x:Name="IntelligentMicNoiseCancellationToggleSwitch" FontFamily="Roboto" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=IntelligentMicNoiseCancellation_String, FallbackValue='OFF'}" IsChecked="{Binding Path=IntelligentMicNoiseCancellationStatus}" IsEnabled="{Binding Path=SupportedIntelligentMicNoiseCancellationToggleSwitch}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,8,20,0" />
+                    </Grid>
+
+                    <StackPanel x:Name="SubContentStackPanel" Orientation="Vertical">
+
+                      <Grid>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="Auto" />
+                          <ColumnDefinition Width="Auto" />
+                          <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <!--Elsa 20250319 for PIMS-348398 add FontWeight="SemiBold"  -->
+                        <UXControls:UXTextBlock x:Name="MuteSoundNotificationText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [SpeakerAudioSettings.1], Source={x:Static lang:LangHelper.Instance}}" Margin="16,16,0,10" />
+                        <Image x:Name="MuteSoundNotificationImage" Grid.Column="1" Width="16" Height="16" Margin="8,8,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                          <Image.ToolTip>
+                            <!--Chwewlin 20250210 fix Speakerphone AudioSetting ToolTip over the DDPM page border issue  ADD Placement="Left" VerticalOffset="30" HorizontalOffset="30"-->
+                            <ToolTip Placement="Left" VerticalOffset="30" HorizontalOffset="30">
+                              <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                <Border.Resources>
+                                  <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                </Border.Resources>
+                                <StackPanel>
+                                  <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding MuteSoundNotificationToolTip}" />
+                                  </StackPanel>
+                                </StackPanel>
+                              </Border>
+                            </ToolTip>
+                          </Image.ToolTip>
+                        </Image>
+                        <!--Elsa 20250319 for PIMS-348398 add FontFamily="Roboto" -->
+                        <UXControls:UXToggleSwitch x:Name="MuteSoundNotificationToggleSwitch" FontFamily="Roboto" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=MuteSoundNotification_String, FallbackValue='OFF'}" IsChecked="{Binding Path=MuteSoundNotificationStatus}" IsEnabled="{Binding Path=SupportedMuteSoundNotificationToggleSwitch}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,8,20,0" />
+                      </Grid>
+
+                      <Grid>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="Auto" />
+                          <ColumnDefinition Width="Auto" />
+                          <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <!--Elsa 20250319 for PIMS-348398 add FontWeight="SemiBold"  -->
+                        <UXControls:UXTextBlock x:Name="VolumeAdjustmentToneText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="{Binding [SpeakerAudioSettings.2], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="16,16,0,0" />
+                        <Image x:Name="VolumeAdjustmentToneImage" Grid.Column="1" Width="16" Height="16" Margin="8,8,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                          <Image.ToolTip>
+                            <!--Chwewlin 20250210 fix Speakerphone AudioSetting ToolTip over the DDPM page border issue  ADD Placement="Left" VerticalOffset="30" HorizontalOffset="30"-->
+                            <ToolTip Placement="Left" VerticalOffset="30" HorizontalOffset="30">
+                              <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                <Border.Resources>
+                                  <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                </Border.Resources>
+                                <StackPanel>
+                                  <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding VolumeAdjustmentToneToolTip}" />
+                                  </StackPanel>
+                                </StackPanel>
+                              </Border>
+                            </ToolTip>
+                          </Image.ToolTip>
+                        </Image>
+                        <!--Elsa 20250319 for PIMS-348398 add FontFamily="Roboto" -->
+                        <UXControls:UXToggleSwitch x:Name="VolumeAdjustmentToneToggleSwitch" FontFamily="Roboto" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=VolumeAdjustmentTone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=VolumeAdjustmentToneStatus}" IsEnabled="{Binding Path=SupportedolumeAdjustmentToneToggleSwitch}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,16,20,0" />
+                      </Grid>
+
+                      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,16,0,8">
+                        <!--Chewlin 20250108 for PIMS-334385 Change Height form 30 to 38-->
+                        <UXControls:UXToggleSwitch x:Name="EveryLevelButton" BorderThickness="1.5" Width="203" Height="38" Margin="0,0,0,8" IsEnabled="{Binding ElementName=VolumeAdjustmentToneStatus}" IsChecked="{Binding IsEveryLevelChecked, Mode=TwoWay}">
+                          <UXControls:UXToggleSwitch.Template>
+                            <ControlTemplate TargetType="UXControls:UXToggleSwitch">
+                              <Border x:Name="EveryLevelButtonBorder" BorderThickness="1.5,1.5,0,1.5" CornerRadius="4,0,0,4">
+                                <Grid>
+                                  <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <UXControls:UXTextBlock x:Name="EveryLevelButtonBorderTxt" Text="{Binding [SpeakerAudioSettings.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                  </StackPanel>
+                                </Grid>
+                              </Border>
+                              <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                  <Setter TargetName="EveryLevelButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
+                                  <Setter TargetName="EveryLevelButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                  <Setter TargetName="EveryLevelButtonBorderTxt" Property="Foreground" Value="White" />
+                                </Trigger>
+                              </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                          </UXControls:UXToggleSwitch.Template>
+                        </UXControls:UXToggleSwitch>
+                        <!--Chewlin 20250108 for PIMS-334385 Change Height form 30 to 38-->
+                        <UXControls:UXToggleSwitch x:Name="MinMaxOnlyButton" BorderThickness="1.5" Width="203" Height="38" Margin="0,0,0,8" IsEnabled="{Binding ElementName=VolumeAdjustmentToneStatus}" IsChecked="{Binding IsMinMaxOnlyChecked, Mode=TwoWay}">
+                          <UXControls:UXToggleSwitch.Template>
+                            <ControlTemplate TargetType="UXControls:UXToggleSwitch">
+                              <Border x:Name="MinMaxOnlyButtonBorder" BorderThickness="0,1.5,1.5,1.5" CornerRadius="0,4,4,0">
+                                <Grid>
+                                  <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <!--Chewlin 20250108 for PIMS-334385 ADD TextWrapping="Wrap"-->
+                                    <UXControls:UXTextBlock x:Name="MinMaxOnlyButtonBorderTxt" Text="{Binding [SpeakerAudioSettings.4], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                  </StackPanel>
+                                </Grid>
+                              </Border>
+                              <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                  <Setter TargetName="MinMaxOnlyButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
+                                  <Setter TargetName="MinMaxOnlyButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                  <Setter TargetName="MinMaxOnlyButtonBorderTxt" Property="Foreground" Value="White" />
+                                </Trigger>
+                              </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                          </UXControls:UXToggleSwitch.Template>
+                        </UXControls:UXToggleSwitch>
+                      </StackPanel>
+                    </StackPanel>
+                  </StackPanel>
+                </Border>
+              </StackPanel>
             </Border>
-        </Grid>
-    </UXControls:UXScrollViewer>
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Grid>
+  </UXControls:UXScrollViewer>
 </UserControl>

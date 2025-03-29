@@ -28,10 +28,6 @@ namespace DDPM.OSDs
 
             /*this.WindowState = WindowState.Maximized;
             this.Topmost = true;*/
-            this.Left = 1;
-            this.Top = 1;
-            this.Width = Screen.PrimaryScreen!.WorkingArea.Width;
-            this.Height = Screen.PrimaryScreen.WorkingArea.Height;
 
             InvokeFadeOutAnimation();
 
