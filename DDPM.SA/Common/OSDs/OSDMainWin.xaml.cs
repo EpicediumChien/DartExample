@@ -67,10 +67,10 @@ namespace DDPM.OSDs
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //this.WindowState = WindowState.Maximized;
-            this.Left = 1;
+            /*this.Left = 1;
             this.Top = 1;
             this.Width = Screen.PrimaryScreen!.WorkingArea.Width;
-            this.Height = Screen.PrimaryScreen.WorkingArea.Height;
+            this.Height = Screen.PrimaryScreen.WorkingArea.Height;*/
         }
 
         public void ShowWindow()
@@ -82,7 +82,25 @@ namespace DDPM.OSDs
             }
             Show();
         }
+        public void adjustOSDWin((double, double, double, double) args)
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    this.Top = args.Item1 + 1;
+                    this.Left = args.Item2 + 1;
+                    this.Width = args.Item3 - 2;
+                    this.Height = args.Item4 - 2;
+                });
+                return;
+            }
+            this.Top = args.Item1 + 1;
+            this.Left = args.Item1 + 1;
+            this.Width = args.Item1 - 2;
+            this.Height = args.Item1 - 2;
 
+        }
         public void AddShowOSDWinInfo(OSDWinInfo oSDWinInfo)
         {
             if (!Dispatcher.CheckAccess())
