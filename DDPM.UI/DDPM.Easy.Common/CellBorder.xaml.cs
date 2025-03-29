@@ -45,14 +45,20 @@ namespace DDPM.Easy.Common
             this.Unloaded -= OnUnloaded;
 
             //Derek 2025/03/28
-            ReleaseBorderBrushResource();
+            ReleaseResource();
         }
 
-        private void ReleaseBorderBrushResource()
+        private void ReleaseResource()
         {
 
             SetValue(BorderBrushProperty, null);
             SetValue(BkBrushProperty, null);
+
+            Dictionary<int, CellAppData> _cellAppInfo = new Dictionary<int, CellAppData>();
+            foreach (var item in _cellAppInfo)
+            {
+                item.Value.Image.d
+            }
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -179,11 +185,12 @@ namespace DDPM.Easy.Common
             }
         }
 
+        //2025/03/29 Removed by Derek
         //Unused, do not use and UnitTest
-        public void AddChild(UIElement ele)
-        {
-            childGrid.Children.Add(ele);
-        }
+        //public void AddChild(UIElement ele)
+        //{
+        //    childGrid.Children.Add(ele);
+        //}
 
         #region Em Use
 
@@ -202,7 +209,7 @@ namespace DDPM.Easy.Common
                     string fileName = System.IO.Path.GetFileName(filePath);
 
                     // MemoryImage
-                    System.Drawing.Icon icon = System.Drawing.Icon.ExtractAssociatedIcon(filePath);
+                    System.Drawing.Icon? icon = System.Drawing.Icon.ExtractAssociatedIcon(filePath);
                     if (icon != null)
                     {
                         using (var iconStream = new System.IO.MemoryStream())
