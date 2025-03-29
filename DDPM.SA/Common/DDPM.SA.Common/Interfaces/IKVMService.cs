@@ -81,6 +81,7 @@ namespace DDPM.SA.Common
         Task SaveVCPcode(NKVMVCPValue value);
 
         Task<bool> GetOnNKVM(MonitorInfo monitorInfo, ISettingsManagerDev _SettingsPlugin);
+
         Task SetOnNKVM(MonitorInfo monitorInfo, bool ison, ISettingsManagerDev _SettingsPlugin);
     }
 }

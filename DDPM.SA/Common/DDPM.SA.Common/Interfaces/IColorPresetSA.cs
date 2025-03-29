@@ -1,12 +1,8 @@
-using DdmLibrary.Utility;
 using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VcpCore.Common;
-
-using DdmLibrary;
-
 
 //using VcpCore.Common;
 //using VcpCore.Interfaces;
@@ -40,14 +36,14 @@ namespace DDPM.SA.Common
 
         //Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, ISettingsManagerDev _SettingsPlugin = null);
         Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, ISettingsManagerDev _SettingsPlugin = null, int colorPresetRunType = 0);
-        //Task<List<ColorPresetSettings>> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, List<ColorPresetSettings> config);        
+
+        //Task<List<ColorPresetSettings>> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, List<ColorPresetSettings> config);
 
         void SetAppIconFolder(string folder_path);
 
         Task<Dictionary<string, InstalledAppInfo>> GetInstalledAppsList(bool isReload = false);
 
         Task<IIC_Metadata> DownloadICCData(string modelName, string displayName, bool blICCProfile = false, string savelPath = "", bool UpdateMetadata = false);
-
 
         Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name);
 
@@ -63,19 +59,24 @@ namespace DDPM.SA.Common
 
         Task<string> Sync_ColorPresetName(MonitorInfo monitorInfo, string ColorPreset_Name);
 
-        Task<bool> Migration(DdmLibrary.Utility.ColorPreset colorPresetSetting_Migration, string Model, string ServiceTag, ISettingsManagerDev _SettingsPlugin, int ColorForManual_VCPE2Code_value =0);
+        Task<bool> Migration(DdmLibrary.Utility.ColorPreset colorPresetSetting_Migration, string Model, string ServiceTag, ISettingsManagerDev _SettingsPlugin, int ColorForManual_VCPE2Code_value = 0);
 
         Task<bool> Import(MonitorInfo MonitorInfo, ColorPresetSettings colorPresetSetting_Import, ISettingsManagerDev _SettingsPlugin);
 
         Task<ColorPresetSettings> Export(MonitorInfo MonitorInfo, ISettingsManagerDev _SettingsPlugin);
 
         Task<bool> SyncNightlightStatus();
+
         Task<bool> CheckNightLightStatus();
+
         Task<bool> CheckNightLightScheduler();
+
         Task<bool> CheckColorICCStatus();
 
         Task<bool> StopRegistryMonitor_NightLight();
+
         Task<bool> StopRegistryMonitor_NightLightScheduler();
+
         Task<bool> StopRegistryMonitor_ICC();
 
         #endregion public for  Color Preset Plugin
