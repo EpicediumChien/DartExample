@@ -49,7 +49,7 @@ namespace DDPM.QAM
             try
             {
                 logger = log;
-                List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA!.GetDevices().Result.deviceInfo;
+                List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA.GetDevices().Result.deviceInfo;
 
                 if (deviceInfos != null && deviceInfos.Count > 0)
                 {
@@ -122,7 +122,16 @@ namespace DDPM.QAM
 
                         for (int k = 0; k < CurrentDeviceInfo!.FOVValues.Length; k++)
                         {
-                            _fOVs[k] = int.Parse(CurrentDeviceInfo!.FOVValues[k]);
+                            if (int.TryParse(CurrentDeviceInfo!.FOVValues[k], out int parsedValue))
+                            {
+                                _fOVs[k] = parsedValue;
+                            }
+                            else
+                            {
+                                DdpmCommonHelper.DeviceManagerSA?.WriteLog($"Failed to parse FOV value: {CurrentDeviceInfo.FOVValues[k]}");
+                            }
+
+                            //_fOVs[k] = int.Parse(CurrentDeviceInfo!.FOVValues[k]);
                         }
                     }
                 }
@@ -130,7 +139,7 @@ namespace DDPM.QAM
                 //Derek 1210
                 if (!isQAMPageViewModel_UIUpdateNotifyExist)
                 {
-                    DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += QAMPageViewModel_UIUpdateNotify;
+                    DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify += QAMPageViewModel_UIUpdateNotify;
                     isQAMPageViewModel_UIUpdateNotifyExist = true;
 
                     LogMsg($"Add event QAMPageViewModel_UIUpdateNotify, isQAMPageViewModel_UIUpdateNotifyExist = {isQAMPageViewModel_UIUpdateNotifyExist}");
@@ -261,14 +270,14 @@ namespace DDPM.QAM
                         //add event by leo 2025/01/14 end
 
                         case "Webcam_ZoomChanged":
-                        { //leo fixed 2025/01/14
-                            if (int.TryParse(eventMsg.NewValue, out currentValue))
-                            {
-                                isStatusChangeByDDPM = true;
-                                ZoomValue = currentValue;
+                            { //leo fixed 2025/01/14
+                                if (int.TryParse(eventMsg.NewValue, out currentValue))
+                                {
+                                    isStatusChangeByDDPM = true;
+                                    ZoomValue = currentValue;
+                                }
                             }
-                        }
-                        break;
+                            break;
 
                         case "Webcam_FieldOfViewChanged":
                             if (int.TryParse(eventMsg.NewValue, out currentValue))
