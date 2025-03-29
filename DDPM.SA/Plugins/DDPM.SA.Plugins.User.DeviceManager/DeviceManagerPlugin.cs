@@ -872,21 +872,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #region ColorPreset implementation
-
         public Task<DDPM.SA.Common.IIC_Metadata> DownloadICCData(MonitorInfo m, bool blICCProfile = false, string savelPath = "")
         {
-            DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
-
-            if (_ColorPresetPlugin == null)
-            {
-                writelog("null _ColorPresetPlugin in [DownloadICCData]");
-                return Task.FromResult(_ICC_Metadata);
-            }
-            else
-            {
-                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m.modelName, m.DisplayName, blICCProfile, savelPath).Result;
-            }
-
+            DDPM.SA.Common.IIC_Metadata _ICC_Metadata = _ColorProfileHelper?.DownloadICCData(m, blICCProfile, savelPath).Result ?? new IIC_Metadata();
             return Task.FromResult(_ICC_Metadata);
         }
 
@@ -894,6 +882,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             //Log.Info($"ReadColorPreset requested ...");
             writelog("ColorPresetPlugin received ReadColorPreset requested ...");
+            bool SmartHDR_ON = GetHDRStatus(m).Result;
+            MonitorPresetCache mpc = _ColorProfileHelper?.GetPresetListFromCache(m, SmartHDR_ON);
+            if (mpc != null)
+            {
+                return Task.FromResult(mpc.preset_list);
+            }
+
             List<string> multiColorPreset = new List<string>();
             // 20240619 jim add check
             if (_SupportedColorPreset != null)
@@ -915,9 +910,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         // 20240619 jim add one retry
                         if (string.IsNullOrEmpty(VCP_capbility))
-                            VCP_capbility = GetVCPCapabilities(m).Result;
-
-                        bool SmartHDR_ON = GetHDRStatus(m).Result;
+                            VCP_capbility = GetVCPCapabilities(m).Result;                        
 
                         _SupportedColorPreset = _ColorPresetPlugin.ReadColorPreset(m, VCP_capbility, SmartHDR_ON).Result;
                         //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
@@ -928,6 +921,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 }
             }
+
+            //add to cache
+            if(multiColorPreset.Count > 0)
+                _ColorProfileHelper?.AddPresetListToCache(m, SmartHDR_ON, multiColorPreset);
 
             return Task.FromResult(multiColorPreset);
         }

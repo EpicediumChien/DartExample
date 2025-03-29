@@ -197,7 +197,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _IDeviceManagerPluginCondition = _deviceManager as IFrameworkPluginConditionNotification;
 
                 if (_IDeviceManagerPluginCondition == null)
+                {
+                    _log.Error($"{nameof(PluginManager_PluginsStarted)} _IDeviceManagerPluginCondition is null");
                     return;
+                }
 
                 // Subscribe to plugin changes
                 _IDeviceManagerPluginCondition.PluginConditionChangeHandler += _IDeviceManagerPluginCondition_PluginConditionChangeHandler;
@@ -209,6 +212,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 if (UserId == string.Empty || UserId == null)
                     UserId = WTSFunction.DirectGetUserID(_log);
+
+                _log.Info($"{nameof(PluginManager_PluginsStarted)} out");
             }
             catch (Exception ex)
             {
@@ -220,7 +225,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private async Task GetCurrentDeviceManagerPluginPluginCondition()
         {
             await _lock.WaitAsync(CancellationToken);
-            _log.Trace($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} lock");
+            _log.Info($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} lock");
             try
             {
                 if (_IDeviceManagerPluginCondition == null)
@@ -378,6 +383,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         _log.Info($"Return from CheckIfNeedImportSetting_Display()");
                     }
                 }
+                else if(pluginCondition is PluginStartedCondition)
+                {
+                    _log.Info($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} plugin is in {nameof(PluginStartedCondition)}");
+                }
+                else if (pluginCondition is PluginStoppedCondition)
+                {
+                    _log.Info($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} plugin is in {nameof(PluginStoppedCondition)}");
+                }
+                _log.Info($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} lock out");
             }
             catch (Exception ex)
             {
