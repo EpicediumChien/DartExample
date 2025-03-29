@@ -449,9 +449,14 @@
     </Style>
     <!--BasedOn to implement self-->
     <Style TargetType="UXControls:UXTextBox" BasedOn="{StaticResource {x:Type UXControls:UXTextBox}}">
-        <Setter Property="Background" Value="{DynamicResource DefaultTheme_TbBkColor}" />
+        <!-- Robert_Lin 2025-3-29 below properies should be removed -->
+        <!--<Setter Property="Background" Value="{DynamicResource DefaultTheme_TbBkColor}" />
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TbFgColor}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource DefaultTheme_TbBdColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DefaultTheme_TbBdColor}" />-->
+        <!-- Robert_Lin, below properties should be added, but seems UXTextBox not supported. -->
+        <Setter Property="SelectionTextBrush" Value="#F5F6F7"/>
+        <Setter Property="SelectionBrush" Value="#0063B8"/>
+        <!--<Setter Property="SelectionOpacity" Value="0.8"/>-->
     </Style>
     <Style TargetType="Path">
         <Setter Property="Fill" Value="{DynamicResource DefaultTheme_PathColor}" />
