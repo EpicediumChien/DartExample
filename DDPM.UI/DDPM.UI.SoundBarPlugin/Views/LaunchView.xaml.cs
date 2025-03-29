@@ -25,13 +25,13 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
     {
         private readonly SoundBarViewModel? _vm;
 
-        private readonly int[] _rightFrameWidth = new int[] { 0, 483, 483, 483 };
+        private readonly int[] _rightFrameWidth = new int[] { 0, 480, 480, 480 };
         //private readonly string Restore = "Restore to default";
         //private readonly string Unpair = "Unpair";
         private readonly string AudioPreset = Strings.SoundBarAudioPreset;
         private readonly string AudioSettings = Strings.SoundBarAudioSettings;
         private readonly string Interactions = Strings.SoundBarInteractions;
-        
+
         private readonly Style ConnectionStyle1;
         private readonly Style ConnectionStyle2;
         private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
@@ -259,8 +259,9 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] OnVbarItemClicked ... in ");
             try
             {
-                if (newItem.Id == _vm!.VbarSelectedIndex) { return; }
-                if(_vm.Model == "SB522A" && newItem.Id == 2)
+                if (newItem.Id == _vm!.VbarSelectedIndex)
+                { return; }
+                if (_vm.Model == "SB522A" && newItem.Id == 2)
                 {
                     _vm.ChangeImage(_vm.Model, "NoLight");
                 }
@@ -431,7 +432,8 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         {
             try
             {
-                if (_vm!.VbarSelectedIndex == -1) { return; }
+                if (_vm!.VbarSelectedIndex == -1)
+                { return; }
                 _vm.UpdateResetToDefault();
                 if (!_vm.IsRestoreEnable)
                 {
@@ -445,7 +447,8 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                 _vm.RightFrameWidthTo = 0;
                 _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
                 InvokeGotoTwoViewModeAnimation();
-                if (_vm.VbarSelectedIndex == 0) { InvokeEnlargeAnimation(); }
+                if (_vm.VbarSelectedIndex == 0)
+                { InvokeEnlargeAnimation(); }
                 _vm.VbarSelectedIndex = -1;
                 _vm.SetLadningMode(true);
                 _vm.SelectVBar();

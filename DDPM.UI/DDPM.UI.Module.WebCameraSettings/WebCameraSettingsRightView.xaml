@@ -44,8 +44,7 @@
     </ResourceDictionary>
   </UserControl.Resources>
   <Grid Margin="0,0,0,15">
-        <!--Elsa 20250325 for PIMS-348388 change Margin="0,10,0,0" to Margin="-13,10,0,0"-->
-        <Border CornerRadius="13" Margin="-13,10,0,0" Width="470">
+    <Border CornerRadius="13" Margin="0,10,10,0" Width="470">
       <Border.Height>
         <MultiBinding Converter="{StaticResource HeightConverter}">
           <Binding Path="Height" RelativeSource="{RelativeSource AncestorType=Grid}" />

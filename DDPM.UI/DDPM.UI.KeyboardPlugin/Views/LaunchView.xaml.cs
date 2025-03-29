@@ -26,7 +26,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
     public partial class LaunchView : UserControl
     {
         private readonly KeyboardViewModel? _vm;
-        private readonly int[] _rightFrameWidth = { 0, 333, 533, 533 };
+        private readonly int[] _rightFrameWidth = { 0, 330, 530, 530 };
         private readonly Style ConnectionStyle1;
         private readonly Style ConnectionStyle2;
         //private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));

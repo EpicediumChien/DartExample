@@ -34,27 +34,55 @@ namespace DDPM.SA.Common.Defer
         public static void removeItems(int count)
         {
             listFwJob.RemoveRange(0, count);
-            writeToFile();
+            try
+            {
+                writeToFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("writeToFile() exception: " + ex.ToString());
+            }
         }
 
         public static void removeItem(string item)
         {
             listFwJob.Remove(item);
-            writeToFile();
+            try
+            {
+                writeToFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("writeToFile() exception: " + ex.ToString());
+            }
         }
 
         public static void addToSchedule(DeferItem item)
         {
             //loadFile();
             listFwJob.Add(item.ToString());
-            writeToFile();
+            try
+            {
+                writeToFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("writeToFile() exception: " + ex.ToString());
+            }
         }
 
         public static void addToSchedule(string item)
         {
             //loadFile();
             listFwJob.Add(item);
-            writeToFile();
+            try
+            {
+                writeToFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("writeToFile() exception: " + ex.ToString());
+            }
         }
 
         // Add Error handling.
@@ -120,7 +148,14 @@ namespace DDPM.SA.Common.Defer
                 }
             }
 
-            writeToFile();
+            try
+            {
+                writeToFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("writeToFile() exception: " + ex.ToString());
+            }
 
             return deferItems;
         }
@@ -179,7 +214,14 @@ namespace DDPM.SA.Common.Defer
                 }
             }
 
-            writeToFile();
+            try
+            {
+                writeToFile();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("writeToFile() exception: " + ex.ToString());
+            }
 
             return deferItems;
 
@@ -222,12 +264,17 @@ namespace DDPM.SA.Common.Defer
 
         private static void writeToFile()
         {
-
+            string info = string.Empty;
             try
             {
                 if (!(System.IO.Directory.Exists(FILE_PATH)))
                 {
                     System.IO.Directory.CreateDirectory(FILE_PATH);
+                }
+                //add @ 20250328 stephen
+                if (!DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(FILE_PATH, out info))
+                {
+                    info = ("[writeToFile] SetFolderPermissions_UserReadAndExecute failed: " + info);
                 }
             }
             catch (Exception e)
@@ -235,9 +282,15 @@ namespace DDPM.SA.Common.Defer
                 Console.WriteLine("CreateDirectory Exception: " + e.Message);
             }
 
-            string info = string.Empty;
-            bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listFwJob).ToString(), (FILE_PATH + FILE_NAME), out info);
-            Console.WriteLine(write);
+            try
+            {
+                bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listFwJob).ToString(), (FILE_PATH + FILE_NAME), out info);
+                Console.WriteLine(write);
+            }
+            catch (Exception e) {
+                Console.WriteLine("SetJsonContentFromSerializedString Exception: " + e.Message);
+                throw( new Exception("SetJsonContentFromSerializedString Exception:" + e.Message));
+            }
 
             //File.WriteAllLines(FILE_PATH + FILE_NAME, listDefer.ToArray());
         }

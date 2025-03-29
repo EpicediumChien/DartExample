@@ -26,7 +26,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
     {
         private readonly HeadsetViewModel? _vm;
 
-        private readonly int[] _rightFrameWidth = new int[] { 0, 533, 533, 533 };
+        private readonly int[] _rightFrameWidth = new int[] { 0, 530, 530, 530 };
         private readonly string AudioSettings = Strings.HeadsetAudioSettings;
         private readonly string AutomatedActions = Strings.HeadsetAutomatedActions;
         private readonly string DeviceSettings = Strings.HeadsetDeviceSettings;
@@ -118,11 +118,11 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         }
 
         private void HeadsetGroupChanged(object? sender, EventArgs e)
-        {           
-                BuildModuleGroups(_vm.SupportedAnswerCalls);
-                vbarList.ItemsSource = null;
-                vbarList.ItemsSource = _vm!.VbarItems;
-                DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView HeadsetGroupChanged SupportedAnswerCalls false");
+        {
+            BuildModuleGroups(_vm.SupportedAnswerCalls);
+            vbarList.ItemsSource = null;
+            vbarList.ItemsSource = _vm!.VbarItems;
+            DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] LaunchView HeadsetGroupChanged SupportedAnswerCalls false");
         }
 
         private void BtnRestoreChanged(object? sender, EventArgs e)
@@ -350,7 +350,8 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] OnVbarItemClicked ... in");
             try
             {
-                if (newItem.Id == _vm!.VbarSelectedIndex) { return; }
+                if (newItem.Id == _vm!.VbarSelectedIndex)
+                { return; }
 
                 if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm.VbarSelectedIndex + 1])
                 {
@@ -522,7 +523,8 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] Mainframe_MouseLeftButtonDown ... in");
             try
             {
-                if (_vm!.VbarSelectedIndex == -1) { return; }
+                if (_vm!.VbarSelectedIndex == -1)
+                { return; }
                 _vm.UpdateResetToDefault();
                 if (_vm!.ConnectionType != "WiredAudio")
                 {
@@ -539,7 +541,8 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 _vm.RightFrameWidthTo = 0;
                 _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
                 InvokeGotoTwoViewModeAnimation();
-                if (_vm.VbarSelectedIndex == 0) { InvokeEnlargeAnimation(); }
+                if (_vm.VbarSelectedIndex == 0)
+                { InvokeEnlargeAnimation(); }
                 _vm.VbarSelectedIndex = -1;
                 _vm.SetLadningMode(true);
                 _vm.SelectVBar();
@@ -610,11 +613,11 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     string PairedHostName1 = string.Empty;
                     string PairedHostName2 = string.Empty;
                     if (string.IsNullOrEmpty(_vm.PairedHostName1))
-                        PairedHostName1 =  DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
+                        PairedHostName1 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
                     else
                         PairedHostName1 = _vm.PairedHostName1; //DTH
                     if (string.IsNullOrEmpty(_vm.PairedHostName2))
-                        PairedHostName2 =  DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result ; //DTP
+                        PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
                     else
                         PairedHostName2 = _vm.PairedHostName2;  //DTH
 

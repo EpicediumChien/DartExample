@@ -123,9 +123,12 @@ namespace DDPM.SA.Plugins.CMAManager
             return responseString;
 
         }
-        // modified @ 10150326 stephen
+        // modified @ 20250326 stephen
         public string writeToFile(string guid, string json)
         {
+            if (json == null) {
+                return "parameter error: json string is null";
+            }
 
             try
             {
@@ -133,20 +136,36 @@ namespace DDPM.SA.Plugins.CMAManager
                 {
                     System.IO.Directory.CreateDirectory(FILE_PATH);
                 }
+
+                // add @ 20250327 stephen
+                if (!DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(FILE_PATH, out errorMsg))
+                {
+                    return ("[writeToFile] SetFolderPermissions_UserReadAndExecute failed: " + errorMsg);
+                }
             }
             catch (Exception e)
             {
                 return ("CreateDirectory Exception: " + e.Message);
             }
 
-            // add @ 20250220 stephen : fix string tio an object
+/*            // add @ 20250220 stephen : fix string to an object
             listResponse = new List<string>();
-            listResponse.Add(json);
+            listResponse.Add(json);*/
 
-            //string info = string.Empty;
-            bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listResponse).ToString(), (FILE_PATH + guid + ".txt"), out errorMsg);
+            try
+            {
+                List<string> listResponse = new List<string> { json };
+                string jsonString = JToken.FromObject(listResponse).ToString();
+                bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(jsonString, System.IO.Path.Combine(FILE_PATH, guid + ".txt"), out errorMsg);
+                return "DDPMFileSecurity.SetJsonContentFromSerializedString = " + write + " ; " + errorMsg;
 
-            return ("DDPMFileSecurity.SetJsonContentFromSerializedString = " + write + " ; " + errorMsg);
+/*                bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listResponse).ToString(), (FILE_PATH + guid + ".txt"), out errorMsg);
+
+                return ("DDPMFileSecurity.SetJsonContentFromSerializedString = " + write + " ; " + errorMsg);*/
+            }
+            catch (Exception e) {
+                return ("Serialization or File Write Exception: " + e.ToString());
+            }
         }
         /*
          
@@ -626,7 +645,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 response = response + "\"marketingname\":\"" + marketingname + "\",";
                 response = response + "\"serialnumber\":\"" + serialnumber + "\",";
                 response = response + "\"fwversion\":\"" + fwversion + "\",";
-                response = response + "\"fwupdateresponse\":[\"" + fwupdateresponse + "\"]";
+                response = response + "\"fwupdateresponse\":[" + fwupdateresponse + "]";
                 response = response + "}";
 
 

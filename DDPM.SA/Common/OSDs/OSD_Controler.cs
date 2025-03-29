@@ -4,6 +4,7 @@ using Dell.TechHub.Sdk.Common.Utilities.Extensions;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Media.Media3D;
 
 namespace DDPM.OSDs
 {
@@ -65,7 +66,7 @@ namespace DDPM.OSDs
 
         // especially for show the OSD with an "close" button
         private OSDMainWin? OSDMainWin = null;
-        public void ShowMultipleOSD(string guid, OSDType_Device oSDType_Device, OSDType_Op oSDType_Op, string title, string content)
+        public void ShowMultipleOSD(string guid, OSDType_Device oSDType_Device, OSDType_Op oSDType_Op, string title, string content, (double, double, double, double) args)
         {
             lock (osdLock)
             {
@@ -86,6 +87,7 @@ namespace DDPM.OSDs
                         ShowStringContent = content
                     });
                 }
+                OSDMainWin.adjustOSDWin(args);
                 Debug.WriteLine($"OSDMainWin!.OSDWins.Count========{OSDMainWin!.OSDWins.Count}");
                 OSDMainWin.ShowWindow();
             }
@@ -135,12 +137,14 @@ namespace DDPM.OSDs
             }
 
         }
-        public void Mute_ShowWindow(string Content, double Top, double Left)
+        public void Mute_ShowWindow(string Content, (double, double, double, double) args)
         {
             MuteWinx = new MuteWin(Content);
             MuteWinx.Closed += Mute_CloseWindow;
-            MuteWinx.Top = Top;
-            MuteWinx.Left = Left;
+            MuteWinx.Top = args.Item1 + 1;
+            MuteWinx.Left = args.Item2 + 1;
+            MuteWinx.Width = args.Item3 - 2;
+            MuteWinx.Height = args.Item4 - 2;
             MuteWinx.ShowWindow();
         }
 
@@ -154,12 +158,14 @@ namespace DDPM.OSDs
             }
         }
 
-        public void UnMute_ShowWindow(string Content, double Top, double Left)
+        public void UnMute_ShowWindow(string Content, (double, double, double, double) args)
         {
             UnMuteWinx = new UnMuteWin(Content);
             UnMuteWinx.Closed += UnMute_CloseWindow;
-            UnMuteWinx.Top = Top;
-            UnMuteWinx.Left = Left;
+            UnMuteWinx.Top = args.Item1 + 1;
+            UnMuteWinx.Left = args.Item2 + 1;
+            UnMuteWinx.Width = args.Item3 - 2;
+            UnMuteWinx.Height = args.Item4 - 2;
             UnMuteWinx.ShowWindow();
         }
 
@@ -173,13 +179,15 @@ namespace DDPM.OSDs
             }
         }
 
-        public void HeadsetBatteryLow_ShowWindow(string Content, double Top, double Left)
+        public void HeadsetBatteryLow_ShowWindow(string Content, (double, double, double, double) args)
         {
             HeadsetBatteryLowIWinx = new HeadsetBatteryLowIWin(Content);
             HeadsetBatteryLowIWinx.Closed += HeadsetBatteryLow_CloseWindow;
 
-            HeadsetBatteryLowIWinx.Top = Top;
-            HeadsetBatteryLowIWinx.Left = Left;
+            HeadsetBatteryLowIWinx.Top = args.Item1 + 1;
+            HeadsetBatteryLowIWinx.Left = args.Item2 + 1;
+            HeadsetBatteryLowIWinx.Width = args.Item3 - 2;
+            HeadsetBatteryLowIWinx.Height = args.Item4 - 2;
             HeadsetBatteryLowIWinx.ShowWindow();
         }
         public void HeadsetBatteryLow_CloseWindow(object? sender, EventArgs e)
@@ -193,13 +201,15 @@ namespace DDPM.OSDs
             }
         }
 
-        public void KeybordBatteryLow_ShowWindow(string Content, double Top, double Left)
+        public void KeybordBatteryLow_ShowWindow(string Content, (double, double, double, double) args)
         {
             KeybordBatteryLowIWinx = new KeybordBatteryLowIWin(Content);
             KeybordBatteryLowIWinx.Closed += KeybordBatteryLow_CloseWindow;
 
-            KeybordBatteryLowIWinx.Top = Top;
-            KeybordBatteryLowIWinx.Left = Left;
+            KeybordBatteryLowIWinx.Top = args.Item1 + 1;
+            KeybordBatteryLowIWinx.Left = args.Item2 + 1;
+            KeybordBatteryLowIWinx.Width = args.Item3 - 2;
+            KeybordBatteryLowIWinx.Height = args.Item4 - 2;
             KeybordBatteryLowIWinx.ShowWindow();
         }
 
@@ -214,13 +224,15 @@ namespace DDPM.OSDs
             }
         }
 
-        public void MouseBatteryLow_ShowWindow(string Content, double Top, double Left)
+        public void MouseBatteryLow_ShowWindow(string Content, (double, double, double, double) args)
         {
             MouseBatteryLowIWinx = new MouseBatteryLowIWin(Content);
             MouseBatteryLowIWinx.Closed += MouseBatteryLow_CloseWindow;
 
-            MouseBatteryLowIWinx.Top = Top;
-            MouseBatteryLowIWinx.Left = Left;
+            MouseBatteryLowIWinx.Top = args.Item1 + 1;
+            MouseBatteryLowIWinx.Left = args.Item2 - 1;
+            MouseBatteryLowIWinx.Width = args.Item3 - 2;
+            MouseBatteryLowIWinx.Height = args.Item4 - 2;
             MouseBatteryLowIWinx.ShowWindow();
         }
 
@@ -235,13 +247,15 @@ namespace DDPM.OSDs
             }
         }
 
-        public void StylusBatteryLow_ShowWindow(string Content, double Top, double Left)
+        public void StylusBatteryLow_ShowWindow(string Content, (double, double, double, double) args)
         {
             StylusBatteryLowIWin = new StylusBatteryLowIWin(Content);
             StylusBatteryLowIWin.Closed += StylusBatteryLow_CloseWindow;
 
-            StylusBatteryLowIWin.Top = Top;
-            StylusBatteryLowIWin.Left = Left;
+            StylusBatteryLowIWin.Top = args.Item1 + 1;
+            StylusBatteryLowIWin.Left = args.Item2 + 1;
+            StylusBatteryLowIWin.Width = args.Item3 - 2;
+            StylusBatteryLowIWin.Height = args.Item4 - 2;
             StylusBatteryLowIWin.ShowWindow();
         }
 
@@ -256,12 +270,14 @@ namespace DDPM.OSDs
             }
         }
 
-        public void StartRecording_ShowWindow(string Content, double Top, double Left)
+        public void StartRecording_ShowWindow(string Content, (double, double, double, double) args)
         {
             StartRecordingWinx = new StartRecordingWin(Content);
             StartRecordingWinx.Closed += StartRecording_CloseWindow;
-            StartRecordingWinx.Top = Top;
-            StartRecordingWinx.Left = Left;
+            StartRecordingWinx.Top = args.Item1 + 1;
+            StartRecordingWinx.Left = args.Item2 + 1;
+            StartRecordingWinx.Width = args.Item3 - 2;
+            StartRecordingWinx.Height = args.Item2 - 2;
             StartRecordingWinx.ShowWindow();
         }
 
@@ -275,12 +291,15 @@ namespace DDPM.OSDs
             }
         }
 
-        public void DisplayChanged_ShowWindow(string Content, double Top, double Left)
+        public void DisplayChanged_ShowWindow(string Content, (double, double, double, double) args)
         {
             DisplayChangedWinx = new DisplayChangedWin(Content);
             DisplayChangedWinx.Closed += DisplayChanged_CloseWindow;
-            DisplayChangedWinx.Top = Top;
-            DisplayChangedWinx.Left = Left;
+            DisplayChangedWinx.Top = args.Item1 + 1;
+            DisplayChangedWinx.Left = args.Item2 + 1;
+            DisplayChangedWinx.Width = args.Item3 - 2;
+            DisplayChangedWinx.Height = args.Item4 - 2;
+
             DisplayChangedWinx.ShowWindow();
         }
 
@@ -294,12 +313,14 @@ namespace DDPM.OSDs
             }
         }
 
-        public void WalkAwayLock_ShowWindow(string Content, double Top, double Left)
+        public void WalkAwayLock_ShowWindow(string Content, (double, double, double, double) args)
         {
             WalkAwayLockWinx = new WalkAwayLockWin(Content);
             WalkAwayLockWinx.Closed += WalkAwayLock_CloseWindow;
-            WalkAwayLockWinx.Top = Top;
-            WalkAwayLockWinx.Left = Left;
+            WalkAwayLockWinx.Top = args.Item1 + 1;
+            WalkAwayLockWinx.Left = args.Item2 + 1;
+            WalkAwayLockWinx.Width = args.Item3 - 2;
+            WalkAwayLockWinx.Height = args.Item4 - 2;
             WalkAwayLockWinx.ShowWindow();
         }
 
@@ -313,7 +334,7 @@ namespace DDPM.OSDs
             }
         }
 
-        public void ScrollLockOn_ShowWindow(double Top, double Left)
+        public void ScrollLockOn_ShowWindow((double, double, double, double) args)
         {
             try
             {
@@ -328,8 +349,10 @@ namespace DDPM.OSDs
                 ScrollLockOnWinx = new ScrollLockOnWin();
                 ScrollLockOnWinx.Closed += ScrollLockOnWinx_Closed;
 
-                ScrollLockOnWinx.Top = Top;
-                ScrollLockOnWinx.Left = Left;
+                ScrollLockOnWinx.Top = args.Item1 + 1;
+                ScrollLockOnWinx.Left = args.Item2 + 1;
+                ScrollLockOnWinx.Width = args.Item3 - 2;
+                ScrollLockOnWinx.Height = args.Item4 - 2;
                 ScrollLockOnWinx.ShowWindow();
             }
             catch (Exception ex)
@@ -372,7 +395,7 @@ namespace DDPM.OSDs
 
         }
 
-        public void ScrollLockOff_ShowWindow(double Top, double Left)
+        public void ScrollLockOff_ShowWindow((double, double, double, double) args)
         {
             try
             {
@@ -387,8 +410,10 @@ namespace DDPM.OSDs
                 ScrollLockOffWinx = new ScrollLockOffWin();
                 ScrollLockOffWinx.Closed += ScrollLockOffWinx_Closed;
 
-                ScrollLockOffWinx.Top = Top;
-                ScrollLockOffWinx.Left = Left;
+                ScrollLockOffWinx.Top = args.Item1 + 1;
+                ScrollLockOffWinx.Left = args.Item2 + 1;
+                ScrollLockOffWinx.Width = args.Item3 - 2;
+                ScrollLockOffWinx.Height = args.Item4 - 2;
                 ScrollLockOffWinx.ShowWindow();
             }
             catch (Exception ex)
@@ -431,7 +456,7 @@ namespace DDPM.OSDs
             }
         }
 
-        public void NumLockOn_ShowWindow(double Top, double Left)
+        public void NumLockOn_ShowWindow((double, double, double, double) args)
         {
             try
             {
@@ -446,8 +471,10 @@ namespace DDPM.OSDs
                 NumLockOnWinx = new NumLockOnWin();
                 NumLockOnWinx.Closed += NumLockOnWinx_Closed;
 
-                NumLockOnWinx.Top = Top;
-                NumLockOnWinx.Left = Left;
+                NumLockOnWinx.Top = args.Item1 + 1;
+                NumLockOnWinx.Left = args.Item2 + 1;
+                NumLockOnWinx.Width = args.Item3 - 2;
+                NumLockOnWinx.Height = args.Item4 - 2;
                 NumLockOnWinx.ShowWindow();
             }
             catch (Exception ex)
@@ -491,7 +518,7 @@ namespace DDPM.OSDs
             }
         }
 
-        public void NumLockOff_ShowWindow(double Top, double Left)
+        public void NumLockOff_ShowWindow((double, double, double, double) args)
         {
             try
             {
@@ -506,8 +533,10 @@ namespace DDPM.OSDs
                 NumLockOffWinx = new NumLockOffWin();
                 NumLockOffWinx.Closed += NumLockOffWinx_Closed;
 
-                NumLockOffWinx.Top = Top;
-                NumLockOffWinx.Left = Left;
+                NumLockOffWinx.Top = args.Item1 + 1;
+                NumLockOffWinx.Left = args.Item2 + 1;
+                NumLockOffWinx.Width = args.Item3 - 2;
+                NumLockOffWinx.Height = args.Item4 - 2;
                 NumLockOffWinx.ShowWindow();
             }
             catch (Exception ex)
@@ -557,7 +586,7 @@ namespace DDPM.OSDs
         }
 
 
-        public void CapsLockOn_ShowWindow(double Top, double Left)
+        public void CapsLockOn_ShowWindow((double, double, double, double) args)
         {
             try
             {
@@ -572,8 +601,10 @@ namespace DDPM.OSDs
                 CapsLockOnWinx = new CapsLockOnWin();
                 CapsLockOnWinx.Closed += CapsLockOnWinx_Closed;
 
-                CapsLockOnWinx.Top = Top;
-                CapsLockOnWinx.Left = Left;
+                CapsLockOnWinx.Top = args.Item1 + 1;
+                CapsLockOnWinx.Left = args.Item2 + 1;
+                CapsLockOnWinx.Width = args.Item3 - 2;
+                CapsLockOnWinx.Height = args.Item4 - 2;
                 CapsLockOnWinx.ShowWindow();
             }
             catch (Exception ex)
@@ -615,7 +646,7 @@ namespace DDPM.OSDs
             }
         }
 
-        public void CapsLockOff_ShowWindow(double Top, double Left)
+        public void CapsLockOff_ShowWindow((double, double, double, double) args)
         {
             try
             {
@@ -630,8 +661,10 @@ namespace DDPM.OSDs
                 CapsLockOffWinx = new CapsLockOffWin();
                 CapsLockOffWinx.Closed += CapsLockOffWinx_Closed;
 
-                CapsLockOffWinx.Top = Top;
-                CapsLockOffWinx.Left = Left;
+                CapsLockOffWinx.Top = args.Item1 + 1;
+                CapsLockOffWinx.Left = args.Item2 + 1;
+                CapsLockOffWinx.Width = args.Item3 - 2;
+                CapsLockOffWinx.Height = args.Item4 - 2;
                 CapsLockOffWinx.ShowWindow();
             }
             catch (Exception ex)
@@ -673,12 +706,14 @@ namespace DDPM.OSDs
             }
         }
 
-        public void Fingerprint_ShowWindow(double Top, double Left)
+        public void Fingerprint_ShowWindow((double, double, double, double) args)
         {
             FingerprintWinx = new FingerprintWin();
             FingerprintWinx.Closed += Fingerprint_CloseWindow;
-            FingerprintWinx.Top = Top;
-            FingerprintWinx.Left = Left;
+            FingerprintWinx.Top = args.Item1 + 1;
+            FingerprintWinx.Left = args.Item2 + 1;
+            FingerprintWinx.Width = args.Item3 - 2;
+            FingerprintWinx.Height = args.Item4 - 2;
             FingerprintWinx.ShowWindow();
         }
 
@@ -692,12 +727,14 @@ namespace DDPM.OSDs
             }
         }
 
-        public void EasyMemory_ShowWindow(double Top, double Left)
+        public void EasyMemory_ShowWindow((double, double, double, double) args)
         {
             EasyMemoryWinx = new EasyMemoryWin();
             EasyMemoryWinx.Closed += EasyMemory_CloseWindow;
-            EasyMemoryWinx.Top = Top;
-            EasyMemoryWinx.Left = Left;
+            EasyMemoryWinx.Top = args.Item1 + 1;
+            EasyMemoryWinx.Left = args.Item2 + 1;
+            EasyMemoryWinx.Width = args.Item3 - 2;
+            EasyMemoryWinx.Height = args.Item4 - 2;
             EasyMemoryWinx.ShowWindow();
         }
 
@@ -711,12 +748,14 @@ namespace DDPM.OSDs
             }
         }
 
-        public void Error_ShowWindow(string title, string Content, bool stayOpen, double Top, double Left)
+        public void Error_ShowWindow(string title, string Content, bool stayOpen, (double, double, double, double) args)
         {
             ErrorWin = new ErrorWin(title, Content, stayOpen);
             ErrorWin.Closed += Error_CloseWindow;
-            ErrorWin.Top = Top;
-            ErrorWin.Left = Left;
+            ErrorWin.Top = args.Item1 + 1;
+            ErrorWin.Left = args.Item2 + 1;
+            ErrorWin.Width = args.Item3 - 2;
+            ErrorWin.Height = args.Item4 - 2;
             ErrorWin.ShowWindow();
         }
 
@@ -729,12 +768,14 @@ namespace DDPM.OSDs
                 ErrorWin = null;
             }
         }
-        public void QAMHotKeyWin_ShowWindow(double Top, double Left)
+        public void QAMHotKeyWin_ShowWindow((double, double, double, double) args)
         {
             QAMHotKeyWin = new QAMHotKeyWin();
             QAMHotKeyWin.Closed += QAMHotKeyWin_CloseWindow;
-            QAMHotKeyWin.Top = Top;
-            QAMHotKeyWin.Left = Left;
+            QAMHotKeyWin.Top = args.Item1 + 1;
+            QAMHotKeyWin.Left = args.Item2 + 1;
+            QAMHotKeyWin.Width = args.Item3 - 2;
+            QAMHotKeyWin.Height = args.Item4 - 2;
             QAMHotKeyWin.ShowWindow();
         }
         public void QAMHotKeyWin_CloseWindow(object? sender, EventArgs e)
@@ -746,12 +787,14 @@ namespace DDPM.OSDs
                 QAMHotKeyWin = null;
             }
         }
-        public void CollaborationNotAvailableWin_ShowWindow(string Content, double Top, double Left)
+        public void CollaborationNotAvailableWin_ShowWindow(string Content, (double, double, double, double) args)
         {
             CollaborationNotAvailableWinx = new CollaborationNotAvailableWin(Content);
             CollaborationNotAvailableWinx.Closed += CollaborationNotAvailableWin_CloseWindow;
-            CollaborationNotAvailableWinx.Top = Top;
-            CollaborationNotAvailableWinx.Left = Left;
+            CollaborationNotAvailableWinx.Top = args.Item1 + 1;
+            CollaborationNotAvailableWinx.Left = args.Item2 + 1;
+            CollaborationNotAvailableWinx.Width = args.Item3 - 2;
+            CollaborationNotAvailableWinx.Height = args.Item4 - 2;
             CollaborationNotAvailableWinx.ShowWindow();
         }
         public void CollaborationNotAvailableWin_CloseWindow(object? sender, EventArgs e)
@@ -764,21 +807,14 @@ namespace DDPM.OSDs
             }
         }
 
-        /*        public void KeyAndKeybordBatteryLowWin_ShowWindow(string Content, double Top, double Left)
-                {
-                    keyAndKeybordBatteryLowWin = new KeyAndKeybordBatteryLowWin(Content);
-
-                    keyAndKeybordBatteryLowWin.Top = Top;
-                    keyAndKeybordBatteryLowWin.Left = Left;
-                    keyAndKeybordBatteryLowWin.ShowWindow();
-                }*/
-
-        public void KeyAndKeybordBatteryLowWin_ShowWindow(string Content, double Top, double Left, OSDType type, OSDType_Device device, bool state)
+        public void KeyAndKeybordBatteryLowWin_ShowWindow(string Content, (double, double, double, double) args, OSDType type, OSDType_Device device, bool state)
         {
             keyAndKeybordBatteryLowWin = new KeyAndKeybordBatteryLowWin(Content, type, device, state);
             keyAndKeybordBatteryLowWin.Closed += KeyAndKeybordBatteryLowWin_CloseWindow;
-            keyAndKeybordBatteryLowWin.Top = Top;
-            keyAndKeybordBatteryLowWin.Left = Left;
+            keyAndKeybordBatteryLowWin.Top = args.Item1 + 1;
+            keyAndKeybordBatteryLowWin.Left = args.Item2 + 1;
+            keyAndKeybordBatteryLowWin.Width = args.Item3 - 2;
+            keyAndKeybordBatteryLowWin.Height = args.Item4 - 2;
             keyAndKeybordBatteryLowWin.ShowWindow();
         }
 

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
@@ -124,6 +125,19 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                         DInfo = deviceInfo;
                         _currentDeviceinfo = DInfo.ID;
                         DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDevice DeviceInfo (ID = {_currentDeviceinfo}) ...");
+
+                        // << 250328 added by Hess to set default values
+                        switch (DInfo.LogicalDeviceType)
+                        {
+                            case "LogicalWebcam":
+                                DInfo.Message = "NEW";
+                                WebcamSettings ws = new(DInfo, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
+                                WebcamSettings.ExportWebcamSettings(ws, DInfo.ModelNumber, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
+                                break;
+                            default:
+                                break;
+                        }
+                        // >>
                         break;
 
                     case MonitorInfo monitorInfo:
@@ -358,24 +372,24 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             //try
             //{
-                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] WriteWalkThroughReg, Model : {Model} ... ");
-                string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin.UserId}";
-                string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{Model}";
-                if (Model == "MS700/7")
-                {
-                    regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.MS700";
-                }
-                if (Model == "CONSENT_PAGE")
-                {
-                    regPath = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
-                    //return DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true).Result;
-                    //DdpmCommonHelper.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
-                //return;// true;
-                }
-                DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] WriteWalkThroughReg UserId : {DdpmHomePlugin.DdpmHomePlugin.UserId}, Model: {Model} ...");
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] WriteWalkThroughReg, Model : {Model} ... ");
+            string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin.UserId}";
+            string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{Model}";
+            if (Model == "MS700/7")
+            {
+                regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.MS700";
+            }
+            if (Model == "CONSENT_PAGE")
+            {
+                regPath = @"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
                 //return DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true).Result;
-                DdpmCommonHelper.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
-                //return true;
+                //DdpmCommonHelper.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
+                //return;// true;
+            }
+            DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] WriteWalkThroughReg UserId : {DdpmHomePlugin.DdpmHomePlugin.UserId}, Model: {Model} ...");
+            //return DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true).Result;
+            DdpmCommonHelper.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
+            //return true;
             //}
             //catch (Exception ex)
             //{
@@ -537,7 +551,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             set
             {
                 SetProperty(ref _isPeripheralVisible, value);
-                
+
                 if (value)
                 {
                     IsConsentPageVisible = false;
@@ -557,7 +571,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             set
             {
                 SetProperty(ref _isDDPMVisibility, value);
-                
+
                 if (value)
                 {
                     IsConsentPageVisible = false;
@@ -577,7 +591,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             set
             {
                 SetProperty(ref _isOtherVisibility, value);
-                
+
                 if (value)
                 {
                     IsPeripheralVisible = false;
