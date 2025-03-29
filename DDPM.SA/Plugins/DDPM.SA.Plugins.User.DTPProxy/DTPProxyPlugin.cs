@@ -16210,7 +16210,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             try
             {
                 var airaudios = await GetAirAudioDeviceItemsExAsync();
-                if ((airaudios is string) && !string.IsNullOrEmpty(airaudios))
+                if (!string.IsNullOrEmpty(airaudios))
                 {
 
                     string[] parsedArray = airaudios.Split(new[] { ", " }, StringSplitOptions.None);
