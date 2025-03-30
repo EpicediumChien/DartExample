@@ -1,26 +1,12 @@
 ﻿using DDPM.SA.Common.Display;
 using DDPM.SA.Common;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using DDPM.SA.Common.Popup;
-using System.Printing;
-using System.Security.AccessControl;
 using Rectangle = System.Drawing.Rectangle;
-using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft.Win32;
 using DDPM.SA.Resources.Helper;
 

@@ -41,7 +41,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         //DCF/Agent related
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
-        private IAgent _agent;
+        private IAgent? _agent = null;
         private ILog? _log;
         private bool _isConfigured = false;
 
@@ -126,6 +126,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 {
                     EABroker_Stop();
                     _agent = null;
+
+                    _HotkeyPlugin.Hook();
+                    _HotkeyPlugin.KeyUp -= Keyboard_KeyUpProc;
+                    _HotkeyPlugin.KeyDown -= Keyboard_KeyDownProc;
                 }
                 IsDisposed = true;
             }
@@ -158,7 +162,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #region PluginManager related
 
-        private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
+        private void PluginManagerOnPluginsStarted(object? sender, PluginsStartedEventArgs e)
         {
             if (e == null)
                 return;
@@ -175,7 +179,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private void InitializeDeviceManagerPlugin()
         {
             //If DeviceManager plugin is got already then return, prevent to call twice
-            if (_deviceManagerPlugin != null)
+            if (_deviceManagerPlugin != null || _agent == null)
                 return;
 
             _deviceManagerPlugin = _agent.PluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
@@ -188,7 +192,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             WriteLog($"Initializing DeviceManager plugin.");
         }
 
-        private void OnDeviceManagerPluginConditionChangeHandler(object sender, EventArgs e)
+        private void OnDeviceManagerPluginConditionChangeHandler(object? sender, EventArgs e)
         {
             GetCurrentDeviceManagerPluginCondition();
         }
@@ -197,6 +201,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             _ = Task.Run(async () =>
             {
+                if (_deviceManagerPlugin == null)
+                    return;
+
                 var pluginCondition = await (_deviceManagerPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
 
                 lock (_PluginConditionLock)
@@ -276,7 +283,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             });
         }
 
-        private void OnDisplayManagerPluginConditionChangeHandler(object sender, EventArgs e)
+        private void OnDisplayManagerPluginConditionChangeHandler(object? sender, EventArgs e)
         {
             GetCurrentDisplayManagerPluginCondition();
         }
@@ -299,7 +306,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _log?.Info($"Initializing SettingsManager plugin.");
         }
 
-        private void OnSettingsManagerPluginConditionChangeHandler(object sender, EventArgs e)
+        private void OnSettingsManagerPluginConditionChangeHandler(object? sender, EventArgs e)
         {
             GetCurrentSettingsManagerPluginCondition();
         }
@@ -358,71 +365,72 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         //TelemetryScheduler Plugin
-        //
-        private void InitializeTelementrySchedulerPlugin()
-        {
-            if (_telementrySchedulerPlugin != null)
-                return;
+        //Derek 2025/03/30 due to 0 reference
+        //private void InitializeTelementrySchedulerPlugin()
+        //{
+        //    if (_telementrySchedulerPlugin != null)
+        //        return;
 
-            _telementrySchedulerPlugin = _agent.PluginManager.FindPluginByType<ITelementryScheduler>(PluginResolution.Dynamic);
+        //    _telementrySchedulerPlugin = _agent.PluginManager.FindPluginByType<ITelementryScheduler>(PluginResolution.Dynamic);
 
-            if (_telementrySchedulerPlugin is IFrameworkPluginConditionNotification pluginCondition)
-            {
-                pluginCondition.PluginConditionChangeHandler += OnTelementrySchedulerConditionChangeHandler;
-                GetCurrentTelementrySchedulerCondition();
-            }
-        }
-        private void OnTelementrySchedulerConditionChangeHandler(object sender, EventArgs e)
-        {
-            GetCurrentTelementrySchedulerCondition();
-        }
-        private void GetCurrentTelementrySchedulerCondition()
-        {
-            _ = Task.Run(async () =>
-            {
-                var pluginCondition = await (_telementrySchedulerPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
-                lock (_PluginConditionLock_TelementryScheduler)
-                {
-                    if (pluginCondition is PluginErrorCondition)
-                    {
-                        WriteLog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in an error condition");
-                        _telementrySchedulerPluginUsable = false;
-                    }
-                    else if (pluginCondition is PluginRunningCondition)
-                    {
-                        WriteLog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in a running condition");
+        //    if (_telementrySchedulerPlugin is IFrameworkPluginConditionNotification pluginCondition)
+        //    {
+        //        pluginCondition.PluginConditionChangeHandler += OnTelementrySchedulerConditionChangeHandler;
+        //        GetCurrentTelementrySchedulerCondition();
+        //    }
+        //}
+        //private void OnTelementrySchedulerConditionChangeHandler(object? sender, EventArgs e)
+        //{
+        //    GetCurrentTelementrySchedulerCondition();
+        //}
+        //private void GetCurrentTelementrySchedulerCondition()
+        //{
+        //    _ = Task.Run(async () =>
+        //    {
+        //        var pluginCondition = await (_telementrySchedulerPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+        //        lock (_PluginConditionLock_TelementryScheduler)
+        //        {
+        //            if (pluginCondition is PluginErrorCondition)
+        //            {
+        //                WriteLog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in an error condition");
+        //                _telementrySchedulerPluginUsable = false;
+        //            }
+        //            else if (pluginCondition is PluginRunningCondition)
+        //            {
+        //                WriteLog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in a running condition");
 
-                        if (_GlobalSettingParam != null)
-                        {
-                            WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
-                            _telementrySchedulerPlugin.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
-                            _telementrySchedulerPluginUsable = true;
-                        }
-                        else
-                        {
-                            WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
-                            _telementrySchedulerPluginUsable = false;
-                        }
-                    }
-                    else if (pluginCondition is PluginStartedCondition)
-                    {
-                        WriteLog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in a started condition");
+        //                if (_GlobalSettingParam != null)
+        //                {
+        //                    WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
+        //                    _telementrySchedulerPlugin.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
+        //                    _telementrySchedulerPluginUsable = true;
+        //                }
+        //                else
+        //                {
+        //                    WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
+        //                    _telementrySchedulerPluginUsable = false;
+        //                }
+        //            }
+        //            else if (pluginCondition is PluginStartedCondition)
+        //            {
+        //                WriteLog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in a started condition");
 
-                        if (_GlobalSettingParam != null)
-                        {
-                            WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
-                            _telementrySchedulerPlugin.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
-                            _telementrySchedulerPluginUsable = true;
-                        }
-                        else
-                        {
-                            WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
-                            _telementrySchedulerPluginUsable = false;
-                        }
-                    }
-                }
-            });
-        }
+        //                if (_GlobalSettingParam != null)
+        //                {
+        //                    WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
+        //                    _telementrySchedulerPlugin.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
+        //                    _telementrySchedulerPluginUsable = true;
+        //                }
+        //                else
+        //                {
+        //                    WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
+        //                    _telementrySchedulerPluginUsable = false;
+        //                }
+        //            }
+        //        }
+        //    });
+        //}
+        //End Derek 2025/03/30
 
         // Hotkey Plugin
         //
@@ -438,7 +446,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 GetCurrentHotkeyPluginCondition();
             }
         }
-        private void OnHotkeyPluginConditionChangeHandler(object sender, EventArgs e)
+        private void OnHotkeyPluginConditionChangeHandler(object? sender, EventArgs e)
         {
             GetCurrentHotkeyPluginCondition();
         }
@@ -2091,7 +2099,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private bool _isLShiftDown = false;
         private bool _isRShiftDown = false;
-        private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
+        private void Keyboard_KeyUpProc(object? sender, KeyEventArgs e)
         {
             string strKey = e.KeyCode.ToString().ToUpper();
            // Debug.WriteLine($"Keyboard_KeyUpProc ---{strKey}");
@@ -2112,7 +2120,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
         }
 
-        private void Keyboard_KeyDownProc(object sender, KeyEventArgs e)
+        private void Keyboard_KeyDownProc(object? sender, KeyEventArgs e)
         {
             string strKey = e.KeyCode.ToString().ToUpper();
            //// Debug.WriteLine($"Keyboard_KeyUpProc ---{strKey}");

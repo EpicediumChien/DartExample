@@ -281,7 +281,8 @@ namespace DDPM.EABroker
             _vm.NotifySelectedMonitorChanged();
         }
 
-        public bool STA_LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eaId)
+        public bool STA_LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, 
+                                                            MonitorInfo moInfo, int eaId)
         {
             if (_deviceManagerSA == null)
             {

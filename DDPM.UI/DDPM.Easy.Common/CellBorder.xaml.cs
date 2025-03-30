@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -50,14 +51,21 @@ namespace DDPM.Easy.Common
 
         private void ReleaseResource()
         {
-
             SetValue(BorderBrushProperty, null);
             SetValue(BkBrushProperty, null);
 
-            Dictionary<int, CellAppData> _cellAppInfo = new Dictionary<int, CellAppData>();
-            foreach (var item in _cellAppInfo)
+            if (_cellAppInfo != null)
             {
-                item.Value.Image.d
+                foreach (var item in _cellAppInfo)
+                {
+                    item.Value.Image = null;
+                    item.Value.Cell = null;
+                    CellAppData? ca = item.Value as CellAppData;
+                    ca = null;
+                }
+
+                _cellAppInfo?.Clear();
+                _cellAppInfo = null;
             }
 
             GC.Collect();
@@ -224,15 +232,16 @@ namespace DDPM.Easy.Common
                         }
                     }
 
-                    _cellAppInfo.Clear();
+                    _cellAppInfo?.Clear();
                     CellAppData appInfo = new CellAppData();
                     appInfo.Number = cellNumber;
                     appInfo.FileName = fileName;
                     appInfo.FilePath = filePath;
                     appInfo.Image = bitmapImage;
                     appInfo.Cell = cellBorder;
-                    _cellAppInfo.Add(cellNumber, appInfo);
-                    DropOccurred?.Invoke(this, _cellAppInfo);
+                    _cellAppInfo?.Add(cellNumber, appInfo);
+                    if (_cellAppInfo != null)
+                        DropOccurred?.Invoke(this, _cellAppInfo);
                 }
             }
         }
@@ -258,7 +267,7 @@ namespace DDPM.Easy.Common
             set => memoryTB.Text = value;
         }
 
-        Dictionary<int, CellAppData> _cellAppInfo = new Dictionary<int, CellAppData>();
+        Dictionary<int, CellAppData>? _cellAppInfo = new Dictionary<int, CellAppData>();
 
         public int CellNumber
         {
@@ -277,9 +286,9 @@ namespace DDPM.Easy.Common
 
             public string FilePath { get; set; }
 
-            public BitmapImage Image { get; set; }
+            public BitmapImage? Image { get; set; }
 
-            public CellBorder Cell { get; set; }
+            public CellBorder? Cell { get; set; }
 
             public CellAppData(int number, string fileName, string filePath, BitmapImage image, CellBorder cell)
             {
