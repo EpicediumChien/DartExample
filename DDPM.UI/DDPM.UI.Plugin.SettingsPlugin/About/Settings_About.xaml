@@ -7,10 +7,9 @@
              xmlns:local="clr-namespace:DDPM.UI.Plugin.SettingsPlugin" d:DataContext="{d:DesignInstance Type=local:SettingsPageViewModel}"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
-             Margin="5,4,0,29"
              d:DesignHeight="450"
              d:DesignWidth="800">
-
+    <!--20250331 Chewlin for PIMS-348208 Remove above Margin="5,4,0,29"-->
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -25,7 +24,8 @@
             -->
         <Border Style="{StaticResource GroupBorderStyle}"
                     CornerRadius="13">
-            <UXControls:UXScrollViewer>
+            <!--20250331 Chewlin for PIMS-348208 ADD ScrollViewer.VerticalScrollBarVisibility="Disabled"-->
+            <UXControls:UXScrollViewer ScrollViewer.VerticalScrollBarVisibility="Disabled">
                 <StackPanel>
                     <!-- Robert_Lin 2025-3-6, OLD: <Grid Margin="20,20,8,8">
                     Add to UXTextBlock: VerticalAlignment="Center" -->
@@ -87,7 +87,8 @@
                     <!-- OLD:
                      <Grid Margin="20,20,8,8">
                    -->
-                    <Grid Margin="0,24,8,8">
+                    <!--20250331 Chewlin for PIMS-348208 Change Margin="0,24,8,8" to Margin=Margin="0,24,0,24"-->
+                    <Grid Margin="0,24,0,24">
                         <Border Style="{StaticResource PartBorderStyle}"
                                 BorderThickness="0" CornerRadius="6">
                             <!-- OLD: Margin="15,0,0,0" -->
