@@ -278,7 +278,14 @@ namespace DDPM.SA.Common.UpdateProgressPage
             {
                 isInstalling = true;
                 ProgressValue = (int)100;
-                ProgressStr = $"{LangHelper.Instance["Processing"]}... {(int)e.ProcessProgress}%";
+                if (0 <= (int)e.ProcessProgress && (int)e.ProcessProgress <= 100)
+                {
+                    ProgressStr = $"{LangHelper.Instance["Processing"]}... {(int)e.ProcessProgress}%";
+                }
+                else//Fix PIMS-349453
+                {
+                    ProgressStr = $"{LangHelper.Instance["Processing"]}...";
+                }
                 if (!e.DeviceName.Equals("DDPM"))
                 {
                     ProgressStr_2 = $"{LangHelper.Instance["DDPM_will_reopen_soon_after_update"]}";

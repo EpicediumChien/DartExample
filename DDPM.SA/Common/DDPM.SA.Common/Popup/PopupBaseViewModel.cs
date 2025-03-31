@@ -49,7 +49,14 @@ namespace DDPM.SA.Common.Popup
                 if (e.ProcessName.Equals("Installing"))
                 {
                     isInstalling = true;
-                    SubHeader = $"{LangHelper.Instance["Processing"]}... {(int)e.ProcessProgress}%";
+                    if (0 <= (int)e.ProcessProgress && (int)e.ProcessProgress <= 100)
+                    {
+                        SubHeader = $"{LangHelper.Instance["Processing"]}... {(int)e.ProcessProgress}%";
+                    }
+                    else//Fix PIMS-349453
+                    {
+                        SubHeader = $"{LangHelper.Instance["Processing"]}...";
+                    }
                 }
                 else if (e.ProcessName.Equals("Downloading"))
                 {

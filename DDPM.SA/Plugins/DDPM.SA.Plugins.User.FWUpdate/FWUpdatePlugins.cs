@@ -727,7 +727,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         DeviceName = fwUpdateInfos[i].DeviceName,
                         Model = fwUpdateInfos[i].Model,
-                        IsDisplay=fwUpdateInfos[i].IsDisplay,
+                        IsDisplay = fwUpdateInfos[i].IsDisplay,
                         UpdateTime = fwUpdateInfos[i].UpdateTime,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                         ProcessName = "Downloading",
@@ -1540,7 +1540,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 UpdateTime = _fWUpdateInfo.UpdateTime,
                                 TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                                 ProcessName = "Installing",
-                                ProcessProgress = 50,
+                                ProcessProgress = 101,
                             };
                             sendMessageToEvent(updateProgressInfo);
                         }
@@ -2234,7 +2234,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         UpdateTime = _fWUpdateInfo.UpdateTime,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                         ProcessName = "Installing",
-                        ProcessProgress = int.Parse(progressNode.InnerText),
+                        ProcessProgress = (_fWUpdateInfo.DeviceType == DeviceType.LogicalDock ||
+                        _fWUpdateInfo.DeviceType == DeviceType.PhysicalWiredDock) ? 101 : int.Parse(progressNode.InnerText),//Fix PIMS-349453
                     };
                     if (_fWUpdateInfo.DeviceType == DeviceType.LogicalHeadset &&
                        _fWUpdateInfo.Model.Contains("7024"))
