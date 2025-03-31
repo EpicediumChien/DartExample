@@ -52,6 +52,8 @@ namespace NGA.ThickClient
         //Robert_Lin 2024-6-19 a flag for switch Resizable MainWindow
         private bool _isMainWindowResizable = false;
 
+        private CancellationTokenSource _ensureWindowIsVisibleDebounceCts;
+        private bool _isEnsureWindowIsVisibleRunning = false;
         /// <summary>
         ///  Ratio of Default size of the window with Height = 782 and Width = 1132
         ///  Used in calculating the height and width when readjusting the window
@@ -150,14 +152,20 @@ namespace NGA.ThickClient
             UXSystemParameters.Instance.ParameterChangedEvent += UXSystemParametersChanged;
         }
 
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("AsyncUsage.CSharp", "VSTHRD100:Avoid async void methods", Justification = "Event handler signature required")]
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
-            DdpmCommonHelper.IsMainWindowAtPrimaryScreen = screen.Primary;
-            ReAdjustWindowSize();
-
-
-            EnsureWindowIsVisible(this);
+            try
+            {
+                Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
+                DdpmCommonHelper.IsMainWindowAtPrimaryScreen = screen.Primary;
+                ReAdjustWindowSize();
+                await EnsureWindowIsVisibleAsync(this);
+            }
+            catch (Exception ex)
+            {
+                _log?.Error($"{nameof(MainWindow)} - MainWindow_Loaded exception: {ex.Message}");
+            }
         }
 
         private void SystemEvents_DisplaySettingsChanged(object? sender, EventArgs e)
@@ -167,17 +175,27 @@ namespace NGA.ThickClient
 
         private void MainWindow_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            // When user tries to move window to another monitor using keyboard (Shift + Windows + Left or Right Arrow)
-            if ((e.Key == (Key.Left) || (e.Key == (Key.Right)) &&
-                (e.KeyboardDevice.Modifiers & ModifierKeys.Shift | ModifierKeys.Windows) > 0) && Screen.AllScreens.Length > 1)
+            try
             {
-                AdjustWindowSizeBasedOnMonitor();
-                RaiseEvent_MoveToNewPosition(true);
+                // When user tries to move window to another monitor using keyboard (Shift + Windows + Left or Right Arrow)
+                if ((e.Key == (Key.Left) || (e.Key == (Key.Right)) &&
+                    (e.KeyboardDevice.Modifiers & ModifierKeys.Shift | ModifierKeys.Windows) > 0) && Screen.AllScreens.Length > 1)
+                {
+                    _log?.Info($"{nameof(MainWindow)} - MainWindow_KeyUp in ...");
+                    AdjustWindowSizeBasedOnMonitor();
+                    RaiseEvent_MoveToNewPosition(true);
+                    _log?.Info($"{nameof(MainWindow)} - MainWindow_KeyUp out ...");
+                }
+            }
+            catch (Exception ex)
+            {
+                _log?.Error($"{nameof(MainWindow)} - MainWindow_KeyUp Exception: {ex.Message}");
             }
         }
 
         private void UXSystemParametersChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            _log?.Info($"{nameof(MainWindow)} - UXSystemParametersChanged in ...");
             try
             {
                 if (e.PropertyName == nameof(UXSystemParameters.Instance.OSTheme))
@@ -188,6 +206,7 @@ namespace NGA.ThickClient
                 if (e.PropertyName != nameof(UXSystemParameters.Instance.HighContrast))
                     return;
                 OnApplyTemplate();
+                _log?.Info($"{nameof(MainWindow)} - UXSystemParametersChanged out ...");
             }
             catch (Exception ex)
             {
@@ -261,6 +280,7 @@ namespace NGA.ThickClient
         /// <param name="screenWidth">Usable screenWidth</param>
         private void AdjustWindowSize(double screenHeight, double screenWidth)
         {
+            _log?.Info($"{nameof(MainWindow)} - AdjustWindowSize in ...");
             try
             {
                 //2024-5-8 Robert_Lin, to support resizeable MainWindow,
@@ -297,6 +317,7 @@ namespace NGA.ThickClient
                         Width = WindowWidth;
                     }
                 }
+                _log?.Info($"{nameof(MainWindow)} - AdjustWindowSize out ...");
             }
             catch (Exception ex)
             {
@@ -341,10 +362,12 @@ namespace NGA.ThickClient
         /// <param name="screenHeight">screen height</param>
         private void MoveWindowToCenter(double screenLeft, double screenTop, double screenWidth, double screenHeight)
         {
+            _log?.Info($"{nameof(MainWindow)} - MoveWindowToCenter in ...");
             try
             {
                 this.Left = (screenLeft + (screenWidth - this.Width) / 2);
                 this.Top = (screenTop + (screenHeight - this.Height) / 2);
+                _log?.Info($"{nameof(MainWindow)} - MoveWindowToCenter out ...");
             }
             catch (Exception ex)
             {
@@ -622,6 +645,7 @@ namespace NGA.ThickClient
         #region Move to new position event
         private void RaiseEvent_MoveToNewPosition(bool isMovedByHotkey = false)
         {
+            _log?.Info($"{nameof(MainWindow)} - RaiseEvent_MoveToNewPosition in ...");
             try
             {
                 //Robert_Lin, 2024-12-20 To show ProductName OSD on the target screen
@@ -635,6 +659,7 @@ namespace NGA.ThickClient
                     }
                     _Console.RaiseEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, this, args);
                 }
+                _log?.Info($"{nameof(MainWindow)} - RaiseEvent_MoveToNewPosition out ...");
             }
             catch (Exception ex)
             {
@@ -716,16 +741,28 @@ namespace NGA.ThickClient
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         private static bool _SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags)
         {
-            bool rst = SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
-
-            if (!rst)
+            DdpmCommonHelper.WriteUILog($"[NGA.ThickClient MainWindow] SetWindowPos in ... ");
+            try
             {
-#if DEBUG
-                Console.WriteLine("[NGA.ThickClient MainWindow] SetWindowPos failed.");
-#endif
-            }
+                bool rst = SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
 
-            return rst;
+                if (!rst)
+                {
+#if DEBUG
+                    Console.WriteLine("[NGA.ThickClient MainWindow] SetWindowPos failed.");
+#endif
+                    DdpmCommonHelper.WriteUILog("[NGA.ThickClient MainWindow] SetWindowPos failed.");
+                }
+
+                DdpmCommonHelper.WriteUILog($"[NGA.ThickClient MainWindow] SetWindowPos out ... ");
+                return rst;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[NGA.ThickClient MainWindow] SetWindowPos exception: {ex.Message}");
+                DdpmCommonHelper.WriteUILog($"[NGA.ThickClient MainWindow] SetWindowPos exception: {ex.Message}");
+                return false;
+            }
         }
         #endregion Win32
 
@@ -749,11 +786,12 @@ namespace NGA.ThickClient
 
         private void AdjustWindowMinSize(object sender, MouseButtonEventArgs e)
         {
-            EnsureWindowIsVisible(this);
+            _ = EnsureWindowIsVisibleAsync(this);
         }
 
         public (double Width, double Height, double WorkingWidth, double WorkingHeight) GetScreenResolution(Window window)
         {
+            _log?.Info($"{nameof(MainWindow)} - GetScreenResolution in ...");
             try
             {
                 // Get the top-left position of the window
@@ -767,6 +805,8 @@ namespace NGA.ThickClient
                 // Get screen resolution and working area
                 var screenBounds = screen.Bounds;
                 var workingArea = screen.WorkingArea;
+
+                _log?.Info($"{nameof(MainWindow)} - GetScreenResolution out ...");
 
                 return (
                     Width: screenBounds.Width,
@@ -784,6 +824,7 @@ namespace NGA.ThickClient
 
         private double GetScalingFactor(Window window)
         {
+            _log?.Info($"{nameof(MainWindow)} - GetScalingFactor in ...");
             try
             {
                 // Get the PresentationSource for the window
@@ -797,7 +838,7 @@ namespace NGA.ThickClient
                     // Extract the scaling factors (X)
                     return transform.M11;
                 }
-
+                _log?.Info($"{nameof(MainWindow)} - GetScalingFactor out ...");
                 // Default scaling is 1.0 (100%)
                 return 1.0;
             }
@@ -810,6 +851,7 @@ namespace NGA.ThickClient
 
         private void AdjustWindowPosition(Window window, Screen screen, double factor = 1.0)
         {
+            _log?.Info($"{nameof(MainWindow)} - AdjustWindowPosition in ...");
             try
             {
                 // Get screen working area
@@ -845,6 +887,8 @@ namespace NGA.ThickClient
                 // Apply the adjusted position
                 window.Left = adjustedLeft / factor;
                 window.Top = adjustedTop / factor;
+
+                _log?.Info($"{nameof(MainWindow)} - AdjustWindowPosition out ...");
             }
             catch (Exception ex)
             {
@@ -852,11 +896,37 @@ namespace NGA.ThickClient
             }
         }
 
-        private void EnsureWindowIsVisible(Window window)
+        private async Task EnsureWindowIsVisibleAsync(Window window)
         {
             _log?.Info($"{nameof(MainWindow)} - EnsureWindowIsVisible in ...");
             try
             {
+                // first check, if EnsureWindowIsVisible is running
+                if (_isEnsureWindowIsVisibleRunning)
+                {
+                    _log?.Info($"{nameof(MainWindow)} - EnsureWindowIsVisible _isEnsureWindowIsVisibleRunning, true.");
+                    return;
+                }
+                _isEnsureWindowIsVisibleRunning = true;
+
+                // second check, EnsureWindowIsVisible Debounce
+                if (_ensureWindowIsVisibleDebounceCts != null)
+                {
+                    await _ensureWindowIsVisibleDebounceCts.CancelAsync();
+                }
+                _ensureWindowIsVisibleDebounceCts = new CancellationTokenSource();
+                var token = _ensureWindowIsVisibleDebounceCts.Token;
+                try
+                {
+                    await Task.Delay(500, token);
+                    _log?.Info($"{nameof(MainWindow)} - after Task.Delay");
+                }
+                catch (TaskCanceledException)
+                {
+                    _log?.Info($"{nameof(MainWindow)} - EnsureWindowIsVisible TaskCanceledException executed.");
+                    return;
+                }
+
                 //Derek 10/26
                 Int16 width = (Int16?)System.Windows.Application.Current?.TryFindResource("breakPoint") ?? 0;
                 Int16 height = (Int16?)System.Windows.Application.Current?.TryFindResource("minHeight") ?? 0;
@@ -922,6 +992,11 @@ namespace NGA.ThickClient
             catch (Exception ex)
             {
                 _log?.Error($"{nameof(MainWindow)} - EnsureWindowIsVisible exception: {ex.Message}");
+            }
+            finally
+            {
+                _isEnsureWindowIsVisibleRunning = false;
+                _log?.Info($"{nameof(MainWindow)} - EnsureWindowIsVisible finished.");
             }
         }
 

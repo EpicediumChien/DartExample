@@ -88,11 +88,41 @@ namespace NGA.ThickClient
         public App() : base(NGA.Resources.Resources.ResourceManager, ThickClientUniqueGuid) { }
         protected override void OnStartup(StartupEventArgs e)
         {
+            this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException!;
+
             //From MSDN: https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.renderoptions.processrendermode?view=net-6.0
             //Use the ProcessRenderMode property to force software rendering for the current process.
             //You can avoid many rendering issues that occur in WPF applications and that are caused by external issues if you change your preference to software rendering.
             RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
             base.OnStartup(e);
+        }
+        /// <summary>
+        /// 處理 UI 執行緒未捕獲的異常
+        /// </summary>
+        private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            EventLogHelper.WriteEventLog($"DispatcherUnhandledException: {e.Exception}", EventLogEntryType.Warning);
+            e.Handled = true;
+        }
+
+        /// <summary>
+        /// 處理 AppDomain 中未捕獲的異常
+        /// </summary>
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception? ex = e.ExceptionObject as Exception;
+            EventLogHelper.WriteEventLog($"CurrentDomain_UnhandledException: {ex}", EventLogEntryType.Warning);
+        }
+
+        /// <summary>
+        /// 處理 Task 中未觀察到的異常
+        /// </summary>
+        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            EventLogHelper.WriteEventLog($"TaskScheduler_UnobservedTaskException: {e.Exception}", EventLogEntryType.Warning);
+            e.SetObserved(); 
         }
         /// <summary>
         /// Configures the ConsoleConfig.
