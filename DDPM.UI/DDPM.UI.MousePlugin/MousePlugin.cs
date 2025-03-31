@@ -98,7 +98,7 @@ namespace DDPM.UI.Plugin.MousePlugin
         private void GetPeripheralsAsync()
         {
             _log.Info($"[Mouseplugin] GetPeripherals is invoked ... in");
-            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(); //(true);
+            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
             _deviceHelper = task.Result;
 
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);

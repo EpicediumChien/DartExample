@@ -923,7 +923,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         _log.Error("DTP SetIsAutoFramingTransitionOn fail!");
                     }
+                    _isAutoFramingTransitionOn = CurrentProfile.IsAutoFramingTransitionOn;
                     OnPropertyChanged(nameof(IsAutoFramingTransitionOn));
+                    OnPropertyChanged(nameof(IsAutoFramingTransitionOnText));
                 }
                 if (CurrentDeviceInfo.IsPropertyAutoFramingSensitivitySupported)
                 {
