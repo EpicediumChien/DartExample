@@ -429,12 +429,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public int ProgressValue { get; set; }
         public bool Progress_IsAnimated { get; set; }
 
-        public Visibility NoUpdateAlert
-        {
-            get => (Critical_UpdateList_UI?.Count <= 0 &&
-                Recommended_UpdateList_UI?.Count <= 0 &&
-                Optional_UpdateList_UI?.Count <= 0) ? Visibility.Visible : Visibility.Collapsed;
-        }
+        public Visibility NoUpdateAlert { get; set; }
 
         public Visibility NoNetwork { get; set; } = Visibility.Collapsed;
         public Visibility Critical_UpdateList { get => Critical_UpdateList_UI?.Count >= 1 ? Visibility.Visible : Visibility.Collapsed; }
@@ -557,6 +552,25 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         Critical_UpdateList_UI.Add(uiUpdateInfo);
                     }
                 }
+                if ((Critical_UpdateList_UI?.Count <= 0 &&
+                    Recommended_UpdateList_UI?.Count <= 0 &&
+                    Optional_UpdateList_UI?.Count <= 0))
+                {
+                    NoUpdateAlert = Visibility.Visible;
+                }
+            }
+            if (NoNetwork == Visibility.Visible || NoUpdateAlert == Visibility.Visible)
+            {
+                System.Timers.Timer timer = new System.Timers.Timer();
+                timer.Interval = TimeSpan.FromSeconds(5).TotalMilliseconds;
+                timer.Elapsed += (sender, args) =>
+                {
+                    timer.Stop();
+                    NoNetwork = Visibility.Collapsed;
+                    NoUpdateAlert = Visibility.Collapsed;
+                    RefreshUI();
+                };
+                timer.Start();
             }
             Log?.Info($"Critical_UpdateList_UI.Count : {Critical_UpdateList_UI.Count}");
             Log?.Info($"Recommended_UpdateList_UI.Count : {Recommended_UpdateList_UI.Count}");
@@ -785,8 +799,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 Log?.Info($"DeviceChanged deviceChangedEventArgs.deviceID : {deviceChangedEventArgs.deviceID}");
                 foreach (UIUpdateInfo uiUpdateInfo in Critical_UpdateList_UI)
                 {
-                    if (uiUpdateInfo.FWUpdateInfo != null && 
-                        !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId) && 
+                    if (uiUpdateInfo.FWUpdateInfo != null &&
+                        !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId) &&
                         uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
                     {
                         ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
@@ -797,8 +811,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 }
                 foreach (UIUpdateInfo uiUpdateInfo in Recommended_UpdateList_UI)
                 {
-                    if (uiUpdateInfo.FWUpdateInfo != null && 
-                        !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId) && 
+                    if (uiUpdateInfo.FWUpdateInfo != null &&
+                        !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId) &&
                         uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
                     {
                         ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
@@ -809,8 +823,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 }
                 foreach (UIUpdateInfo uiUpdateInfo in Optional_UpdateList_UI)
                 {
-                    if (uiUpdateInfo.FWUpdateInfo != null && 
-                        !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId) && 
+                    if (uiUpdateInfo.FWUpdateInfo != null &&
+                        !string.IsNullOrEmpty(uiUpdateInfo.FWUpdateInfo.DeviceId) &&
                         uiUpdateInfo.FWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "") == deviceChangedEventArgs.deviceID)
                     {
                         ChangeStatus(uiUpdateInfo, deviceChangedEventArgs);
