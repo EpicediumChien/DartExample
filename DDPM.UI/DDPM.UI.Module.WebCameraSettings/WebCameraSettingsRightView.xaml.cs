@@ -568,5 +568,36 @@ namespace DDPM.UI.Module.WebCameraSettings
                 DdpmCommonHelper.WriteUILog($"AutoFrameSwitch_Click catch exception: {ex.Message}");
             }
         }
+
+        private void BgBlurSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            //try
+            //{
+            //    DdpmCommonHelper.DeviceManagerSA?.SetIsBgBlurEnable("DDPMSetProfileToNoneByAutoFrame", false);
+            //}
+            //catch (Exception ex)
+            //{
+            //    DdpmCommonHelper.WriteUILog($"AutoFrameSwitch_Click catch exception: {ex.Message}");
+            //}
+        }
+
+        private void SetBgBlur_Click(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                if (sender is Border bdr)
+                {
+                    var val = int.Parse(bdr.Tag.ToString()!);
+                    if (val == _vm.BgBlur)
+                    { return; }
+
+                    _vm.BgBlur = val;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs AutoFramingSensitivity_Click() ex:" + ex.Message);
+            }
+        }
     }
 }
