@@ -846,14 +846,23 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 header = e.is_defer ? "Update available" : "Update will be applied";
                 e.toast_message = e.is_defer ? $"Dell Display and Peripheral Manager has a pending update. This update can be deferred {e.defer_item.count + 1} times before it is required." : "There is a required software update for Dell Display and Peripheral Manager.";
             }
-            else
+            else if (e.defer_item.commanddata.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase))
             {
                 header = e.is_defer ? "Pending Changes to settings" : "Changes to settings will be applied";
                 e.toast_message = e.is_defer ? $"Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator.\nThe configuration can be deferred {e.defer_item.count + 1} times before it is required." : "Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator.";
             }
+            else
+            {
+                header = e.is_defer ? "Pending Changes to settings" : "Changes to settings will be applied";
+                e.toast_message = e.is_defer ? $"Settings are being configured for your Dell devices by your system administrator. \nThis notice can be deferred {e.defer_item.count + 1} times." : "Settings are being configured for your Dell devices by your system administrator.";
+            }
             //throw new NotImplementedException();
             //Console.WriteLine($"value = {CLIEventToastArgs.toast_message}");
-            if (e.is_defer)
+            if (e.is_defer && e.defer_item.commanddata.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase))
+            {              
+                FWshowToast(e.defer_id, header, e.toast_message);
+            }
+            else if (e.is_defer)
             {
                 showToast(e.defer_id, header, e.toast_message);
             }
@@ -958,6 +967,30 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 );
         }
         public void showToast(string id, string header, string msg)
+        {
+
+            new ToastContentBuilder()
+                .SetToastScenario(ToastScenario.Reminder)
+                .AddArgument("deferid", id)
+                .AddText(header)
+                .AddText(msg)
+                .AddButton(new ToastButton()
+                    .SetContent("Make changes")
+                    .AddArgument("action", "runnow")
+                )
+                .AddButton(new ToastButton()
+                    .SetContent("Defer")
+                    .AddArgument("action", "defer")
+                )
+
+                .Show(toast =>
+                {
+                    toast.ExpirationTime = DateTime.Now.AddSeconds(300);
+                }
+                );
+
+        }
+        public void FWshowToast(string id, string header, string msg)
         {
 
             new ToastContentBuilder()
