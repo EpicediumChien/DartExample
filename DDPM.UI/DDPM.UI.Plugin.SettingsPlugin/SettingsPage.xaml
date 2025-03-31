@@ -475,7 +475,8 @@
                 <!--- Robert_Lin 2025-3-6 PIMS-348208 S-348208 Multiple Instances of Incorrect Padding (too much space) in Settings
                 Move from bottom of this file.
                 -->
-                <Grid Grid.Column="1" Margin="4,0,0,0"  >
+                <!--20250331 Chewlin for PIMS-348208 change Margin="4,0,0,0" to Margin="4,4,4,4"-->
+                <Grid Grid.Column="1" Margin="4,4,4,4"  >
                     <ContentControl Content="{Binding FullView}"  />
                 </Grid>
 

@@ -26,7 +26,8 @@
     <Grid>
         <Border Style="{StaticResource GroupBorderStyle}"
                     CornerRadius="13">
-            <UXControls:UXScrollViewer>
+            <!--20250331 Chewlin for PIMS-348208 ADD ScrollViewer.VerticalScrollBarVisibility="Disabled"-->
+            <UXControls:UXScrollViewer ScrollViewer.VerticalScrollBarVisibility="Disabled">
                 <StackPanel>
                     <!-- Robert_Lin 2025-3-6 PIMS-348208 S-348208 Multiple Instances of Incorrect Padding (too much space) in Settings
                      1 Problem: The Margin.Left of each Region below should be 16 (original 20)
