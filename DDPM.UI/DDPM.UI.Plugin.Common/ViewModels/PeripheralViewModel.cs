@@ -42,7 +42,6 @@ namespace DDPM.UI.Plugin.ViewModels
         private string _name = "";
         private string _model = "";
         private string _imageFilePath = "";
-        private string _imageSFilePath = "";
         private string _deviceId = "";
         private string _firmwareVersion = "";
         private string _firmwareVersion2 = "";
@@ -58,7 +57,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         #endregion Variables
 
-        public DeviceInfo CurrentDeviceInfo = new();
+        public DeviceInfo? CurrentDeviceInfo = null;
 
         public ICommand GoBackClickedCommand { get; private set; }
         public ICommand ShowInfoClickedCommand { get; private set; }
@@ -225,7 +224,6 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 if (di == null)
                 {
-                    CurrentDeviceInfo = new();
                     return false;
                 }
                 CurrentDeviceInfo = di;
@@ -290,6 +288,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 else
                     ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}{colorCode}.png";
             }
+
+            if (CurrentDeviceInfo == null)
+                return false;
 
             FirmwareVersion = CurrentDeviceInfo.FirmwareVersion;
             var fv = CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
@@ -399,7 +400,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
-            if (di == null)
+            if (di == null || CurrentDeviceInfo == null)
             {
                 DdpmCommonHelper.WriteUILog($"Error: DeviceChanged Event with no device info!");
                 return;
@@ -498,6 +499,9 @@ namespace DDPM.UI.Plugin.ViewModels
         protected void GenerateInfo()
         {
 #if DEBUG
+            if (CurrentDeviceInfo == null)
+                return;
+
             StringBuilder localDeviceInfo = new();
             if (CurrentDeviceInfo.Name.ToUpper().Contains("HEADSET"))
             {
