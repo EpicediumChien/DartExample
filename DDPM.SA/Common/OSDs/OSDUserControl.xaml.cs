@@ -28,7 +28,16 @@ namespace DDPM.OSDs
         public OSDType_Device OSDType_Device { get; set; }
         public OSDType_Op OSDType_Op { get; set; } = OSDType_Op.None;
         public required string ShowStringTitle { get; set; }
-        public required string ShowStringContent { get; set; }
+        public required string showStringContent = string.Empty;
+        public string ShowStringContent
+        {
+            get { return showStringContent; }
+            set
+            {
+                showStringContent = value;
+                OnPropertyChanged("ShowStringContent");
+            }
+        }
 
         private bool isFadeOut = false;
         public bool IsFadeOut

@@ -6656,6 +6656,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 GetFWUpdateInfo(true).Wait();
                 SW_GetSWUpdateInfo(false).Wait();
+                show_peripheralsUpdateNotify(this, true);
             }
             else
             {
@@ -14511,31 +14512,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool _altPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
             bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
             bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
-            /*ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.StartRecording);
-            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
-            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
-            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", false);*/
-            //test
-            //CallQAM_UI(this);
-            /*ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Headset, "Dell Multi-Device Headset - MS5320W");
-            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Mouse, "Dell Multi-Device Mouse - MS5320W");
-            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
-            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");*/
             /*iTest++;
             if (iTest % 2 == 1)
             {
                 //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Pen, "Dell Multi-Device pen - MS5320W");
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetyyyyyyyyy - MS5320W", true);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Fingerprint);
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
                 //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
             }
             else
             {
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.StartRecording);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.EasyMemory);
+
                 //_OSD_Controler.CloseMultipleOSDByGuidAndOp("377C7B36-ED5B-446F-93A6-3418F0447836", OSDType_Op.None);
-                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", false);
+                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", false);
                 //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("FW", "fwxxxx update ccccccccccccccccccccccccccccccccccc...", true));
             }*/
             //will register as ALT+Z ?
@@ -18517,8 +18512,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-                                        _OSD_Controler.StartRecording_CloseWindow(null, null);
-                                        _OSD_Controler.StartRecording_ShowWindow(Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+
+                                        if (_OSD_Controler.ExistMultipleOSD())
+                                        {
+                                            //default guid {7471D427-F152-4E19-918E-F84FF12FBBEE}
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "7471D427-F152-4E19-918E-F84FF12FBBEE" : guid.ToString(), OSDType_Device.StartRecording, oSDType_Op, string.Empty, "3", ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            await Task.Run(async () =>
+                                            {
+                                                for (int i = 2; i >= 0; i--)
+                                                {
+                                                    await Task.Delay(1000);
+                                                    _OSD_Controler.UpdateOsdContentByGuid("7471D427-F152-4E19-918E-F84FF12FBBEE", i.ToString());
+                                                }
+                                                await Task.Delay(1000);
+                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp("7471D427-F152-4E19-918E-F84FF12FBBEE", OSDType_Op.None);
+                                            });
+                                        }
+                                        else
+                                        {
+                                            _OSD_Controler.StartRecording_CloseWindow(null, null);
+                                            _OSD_Controler.StartRecording_ShowWindow(Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        }
                                     }
                                     catch (Exception ex)
                                     {
@@ -18545,8 +18559,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-                                        _OSD_Controler.WalkAwayLock_CloseWindow(null, null);
-                                        _OSD_Controler.WalkAwayLock_ShowWindow(Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+
+                                        if (_OSD_Controler.ExistMultipleOSD())
+                                        {
+                                            //default guid {0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09}
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09" : guid.ToString(), OSDType_Device.WalkAwayLock, oSDType_Op, LangHelper.Instance["Walk_Away_Lock"], "5", ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            await Task.Run(async () =>
+                                            {
+                                                for (int i = 4; i >= 0; i--)
+                                                {
+                                                    await Task.Delay(1000);
+                                                    _OSD_Controler.UpdateOsdContentByGuid("0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09", i.ToString());
+                                                }
+                                                await Task.Delay(1000);
+                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp("0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09", OSDType_Op.None);
+                                            });
+                                        }
+                                        else
+                                        {
+                                            _OSD_Controler.WalkAwayLock_CloseWindow(null, null);
+                                            _OSD_Controler.WalkAwayLock_ShowWindow(Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        }
                                     }
                                     catch (Exception ex)
                                     {
@@ -18734,8 +18767,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-                                        _OSD_Controler.EasyMemory_CloseWindow(null, null);
-                                        _OSD_Controler.EasyMemory_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+
+                                        if (_OSD_Controler.ExistMultipleOSD())
+                                        {
+                                            //default guid {2DB1454E-A3D4-4380-A1A3-2483FE38E3D8}
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "2DB1454E-A3D4-4380-A1A3-2483FE38E3D8" : guid.ToString(), OSDType_Device.EasyMemory, oSDType_Op, string.Empty, LangHelper.Instance["Easy_Memory"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            await Task.Run(async () =>
+                                            {
+                                                await Task.Delay(3000);
+                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp("2DB1454E-A3D4-4380-A1A3-2483FE38E3D8", OSDType_Op.None);
+                                            });
+                                        }
+                                        else
+                                        {
+                                            _OSD_Controler.EasyMemory_CloseWindow(null, null);
+                                            _OSD_Controler.EasyMemory_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        }
                                     }
                                     catch (Exception ex)
                                     {

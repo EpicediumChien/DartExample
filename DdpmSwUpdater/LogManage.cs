@@ -20,7 +20,7 @@ namespace DdpmSwUpdater
         static string logFilePath = "DdpmSwUpdater.log";
         static string path = string.Empty;
 
-        private static Logs logs;
+        private static Logs? logs = null;
         public static Logs Logs { get => logs; set => logs = value; }
 
         private static string version = string.Empty;

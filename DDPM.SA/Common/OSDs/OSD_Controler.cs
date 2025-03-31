@@ -4,7 +4,6 @@ using Dell.TechHub.Sdk.Common.Utilities.Extensions;
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows.Media.Media3D;
 
 namespace DDPM.OSDs
 {
@@ -84,7 +83,7 @@ namespace DDPM.OSDs
                         OSDType_Op = oSDType_Op,
                         ShowStringTitle = title,
                         /* ShowStringTitle = title + "(" + guid.Substring(0, 4) + ")",*/
-                        ShowStringContent = content
+                        showStringContent = content
                     });
                 }
                 OSDMainWin.adjustOSDWin(args);
@@ -93,6 +92,18 @@ namespace DDPM.OSDs
             }
         }
 
+        public void UpdateOsdContentByGuid(string guid, string content)
+        {
+
+            if (OSDMainWin != null)
+            {
+                OSDWinInfo? target = OSDMainWin.OSDWins.FirstOrDefault(x => x.GUID.Equals(guid, StringComparison.InvariantCultureIgnoreCase));
+                if (target != null)
+                {
+                    target.ShowStringContent = content;
+                }
+            }
+        }
         public bool ExistMultipleOSD()
         {
             lock (osdLock)
@@ -277,7 +288,7 @@ namespace DDPM.OSDs
             StartRecordingWinx.Top = args.Item1 + 1;
             StartRecordingWinx.Left = args.Item2 + 1;
             StartRecordingWinx.Width = args.Item3 - 2;
-            StartRecordingWinx.Height = args.Item2 - 2;
+            StartRecordingWinx.Height = args.Item4 - 2;
             StartRecordingWinx.ShowWindow();
         }
 
