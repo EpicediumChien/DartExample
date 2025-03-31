@@ -636,12 +636,12 @@ namespace DDPM.EABroker
         }
         #endregion
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
-            {
-         //       System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
-            }
-        }
+        //private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        //{
+        //    if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+        //    {
+        // //       System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+        //    }
+        //}
     }
 }

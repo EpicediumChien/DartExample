@@ -723,7 +723,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return Task.FromResult(true);
         }
 
-        private OverlapWindow _overlapWindow;
+        //Derek 2028/03/31
+        private void ExitUIThread()
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
+        }
+
+        private OverlapWindow? _overlapWindow = null;
         /// <summary>
         /// EditCommand() function which is running under STA thread.
         /// In this method, it must return a EditStarted event to UI, to tell UI
@@ -742,6 +751,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (_eaBroker == null)
             {
                 WriteLog("@ STA_EditCommand(), exit due to _eaBroker is null.");
+                ExitUIThread();
                 return false;
             }
             //if (_editWindow == null)
@@ -774,6 +784,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 {
                     EditStarted(this, $"Cannot find a Screen from monitorInfo. MonitorInfo.DisplayName=[{monitorInfo.DisplayName}]");
                 }
+
+                ExitUIThread();
                 return false;
             }
             bool isVertical = (scr.Bounds.Width < scr.Bounds.Height);
@@ -833,6 +845,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                             _eaBroker.VM.IsWorkUIEnabled = true;
                             _eaBroker.RunningState = eEARunningStates.Waiting;
                         }
+
+                        ExitUIThread();
                         return false;
                     }
 
@@ -845,7 +859,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                     WriteLog($"SaveCustomWindow.SaveClicked, CutomName=[{customName}]");
 
-                    _overlapWindow = new OverlapWindow(_log);
+                    _overlapWindow = new OverlapWindow(_log!);
+                    _overlapWindow.Closing += _overlapWindow_Closing; //Derek 2025/03/31
                     //Handler of CaptureDone
                     //After CaptureOverlapLayout() finished it job and returned.
                     //The output (OverlapWindow.SplitCtrl) has ready to get.
@@ -909,7 +924,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         Trace.WriteLine($"WorkingArea: {workingArea.Width}x{workingArea.Height}");
                         _overlapWindow.Show();
                         addCount = _overlapWindow.CaptureOverlapLayoutByWorkingArea(workingArea);
-
                     }
                     else
                     {
@@ -972,6 +986,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     {
                         EditStarted(this, "Error");
                     }
+
+                    ExitUIThread();
                     return false;
                 }
 
@@ -1000,6 +1016,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         _eaBroker.VM.IsWorkUIEnabled = true;
                         _eaBroker.RunningState = eEARunningStates.Waiting;
                     }
+
+                    ExitUIThread();
                 };
                 _saveCustomWindow.SaveButtonClick += delegate
                 {
@@ -1043,6 +1061,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         _saveCustomWindow.Close();
                         _saveCustomWindow = null;
                     }
+
+                    ExitUIThread();
                 };
 
                 //_saveCustomWindow.ShowAndEdit(args, workingArea);
@@ -1059,7 +1079,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 //5 Wait for user click "Save" or "Cancel"
             }
 
+            //cts.Cancel();
             return true;
+        }
+
+        private void _overlapWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            _overlapWindow.Closing -= _overlapWindow_Closing;
+
+            _overlapWindow = null;
+            ExitUIThread();
         }
 
         /// <summary>
@@ -1181,7 +1210,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             Thread thread = new Thread(() =>
             {
                 STA_SetEASelectedLayout(monitorInfo, eaId);
+                WriteLog("STA_SetEASelectedLayout thread start");
                 System.Windows.Threading.Dispatcher.Run();
+                WriteLog("STA_SetEASelectedLayout thread end");
+                WriteLog("");
             });
 
             thread.SetApartmentState(ApartmentState.STA);
@@ -1199,11 +1231,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (_eaBroker == null)
             {
                 WriteLog($"STA_SetEASelectedLayout({eaId}) return false: _eaBroker is null.");
+                ExitUIThread();
                 return false;
             }
             if (_eaBroker.VM == null)
             {
                 WriteLog($"SetEASelectedLayout({eaId}) return false: EABroker.VM is null.");
+                ExitUIThread();
                 return false;
             }
 
@@ -1215,6 +1249,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 _eaBroker.VM.EAPluginLastError = "ReadEAMonitorSettings() return null.";
                 WriteLog($"STA_SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
+                ExitUIThread();
                 return false;
             }
 
@@ -1257,6 +1292,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     //Should naver to here, ReadEACustomList() never return null.
                     _eaBroker.VM.EAPluginLastError = "ReadEACustomList() return null.";
                     WriteLog($"STA_SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
+                    ExitUIThread();
                     return false;
                 }
             }
@@ -1333,6 +1369,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (!isOKSaveSettings)
             {
                 WriteLog(" SetEASelectedLayout() return false: Fail to write to MonitorSettings file.");
+                ExitUIThread();
                 return false;
             }
 
@@ -1354,6 +1391,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 eaArgs.Message = $"{model}|{serviceTag}";
                 EASettingsChanged(this, eaArgs);
             }
+
+            ExitUIThread();
             return true;
         }
 
@@ -1687,7 +1726,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             Thread thread = new Thread(() =>
             {
                 _eaBroker.STA_LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid);
+                WriteLog("STA_LaunchAndArrangeAppsWithEzArrange thread start");
                 System.Windows.Threading.Dispatcher.Run();
+                WriteLog("STA_LaunchAndArrangeAppsWithEzArrange thread end");
             });
 
             thread.SetApartmentState(ApartmentState.STA);
@@ -1869,78 +1910,80 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #endregion Display Changed event
 
 
- 
+
         #region EditWindow and SaveCustomWindow
- 
-        private void saveCustomWidow_CancelButtonClick(object? sender, string e)
-        {
-            if ((EditReturn != null) && (_eaArgs != null))
-            {
-                EAArgs retArgs = new EAArgs(_eaArgs);
-                retArgs.Result = false;
-                retArgs.Command = "EditReturn";
-                retArgs.Message = "User cancel the editing.";
-                EditReturn(this, retArgs);
-            }
-            if (_editWindow != null)
-            {
-                _editWindow.Dispatcher_Hide();
-                _editWindow = null;
-            }
-            if (_eaBroker != null)
-                _eaBroker.VM.IsWorkUIEnabled = true;
-        }
 
-        private void saveCustomWidow_SaveButtonClick(object? sender, string e)
-        {
-            if ((EditReturn != null) && (_eaArgs != null))
-            {
-                if (_eaArgs.SplitJson.IsOverlapLayout)
-                {
-                    EditForOverlapLayout();
-                    return;
-                }
+        //Derek 2025/03/31 due to 0 references
+        //private void saveCustomWidow_CancelButtonClick(object? sender, string e)
+        //{
+        //    if ((EditReturn != null) && (_eaArgs != null))
+        //    {
+        //        EAArgs retArgs = new EAArgs(_eaArgs);
+        //        retArgs.Result = false;
+        //        retArgs.Command = "EditReturn";
+        //        retArgs.Message = "User cancel the editing.";
+        //        EditReturn(this, retArgs);
+        //    }
+        //    if (_editWindow != null)
+        //    {
+        //        _editWindow.Dispatcher_Hide();
+        //        _editWindow = null;
+        //    }
+        //    if (_eaBroker != null)
+        //        _eaBroker.VM.IsWorkUIEnabled = true;
+        //}
 
-                EAArgs retArgs = new EAArgs(_eaArgs);
-                retArgs.Command = "EditReturn";
-                retArgs.Result = true;
-                retArgs.SplitJson.Settings = _editWindow.GetSettings();
+        //Derek 2025/03/31 due to 0 references
+        //private void saveCustomWidow_SaveButtonClick(object? sender, string e)
+        //{
+        //    if ((EditReturn != null) && (_eaArgs != null))
+        //    {
+        //        if (_eaArgs.SplitJson.IsOverlapLayout)
+        //        {
+        //            EditForOverlapLayout();
+        //            return;
+        //        }
 
-                if (_saveCustomWindow != null &&
-                    _saveCustomWindow.SelectedCustomItem != null)
-                { 
-                    //CustomName will copy from SaveCustomWindow
-                    retArgs.SplitJson.CustomName = _saveCustomWindow.SelectedCustomItem.CustomName;
+        //        EAArgs retArgs = new EAArgs(_eaArgs);
+        //        retArgs.Command = "EditReturn";
+        //        retArgs.Result = true;
+        //        retArgs.SplitJson.Settings = _editWindow.GetSettings();
 
-                    //If user has selected an existed custom layout
-                    if (_saveCustomWindow.SelectedCustomItem.EAID >= EAEMConstants.EAID_FirstCustom)
-                    {
-                        retArgs.SplitJson.EAID = _saveCustomWindow.SelectedCustomItem.EAID;
+        //        if (_saveCustomWindow != null &&
+        //            _saveCustomWindow.SelectedCustomItem != null)
+        //        { 
+        //            //CustomName will copy from SaveCustomWindow
+        //            retArgs.SplitJson.CustomName = _saveCustomWindow.SelectedCustomItem.CustomName;
 
-                    }
-                    else
-                    {
-                        //The SplitClass will update from SaveCustomWindow
+        //            //If user has selected an existed custom layout
+        //            if (_saveCustomWindow.SelectedCustomItem.EAID >= EAEMConstants.EAID_FirstCustom)
+        //            {
+        //                retArgs.SplitJson.EAID = _saveCustomWindow.SelectedCustomItem.EAID;
 
-                        //retArgs.SplitJson = _saveCustomWindow.SelectedCustomItem.Clone();
-                    }                    
-                }
+        //            }
+        //            else
+        //            {
+        //                //The SplitClass will update from SaveCustomWindow
 
-                //Can be removed
-                //retArgs.CustomName = e;
-                //retArgs.Settings = _editWindow.GetSettings();
+        //                //retArgs.SplitJson = _saveCustomWindow.SelectedCustomItem.Clone();
+        //            }                    
+        //        }
 
-                EditReturn(this, retArgs);
-            }
-            if (_editWindow != null)
-            {
-                _editWindow.Dispatcher_Hide();
-                _editWindow = null;
-            }
+        //        //Can be removed
+        //        //retArgs.CustomName = e;
+        //        //retArgs.Settings = _editWindow.GetSettings();
 
-            if (_eaBroker != null)
-                _eaBroker.VM.IsWorkUIEnabled = true;
-        }
+        //        EditReturn(this, retArgs);
+        //    }
+        //    if (_editWindow != null)
+        //    {
+        //        _editWindow.Dispatcher_Hide();
+        //        _editWindow = null;
+        //    }
+
+        //    if (_eaBroker != null)
+        //        _eaBroker.VM.IsWorkUIEnabled = true;
+        //}
 
         private void EditForOverlapLayout()
         {
