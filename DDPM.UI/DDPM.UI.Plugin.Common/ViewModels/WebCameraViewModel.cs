@@ -1340,8 +1340,8 @@ namespace DDPM.UI.Plugin.ViewModels
                             SetFPS_Selected(1);
                     }
 
-                    if (!isUIHasUpdateByQAM)
-                        DdpmCommonHelper.DeviceManagerSA?.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), value);
+                    //if (!isUIHasUpdateByQAM)
+                    DdpmCommonHelper.DeviceManagerSA?.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), value);
 
                     SetProfileProperty(nameof(IsAutoFramingOn), value, OperationModule.CameraControl);
                     //CurrentProfile.IsAutoFramingOn = value;
