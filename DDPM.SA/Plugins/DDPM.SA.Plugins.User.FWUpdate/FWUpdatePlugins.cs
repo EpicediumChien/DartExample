@@ -109,6 +109,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         public const string PluginLogId = "FWUpdate";
 
         private Logs _logs;
+        private Log? _ILogs;
 
         static bool _IsSkipCA = false;
         static bool _IsSkipSHA = false;
@@ -1408,6 +1409,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             Directory.CreateDirectory(path);
                         }
                     }
+                    DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(path, out string errorMsg);
+                    _logs.DebugMsg_1($"DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute errorMsg : {errorMsg}");
                     if (!DDPMFileSecurity.ValidateFilePath(@$"{programData}{GlobalDefinitions.LogFwUpdater}", out string info))
                     {
                         _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName}[FWUpdateLog] log path Error : {info}");
@@ -1418,9 +1421,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName}[FWUpdateLog] log path ACL Error : {info}");
                         return FWUErrorCode.FolderIsNotSafe;
                     }*/
-                    logPath = path;
-                    _ProgressLogPath = $"{logPath}\\PrgoressResult";
-                    _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " create log path done");
+                    if (!string.IsNullOrEmpty(path))
+                    {
+                        logPath = path;
+                        _ProgressLogPath = $"{logPath}\\PrgoressResult";
+                        _ILogs = new Log("ISP", new LogFile(_ProgressLogPath), "ISP");
+                        _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " create log path done");
+                    }
+                    else
+                    {
+                        _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " create log path done but path is null or empty");
+                    }
                 }
                 if (fwUpdateInfo.IsDisplay && IsISPInApp(fwUpdateInfo.InstallPaths, out string upgPath))//新版螢幕韌體更新
                 {
@@ -1733,6 +1744,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _logs.DebugMsg_1($"{nameof(Install)} done");
                 WriteLog($"DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} Result : {_updateErrorCode}");
                 _ProgressLogPath = string.Empty;
+                if (_ILogs != null)
+                {
+                    _ILogs = null;
+                }
                 return _updateErrorCode;
             }
             catch (Exception ex)
@@ -1740,6 +1755,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _updateErrorCode = FWUErrorCode.Unknow;
                 _logs.DebugMsg_1(fwUpdateInfo.DeviceName + nameof(Install) + " Error:" + ex.ToString());
                 _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
+                if (_ILogs != null)
+                {
+                    _ILogs = null;
+                }
                 return _updateErrorCode;
             }
             finally
@@ -2330,25 +2349,22 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 ProgressUpdate_Notify?.AsyncFireAndForget(this, fWUpdateInfo, System.Threading.CancellationToken.None);
             }
             _logs.DebugMsg_1($"sendMessageToEvent _IsShowNotify : {_IsShowNotify}, {fWUpdateInfo.DeviceName} {fWUpdateInfo.Model} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
-            WriteLog($"_IsShowNotify : {_IsShowNotify}, {DateTime.Now}--DeviceName : {fWUpdateInfo.DeviceName} Model : {fWUpdateInfo.Model} to ver : {fWUpdateInfo.TheLatestVersion} ProcessName : {fWUpdateInfo.ProcessName}...{fWUpdateInfo.ProcessProgress}%");
+            WriteLog($"_IsShowNotify : {_IsShowNotify}, --DeviceName : {fWUpdateInfo.DeviceName} Model : {fWUpdateInfo.Model} to ver : {fWUpdateInfo.TheLatestVersion} ProcessName : {fWUpdateInfo.ProcessName}...{fWUpdateInfo.ProcessProgress}%");
         }
-        /*private void WriteLog(string s)
+        private void WriteLog(string s)
         {
             try
             {
-                if (!string.IsNullOrEmpty(_ProgressLogPath))
+                if (_ILogs != null)
                 {
-                    using (StreamWriter writer = new StreamWriter(_ProgressLogPath, true))
-                    {
-                        writer.WriteLine($"{DateTime.Now}: {s}");
-                    }
+                    _ILogs.Info($"{s}");
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                _logs.DebugMsg_1($"WriteLog Error : {ex.Message}");
+                _logs?.DebugMsg_1($"WriteLog ex: {ex.Message}");
             }
-        }*/
+        }
 
         private bool CheckSHA(string filePath, out string fileCAInfo)
         {

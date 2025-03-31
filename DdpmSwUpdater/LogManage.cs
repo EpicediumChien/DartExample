@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using VcpCore.Common;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace DdpmSwUpdater
 {
@@ -40,8 +41,10 @@ namespace DdpmSwUpdater
                 {
                     Directory.CreateDirectory(path);
                 }
+                DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(path, out string errorMsg);
                 logFilePath = path + "\\" + logFilePath;
-                //logs = new Logs(logFilePath, "DdpmSwUpdater");
+                Log log = new Log("DdpmSwUpdater", new LogFile(logFilePath), "DdpmSwUpdater");
+                logs = new Logs(log, "DdpmSwUpdater");
                 LogMessage($"DdpmSwUpdater Ver:{Assembly.GetExecutingAssembly().GetName().Version}");
 
                 //Dean 0124 According to log move into %programdata%\Dell\Dell Display and Peripheral Manager, using oridignal ACL as well 
