@@ -273,7 +273,6 @@ namespace DDPM.SA.Common.Settings
                         //PresetProfiles["Warm"].IsFocusOn = true;
                         //PresetProfiles["Vibrant"].IsFocusOn = true;
                         //PresetProfiles["Smooth"].IsFocusOn = true;
-                        PresetProfiles["Smooth"].Sharpness = 32;
                         break;
                     case "U3223QZ":
                         PresetProfiles["Default"].FieldOfView = 90;
