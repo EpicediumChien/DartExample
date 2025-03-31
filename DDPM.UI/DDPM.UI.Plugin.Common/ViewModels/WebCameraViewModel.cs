@@ -1397,8 +1397,8 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (value != _isAutoFramingTransitionOn)
                 {
-                    //_isAutoFramingTransitionOn = value;
-                    CurrentProfile.IsAutoFramingTransitionOn = _isAutoFramingTransitionOn = value; // 20250205 Kidd to fix AutoFramingTransition text is always "On"  
+                    _isAutoFramingTransitionOn = value;
+                    //CurrentProfile.IsAutoFramingTransitionOn = _isAutoFramingTransitionOn = value; // 20250205 Kidd to fix AutoFramingTransition text is always "On"  
 
                     DdpmCommonHelper.DeviceManagerSA?.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), value);
                     SetProfileProperty(nameof(IsAutoFramingTransitionOn), value, OperationModule.CameraControl);
