@@ -135,6 +135,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private int _updateAvailableCount_FW = 0;
         private int _updateAvailableCount_SW = 0;
 
+        private CancellationTokenSource _deviceChangedDebounceCts;
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -316,6 +317,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _log.Info($"Calling to CheckAndQueueDevice(DDPM,DDPM,null)");
                             await CheckAndQueueDevice("DDPM", "DDPM", null);//DDPM WalkThrough no need into setting page.
                             _log.Info($"Returned from CheckAndQueueDevice()");
+
+                            _monitorInfos = _deviceManager.GetMonitors().Result;          // change to restore monitor caches
+                            _log.Info($"[DdpmHomePlugin] GetCurrentDeviceManagerPluginPluginCondition after GetMonitors");
+
+                            _deviceInfos = _deviceManager.GetDevices().Result.deviceInfo; // change to restore device caches
+                            _log.Info($"[DdpmHomePlugin] GetCurrentDeviceManagerPluginPluginCondition after GetDevices");
+
                             //Elapsed= 78, 61 msec
                             //Wayn 2024-09-04 For WalkThrough
                             _log.Info("Calling to CollectAndCompareDevicesAsync()");
@@ -488,7 +496,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 throw;
             }
         }
-
+        
         private async void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
             _log.Info("DdpmHomePlugin._deviceManager_DeviceChanged() executed");
@@ -497,16 +505,46 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 //Robert_Lin, 2024-7-22 log info
                 _log.Info($"@ ChangedProperty=[{e.changedProperty}], ChangedType=[{e.type}] DeviceID=[{e.deviceID}]");
-                //if (e.device_peripherals != null)
-                //{
-                    // Check and handle new inserted devices
-                    //await CheckAndQueueDevice(e.device_peripherals);
-                //    _log.Info($"@ DeviceName=[{e.device_peripherals.Name}]");
-                //}
 
-                // If event Contains Add, then into Walkthrough
-                if (e.changedProperty.ToLower().Contains("add") || e.changedProperty.ToLower().Contains("displaychanged"))
+                //2024-8-6 Robert, fix bug. compare string should be lowercase due to ToLower()
+                //2024-07-02, Elie, we only handle remove and add event on the DdpmHomePlugin.
+                if (e.changedProperty.ToLower().Contains("remove") ||
+                    (e.changedProperty.ToLower().Contains("add")) ||
+                    (e.changedProperty.ToLower().Contains("batterystatuschanged")) ||
+                    (e.changedProperty.ToLower().Contains("batterylevelchanged")) ||
+                    (string.Compare(e.changedProperty, "DisplayChanged", true) == 0))
                 {
+
+                    if (e.changedProperty.ToLower().Contains("remove") || e.changedProperty.ToLower().Contains("add"))
+                    {
+                        _deviceChangedDebounceCts?.Cancel();
+                        _deviceChangedDebounceCts = new CancellationTokenSource();
+                        var token = _deviceChangedDebounceCts.Token;
+
+                        try
+                        {
+                            await Task.Delay(500, token);
+                            _log.Info($"DdpmHomePlugin._deviceManager_DeviceChanged() after Task.Delay");
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            _log.Info($"DdpmHomePlugin._deviceManager_DeviceChanged() TaskCanceledException executed : {e.changedProperty.ToLower()}");
+                            return;
+                        }
+                    }
+
+                    if (_deviceManager == null)
+                    {
+                        _log.Info($"[DdpmHomePlugin] {nameof(_deviceManager_DeviceChanged)} _deviceManager is null, return");
+                        return;
+                    }
+                    _monitorInfos = _deviceManager.GetMonitors().Result;          // change to restore monitor caches
+                    _log.Info($"[DdpmHomePlugin] {nameof(_deviceManager_DeviceChanged)} after GetMonitors");
+
+                    _deviceInfos = _deviceManager.GetDevices().Result.deviceInfo; // change to restore device caches
+                    _log.Info($"[DdpmHomePlugin] {nameof(_deviceManager_DeviceChanged)} after GetDevices");
+
+                    // If event Contains Add, then into Walkthrough
                     _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} {e.changedProperty.ToString()} Start");
                     await CollectAndCompareDevicesAsync();
                     //// Check Queue¡Afirst use device need to show WalkThroughPage
@@ -516,15 +554,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
                         ShowPluginById = true;
                     }
-                }
-                //2024-8-6 Robert, fix bug. compare string should be lowercase due to ToLower()
-                //2024-07-02, Elie, we only handle remove and add event on the DdpmHomePlugin.
-                if (e.changedProperty.ToLower().Contains("remove") ||
-                    (e.changedProperty.ToLower().Contains("add")) ||
-                    (e.changedProperty.ToLower().Contains("batterystatuschanged")) ||
-                    (e.changedProperty.ToLower().Contains("batterylevelchanged")) ||
-                    (string.Compare(e.changedProperty, "DisplayChanged", true) == 0))
-                {
+
                     //Force return to HomePage
                     // 2024-06-19 From Dean, using DeviceChangedType.NotifyOnly to check if it's a monitor settings change.
 
@@ -783,24 +813,17 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                                             //List<MonitorInfo> monitorInfos = deviceManager.GetMonitors().Result;
                     if (condition.Equals("all") || condition.Equals("displaychanged"))
                     {
-                        _monitorInfos = deviceManager.GetMonitors().Result;
-                        _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Monitor count is ${_monitorInfos.Count}");
-                    }
-                    if (condition.Equals("all") || !condition.Equals("displaychanged"))
-                    {
-                        DeviceHelper deviceHelper = deviceManager.GetDevices().Result;
-                        if (deviceHelper == null || deviceHelper.deviceInfo.Count <= 0)
+                        if (_monitorInfos == null)
                         {
-                            deviceHelper = deviceManager.GetDevices(true).Result;
-                            _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Peripheral count is ${deviceHelper.deviceInfo.Count}");
+                            _monitorInfos = deviceManager.GetMonitors().Result;
+                            _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync GetMonitors count is ${_monitorInfos.Count}");
                         }
-                        //List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
-                        _deviceInfos = new List<DeviceInfo>();
-                        if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
+                        if (_deviceInfos == null)
                         {
-                            _deviceInfos = deviceHelper.deviceInfo;
+                            _deviceInfos = deviceManager!.GetDevices().Result.deviceInfo;
+                            _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync GetDevices count is ${_deviceInfos.Count}");
                         }
-                        _log.Info($"[DdpmHomePlugin] GetDdpmDevicesAsync Peripheral count is ${_deviceInfos.Count}");
+                        _log.Info($"[Walkthrough] CollectAndCompareDevicesAsync, monitor count:{_monitorInfos.Count.ToString()}, device count : {_deviceInfos.Count.ToString()}");
                     }
                     _ = Task.Run(() =>
                     {
@@ -1717,23 +1740,27 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _log.Info($"[Walkthrough] {nameof(CollectAndCompareDevicesAsync)} Start");
             try
             {
-                if (_deviceManager == null)
+                if (_monitorInfos == null)
                 {
-                    _log.Info($"[Walkthrough] {nameof(CollectAndCompareDevicesAsync)} _deviceManager is null");
-                    return;
+                    _monitorInfos = _deviceManager!.GetMonitors().Result;  // change to restore monitor caches
+                    _log.Info($"[Walkthrough] CollectAndCompareDevicesAsync GetMonitors, _monitorInfos == null");
                 }
-                List<MonitorInfo> monitorInfos = _deviceManager.GetMonitors().Result;
-                var deviceHelper = _deviceManager.GetDevices().Result;
-                _log.Info($"[Walkthrough] CollectAndCompareDevicesAsync, monitor count:{monitorInfos.Count.ToString()}, device count : {deviceHelper.deviceInfo.Count.ToString()}");
-                Trace.WriteLine($"[Walkthrough] CollectAndCompareDevicesAsync, monitor count:{monitorInfos.Count.ToString()}, device count : {deviceHelper.deviceInfo.Count.ToString()}");
+                if(_deviceInfos == null)
+                {
+                    _deviceInfos = _deviceManager!.GetDevices().Result.deviceInfo; // change to restore device caches
+                    _log.Info($"[Walkthrough] CollectAndCompareDevicesAsync GetDevices, _deviceInfos == null");
+                }
+
+                _log.Info($"[Walkthrough] CollectAndCompareDevicesAsync, monitor count:{_monitorInfos.Count.ToString()}, device count : {_deviceInfos.Count.ToString()}");
+               
                 // WalkThroughInfo
-                foreach (var monitor in monitorInfos)
+                foreach (var monitor in _monitorInfos)
                 {
                     _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Monitor)");
                     await CheckAndQueueDevice(monitor.modelName, "Displays", monitor);
                 }
 
-                foreach (var device in deviceHelper.deviceInfo)
+                foreach (var device in _deviceInfos)
                 {
                     _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (device)");
                     // Check color code
