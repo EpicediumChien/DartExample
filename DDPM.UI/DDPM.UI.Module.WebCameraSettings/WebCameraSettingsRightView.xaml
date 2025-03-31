@@ -43,8 +43,9 @@
       </Style>
     </ResourceDictionary>
   </UserControl.Resources>
-  <Grid Margin="0,0,0,15">
-    <Border CornerRadius="13" Margin="0,10,10,0" Width="470">
+  <!--Elsa 20250331 for PIMS-348388 change Width="470" to Width="auto",change Margin="0,0,0,15" to Margin="0,0,6,16"-->
+  <Grid Margin="0,0,6,16">
+    <Border CornerRadius="13" Margin="0,10,10,0" Width="auto">
       <Border.Height>
         <MultiBinding Converter="{StaticResource HeightConverter}">
           <Binding Path="Height" RelativeSource="{RelativeSource AncestorType=Grid}" />
