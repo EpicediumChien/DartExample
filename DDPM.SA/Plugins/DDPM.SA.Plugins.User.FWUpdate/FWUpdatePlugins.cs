@@ -1431,12 +1431,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             if (!string.IsNullOrEmpty(msg))
                             {
-                                WriteLog($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} ISP msg : {msg}");
+                                WriteLog($"DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} ISP msg : {msg}");
                             }
                         }
                         if (result.ErrorCode >= 0)
                         {
-                            WriteLog($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} ErrorCode: {result.ErrorCode}, WriteProtection: {result.WriteProtection}");
+                            WriteLog($"DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} ErrorCode: {result.ErrorCode}, WriteProtection: {result.WriteProtection}");
                             CheckDisplayErrorCode(result.ErrorCode);
                         }
                         UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
@@ -1463,7 +1463,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         ProcessProgress = 0,
                     };
                     sendMessageToEvent(updateProgressInfo);
-                    WriteLog($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} ===========[START]==========");
+                    WriteLog($"DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} ===========[START]==========");
 
                     try
                     {
@@ -1474,7 +1474,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     finally
                     {
-                        WriteLog($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion}============[END]===========");
+                        WriteLog($"DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion}============[END]===========");
                     }
                 }
                 else//周邊裝置和舊版螢幕韌體更新
@@ -1731,7 +1731,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _logs.DebugMsg_1($"{nameof(Install)} DeviceName : {fwUpdateInfo.DeviceName}, Model : {fwUpdateInfo.Model} _updateErrorCode : {_updateErrorCode}");
                 _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} _notificationStr : {_notificationStr}");
                 _logs.DebugMsg_1($"{nameof(Install)} done");
-                WriteLog($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} Result : {_updateErrorCode}");
+                WriteLog($"DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} Result : {_updateErrorCode}");
                 _ProgressLogPath = string.Empty;
                 return _updateErrorCode;
             }
