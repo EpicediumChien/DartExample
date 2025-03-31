@@ -6656,6 +6656,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 GetFWUpdateInfo(true).Wait();
                 SW_GetSWUpdateInfo(false).Wait();
+                show_peripheralsUpdateNotify(this, true);
             }
             else
             {
