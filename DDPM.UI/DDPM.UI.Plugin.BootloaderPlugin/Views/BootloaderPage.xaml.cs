@@ -38,15 +38,15 @@ namespace DDPM.UI.Plugin.BootloaderPlugin.Views
                 DataContext = _vm;
                 //_vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
                 //BuildModuleGroups();
+
+                //txtFWUpdate.Text = FWU;
+
+                txtSystemName1.Text = _vm!.VisiblePairedHostName1;
+                txtSystemName2.Text = _vm.VisiblePairedHostName1;
+                txtSystemName3.Text = _vm.VisiblePairedHostName1;
+                txtFirmware.Text = string.Format(Strings.DockDongle1, _vm.PhysicalDeviceFWVersion);
+                txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo?.MaxPairingSlots - _vm.CurrentDeviceInfo?.PairedDeviceCount, _vm.CurrentDeviceInfo?.MaxPairingSlots);
             }
-
-            //txtFWUpdate.Text = FWU;
-
-            txtSystemName1.Text = _vm!.VisiblePairedHostName1;
-            txtSystemName2.Text = _vm.VisiblePairedHostName1;
-            txtSystemName3.Text = _vm.VisiblePairedHostName1;
-            txtFirmware.Text = string.Format(Strings.DockDongle1,_vm.PhysicalDeviceFWVersion);
-            txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo?.MaxPairingSlots - _vm.CurrentDeviceInfo?.PairedDeviceCount, _vm.CurrentDeviceInfo?.MaxPairingSlots);
 
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
