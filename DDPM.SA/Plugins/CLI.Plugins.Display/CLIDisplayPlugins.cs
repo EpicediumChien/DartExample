@@ -5027,6 +5027,14 @@ namespace DDPM.CLI.Plugins.Display
                     {"MOVIEHDR", "MOVIE HDR"},
                     {"GAMEHDR", "GAME HDR"},
                     {"DISPLAYHDR", "DISPLAY HDR"},
+                    {"DISPLAYP3", "DISPLAY P3"},
+                    {"SPORTSGAME", "SPORTS Game"},
+                    {"Game1", "Game1"},
+                    {"Game2", "Game2"},
+                    {"Game3", "Game3"},
+                    {"SRGB", "sRGB"},
+                    {"CustomColorHDR", "Custom Color HDR"},
+                    {"HDRPeak1000", "HDR Peak 1000"},
                 };
                 value = colorPresetList.ContainsKey(value.ToUpper()) ? colorPresetList[value.ToUpper()] : value;
                 if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
