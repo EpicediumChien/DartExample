@@ -19,7 +19,7 @@ namespace DdpmSwUpdater
         static string logFilePath = "DdpmSwUpdater.log";
         static string path = string.Empty;
 
-        private static Logs logs;
+        private static Logs? logs = null;
         public static Logs Logs { get => logs; set => logs = value; }
 
         private static string version = string.Empty;
@@ -41,7 +41,7 @@ namespace DdpmSwUpdater
                     Directory.CreateDirectory(path);
                 }
                 logFilePath = path + "\\" + logFilePath;
-                logs = new Logs(logFilePath, "DdpmSwUpdater");
+                //logs = new Logs(logFilePath, "DdpmSwUpdater");
                 LogMessage($"DdpmSwUpdater Ver:{Assembly.GetExecutingAssembly().GetName().Version}");
 
                 //Dean 0124 According to log move into %programdata%\Dell\Dell Display and Peripheral Manager, using oridignal ACL as well 
@@ -132,7 +132,7 @@ namespace DdpmSwUpdater
                 Console.WriteLine($"{DateTime.Now}: {safeMessage}");
 #endif
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 #if DEBUG
                 Console.WriteLine($"LogMessage exception, message: {ex.Message}");
