@@ -187,7 +187,7 @@ namespace DDPM.SA.Common.Method
                 {
                     if (CTS != null)
                     {
-                        CTS.CancelAfter(TimeSpan.FromSeconds(300));
+                        CTS.CancelAfter(TimeSpan.FromSeconds(60));
                     }
                 }
                 currentFileSize = DownloadFileStream.Length;

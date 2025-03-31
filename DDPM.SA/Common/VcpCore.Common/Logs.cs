@@ -8,7 +8,7 @@ namespace VcpCore.Common
     public class Logs
     {
         private ILog Logg;
-        //private string logPath;
+        private Log _Log;
 
         private string _PluginLogId = string.Empty;
 
@@ -18,14 +18,18 @@ namespace VcpCore.Common
         public Logs(ILog Logx, string PluginLogId)
         { Logg = Logx; _PluginLogId = PluginLogId; }
 
-        //public Logs(string logPathx, string PluginLogId)
-        //{ logPath = logPathx; _PluginLogId = PluginLogId; }
+        public Logs(Log log, string PluginLogId)
+        { _Log = log; _PluginLogId = PluginLogId; }
 
         public void DebugMsg(string DebugMsg)
         {
             if (Logg != null) // Elie, check if it's null or not.
             {
                 Logg.Info("[INFO] " + DebugMsg);
+            }
+            if (_Log != null)
+            {
+                _Log.Info("[INFO] " + DebugMsg);
             }
             /*if (!string.IsNullOrEmpty(logPath))
             {
@@ -55,6 +59,10 @@ namespace VcpCore.Common
             {
                 Logg.Info(s);
             }
+            if (_Log != null)
+            {
+                _Log.Info(s);
+            }
             /*if (!string.IsNullOrEmpty(logPath))
             {
                 try
@@ -83,6 +91,10 @@ namespace VcpCore.Common
             {
                 Logg.Info(s);
             }
+            if (_Log != null)
+            {
+                _Log.Info(s);
+            }
             /*if (!string.IsNullOrEmpty(logPath))
             {
                 try
@@ -110,6 +122,10 @@ namespace VcpCore.Common
             if (Logg != null) // Elie, check if it's null or not.
             {
                 Logg.Error(s);
+            }
+            if (_Log != null)
+            {
+                _Log.Error(s);
             }
             /*if (!string.IsNullOrEmpty(logPath))
             {
