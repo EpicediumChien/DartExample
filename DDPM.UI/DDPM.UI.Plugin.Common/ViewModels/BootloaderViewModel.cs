@@ -100,7 +100,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         }
                         else
                         {
-                            _log?.Info($"[DockPageViewModel] HandleNotification CurrentDeviceInfo is null ...");
+                            _log?.Info($"[BootloaderViewModel] HandleNotification CurrentDeviceInfo is null ...");
                         }
 
                         //GenerateInfo();
