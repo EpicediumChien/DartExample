@@ -2226,7 +2226,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 if (progressNode != null)
                 {
-
                     UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                     {
                         DeviceName = _fWUpdateInfo.DeviceName,
