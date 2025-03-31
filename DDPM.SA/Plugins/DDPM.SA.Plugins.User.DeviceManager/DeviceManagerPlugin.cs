@@ -9967,6 +9967,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetWebcamSerialNumber(Guid));
         }
+        public async Task<int> GetBgBlur(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetBgBlur(Guid));
+        }
+
+        public async Task<bool> GetIsBgBlurEnable(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsBgBlurEnable(Guid));
+        }
+        public async Task<bool> GetIsPropertyBgBlurSupported(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsPropertyBgBlurSupported(Guid));
+        }
 
         public Task SetIsMicEnumerationOn(string Guid, bool newValue)
         {
@@ -10273,6 +10286,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetTilt(Guid, newValue);
             return Task.CompletedTask;//Task.FromResult(true);
+        }
+
+        public Task<bool> SetIsBgBlurEnable(string Guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsBgBlurEnable requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            return _DTPProxyPlugin.SetIsBgBlurEnable(Guid, newValue);
+        }
+
+        public Task<bool> SetBgBlur(string Guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetBgBlur requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            return _DTPProxyPlugin.SetBgBlur(Guid, newValue);
         }
 
         public Task SetPan(string Guid, int newValue)

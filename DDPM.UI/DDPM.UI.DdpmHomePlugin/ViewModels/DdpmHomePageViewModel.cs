@@ -393,7 +393,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                                 case "P2724DEB": //internal webcamera
                                     imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
                                     break;
-
+                                case "P3426WEB": //internal webcamera
                                 case "P3424WEB": //internal webcamera
                                     imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
                                     break;

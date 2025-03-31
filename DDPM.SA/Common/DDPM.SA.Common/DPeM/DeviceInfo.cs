@@ -1137,7 +1137,8 @@ namespace DDPM.SA.Common
         public bool IsWalkAwayLockEnable { get; set; }
         public int WALTime { get; set; }
         public bool IsPrioritizeExternalWebcam { get; set; }
-
+        //public bool IsBgBlurEnable { get; set; }
+        //public int BgBlur { get; set; }
 
         public string DeviceSymbolicLink
         {

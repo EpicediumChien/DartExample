@@ -1379,6 +1379,18 @@
   <data name="WebCameraSettings.26" xml:space="preserve">
     <value>Automatically switches between Dell UltraSharp Webcam and other webcams (integrated and external). Windows Hello will use the active webcam for facial recognition.\n\nNote: Only one camera can be enabled and accessible at a time.</value>
   </data>
+  <data name="WebCameraSettings.28" xml:space="preserve">
+    <value>Background Blur</value>
+  </data>
+  <data name="WebCameraSettings.29" xml:space="preserve">
+    <value>WebCameraSettings.28 tooltip</value>
+  </data>
+  <data name="WebCameraSettings.30" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="WebCameraSettings.31" xml:space="preserve">
+    <value>Portrait</value>
+  </data>
   <data name="Mouse.8" xml:space="preserve">
     <value>Touch Scroll Sensitivity</value>
   </data>
