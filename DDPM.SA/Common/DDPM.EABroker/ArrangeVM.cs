@@ -96,6 +96,10 @@ namespace DDPM.EABroker
         #endregion Private members
 
         #region Constants
+        //Derek 2025/03/31 test data
+        //MaxWorkWindowCount = 5 SA開起來 UI不開 memory使用量 330M
+        //MaxWorkWindowCount = 1 SA開起來 UI不開 memory使用量 300M
+        //MaxWorkWindowCount = 0 SA開起來 UI不開 memory使用量 260M
         public const int MaxWorkWindowCount = 5;
         //The gap between AWS window bottom to cursor when AWS showing up
         public const double dyAwsShow = 96;

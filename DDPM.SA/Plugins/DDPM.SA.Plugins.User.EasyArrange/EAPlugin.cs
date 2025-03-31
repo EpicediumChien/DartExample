@@ -1744,7 +1744,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #region EA Broker
 
         /// <summary>
-        /// Startup the EABroker. Set _isEaBrokerStarted to true, and let EABroker enter Waitig state.
+        /// Startup the EABroker. Set _isEaBrokerStarted to true, and let EABroker enter Waiting state.
         /// </summary>
         public void EABroker_Start()
         {
