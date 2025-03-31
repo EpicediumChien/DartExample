@@ -71,7 +71,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// </summary>
         /// <param name="text"></param>
         /// <param name="log_type">0 means info, others means error</param>
-        private void WriteLog(string text, log_type log_type,
+        private void WriteLog(string text, log_type log_type = log_type.info,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
             [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
@@ -2331,7 +2331,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _logs.DebugMsg_1($"sendMessageToEvent _IsShowNotify : {_IsShowNotify}, {fWUpdateInfo.DeviceName} {fWUpdateInfo.Model} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
             WriteLog($"_IsShowNotify : {_IsShowNotify}, {DateTime.Now}--DeviceName : {fWUpdateInfo.DeviceName} Model : {fWUpdateInfo.Model} to ver : {fWUpdateInfo.TheLatestVersion} ProcessName : {fWUpdateInfo.ProcessName}...{fWUpdateInfo.ProcessProgress}%");
         }
-        private void WriteLog(string s)
+        /*private void WriteLog(string s)
         {
             try
             {
@@ -2347,7 +2347,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 _logs.DebugMsg_1($"WriteLog Error : {ex.Message}");
             }
-        }
+        }*/
 
         private bool CheckSHA(string filePath, out string fileCAInfo)
         {
