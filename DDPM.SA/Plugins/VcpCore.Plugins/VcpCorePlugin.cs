@@ -4069,8 +4069,9 @@ namespace VcpCore.Plugins
                             Task.Delay(250 * (4 - num)).Wait();
                         }
 
-                        if (!string.IsNullOrWhiteSpace(sb.ToString()))
-                            return sb.ToString();
+                        var sbstr = Encoding.Default.GetString(sb, 0, Array.IndexOf(sb, (byte)0));
+                        if (!string.IsNullOrWhiteSpace(sbstr))
+                            return sbstr;
                     }
 
                     count++;

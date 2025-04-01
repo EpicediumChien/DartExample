@@ -81,8 +81,8 @@ namespace VcpCore.Common
         }
 
         [DllImport("dxva2.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool CapabilitiesRequestAndCapabilitiesReply(IntPtr hMonitor, byte[] output, uint length);
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool CapabilitiesRequestAndCapabilitiesReply(IntPtr hMonitor, byte[] pszASCIICapabilitiesString, uint dwCapabilitiesStringLengthInCharacters);
 
         public static bool _CapabilitiesRequestAndCapabilitiesReply(IntPtr hMonitor, byte[] output, uint length)
         {
