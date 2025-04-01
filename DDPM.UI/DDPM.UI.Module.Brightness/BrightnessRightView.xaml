@@ -1177,11 +1177,12 @@
                                             </Border.Style>
 
                                             <StackPanel>
+                                                <!--20250401 Chewlin change ColumnDefinition Width="6" to  "15" -->
                                                 <!-- Elsa 20250113 For PIMS [PIMS-333699] change ColumnDefinition Width="30*" "15" 30* "15" to "25*" "6" "33*" "5" -->
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="25*" />
-                                                        <ColumnDefinition Width="6" />
+                                                        <ColumnDefinition Width="15" />
                                                         <ColumnDefinition Width="33*" />
                                                         <ColumnDefinition Width="5" />
                                                         <ColumnDefinition Width="30*" />
@@ -1233,14 +1234,15 @@
                                                             <RowDefinition MinHeight="24" />
                                                             <RowDefinition Height="40" />
                                                         </Grid.RowDefinitions>
-
+                                                        <!--20250401 Chewlin for Fix PIMS-348382 change ColumnDefinition Width="3" to "5" to keep same with start time 2 -->
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="70" />
-                                                            <ColumnDefinition Width="3" />
+                                                            <ColumnDefinition Width="5" />
                                                             <ColumnDefinition Width="70" />
                                                             <ColumnDefinition Width="Auto" />
                                                         </Grid.ColumnDefinitions>
                                                         <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
+                                                        <!--20250401 Chewlin for Fix PIMS-348382 change FontSize="15" to FontSize="16"  -->
                                                         <!-- Elsa 20250113 For PIMS [PIMS-333699]add Width="190" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom" change FontSize="16" to FontSize="15"-->
                                                         <UXControls:UXTextBlock
                                                             Width="190"
@@ -1250,7 +1252,7 @@
                                                             Grid.ColumnSpan="4"
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Bottom"
-                                                            FontSize="15"
+                                                            FontSize="16"
                                                             FontFamily="Roboto"
                                                             Name="labelStartTime1"
                                                             Focusable="True" KeyboardNavigation.TabIndex="133"
@@ -1296,6 +1298,7 @@
                                                         </UXControls:UXComboBox>
 
                                                         <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
+                                                        <!--20250401 Chewlin for Fix PIMS-348382 ADD Margin="8,0,0,0" -->
                                                         <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="60" TextWrapping="WrapWithOverflow" change FontSize="16" to FontSize="15" -->
                                                         <UXControls:UXTextBlock
                                                             Width="60"
@@ -1309,6 +1312,7 @@
                                                             Focusable="True" KeyboardNavigation.TabIndex="136"
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             Text="{Binding [AM], Source={x:Static lang:LangHelper.Instance}}"
+                                                            Margin="8,0,0,0"
                                                             TextBlockSemanticColorType="Light"
                                                             TextBlockType="Display1" />
                                                     </Grid>
@@ -1394,6 +1398,7 @@
                                                             </ComboBox.ItemTemplate>
                                                         </UXControls:UXComboBox>
                                                     <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
+                                                    <!--20250401 Chewlin for Fix PIMS-348382 ADD Margin="8,0,0,0" -->
                                                     <UXControls:UXTextBlock
                                                             Grid.Row="1"
                                                             Grid.Column="1"
@@ -1401,6 +1406,7 @@
                                                             VerticalAlignment="Center"
                                                             FontSize="16"
                                                             FontFamily="Roboto"
+                                                            Margin="8,0,0,0"
                                                             Focusable="True" KeyboardNavigation.TabIndex="140" KeyboardNavigation.TabNavigation="Continue"
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             Text="{Binding [Min], Source={x:Static lang:LangHelper.Instance}}"
@@ -1597,11 +1603,12 @@
                                             </Border.Style>
 
                                             <StackPanel>
+                                                <!--20250401 Chewlin change ColumnDefinition Width="6" to  "15" -->
                                                 <!-- Elsa 20250113 For PIMS [PIMS-333699] change ColumnDefinition Width="30*" "15" 30* "15" to "25*" "6" "33*" "5" -->
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="25*" />
-                                                        <ColumnDefinition Width="6" />
+                                                        <ColumnDefinition Width="15" />
                                                         <ColumnDefinition Width="33*" />
                                                         <ColumnDefinition Width="5" />
                                                         <ColumnDefinition Width="30*" />
@@ -1614,9 +1621,10 @@
                                                             <RowDefinition Height="40" />
                                                         </Grid.RowDefinitions>
                                                         <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
+                                                        <!--20250401 Chewlin for Fix PIMS-348382 change Width="155" to MaxWidth=155 to keep same Preset 1 Name-->
                                                         <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="155" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom"-->
                                                         <UXControls:UXTextBlock
-                                                            Width="155"
+                                                            MaxWidth="155"
                                                             TextWrapping="WrapWithOverflow"
                                                             Grid.Row="0"
                                                             HorizontalAlignment="Left"
@@ -1718,6 +1726,7 @@
                                                         </ComboBox.ItemTemplate>
                                                         </UXControls:UXComboBox>
                                                         <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
+                                                        <!--20250401 Chewlin for Fix PIMS-348382 ADD Margin="8,0,0,0" -->
                                                         <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="190" TextWrapping="WrapWithOverflow" change FontSize="16" to FontSize="15"-->
                                                         <UXControls:UXTextBlock
                                                             TextWrapping="WrapWithOverflow"
@@ -1728,6 +1737,7 @@
                                                             VerticalAlignment="Center"
                                                             FontSize="15"
                                                             FontFamily="Roboto"
+                                                            Margin="8,0,0,0"
                                                             Focusable="True" KeyboardNavigation.TabIndex="156"       
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             Text="{Binding [PM], Source={x:Static lang:LangHelper.Instance}}"
@@ -1819,6 +1829,7 @@
                                                             </ComboBox.ItemTemplate>
                                                         </UXControls:UXComboBox>
                                                     <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
+                                                    <!--20250401 Chewlin for Fix PIMS-348382 ADD Margin="8,0,0,0" -->
                                                         <UXControls:UXTextBlock
                                                             Grid.Row="1"
                                                             Grid.Column="1"
@@ -1826,6 +1837,7 @@
                                                             VerticalAlignment="Center"
                                                             FontSize="16"
                                                             FontFamily="Roboto"
+                                                            Margin="8,0,0,0"
                                                             Focusable="True" KeyboardNavigation.TabIndex="160"
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             Text="{Binding [Min], Source={x:Static lang:LangHelper.Instance}}"
@@ -1978,10 +1990,11 @@
                                                             </Setter>
                                                         </Style>
                                                     </Grid.Resources>
+                                                    <!-- 20250401 Chewlin change Width="173" to MinWidth="173" to keep preview 1 Same -->
                                                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                                         <UXControls:UXButton
                                                             Name="PR2_Preview_UXButton"
-                                                            Width="173"
+                                                            MinWidth="173"
                                                             Height="40"
                                                             Padding="31.5,8"
                                                             ButtonSemanticColorType="Neutral"
