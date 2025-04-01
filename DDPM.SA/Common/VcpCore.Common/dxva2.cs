@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace VcpCore.Common
 {
@@ -83,9 +82,9 @@ namespace VcpCore.Common
 
         [DllImport("dxva2.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool CapabilitiesRequestAndCapabilitiesReply(IntPtr hMonitor, StringBuilder output, uint length);
+        private static extern bool CapabilitiesRequestAndCapabilitiesReply(IntPtr hMonitor, byte[] output, uint length);
 
-        public static bool _CapabilitiesRequestAndCapabilitiesReply(IntPtr hMonitor, StringBuilder output, uint length)
+        public static bool _CapabilitiesRequestAndCapabilitiesReply(IntPtr hMonitor, byte[] output, uint length)
         {
             bool rst = CapabilitiesRequestAndCapabilitiesReply(hMonitor, output, length);
 
