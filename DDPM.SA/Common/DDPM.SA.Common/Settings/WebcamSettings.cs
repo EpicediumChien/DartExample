@@ -57,7 +57,8 @@ namespace DDPM.SA.Common.Settings
         //public string CurrentResolution { get => Resolutions[SelectedResolution]; }
         //public string CurrentFPS { get => SelectedFPSs[SelectedResolution]; }
 
-        public string CurrentResolution {
+        public string CurrentResolution
+        {
             get
             {
                 if (Resolutions.TryGetValue(SelectedResolution, out var key))
@@ -70,12 +71,13 @@ namespace DDPM.SA.Common.Settings
         }
         public string CurrentFPS
         {
-            get 
+            get
             {
-                if (SelectedFPSs.TryGetValue(SelectedResolution, out var key)) 
+                if (SelectedFPSs.TryGetValue(SelectedResolution, out var key))
                 {
                     return key;
-                }else
+                }
+                else
                     return "30";
             }
         }
@@ -271,28 +273,29 @@ namespace DDPM.SA.Common.Settings
                         //PresetProfiles["Warm"].IsFocusOn = true;
                         //PresetProfiles["Vibrant"].IsFocusOn = true;
                         //PresetProfiles["Smooth"].IsFocusOn = true;
-                        PresetProfiles["Smooth"].Sharpness = 32;
                         break;
                     case "U3223QZ":
                         PresetProfiles["Default"].FieldOfView = 90;
                         //PresetProfiles["Default"].IsFocusOn = true;
                         PresetProfiles["Smooth"].IsHDROn = false;
                         PresetProfiles["Smooth"].FieldOfView = 90;
-                        PresetProfiles["Smooth"].Sharpness = 250;
+                        PresetProfiles["Smooth"].Brightness = 93;
+                        PresetProfiles["Smooth"].Contrast = 27;
+                        PresetProfiles["Smooth"].Sharpness = 27;
                         //PresetProfiles["Smooth"].IsFocusOn = true;
                         PresetProfiles["Vibrant"].IsHDROn = false;
                         PresetProfiles["Vibrant"].FieldOfView = 90;
-                        PresetProfiles["Vibrant"].Brightness = 200;
-                        PresetProfiles["Vibrant"].Contrast = 162;
-                        PresetProfiles["Vibrant"].Saturation = 128;
-                        PresetProfiles["Vibrant"].Sharpness = 180;
+                        PresetProfiles["Vibrant"].Brightness = 128;
+                        PresetProfiles["Vibrant"].Contrast = 191;
+                        PresetProfiles["Vibrant"].Saturation = 157;
+                        PresetProfiles["Vibrant"].Sharpness = 163;
                         //PresetProfiles["Vibrant"].IsFocusOn = true;
                         PresetProfiles["Warm"].IsHDROn = false;
                         PresetProfiles["Warm"].FieldOfView = 90;
-                        PresetProfiles["Warm"].Brightness = 204;
-                        PresetProfiles["Warm"].Contrast = 147;
-                        PresetProfiles["Warm"].Saturation = 155;
-                        PresetProfiles["Warm"].Sharpness = 128;
+                        PresetProfiles["Warm"].Brightness = 93;
+                        PresetProfiles["Warm"].Contrast = 128;
+                        PresetProfiles["Warm"].Saturation = 129;
+                        PresetProfiles["Warm"].Sharpness = 63;
                         //PresetProfiles["Warm"].IsFocusOn = true;
                         break;
                     case "U3224KB":
@@ -301,28 +304,20 @@ namespace DDPM.SA.Common.Settings
                         //PresetProfiles["Default"].IsFocusOn = true;
                         //PresetProfiles["Default"].Focus = 1;
                         PresetProfiles["Smooth"].FieldOfView = 90;
-                        PresetProfiles["Smooth"].Brightness = 128;
-                        PresetProfiles["Smooth"].Sharpness = 25;
+                        PresetProfiles["Smooth"].Sharpness = 250;
                         //PresetProfiles["Smooth"].IsFocusOn = true;
-                        PresetProfiles["Smooth"].Saturation = 100;
-                        PresetProfiles["Smooth"].IsHDROn = false;
                         PresetProfiles["Vibrant"].FieldOfView = 90;
-                        PresetProfiles["Vibrant"].Brightness = 128;
-                        PresetProfiles["Vibrant"].Contrast = 191;
-                        PresetProfiles["Vibrant"].Saturation = 157;
-                        PresetProfiles["Vibrant"].Sharpness = 163;
-                        PresetProfiles["Vibrant"].IsHDROn = false;
+                        PresetProfiles["Vibrant"].Brightness = 200;
+                        PresetProfiles["Vibrant"].Contrast = 162;
+                        PresetProfiles["Vibrant"].Saturation = 128;
+                        PresetProfiles["Vibrant"].Sharpness = 180;
                         //PresetProfiles["Vibrant"].IsFocusOn = true;
                         PresetProfiles["Warm"].FieldOfView = 90;
-                        PresetProfiles["Warm"].Brightness = 93;
-                        PresetProfiles["Warm"].Contrast = 128;
-                        PresetProfiles["Warm"].Saturation = 129;
-                        PresetProfiles["Warm"].Sharpness = 63;
-                        PresetProfiles["Warm"].IsHDROn = false;
+                        PresetProfiles["Warm"].Brightness = 204;
+                        PresetProfiles["Warm"].Contrast = 147;
+                        PresetProfiles["Warm"].Saturation = 155;
+                        PresetProfiles["Warm"].Sharpness = 128;
                         //PresetProfiles["Warm"].IsFocusOn = true;
-                        PresetProfiles["Warm"].IsAutoWhiteBalanceOn = false;
-                        PresetProfiles["Warm"].AutoWhiteBalance = 5830;
-
                         break;
                     case "WB5023":
                         //PresetProfiles["Default"].IsFocusOn = true;
@@ -363,7 +358,8 @@ namespace DDPM.SA.Common.Settings
                         break;
                 }
                 log?.Error($"if (presetProfiles != null) {PresetProfiles.Keys}");
-                SetDPeMDefaultSettings(presetProfiles, PresetProfiles, log);
+                if (string.IsNullOrEmpty(di.Message))
+                    SetDPeMDefaultSettings(presetProfiles, PresetProfiles, log);
                 var HasNewDefault = CustomProfiles.Values.Any(x => x.Name.Contains(di.ProfileName)) && WebcamProfileNames.Any(y => y == di.ProfileName);
                 SelectedProfileName = di.ProfileName != string.Empty ? HasNewDefault == true ? di.ProfileName + "*" : di.ProfileName : "Default";
             }
@@ -685,6 +681,10 @@ namespace DDPM.SA.Common.Settings
         public int AutoFramingSensitivity { get; set; } = 1;//參考IL基本值
         public int AutoFramingFrameSize { get; set; } = 1;//參考IL基本值
         public bool IsAutoFramingTransitionOn { get; set; } = true;//參考IL基本值
+
+        public bool IsBgBlurEnable { get; set; } = true;//參考IL基本值
+
+        public int BgBlur { get; set; } = 0;
         public WebcamProfile Clone()
         {
             return (WebcamProfile)MemberwiseClone();

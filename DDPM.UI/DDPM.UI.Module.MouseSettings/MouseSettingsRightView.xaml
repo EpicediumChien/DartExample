@@ -25,9 +25,9 @@
       <PluginCommon:HeightConverter x:Key="HeightConverter" />
     </ResourceDictionary>
   </UserControl.Resources>
-  <Grid Margin="0,0,10,15">
-    <!-- remove Width="520"  for this border Derek 10/30 -->
-    <Border  Background="{DynamicResource MouseSettingMenu_BgColor99}"  CornerRadius="13" Margin="0,10,0,0">
+  <!--Elsa 20250331 for PIMS-348388 change Margin="0,0,0,15" to Margin="0,0,6,16",change Width="520" to Width="auto" -->
+  <Grid Margin="0,0,6,16">
+    <Border  Background="{DynamicResource MouseSettingMenu_BgColor99}" Width="auto" CornerRadius="13" Margin="0,10,10,0">
       <Border.Height>
         <MultiBinding Converter="{StaticResource HeightConverter}">
           <Binding Path="Height" RelativeSource="{RelativeSource AncestorType=Grid}" />

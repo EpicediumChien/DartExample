@@ -34,7 +34,10 @@
         FW,
         Mute,
         UnMute,
-        FingerPrint
+        FingerPrint,
+        WalkAwayLock,
+        StartRecording,
+        EasyMemory
     }
 
     public enum OSDType_Op

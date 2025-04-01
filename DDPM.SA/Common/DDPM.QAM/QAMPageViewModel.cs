@@ -49,7 +49,7 @@ namespace DDPM.QAM
             try
             {
                 logger = log;
-                List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA!.GetDevices().Result.deviceInfo;
+                List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA.GetDevices().Result.deviceInfo;
 
                 if (deviceInfos != null && deviceInfos.Count > 0)
                 {
@@ -122,7 +122,16 @@ namespace DDPM.QAM
 
                         for (int k = 0; k < CurrentDeviceInfo!.FOVValues.Length; k++)
                         {
-                            _fOVs[k] = int.Parse(CurrentDeviceInfo!.FOVValues[k]);
+                            if (int.TryParse(CurrentDeviceInfo!.FOVValues[k], out int parsedValue))
+                            {
+                                _fOVs[k] = parsedValue;
+                            }
+                            else
+                            {
+                                DdpmCommonHelper.DeviceManagerSA?.WriteLog($"Failed to parse FOV value: {CurrentDeviceInfo.FOVValues[k]}");
+                            }
+
+                            //_fOVs[k] = int.Parse(CurrentDeviceInfo!.FOVValues[k]);
                         }
                     }
                 }
@@ -130,7 +139,7 @@ namespace DDPM.QAM
                 //Derek 1210
                 if (!isQAMPageViewModel_UIUpdateNotifyExist)
                 {
-                    DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += QAMPageViewModel_UIUpdateNotify;
+                    DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify += QAMPageViewModel_UIUpdateNotify;
                     isQAMPageViewModel_UIUpdateNotifyExist = true;
 
                     LogMsg($"Add event QAMPageViewModel_UIUpdateNotify, isQAMPageViewModel_UIUpdateNotifyExist = {isQAMPageViewModel_UIUpdateNotifyExist}");
@@ -801,6 +810,7 @@ namespace DDPM.QAM
             {
                 bool result = DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), _ZoomValue).Result;
                 LogMsg($"QAM set Zoom value to {_ZoomValue}, result is {result}");
+                SetNoneProfile();
             }
             else
                 LogMsg($"QAM Zoom value has modified by UI");
@@ -911,26 +921,26 @@ namespace DDPM.QAM
             return false;
         }
 
-        public bool SaveNoneProfileZOOM()
-        {
-            try
-            {
-                if (null != webcamSettings.NONE && selectedProfileName == "NONE")
-                {
-                    webcamSettings.NONE.Zoom = ZoomValue;
+        //public bool SaveNoneProfileZOOM()
+        //{
+        //    try
+        //    {
+        //        if (null != webcamSettings.NONE && selectedProfileName != "NONE")
+        //        {
+        //            webcamSettings.NONE.Zoom = ZoomValue;
 
-                    SaveSelectProfile();
+        //            SaveSelectProfile();
 
-                    return true;
-                }
-            }
-            catch (Exception e)
-            {
-                LogMsg($"SaveNoneProfileZOOM catch exception: {e.Message}");
-            }
+        //            return true;
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        LogMsg($"SaveNoneProfileZOOM catch exception: {e.Message}");
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
     }
     public class UI_Profile
     {

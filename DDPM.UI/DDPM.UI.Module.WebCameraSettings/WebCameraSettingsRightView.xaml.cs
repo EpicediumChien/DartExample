@@ -29,6 +29,8 @@ namespace DDPM.UI.Module.WebCameraSettings
 
                 InitializeComponent();
                 _vm = vm;
+                if (_vm?.CurrentDeviceInfo == null)
+                    return;
 
                 //lock/unlock init, 9/23 add lock
                 if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -57,7 +59,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                     }
                 }
 
-                if (_vm.CurrentDeviceInfo!.IsPropertyFOVSupported)
+                if (_vm.CurrentDeviceInfo.IsPropertyFOVSupported)
                     InitializeFOV();
 
                 if (_vm.CurrentDeviceInfo.IsPropertyZoomSupported)
@@ -82,9 +84,11 @@ namespace DDPM.UI.Module.WebCameraSettings
 
         private void InitializeFOV()
         {
+            if (_vm?.CurrentDeviceInfo == null)
+                return;
             try
             {
-                var FOV = _vm.CurrentDeviceInfo!.FOVValues;
+                var FOV = _vm.CurrentDeviceInfo.FOVValues;
                 switch (FOV.Length)
                 {
                     case 2:
@@ -119,11 +123,13 @@ namespace DDPM.UI.Module.WebCameraSettings
 
         private void InitializeZoom()
         {
+            if (_vm?.CurrentDeviceInfo == null)
+                return;
             try
             {
-                ZoomSlider.Maximum = _vm.CurrentDeviceInfo!.ZoomMax;
-                ZoomSlider.Minimum = _vm.CurrentDeviceInfo!.ZoomMin;
-                ZoomSlider.TickFrequency = _vm.CurrentDeviceInfo!.ZoomSteppingDelta;
+                ZoomSlider.Maximum = _vm.CurrentDeviceInfo.ZoomMax;
+                ZoomSlider.Minimum = _vm.CurrentDeviceInfo.ZoomMin;
+                ZoomSlider.TickFrequency = _vm.CurrentDeviceInfo.ZoomSteppingDelta;
             }
             catch(Exception ex)
             {
@@ -132,11 +138,13 @@ namespace DDPM.UI.Module.WebCameraSettings
         }
         private void InitializeAutofocus()
         {
+            if (_vm?.CurrentDeviceInfo == null)
+                return;
             try
             {
-                AutofocusSlider.Maximum = _vm.CurrentDeviceInfo!.FocusMax;
-                AutofocusSlider.Minimum = _vm.CurrentDeviceInfo!.FocusMin;
-                AutofocusSlider.TickFrequency = _vm.CurrentDeviceInfo!.FocusSteppingDelta;
+                AutofocusSlider.Maximum = _vm.CurrentDeviceInfo.FocusMax;
+                AutofocusSlider.Minimum = _vm.CurrentDeviceInfo.FocusMin;
+                AutofocusSlider.TickFrequency = _vm.CurrentDeviceInfo.FocusSteppingDelta;
             }
             catch ( Exception ex)
             {
@@ -566,6 +574,37 @@ namespace DDPM.UI.Module.WebCameraSettings
             catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog($"AutoFrameSwitch_Click catch exception: {ex.Message}");
+            }
+        }
+
+        private void BgBlurSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            //try
+            //{
+            //    DdpmCommonHelper.DeviceManagerSA?.SetIsBgBlurEnable("DDPMSetProfileToNoneByAutoFrame", false);
+            //}
+            //catch (Exception ex)
+            //{
+            //    DdpmCommonHelper.WriteUILog($"AutoFrameSwitch_Click catch exception: {ex.Message}");
+            //}
+        }
+
+        private void SetBgBlur_Click(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                if (sender is Border bdr)
+                {
+                    var val = int.Parse(bdr.Tag.ToString()!);
+                    if (val == _vm.BgBlur)
+                    { return; }
+
+                    _vm.BgBlur = val;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs AutoFramingSensitivity_Click() ex:" + ex.Message);
             }
         }
     }

@@ -1307,7 +1307,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed args.notification = " + args.notification);
 
-                args.notification = "{\"sid\": \"\",\"gid\": \"\",\"response\": [{\"tid\": ,\"result\": 0,\"msg\": \" " + DateTimeOffset.Now.ToString() + " \",\"data\": [" + args.notification + "]}]}";
+                args.notification = "{\"sid\": \"\",\"gid\": \"\",\"response\": [{\"tid\": 0,\"result\": 0,\"msg\": \" " + DateTimeOffset.Now.ToString() + " \",\"data\": [" + args.notification + "]}]}";
 
                 if (Params.EventType.DISPLAY_CONNECT.ToString().Equals(args.eventType))
                 {

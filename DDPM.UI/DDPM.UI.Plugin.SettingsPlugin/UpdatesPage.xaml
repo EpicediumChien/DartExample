@@ -9,12 +9,11 @@
              xmlns:commonModel="clr-namespace:DDPM.UI.Common.Models;assembly=DDPM.UI.Common"
              xmlns:SAAlert="clr-namespace:DDPM.SA.Common.Alert;assembly=DDPM.SA.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-             mc:Ignorable="d" 
-             Margin="5,4,0,29"
+             mc:Ignorable="d"             
              d:DesignHeight="450"
              d:DesignWidth="800"
              SizeChanged="UserControl_SizeChanged">
-
+    <!--20250331 Chewlin for PIMS-348208 Remove above Margin="5,4,0,29"-->
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -93,7 +92,8 @@
                                 <!-- Row 0: spFWUpdate -->
                                 <StackPanel Grid.Row="0" Margin="0,0,0,16" Orientation="Horizontal" x:Name="spFWUpdate">
                                     <!-- 2025/01/11 Derek PIMS 334386 change Width="176" to MinWidth="176" add move content to textblock -->
-                                    <Button Width="179"
+                                    <!-- 2025/03/31 Chewlin for mutilanguage clipping isssue change Width="179" to MinWidth="179"  -->
+                                    <Button MinWidth="179"
                                             Height="40"
                                             Click="CheckUpdate_Click"
                                             Cursor="Hand"

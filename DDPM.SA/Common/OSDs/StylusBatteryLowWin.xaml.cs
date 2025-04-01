@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -29,9 +30,9 @@ namespace DDPM.OSDs
 
             if (!string.IsNullOrWhiteSpace(showString))
             {
-                this.WindowState = WindowState.Maximized;
+                /*this.WindowState = WindowState.Maximized;
+                this.Topmost = true;*/
                 this.ShowStringText.Text = showString;
-                this.Topmost = true;
 
                 //PIMS-322110 250123 updated by Hwe
                 /*time = TimeSpan.FromMilliseconds(3000);

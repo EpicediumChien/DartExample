@@ -101,6 +101,8 @@ namespace DDPM.SA.Plugins.CMAManager
         {
             string result = string.Empty;
 
+            int count = 0; // add @ 2020328 stephen
+
             List<MonitorInfo> diff = new List<MonitorInfo>();
 
             foreach (MonitorInfo info1 in src)
@@ -127,6 +129,7 @@ namespace DDPM.SA.Plugins.CMAManager
             if (diff.Count > 0)
             {
                 ItemMonitor item;
+                count = 0;  // add @ 20250328 stephen
                 foreach (MonitorInfo info in diff)
                 {
                     item = new ItemMonitor()
@@ -140,7 +143,14 @@ namespace DDPM.SA.Plugins.CMAManager
                         servicetag = info.edid.ServiceTag
                     };
 
+                    // add @ 20250327 stephen
+                    if (count > 0)
+                    {
+                        result = result + ",\n";
+                    }
+
                     result = result + "{" + item.ToString() + "}";
+                    count++;
                 }
 
             }

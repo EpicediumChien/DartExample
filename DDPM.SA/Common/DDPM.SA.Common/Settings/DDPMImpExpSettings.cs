@@ -1,4 +1,5 @@
 ﻿using DdmLibrary.Utility;
+using System;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -14,7 +15,6 @@ namespace DDPM.SA.Common.Settings
         public DDMAppSettings AppSettings { get; set; } = new DDMAppSettings();
         public DDMUserSettings UserSettings { get; set; } = new DDMUserSettings();
         public DDMMonitorSettings MonitorSettings { get; set; } = new DDMMonitorSettings();
-
     }
 
     public class ImpVCPSequence

@@ -161,6 +161,8 @@
                 <Button Content="+K" Click="addKb_Click" />
                 <Button Content="+M" Click="addMouse_Click" />
                 <Button Content="+A" Click="addAllTest_Click" />
+                <UXControls:UXButton Content="flyOut" Click="UXButton_Click">
+                </UXControls:UXButton>
                 <CheckBox Name="ckbGreenBorder" Content="GreenBorder" Foreground="Green" />
 
                 <TextBlock Foreground="#FF7BFF00" Text="Items=" Margin="8,0,0,0" />

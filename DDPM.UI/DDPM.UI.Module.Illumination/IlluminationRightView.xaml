@@ -19,8 +19,8 @@
       <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </ResourceDictionary>
   </UserControl.Resources>
-  <!--Elsa 20250325 for PIMS-348388 change Width="507" to Width="520" and change Margin="0,0,0,15" to Margin="-13,10,0,15"-->
-  <Border CornerRadius="13" Width="520" Margin="-13,10,0,15">
+  <!--Elsa 20250331 for PIMS-348388 change Width="520" to Width="auto",change Margin="0,10,10,15" to Margin="0,10,16,16" -->
+  <Border CornerRadius="13" Width="auto" Margin="0,10,16,16">
     <Grid Margin="0,0,0,0">
       <Grid.RowDefinitions>
         <RowDefinition Height="70" />

@@ -84,7 +84,7 @@ namespace ColorPreset.Plugins
         private ISettingsManagerDev _SettingsPlugin_internal;
 
         private MainWindow? MonitorBorkerWin = null;
-        private Thread newWindowThread_AutoSetColorPresetForMonitorConfig = null;
+        private Thread? newWindowThread_AutoSetColorPresetForMonitorConfig = null;
 
         //20240830 Jim add
         IIC_Metadata _ICC_Metadata = new IIC_Metadata();
@@ -1975,7 +1975,7 @@ namespace ColorPreset.Plugins
         /// </summary>
         /// <param name="m">Monitor Info</param>
         /// <returns> Run Deserialize ICC.json後的 object   </returns>
-        public Task<IIC_Metadata> DownloadICCData(string modelName , string displayName , bool blICCProfile = false, string savelPath = "", bool UpdateMetadata = false)
+        public Task<IIC_Metadata> DownloadICCData(string modelName, string displayName, bool blICCProfile = false, string savelPath = "", bool UpdateMetadata = false)
         {
             writelog("ColorPresetPlugin DownloadICCData requested ...");
             try

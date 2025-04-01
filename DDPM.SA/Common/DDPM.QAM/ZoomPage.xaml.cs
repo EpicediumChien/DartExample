@@ -32,9 +32,6 @@ namespace DDPM.QAM
                 vm.IsSliderDragging = false;
                 vm.isStatusChangeByDDPM = false;
                 vm.SetZoom();
-
-                //Derek 2025/01/24 Save Zoom value to none profile if current select is none
-                vm.SaveNoneProfileZOOM();
             }
         }
     }

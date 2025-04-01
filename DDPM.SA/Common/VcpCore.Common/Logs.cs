@@ -8,7 +8,7 @@ namespace VcpCore.Common
     public class Logs
     {
         private ILog Logg;
-        private string logPath;
+        private Log _Log;
 
         private string _PluginLogId = string.Empty;
 
@@ -18,14 +18,20 @@ namespace VcpCore.Common
         public Logs(ILog Logx, string PluginLogId)
         { Logg = Logx; _PluginLogId = PluginLogId; }
 
-        public Logs(string logPathx, string PluginLogId)
-        { logPath = logPathx; _PluginLogId = PluginLogId; }
+        public Logs(Log log, string PluginLogId)
+        { _Log = log; _PluginLogId = PluginLogId; }
 
         public void DebugMsg(string DebugMsg)
         {
             if (Logg != null) // Elie, check if it's null or not.
-            { Logg.Info("[INFO] " + DebugMsg); }
-            if (!string.IsNullOrEmpty(logPath))
+            {
+                Logg.Info("[INFO] " + DebugMsg);
+            }
+            if (_Log != null)
+            {
+                _Log.Info("[INFO] " + DebugMsg);
+            }
+            /*if (!string.IsNullOrEmpty(logPath))
             {
                 try
                 {
@@ -40,7 +46,7 @@ namespace VcpCore.Common
                     Console.WriteLine($"[VcpCore.Common.Logs] DebugMsg failed, message: {ex.Message}");
 #endif
                 }
-            }
+            }*/
 #if DEBUG
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + DebugMsg);
 #endif
@@ -50,8 +56,14 @@ namespace VcpCore.Common
         {
             string s = $"[{_PluginLogId}][INFO] " + DebugMsg;
             if (Logg != null) // Elie, check if it's null or not.
-            { Logg.Info(s); }
-            if (!string.IsNullOrEmpty(logPath))
+            {
+                Logg.Info(s);
+            }
+            if (_Log != null)
+            {
+                _Log.Info(s);
+            }
+            /*if (!string.IsNullOrEmpty(logPath))
             {
                 try
                 {
@@ -66,7 +78,7 @@ namespace VcpCore.Common
                     Console.WriteLine($"[VcpCore.Common.Logs] DebugMsg_1 failed, message: {ex.Message}");
 #endif
                 }
-            }
+            }*/
 #if DEBUG
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + s);
 #endif
@@ -76,8 +88,14 @@ namespace VcpCore.Common
         {
             string s = $"[{_PluginLogId}] " + DebugMsg;
             if (Logg != null) // Elie, check if it's null or not.
-            { Logg.Info(s); }
-            if (!string.IsNullOrEmpty(logPath))
+            {
+                Logg.Info(s);
+            }
+            if (_Log != null)
+            {
+                _Log.Info(s);
+            }
+            /*if (!string.IsNullOrEmpty(logPath))
             {
                 try
                 {
@@ -92,7 +110,7 @@ namespace VcpCore.Common
                     Console.WriteLine($"[VcpCore.Common.Logs] Info failed, message: {ex.Message}");
 #endif
                 }
-            }
+            }*/
 #if DEBUG
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + s);
 #endif
@@ -102,8 +120,14 @@ namespace VcpCore.Common
         {
             string s = $"[{_PluginLogId}]" + DebugMsg;
             if (Logg != null) // Elie, check if it's null or not.
-            { Logg.Error(s); }
-            if (!string.IsNullOrEmpty(logPath))
+            {
+                Logg.Error(s);
+            }
+            if (_Log != null)
+            {
+                _Log.Error(s);
+            }
+            /*if (!string.IsNullOrEmpty(logPath))
             {
                 try
                 {
@@ -118,7 +142,7 @@ namespace VcpCore.Common
                     Console.WriteLine($"[VcpCore.Common.Logs] Info failed, message: {ex.Message}");
 #endif
                 }
-            }
+            }*/
 #if DEBUG
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + s);
 #endif
