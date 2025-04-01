@@ -1,19 +1,9 @@
 ﻿using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using VcpCore.Common;
-using Rectangle = System.Drawing.Rectangle;
 using System.Windows;
-using System.Reflection;
-using static System.Windows.Forms.AxHost;
 using Dell.Client.Framework.Common;
-using System.Windows.Media.Media3D;
 
 namespace DDPM.EABroker
 {
@@ -38,7 +28,7 @@ namespace DDPM.EABroker
         #endregion
         public EzMemLauncher_Unused()
         {
-            
+
         }
 
         public string LastError => _lastError;
@@ -157,7 +147,7 @@ namespace DDPM.EABroker
             //_emLauncherWindow = new EzMemLauncherWindow();
 
             //The eaId is belong to a custom layout
-            if (eaId >= EAEMConstants.EAID_FirstCustom)
+            if (eaId >= EAEMConstants.EAID_FirstCustom && DeviceManagerSA != null)
             {
                 //Load EA CustomList from User settings
                 SplitJson[] customList = DeviceManagerSA.ReadEACustomList().Result;

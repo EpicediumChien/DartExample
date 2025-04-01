@@ -189,6 +189,7 @@ namespace DDPM.EABroker
         public void SetWorkSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings = null)
         {
             EAWorkWindow? workWindow = _vm.FindWorkWindowByMonitor(monitorInfo);
+
             if (workWindow != null)
             {
                 workWindow.SetWorkingSplit(cellCount, splitKey, settings);
@@ -209,12 +210,14 @@ namespace DDPM.EABroker
                 _vm.ReloadEzSettingsFromUserSettingsFile();
         }
 
-        public void TestForRobert_EzArrange()
-        {
-            MonitorInfo moinfo = new MonitorInfo();
-            _deviceManagerSA.CheckEAIDExit( moinfo, 0);
-            _deviceManagerSA.DeleteEAID(moinfo, 0);
-        }
+        //Derek 2025/0401 due to reference = 0
+        //public void TestForRobert_EzArrange()
+        //{
+        //    MonitorInfo moinfo = new MonitorInfo();
+
+        //    _ = _deviceManagerSA.CheckEAIDExit( moinfo, 0);
+        //    _ = _deviceManagerSA.DeleteEAID(moinfo, 0);
+        //}
 
         public void Handle_DisplaySettingsChanged(bool isInit=false)
         {
@@ -243,7 +246,7 @@ namespace DDPM.EABroker
                     EAArgs eAArgs = new EAArgs();
                     eAArgs.Command = EAEMConstants.EACommand_SetIsSpanEnabled;
                     eAArgs.Result = newSpanEnabled;
-                    _deviceManagerSA.SendEANotify(eAArgs);                    
+                    _ = _deviceManagerSA.SendEANotify(eAArgs);
                 }
 
                 _vm.RefreshWorkWindows(isInit);
@@ -272,7 +275,7 @@ namespace DDPM.EABroker
                     EAArgs eAArgs = new EAArgs();
                     eAArgs.Command = EAEMConstants.EACommand_SetIsSpanEnabled;
                     eAArgs.Result = newSpanEnabled;
-                    _deviceManagerSA.SendEANotify(eAArgs);
+                    _ = _deviceManagerSA.SendEANotify(eAArgs);
                 }
 
                 _vm.RefreshWorkWindows(isInit);
@@ -511,6 +514,7 @@ namespace DDPM.EABroker
                     _easyArrangeService.SetEASelectedLayout(moInfo, eaId);
                 }
 
+                //Derek 2025/03/31
                 ExitUIThread();
             };
             emWin.Show();

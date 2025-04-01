@@ -55,6 +55,7 @@ namespace DDPM.EABroker
             {
                 if (_workScreen == null)
                     return false;
+
                 return (_workScreen.Bounds.Width < _workScreen.Bounds.Height);
             }
         }
@@ -65,6 +66,7 @@ namespace DDPM.EABroker
             {
                 return;
             }
+
             _workScreen = screen;
             //WorkScreen is changed
 
@@ -91,7 +93,7 @@ namespace DDPM.EABroker
             {
                 //If workSplit not been assigned, or changed
                 bool needToRefreshWorkSplit = (_workSplit == null) || (splitCtrl.EAID != _workSplit.EAID);
-                ISplitCtrl localSplit = _workSplit;
+                ISplitCtrl? localSplit = _workSplit;
 
                 if (needToRefreshWorkSplit)
                 {

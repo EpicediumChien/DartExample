@@ -2,34 +2,14 @@
 using DDPM.SA.Common;
 using DDPM.Win32Lib;
 using Dell.Client.Framework.Common;
-using Microsoft.VisualBasic.Logging;
-using nsWinEventHook;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using VcpCore.Common;
-using Windows.ApplicationModel.Contacts;
-using Windows.Media.Devices.Core;
-using static DDPM.RemoteManagement.Common.Interfaces.Params;
 using static DDPM.Win32Lib.Win32;
-using static System.Reflection.Metadata.BlobBuilder;
 using Rectangle = System.Drawing.Rectangle;
 
 namespace DDPM.EABroker
@@ -96,11 +76,11 @@ namespace DDPM.EABroker
             return rst;
         }
         private const int SW_SHOWNORMAL = 1;
-        private const int SW_SHOWMAXIMIZED = 3;
-        private const int SW_MAXIMIZE = 3;
+        //private const int SW_SHOWMAXIMIZED = 3;
+        //private const int SW_MAXIMIZE = 3;
         private const int SW_SHOWN = 5;
-        private const int SW_SHOWNA = 8;
-        private const int SW_RESTORE = 9;
+        //private const int SW_SHOWNA = 8;
+        //private const int SW_RESTORE = 9;
 
 
         //[DllImport("user32.dll")]
@@ -113,7 +93,7 @@ namespace DDPM.EABroker
         private ISplitCtrl _inputSplitCtrl = new SplitCtrl0A();
         private Rectangle _workingArea = Rectangle.Empty;
         private readonly ArrangeVM _vm;
-        private int _cellBorderCount = 0; //Cell count in the Layout (_inputSplitCtrl)
+        //private int _cellBorderCount = 0; //Cell count in the Layout (_inputSplitCtrl)
         private int _toBeArrangedCount = 0; //The count of app wait for arrange
         private int _alreadyArrangedCount = 0; //The count of app window has already been arraged
         private readonly IDeviceManagerSA _deviceManagerSA;
@@ -122,10 +102,10 @@ namespace DDPM.EABroker
         #region Events
         //When (Phase I) the EA Layout (inputSplitCtrl) is created, show on window, and get the Rects.
         //Caller can start to Phase II, launch app and arrange their window into layout
-        public EventHandler LayoutReady;
+        public EventHandler? LayoutReady = null;
 
         //When (Phase II) all (_arrangeCount) of app windows are launched and arranged.
-        public EventHandler ArrangeDone;
+        public EventHandler? ArrangeDone = null;
         #endregion Events
 
         #region Phase I - Assign Layout and Show Window
@@ -135,7 +115,8 @@ namespace DDPM.EABroker
         // emWin.Show();
         //
 
-        public EzMemLauncherWindow(ISplitCtrl inputSplitCtrl, Rectangle workingArea, int arrangeCount, ArrangeVM vm, IDeviceManagerSA deviceManagerSA)
+        public EzMemLauncherWindow(ISplitCtrl inputSplitCtrl, Rectangle workingArea, int arrangeCount, 
+                                    ArrangeVM vm, IDeviceManagerSA deviceManagerSA)
         {
             InitializeComponent();
             _inputSplitCtrl = inputSplitCtrl;
@@ -149,7 +130,6 @@ namespace DDPM.EABroker
             Top = workingArea.Top / _screenScale;
             Width = workingArea.Width / _screenScale;
             Height = workingArea.Height / _screenScale;
-
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -161,16 +141,17 @@ namespace DDPM.EABroker
             splitCtrl.Content = _inputSplitCtrl.UC;
         }
 
-        private void Window_ContentRendered(object sender, EventArgs e)
+        private void Window_ContentRendered(object? sender, EventArgs e)
         {
             RefreshCellRects();
+
             if (LayoutReady != null)
                 LayoutReady(this, EventArgs.Empty);
         }
 
-        private void EAEditWindow_ContenRendered(object? sender, EventArgs e)
-        {
-        }
+        //private void EAEditWindow_ContenRendered(object? sender, EventArgs e)
+        //{
+        //}
 
         private double RefreshScreenScale()
         {
@@ -262,7 +243,7 @@ namespace DDPM.EABroker
             if (apps.Count == 0)
                 return;
 
-            Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 List<(IntPtr handle, int idxCell)> appHandles = new List<(IntPtr, int)>();
 
@@ -515,7 +496,7 @@ namespace DDPM.EABroker
                 try
                 {
                     uint lpdwSize = 2048;
-                    StringBuilder sb = new StringBuilder((int)lpdwSize);
+                    StringBuilder? sb = new StringBuilder((int)lpdwSize);
                     if (Win32._QueryFullProcessImageName(process.Handle, 0, sb, ref lpdwSize))
                     {
                         pathName = sb.ToString();
@@ -524,8 +505,11 @@ namespace DDPM.EABroker
                     {
                         //Try with another method
                         if ((process != null) && (process.MainModule != null))
-                            pathName = process.MainModule?.FileName;
+                            pathName = process.MainModule.FileName;
                     }
+
+                    sb.Clear();
+                    sb = null;
                 }
                 catch (Exception ex1)
                 {
@@ -625,7 +609,7 @@ namespace DDPM.EABroker
                 foreach (var vapp in exitsApp)
                 {
                     appHandle = IntPtr.Zero;
-                    uint processId;
+                    //uint processId;
                     string handlePath = GetFilePathFromHandle(vapp);// 從Handle找路徑
                     Trace.WriteLine($"[LaunchAndArrange] SpecialGetHandle HandlePath {handlePath}, Handle = {vapp.ToString()}");
                     if (handlePath != null)
@@ -693,25 +677,26 @@ namespace DDPM.EABroker
         /// </summary>
         /// <param name="input">string</param>
         /// <returns></returns>
-        private string ExtractSubstring(string input)
-        {
-            if (string.IsNullOrEmpty(input))
-            {
-                return string.Empty;
-            }
+        //Derek 2025/04/01
+        //private string ExtractSubstring(string input)
+        //{
+        //    if (string.IsNullOrEmpty(input))
+        //    {
+        //        return string.Empty;
+        //    }
 
-            int underscoreIndex = input.IndexOf('_');
-            int exclamationIndex = input.IndexOf('!');
+        //    int underscoreIndex = input.IndexOf('_');
+        //    int exclamationIndex = input.IndexOf('!');
 
-            if (underscoreIndex != -1 && exclamationIndex != -1 && underscoreIndex < exclamationIndex)
-            {
-                return input.Substring(underscoreIndex + 1, exclamationIndex - underscoreIndex - 1);
-            }
+        //    if (underscoreIndex != -1 && exclamationIndex != -1 && underscoreIndex < exclamationIndex)
+        //    {
+        //        return input.Substring(underscoreIndex + 1, exclamationIndex - underscoreIndex - 1);
+        //    }
 
-            return string.Empty;
-        }
+        //    return string.Empty;
+        //}
 
-        private static string GetFilePathFromHandle(IntPtr hWnd)
+        private static string? GetFilePathFromHandle(IntPtr hWnd)
         {
             _GetWindowThreadProcessId(hWnd, out uint processId);
 
@@ -755,25 +740,27 @@ namespace DDPM.EABroker
             //return title.ToString();
         }
 
-        private bool IsHandleBelongsToApp(IntPtr handle, string expectedAppName, ILog? log = null)
-        {
-            try
-            {
-                uint processId;
-                _GetWindowThreadProcessId(handle, out processId);
-                Process process = Process.GetProcessById((int)processId);
-                return process.ProcessName.Contains(expectedAppName, StringComparison.OrdinalIgnoreCase);
-            }
-            catch (Exception ex)
-            {
-                log?.Info($"[{myName}] IsHandleBelongsToApp, Exception : {ex.Message}");
-                return false;
-            }
-        }
+        //Derek 2025/04/01
+        //private bool IsHandleBelongsToApp(IntPtr handle, string expectedAppName, ILog? log = null)
+        //{
+        //    try
+        //    {
+        //        uint processId;
+        //        _GetWindowThreadProcessId(handle, out processId);
+        //        Process process = Process.GetProcessById((int)processId);
+        //        return process.ProcessName.Contains(expectedAppName, StringComparison.OrdinalIgnoreCase);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        log?.Info($"[{myName}] IsHandleBelongsToApp, Exception : {ex.Message}");
+        //        return false;
+        //    }
+        //}
 
-        private Process LaunchApp(Bind_AddFullPage_AppCollectionData appData, ILog? log = null)
+        private Process? LaunchApp(Bind_AddFullPage_AppCollectionData appData, ILog? log = null)
         {
-            Process process = null;
+            Process? process = null;
+
             try
             {
                 if (appData.AppType == "False") //UWP
@@ -953,7 +940,7 @@ namespace DDPM.EABroker
 
         public void ArrangeWindow(IntPtr hWnd, int idxCell)
         {
-            Dispatcher.BeginInvoke(new Action(() =>
+            _ = Dispatcher.BeginInvoke(new Action(() =>
             {
                 if (_inputSplitCtrl == null)
                     return;
@@ -965,7 +952,7 @@ namespace DDPM.EABroker
                 }
                 CellObj celObj = _inputSplitCtrl.CellList[idxCell];
                 Rect rcArrange = celObj.rc;
-                Task.Delay(500);
+                _ = Task.Delay(500);
                 if (rcArrange.IsEmpty || (rcArrange.Width <= 0))
                 {
                     rcArrange = GetFrameworkElementRect(celObj.CellBd);
@@ -986,7 +973,7 @@ namespace DDPM.EABroker
                 Rect rcActualArranged = _vm.SetEAWindowPos(hWnd, rcArrange, _workingArea);
 
                 _alreadyArrangedCount++;
-                if (AreAllAppsArranged && 
+                if (AreAllAppsArranged &&
                     ArrangeDone != null)
                 {
                     _vm.WriteLog($"Send ArrangeDone event.");
@@ -1009,7 +996,9 @@ namespace DDPM.EABroker
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             _vm.WriteLog($"EzMemLauncherWindow is closing");
+
             ExitUIThread(); //Derek 2025/03/31
+            ContentRendered -= Window_ContentRendered;            
         }
     }
 }

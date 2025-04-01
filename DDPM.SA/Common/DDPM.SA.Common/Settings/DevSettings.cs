@@ -143,6 +143,9 @@ namespace DDPM.SA.Common.Settings
 
         public static bool IsEABorkerRevoked()
         {
+            /* Derek test data 2025/04/01
+             * EA enable/disable 330M/190M
+             */
             return 1 == ReadInt("IsEABrokerRevoked");
         }
 

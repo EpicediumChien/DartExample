@@ -18,13 +18,13 @@ namespace DDPM.EABroker
     public partial class SaveCustomWindow : Window
     {
         #region Private Members
-        private readonly IDeviceManagerSA _deviceManagerSA;
-        private readonly SaveCustomWindowViewModel _viewModel;
-        private readonly EAArgs _eaArgs;
+        private readonly IDeviceManagerSA? _deviceManagerSA = null;
+        private readonly SaveCustomWindowViewModel? _viewModel = null;
+        private readonly EAArgs? _eaArgs = null;
         private IntPtr _hWnd;
-        private SplitJson[] _savedCustomList; //Will be update/reloaded at ShowAndEdit()
-        private SplitJson _inputSplit; //The copy from EAArgs when entering ShowAndEdit()
-        private Screen _workScreen; //Unused, use _workingArea instead
+        private SplitJson[]? _savedCustomList = null; //Will be update/reloaded at ShowAndEdit()
+        private SplitJson? _inputSplit = null; //The copy from EAArgs when entering ShowAndEdit()
+        private Screen? _workScreen = null; //Unused, use _workingArea instead
         private Rectangle _workingArea;
         #endregion Private Members
 
@@ -172,18 +172,19 @@ namespace DDPM.EABroker
         /// </summary>
         private void UpdateUIContent()
         {
-            if (_viewModel.IsOverlapLayout)
+            if (_viewModel != null && _viewModel.IsOverlapLayout)
             {
                 _viewModel.HeaderText = _arrangeWindows;
                 _viewModel.SubText = _adjust;
                 _viewModel.IsAdjustTextVisible = true;
             }
-            else
+            else if (_viewModel != null)
             {
                 _viewModel.HeaderText = _customLayout;
                 _viewModel.SubText = _adjust;
                 _viewModel.IsAdjustTextVisible = false;
             }
+
             saveBtn.Content = _saveButton;
             cancelBtn.Content = _cancelButton;
         }
@@ -194,7 +195,7 @@ namespace DDPM.EABroker
         {
             if (_deviceManagerSA == null)
                 return;
-            if (_eaArgs == null)
+            if (_eaArgs == null || _viewModel == null)
                 return;
 
             //Build ComboBox ItemsSource and determine SelectedItem

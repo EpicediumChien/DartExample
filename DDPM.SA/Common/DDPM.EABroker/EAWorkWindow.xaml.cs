@@ -2,8 +2,6 @@
 using DDPM.SA.Common.Display;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Media.Animation;
 using VcpCore.Common;
 using Rectangle = System.Drawing.Rectangle;
@@ -18,12 +16,12 @@ namespace DDPM.EABroker
     {
         #region Private members
         private readonly ArrangeVM _vm;
-        private Screen _workScreen;
-        private EAScreen _workEaScreen;
+        private Screen? _workScreen = null;
+        private EAScreen? _workEaScreen = null;
         private List<MonitorInfo> _attachedMonitors = new List<MonitorInfo>();
         private bool _isVertical = false;
         private ISplitCtrl? _workingSplit = null;
-        private bool _isSplitCtrl0A = false;
+        //private bool _isSplitCtrl0A = false;
         private readonly bool _isAwsBuddy;
         private bool _isWorkForSpanScreen = false;
         #endregion
@@ -372,8 +370,8 @@ namespace DDPM.EABroker
 
                     if ((cellCount == 0) && (splitKey == 'B'))
                     {
-                        SplitCtrl0B sp0b = fadeSplit as SplitCtrl0B;
-                        sp0b.ApplySettingsToCellList(rcScreen);
+                        SplitCtrl0B? sp0b = fadeSplit as SplitCtrl0B;
+                        sp0b?.ApplySettingsToCellList(rcScreen);
                     }
                     fadeSplit.IsEditable = false;
                     fadeSplit.IsVertical = _isVertical;
@@ -444,6 +442,7 @@ namespace DDPM.EABroker
                 fadeOutGrid.Visibility = Visibility.Collapsed;
                 //Visibility = Visibility.Hidden;
                 //gridSplitCtrl.Opacity = 1;
+                sb = null; //Derek 2025/04/01
             };
 
             IsFading = true;
@@ -453,18 +452,21 @@ namespace DDPM.EABroker
             // });
         }
 
-        public void StopFadeOutAnimation()
-        {
-            this.Dispatcher.Invoke(() =>
-            {
-                Storyboard? sb = Resources["FadeOut"] as Storyboard;
-                if (sb == null)
-                    return;
-                sb.Stop();
-                IsFading = false;
-                //gridSplitCtrl.Opacity = 1;
-            });
-        }
+        //Derek 2025/04/01
+        //public void StopFadeOutAnimation()
+        //{
+        //    this.Dispatcher.Invoke(() =>
+        //    {
+        //        Storyboard? sb = Resources["FadeOut"] as Storyboard;
+
+        //        if (sb == null)
+        //            return;
+
+        //        sb.Stop();
+        //        IsFading = false;
+        //        //gridSplitCtrl.Opacity = 1;
+        //    });
+        //}
 
         #endregion FadeOut FadeOut Animation
 
