@@ -73,8 +73,8 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
                 //txtSystemName2.Text = _vm.VisiblePairedHostName1;
                 txtSystemName3.Text = _vm.VisiblePairedHostName1;
                 txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
-                txtSlot.Text = $"{_vm.CurrentDeviceInfo.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
-                txtAudioBLText.Text = string.Format(Strings.Paired_Info, _vm.CurrentDeviceInfo.TotalNumberOfPairedHostName);
+                txtSlot.Text = $"{_vm.CurrentDeviceInfo?.MaxPairingSlots - _vm.CurrentDeviceInfo?.PairedDeviceCount} of {_vm.CurrentDeviceInfo?.MaxPairingSlots} slots available";
+                txtAudioBLText.Text = string.Format(Strings.Paired_Info, _vm.CurrentDeviceInfo?.TotalNumberOfPairedHostName);
                 if (_deviceManager != null)
                 {
                     _deviceManager.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
@@ -112,7 +112,8 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
 
         private async void LaunchView_UnLoadedStatus(object sender, RoutedEventArgs e)
         {
-            if (_vm == null) return;
+            if (_vm == null)
+                return;
             _vm.UloadAirAudio_DTPNotify();
             if (_deviceManager != null)
             {
@@ -126,7 +127,8 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
 
         private void LaunchView_LoadedStatus(object sender, RoutedEventArgs e)
         {
-            if (_vm == null) return;
+            if (_vm == null)
+                return;
 
             try
             {
@@ -200,7 +202,8 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
         /// <param name="newItem"></param>
         private void OnVbarItemClicked(VbarItem1 newItem)
         {
-            if (newItem.Id == _vm!.VbarSelectedIndex) { return; }
+            if (newItem.Id == _vm!.VbarSelectedIndex)
+            { return; }
 
             if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm.VbarSelectedIndex + 1])
             {
@@ -335,7 +338,8 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
 
         private void Mainframe_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (_vm!.VbarSelectedIndex == -1) { return; }
+            if (_vm!.VbarSelectedIndex == -1)
+            { return; }
             _vm.UpdateResetToDefault();
             if (_vm!.ConnectionType != "WiredAudio")
             {
@@ -352,7 +356,8 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
             _vm.RightFrameWidthTo = 0;
             _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
             InvokeGotoTwoViewModeAnimation();
-            if (_vm.VbarSelectedIndex == 0) { InvokeEnlargeAnimation(); }
+            if (_vm.VbarSelectedIndex == 0)
+            { InvokeEnlargeAnimation(); }
             _vm.VbarSelectedIndex = -1;
             _vm.SetLadningMode(true);
             _vm.SelectVBar();
