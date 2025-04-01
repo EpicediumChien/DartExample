@@ -62,13 +62,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         //DDPM Subagent Plugins - TelemetryScheduler
         private ITelementryScheduler _telementrySchedulerPlugin;
-        private readonly object _PluginConditionLock_TelementryScheduler = new object();
+        //private readonly object _PluginConditionLock_TelementryScheduler = new object();  //Derek 2025/04/01
         private bool _telementrySchedulerPluginUsable = false;
         private GlobalSettingParam? _globalSettingParam = null;
 
         //DDPM Subagent Plugins - Hotkey
         private IHotkey _HotkeyPlugin;
-        private PluginCondition _hotkeyPluginCondition;
+        //private PluginCondition _hotkeyPluginCondition; //Derek 2025/04/01
         private readonly object _PluginConditionLock_Hotkey = new object();
 
         //Lock objects

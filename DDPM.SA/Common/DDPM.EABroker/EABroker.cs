@@ -6,7 +6,6 @@ using DDPM.SA.Common.Interfaces;
 using DDPM.Win32Lib;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Interfaces;
-using System.ComponentModel;
 using VcpCore.Common;
 
 namespace DDPM.EABroker
@@ -15,10 +14,11 @@ namespace DDPM.EABroker
     {
         #region Private members
         private bool _isEaBrokerStarted = false;
-        private AwsWindow _awsWindow;
-        private EAEditWindow _editWindow;
-        private SaveCustomWindow _saveCustomWindow;
-        private InfoWindow _infoWindow;
+        //Derek 2025/04/01
+        //private AwsWindow? _awsWindow = null;
+        //private EAEditWindow? _editWindow = null;
+        //private SaveCustomWindow? _saveCustomWindow = null;
+        private InfoWindow? _infoWindow = null;
         private readonly IAgent _agent;
         private ILog? _log = null;
         private readonly IDeviceManagerSA _deviceManagerSA;
@@ -41,8 +41,9 @@ namespace DDPM.EABroker
             _easyArrangeService = easyArrangeService;
 
             _vm.InitInterfaces(agent, _log, deviceManager, displayService, easyArrangeService, settingsManager);
-            WriteLog("EABroker is constructed.");
             _settingsManager = settingsManager;
+
+            WriteLog("EABroker is constructed.");
         }
         #endregion ctor
 
@@ -51,7 +52,8 @@ namespace DDPM.EABroker
         {
             WriteLog("@EABroker.Start()");
             //Init InfoWindow, EAEditWindow, SaveCustomWindow 
-            InitAllWindows();
+            //InitAllWindows(); //Derek Change function name to InitInfoWindow
+            InitInfoWindow();
             //Init EAWorkWindows
             _vm.InitWorkWindows();
             //Init AwsWindow
@@ -59,7 +61,7 @@ namespace DDPM.EABroker
             _isEaBrokerStarted = true;
             RunningState = eEARunningStates.Waiting;
         }
-        private void InitAllWindows()
+        private void InitInfoWindow()
         {
             int added = 0;
             Thread thread = new Thread(() =>

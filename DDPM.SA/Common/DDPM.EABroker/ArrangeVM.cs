@@ -43,7 +43,7 @@ namespace DDPM.EABroker
         private int _yCursor = 0;
         private double _screenScale = 1;
         private Screen? _workScreen = null;
-        private EAScreen? _workEaScreen = null;
+        //private EAScreen? _workEaScreen = null;
 
         //EzSettings
         private bool _isOnlyShift = EzSettings.Default_IsOnlyAllowWhenShiftKeyPressed;

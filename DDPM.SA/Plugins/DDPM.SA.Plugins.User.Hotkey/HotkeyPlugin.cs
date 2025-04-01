@@ -108,12 +108,6 @@ namespace DDPM.SA.Plugins.User.Hotkey
                 {
                     Debug.WriteLine("Can't hook more than once");
 
-                    //Derek 2025/03/31
-                    if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
-                    {
-                        System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
-                    }
-
                     return true;
                 }
 
