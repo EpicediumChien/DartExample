@@ -96,67 +96,51 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
 
 
                 bool blRes = false;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    blRes = DdpmCommonHelper.DeviceManagerSA.GetIsProximitySensorEnable(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+                    _vm.IsChecked_ProximitySensor = blRes;
 
-                blRes = DdpmCommonHelper.DeviceManagerSA!.GetIsProximitySensorEnable(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-                _vm.IsChecked_ProximitySensor = blRes;
+                    blRes = DdpmCommonHelper.DeviceManagerSA.GetIsWakeonApproachEnable(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+                    _vm.IsChecked_WakeOnApproach = blRes;
 
-                blRes = DdpmCommonHelper.DeviceManagerSA!.GetIsWakeonApproachEnable(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-                _vm.IsChecked_WakeOnApproach = blRes;
+                    blRes = DdpmCommonHelper.DeviceManagerSA.GetIsWalkAwayLockEnable(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+                    _vm.IsChecked_WalkAwayLock = blRes;
 
-                blRes = DdpmCommonHelper.DeviceManagerSA!.GetIsWalkAwayLockEnable(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-                _vm.IsChecked_WalkAwayLock = blRes;
+                    int nRes = -1;
 
-                int nRes = -1;
+                    nRes = DdpmCommonHelper.DeviceManagerSA.GetWALTime(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
 
-                nRes = DdpmCommonHelper.DeviceManagerSA!.GetWALTime(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+                    if (nRes != 30 && nRes != 60 && nRes != 120)
+                        nRes = 60;
 
-                if (nRes != 30 && nRes != 60 && nRes != 120)
-                    nRes = 60;
-
-                _vm.SelectedDelay = _vm.Delay_ItemsCollection.Find(x => (x.Delay == nRes));
-
-
-                nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnooze(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-                //nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnooze(_vm.CurrentDeviceInfo!.ID).Result;
-
-                if (nRes >= 0)
-                    _vm.IsChecked_Snooze = true;
-                else
-                    _vm.IsChecked_Snooze = false;
+                    _vm.SelectedDelay = _vm.Delay_ItemsCollection.Find(x => (x.Delay == nRes));
 
 
-                //nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-                //nRes = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID).Result;
+                    nRes = DdpmCommonHelper.DeviceManagerSA.GetSnooze(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+                    //nRes = DdpmCommonHelper.DeviceManagerSA.GetSnooze(_vm.CurrentDeviceInfo!.ID).Result;
 
-                //if (nRes != 30 && nRes != 60 && nRes != 90 && nRes != 120)
-                //    nRes = 60;
+                    if (nRes >= 0)
+                        _vm.IsChecked_Snooze = true;
+                    else
+                        _vm.IsChecked_Snooze = false;
 
-                /*
-                if (nRes <= 1800)
-                    nRes = 30;
-                else if (nRes > 1800 && nRes <= 3600)
-                    nRes = 60;
-                else if (nRes > 3600 && nRes <= 5400)
-                    nRes = 90;
-                else if (nRes > 5400 && nRes <= 7200)
-                    nRes = 120;
-                */
+                    if (nRes < 0)
+                        nRes = 30;
+                    else if (nRes == 0)
+                        nRes = 30;
+                    else if (nRes == 1)
+                        nRes = 60;
+                    else if (nRes == 2)
+                        nRes = 90;
+                    else if (nRes == 3)
+                        nRes = 120;
 
-                if (nRes < 0)
-                    nRes = 30;
-                else if (nRes == 0)
-                    nRes = 30;
-                else if (nRes == 1)
-                    nRes = 60;
-                else if (nRes == 2)
-                    nRes = 90;
-                else if (nRes == 3)
-                    nRes = 120;
+                    _vm.SelectedSnoozeLength = _vm.SnoozeLength_ItemsCollection.Find(x => (x.SnoozeLength == nRes));
 
-                _vm.SelectedSnoozeLength = _vm.SnoozeLength_ItemsCollection.Find(x => (x.SnoozeLength == nRes));
-
-                if (_vm.IsChecked_Snooze == false)
-                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(-1, _vm.CurrentDeviceInfo!.ID);
+                    if (_vm.IsChecked_Snooze == false)
+                        DdpmCommonHelper.DeviceManagerSA.SetSnooze(-1, _vm.CurrentDeviceInfo!.ID);
+                }
 
                 //lock/unlock init, 9/23 add lock
                 if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -196,7 +180,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
                 //[DDPM Win 2.0][R15 webcam] Proximity Sensor in Presence Detection default is not disable.
                 SetUPDToDefaultStatus();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraPresenceDetection\\WebCameraPresenceDetectionRightView.xaml.cs WebCameraPresenceDetectionRightView() ex:" + ex.Message);
             }
@@ -275,7 +259,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
                 }));
                 */
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraPresenceDetection\\WebCameraPresenceDetectionRightView.xaml.cs DeviceManagerSA_ITSettingsActionEvent() ex:" + ex.Message);
             }
@@ -331,7 +315,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
 
                 System.Diagnostics.Process.Start(psi);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraPresenceDetection\\WebCameraPresenceDetectionRightView.xaml.cs CallPresenceSensor_Click() ex:" + ex.Message);
             }
@@ -362,7 +346,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             {
                 DdpmCommonHelper.WriteUILog($"Catch exception[{ex.Message}] when open url: {url}");
             }
-            
+
         }
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -378,7 +362,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
                         _vm.Redo();
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraPresenceDetection\\WebCameraPresenceDetectionRightView.xaml.cs Image_MouseLeftButtonDown() ex:" + ex.Message);
             }
@@ -389,7 +373,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             if (_vm.IsChecked_Snooze)
             {
                 txtTimer.Visibility = Visibility.Visible;
-                //_countdown = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+                //_countdown = DdpmCommonHelper.DeviceManagerSA.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
                 //_timer = new DispatcherTimer();
                 //_timer.Interval = TimeSpan.FromSeconds(1);
                 //_timer.Tick += Timer_Tick;
@@ -414,7 +398,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
         {
             if (_vm.IsChecked_Snooze)
             {
-                //_countdown = DdpmCommonHelper.DeviceManagerSA!.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;             
+                //_countdown = DdpmCommonHelper.DeviceManagerSA.GetSnoozeLength(_vm.CurrentDeviceInfo!.ID.ToString()).Result;             
             }
         }
 
@@ -431,7 +415,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
         //    _vm._log.Info($" Catch event {nameof(OnEsi_IsCameraSensorCoverChangeHandler)} , Caller Name: {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_IsCameraSensorCover_ChangeEvent)} ");
 
         //    if (e) 
-        //        DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.Fingerprint);
+        //        DdpmCommonHelper.DeviceManagerSA.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.Fingerprint);
         //}
 
         //private void OnWALSnoozeTimeLeftInSecondsChangeHandler(object sender, int e)
@@ -448,7 +432,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
         //    _vm._log.Info($" Catch event {nameof(OnEsi_IsWALLockCountdownStartedChangeHandler)} , Caller Name: {nameof(DdpmCommonHelper.DeviceManagerSA.Esi_IsWALLockCountdownStartedChanged_ChangeEvent)} ");
 
         //    if (e)
-        //        DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.WalkAwayLock);
+        //        DdpmCommonHelper.DeviceManagerSA.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.WalkAwayLock);
         //}
 
         //private void OnEsi_WALLockCountdownChangeHandler(object sender, int e)

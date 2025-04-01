@@ -58,7 +58,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public ICommand TabAdaptiveLightClickedCommand { get; }
         public ICommand TabManualClickedCommand { get; }
 
-        public KeyboardViewModel(IConsole console, ILog log) : base(console, log, DdpmCommonHelper.DeviceManagerSA!)
+        public KeyboardViewModel(IConsole console, ILog log) : base(console, log, DdpmCommonHelper.DeviceManagerSA)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
@@ -158,9 +158,11 @@ namespace DDPM.UI.Plugin.ViewModels
                 DdpmCommonHelper.WriteUILog($"[KeyboardViewModel] Exception : {ex}");
             }
 
+            if (CurrentDeviceInfo == null)
+                return false;
 
             InitializeKey();
-            if (CurrentDeviceInfo!.IsCollabsKeysSupported)
+            if (CurrentDeviceInfo.IsCollabsKeysSupported)
             {
                 IsCollaborationDoubleTapEnable = CurrentDeviceInfo.IsCollaborationDoubleTapEnable;
                 IsCollaborationKeyEnable = CurrentDeviceInfo.IsCollaborationKeyEnable;
@@ -333,8 +335,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     value = 3;
                     break;
             }
-            if (NeedSetting)
-                DdpmCommonHelper.DeviceManagerSA!.SetBackLightingControls(value, CurrentDeviceInfo!.ID);
+            if (NeedSetting && CurrentDeviceInfo != null)
+                DdpmCommonHelper.DeviceManagerSA?.SetBackLightingControls(value, CurrentDeviceInfo.ID);
 
             IlluminationSelectedTabIndex = index;
         }
@@ -430,8 +432,11 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void SetDBackLightingLevel()
         {
-            if (_backLightingLevel != CurrentDeviceInfo!.BackLightingLevel)
-                DdpmCommonHelper.DeviceManagerSA!.SetBackLightingLevel(_backLightingLevel, CurrentDeviceInfo.ID);
+            if (CurrentDeviceInfo == null)
+                return;
+
+            if (_backLightingLevel != CurrentDeviceInfo.BackLightingLevel)
+                DdpmCommonHelper.DeviceManagerSA?.SetBackLightingLevel(_backLightingLevel, CurrentDeviceInfo.ID);
         }
 
         public bool IsCollaborationKeyEnable
@@ -444,7 +449,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isCollaborationKeyEnable = value;
                     EnableCollaborationKey(value);
                     OnPropertyChanged();
-                    DdpmCommonHelper.DeviceManagerSA!.SetCollaborationKeyEnable(value, CurrentDeviceInfo!.ID);
+                    if (CurrentDeviceInfo != null)
+                        DdpmCommonHelper.DeviceManagerSA?.SetCollaborationKeyEnable(value, CurrentDeviceInfo.ID);
                 }
             }
         }
@@ -524,7 +530,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isCollaborationCameraEnable = value;
                     IsCollaborationCameraEnableText = value ? Strings.On : Strings.Off;
                     OnPropertyChanged();
-                    DdpmCommonHelper.DeviceManagerSA!.SetCollaborationCameraEnable(value, CurrentDeviceInfo!.ID);
+                    if (CurrentDeviceInfo != null)
+                        DdpmCommonHelper.DeviceManagerSA?.SetCollaborationCameraEnable(value, CurrentDeviceInfo.ID);
                 }
             }
         }
@@ -539,7 +546,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isCollaborationScreenShareEnable = value;
                     IsCollaborationScreenShareEnableText = value ? Strings.On : Strings.Off;
                     OnPropertyChanged();
-                    DdpmCommonHelper.DeviceManagerSA!.SetCollaborationScreenShareEnable(value, CurrentDeviceInfo!.ID);
+                    if (CurrentDeviceInfo != null)
+                        DdpmCommonHelper.DeviceManagerSA?.SetCollaborationScreenShareEnable(value, CurrentDeviceInfo.ID);
                 }
             }
         }
@@ -554,7 +562,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isCollaborationChatEnable = value;
                     IsCollaborationChatEnableText = value ? Strings.On : Strings.Off;
                     OnPropertyChanged();
-                    DdpmCommonHelper.DeviceManagerSA!.SetCollaborationChatEnable(value, CurrentDeviceInfo!.ID);
+                    if (CurrentDeviceInfo != null)
+                        DdpmCommonHelper.DeviceManagerSA?.SetCollaborationChatEnable(value, CurrentDeviceInfo.ID);
                 }
             }
         }
@@ -569,7 +578,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isCollaborationMicEnable = value;
                     IsCollaborationMicEnableText = value ? Strings.On : Strings.Off;
                     OnPropertyChanged();
-                    DdpmCommonHelper.DeviceManagerSA!.SetCollaborationMicEnable(value, CurrentDeviceInfo!.ID);
+                    if (CurrentDeviceInfo != null)
+                        DdpmCommonHelper.DeviceManagerSA?.SetCollaborationMicEnable(value, CurrentDeviceInfo.ID);
                 }
             }
         }
@@ -583,7 +593,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     _isCollaborationBlinkEffectEnable = value;
                     OnPropertyChanged();
-                    DdpmCommonHelper.DeviceManagerSA!.SetCollaborationBlinkEffectEnable(value, CurrentDeviceInfo!.ID);
+                    if (CurrentDeviceInfo != null)
+                        DdpmCommonHelper.DeviceManagerSA?.SetCollaborationBlinkEffectEnable(value, CurrentDeviceInfo.ID);
                 }
             }
         }
@@ -597,7 +608,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     _isCollaborationDoubleTapEnable = value;
                     OnPropertyChanged();
-                    DdpmCommonHelper.DeviceManagerSA!.SetCollaborationDoubleTapEnable(value, CurrentDeviceInfo!.ID);
+                    if (CurrentDeviceInfo != null)
+                        DdpmCommonHelper.DeviceManagerSA?.SetCollaborationDoubleTapEnable(value, CurrentDeviceInfo.ID);
                 }
             }
         }
@@ -1235,7 +1247,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 //string json_str = JsonConvert.SerializeObject(json_obj);
                 if (actionID == -1 || actionID > 40)
                 {
-                    DdpmCommonHelper.DeviceManagerSA!.DeleteKeyboardAssignedAction(CurrentDeviceID.ToString(), pkId);
+                    DdpmCommonHelper.DeviceManagerSA?.DeleteKeyboardAssignedAction(CurrentDeviceID.ToString(), pkId);
                 }
                 else
                 {
@@ -1248,16 +1260,16 @@ namespace DDPM.UI.Plugin.ViewModels
                     if (string.IsNullOrEmpty(parameter))
                     {
                         byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
-                        DdpmCommonHelper.DeviceManagerSA!.SetKbAssignedAction(CurrentDeviceID.ToString(), newValue);
+                        DdpmCommonHelper.DeviceManagerSA?.SetKbAssignedAction(CurrentDeviceID.ToString(), newValue);
                     }
                     else
                     {
                         jobj.Add("Command", parameter);
                         byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
                         if (actionID == 14)
-                            DdpmCommonHelper.DeviceManagerSA!.SetKbAssignKeystrokeAction(CurrentDeviceID.ToString(), newValue);
+                            DdpmCommonHelper.DeviceManagerSA?.SetKbAssignKeystrokeAction(CurrentDeviceID.ToString(), newValue);
                         else
-                            DdpmCommonHelper.DeviceManagerSA!.SetKbAssignDialogAction(CurrentDeviceID.ToString(), newValue);
+                            DdpmCommonHelper.DeviceManagerSA?.SetKbAssignDialogAction(CurrentDeviceID.ToString(), newValue);
                     }
                 }
 

@@ -98,8 +98,11 @@ namespace DDPM.UI.Plugin.MousePlugin
         private void GetPeripheralsAsync()
         {
             _log.Info($"[Mouseplugin] GetPeripherals is invoked ... in");
-            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(); //(true);
-            _deviceHelper = task.Result;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA.GetDevices(true);
+                _deviceHelper = task.Result;
+            }
 
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
             _log.Info($"[Mouseplugin] GetPeripherals is invoked ... out");
@@ -154,7 +157,8 @@ namespace DDPM.UI.Plugin.MousePlugin
         {
             if (!IsEventRegistered)
             {
-                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManager_DeviceChanged;
                 IsEventRegistered = true;
             }
             Mouse.OverrideCursor = null;
@@ -165,7 +169,8 @@ namespace DDPM.UI.Plugin.MousePlugin
         {
             if (IsEventRegistered)
             {
-                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                    DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManager_DeviceChanged;
                 IsEventRegistered = false;
             }
             Mouse.OverrideCursor = Cursors.Wait;
@@ -177,7 +182,8 @@ namespace DDPM.UI.Plugin.MousePlugin
             DdpmCommonHelper.WriteUILog($"Mouse pugin OnShown Begin timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
             if (!IsEventRegistered)
             {
-                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManager_DeviceChanged;
                 IsEventRegistered = true;
             }
             ConfigureServices();
@@ -192,7 +198,8 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         ~Mouseplugin()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManager_DeviceChanged;
         }
     }
 }

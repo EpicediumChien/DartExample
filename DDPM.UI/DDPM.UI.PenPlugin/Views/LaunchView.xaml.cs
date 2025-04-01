@@ -47,7 +47,7 @@ namespace DDPM.UI.Plugin.PenPlugin
                 //txtRestore.Text = Strings.RestoreToDefault;
 
                 InitializeButtonImage();
-                //if (_vm!.IsRestoreEnable)
+                //if (_vm.IsRestoreEnable)
                 //{
                 //    btnRestore.Visibility = Visibility.Visible;
                 //}
@@ -121,7 +121,7 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         private void InitializeButtonImage()
         {
-            switch (_vm!.Model.ToUpper())
+            switch (_vm?.Model?.ToUpper())
             {
                 case "PN7522W":
                     imgTopButtonBackground.Visibility = Visibility.Visible;
@@ -212,6 +212,9 @@ namespace DDPM.UI.Plugin.PenPlugin
         /// </summary>
         private void BuildModuleGroups()
         {
+            if (_vm == null)
+                return;
+
             List<ModuleGroup> groups = new();
             ModuleGroup moduleGroup;
 
@@ -221,7 +224,7 @@ namespace DDPM.UI.Plugin.PenPlugin
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/PencilMark.png", "DDPM.UI.Resources"),
                 GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.PenSettings)
             };
-            moduleGroup.AddHeader(Strings.PenSettingsCaption, new PenSettingsModule(_vm!));
+            moduleGroup.AddHeader(Strings.PenSettingsCaption, new PenSettingsModule(_vm));
             groups.Add(moduleGroup);
 
             moduleGroup = new ModuleGroup()
@@ -230,10 +233,10 @@ namespace DDPM.UI.Plugin.PenPlugin
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/PenButton.png", "DDPM.UI.Resources"),
                 GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.PenButton)
             };
-            moduleGroup.AddHeader(Strings.ButtonCustomizationCaption, new PenButtonSettingsModule(_vm!));
+            moduleGroup.AddHeader(Strings.ButtonCustomizationCaption, new PenButtonSettingsModule(_vm));
             groups.Add(moduleGroup);
 
-            _vm!.ModuleGroups = groups;
+            _vm.ModuleGroups = groups;
         }
 
         #endregion Init for Modules
@@ -242,9 +245,12 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         private void OnVbarItemClicked(VbarItem1 newItem)
         {
+            if (_vm == null)
+                return;
+
             try
             {
-                if (newItem.Id == _vm!.VbarSelectedIndex)
+                if (newItem.Id == _vm.VbarSelectedIndex)
                 { return; }
 
                 if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm.VbarSelectedIndex + 1])
@@ -279,7 +285,7 @@ namespace DDPM.UI.Plugin.PenPlugin
                 _vm.SetLadningMode(false);
                 _vm.SelectVBar();
 
-                if (_vm!.VbarSelectedIndex == 0)
+                if (_vm.VbarSelectedIndex == 0)
                 { _vm.IsAllButtonsVisible = Visibility.Hidden; }
                 else
                 { _vm.IsAllButtonsVisible = Visibility.Visible; }
@@ -365,9 +371,12 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         private void Unpair_Click(object sender, RoutedEventArgs e)
         {
+            if (_vm == null)
+                return;
+
             try
             {
-                if (_vm!.Model == "PN5122W")
+                if (_vm.Model == "PN5122W")
                 {
                     UnpairModalDialog unpairModalDialog = new(eDeviceCategory.Pen);
                     Window parentWindow = Window.GetWindow(this);
@@ -410,7 +419,7 @@ namespace DDPM.UI.Plugin.PenPlugin
         {
             try
             {
-                if (_vm!.VbarSelectedIndex == -1)
+                if (_vm.VbarSelectedIndex == -1)
                 { return; }
 
                 _vm.RightFrameWidthTo = 0;
@@ -456,7 +465,7 @@ namespace DDPM.UI.Plugin.PenPlugin
                 bool? dialogResult = restoreModalDialog.ShowDialog();
                 if (dialogResult == true)
                 {
-                    _vm!.RestoreToDefault();
+                    _vm.RestoreToDefault();
                 }
                 btnRestore.Visibility = Visibility.Collapsed;
             }
@@ -468,10 +477,13 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         private void ButtonHoverIn(object sender, System.Windows.Input.MouseEventArgs e)
         {
+            if (_vm == null)
+                return;
+
             try
             {
                 var btnName = ((Image)sender).Name;
-                _vm!.RefreshButtonImageFile(btnName, true, btnName == _vm.SelectedButton);
+                _vm.RefreshButtonImageFile(btnName, true, btnName == _vm.SelectedButton);
             }
             catch (Exception ex)
             {
@@ -481,10 +493,13 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         private void ButtonHoverOut(object sender, System.Windows.Input.MouseEventArgs e)
         {
+            if (_vm == null)
+                return;
+
             try
             {
                 var btnName = ((Image)sender).Name;
-                _vm!.RefreshButtonImageFile(btnName, false, btnName == _vm.SelectedButton);
+                _vm.RefreshButtonImageFile(btnName, false, btnName == _vm.SelectedButton);
             }
             catch (Exception ex)
             {
@@ -494,13 +509,16 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         private void ButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            if (_vm == null)
+                return;
+
             try
             {
-                if (_vm!.SelectedButton != "")
+                if (_vm.SelectedButton != "")
                 { _vm.RefreshButtonImageFile(_vm.SelectedButton); }
 
                 var btnName = ((Image)sender).Name;
-                _vm!.SelectedButton = btnName;
+                _vm.SelectedButton = btnName;
                 _vm.RefreshButtonImageFile(btnName, false, true);
 
                 if (_vm.VbarSelectedIndex == 1)

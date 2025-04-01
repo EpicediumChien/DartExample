@@ -58,7 +58,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         private void GetRFDongleAsync()
         {
             _log.Info($"[AddDevicePlugin] GetRFDongleAsync is invoked ... in");
-            //Task<DeviceHelper> tsk = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
+            //Task<DeviceHelper> tsk = DdpmCommonHelper.DeviceManagerSA.GetDevices(true);
             //_viewModel!.WacomVersion = tsk.Result.IsdDriverVersion;
             if (DdpmCommonHelper.DeviceManagerSA == null)
             {
@@ -114,7 +114,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceChanged;
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceChanged;
             }
             _viewModel!.StopPairing();
             //Mouse.OverrideCursor = Cursors.Wait;
@@ -129,7 +129,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             GetRFDongleAsync();
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceChanged;
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceChanged;
             }
             Mouse.OverrideCursor = null;
             DdpmCommonHelper.WriteUILog($"AddDevice pugin OnShown End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
@@ -140,7 +140,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         //private void GetPeripheralsAsync()
         //{
         //    _log.Debug($"GetPeripherals is invoked");
-        //    Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
+        //    Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA.GetDevices(true);
 
         //    _viewModel?.CheckPandora(task.Result.deviceInfo);
         //}

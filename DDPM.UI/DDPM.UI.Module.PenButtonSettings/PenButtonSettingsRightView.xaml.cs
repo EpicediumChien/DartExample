@@ -515,7 +515,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 bool? dialogResult = restoreModalDialog.ShowDialog();
                 if (dialogResult == true)
                 {
-                    _vm!.RestoreToDefault();
+                    _vm?.RestoreToDefault();
                 }
             }
             catch (Exception ex)

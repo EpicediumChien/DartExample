@@ -232,7 +232,7 @@ namespace DDPM.UI.Module.ButtonSettings
             bool? dialogResult = restoreModalDialog.ShowDialog();
             if (dialogResult == true)
             {
-                _vm!.RestoreToDefault();
+                _vm?.RestoreToDefault();
             }
         }
 
