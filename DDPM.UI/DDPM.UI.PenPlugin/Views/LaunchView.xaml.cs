@@ -121,7 +121,7 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         private void InitializeButtonImage()
         {
-            switch (_vm?.Model.ToUpper())
+            switch (_vm?.Model?.ToUpper())
             {
                 case "PN7522W":
                     imgTopButtonBackground.Visibility = Visibility.Visible;

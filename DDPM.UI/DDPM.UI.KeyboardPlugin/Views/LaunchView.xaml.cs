@@ -214,7 +214,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         {
             if (_vm == null)
                 return;
-            
+
             List<ModuleGroup> groups = new();
             ModuleGroup moduleGroup;
 
@@ -259,7 +259,8 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         private void OnVbarItemClicked(VbarItem1 newItem)
         {
-            //if(newItem.Id == _vm.VbarSelectedIndex) { return; }
+            if (_vm == null)
+            { return; }
 
             if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm.VbarSelectedIndex + 1])
             {

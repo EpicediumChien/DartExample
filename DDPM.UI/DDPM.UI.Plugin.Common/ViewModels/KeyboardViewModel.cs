@@ -531,7 +531,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     IsCollaborationCameraEnableText = value ? Strings.On : Strings.Off;
                     OnPropertyChanged();
                     if (CurrentDeviceInfo != null)
-                        DdpmCommonHelper.DeviceManagerSA.SetCollaborationCameraEnable(value, CurrentDeviceInfo.ID);
+                        DdpmCommonHelper.DeviceManagerSA?.SetCollaborationCameraEnable(value, CurrentDeviceInfo.ID);
                 }
             }
         }
@@ -547,7 +547,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     IsCollaborationScreenShareEnableText = value ? Strings.On : Strings.Off;
                     OnPropertyChanged();
                     if (CurrentDeviceInfo != null)
-                        DdpmCommonHelper.DeviceManagerSA.SetCollaborationScreenShareEnable(value, CurrentDeviceInfo.ID);
+                        DdpmCommonHelper.DeviceManagerSA?.SetCollaborationScreenShareEnable(value, CurrentDeviceInfo.ID);
                 }
             }
         }
@@ -563,7 +563,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     IsCollaborationChatEnableText = value ? Strings.On : Strings.Off;
                     OnPropertyChanged();
                     if (CurrentDeviceInfo != null)
-                        DdpmCommonHelper.DeviceManagerSA.SetCollaborationChatEnable(value, CurrentDeviceInfo.ID);
+                        DdpmCommonHelper.DeviceManagerSA?.SetCollaborationChatEnable(value, CurrentDeviceInfo.ID);
                 }
             }
         }
@@ -579,7 +579,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     IsCollaborationMicEnableText = value ? Strings.On : Strings.Off;
                     OnPropertyChanged();
                     if (CurrentDeviceInfo != null)
-                        DdpmCommonHelper.DeviceManagerSA.SetCollaborationMicEnable(value, CurrentDeviceInfo.ID);
+                        DdpmCommonHelper.DeviceManagerSA?.SetCollaborationMicEnable(value, CurrentDeviceInfo.ID);
                 }
             }
         }
@@ -594,7 +594,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isCollaborationBlinkEffectEnable = value;
                     OnPropertyChanged();
                     if (CurrentDeviceInfo != null)
-                        DdpmCommonHelper.DeviceManagerSA.SetCollaborationBlinkEffectEnable(value, CurrentDeviceInfo.ID);
+                        DdpmCommonHelper.DeviceManagerSA?.SetCollaborationBlinkEffectEnable(value, CurrentDeviceInfo.ID);
                 }
             }
         }
@@ -609,7 +609,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isCollaborationDoubleTapEnable = value;
                     OnPropertyChanged();
                     if (CurrentDeviceInfo != null)
-                        DdpmCommonHelper.DeviceManagerSA.SetCollaborationDoubleTapEnable(value, CurrentDeviceInfo.ID);
+                        DdpmCommonHelper.DeviceManagerSA?.SetCollaborationDoubleTapEnable(value, CurrentDeviceInfo.ID);
                 }
             }
         }
@@ -1247,7 +1247,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 //string json_str = JsonConvert.SerializeObject(json_obj);
                 if (actionID == -1 || actionID > 40)
                 {
-                    DdpmCommonHelper.DeviceManagerSA.DeleteKeyboardAssignedAction(CurrentDeviceID.ToString(), pkId);
+                    DdpmCommonHelper.DeviceManagerSA?.DeleteKeyboardAssignedAction(CurrentDeviceID.ToString(), pkId);
                 }
                 else
                 {
@@ -1260,16 +1260,16 @@ namespace DDPM.UI.Plugin.ViewModels
                     if (string.IsNullOrEmpty(parameter))
                     {
                         byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
-                        DdpmCommonHelper.DeviceManagerSA.SetKbAssignedAction(CurrentDeviceID.ToString(), newValue);
+                        DdpmCommonHelper.DeviceManagerSA?.SetKbAssignedAction(CurrentDeviceID.ToString(), newValue);
                     }
                     else
                     {
                         jobj.Add("Command", parameter);
                         byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
                         if (actionID == 14)
-                            DdpmCommonHelper.DeviceManagerSA.SetKbAssignKeystrokeAction(CurrentDeviceID.ToString(), newValue);
+                            DdpmCommonHelper.DeviceManagerSA?.SetKbAssignKeystrokeAction(CurrentDeviceID.ToString(), newValue);
                         else
-                            DdpmCommonHelper.DeviceManagerSA.SetKbAssignDialogAction(CurrentDeviceID.ToString(), newValue);
+                            DdpmCommonHelper.DeviceManagerSA?.SetKbAssignDialogAction(CurrentDeviceID.ToString(), newValue);
                     }
                 }
 
