@@ -1177,12 +1177,13 @@
                                             </Border.Style>
 
                                             <StackPanel>
-                                                <!--20250401 Chewlin change ColumnDefinition Width="6" to  "15" -->
+                                                <!--20250401 Chewlin change ColumnDefinition Width="25" to  "30" -->
+                                                <!--20250401 Chewlin change ColumnDefinition Width="6" to  "16" -->
                                                 <!-- Elsa 20250113 For PIMS [PIMS-333699] change ColumnDefinition Width="30*" "15" 30* "15" to "25*" "6" "33*" "5" -->
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="25*" />
-                                                        <ColumnDefinition Width="15" />
+                                                        <ColumnDefinition Width="30*" />
+                                                        <ColumnDefinition Width="16" />
                                                         <ColumnDefinition Width="33*" />
                                                         <ColumnDefinition Width="5" />
                                                         <ColumnDefinition Width="30*" />
@@ -1195,9 +1196,10 @@
                                                             <RowDefinition Height="40" />
                                                         </Grid.RowDefinitions>
                                                         <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
+                                                        <!--20250401 Chewlin for Fix PIMS-348382 change MaxWidth="155" to 220 -->
                                                         <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="155" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom" -->
                                                         <UXControls:UXTextBlock
-                                                            MaxWidth="155"
+                                                            MaxWidth="220"
                                                             TextWrapping="WrapWithOverflow"
                                                             Grid.Row="0"
                                                             HorizontalAlignment="Left"
@@ -1339,9 +1341,11 @@
                                                             Grid.ColumnSpan="2"
                                                             Orientation="Horizontal" 
                                                             VerticalAlignment="Center">
-                                                            <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="140" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom"-->
+                                                        <!--20250401 Chewlin for Fix PIMS-348382 change MinWidth=140 to "127" add  Margin="0,0,4,0"-->
+                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="140" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom"-->
                                                             <UXControls:UXTextBlock
-                                                                Width="140"
+                                                                MinWidth="127"
+                                                                Margin="0,0,4,0"
                                                                 TextWrapping="WrapWithOverflow"                                                                   
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Bottom"
@@ -1353,12 +1357,13 @@
                                                                 Text="{Binding [Brightness.16], Source={x:Static lang:LangHelper.Instance}}"
                                                                 TextBlockSemanticColorType="Light"
                                                                 TextBlockType="Display1" />
-
+                                                        <!--20250324 Chewlin for Fix PIMS-348382 ADD  Margin="4,0,0,0"-->
                                                             <Image
                                                                 Width="16"
                                                                 Height="16"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Center"
+                                                                Margin="4,0,0,0"
                                                                 Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                                                 Stretch="Uniform">
                                                             <!--20250324 Chewlin for Fix PIMS-348382 Fix Tooltip issue ADD Placement="Top" HorizontalOffset="0" VerticalOffset="12", HorizontalAlignment="Left" MaxWidth="272" TextWrapping="WrapWithOverflow"-->
@@ -1603,12 +1608,13 @@
                                             </Border.Style>
 
                                             <StackPanel>
-                                                <!--20250401 Chewlin change ColumnDefinition Width="6" to  "15" -->
+                                                <!--20250401 Chewlin change ColumnDefinition Width="25" to  "30" -->
+                                                <!--20250401 Chewlin change ColumnDefinition Width="6" to  "16" -->
                                                 <!-- Elsa 20250113 For PIMS [PIMS-333699] change ColumnDefinition Width="30*" "15" 30* "15" to "25*" "6" "33*" "5" -->
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="25*" />
-                                                        <ColumnDefinition Width="15" />
+                                                        <ColumnDefinition Width="30*" />
+                                                        <ColumnDefinition Width="16" />
                                                         <ColumnDefinition Width="33*" />
                                                         <ColumnDefinition Width="5" />
                                                         <ColumnDefinition Width="30*" />
@@ -1620,11 +1626,12 @@
                                                             <RowDefinition MinHeight="24" />
                                                             <RowDefinition Height="40" />
                                                         </Grid.RowDefinitions>
+                                                        <!--20250401 Chewlin for Fix PIMS-348382 change MaxWidth=155 to "220"  -->
                                                         <!--20250324 Chewlin for Fix PIMS-348382 ADD FontFamily="Roboto" -->
                                                         <!--20250401 Chewlin for Fix PIMS-348382 change Width="155" to MaxWidth=155 to keep same Preset 1 Name-->
                                                         <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="155" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom"-->
                                                         <UXControls:UXTextBlock
-                                                            MaxWidth="155"
+                                                            MaxWidth="220"
                                                             TextWrapping="WrapWithOverflow"
                                                             Grid.Row="0"
                                                             HorizontalAlignment="Left"
@@ -1767,9 +1774,11 @@
                                                             Grid.ColumnSpan="2"
                                                             Orientation="Horizontal" 
                                                             VerticalAlignment="Center">
-                                                            <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="140" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom"-->
+                                                        <!--20250401 Chewlin for Fix PIMS-348382 change Width=140 to MinWidth= "127" ADD Margin="0,0,4,0" -->
+                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="140" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom"-->
                                                             <UXControls:UXTextBlock
-                                                                Width="140"
+                                                                MinWidth="127"
+                                                                Margin="0,0,4,0"
                                                                 TextWrapping="WrapWithOverflow"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Bottom"
@@ -1781,11 +1790,11 @@
                                                                 Text="{Binding [Brightness.16], Source={x:Static lang:LangHelper.Instance}}"
                                                                 TextBlockSemanticColorType="Light"
                                                                 TextBlockType="Display1" />
-
-                                                            <Image
+                                                        <!--20250401 Chewlin for Fix PIMS-348382 ADD Margin="0,0,4,0" -->
+                                                        <Image
                                                                 Width="16"
                                                                 Height="16"
-                                                                Margin="10,0"
+                                                                Margin="4,0,0,0"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Center"
                                                                 Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
