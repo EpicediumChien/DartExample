@@ -967,6 +967,7 @@ namespace DDPM.UI.Module.Kvm
             bw.DoWork += DoWork_RefreshData;
             if (USBKVMisON && !NKVMisON && !NoKVMisON)
             {
+                UpdateArrow(true);
                 bw.DoWork -= DoWork_USBKVM;
                 bw.DoWork += DoWork_USBKVM;
                 bw.RunWorkerCompleted -= RunWorkerCompleted_USBKVMisON;
@@ -1143,7 +1144,6 @@ namespace DDPM.UI.Module.Kvm
             if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
             {
                 MonitorInfo mi = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
-
                 bw.DoWork -= DoWork_USBKVM;
                 bw.DoWork += DoWork_USBKVM;
                 bw.RunWorkerCompleted -= RunWorkerCompleted_USBKVM;
@@ -3030,8 +3030,109 @@ namespace DDPM.UI.Module.Kvm
 
         public void UpdateArrow(bool isshow)
         {
-            ArrowinFullscreen = Visibility.Visible;
+            if (isshow)
+            {
+                ArrowinFullscreen = Visibility.Visible;
+            }
+            else
+            {
+                ArrowinFullscreen = Visibility.Collapsed;
+            }
             OnPropertyChanged("ArrowinFullscreen");
+        }
+
+        public void ChangePC(bool isNext)
+        {
+            MonitorInfo monitorInfo = new MonitorInfo();
+            List<MonitorInfo> monitorList = new List<MonitorInfo>();
+            if (pcsList != null && pcsList.Count > 0 && subInputList != null && subInputList.Count > 0)
+            {
+                original_pcsList = pcsList.ToDictionary(entry => entry.Key, entry => entry.Value);
+                if (original_pcsList != null)
+                {
+                    if (isNext)
+                    {
+                        if (subInputList.Count == 1)
+                        {
+                            PCSwap("PC1", "PC2");
+                            //DdpmCommonHelper.DeviceManagerSA.VideoSwap(KvmModule.SelectedHomeDevice.MonitorInfo, 0, 1).Wait();
+                            InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                            bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(monitorInfo, pc2input, null, null).Result;
+                            string result = res ? "Success" : "Failed";
+                            _log?.Info($"[KvmViewModel] SubInputs PC Done with {result}.");
+                            CurrentInputChange();
+                        }
+                        else if (subInputList.Count == 2)
+                        {
+                            pcsList["PC1"] = original_pcsList["PC2"];
+                            pcsList["PC2"] = original_pcsList["PC3"];
+                            pcsList["PC3"] = original_pcsList["PC1"];
+                            InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                            InputSourceObj pc3input = new InputSourceObj((UInt16)pcsList["PC3"].Code, pcsList["PC3"].InputType);
+                            bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(monitorInfo, pc2input, pc3input, null).Result;
+                            string result = res ? "Success" : "Failed";
+                            _log?.Info($"[KvmViewModel] SubInputs PC Done with {result}.");
+                            CurrentInputChange();
+                        }
+                        else if (subInputList.Count == 3)
+                        {
+                            pcsList["PC1"] = original_pcsList["PC2"];
+                            pcsList["PC2"] = original_pcsList["PC3"];
+                            pcsList["PC3"] = original_pcsList["PC4"];
+                            pcsList["PC4"] = original_pcsList["PC1"];
+                            InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                            InputSourceObj pc3input = new InputSourceObj((UInt16)pcsList["PC3"].Code, pcsList["PC3"].InputType);
+                            InputSourceObj pc4input = new InputSourceObj((UInt16)pcsList["PC4"].Code, pcsList["PC4"].InputType);
+                            bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(monitorInfo, pc2input, pc3input, pc4input).Result;
+                            string result = res ? "Success" : "Failed";
+                            _log?.Info($"[KvmViewModel] SubInputs PC Done with {result}.");
+                            CurrentInputChange();
+                        }
+                    }
+                    else
+                    {
+                        if (subInputList.Count == 1)
+                        {
+                            PCSwap("PC1", "PC2");
+                            //DdpmCommonHelper.DeviceManagerSA.VideoSwap(KvmModule.SelectedHomeDevice.MonitorInfo, 0, 1).Wait();
+                            InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                            bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(monitorInfo, pc2input, null, null).Result;
+                            string result = res ? "Success" : "Failed";
+                            _log?.Info($"[KvmViewModel] SubInputs PC Done with {result}.");
+                            CurrentInputChange();
+                        }
+                        else if (subInputList.Count == 2)
+                        {
+                            pcsList["PC1"] = original_pcsList["PC3"];
+                            pcsList["PC2"] = original_pcsList["PC1"];
+                            pcsList["PC3"] = original_pcsList["PC2"];
+                            InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                            InputSourceObj pc3input = new InputSourceObj((UInt16)pcsList["PC3"].Code, pcsList["PC3"].InputType);
+                            bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(monitorInfo, pc2input, pc3input, null).Result;
+                            string result = res ? "Success" : "Failed";
+                            _log?.Info($"[KvmViewModel] SubInputs PC Done with {result}.");
+                            CurrentInputChange();
+                        }
+                        else if (subInputList.Count == 3)
+                        {
+                            pcsList["PC1"] = original_pcsList["PC4"];
+                            pcsList["PC2"] = original_pcsList["PC1"];
+                            pcsList["PC3"] = original_pcsList["PC2"];
+                            pcsList["PC4"] = original_pcsList["PC3"];
+                            InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                            InputSourceObj pc3input = new InputSourceObj((UInt16)pcsList["PC3"].Code, pcsList["PC3"].InputType);
+                            InputSourceObj pc4input = new InputSourceObj((UInt16)pcsList["PC4"].Code, pcsList["PC4"].InputType);
+                            bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(monitorInfo, pc2input, pc3input, pc4input).Result;
+                            string result = res ? "Success" : "Failed";
+                            _log?.Info($"[KvmViewModel] SubInputs PC Done with {result}.");
+                            CurrentInputChange();
+                        }
+                    }
+                    PC1_Input = pcsList["PC1"].InputType;
+                    OnPropertyChanged("PC1_Input");
+                    original_pcsList = pcsList.ToDictionary(entry => entry.Key, entry => entry.Value);
+                }
+            }
         }
 
         #region Event

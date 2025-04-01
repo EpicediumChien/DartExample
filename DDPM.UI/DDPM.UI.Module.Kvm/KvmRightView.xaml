@@ -323,7 +323,8 @@
                                                      VerticalAlignment="Center"
                                                      Margin="16" Padding="32,0"
                                                      Background="#0672CB"
-                                                     Visibility="Collapsed" Click="OpenNKVM">
+                                                     Visibility="Collapsed" Click="OpenNKVM"
+                                                     IsEnabled="{Binding isNKVMEanble}" Opacity="{Binding NKVM_Opacity}">
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <UXControls:UXTextBlock Margin="8" Text="{Binding [Kvm.31], Source={x:Static lang:LangHelper.Instance}}" Foreground="#FFFFFF" />
                                         <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Background="#00000000">

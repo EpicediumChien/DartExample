@@ -28,20 +28,27 @@ namespace DDPM.UI.Module.Kvm
 
         private void EditInput_Click(object sender, RoutedEventArgs e)
         {
-            vm.EditInput = Visibility.Visible;
-            vm.SetInput = Visibility.Collapsed;
-            InputSourceFullView _inputSourceFullView = new InputSourceFullView();
-            _inputSourceFullView.DataContext = vm;
-            DdpmCommonHelper.ModuleOwner?.OpenFullView(_inputSourceFullView);
+            if (vm != null)
+            {
+                vm.EditInput = Visibility.Visible;
+                vm.SetInput = Visibility.Collapsed;
+                InputSourceFullView _inputSourceFullView = new InputSourceFullView();
+                _inputSourceFullView.DataContext = vm;
+                DdpmCommonHelper.ModuleOwner?.OpenFullView(_inputSourceFullView);
+            }
         }
 
         private void EditPXP_Click(object sender, RoutedEventArgs e)
         {
-            vm.SetPXP = Visibility.Collapsed;
-            vm.EditPXP = Visibility.Visible;
-            KVMPIPPBPFullView kvmPIPPBPFullView = new KVMPIPPBPFullView(vm);
-            kvmPIPPBPFullView.DataContext = vm;
-            DdpmCommonHelper.ModuleOwner?.OpenFullView(kvmPIPPBPFullView);
+            if (vm != null)
+            {
+                vm.SetPXP = Visibility.Collapsed;
+                vm.EditPXP = Visibility.Visible;
+                KVMPIPPBPFullView kvmPIPPBPFullView = new KVMPIPPBPFullView(vm);
+                kvmPIPPBPFullView.DataContext = vm;
+                vm.UpdateArrow(false);
+                DdpmCommonHelper.ModuleOwner?.OpenFullView(kvmPIPPBPFullView);
+            }
         }
     }
 }
