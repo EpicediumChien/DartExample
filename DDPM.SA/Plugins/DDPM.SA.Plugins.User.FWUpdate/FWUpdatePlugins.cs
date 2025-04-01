@@ -2360,7 +2360,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _ILogs.Info($"{s}");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logs?.DebugMsg_1($"WriteLog ex: {ex.Message}");
             }
@@ -2637,10 +2637,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 //Updates can only be displayed if the firmware is HPD and the OS supports MPS.
                 ret = fwUpdateInfo.IsESISupported && ret;
             }
-            else if (fwUpdateInfo.DeviceType == DeviceType.LogicalAirAudio)//0205 Added by Bruce, to skip CADI FWU.
+            if (!GlobalDefinitions.isSupport210)
             {
-                _logs.DebugMsg_1($"Check_CanBeOTAUpdate DeviceType is DeviceType.LogicalAirAudio can not be update");
-                ret = false;
+                if (fwUpdateInfo.DeviceType == DeviceType.LogicalAirAudio)//0205 Added by Bruce, to skip CADI FWU.
+                {
+                    _logs.DebugMsg_1($"Check_CanBeOTAUpdate DeviceType is DeviceType.LogicalAirAudio can not be update");
+                    ret = false;
+                }
             }
             _logs.DebugMsg_1($"Check_CanBeOTAUpdate finish. ret : {ret}");
             return ret;
