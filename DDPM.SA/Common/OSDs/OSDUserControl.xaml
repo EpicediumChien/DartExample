@@ -316,6 +316,21 @@
                 <Path Data="M28.4783 29.0281C28.4783 29.0281 21.5877 29.3781 19.4658 23.4719L19.0939 22.3781L16.9064 23.1656L17.2783 24.2594C18.0939 26.8531 20.1908 28.6625 22.4346 29.6312C23.9493 30.2276 25.599 30.509 27.2564 30.4594C27.7731 30.4703 28.2868 30.4006 28.7845 30.2531L30.0502 31.2125L31.2127 29.4625L29.9564 28.5156C29.0962 28.9114 28.2096 29.2223 27.3064 29.4469C27.0233 29.5045 26.7359 29.5527 26.4471 29.5906C26.1836 29.5906 24.2283 29.1625 28.4783 29.0281Z" Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}"/>
             </Canvas>
         </DataTemplate>
+        <DataTemplate x:Key="WalkawayLock">
+            <!--Walk away lock-->
+            <Canvas Grid.Row="0" 
+                    Width="35" Height="35" Margin="0,30,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top" 
+                    Tag="{DynamicResource Default_SA_OSD_PathColor}">
+                <!-- Path 1 (Main Shape) -->
+                <Path Data="M26.9688 14V8.75C27.1875 3.9375 23.4688 0.21875 18.6562 0H18.2188C13.4062 0 9.46875 3.9375 9.46875 8.75V14H4.4375V35H31.3438V14H26.9688ZM12.0938 8.75C11.875 5.46875 14.5 2.84375 17.5625 2.625H18.4375C21.9375 2.625 24.5625 5.46875 24.5625 8.75V14H12.0938V8.75ZM29.1562 32.5938H7.0625V16.4062H29.1562V32.5938Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+                <!-- Path 2 (Cross Shape) -->
+                <Path Data="M17.125 27.3438H19.3125V20.3438H15.375V22.5312H17.125V27.3438Z"
+                      Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            </Canvas>
+        </DataTemplate>
     </UserControl.Resources>
     <Grid x:Name="fadeOutCtrl"
           HorizontalAlignment="Center"
@@ -410,6 +425,22 @@
                                         <Setter Property="Visibility"
                                                 Value="Collapsed" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="WalkAwayLock">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="StartRecording">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="EasyMemory">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+
                                 </Style.Triggers>
                             </Style>
                         </TextBlock.Style></TextBlock>
@@ -453,6 +484,21 @@
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding OSDType_Device}"
                                                  Value="ScrollLockOFFIcon">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="WalkAwayLock">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="StartRecording">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="EasyMemory">
                                         <Setter Property="Visibility"
                                                 Value="Collapsed" />
                                     </DataTrigger>
@@ -554,6 +600,11 @@
                                         <Setter Property="ContentTemplate"
                                                 Value="{StaticResource Fingerprint}" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="WalkAwayLock">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource WalkawayLock}" />
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </ContentControl.Style>
@@ -578,6 +629,20 @@
                                         <Setter Property="Grid.RowSpan"
                                                 Value="2" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="StartRecording">
+                                        <Setter Property="Grid.Row"
+                                                Value="0" />
+                                        <Setter Property="Grid.RowSpan"
+                                                Value="2" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                                 Value="EasyMemory">
+                                        <Setter Property="Grid.Row"
+                                                Value="0" />
+                                        <Setter Property="Grid.RowSpan"
+                                                Value="2" />
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </StackPanel.Style>
@@ -597,17 +662,105 @@
                                             <Setter Property="Visibility"
                                                     Value="Collapsed" />
                                         </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}"
+                                                     Value="StartRecording">
+                                            <Setter Property="Visibility"
+                                                    Value="Collapsed" />
+                                        </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </TextBlock.Style></TextBlock>
+                            </TextBlock.Style>
+                        </TextBlock>
                         <TextBlock HorizontalAlignment="Center"
                                    VerticalAlignment="Top"
                                    FontFamily="Roboto"
-                                   FontSize="14"
-                                   FontWeight="Medium"
                                    TextWrapping="Wrap"
                                    Foreground="{DynamicResource Default_SA_OSD_PathColor}"
-                                   Text="{Binding ShowStringContent}"></TextBlock>
+                                   Text="{Binding ShowStringContent}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding OSDType_Device}"
+                                                     Value="WalkAwayLock">
+                                            <Setter Property="Margin"
+                                                    Value="0,10,0,0" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="Unknown">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="FontWeight" Value="Medium" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="Keyboard">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="FontWeight" Value="Medium" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="Mouse">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="FontWeight" Value="Medium" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="Headset">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="FontWeight" Value="Medium" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="Pen">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="FontWeight" Value="Medium" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="CapsLockOn">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="FontWeight" Value="Medium" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="CapsLockOff">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="FontWeight" Value="Medium" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="ScrollLockOn">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="FontWeight" Value="Medium" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="ScrollLockOff">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="FontWeight" Value="Medium" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="NumLockOn">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="FontWeight" Value="Medium" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="NumLockOn">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="FontWeight" Value="Medium" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="FW">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="FontWeight" Value="Medium" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="Mute">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="FontWeight" Value="Medium" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="UnMute">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="FontWeight" Value="Medium" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="FingerPrint">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="FontWeight" Value="Medium" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="WalkAwayLock">
+                                            <Setter Property="FontSize" Value="14" />
+                                            <Setter Property="FontWeight" Value="Medium" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="StartRecording">
+                                            <Setter Property="FontSize" Value="64" />
+                                            <Setter Property="FontWeight" Value="ExtraLight" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="EasyMemory">
+                                            <Setter Property="FontSize" Value="40" />
+                                            <Setter Property="FontWeight" Value="ExtraLight" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                     </StackPanel>
                 </Grid>
             </Grid>

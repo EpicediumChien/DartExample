@@ -696,7 +696,14 @@ namespace DDPM.UI.Plugin.ViewModels
                     WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
                     _log.Info("WebCameraViewModel ExportWebcamSettings Finish");
                 }
-
+                is_BackgroundBlurVisibility = DdpmCommonHelper.DeviceManagerSA.GetIsPropertyBgBlurSupported(CurrentDeviceInfo!.ID.ToString()).Result;
+                if (is_BackgroundBlurVisibility)
+                {
+                    IsBgBlurOn = DdpmCommonHelper.DeviceManagerSA.GetIsBgBlurEnable(CurrentDeviceInfo!.ID.ToString()).Result;
+                    int DtpBgBlur=DdpmCommonHelper.DeviceManagerSA.GetBgBlur(CurrentDeviceInfo!.ID.ToString()).Result;
+                    BgBlur = IsBgBlurOn ==false? 1: DtpBgBlur == 0?1 : DtpBgBlur;
+                    
+                }
                 IsMicEnumerationOnEnabled = true;
                 AlertVisibility = Visibility.Collapsed;
             }
@@ -1493,6 +1500,55 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs SetZoom() ex:" + ex.Message);
             }
+        }
+
+        private int _bgBlur = 0;
+        public int BgBlur
+        {
+            get => _bgBlur;
+            set
+            {
+                if (value != _bgBlur)
+                {
+                    _bgBlur = value;
+                    DdpmCommonHelper.DeviceManagerSA?.SetBgBlur(CurrentDeviceInfo!.ID.ToString(), value);
+                    SetProfileProperty(nameof(BgBlur), value, OperationModule.CameraControl);
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private bool _isBgBlurOn = false;
+        public bool IsBgBlurOn
+        {
+            get => _isBgBlurOn;
+            set
+            {
+                if (value != _isBgBlurOn)
+                {
+                    //_isAutoFramingTransitionOn = value;
+                    CurrentProfile.IsBgBlurEnable = _isBgBlurOn = value; 
+
+                    DdpmCommonHelper.DeviceManagerSA?.SetIsBgBlurEnable(CurrentDeviceInfo!.ID.ToString(), value);
+                    if (value == false) 
+                    {
+                        DdpmCommonHelper.DeviceManagerSA?.SetBgBlur(CurrentDeviceInfo!.ID.ToString(), 0);
+                    }
+                    SetProfileProperty(nameof(IsBgBlurOn), value, OperationModule.CameraControl);
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsBgBlurText));
+                }
+            }
+        }
+
+        public bool is_BackgroundBlurVisibility = false;
+        public Visibility BackgroundBlurVisibility
+        {
+            get => is_BackgroundBlurVisibility ? Visibility.Visible : Visibility.Collapsed;
+
+        }
+        public string IsBgBlurText
+        {
+            get => CurrentProfile.IsBgBlurEnable ? Strings.On : Strings.Off;
         }
 
         public Visibility AutofocusVisibility

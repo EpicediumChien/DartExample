@@ -94,7 +94,7 @@ namespace DDPM.SA.Common
 
         //Task<List<PowerNapSetting>> ImportPowerNapSettings(string filePath);
 
-        Task<bool> ExportPowerNapSettings(List<PowerNapSetting> powerNapSettings, string filePath);
+        //Task<bool> ExportPowerNapSettings(List<PowerNapSetting> powerNapSettings, string filePath);
 
         //Easy Arrange, Robret_Lin, 2024-10-10 remove unused method
         //public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings);

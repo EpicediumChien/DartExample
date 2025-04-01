@@ -508,14 +508,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 //2024-8-6 Robert, fix bug. compare string should be lowercase due to ToLower()
                 //2024-07-02, Elie, we only handle remove and add event on the DdpmHomePlugin.
-                if (e.changedProperty.ToLower().Contains("remove") ||
-                    (e.changedProperty.ToLower().Contains("add")) ||
-                    (e.changedProperty.ToLower().Contains("batterystatuschanged")) ||
-                    (e.changedProperty.ToLower().Contains("batterylevelchanged")) ||
-                    (string.Compare(e.changedProperty, "DisplayChanged", true) == 0))
-                {
+                var lowerChangedProperty = e.changedProperty.ToLower();
+                bool isAddOrRemove = lowerChangedProperty.Contains("remove") || lowerChangedProperty.Contains("add");
 
-                    if (e.changedProperty.ToLower().Contains("remove") || e.changedProperty.ToLower().Contains("add"))
+                if (isAddOrRemove ||
+                    lowerChangedProperty.Contains("batterystatuschanged") ||
+                    lowerChangedProperty.Contains("batterylevelchanged") ||
+                    string.Equals(e.changedProperty, "DisplayChanged", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (isAddOrRemove)
                     {
                         _deviceChangedDebounceCts?.Cancel();
                         _deviceChangedDebounceCts = new CancellationTokenSource();
@@ -524,11 +525,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         try
                         {
                             await Task.Delay(500, token);
-                            _log.Info($"DdpmHomePlugin._deviceManager_DeviceChanged() after Task.Delay");
+                            _log.Info("DdpmHomePlugin._deviceManager_DeviceChanged() after Task.Delay");
                         }
                         catch (TaskCanceledException)
                         {
-                            _log.Info($"DdpmHomePlugin._deviceManager_DeviceChanged() TaskCanceledException executed : {e.changedProperty.ToLower()}");
+                            _log.Info($"DdpmHomePlugin._deviceManager_DeviceChanged() TaskCanceledException executed : {lowerChangedProperty}");
                             return;
                         }
                     }

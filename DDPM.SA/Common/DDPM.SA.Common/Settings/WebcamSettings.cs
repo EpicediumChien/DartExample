@@ -681,6 +681,10 @@ namespace DDPM.SA.Common.Settings
         public int AutoFramingSensitivity { get; set; } = 1;//參考IL基本值
         public int AutoFramingFrameSize { get; set; } = 1;//參考IL基本值
         public bool IsAutoFramingTransitionOn { get; set; } = true;//參考IL基本值
+
+        public bool IsBgBlurEnable { get; set; } = true;//參考IL基本值
+
+        public int BgBlur { get; set; } = 0;
         public WebcamProfile Clone()
         {
             return (WebcamProfile)MemberwiseClone();

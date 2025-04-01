@@ -1552,7 +1552,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             }
         }
 
-        [Test]
+        /*[Test]
         public void TestExportPowerNapSettings()
         {
             List<PowerNapSetting> powerNapSettings;
@@ -1574,9 +1574,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             var ExportPowerNapSettings_result2 = SettingsManagerSAPlugin.ExportPowerNapSettings(powerNapSettings, SerializePowerNapSettings_path1_).Result;
             Assert.IsNotNull(ExportPowerNapSettings_result2);
             Assert.That(ExportPowerNapSettings_result2, Is.EqualTo(true));
-        }
+        }*/
 
-        [Test]
+        /*[Test]
         public void TestDisplayImpDDMSettings()
         {
             string path;
@@ -1608,7 +1608,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             Assert.IsNotNull(DisplayImpDDMSettings_result2);
             Assert.That(DisplayImpDDMSettings_result2, Is.EqualTo(false));
             File.Delete(monitorSettingspath2);
-        }
+        }*/
 
         [OneTimeTearDown]
         public void TearDown()

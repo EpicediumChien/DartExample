@@ -6,11 +6,11 @@
              xmlns:local="clr-namespace:DDPM.UI.Plugin.SettingsPlugin"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-             mc:Ignorable="d" 
-             Margin="5,4,0,29"
+             mc:Ignorable="d"    
             d:DesignHeight="450"
                 d:DesignWidth="800"
              SizeChanged="UserControl_SizeChanged">
+    <!--20250331 Chewlin for PIMS-348208 Remove above Margin="5,4,0,29"-->
     <Grid Opacity="{Binding AnalyticsPageUI_Opacity}">
         <Border Style="{StaticResource GroupBorderStyle}" CornerRadius="13">
             <Grid>

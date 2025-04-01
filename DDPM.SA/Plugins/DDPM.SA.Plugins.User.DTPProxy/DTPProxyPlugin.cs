@@ -2470,6 +2470,143 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
+        public async Task<int> GetBgBlur(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return -1; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "BgBlur");
+
+                if (value == null)
+                {
+                    Debug.WriteLine("GetPropertyValue returned null for BgBlur.");
+                    writelog("GetPropertyValue returned null for BgBlur.");
+                    return -1;
+                }
+                else
+                {
+                    if (value is int intValue)
+                    {
+                        Debug.WriteLine("GetPropertyValue successfully retrieved BgBlur.");
+                        writelog("GetPropertyValue successfully retrieved BgBlur.");
+                        return intValue;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("GetPropertyValue returned a non-integer value for BgBlur.");
+                        writelog("GetPropertyValue returned a non-integer value for BgBlur.");
+                        return -1;
+                    }
+                }
+
+            }
+            else
+            {
+                Debug.WriteLine($"[GetBgBlur]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"[GetBgBlur]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                return -1;
+            }
+        }
+        public async Task<bool> GetIsPropertyBgBlurSupported(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return false; }
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsPropertyBgBlurSupported");
+
+                    if (value == null)
+                    {
+                        Debug.WriteLine("GetPropertyValue returned null for IsPropertyBgBlurSupported.");
+                        writelog("GetPropertyValue returned null for IsPropertyBgBlurSupported.");
+                        return false;
+                    }
+                    else
+                    {
+                        if (value is bool boolValue)
+                        {
+                            Debug.WriteLine("GetPropertyValue successfully retrieved IsPropertyBgBlurSupported.");
+                            writelog("GetPropertyValue successfully retrieved IsPropertyBgBlurSupported.");
+                            return boolValue;
+                        }
+                        else
+                        {
+                            Debug.WriteLine("GetPropertyValue returned a non-boolean value for IsPropertyBgBlurSupported.");
+                            writelog("GetPropertyValue returned a non-boolean value for IsPropertyBgBlurSupported.");
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($"[CheckIsPropertyBgBlurSupported]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[CheckIsPropertyBgBlurSupported]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[CheckIsPropertyBgBlurSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[CheckIsPropertyBgBlurSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+
+        }
+        public async Task<bool> GetIsBgBlurEnable(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return false; }
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsBgBlurEnable");
+
+                    if (value == null)
+                    {
+                        Debug.WriteLine("GetPropertyValue returned null for IsBgBlurEnable.");
+                        writelog("GetPropertyValue returned null for IsBgBlurEnable.");
+                        return false;
+                    }
+                    else
+                    {
+                        if (value is bool boolValue)
+                        {
+                            Debug.WriteLine("GetPropertyValue successfully retrieved IsBgBlurEnable.");
+                            writelog("GetPropertyValue successfully retrieved IsBgBlurEnable.");
+                            return boolValue;
+                        }
+                        else
+                        {
+                            Debug.WriteLine("GetPropertyValue returned a non-boolean value for IsBgBlurEnable.");
+                            writelog("GetPropertyValue returned a non-boolean value for IsBgBlurEnable.");
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($"[GetIsBgBlurEnable]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[GetIsBgBlurEnable]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsBgBlurEnable]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[GetIsBgBlurEnable]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+
+        }
+
+
         public async Task<int> GetPriority(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -3283,7 +3420,48 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
             }
         }
+        public async Task<bool> SetBgBlur(string Guid, int newValue)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            {
+                writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
+                return false;
+            }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                return SetPropertyValue(_webcamInterfaceType, commodity, "BgBlur", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsBgBlurEnable(string Guid, bool newValue)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            {
+                writelog($"GetItemIDAsync fail for webcam:{Guid}");
+
+                return false;
+            }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                return SetPropertyValue(_webcamInterfaceType, commodity, "IsBgBlurEnable", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+
+                return false;
+            }
+        }
         public async Task<int> GetWALTime(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))

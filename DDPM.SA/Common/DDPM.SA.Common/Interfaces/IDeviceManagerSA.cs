@@ -1185,6 +1185,10 @@ namespace DDPM.SA.Common
 
         Task<string> GetWebcamSerialNumber(string Guid);
 
+        Task<int> GetBgBlur(string Guid);
+        Task<bool> GetIsBgBlurEnable(string Guid);
+        Task<bool> GetIsPropertyBgBlurSupported(string Guid);
+
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
 
         Task SetProfile(string Guid, string newValue);
@@ -1265,6 +1269,10 @@ namespace DDPM.SA.Common
         Task<bool?> GetIsPrioritizeExternalWebcam(string Guid);
 
         Task<bool> GetIsESISupported(string Guid);
+
+        Task<bool> SetIsBgBlurEnable(string Guid, bool newValue);
+
+        Task<bool> SetBgBlur(string Guid, int newValue);
 
         #endregion Webcam
 
