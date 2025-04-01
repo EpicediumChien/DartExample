@@ -104,10 +104,18 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                                 Dispatcher.Invoke(new Action(() =>
                                 {
                                     waitingModalDialog?.Close();
-                                    _vm.GotoNewDevice();
+                                    //_vm.GotoNewDevice();
+                                    _console.ShowHomePage();
                                 }));
                             }
                         }
+                        else
+                            Dispatcher.Invoke(new Action(() =>
+                            {
+                                WaitingModalDialogIsOpen = false;
+                                waitingModalDialog?.Close();
+                                _console.ShowHomePage();
+                            }));
                         break;
 
                     case DeviceChangedType.Peripherals_UnPlug:
@@ -462,6 +470,8 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= AddDeviceView_DeviceChanged;
             _vm.StopPairing();
             _vm.RightViewHeaderSelectedIndex = -1;
+            WaitingModalDialogIsOpen = false;
+            waitingModalDialog?.Close();
         }
 
         private void ArrowLeft_PreviewKeyDown(object sender, KeyEventArgs e)

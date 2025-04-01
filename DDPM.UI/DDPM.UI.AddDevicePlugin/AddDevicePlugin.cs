@@ -154,34 +154,12 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                     GetRFDongleAsync();
                     return;
                 }
-                //if (_viewModel!.CurrentDongle != null && e.device_peripherals != null && e.device_peripherals.PhyscialDeviceID == _viewModel!.CurrentDongle.ID)
-                //{
-                //    _viewModel.NewDevice = e.device_peripherals;
-                //    //if(e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
-                //    _viewModel.GotoNewDevice();
-                //}
-                if (e.device_peripherals!.PhysicalDeviceType == DeviceType.PhysicalBluetooth || e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalBluetoothAudio || e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalPen)
-                {
-                    _viewModel.NewDevice = e.device_peripherals;
-                    _viewModel.GotoNewDevice();
-                }
             }
             if (e.changedProperty == "PhysicalDeviceRemoved")
             {
                 GetRFDongleAsync();
                 return;
             }
-            //if (e.device_peripherals?.IsPhysicalDeviceDongle ?? false)
-            //{
-            //    if (e.type == DeviceChangedType.Peripherals_SettingsChange)
-            //    {
-            //        //_viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
-            //    }
-            //    else
-            //    {
-            //        GetRFDongleAsync();
-            //    }
-            //}
         }
     }
 }
