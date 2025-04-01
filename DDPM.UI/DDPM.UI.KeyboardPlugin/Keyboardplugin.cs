@@ -102,10 +102,13 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         private void GetPeripheralsAsync()
         {
             _log.Info($"[Keyboardplugin] GetPeripherals is invoked ... in");
-            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(); //(true);
-            _deviceHelper = task.Result;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA.GetDevices(); //(true);
+                _deviceHelper = task.Result;
+            }
 
-            //Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA!.GetKeyboardDeviceItemsEx();
+            //Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA.GetKeyboardDeviceItemsEx();
             //var jArray = JArray.FromObject(task2.Result);
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
             _log.Info($"[Keyboardplugin] GetPeripherals is invoked ... out");
@@ -144,7 +147,8 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         {
             if (!IsEventRegistered)
             {
-                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManager_DeviceChanged;
                 IsEventRegistered = true;
             }
             Mouse.OverrideCursor = null;
@@ -155,7 +159,8 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         {
             if (IsEventRegistered)
             {
-                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                    DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManager_DeviceChanged;
                 IsEventRegistered = false;
             }
             Mouse.OverrideCursor = Cursors.Wait;
@@ -167,7 +172,8 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             DdpmCommonHelper.WriteUILog($"Keyboard pugin OnShown Begin timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
             if (!IsEventRegistered)
             {
-                DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManager_DeviceChanged;
                 IsEventRegistered = true;
             }
             ConfigureServices();
@@ -176,8 +182,11 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 _viewModel.CurrentDeviceInfo.IsCollabsKeysSupported)
             {
                 _log.Debug($"GetCTKMessageHelper is invoked");
-                Task<CTKMessageHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetCTKMessageHelper();
-                _viewModel.CTKMessageHelper = task.Result;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    Task<CTKMessageHelper> task = DdpmCommonHelper.DeviceManagerSA.GetCTKMessageHelper();
+                    _viewModel.CTKMessageHelper = task.Result;
+                }
                 _log.Debug($"GetCTKMessageHelper is successful");
             }
             DdpmCommonHelper.WriteUILog($"Keyboard pugin OnShown End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
@@ -187,7 +196,8 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         ~Keyboardplugin()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManager_DeviceChanged;
         }
     }
 }

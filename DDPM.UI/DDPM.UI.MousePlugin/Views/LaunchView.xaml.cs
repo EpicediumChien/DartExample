@@ -499,7 +499,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 if (_vm.ConnectionType == "Dongle")
                 {
                     txtFirmware.Text = $"{Strings.ReceiverFirmwareVersion} {_vm.PhysicalDeviceFWVersion}";
-                    txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+                    txtSlot.Text = $"{_vm.CurrentDeviceInfo?.MaxPairingSlots ?? 6 - _vm.CurrentDeviceInfo?.PairedDeviceCount ?? 2} of {_vm.CurrentDeviceInfo?.MaxPairingSlots ?? 6} slots available";
                     DongleConnection.Visibility = Visibility.Visible;
                 }
                 else if (_vm.ConnectionType == "Bluetooth")

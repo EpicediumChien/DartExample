@@ -96,7 +96,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                         break;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraCapture\\WebCameraCaptureRightView.xaml.cs InitializeResolution() ex:" + ex.Message);
             }
@@ -141,7 +141,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                 }
                 _vm.SetFPS_Selected(_vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution].IndexOf(_vm.WebcamSettings.CurrentFPS));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraCapture\\WebCameraCaptureRightView.xaml.cs InitializeFPS() ex:" + ex.Message);
             }
@@ -303,7 +303,7 @@ namespace DDPM.UI.Module.WebCameraCapture
 
         private void Open_Click(object sender, MouseButtonEventArgs e)
         {
-            Process.Start("explorer.exe", _vm!.VideoCaptureFolder);
+            Process.Start("explorer.exe", _vm?.VideoCaptureFolder ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
         }
 
         private void Change_Click(object sender, RoutedEventArgs e)
@@ -331,7 +331,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                         _vm.Redo();
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraCapture\\WebCameraCaptureRightView.xaml.cs Image_MouseLeftButtonDown() ex:" + ex.Message);
             }

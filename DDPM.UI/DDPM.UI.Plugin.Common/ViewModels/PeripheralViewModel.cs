@@ -38,7 +38,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private readonly IConsole _console;
         private readonly ILog _log;
-        private readonly IDeviceManagerSA _deviceManager;
+        private readonly IDeviceManagerSA? _deviceManager;
         private string _name = "";
         private string _model = "";
         private string _imageFilePath = "";
@@ -69,7 +69,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool IsDTPReady = false;
         public int CurrentVersion = 0;
 
-        public PeripheralViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager)
+        public PeripheralViewModel(IConsole console, ILog log, IDeviceManagerSA? deviceManager)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
@@ -91,7 +91,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 string regPath = $@"SOFTWARE\Microsoft\Windows NT\CurrentVersion";
                 string regKey = $"CurrentBuild";
-                //var regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey).Result;
+                //var regValue = DdpmCommonHelper.DeviceManagerSA.ReadRegistryData(SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey).Result;
                 var regValue = DdpmCommonHelper.ReadRegistryData(SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
                 if (int.TryParse((string)regValue, out int build))
                 {
@@ -149,10 +149,10 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             //string regPath2 = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
             //string regKey2 = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
-            //var regValue2 = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(RegistryHive.LocalMachine, regPath2, regKey2).Result;
+            //var regValue2 = DdpmCommonHelper.DeviceManagerSA.ReadRegistryData(RegistryHive.LocalMachine, regPath2, regKey2).Result;
             string regPath = $@"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot";
             string regKey = $"TurnOffWindowsCopilot";
-            //var regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(RegistryHive.CurrentUser, regPath, regKey).Result;
+            //var regValue = DdpmCommonHelper.DeviceManagerSA.ReadRegistryData(RegistryHive.CurrentUser, regPath, regKey).Result;
             try
             {
                 // Open the registry key under the current user

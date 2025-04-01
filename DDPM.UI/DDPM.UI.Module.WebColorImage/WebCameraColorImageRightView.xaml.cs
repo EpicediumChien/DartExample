@@ -15,7 +15,7 @@ namespace DDPM.UI.Module.WebCameraColorImage
     /// </summary>
     public partial class WebCameraColorImageRightView : UserControl
     {
-        private WebCameraViewModel _vm;
+        private readonly WebCameraViewModel _vm;
 
         public WebCameraColorImageRightView(WebCameraViewModel vm)
         {
@@ -23,46 +23,48 @@ namespace DDPM.UI.Module.WebCameraColorImage
             {
                 InitializeComponent();
                 _vm = vm;
+                if (_vm.CurrentDeviceInfo == null)
+                    return;
 
-                if (_vm.CurrentDeviceInfo!.IsPropertyWhiteBalanceSupported)
+                if (_vm.CurrentDeviceInfo.IsPropertyWhiteBalanceSupported)
                 {
-                    AWBSlider.Maximum = _vm.CurrentDeviceInfo!.WhiteBalanceMax;
+                    AWBSlider.Maximum = _vm.CurrentDeviceInfo.WhiteBalanceMax;
                     AWBSlider.Minimum = _vm.CurrentDeviceInfo.WhiteBalanceMin;
-                    AWBSlider.TickFrequency = _vm.CurrentDeviceInfo!.WhiteBalanceSteppingDelta;
+                    AWBSlider.TickFrequency = _vm.CurrentDeviceInfo.WhiteBalanceSteppingDelta;
                 }
 
-                if (_vm.CurrentDeviceInfo!.IsPropertyBrightnessSupported)
+                if (_vm.CurrentDeviceInfo.IsPropertyBrightnessSupported)
                 {
-                    BrightnessSlider.Maximum = _vm.CurrentDeviceInfo!.BrightnessMax;
+                    BrightnessSlider.Maximum = _vm.CurrentDeviceInfo.BrightnessMax;
                     BrightnessSlider.Minimum = _vm.CurrentDeviceInfo.BrightnessMin;
-                    BrightnessSlider.TickFrequency = _vm.CurrentDeviceInfo!.BrightnessSteppingDelta;
+                    BrightnessSlider.TickFrequency = _vm.CurrentDeviceInfo.BrightnessSteppingDelta;
                     spBrightness.Visibility = Visibility.Visible;
                     BSCS.Visibility = Visibility.Visible;
                 }
 
-                if (_vm.CurrentDeviceInfo!.IsPropertySharpnessSupported)
+                if (_vm.CurrentDeviceInfo.IsPropertySharpnessSupported)
                 {
-                    SharpnessSlider.Maximum = _vm.CurrentDeviceInfo!.SharpnessMax;
+                    SharpnessSlider.Maximum = _vm.CurrentDeviceInfo.SharpnessMax;
                     SharpnessSlider.Minimum = _vm.CurrentDeviceInfo.SharpnessMin;
-                    SharpnessSlider.TickFrequency = _vm.CurrentDeviceInfo!.SharpnessSteppingDelta;
+                    SharpnessSlider.TickFrequency = _vm.CurrentDeviceInfo.SharpnessSteppingDelta;
                     spSharpness.Visibility = Visibility.Visible;
                     BSCS.Visibility = Visibility.Visible;
                 }
 
-                if (_vm.CurrentDeviceInfo!.IsPropertyContrastSupported)
+                if (_vm.CurrentDeviceInfo.IsPropertyContrastSupported)
                 {
-                    ContrastSlider.Maximum = _vm.CurrentDeviceInfo!.ContrastMax;
+                    ContrastSlider.Maximum = _vm.CurrentDeviceInfo.ContrastMax;
                     ContrastSlider.Minimum = _vm.CurrentDeviceInfo.ContrastMin;
-                    ContrastSlider.TickFrequency = _vm.CurrentDeviceInfo!.ContrastSteppingDelta;
+                    ContrastSlider.TickFrequency = _vm.CurrentDeviceInfo.ContrastSteppingDelta;
                     spContrast.Visibility = Visibility.Visible;
                     BSCS.Visibility = Visibility.Visible;
                 }
 
-                if (_vm.CurrentDeviceInfo!.IsPropertySaturationSupported)
+                if (_vm.CurrentDeviceInfo.IsPropertySaturationSupported)
                 {
-                    SaturationSlider.Maximum = _vm.CurrentDeviceInfo!.SaturationMax;
+                    SaturationSlider.Maximum = _vm.CurrentDeviceInfo.SaturationMax;
                     SaturationSlider.Minimum = _vm.CurrentDeviceInfo.SaturationMin;
-                    SaturationSlider.TickFrequency = _vm.CurrentDeviceInfo!.SaturationSteppingDelta;
+                    SaturationSlider.TickFrequency = _vm.CurrentDeviceInfo.SaturationSteppingDelta;
                     spSaturation.Visibility = Visibility.Visible;
                     BSCS.Visibility = Visibility.Visible;
                 }

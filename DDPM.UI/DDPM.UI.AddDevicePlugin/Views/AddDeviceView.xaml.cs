@@ -79,7 +79,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             }
             txtCaption.Text = Caption;
             //DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
-            //DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += AddDeviceView_DeviceChanged;
+            //DdpmCommonHelper.DeviceManagerSA.DeviceChanged += AddDeviceView_DeviceChanged;
         }
 
         bool IsRequested = false;
@@ -431,7 +431,8 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             ArrowLeft.Focus();
 
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += AddDeviceView_DeviceChanged;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += AddDeviceView_DeviceChanged;
         }
 
         private void Pairing(object sender, StylusDownEventArgs e)
@@ -457,7 +458,8 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= AddDeviceView_DeviceChanged;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= AddDeviceView_DeviceChanged;
             _vm.StopPairing();
             _vm.RightViewHeaderSelectedIndex = -1;
         }

@@ -558,7 +558,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public event EventHandler<EventArgs> ProfilePropertyChanged;
         public new event PropertyChangedEventHandler? PropertyChanged;
 
-        public WebCameraViewModel(IConsole console, ILog log) : base(console, log, DdpmCommonHelper.DeviceManagerSA!)
+        public WebCameraViewModel(IConsole console, ILog log) : base(console, log, DdpmCommonHelper.DeviceManagerSA)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
