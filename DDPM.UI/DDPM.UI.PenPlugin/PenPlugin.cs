@@ -83,10 +83,13 @@ namespace DDPM.UI.Plugin.PenPlugin
         private void GetPeripheralsAsync()
         {
             _log.Info($"[Penplugin] GetPeripherals is invoked ... in");
-            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(); //(true);
-            _deviceHelper = task.Result;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA.GetDevices(); //(true);
+                _deviceHelper = task.Result;
+            }
 
-            //Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA!.GetPenDeviceItemsEx();
+            //Task<JArray> task2 = DdpmCommonHelper.DeviceManagerSA.GetPenDeviceItemsEx();
             //var jArray = JArray.FromObject(task2.Result);
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
             _log.Info($"[Penplugin] GetPeripherals is invoked ... out");
@@ -123,14 +126,16 @@ namespace DDPM.UI.Plugin.PenPlugin
         /// <inheritdoc/>
         public void OnActivated()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManager_DeviceChanged;
             Mouse.OverrideCursor = null;
         }
 
         /// <inheritdoc/>
         public void OnDeactivated()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManager_DeviceChanged;
             Mouse.OverrideCursor = Cursors.Wait;
         }
 
@@ -149,7 +154,8 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         ~Penplugin()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManager_DeviceChanged;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManager_DeviceChanged;
         }
     }
 }

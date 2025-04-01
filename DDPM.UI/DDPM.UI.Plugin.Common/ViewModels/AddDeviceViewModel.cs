@@ -406,12 +406,12 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void StartPairing(Guid guid)
         {
-            DdpmCommonHelper.DeviceManagerSA!.StartPairing(guid);
+            DdpmCommonHelper.DeviceManagerSA?.StartPairing(guid);
             IsPairing = true;
         }
         public void StartPairingPen()
         {
-            DdpmCommonHelper.DeviceManagerSA!.PairingPen();
+            DdpmCommonHelper.DeviceManagerSA?.PairingPen();
         }
 
         public void StopPairing()
@@ -419,7 +419,7 @@ namespace DDPM.UI.Plugin.ViewModels
             if (IsPairing)
             {
                 foreach (var di in DongleInfos.Values)
-                { DdpmCommonHelper.DeviceManagerSA!.StopPairing(di.ID); }
+                { DdpmCommonHelper.DeviceManagerSA?.StopPairing(di.ID); }
                 IsPairing = false;
             }
         }
@@ -427,7 +427,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             if (IsPairing)
             {
-                //DdpmCommonHelper.DeviceManagerSA!.StopPairingPen();
+                //DdpmCommonHelper.DeviceManagerSA?.StopPairingPen();
             }
             IsPairing = false;
         }
