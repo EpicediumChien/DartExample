@@ -726,7 +726,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             SetIsUserActive(true);
 
             if (_isSubagentActive && (!PreActiveStatus))
-                Task.Run(() => _SystemEvents_DisplaySettingsChanged(null));
+                Task.Run(() => SystemEventsDisplaySettingsChangedAsync(null));
         }
 
         private void HotkeyPressed(object sender, KeyPressedEventArgs e)
@@ -2217,14 +2217,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<List<MonitorInfo>> Re_GetMonitors()
         {
             writelog("[DeviceMangerPlugin] received Re_GetMonitors requested ...");
-            Task.Run(() => _SystemEvents_DisplaySettingsChanged(null)).Wait();
+            Task.Run(() => SystemEventsDisplaySettingsChangedAsync(null)).Wait();
             return Task.FromResult(_AllInfoMonitors.ToList());
         }
 
         public Task ReGetMonitors()
         {
             writelog("[DeviceMangerPlugin] received ReGetMonitors requested ...");
-            Task.Run(() => _SystemEvents_DisplaySettingsChanged(null));
+            Task.Run(() => SystemEventsDisplaySettingsChangedAsync(null));
             return Task.CompletedTask;
         }
 
@@ -11781,17 +11781,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog("[DeviceMangerPlugin] WTSFunction.IsYourProcessInActiveSession return True");
 
-                _SystemEvents_DisplaySettingsChanged(new DebouncerArg()
+                _ = SystemEventsDisplaySettingsChangedAsync(new DebouncerArg()
                 {
                     sender = sender,
                     eventArgs = e,
-                }).Wait();
+                });
             }
             else
                 writelog("[DeviceMangerPlugin] WTSFunction.IsYourProcessInActiveSession return False");
         }
 
-        private async Task _SystemEvents_DisplaySettingsChanged(object _arg)
+        private async Task SystemEventsDisplaySettingsChangedAsync(object _arg)
         {
             try
             {
@@ -11891,12 +11891,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             _ReGetcancellationTokenSource = new CancellationTokenSource();
                             var token = _ReGetcancellationTokenSource.Token;
 
-                            writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() into Re-GetDevices ...");
+                            writelog("[DeviceMangerPlugin] SystemEventsDisplaySettingsChangedAsync() into Re-GetDevices ...");
                             //Call VCP to catch updated monitor info
                             var NewMonitors = (_DisplayManagerPlugin.Re_GetMonitors(token).Result).ToList();
                             _AllInfoMonitors = new(NewMonitors);
 
-                            writelog($"[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() get monitor count {NewMonitors.Count} ...");
+                            writelog($"[DeviceMangerPlugin] SystemEventsDisplaySettingsChangedAsync() get monitor count {NewMonitors.Count} ...");
 
                             var T1 = Task.Run(() => InitMonitorSettings(NewMonitors.ToList(), token), token);
                             var T2 = Task.Run(() => InitAllDisplayData(NewMonitors.ToList(), token), token);
@@ -11904,9 +11904,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             {
                                 while (!token.IsCancellationRequested)
                                 {
-                                    if (T1.IsCompleted && T2.IsCompleted)
+                                    if (T1.IsCompleted)
                                     {
-                                        writelog($"[DeviceMangerPlugin] InitMonitorSettings Is Completed && InitAllDisplayData Is Completed ...");
+                                        writelog($"[DeviceMangerPlugin] InitMonitorSettings Is Completed ...");
                                         break;
                                     }
                                 }
@@ -11926,7 +11926,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             if (_NKVMPlugin != null && (!token.IsCancellationRequested))
                             {
                                 writelog("[DeviceMangerPlugin] NKVM UpdateMonitorInfo ...");
-                                _NKVMPlugin.UpdateMonitorInfo(NewMonitors, token);
+                                _ = _NKVMPlugin.UpdateMonitorInfo(NewMonitors, token);
                             }
 
                             //Update display properties in display data
@@ -11948,16 +11948,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             //if (NewMonitors.Count > 0)
                             //    new_mo.AddRange(NewMonitors);
 
-                            writelog($"[DeviceManager] _SystemEvents_DisplaySettingsChanged() Got event, monitor count {NewMonitors.Count}");
+                            writelog($"[DeviceManager] SystemEventsDisplaySettingsChangedAsync() Got event, monitor count {NewMonitors.Count}");
 
-                            if (await Task.WhenAny(Task.WhenAll(T1, T2), T3) != T3)
+                            if (await Task.WhenAny(T1, T3) != T3)
                             {
                                 if (NewMonitors.Count > 0)
                                     OnDeviceChanged(NewMonitors[0], null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");//DeviceChangedType.Display_PlugIn);
                                 else
                                     OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");
 
-                                writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() OnDeviceChanged finish ...");
+                                writelog("[DeviceMangerPlugin] SystemEventsDisplaySettingsChangedAsync() OnDeviceChanged finish ...");
 
                                 //Robert_Lin, 2024-9-9 Signal a DisplaySettingsChanged event through Agent
                                 //Anyone who would like to receive this event, you can add below code: (refer to EAPlugin.cs)
@@ -11972,7 +11972,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if ((_agent != null) && (!token.IsCancellationRequested))
                                     _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
 
-                                writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() _agent.RaiseEvent finish ...");
+                                writelog("[DeviceMangerPlugin] SystemEventsDisplaySettingsChangedAsync() _agent.RaiseEvent finish ...");
 
                                 if ((NewMonitors.Count > 0) && (!token.IsCancellationRequested))
                                 {
@@ -11998,7 +11998,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (!token.IsCancellationRequested)
                                 {
                                     _ = _DisplayManagerPlugin.UpdateExistAlsConfig(NewMonitors.ToList());
-                                    writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() UpdateExistAlsConfig finish ...");
+                                    writelog("[DeviceMangerPlugin] SystemEventsDisplaySettingsChangedAsync() UpdateExistAlsConfig finish ...");
                                 }
 
                                 writelog($"[DeviceMangerPlugin] Toast Windows notification token.IsCancellationRequested: {token.IsCancellationRequested}");
@@ -12007,10 +12007,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             }
                             else
                             {
-                                writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() cancel ...");
+                                writelog("[DeviceMangerPlugin] SystemEventsDisplaySettingsChangedAsync() cancel ...");
                             }
 
-                            writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
+                            writelog("[DeviceMangerPlugin] SystemEventsDisplaySettingsChangedAsync() Re-GetDevices finish ...");
                         }
                         catch (TaskCanceledException)
                         {
