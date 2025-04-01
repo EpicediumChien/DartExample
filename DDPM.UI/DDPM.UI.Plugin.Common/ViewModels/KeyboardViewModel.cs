@@ -450,7 +450,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     EnableCollaborationKey(value);
                     OnPropertyChanged();
                     if (CurrentDeviceInfo != null)
-                        DdpmCommonHelper.DeviceManagerSA.SetCollaborationKeyEnable(value, CurrentDeviceInfo.ID);
+                        DdpmCommonHelper.DeviceManagerSA?.SetCollaborationKeyEnable(value, CurrentDeviceInfo.ID);
                 }
             }
         }
