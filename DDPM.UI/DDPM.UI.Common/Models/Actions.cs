@@ -31,9 +31,12 @@ namespace DDPM.UI.Common
         public PenActions() { }
         public PenActions(bool hasFile)
         {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+                return;
+
             try
             {
-                Task<string> task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserDoublePressSetting();
+                Task<string> task1 = DdpmCommonHelper.DeviceManagerSA.GetEraserDoublePressSetting();
                 string jsonResult = task1.Result;
                 if (string.IsNullOrEmpty(jsonResult))
                 {
@@ -51,7 +54,7 @@ namespace DDPM.UI.Common
                     TopButtonDoubleClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
                 }
 
-                task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserSinglePressSetting();
+                task1 = DdpmCommonHelper.DeviceManagerSA.GetEraserSinglePressSetting();
                 jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
                 TopButtonClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
                 if (TopButtonClickAction.AssignedAction.ID == 8 || TopButtonClickAction.AssignedAction.ID == 23)
@@ -59,7 +62,7 @@ namespace DDPM.UI.Common
                     TopButtonClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
                 }
 
-                task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserLongPressSetting();
+                task1 = DdpmCommonHelper.DeviceManagerSA.GetEraserLongPressSetting();
                 jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
                 TopButtonPressHoldAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
                 if (TopButtonPressHoldAction.AssignedAction.ID == 77)
@@ -71,7 +74,7 @@ namespace DDPM.UI.Common
                     TopButtonPressHoldAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
                 }
 
-                task1 = DdpmCommonHelper.DeviceManagerSA!.GetSideTopSwitchSinglePressSetting();
+                task1 = DdpmCommonHelper.DeviceManagerSA.GetSideTopSwitchSinglePressSetting();
                 jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
                 TopBarrelButtonClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
                 if (TopBarrelButtonClickAction.AssignedAction.ID == 8 || TopBarrelButtonClickAction.AssignedAction.ID == 23)
@@ -79,7 +82,7 @@ namespace DDPM.UI.Common
                     TopBarrelButtonClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
                 }
 
-                task1 = DdpmCommonHelper.DeviceManagerSA!.GetSideBottomSwitchSinglePressSetting();
+                task1 = DdpmCommonHelper.DeviceManagerSA.GetSideBottomSwitchSinglePressSetting();
                 jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
                 BottomBarrelButtonClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
                 if (BottomBarrelButtonClickAction.AssignedAction.ID == 8 || BottomBarrelButtonClickAction.AssignedAction.ID == 23)
@@ -88,15 +91,15 @@ namespace DDPM.UI.Common
                 }
 
 
-                Task<bool> task2 = DdpmCommonHelper.DeviceManagerSA!.GetMenuCenterRightClickSetting();
+                Task<bool> task2 = DdpmCommonHelper.DeviceManagerSA.GetMenuCenterRightClickSetting();
                 IsUseCenter = task2.Result;
-                task2 = DdpmCommonHelper.DeviceManagerSA!.GetIsSideTopButtonHoverClick();
+                task2 = DdpmCommonHelper.DeviceManagerSA.GetIsSideTopButtonHoverClick();
                 IsTopBarrelHoverClickOn = task2.Result;
-                task2 = DdpmCommonHelper.DeviceManagerSA!.GetIsSideBottomButtonHoverClick();
+                task2 = DdpmCommonHelper.DeviceManagerSA.GetIsSideBottomButtonHoverClick();
                 IsBottomBarrelHoverClickOn = task2.Result;
 
                 ResetRadialMenu();
-                //task1 = DdpmCommonHelper.DeviceManagerSA!.GetMenuSinglePressSetting();
+                //task1 = DdpmCommonHelper.DeviceManagerSA.GetMenuSinglePressSetting();
                 //var result = task1.Result;
                 //var RadialMenus = JsonConvert.DeserializeObject<List<RadialMenuItem>>(task1.Result)!;
                 //RadialActions.Clear();
@@ -500,7 +503,7 @@ namespace DDPM.UI.Common
                     //PowerPoint
                     DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{7BBECD91-F12A-4CC4-B005-526BA66BA657}");
                     DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] PowerPoint Guid:{7BBECD91-F12A-4CC4-B005-526BA66BA657}");
-                    task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseAssignedActions(guid);
+                    task1 = DdpmCommonHelper.DeviceManagerSA.GetMouseAssignedActions(guid);
                     try
                     {
                         var jArray = JArray.FromObject(task1.Result);
@@ -530,7 +533,7 @@ namespace DDPM.UI.Common
                     //Outlook
                     DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{CCCE4E6F-C690-4EF5-BA19-F270C26C21B6}");
                     DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] Outlook Guid:{CCCE4E6F-C690-4EF5-BA19-F270C26C21B6}");
-                    task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseAssignedActions(guid);
+                    task1 = DdpmCommonHelper.DeviceManagerSA.GetMouseAssignedActions(guid);
                     try
                     {
                         var jArray = JArray.FromObject(task1.Result);
@@ -558,7 +561,7 @@ namespace DDPM.UI.Common
                 /////////////////////////////////////////////////////////////////////////////////////////
 
                 //AllApp
-                DdpmCommonHelper.DeviceManagerSA!.SetCurrentSelectedAppSpecificProfile(guid, "{76824745-CE06-4358-835D-7BB991CB71A0}");
+                DdpmCommonHelper.DeviceManagerSA?.SetCurrentSelectedAppSpecificProfile(guid, "{76824745-CE06-4358-835D-7BB991CB71A0}");
                 DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] AllApp Guid:{76824745-CE06-4358-835D-7BB991CB71A0}");
             }
             else
