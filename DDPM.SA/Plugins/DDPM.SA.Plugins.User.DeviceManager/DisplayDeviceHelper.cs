@@ -140,7 +140,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         // ReadImportSettingsFile will check file existence
                         //if (File.Exists(exportpath))
                         //{
-                        WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Checked exported file exists!");
                         DDPMImpExpSettings dDPMImpExpSettings = new DDPMImpExpSettings();
                         dDPMImpExpSettings = settingsManager.ReadImportSettingsFile(exportpath).Result;
                         if (dDPMImpExpSettings != null)
