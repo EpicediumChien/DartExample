@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using Windows.Devices.HumanInterfaceDevice;
+using Windows.Gaming.Input;
 using static DDPM.SA.Common.ICLICommandTable;
 using Console = System.Console;
 
@@ -3201,20 +3202,36 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                                       .ToList();
 
                     var serialNumbers = new List<string>();
-
+                    string ss0 = null;
                     if (commandLineInput.Options.Count > 0)
                         ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
                     if (ss_1.Length > 0)
                     {
                         foreach (var info in allFWUpdateResponseInfos)
                         {
+                            var device0 = fwUpdateDeviceInfos.FirstOrDefault(_ => _.LogicalDeviceType.ToString().ToUpper().Contains("LOGICALHEADSET"));
+                            if(device0 == null)
+                                ss0 = ss_1[0];
+                            else if (ss_1[0].ToUpper() == "AUDIO" && device0.LogicalDeviceType.ToString().ToUpper().Contains("HEADSET")) 
+                                ss0 = "HEADSET";
+
                             var device = fwUpdateDeviceInfos.FirstOrDefault(_ => _.ModelNumber.Equals(info.Model, StringComparison.OrdinalIgnoreCase) &&
-                            _.LogicalDeviceType.ToString().ToUpper().Contains(ss_1[0]));
+                                                            _.LogicalDeviceType.ToString().ToUpper().Contains(ss0));
+
                             //Console.WriteLine($"-----Model: {info.Model} Service Tag: {ss_1[0]} Version: {info.Version}-----");
                             //Console.WriteLine($"-----DeviceType: {device.LogicalDeviceType} FW Version: {device.FirmwareVersion}-----");
-                            if (device != null)
+                            //Trace.WriteLine($@"LogicalDeviceType = {device.LogicalDeviceType.ToString().ToUpper()}");
+                            if (device != null && device.LogicalDeviceType.ToString().ToUpper().Contains("HEADSET"))
                             {
                                 serialNumbers.Add(_devMgr.GetHeadsetSerialNumberAsync(device.ID.ToString()).Result ?? "N/A");
+                            }
+                            else if (device != null && device.LogicalDeviceType.ToString().ToUpper().Contains("WEBCAM"))
+                            {
+                                serialNumbers.Add(_devMgr.GetWebcamSerialNumber(device.ID.ToString()).Result ?? "N/A");
+                            }
+                            else
+                            {
+                                serialNumbers.Add("N/A");
                             }
                         }
                     }
