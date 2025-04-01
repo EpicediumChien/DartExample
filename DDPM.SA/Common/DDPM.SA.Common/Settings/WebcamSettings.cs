@@ -57,7 +57,8 @@ namespace DDPM.SA.Common.Settings
         //public string CurrentResolution { get => Resolutions[SelectedResolution]; }
         //public string CurrentFPS { get => SelectedFPSs[SelectedResolution]; }
 
-        public string CurrentResolution {
+        public string CurrentResolution
+        {
             get
             {
                 if (Resolutions.TryGetValue(SelectedResolution, out var key))
@@ -70,12 +71,13 @@ namespace DDPM.SA.Common.Settings
         }
         public string CurrentFPS
         {
-            get 
+            get
             {
-                if (SelectedFPSs.TryGetValue(SelectedResolution, out var key)) 
+                if (SelectedFPSs.TryGetValue(SelectedResolution, out var key))
                 {
                     return key;
-                }else
+                }
+                else
                     return "30";
             }
         }
@@ -363,7 +365,8 @@ namespace DDPM.SA.Common.Settings
                         break;
                 }
                 log?.Error($"if (presetProfiles != null) {PresetProfiles.Keys}");
-                SetDPeMDefaultSettings(presetProfiles, PresetProfiles, log);
+                if (string.IsNullOrEmpty(di.Message))
+                    SetDPeMDefaultSettings(presetProfiles, PresetProfiles, log);
                 var HasNewDefault = CustomProfiles.Values.Any(x => x.Name.Contains(di.ProfileName)) && WebcamProfileNames.Any(y => y == di.ProfileName);
                 SelectedProfileName = di.ProfileName != string.Empty ? HasNewDefault == true ? di.ProfileName + "*" : di.ProfileName : "Default";
             }
@@ -685,6 +688,10 @@ namespace DDPM.SA.Common.Settings
         public int AutoFramingSensitivity { get; set; } = 1;//參考IL基本值
         public int AutoFramingFrameSize { get; set; } = 1;//參考IL基本值
         public bool IsAutoFramingTransitionOn { get; set; } = true;//參考IL基本值
+
+        public bool IsBgBlurEnable { get; set; } = true;//參考IL基本值
+
+        public int BgBlur { get; set; } = 0;
         public WebcamProfile Clone()
         {
             return (WebcamProfile)MemberwiseClone();

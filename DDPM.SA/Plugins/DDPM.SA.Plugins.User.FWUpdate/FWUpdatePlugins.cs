@@ -71,7 +71,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// </summary>
         /// <param name="text"></param>
         /// <param name="log_type">0 means info, others means error</param>
-        private void WriteLog(string text, log_type log_type,
+        private void WriteLog(string text, log_type log_type = log_type.info,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
             [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
@@ -109,6 +109,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         public const string PluginLogId = "FWUpdate";
 
         private Logs _logs;
+        private Log? _ILogs;
 
         static bool _IsSkipCA = false;
         static bool _IsSkipSHA = false;
@@ -727,7 +728,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         DeviceName = fwUpdateInfos[i].DeviceName,
                         Model = fwUpdateInfos[i].Model,
-                        IsDisplay=fwUpdateInfos[i].IsDisplay,
+                        IsDisplay = fwUpdateInfos[i].IsDisplay,
                         UpdateTime = fwUpdateInfos[i].UpdateTime,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                         ProcessName = "Downloading",
@@ -1408,6 +1409,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             Directory.CreateDirectory(path);
                         }
                     }
+                    DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(path, out string errorMsg);
+                    _logs.DebugMsg_1($"DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute errorMsg : {errorMsg}");
                     if (!DDPMFileSecurity.ValidateFilePath(@$"{programData}{GlobalDefinitions.LogFwUpdater}", out string info))
                     {
                         _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName}[FWUpdateLog] log path Error : {info}");
@@ -1418,9 +1421,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName}[FWUpdateLog] log path ACL Error : {info}");
                         return FWUErrorCode.FolderIsNotSafe;
                     }*/
-                    logPath = path;
-                    _ProgressLogPath = $"{logPath}\\PrgoressResult";
-                    _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " create log path done");
+                    if (!string.IsNullOrEmpty(path))
+                    {
+                        logPath = path;
+                        _ProgressLogPath = $"{logPath}\\PrgoressResult";
+                        _ILogs = new Log("ISP", new LogFile(_ProgressLogPath), "ISP");
+                        _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " create log path done");
+                    }
+                    else
+                    {
+                        _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " create log path done but path is null or empty");
+                    }
                 }
                 if (fwUpdateInfo.IsDisplay && IsISPInApp(fwUpdateInfo.InstallPaths, out string upgPath))//新版螢幕韌體更新
                 {
@@ -1431,12 +1442,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             if (!string.IsNullOrEmpty(msg))
                             {
-                                WriteLog($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} ISP msg : {msg}");
+                                WriteLog($"DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} ISP msg : {msg}");
                             }
                         }
                         if (result.ErrorCode >= 0)
                         {
-                            WriteLog($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} ErrorCode: {result.ErrorCode}, WriteProtection: {result.WriteProtection}");
+                            WriteLog($"DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} ErrorCode: {result.ErrorCode}, WriteProtection: {result.WriteProtection}");
                             CheckDisplayErrorCode(result.ErrorCode);
                         }
                         UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
@@ -1463,7 +1474,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         ProcessProgress = 0,
                     };
                     sendMessageToEvent(updateProgressInfo);
-                    WriteLog($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} ===========[START]==========");
+                    WriteLog($"DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} ===========[START]==========");
 
                     try
                     {
@@ -1474,7 +1485,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     finally
                     {
-                        WriteLog($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion}============[END]===========");
+                        WriteLog($"DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion}============[END]===========");
                     }
                 }
                 else//周邊裝置和舊版螢幕韌體更新
@@ -1540,7 +1551,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 UpdateTime = _fWUpdateInfo.UpdateTime,
                                 TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                                 ProcessName = "Installing",
-                                ProcessProgress = 50,
+                                ProcessProgress = 101,
                             };
                             sendMessageToEvent(updateProgressInfo);
                         }
@@ -1731,8 +1742,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _logs.DebugMsg_1($"{nameof(Install)} DeviceName : {fwUpdateInfo.DeviceName}, Model : {fwUpdateInfo.Model} _updateErrorCode : {_updateErrorCode}");
                 _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} _notificationStr : {_notificationStr}");
                 _logs.DebugMsg_1($"{nameof(Install)} done");
-                WriteLog($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} Result : {_updateErrorCode}");
+                WriteLog($"DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} Result : {_updateErrorCode}");
                 _ProgressLogPath = string.Empty;
+                if (_ILogs != null)
+                {
+                    _ILogs = null;
+                }
                 return _updateErrorCode;
             }
             catch (Exception ex)
@@ -1740,6 +1755,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _updateErrorCode = FWUErrorCode.Unknow;
                 _logs.DebugMsg_1(fwUpdateInfo.DeviceName + nameof(Install) + " Error:" + ex.ToString());
                 _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
+                if (_ILogs != null)
+                {
+                    _ILogs = null;
+                }
                 return _updateErrorCode;
             }
             finally
@@ -2234,7 +2253,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         UpdateTime = _fWUpdateInfo.UpdateTime,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                         ProcessName = "Installing",
-                        ProcessProgress = int.Parse(progressNode.InnerText),
+                        ProcessProgress = (_fWUpdateInfo.DeviceType == DeviceType.LogicalDock ||
+                        _fWUpdateInfo.DeviceType == DeviceType.PhysicalWiredDock) ? 101 : int.Parse(progressNode.InnerText),//Fix PIMS-349453
                     };
                     if (_fWUpdateInfo.DeviceType == DeviceType.LogicalHeadset &&
                        _fWUpdateInfo.Model.Contains("7024"))
@@ -2329,23 +2349,20 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 ProgressUpdate_Notify?.AsyncFireAndForget(this, fWUpdateInfo, System.Threading.CancellationToken.None);
             }
             _logs.DebugMsg_1($"sendMessageToEvent _IsShowNotify : {_IsShowNotify}, {fWUpdateInfo.DeviceName} {fWUpdateInfo.Model} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
-            WriteLog($"_IsShowNotify : {_IsShowNotify}, {DateTime.Now}--DeviceName : {fWUpdateInfo.DeviceName} Model : {fWUpdateInfo.Model} to ver : {fWUpdateInfo.TheLatestVersion} ProcessName : {fWUpdateInfo.ProcessName}...{fWUpdateInfo.ProcessProgress}%");
+            WriteLog($"_IsShowNotify : {_IsShowNotify}, --DeviceName : {fWUpdateInfo.DeviceName} Model : {fWUpdateInfo.Model} to ver : {fWUpdateInfo.TheLatestVersion} ProcessName : {fWUpdateInfo.ProcessName}...{fWUpdateInfo.ProcessProgress}%");
         }
         private void WriteLog(string s)
         {
             try
             {
-                if (!string.IsNullOrEmpty(_ProgressLogPath))
+                if (_ILogs != null)
                 {
-                    using (StreamWriter writer = new StreamWriter(_ProgressLogPath, true))
-                    {
-                        writer.WriteLine($"{DateTime.Now}: {s}");
-                    }
+                    _ILogs.Info($"{s}");
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                _logs.DebugMsg_1($"WriteLog Error : {ex.Message}");
+                _logs?.DebugMsg_1($"WriteLog ex: {ex.Message}");
             }
         }
 

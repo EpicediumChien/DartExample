@@ -159,7 +159,7 @@ namespace DDPM.QAM
                     {
                         CameraSetting.Close();
                     });
-                    
+
                     CameraSetting = null;
                 }
 
@@ -255,7 +255,10 @@ namespace DDPM.QAM
                 WriteLog($"Lanuch DDPM successfully!");
             }
             else
-                DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);
+            {
+                WriteLog($"Going to run SetIsDDPMLaunchByQAMAsync()");
+                DdpmCommonHelper.DeviceManagerSA?.SetIsDDPMLaunchByQAMAsync(false);
+            }
         }
 
         //private void SendMessageToDDPM(int timeout)
@@ -365,7 +368,7 @@ namespace DDPM.QAM
             {
                 WriteLog($"Catch exception {ex.Message} when QAM Window_Closing");
             }
-            
+
         }
 
         //如果右边的window有出来，也要跟着隐藏  Derek 2025/01/23

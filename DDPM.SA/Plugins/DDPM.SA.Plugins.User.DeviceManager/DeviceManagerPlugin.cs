@@ -128,11 +128,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         // ColorPreset objects
         private Dictionary<string, InstalledAppInfo> _AllAppData_tmp = new Dictionary<string, InstalledAppInfo>();
+
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private List<string> _SupportedColorPreset = new List<string>();
         private readonly object _CheckAutoLock = new object();
+
         // Jim move to here 20240621
         private ShowOSDWin OsdWin = null;
+
         private string iconFolderPath = string.Empty;
         private MainWindow? MonitorBorkerWin = null; //Dean 0626 fix SAST issue, remove static
         private Thread newWindowThread_AutoSetColorPresetForMonitorConfig = null;
@@ -875,18 +878,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<DDPM.SA.Common.IIC_Metadata> DownloadICCData(MonitorInfo m, bool blICCProfile = false, string savelPath = "")
         {
-            DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
-
-            if (_ColorPresetPlugin == null)
-            {
-                writelog("null _ColorPresetPlugin in [DownloadICCData]");
-                return Task.FromResult(_ICC_Metadata);
-            }
-            else
-            {
-                _ICC_Metadata = _ColorPresetPlugin.DownloadICCData(m.modelName, m.DisplayName, blICCProfile, savelPath).Result;
-            }
-
+            DDPM.SA.Common.IIC_Metadata _ICC_Metadata = _ColorProfileHelper?.DownloadICCData(m, blICCProfile, savelPath).Result ?? new IIC_Metadata();
             return Task.FromResult(_ICC_Metadata);
         }
 
@@ -894,6 +886,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             //Log.Info($"ReadColorPreset requested ...");
             writelog("ColorPresetPlugin received ReadColorPreset requested ...");
+            bool SmartHDR_ON = GetHDRStatus(m).Result;
+            MonitorPresetCache mpc = _ColorProfileHelper?.GetPresetListFromCache(m, SmartHDR_ON);
+            if (mpc != null)
+            {
+                return Task.FromResult(mpc.preset_list);
+            }
+
             List<string> multiColorPreset = new List<string>();
             // 20240619 jim add check
             if (_SupportedColorPreset != null)
@@ -917,8 +916,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (string.IsNullOrEmpty(VCP_capbility))
                             VCP_capbility = GetVCPCapabilities(m).Result;
 
-                        bool SmartHDR_ON = GetHDRStatus(m).Result;
-
                         _SupportedColorPreset = _ColorPresetPlugin.ReadColorPreset(m, VCP_capbility, SmartHDR_ON).Result;
                         //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
                         foreach (string info in _SupportedColorPreset)
@@ -928,6 +925,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 }
             }
+
+            //add to cache
+            if (multiColorPreset.Count > 0)
+                _ColorProfileHelper?.AddPresetListToCache(m, SmartHDR_ON, multiColorPreset);
 
             return Task.FromResult(multiColorPreset);
         }
@@ -6655,6 +6656,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 GetFWUpdateInfo(true).Wait();
                 SW_GetSWUpdateInfo(false).Wait();
+                show_peripheralsUpdateNotify(this, true);
             }
             else
             {
@@ -9965,6 +9967,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetWebcamSerialNumber(Guid));
         }
+        public async Task<int> GetBgBlur(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetBgBlur(Guid));
+        }
+
+        public async Task<bool> GetIsBgBlurEnable(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsBgBlurEnable(Guid));
+        }
+        public async Task<bool> GetIsPropertyBgBlurSupported(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsPropertyBgBlurSupported(Guid));
+        }
 
         public Task SetIsMicEnumerationOn(string Guid, bool newValue)
         {
@@ -10271,6 +10286,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetTilt(Guid, newValue);
             return Task.CompletedTask;//Task.FromResult(true);
+        }
+
+        public Task<bool> SetIsBgBlurEnable(string Guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsBgBlurEnable requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            return _DTPProxyPlugin.SetIsBgBlurEnable(Guid, newValue);
+        }
+
+        public Task<bool> SetBgBlur(string Guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetBgBlur requested ...");
+            writelog($"Target Guid is {Guid}");
+            writelog($"Target Value is {newValue}");
+            return _DTPProxyPlugin.SetBgBlur(Guid, newValue);
         }
 
         public Task SetPan(string Guid, int newValue)
@@ -11754,13 +11785,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     sender = sender,
                     eventArgs = e,
-                });
+                }).Wait();
             }
             else
                 writelog("[DeviceMangerPlugin] WTSFunction.IsYourProcessInActiveSession return False");
         }
 
-        private void _SystemEvents_DisplaySettingsChanged(object _arg)
+        private async Task _SystemEvents_DisplaySettingsChanged(object _arg)
         {
             try
             {
@@ -11815,23 +11846,43 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (_ReGetcancellationTokenSource != null)
                         {
                             writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _ReGetcancellationTokenSource trigger cancel ...");
-                            _ReGetcancellationTokenSource.Cancel();
+
+                            if (_ReGetcancellationTokenSource is not null)
+                            {
+                                _ReGetcancellationTokenSource.Dispose();
+                                _ReGetcancellationTokenSource = null;
+                            }
                         }
                     }
                     catch (TaskCanceledException)
                     {
                         writelog("[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
-                        _ReGetcancellationTokenSource.Dispose();
+
+                        if (_ReGetcancellationTokenSource is not null)
+                        {
+                            _ReGetcancellationTokenSource.Dispose();
+                            _ReGetcancellationTokenSource = null;
+                        }
                     }
                     catch (OperationCanceledException)
                     {
                         writelog("[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
-                        _ReGetcancellationTokenSource.Dispose();
+
+                        if (_ReGetcancellationTokenSource is not null)
+                        {
+                            _ReGetcancellationTokenSource.Dispose();
+                            _ReGetcancellationTokenSource = null;
+                        }
                     }
                     catch (Exception ex)
                     {
                         writelog($"[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() ...there is an exception-- ({ex.Message})");
-                        _ReGetcancellationTokenSource.Dispose();
+
+                        if (_ReGetcancellationTokenSource is not null)
+                        {
+                            _ReGetcancellationTokenSource.Dispose();
+                            _ReGetcancellationTokenSource = null;
+                        }
                     }
                     finally
                     {
@@ -11843,17 +11894,28 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() into Re-GetDevices ...");
                             //Call VCP to catch updated monitor info
                             var NewMonitors = (_DisplayManagerPlugin.Re_GetMonitors(token).Result).ToList();
-                            _AllInfoMonitors = NewMonitors.ToList();
+                            _AllInfoMonitors = new(NewMonitors);
 
                             writelog($"[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() get monitor count {NewMonitors.Count} ...");
 
-                            InitMonitorSettings(NewMonitors.ToList());
-
-                            Task.Run(() => InitAllDisplayData(NewMonitors.ToList())).ConfigureAwait(false);
+                            var T1 = Task.Run(() => InitMonitorSettings(NewMonitors.ToList(), token), token);
+                            var T2 = Task.Run(() => InitAllDisplayData(NewMonitors.ToList(), token), token);
+                            var T3 = Task.Run(() =>
+                            {
+                                while (!token.IsCancellationRequested)
+                                {
+                                    if (T1.IsCompleted && T2.IsCompleted)
+                                    {
+                                        writelog($"[DeviceMangerPlugin] InitMonitorSettings Is Completed && InitAllDisplayData Is Completed ...");
+                                        break;
+                                    }
+                                }
+                                writelog($"[DeviceMangerPlugin] T3 Is Completed ...");
+                            }, token);
 
                             // add @ 20250303 stephen
                             // modified @ 20250305 stephen : set count = -1 as a flag to avoid trigger ui reflash
-                            if (_arg != null)
+                            if ((_arg != null) && (!token.IsCancellationRequested))
                             {
                                 arg = (DebouncerArg)_arg;
                                 show_displays_changed(arg.sender, new DisplaychangedEventArgs() { count = -1, monitors = NewMonitors });
@@ -11861,24 +11923,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             // add @ 20250303 stephen
 
                             //NKVM monitor change
-                            if (_NKVMPlugin != null)
+                            if (_NKVMPlugin != null && (!token.IsCancellationRequested))
                             {
                                 writelog("[DeviceMangerPlugin] NKVM UpdateMonitorInfo ...");
                                 _NKVMPlugin.UpdateMonitorInfo(NewMonitors, token);
                             }
+
                             //Update display properties in display data
-                            if (_DisplayManagerPlugin != null)
+                            if (_DisplayManagerPlugin != null && (!token.IsCancellationRequested))
                             {
                                 for (int i = 0; i < NewMonitors.Count; i++)
                                 {
+                                    if (token.IsCancellationRequested) break;
+
                                     writelog("[DeviceMangerPlugin]  GetDisplaySupportedProperties ...");
-                                    _DisplayManagerPlugin.GetDisplaySupportedProperties(NewMonitors[i]).Wait();
+                                    _DisplayManagerPlugin.GetDisplaySupportedProperties(NewMonitors[i]).Wait(token);
                                 }
                             }
 
-                            token.ThrowIfCancellationRequested();
-                            //review monitor list to check duplicated data
-                            ReviewAllMonitorToAvoidDuplicatedInfo();
+                            if (!token.IsCancellationRequested)
+                                ReviewAllMonitorToAvoidDuplicatedInfo();  //review monitor list to check duplicated data
 
                             //List<MonitorInfo> new_mo = new List<MonitorInfo>();
                             //if (NewMonitors.Count > 0)
@@ -11886,75 +11950,83 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             writelog($"[DeviceManager] _SystemEvents_DisplaySettingsChanged() Got event, monitor count {NewMonitors.Count}");
 
-                            token.ThrowIfCancellationRequested();
-
-                            if (NewMonitors.Count > 0)
-                                OnDeviceChanged(NewMonitors[0], null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");//DeviceChangedType.Display_PlugIn);
-                            else
-                                OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");
-
-                            writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() OnDeviceChanged finish ...");
-
-                            //Robert_Lin, 2024-9-9 Signal a DisplaySettingsChanged event through Agent
-                            //Anyone who would like to receive this event, you can add below code: (refer to EAPlugin.cs)
-                            // _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
-                            //
-                            // private void DisplaySettingsChangedHandler(object sender, EventManagerArgs e)
-                            // {
-                            //    your handler code
-                            // }
-                            //
-
-                            if (_agent != null && !token.IsCancellationRequested)
-                                _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
-
-                            writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() _agent.RaiseEvent finish ...");
-
-                            if (NewMonitors.Count > 0 && !token.IsCancellationRequested)
+                            if (await Task.WhenAny(Task.WhenAll(T1, T2), T3) != T3)
                             {
-                                Task.Run(() =>
+                                if (NewMonitors.Count > 0)
+                                    OnDeviceChanged(NewMonitors[0], null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");//DeviceChangedType.Display_PlugIn);
+                                else
+                                    OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");
+
+                                writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() OnDeviceChanged finish ...");
+
+                                //Robert_Lin, 2024-9-9 Signal a DisplaySettingsChanged event through Agent
+                                //Anyone who would like to receive this event, you can add below code: (refer to EAPlugin.cs)
+                                // _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
+                                //
+                                // private void DisplaySettingsChangedHandler(object sender, EventManagerArgs e)
+                                // {
+                                //    your handler code
+                                // }
+                                //
+
+                                if ((_agent != null) && (!token.IsCancellationRequested))
+                                    _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
+
+                                writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() _agent.RaiseEvent finish ...");
+
+                                if ((NewMonitors.Count > 0) && (!token.IsCancellationRequested))
                                 {
-                                    //Telementry Collection
-                                    var rt = false;
-                                    var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
-                                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
-                                    rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, NewMonitors);
-                                    if (rt)
-                                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
-                                    else
-                                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
-                                }, token).ConfigureAwait(false);
+                                    _ = Task.Run(() =>
+                                    {
+                                        //Telementry Collection
+                                        var rt = false;
+                                        var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
+                                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
+                                        rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, NewMonitors);
+                                        if (rt)
+                                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
+                                        else
+                                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
+                                    }, token);
+                                }
+
+                                ////1117 Bruce 不用自動旋轉把下兩行註解
+                                //if (displayDeviceNumChange && NewMonitors.Count > 0)
+                                //_DisplayManagerPlugin.SetDisplayOrientation(NewMonitors).Wait();
+                                //writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
+
+                                if (!token.IsCancellationRequested)
+                                {
+                                    _ = _DisplayManagerPlugin.UpdateExistAlsConfig(NewMonitors.ToList());
+                                    writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() UpdateExistAlsConfig finish ...");
+                                }
+
+                                writelog($"[DeviceMangerPlugin] Toast Windows notification token.IsCancellationRequested: {token.IsCancellationRequested}");
+                                if (NewMonitors != null && NewMonitors.Count > 0 && !token.IsCancellationRequested)
+                                    _ = Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, NewMonitors.ToList(), _SettingsPlugin));
+                            }
+                            else
+                            {
+                                writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() cancel ...");
                             }
 
-                            ////1117 Bruce 不用自動旋轉把下兩行註解
-                            //if (displayDeviceNumChange && NewMonitors.Count > 0)
-                            //_DisplayManagerPlugin.SetDisplayOrientation(NewMonitors).Wait();
-                            //writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
-
-                            token.ThrowIfCancellationRequested();
-                            _DisplayManagerPlugin.UpdateExistAlsConfig(NewMonitors.ToList());
-                            writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() UpdateExistAlsConfig finish ...");
                             writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
-
-                            writelog($"[DeviceMangerPlugin] Toast Windows notification token.IsCancellationRequested: {token.IsCancellationRequested}");
-                            if (NewMonitors != null && NewMonitors.Count > 0 && !token.IsCancellationRequested)
-                                Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, NewMonitors.ToList(), _SettingsPlugin));
                         }
                         catch (TaskCanceledException)
                         {
                             writelog("[DeviceMangerPlugin] II_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
-                            OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
+                            //OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
                         }
                         catch (OperationCanceledException)
                         {
                             writelog("[DeviceMangerPlugin] II_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
-                            OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
+                            //OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
                         }
                         catch (Exception ex)
                         {
                             // Failed to complete due to e exception
                             writelog($"[DeviceMangerPlugin] II_SystemEvents_DisplaySettingsChanged() ...there is an exception-- ({ex.Message})");
-                            OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
+                            //OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
                         }
                     }
                 }
@@ -12347,7 +12419,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                                 _ColorPresetPlugin.DownloadICCData(monitor.modelName, monitor.DisplayName, true, "", true).Wait();
                                 writelog($"[OnDeviceChanged]: _ColorPresetPlugin.DownloadICCData done");
-
                             }
                             else
                                 writelog($"[OnDeviceChanged]: _ColorPresetPlugin is null, skip DownloadICCData({monitor.modelName})");
@@ -12372,7 +12443,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //}
                     //else
                     //    writelog($"OnDeviceChanged: _ColorPresetPlugin is null, skip DownloadICCData({monitor.modelName})");
-                }                
+                }
             }
         }
 
@@ -12547,25 +12618,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             OnMonitorinfoUpdatechanged(_EventArgss);
         }
 
-        private void InitAllDisplayData(List<MonitorInfo> AllMonitors)
+        private void InitAllDisplayData(List<MonitorInfo> AllMonitors, CancellationToken cancellationToken)
         {
             //InitMonitorSettings();
             if (AllMonitors != null && AllMonitors.Count > 0)
             {
-                _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait();
-                for (int i = 0; i < AllMonitors.Count; i++)
+                _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait(cancellationToken);
+
+                for (int i = 0; ((i < AllMonitors.Count) && (!cancellationToken.IsCancellationRequested)); i++)
                 {
                     MonitorInfo info = AllMonitors[i];
-                    _DisplayManagerPlugin.GetVCPCapability(info, 0xE9);
-                    _DisplayManagerPlugin.GetDisplayPropertiesInfo(info);
+
+                    _ = _DisplayManagerPlugin.GetVCPCapability(info, 0xE9);
+
+                    _ = _DisplayManagerPlugin.GetDisplayPropertiesInfo(info);
+
                     if (info.CapabilityString.Contains("F4"))
-                    {
-                        _DisplayManagerPlugin.GetGamingProperties_SupportedList(info);
-                    }
-                    _DisplayManagerPlugin.GetUSBUpstreamList(info).Wait();
-                    _DisplayManagerPlugin.GetAllUSBUpstream(info);
+                        _ = _DisplayManagerPlugin.GetGamingProperties_SupportedList(info);
+
+                    _DisplayManagerPlugin.GetUSBUpstreamList(info).Wait(cancellationToken);
+
+                    if (!cancellationToken.IsCancellationRequested)
+                        _ = _DisplayManagerPlugin.GetAllUSBUpstream(info);
                 }
-                UpdateHotkeyInfo();
+
+                if (!cancellationToken.IsCancellationRequested)
+                    UpdateHotkeyInfo(cancellationToken);
             }
         }
 
@@ -12582,15 +12660,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             //if GetMonitors() already return right list, this function won't be called
             //it means if vcp core find the different monitor then this call will be triggered
-            writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin");           
+            writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin");
 
             _AllInfoMonitors = (e.monitors).ToList();
 
             writelog($"monitor count {e.monitors.Count} ...");
 
-            InitMonitorSettings((e.monitors).ToList());
+            InitMonitorSettings((e.monitors).ToList(), CancellationToken.None);
 
-            Task.Run(() => InitAllDisplayData((e.monitors).ToList())).ConfigureAwait(false);
+            Task.Run(() => InitAllDisplayData((e.monitors).ToList(), CancellationToken.None)).ConfigureAwait(false);
 
             DisplaychangedEventArgs _displaychangedEventArgs = new DisplaychangedEventArgs();
             _displaychangedEventArgs.count = e.count;
@@ -14081,7 +14159,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Debug.WriteLine($"SaveHotkeySetting:GetInputSourceHotKeyDataAndSaveNewBack mo is null ");
                 }
             }
-            //03/27 testCase:Change hotkey in Input source - "Change PIP Position" will be updated in USB KVM > Hotkey > "Change PIP Position". 
+            //03/27 testCase:Change hotkey in Input source - "Change PIP Position" will be updated in USB KVM > Hotkey > "Change PIP Position".
             if (info.Job.Equals(HotkeyType.ChangePIPPosition))
             {
                 //clear KVM Change PIP Position hotkey if exist
@@ -14293,15 +14371,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         break;
 
                     case OSDType_Device.Keyboard:
-                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Keyboard, state);
+                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)), oSDType, OSDType_Device.Keyboard, state);
                         break;
 
                     case OSDType_Device.Mouse:
-                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Mouse, state);
+                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)), oSDType, OSDType_Device.Mouse, state);
                         break;
 
                     case OSDType_Device.Headset:
-                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), oSDType, OSDType_Device.Headset, state);
+                        _OSD_Controler.KeyAndKeybordBatteryLowWin_ShowWindow(_latestBatterylowContent, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)), oSDType, OSDType_Device.Headset, state);
                         break;
                 }
                 _latestBatterylowContent = string.Empty;
@@ -14454,6 +14532,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             KeyboardHook_Debounce(300, null, KeyboardHook_KeyUpProc, e);
         }
+
         //private int iTest = 0;
         private void KeyboardHook_KeyUpProc(KeyEventArgs e)
         {
@@ -14462,34 +14541,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool _altPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
             bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
             bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
-            /*ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.StartRecording);
-            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
-            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
-            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", false);*/
-            //test
-            //CallQAM_UI(this);
-            /*ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Headset, "Dell Multi-Device Headset - MS5320W");
-            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Mouse, "Dell Multi-Device Mouse - MS5320W");
-            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
-            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");*/
             /*iTest++;
             if (iTest % 2 == 1)
             {
                 //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Pen, "Dell Multi-Device pen - MS5320W");
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetyyyyyyyyy - MS5320W", true);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Fingerprint);
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
                 //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
-
             }
             else
             {
-                //_OSD_Controler.CloseMultipleOSDByGuidAndOp("377C7B36-ED5B-446F-93A6-3418F0447836", OSDType_Op.None);
-                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", false);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("FW", "fwxxxx update ccccccccccccccccccccccccccccccccccc...", true));
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.StartRecording);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.EasyMemory);
 
+                //_OSD_Controler.CloseMultipleOSDByGuidAndOp("377C7B36-ED5B-446F-93A6-3418F0447836", OSDType_Op.None);
+                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", false);
+                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("FW", "fwxxxx update ccccccccccccccccccccccccccccccccccc...", true));
             }*/
             //will register as ALT+Z ?
             if (_altPressed && strKey.Equals("Z") && !_ctrlPressed && !_shiftPressed)
@@ -16791,116 +16862,149 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        private void InitMonitorSettings(List<MonitorInfo> AllInfoMonitors)
+        private void InitMonitorSettings(List<MonitorInfo> AllInfoMonitors, CancellationToken cancellationToken)
         {
-            List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
-            if (AllInfoMonitors != null && _SettingsPlugin != null)
+            try
             {
-                writelog("[InitMonitorSettings] AllInfoMonitors count = " + AllInfoMonitors.Count.ToString());
-                foreach (MonitorInfo m in AllInfoMonitors.ToList())
-                {
-                    monitorSettingsList = _SettingsPlugin.InitDDPMMonitorConfigFile(m.modelName, out isInitMonitorSettings).Result;
-                    if (isInitMonitorSettings)
-                    {
-                        if (monitorSettingsList == null)
-                        {
-                            monitorSettingsList = new List<DDPMMonitorSettings>();
-                        }
-                        Trace.WriteLine("ServiceTag:" + m.edid.ServiceTag);
-                        if (monitorSettingsList.Count == 0 || !monitorSettingsList.Exists(x => x.ServiceTag == m.edid.ServiceTag))
-                        {
-                            DDPMMonitorSettings settings = new DDPMMonitorSettings();
-                            settings.Model = m.modelName;
-                            settings.ServiceTag = m.edid.ServiceTag;
-                            settings.VCPs = GetAllVCPcode(m);
-                            settings.DisplayPropertiesInfo = new DisplayCurrentPropertiesInfo();
-                            settings.EA = new EAMonitorSettings();
-                            settings.easyArrangementDDPM = new EasyArrangementDDPM();
-                            settings.ImpExpSettings = new ImpExpSettings();
-                            settings.hotkeyData = new List<HotkeyData>();
-                            settings.ALSConfig = 0;
+                List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
 
-                            // scheduleInfo PIMS-302114
+                if (AllInfoMonitors != null && _SettingsPlugin != null)
+                {
+                    writelog("[InitMonitorSettings] AllInfoMonitors count = " + AllInfoMonitors.Count.ToString());
+
+                    var AllInfoMonitorsClone = AllInfoMonitors.ToList();
+
+                    foreach (MonitorInfo m in AllInfoMonitors.ToList())
+                    {
+                        if (cancellationToken.IsCancellationRequested) break;
+
+                        monitorSettingsList = _SettingsPlugin.InitDDPMMonitorConfigFile(m.modelName, out isInitMonitorSettings).Result;
+
+                        cancellationToken.ThrowIfCancellationRequested();  //----Extra Check Is Cancellation?
+
+                        if (isInitMonitorSettings)
+                        {
+                            if (monitorSettingsList == null)
                             {
-                                if (m.modelName.Equals("UP2720Q", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    settings.scheduleInfo = new scheduleInfo()
-                                    {
-                                        model = m.modelName,
-                                        serviceTag = m.edid.ServiceTag,
-                                        Brightness1 = 150,
-                                        Brightness2 = 150,
-                                    };
-                                }
-                                else if (m.modelName.Equals("UP2720QA", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    settings.scheduleInfo = new scheduleInfo()
-                                    {
-                                        model = m.modelName,
-                                        serviceTag = m.edid.ServiceTag,
-                                        Brightness1 = 150,
-                                        Brightness2 = 150,
-                                    };
-                                }
-                                else if (m.modelName.Equals("UP3221Q", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    settings.scheduleInfo = new scheduleInfo()
-                                    {
-                                        model = m.modelName,
-                                        serviceTag = m.edid.ServiceTag,
-                                        Brightness1 = 230,
-                                        Brightness2 = 230,
-                                    };
-                                }
-                                else
-                                {
-                                    settings.scheduleInfo = new scheduleInfo()
-                                    {
-                                        model = m.modelName,
-                                        serviceTag = m.edid.ServiceTag
-                                    };
-                                }
+                                monitorSettingsList = new List<DDPMMonitorSettings>();
                             }
 
-                            monitorSettingsList.Add(settings);
-                            bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
+                            Trace.WriteLine("ServiceTag:" + m.edid.ServiceTag);
 
-                            Task.Run(() =>
+                            if (monitorSettingsList.Count == 0 || !monitorSettingsList.Exists(x => x.ServiceTag == m.edid.ServiceTag))
                             {
-                                if (_ColorProfileHelper == null)
-                                    writelog("[InitMonitorSettings] null _ColorProfileHelper");
-                                _ColorProfileHelper?.PreDownloadICC(m);//
-                            });
+                                DDPMMonitorSettings settings = new DDPMMonitorSettings();
+                                settings.Model = m.modelName;
+                                settings.ServiceTag = m.edid.ServiceTag;
+                                settings.VCPs = GetAllVCPcode(m);
+                                settings.DisplayPropertiesInfo = new DisplayCurrentPropertiesInfo();
+                                settings.EA = new EAMonitorSettings();
+                                settings.easyArrangementDDPM = new EasyArrangementDDPM();
+                                settings.ImpExpSettings = new ImpExpSettings();
+                                settings.hotkeyData = new List<HotkeyData>();
+                                settings.ALSConfig = 0;
+
+                                // scheduleInfo PIMS-302114
+                                {
+                                    if (m.modelName.Equals("UP2720Q", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        settings.scheduleInfo = new scheduleInfo()
+                                        {
+                                            model = m.modelName,
+                                            serviceTag = m.edid.ServiceTag,
+                                            Brightness1 = 150,
+                                            Brightness2 = 150,
+                                        };
+                                    }
+                                    else if (m.modelName.Equals("UP2720QA", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        settings.scheduleInfo = new scheduleInfo()
+                                        {
+                                            model = m.modelName,
+                                            serviceTag = m.edid.ServiceTag,
+                                            Brightness1 = 150,
+                                            Brightness2 = 150,
+                                        };
+                                    }
+                                    else if (m.modelName.Equals("UP3221Q", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        settings.scheduleInfo = new scheduleInfo()
+                                        {
+                                            model = m.modelName,
+                                            serviceTag = m.edid.ServiceTag,
+                                            Brightness1 = 230,
+                                            Brightness2 = 230,
+                                        };
+                                    }
+                                    else
+                                    {
+                                        settings.scheduleInfo = new scheduleInfo()
+                                        {
+                                            model = m.modelName,
+                                            serviceTag = m.edid.ServiceTag
+                                        };
+                                    }
+                                }
+
+                                monitorSettingsList.Add(settings);
+                                bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
+
+                                Task.Run(() =>
+                                {
+                                    if (_ColorProfileHelper == null)
+                                        writelog("[InitMonitorSettings] null _ColorProfileHelper");
+                                    _ColorProfileHelper?.PreDownloadICC(m);//
+                                }, cancellationToken);
+                            }
                         }
                     }
                 }
+                else
+                {
+                    writelog("[InitMonitorSettings] AllInfoMonitors or _SettingsPlugin is null");
+                }
             }
-            else
+            catch (TaskCanceledException)
             {
-                writelog("[InitMonitorSettings] AllInfoMonitors or _SettingsPlugin is null");
+                writelog("[InitMonitorSettings] _cancellationTokenSource trigger cancel cancellation happened ...");
+            }
+            catch (OperationCanceledException)
+            {
+                writelog("[InitMonitorSettings] _cancellationTokenSource trigger cancel cancellation happened ...");
+            }
+            catch (Exception ex)
+            {
+                writelog($"[InitMonitorSettings] _cancellationTokenSource ...there is an exception-- ({ex.Message})");
             }
         }
 
         //01/03 Jason add Hotkey to same model
-        private void UpdateHotkeyInfo()
+        private void UpdateHotkeyInfo(CancellationToken cancellationToken)
         {
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
             if (_AllInfoMonitors != null && _SettingsPlugin != null)
             {
                 foreach (MonitorInfo m in _AllInfoMonitors.ToList())
                 {
+                    if (cancellationToken.IsCancellationRequested) break;
+
                     monitorSettingsList = _SettingsPlugin.ReloadMonitorSettings(m.modelName).Result;
                     if (monitorSettingsList != null && monitorSettingsList.Count > 1)
                     {
                         List<HotkeyData> hotkeyDatas = new List<HotkeyData>();
+
                         foreach (DDPMMonitorSettings monitorSettings in monitorSettingsList)
                         {
+                            if (cancellationToken.IsCancellationRequested) break;
+
                             if (monitorSettings != null &&
                                 monitorSettings.hotkeyData.Count > 0)
                             {
                                 writelog("[UpdateHotkeyInfo] monitor : " + monitorSettings.Model);
                                 foreach (HotkeyData hotkey in monitorSettings.hotkeyData)
                                 {
+                                    if (cancellationToken.IsCancellationRequested) break;
+
                                     writelog("[UpdateHotkeyInfo] hotkeyType : " + hotkey.hotkeyType);
                                     if ((hotkey.hotkeyType != HotkeyType.FavoriteInputSource &&
                                         hotkey.hotkeyType != HotkeyType.SwitchInputSource) &&
@@ -16912,13 +17016,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 }
                             }
                         }
+
                         foreach (DDPMMonitorSettings monitorSettings in monitorSettingsList)
                         {
+                            if (cancellationToken.IsCancellationRequested) break;
+
                             if (monitorSettings != null)
                             {
                                 writelog("[UpdateHotkeyInfo] monitor : " + monitorSettings.Model);
                                 foreach (HotkeyData hotkey in hotkeyDatas)
                                 {
+                                    if (cancellationToken.IsCancellationRequested) break;
+
                                     if (!monitorSettings.hotkeyData.Exists(x => x.hotkeyType == hotkey.hotkeyType))
                                     {
                                         writelog("[UpdateHotkeyInfo] add hotkeyType to monitorSettings.");
@@ -16927,6 +17036,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 }
                             }
                         }
+
                         bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
                     }
                 }
@@ -17556,7 +17666,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"{nameof(CopyFile)} end");
                 return false;
             }
-
         }
 
         //Robert_Lin, 2024-10-11, added
@@ -18310,7 +18419,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             string tmpMuteGuid = Guid.NewGuid().ToString();
-                                            _OSD_Controler.ShowMultipleOSD(tmpMuteGuid, OSDType_Device.Mute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_muted"]);
+                                            _OSD_Controler.ShowMultipleOSD(tmpMuteGuid, OSDType_Device.Mute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_muted"], ((Screen.PrimaryScreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             await Task.Run(async () =>
                                             {
                                                 await Task.Delay(3000);
@@ -18328,9 +18437,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         try
                                         {
-
                                             string tmpUnMuteGuid = Guid.NewGuid().ToString();
-                                            _OSD_Controler.ShowMultipleOSD(tmpUnMuteGuid, OSDType_Device.UnMute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_Unmuted"]);
+                                            _OSD_Controler.ShowMultipleOSD(tmpUnMuteGuid, OSDType_Device.UnMute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_Unmuted"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             await Task.Run(async () =>
                                             {
                                                 await Task.Delay(3000);
@@ -18355,7 +18463,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {B70715F8-9DF6-440F-B5BE-A48336A4B261}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "B70715F8-9DF6-440F-B5BE-A48336A4B261" : guid.ToString(), OSDType_Device.Headset, oSDType_Op, Content, LangHelper.Instance["Battery_Low"]);
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "B70715F8-9DF6-440F-B5BE-A48336A4B261" : guid.ToString(), OSDType_Device.Headset, oSDType_Op, Content, LangHelper.Instance["Battery_Low"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             /*  if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Headset))
                                               {
                                                   _latestBatterylowContent = Content;
@@ -18374,7 +18482,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {377C7B36-ED5B-446F-93A6-3418F0447836}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "377C7B36-ED5B-446F-93A6-3418F0447836" : guid.ToString(), OSDType_Device.Keyboard, oSDType_Op, Content, LangHelper.Instance["Battery_Low"]);
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "377C7B36-ED5B-446F-93A6-3418F0447836" : guid.ToString(), OSDType_Device.Keyboard, oSDType_Op, Content, LangHelper.Instance["Battery_Low"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             /*if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Keyboard))
                                             {
                                                 //when keyboard battery low, press CapsLock/ScrollLock/NumLockLock combine with
@@ -18394,7 +18502,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {1D5E64AD-212C-4364-AF84-BA1C95723ED7}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "1D5E64AD-212C-4364-AF84-BA1C95723ED7" : guid.ToString(), OSDType_Device.Mouse, oSDType_Op, Content, LangHelper.Instance["Battery_Low"]);
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "1D5E64AD-212C-4364-AF84-BA1C95723ED7" : guid.ToString(), OSDType_Device.Mouse, oSDType_Op, Content, LangHelper.Instance["Battery_Low"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             /*if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Mouse))
                                             {
                                                 _latestBatterylowContent = Content;
@@ -18413,7 +18521,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {9239EAA6-660D-4DC5-B141-937D3AB0C3EF}
-                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "9239EAA6-660D-4DC5-B141-937D3AB0C3EF" : guid.ToString(), OSDType_Device.Pen, oSDType_Op, Content, LangHelper.Instance["Battery_Low"]);
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "9239EAA6-660D-4DC5-B141-937D3AB0C3EF" : guid.ToString(), OSDType_Device.Pen, oSDType_Op, Content, LangHelper.Instance["Battery_Low"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
 
                                             /* if (_OSD_Controler.OSD_ShowStatus(OSDType_Device.Pen))
                                               {
@@ -18433,8 +18541,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-                                        _OSD_Controler.StartRecording_CloseWindow(null, null);
-                                        _OSD_Controler.StartRecording_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+
+                                        if (_OSD_Controler.ExistMultipleOSD())
+                                        {
+                                            //default guid {7471D427-F152-4E19-918E-F84FF12FBBEE}
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "7471D427-F152-4E19-918E-F84FF12FBBEE" : guid.ToString(), OSDType_Device.StartRecording, oSDType_Op, string.Empty, "3", ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            await Task.Run(async () =>
+                                            {
+                                                for (int i = 2; i >= 0; i--)
+                                                {
+                                                    await Task.Delay(1000);
+                                                    _OSD_Controler.UpdateOsdContentByGuid("7471D427-F152-4E19-918E-F84FF12FBBEE", i.ToString());
+                                                }
+                                                await Task.Delay(1000);
+                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp("7471D427-F152-4E19-918E-F84FF12FBBEE", OSDType_Op.None);
+                                            });
+                                        }
+                                        else
+                                        {
+                                            _OSD_Controler.StartRecording_CloseWindow(null, null);
+                                            _OSD_Controler.StartRecording_ShowWindow(Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        }
                                     }
                                     catch (Exception ex)
                                     {
@@ -18448,7 +18575,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     try
                                     {
                                         _OSD_Controler.DisplayChanged_CloseWindow(null, null);
-                                        _OSD_Controler.DisplayChanged_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                        _OSD_Controler.DisplayChanged_ShowWindow(Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                     }
                                     catch (Exception ex)
                                     {
@@ -18461,8 +18588,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-                                        _OSD_Controler.WalkAwayLock_CloseWindow(null, null);
-                                        _OSD_Controler.WalkAwayLock_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+
+                                        if (_OSD_Controler.ExistMultipleOSD())
+                                        {
+                                            //default guid {0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09}
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09" : guid.ToString(), OSDType_Device.WalkAwayLock, oSDType_Op, LangHelper.Instance["Walk_Away_Lock"], "5", ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            await Task.Run(async () =>
+                                            {
+                                                for (int i = 4; i >= 0; i--)
+                                                {
+                                                    await Task.Delay(1000);
+                                                    _OSD_Controler.UpdateOsdContentByGuid("0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09", i.ToString());
+                                                }
+                                                await Task.Delay(1000);
+                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp("0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09", OSDType_Op.None);
+                                            });
+                                        }
+                                        else
+                                        {
+                                            _OSD_Controler.WalkAwayLock_CloseWindow(null, null);
+                                            _OSD_Controler.WalkAwayLock_ShowWindow(Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        }
                                     }
                                     catch (Exception ex)
                                     {
@@ -18475,13 +18621,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-
                                         if (State)
                                         {
                                             if (_OSD_Controler.ExistMultipleOSD())
                                             {
                                                 //default guid {4C24C783-3E8B-4FED-81ED-70CBE7DA43DD}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "4C24C783-3E8B-4FED-81ED-70CBE7DA43DD" : guid.ToString(), OSDType_Device.ScrollLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_On"]);
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "4C24C783-3E8B-4FED-81ED-70CBE7DA43DD" : guid.ToString(), OSDType_Device.ScrollLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                                 await Task.Run(async () =>
                                                 {
                                                     await Task.Delay(1000);
@@ -18491,7 +18636,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             else
                                             {
                                                 //_OSD_Controler.ScrollLockOn_CloseWindow();
-                                                _OSD_Controler.ScrollLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                _OSD_Controler.ScrollLockOn_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             }
                                         }
                                         else
@@ -18499,7 +18644,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             if (_OSD_Controler.ExistMultipleOSD())
                                             {
                                                 //default guid {99EACE23-6309-44AD-91F6-D55915D2D41E}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "99EACE23-6309-44AD-91F6-D55915D2D41E" : guid.ToString(), OSDType_Device.ScrollLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_Off"]);
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "99EACE23-6309-44AD-91F6-D55915D2D41E" : guid.ToString(), OSDType_Device.ScrollLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Scroll_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                                 await Task.Run(async () =>
                                                 {
                                                     await Task.Delay(1000);
@@ -18509,7 +18654,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             else
                                             {
                                                 //_OSD_Controler.ScrollLockOff_CloseWindow();
-                                                _OSD_Controler.ScrollLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                _OSD_Controler.ScrollLockOff_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             }
                                         }
 
@@ -18519,7 +18664,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         }
                                         else
                                         {
-
                                         }*/
                                     }
                                     catch (Exception ex)
@@ -18533,13 +18677,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-
                                         if (State)
                                         {
                                             if (_OSD_Controler.ExistMultipleOSD())
                                             {
                                                 //default guid {288AB64E-4730-41C1-9681-A3DF934F1FDA}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "288AB64E-4730-41C1-9681-A3DF934F1FDA" : guid.ToString(), OSDType_Device.NumLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_On"]);
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "288AB64E-4730-41C1-9681-A3DF934F1FDA" : guid.ToString(), OSDType_Device.NumLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                                 await Task.Run(async () =>
                                                 {
                                                     await Task.Delay(1000);
@@ -18549,16 +18692,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             else
                                             {
                                                 //_OSD_Controler.NumLockOn_CloseWindow();
-                                                _OSD_Controler.NumLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                _OSD_Controler.NumLockOn_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             }
-
                                         }
                                         else
                                         {
                                             if (_OSD_Controler.ExistMultipleOSD())
                                             {
                                                 //default guid {41F5E9F5-0537-4404-BCD8-3612803F09BF}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "41F5E9F5-0537-4404-BCD8-3612803F09BF" : guid.ToString(), OSDType_Device.NumLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_Off"]);
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "41F5E9F5-0537-4404-BCD8-3612803F09BF" : guid.ToString(), OSDType_Device.NumLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Num_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                                 await Task.Run(async () =>
                                                 {
                                                     await Task.Delay(1000);
@@ -18568,10 +18710,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             else
                                             {
                                                 //_OSD_Controler.NumLockOff_CloseWindow();
-                                                _OSD_Controler.NumLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                _OSD_Controler.NumLockOff_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             }
                                         }
-
                                     }
                                     catch (Exception ex)
                                     {
@@ -18589,7 +18730,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             if (_OSD_Controler.ExistMultipleOSD())
                                             {
                                                 //default guid {1B97890A-B1D9-4372-9B09-AC04893C9B39}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "1B97890A-B1D9-4372-9B09-AC04893C9B39" : guid.ToString(), OSDType_Device.CapsLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_On"]);
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "1B97890A-B1D9-4372-9B09-AC04893C9B39" : guid.ToString(), OSDType_Device.CapsLockOn, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_On"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                                 await Task.Run(async () =>
                                                 {
                                                     await Task.Delay(1000);
@@ -18599,7 +18740,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             else
                                             {
                                                 //_OSD_Controler.CapsLockOn_CloseWindow();
-                                                _OSD_Controler.CapsLockOn_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                _OSD_Controler.CapsLockOn_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             }
                                         }
                                         else
@@ -18607,7 +18748,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             if (_OSD_Controler.ExistMultipleOSD())
                                             {
                                                 //default guid {C88641DE-92EC-493F-A398-7CB664FDC563}
-                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "C88641DE-92EC-493F-A398-7CB664FDC563" : guid.ToString(), OSDType_Device.CapsLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_Off"]);
+                                                _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "C88641DE-92EC-493F-A398-7CB664FDC563" : guid.ToString(), OSDType_Device.CapsLockOff, oSDType_Op, string.Empty, LangHelper.Instance["Caps_Lock_Off"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                                 await Task.Run(async () =>
                                                 {
                                                     await Task.Delay(1000);
@@ -18617,17 +18758,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             else
                                             {
                                                 //_OSD_Controler.CapsLockOff_CloseWindow();
-                                                _OSD_Controler.CapsLockOff_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+                                                _OSD_Controler.CapsLockOff_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             }
                                         }
-
                                     }
                                     catch (Exception ex)
                                     {
                                         writelog($"[_showosd] ERROR - OSDType.CapsLock: {ex.Message}, State:{State}");
                                     }
-
-
                                 }
                                 break;
 
@@ -18637,7 +18775,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         //default guid {E746E618-1419-4F56-99D4-72D705AF9DA7}
                                         string tmpFingerPrintGuid = Guid.Empty.Equals(guid) ? "E746E618-1419-4F56-99D4-72D705AF9DA7" : guid.ToString();
-                                        _OSD_Controler.ShowMultipleOSD(tmpFingerPrintGuid, OSDType_Device.FingerPrint, oSDType_Op, string.Empty, LangHelper.Instance["Presence_detection_sensor_is_covered"]);
+                                        _OSD_Controler.ShowMultipleOSD(tmpFingerPrintGuid, OSDType_Device.FingerPrint, oSDType_Op, string.Empty, LangHelper.Instance["Presence_detection_sensor_is_covered"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                         await Task.Run(async () =>
                                         {
                                             await Task.Delay(5000);
@@ -18658,8 +18796,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-                                        _OSD_Controler.EasyMemory_CloseWindow(null, null);
-                                        _OSD_Controler.EasyMemory_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));
+
+                                        if (_OSD_Controler.ExistMultipleOSD())
+                                        {
+                                            //default guid {2DB1454E-A3D4-4380-A1A3-2483FE38E3D8}
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? "2DB1454E-A3D4-4380-A1A3-2483FE38E3D8" : guid.ToString(), OSDType_Device.EasyMemory, oSDType_Op, string.Empty, LangHelper.Instance["Easy_Memory"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            await Task.Run(async () =>
+                                            {
+                                                await Task.Delay(3000);
+                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp("2DB1454E-A3D4-4380-A1A3-2483FE38E3D8", OSDType_Op.None);
+                                            });
+                                        }
+                                        else
+                                        {
+                                            _OSD_Controler.EasyMemory_CloseWindow(null, null);
+                                            _OSD_Controler.EasyMemory_ShowWindow(((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                        }
                                     }
                                     catch (Exception ex)
                                     {
@@ -18687,7 +18839,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     try
                                     {
                                         Debug.WriteLine($"title={title},Content={Content}");
-                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.FW, oSDType_Op, title, Content);
+                                        _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? Guid.NewGuid().ToString() : guid.ToString(), OSDType_Device.FW, oSDType_Op, title, Content, ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                         /* _OSD_Controler.Error_CloseWindow(null, null);
                                          _OSD_Controler.Error_ShowWindow(title, Content, stayOpen, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
                                     }
@@ -18706,7 +18858,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {C563A281-26EB-4DCD-8642-EC7498108266}
-                                            _OSD_Controler.ShowMultipleOSD("C563A281-26EB-4DCD-8642-EC7498108266", OSDType_Device.QAM, oSDType_Op, LangHelper.Instance["QAM_OSD_Msg"], LangHelper.Instance["Go_to_Widget_Settings"]);
+                                            _OSD_Controler.ShowMultipleOSD("C563A281-26EB-4DCD-8642-EC7498108266", OSDType_Device.QAM, oSDType_Op, LangHelper.Instance["QAM_OSD_Msg"], LangHelper.Instance["Go_to_Widget_Settings"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             /*_OSD_Controler.QAMHotKeyWin_CloseWindow();
                                             _OSD_Controler.QAMHotKeyWin_ShowWindow((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
                                             await Task.Run(async () =>
@@ -18742,7 +18894,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             //default guid {1233BBAF-348B-4498-8051-DB0E53004AAB}
-                                            _OSD_Controler.ShowMultipleOSD("1233BBAF-348B-4498-8051-DB0E53004AAB", OSDType_Device.Keyboard, oSDType_Op, Content, "");
+                                            _OSD_Controler.ShowMultipleOSD("1233BBAF-348B-4498-8051-DB0E53004AAB", OSDType_Device.Keyboard, oSDType_Op, Content, "", ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
 
                                             /*_OSD_Controler.CollaborationNotAvailableWin_CloseWindow();
                                             _OSD_Controler.CollaborationNotAvailableWin_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
@@ -19904,10 +20056,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await _AirAudioHelper.GetAirAudioBatteryLevelCaseAsync(Guid);
         }
+
         public async Task<int> GetAirAudioMaxAllowedPariedHost(string Guid)
         {
             return await _AirAudioHelper.GetAirAudioMaxAllowedPariedHost(Guid);
         }
+
         public async Task<bool> SetFactoryResetAsyncValueForAirAudioAsync(string Guid, bool newValue)
         {
             return await _AirAudioHelper.SetFactoryResetAsyncValueForAirAudioAsync(Guid, newValue);

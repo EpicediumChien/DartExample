@@ -132,9 +132,6 @@
   <data name="Network_fail" xml:space="preserve">
     <value>ネットワーク障害</value>
   </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>ネットワーク エラーのため、アップデートに失敗しました。もう一度やり直してください。</value>
-  </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>ドッキング ステーションFWがロードされました。FWの適用を完了するためにドッキング ステーションを取り外し、1分後に再接続してください。</value>
   </data>
@@ -236,12 +233,6 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>タイムアウト エラー</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>ファームウェア アップデートを開始するにはマウスの左ボタンをダブルクリックしてください</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>ファームウェア アップデートを開始するにはキーボードの"U"キーを押してください</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>デバイスが接続されました</value>

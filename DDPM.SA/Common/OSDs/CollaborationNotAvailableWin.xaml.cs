@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -41,15 +42,15 @@ namespace DDPM.OSDs
 
             if (!string.IsNullOrWhiteSpace(showString))
             {
-                this.WindowState = WindowState.Maximized;
+                /*this.WindowState = WindowState.Maximized;
+                this.Topmost = true;*/
                 this.ShowStringText.Text = showString;
-                this.Topmost = true;
 
-                /*                time = TimeSpan.FromMilliseconds(3000);
-                                animationTimer = new DispatcherTimer();
-                                animationTimer.Interval = TimeSpan.FromMilliseconds(1000);
-                                animationTimer.Tick += RunTimerTick;
-                                animationTimer.Start();*/
+                /*time = TimeSpan.FromMilliseconds(3000);
+                animationTimer = new DispatcherTimer();
+                animationTimer.Interval = TimeSpan.FromMilliseconds(1000);
+                animationTimer.Tick += RunTimerTick;
+                animationTimer.Start();*/
             }
             else
             {

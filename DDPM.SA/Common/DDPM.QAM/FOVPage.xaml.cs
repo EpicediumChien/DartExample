@@ -50,26 +50,32 @@ namespace DDPM.QAM
         }
         private void FOV_Click(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Border bdr && 
+            if (sender is Border bdr &&
                 DataContext is QAMPageViewModel vm)
             {
                 try
                 {
-                    var index = int.Parse(bdr.Tag.ToString()!);
-                    var val = vm.FOVs[index];
+                    if (int.TryParse(bdr.Tag.ToString(), out int index))
+                    {
+                        var val = vm.FOVs[index];
 
-                    if (val == vm.FieldOfView)
-                    { 
-                        return; 
+                        if (val == vm.FieldOfView)
+                        {
+                            return;
+                        }
+
+                        vm.FOV_Selected(index);
+                        vm.isStatusChangeByDDPM = false;
+                        vm.SetNoneProfile(); //Derek 2025/01/16
+                        vm.FieldOfView = val;
+
+                        //Derek 2025/01/24 Save FOV to none profile if current select is none
+                        vm.SaveNoneProfileFOV(val);
                     }
-
-                    vm.FOV_Selected(index);
-                    vm.isStatusChangeByDDPM = false;
-                    vm.SetNoneProfile(); //Derek 2025/01/16
-                    vm.FieldOfView = val;
-
-                    //Derek 2025/01/24 Save FOV to none profile if current select is none
-                    vm.SaveNoneProfileFOV(val);
+                    else
+                    {
+                        DdpmCommonHelper.DeviceManagerSA?.WriteLog($"Failed to parse index from Tag: {bdr.Tag}");
+                    }
                 }
                 catch (Exception ex)
                 {

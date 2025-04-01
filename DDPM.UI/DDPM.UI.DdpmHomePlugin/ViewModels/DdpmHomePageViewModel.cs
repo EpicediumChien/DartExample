@@ -393,7 +393,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                                 case "P2724DEB": //internal webcamera
                                     imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
                                     break;
-
+                                case "P3426WEB": //internal webcamera
                                 case "P3424WEB": //internal webcamera
                                     imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
                                     break;
@@ -791,82 +791,90 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         private void DoWork_PleaseWait(object? sender, DoWorkEventArgs e)
         {
             _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait in ... ");
-            Task.Delay(1500).Wait(); //Thread.Sleep(1500);
+            try
+            {
+                Task.Delay(1500).Wait(); //Thread.Sleep(1500);
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            //Check if DTH service is running
-            ServiceController sc = new ServiceController("DellTechHub");
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                //Check if DTH service is running
+                ServiceController sc = new ServiceController("DellTechHub");
 
-            while (sc.Status == ServiceControllerStatus.Stopped ||
-                sc.Status == ServiceControllerStatus.StopPending)
-            {
-                PleaseWaitMessage = LangHelper.Instance["Wait_DTH"];// "DellTechHub service is not running";
-                Task.Delay(200).Wait(); //Thread.Sleep(200);
-                _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait Wait_DTH {PleaseWaitMessage} ... ");
-            }
-            while (!IsDeviceManagerReady)
-            {
-                PleaseWaitMessage = LangHelper.Instance["Wait_DevMgr"]; //"DDPM.Subagent.DeviceManager is not ready";
-                Task.Delay(200).Wait(); //Thread.Sleep(200);
-                _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait Wait_DevMgr {PleaseWaitMessage} ... ");
-            }
-            int timeoutMsec = 10000;
-            while (HomeDeviceCount == 0)
-            {
-                PleaseWaitMessage = LangHelper.Instance["Wait_NoDevice"];// "No device detected";
-                Task.Delay(500).Wait();
-                _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait Wait_NoDevice {PleaseWaitMessage} ... ");
-                if (sw.ElapsedMilliseconds > timeoutMsec)
+                while (sc.Status == ServiceControllerStatus.Stopped ||
+                    sc.Status == ServiceControllerStatus.StopPending)
                 {
-                    _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait timeoutMsec break ... ");
-                    break;
+                    PleaseWaitMessage = LangHelper.Instance["Wait_DTH"];// "DellTechHub service is not running";
+                    Task.Delay(200).Wait(); //Thread.Sleep(200);
+                    _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait Wait_DTH {PleaseWaitMessage} ... ");
                 }
-            }
-            sw.Stop();
-
-            //Robert_Lin, 2024-12-16, The final action, when no device detected and Please wait time-out
-            //
-            if (HomeDeviceCount == 0)
-            {
-                _log.Info("PleaseWait-Final try to refresh device list manually:");
-                if (DeviceManagerPlugin != null) //Should be always true
+                while (!IsDeviceManagerReady)
                 {
-                    List<MonitorInfo> monitors = DeviceManagerPlugin.GetMonitors().Result;
-                    //Robert_Lin 2025-1-20 to prevent monitors is null
-                    if ((monitors != null) && (monitors.Count > 0))
+                    PleaseWaitMessage = LangHelper.Instance["Wait_DevMgr"]; //"DDPM.Subagent.DeviceManager is not ready";
+                    Task.Delay(200).Wait(); //Thread.Sleep(200);
+                    _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait Wait_DevMgr {PleaseWaitMessage} ... ");
+                }
+                int timeoutMsec = 10000;
+                while (HomeDeviceCount == 0)
+                {
+                    PleaseWaitMessage = LangHelper.Instance["Wait_NoDevice"];// "No device detected";
+                    Task.Delay(500).Wait();
+                    _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait Wait_NoDevice {PleaseWaitMessage} ... ");
+                    if (sw.ElapsedMilliseconds > timeoutMsec)
                     {
-                        _log.Info($"PleaseWait-Monitor count={monitors.Count}");
-                        PrepareMonitorInfos(monitors);
+                        _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait timeoutMsec break ... ");
+                        break;
                     }
-                    else
-                    {
-                        _log.Info($"PleaseWait-Monitor count=0");
-                    }
+                }
+                sw.Stop();
 
-                    DeviceHelper deviceHelper = DeviceManagerPlugin.GetDevices().Result;
-                    if (deviceHelper == null || deviceHelper.deviceInfo.Count <= 0)
+                //Robert_Lin, 2024-12-16, The final action, when no device detected and Please wait time-out
+                //
+                if (HomeDeviceCount == 0)
+                {
+                    _log.Info("PleaseWait-Final try to refresh device list manually:");
+                    if (DeviceManagerPlugin != null) //Should be always true
                     {
-                        deviceHelper = DeviceManagerPlugin.GetDevices(true).Result;
-                        if (deviceHelper != null)
+                        List<MonitorInfo> monitors = DeviceManagerPlugin.GetMonitors().Result;
+                        //Robert_Lin 2025-1-20 to prevent monitors is null
+                        if ((monitors != null) && (monitors.Count > 0))
                         {
-                            _log.Info($"PleaseWait-Peripheral count = {deviceHelper.deviceInfo.Count}");
+                            _log.Info($"PleaseWait-Monitor count={monitors.Count}");
+                            PrepareMonitorInfos(monitors);
+                        }
+                        else
+                        {
+                            _log.Info($"PleaseWait-Monitor count=0");
+                        }
+
+                        DeviceHelper deviceHelper = DeviceManagerPlugin.GetDevices().Result;
+                        if (deviceHelper == null || deviceHelper.deviceInfo.Count <= 0)
+                        {
+                            deviceHelper = DeviceManagerPlugin.GetDevices(true).Result;
+                            if (deviceHelper != null)
+                            {
+                                _log.Info($"PleaseWait-Peripheral count = {deviceHelper.deviceInfo.Count}");
+                            }
+                        }
+                        List<DeviceInfo> _deviceInfos = new List<DeviceInfo>();
+                        if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
+                        {
+                            _deviceInfos = deviceHelper.deviceInfo;
+                            _log.Info($"PleaseWait-Peripheral count={_deviceInfos.Count}");
+                            PrepareDeviceInfos(_deviceInfos);
+                        }
+                        else
+                        {
+                            _log.Info("PleaseWait-Peripheral count=(null)");
                         }
                     }
-                    List<DeviceInfo> _deviceInfos = new List<DeviceInfo>();
-                    if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
-                    {
-                        _deviceInfos = deviceHelper.deviceInfo;
-                        _log.Info($"PleaseWait-Peripheral count={_deviceInfos.Count}");
-                        PrepareDeviceInfos(_deviceInfos);
-                    }
-                    else
-                    {
-                        _log.Info("PleaseWait-Peripheral count=(null)");
-                    }
                 }
+                _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait out ... ");
             }
-            _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait out ... ");
+            catch (Exception ex)
+            {
+                IsPleaseWaitVisible = false;
+                _log.Error($"[DdpmHomePageViewModel] DoWork_PleaseWait Exception: {ex.Message}");
+            }
         }
 
         private void RunWorkerCompleted_PleaseWait(object sender, RunWorkerCompletedEventArgs e)

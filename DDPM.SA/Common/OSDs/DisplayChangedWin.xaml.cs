@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
@@ -29,9 +30,9 @@ namespace DDPM.OSDs
 
             if (!string.IsNullOrWhiteSpace(showString))
             {
-                this.WindowState = WindowState.Maximized;
+                /*this.WindowState = WindowState.Maximized;
+                this.Topmost = true;*/
                 this.ShowStringText.Text = showString;
-                this.Topmost = true;
 
                 InvokeFadeOutAnimation();
 

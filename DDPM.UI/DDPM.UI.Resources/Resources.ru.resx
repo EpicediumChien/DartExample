@@ -3508,4 +3508,19 @@
   <data name="HDR" xml:space="preserve">
     <value>HDR</value>
   </data>
+  <data name="UnableToLoadDdpm" xml:space="preserve">
+    <value />
+  </data>
+  <data name="InputValidationTooltip.1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="InputValidationTooltip.2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="InputValidationTooltip.3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="InputValidationTooltip.4" xml:space="preserve">
+    <value />
+  </data>
 </root>

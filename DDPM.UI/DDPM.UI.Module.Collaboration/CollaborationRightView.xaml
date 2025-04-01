@@ -39,9 +39,9 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Margin="0,0,0,15">
-        <!--Elsa 20250325 for PIMS-348388 change Margin="0,10,0,0" to Margin="-13,10,0,0"-->
-        <Border CornerRadius="13" Width="520" Margin="-13,10,0,0">
+    <!--Elsa 20250331 for PIMS-348388 change Margin="0,0,0,15" to Margin="0,0,6,16",change Width="520" to Width="auto"-->
+    <Grid Margin="0,0,6,16">
+        <Border CornerRadius="13" Width="auto" Margin="0,10,10,0">
             <StackPanel Orientation="Vertical">
                 <StackPanel x:Name="spAlert" Orientation="Vertical">
                     <Border Name="bdrAlert1" Background="#364861" CornerRadius="4" Margin="16,23,16,-9" BorderThickness="7,0,0,0" BorderBrush="#0E92F2" MouseEnter="MessageBox_MouseEnter" MouseLeave="MessageBox_MouseLeave" Visibility="Collapsed">
@@ -89,13 +89,13 @@
                                 <Image Margin="9,28,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Uniform"
                                        VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="16" Height="16">
                                     <Image.ToolTip>
-                                        <ToolTip Placement="Left" VerticalOffset="8" HorizontalOffset="6">
+                    <ToolTip Placement="Left" VerticalOffset="8" HorizontalOffset="6">
                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                 <Border.Resources>
                                                     <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                 </Border.Resources>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Name="txtCollabsTooltip" TextWrapping="WrapWithOverflow" MaxWidth="350" Text="{Binding [Collaboration.1], Source={x:Static lang:LangHelper.Instance}}"/>
+                        <StackPanel Orientation="Horizontal">
+                          <TextBlock Name="txtCollabsTooltip" TextWrapping="WrapWithOverflow" MaxWidth="350" Text="{Binding [Collaboration.1], Source={x:Static lang:LangHelper.Instance}}"/>
                                                 </StackPanel>
                                             </Border>
                                         </ToolTip>

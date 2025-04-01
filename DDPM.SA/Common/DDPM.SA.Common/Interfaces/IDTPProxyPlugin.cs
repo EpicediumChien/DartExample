@@ -177,7 +177,9 @@ namespace DDPM.SA.Common
         Task<int> GetAutoFramingFrameSize(string Guid);
         Task<int> GetAutoFramingSensitivity(string Guid);
         Task<string> GetWebcamSerialNumber(string Guid);
-
+        Task<int> GetBgBlur(string Guid);
+        Task<bool> GetIsBgBlurEnable(string Guid);
+        Task<bool> GetIsPropertyBgBlurSupported(string Guid);
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
         Task SetProfile(string Guid, string newValue);
         Task SetProfileName(string Guid, string newValue);
@@ -199,6 +201,8 @@ namespace DDPM.SA.Common
         Task<bool> SetSharpness(string Guid, int newValue);
         Task<bool> SetContrast(string Guid, int newValue);
         Task<bool> SetSaturation(string Guid, int newValue);
+        Task<bool> SetIsBgBlurEnable(string Guid, bool newValue);
+        Task<bool> SetBgBlur(string Guid, int newValue);
         Task SetAntiFlicker(string Guid, int newValue);
         Task SetTilt(string Guid, int newValue);
         Task SetPan(string Guid, int newValue);

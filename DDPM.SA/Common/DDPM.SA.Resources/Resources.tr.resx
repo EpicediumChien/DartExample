@@ -132,9 +132,6 @@
   <data name="Network_fail" xml:space="preserve">
     <value>Ağ başarısız</value>
   </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>Ağ hatası sebebiyle güncelleştirme işlemi başarısız oldu. Yeniden deneyin.</value>
-  </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>Bağlantı istasyonu bellenimi yüklendi. Bellenim uygulamasını tamamlamak için bağlantı istasyonunu çıkarın ve 1 dakika sonra yeniden bağlayın.</value>
   </data>
@@ -236,12 +233,6 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>Zaman aşımı hatası</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>Bellenim güncelleştirmesini başlatmak için lütfen farenin sol düğmesine çift tıklayın</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Bellenim güncelleştirmesini başlatmak için lütfen klavyedeki "U" tuşuna basın</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Aygıt bağlı</value>

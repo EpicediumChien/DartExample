@@ -340,7 +340,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception e)
             {
-                _logs.DebugMsg("[VcpCorePlugin] Re-GetMonitors Exception : " + e.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] Re-GetMonitors Exception : " + e.Message);
+                WriteLog("Re-GetMonitors Exception : " + e.Message, log_type.error);
                 return new List<MonitorInfo>();
             }
         }
@@ -376,7 +377,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg($"[VcpCorePlugin] VcpCorePlugin MultiCommandRun exception : {ex.Message} ...");
+                //_logs.DebugMsg($"[VcpCorePlugin] VcpCorePlugin MultiCommandRun exception : {ex.Message} ...");
+                WriteLog($"VcpCorePlugin MultiCommandRun exception : {ex.Message} ...", log_type.error);
                 return _multiCommands;
             }
 
@@ -975,7 +977,8 @@ namespace VcpCore.Plugins
                     }
                     catch (Exception e)
                     {
-                        _logs.DebugMsg($"[VcpCorePlugin] --Task.Run ...GetResultObjectAsync is an exception-- ({e.Message})");
+                        //_logs.DebugMsg($"[VcpCorePlugin] --Task.Run ...GetResultObjectAsync is an exception-- ({e.Message})");
+                        WriteLog($"--Task.Run ...GetResultObjectAsync is an exception-- ({e.Message})", log_type.error);
                         return null;
                     }
                     finally
@@ -988,7 +991,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] GetResultObjectAsync ex: " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] GetResultObjectAsync ex: " + ex.Message);
+                WriteLog("GetResultObjectAsync ex: " + ex.Message, log_type.error);
                 return null;
             }
         }
@@ -1251,7 +1255,9 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork Exception : " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork Exception : " + ex.Message);
+                WriteLog("TaskQueueExecutorDoWork Exception : " + ex.Message, log_type.error);
+
                 _TaskQueue = new TaskLockQueue<ParameterType>();
                 _TaskQueueResult = new ResultLockPool();
                 _CancelhashSet.Clear();
@@ -1321,7 +1327,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetCapabilitiesString_ ex: " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetCapabilitiesString_ ex: " + ex.Message);
+                WriteLog("[QueueTrigger] GetCapabilitiesString_ ex: " + ex.Message, log_type.error);
                 return string.Empty;
             }
         }
@@ -1500,7 +1507,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetVCPCapabilities_ ex: " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetVCPCapabilities_ ex: " + ex.Message);
+                WriteLog("[QueueTrigger] GetVCPCapabilities_ ex: " + ex.Message, log_type.error);
                 return string.Empty;
             }
         }
@@ -1542,7 +1550,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetVCPCapability_ ex: " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetVCPCapability_ ex: " + ex.Message);
+                WriteLog("[QueueTrigger] GetVCPCapability_ ex: " + ex.Message, log_type.error);
                 return null;
             }
         }
@@ -1733,7 +1742,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetVCPCapability_ ex: " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetVCPCapability_ ex: " + ex.Message);
+                WriteLog("[QueueTrigger] GetVCPCapability_ ex: " + ex.Message, log_type.error);
                 return null;
             }
         }
@@ -1790,7 +1800,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] SetVCPCapability_ ex: " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] SetVCPCapability_ ex: " + ex.Message);
+                WriteLog("[QueueTrigger] SetVCPCapability_ ex: " + ex.Message, log_type.error);
                 return false;
             }
         }
@@ -1955,7 +1966,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] SetVCPCapability_ ex: " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] SetVCPCapability_ ex: " + ex.Message);
+                WriteLog("[QueueTrigger] SetVCPCapability_ ex: " + ex.Message, log_type.error);
                 return false;
             }
         }
@@ -2010,7 +2022,8 @@ namespace VcpCore.Plugins
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Initialize0x52toEmpty_ ex: " + ex.Message);
+                //_logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Initialize0x52toEmpty_ ex: " + ex.Message);
+                WriteLog("[QueueTrigger] Initialize0x52toEmpty_ ex: " + ex.Message, log_type.error);
             }
         }
 
@@ -2454,7 +2467,7 @@ namespace VcpCore.Plugins
                     }
                     catch (TaskCanceledException)
                     {
-                        _logs.DebugMsg("[DeviceMangerPlugin] _cancellationTokenSource trigger cancel cancellation happened ...");
+                        _logs.DebugMsg("[VcpCorePlugin] _cancellationTokenSource trigger cancel cancellation happened ...");
 
                         if (_cancellationTokenSource != null)
                         {
@@ -2464,7 +2477,7 @@ namespace VcpCore.Plugins
                     }
                     catch (OperationCanceledException)
                     {
-                        _logs.DebugMsg("[DeviceMangerPlugin] _cancellationTokenSource trigger cancel cancellation happened ...");
+                        _logs.DebugMsg("[VcpCorePlugin] _cancellationTokenSource trigger cancel cancellation happened ...");
 
                         if (_cancellationTokenSource != null)
                         {
@@ -2474,7 +2487,7 @@ namespace VcpCore.Plugins
                     }
                     catch (Exception ex)
                     {
-                        _logs.DebugMsg($"[DeviceMangerPlugin] _cancellationTokenSource ...there is an exception-- ({ex.Message})");
+                        _logs.DebugMsg($"[VcpCorePlugin] _cancellationTokenSource ...there is an exception-- ({ex.Message})");
 
                         if (_cancellationTokenSource != null)
                         {
@@ -5482,52 +5495,56 @@ namespace VcpCore.Plugins
             MonitorInfo _monitor = null;
             MonitorInfo_complex _monitor_complex = null;
 
-            if (monitor != null)
+            if (monitor is not null)
             {
                 if (monitor is MonitorInfo)
                 {
                     _monitor = monitor as MonitorInfo;
                     _monitor_complex = null;
+
+                    _logs.DebugMsg("----------------SourceMonitorInfo------------ is MonitorInfo");
                 }
                 else if (monitor is MonitorInfo_complex)
                 {
                     _monitor_complex = monitor as MonitorInfo_complex;
                     _monitor = null;
+
+                    _logs.DebugMsg("----------------SourceMonitorInfo------------ is MonitorInfo_complex");
                 }
 
                 //------------------------------------------------------------------------------------------------
                 _logs.DebugMsg("\n//----------------SourceMonitorInfo------------//" +
-                    "\n[VcpCorePlugin] Show*** monitorInfo : " +
-                    "\n[VcpCorePlugin] Show*** AliasDeviceName : " + _monitor?.AliasDeviceName ?? string.Empty + _monitor_complex?.AliasDeviceName ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** IsDellMonitor : " + _monitor?.IsDellMonitor.ToString() ?? string.Empty + _monitor_complex?.IsDellMonitor.ToString() ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** Index : " + _monitor?.Index.ToString() ?? string.Empty + _monitor_complex?.Index.ToString() ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** CapabilityString : " + _monitor?.CapabilityString ?? string.Empty + _monitor_complex?.CapabilityString ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** DDCisON : " + _monitor?.DDCisON.ToString() ?? string.Empty + _monitor_complex?.DDCisON.ToString() ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** DisplayName : " + _monitor?.DisplayName ?? string.Empty + _monitor_complex?.DisplayName ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** edid : " + _monitor?.edid.Edid ?? string.Empty + _monitor_complex?.edid.Edid ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** edid.ManufactureID : " + _monitor?.edid.ManufactureID ?? string.Empty + _monitor_complex?.edid.ManufactureID ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** edid.PID : " + _monitor?.edid.PID ?? string.Empty + _monitor_complex?.edid.PID ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** edid.VendorID : " + _monitor?.edid.VendorID ?? string.Empty + _monitor_complex?.edid.VendorID ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** edid.Year : " + _monitor?.edid.Year.ToString() ?? string.Empty + _monitor_complex?.edid.Year.ToString() ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** edid.Month : " + _monitor?.edid.Month.ToString() ?? string.Empty + _monitor_complex?.edid.Month.ToString() ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** edid.Week : " + _monitor?.edid.Week.ToString() ?? string.Empty + _monitor_complex?.edid.Week.ToString() ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** edid.ModelName : " + _monitor?.edid.ModelName ?? string.Empty + _monitor_complex?.edid.ModelName ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** edid.EdidVersion : " + _monitor?.edid.EdidVersion ?? string.Empty + _monitor_complex?.edid.EdidVersion ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** edid.VideoInputType : " + _monitor?.edid.VideoInputType ?? string.Empty + _monitor_complex?.edid.VideoInputType ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** edid.Size : " + _monitor?.edid.Size.ToString() ?? string.Empty + _monitor_complex?.edid.Size.ToString() ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** edid.ServiceTag : " + _monitor?.edid.ServiceTag ?? string.Empty + _monitor_complex?.edid.ServiceTag ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** edid.SerialNumber : " + _monitor?.edid.SerialNumber ?? string.Empty + _monitor_complex?.edid.SerialNumber ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** FwVersion : " + _monitor?.FwVersion ?? string.Empty + _monitor_complex?.FwVersion ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** inputSource : " + _monitor?.inputSource ?? string.Empty + _monitor_complex?.inputSource ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** inputCable : " + _monitor?.inputCable ?? string.Empty + _monitor_complex?.inputCable ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** modelName : " + _monitor?.modelName ?? string.Empty + _monitor_complex?.modelName ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** series : " + _monitor?.series ?? string.Empty + _monitor_complex?.series ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** MarketingName : " + _monitor?.MarketingName ?? string.Empty + _monitor_complex?.MarketingName ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** ImageFileName : " + _monitor?.ImageFileName ?? string.Empty + _monitor_complex?.ImageFileName ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** SupplierID : " + _monitor?.SupplierID ?? string.Empty + _monitor_complex?.SupplierID ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** D_Ctrl : " + _monitor?.D_Ctrl ?? string.Empty + _monitor_complex?.D_Ctrl ?? string.Empty +
-                    "\n[VcpCorePlugin] Show*** scalingFactor : " + _monitor?.scalingFactor.ToString() ?? string.Empty + _monitor_complex?.scalingFactor.ToString() ?? string.Empty +
-                    "\n//----------------Show END------------//");
+                                "\n[VcpCorePlugin] Show*** monitorInfo : " +
+                                "\n[VcpCorePlugin] Show*** AliasDeviceName : " + (_monitor?.AliasDeviceName ?? string.Empty) + (_monitor_complex?.AliasDeviceName ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** IsDellMonitor : " + (_monitor?.IsDellMonitor.ToString() ?? string.Empty) + (_monitor_complex?.IsDellMonitor.ToString() ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** Index : " + (_monitor?.Index.ToString() ?? string.Empty) + (_monitor_complex?.Index.ToString() ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** CapabilityString : " + (_monitor?.CapabilityString ?? string.Empty) + (_monitor_complex?.CapabilityString ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** DDCisON : " + (_monitor?.DDCisON.ToString() ?? string.Empty) + (_monitor_complex?.DDCisON.ToString() ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** DisplayName : " + (_monitor?.DisplayName ?? string.Empty) + (_monitor_complex?.DisplayName ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** edid : " + (_monitor?.edid.Edid ?? string.Empty) + (_monitor_complex?.edid.Edid ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** edid.ManufactureID : " + (_monitor?.edid.ManufactureID ?? string.Empty) + (_monitor_complex?.edid.ManufactureID ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** edid.PID : " + (_monitor?.edid.PID ?? string.Empty) + (_monitor_complex?.edid.PID ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** edid.VendorID : " + (_monitor?.edid.VendorID ?? string.Empty) + (_monitor_complex?.edid.VendorID ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** edid.Year : " + (_monitor?.edid.Year.ToString() ?? string.Empty) + (_monitor_complex?.edid.Year.ToString() ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** edid.Month : " + (_monitor?.edid.Month.ToString() ?? string.Empty) + (_monitor_complex?.edid.Month.ToString() ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** edid.Week : " + (_monitor?.edid.Week.ToString() ?? string.Empty) + (_monitor_complex?.edid.Week.ToString() ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** edid.ModelName : " + (_monitor?.edid.ModelName ?? string.Empty) + (_monitor_complex?.edid.ModelName ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** edid.EdidVersion : " + (_monitor?.edid.EdidVersion ?? string.Empty) + (_monitor_complex?.edid.EdidVersion ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** edid.VideoInputType : " + (_monitor?.edid.VideoInputType ?? string.Empty) + (_monitor_complex?.edid.VideoInputType ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** edid.Size : " + (_monitor?.edid.Size.ToString() ?? string.Empty) + (_monitor_complex?.edid.Size.ToString() ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** edid.ServiceTag : " + (_monitor?.edid.ServiceTag ?? string.Empty) + (_monitor_complex?.edid.ServiceTag ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** edid.SerialNumber : " + (_monitor?.edid.SerialNumber ?? string.Empty) + (_monitor_complex?.edid.SerialNumber ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** FwVersion : " + (_monitor?.FwVersion ?? string.Empty) + (_monitor_complex?.FwVersion ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** inputSource : " + (_monitor?.inputSource ?? string.Empty) + (_monitor_complex?.inputSource ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** inputCable : " + (_monitor?.inputCable ?? string.Empty) + (_monitor_complex?.inputCable ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** modelName : " + (_monitor?.modelName ?? string.Empty) + (_monitor_complex?.modelName ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** series : " + (_monitor?.series ?? string.Empty) + (_monitor_complex?.series ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** MarketingName : " + (_monitor?.MarketingName ?? string.Empty) + (_monitor_complex?.MarketingName ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** ImageFileName : " + (_monitor?.ImageFileName ?? string.Empty) + (_monitor_complex?.ImageFileName ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** SupplierID : " + (_monitor?.SupplierID ?? string.Empty) + (_monitor_complex?.SupplierID ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** D_Ctrl : " + (_monitor?.D_Ctrl ?? string.Empty) + (_monitor_complex?.D_Ctrl ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** scalingFactor : " + (_monitor?.scalingFactor.ToString() ?? string.Empty) + (_monitor_complex?.scalingFactor.ToString() ?? string.Empty) +
+                                "\n//----------------Show END------------//");
                 //------------------------------------------------------------------------------------------------
             }
 
@@ -5535,37 +5552,37 @@ namespace VcpCore.Plugins
             {
                 //------------------------------------------------------------------------------------------------
                 _logs.DebugMsg("\n//----------------ShowSAMonitorInfo------------//" +
-                "\n[VcpCorePlugin] Show*** monitorInfo : " +
-                "\n[VcpCorePlugin] Show*** AliasDeviceName : " + Monitor.Item1.AliasDeviceName + "<--->" + Monitor.Item2.AliasDeviceName +
-                "\n[VcpCorePlugin] Show*** IsDellMonitor : " + Monitor.Item1.IsDellMonitor.ToString() + "<--->" + Monitor.Item2.IsDellMonitor.ToString() +
-                "\n[VcpCorePlugin] Show*** Index : " + Monitor.Item1.Index.ToString() + "<--->" + Monitor.Item2.Index.ToString() +
-                "\n[VcpCorePlugin] Show*** CapabilityString : " + Monitor.Item1.CapabilityString + "<--->" + Monitor.Item2.CapabilityString +
-                "\n[VcpCorePlugin] Show*** DDCisON : " + Monitor.Item1.DDCisON.ToString() + "<--->" + Monitor.Item2.DDCisON.ToString() +
-                "\n[VcpCorePlugin] Show*** DisplayName : " + Monitor.Item1.DisplayName + "<--->" + Monitor.Item2.DisplayName +
-                "\n[VcpCorePlugin] Show*** edid : " + Monitor.Item1.edid.Edid + "<--->" + Monitor.Item2.edid.Edid +
-                "\n[VcpCorePlugin] Show*** edid.ManufactureID : " + Monitor.Item1.edid.ManufactureID + "<--->" + Monitor.Item2.edid.ManufactureID +
-                "\n[VcpCorePlugin] Show*** edid.PID : " + Monitor.Item1.edid.PID + "<--->" + Monitor.Item2.edid.PID +
-                "\n[VcpCorePlugin] Show*** edid.VendorID : " + Monitor.Item1.edid.VendorID + "<--->" + Monitor.Item2.edid.VendorID +
-                "\n[VcpCorePlugin] Show*** edid.Year : " + Monitor.Item1.edid.Year.ToString() + "<--->" + Monitor.Item2.edid.Year.ToString() +
-                "\n[VcpCorePlugin] Show*** edid.Month : " + Monitor.Item1.edid.Month.ToString() + "<--->" + Monitor.Item2.edid.Month.ToString() +
-                "\n[VcpCorePlugin] Show*** edid.Week : " + Monitor.Item1.edid.Week.ToString() + "<--->" + Monitor.Item2.edid.Week.ToString() +
-                "\n[VcpCorePlugin] Show*** edid.ModelName : " + Monitor.Item1.edid.ModelName + "<--->" + Monitor.Item2.edid.ModelName +
-                "\n[VcpCorePlugin] Show*** edid.EdidVersion : " + Monitor.Item1.edid.EdidVersion + "<--->" + Monitor.Item2.edid.EdidVersion +
-                "\n[VcpCorePlugin] Show*** edid.VideoInputType : " + Monitor.Item1.edid.VideoInputType + "<--->" + Monitor.Item2.edid.VideoInputType +
-                "\n[VcpCorePlugin] Show*** edid.Size : " + Monitor.Item1.edid.Size.ToString() + "<--->" + Monitor.Item2.edid.Size.ToString() +
-                "\n[VcpCorePlugin] Show*** edid.ServiceTag : " + Monitor.Item1.edid.ServiceTag + "<--->" + Monitor.Item2.edid.ServiceTag +
-                "\n[VcpCorePlugin] Show*** edid.SerialNumber : " + Monitor.Item1.edid.SerialNumber + "<--->" + Monitor.Item2.edid.SerialNumber +
-                "\n[VcpCorePlugin] Show*** FwVersion : " + Monitor.Item1.FwVersion + "<--->" + Monitor.Item2.FwVersion +
-                "\n[VcpCorePlugin] Show*** inputSource : " + Monitor.Item1.inputSource + "<--->" + Monitor.Item2.inputSource +
-                "\n[VcpCorePlugin] Show*** inputCable : " + Monitor.Item1.inputCable + "<--->" + Monitor.Item2.inputCable +
-                "\n[VcpCorePlugin] Show*** modelName : " + Monitor.Item1.modelName + "<--->" + Monitor.Item2.modelName +
-                "\n[VcpCorePlugin] Show*** series : " + Monitor.Item1.series + "<--->" + Monitor.Item2.series +
-                "\n[VcpCorePlugin] Show*** MarketingName : " + Monitor.Item1.MarketingName + "<--->" + Monitor.Item2.MarketingName +
-                "\n[VcpCorePlugin] Show*** ImageFileName : " + Monitor.Item1.ImageFileName + "<--->" + Monitor.Item2.ImageFileName +
-                "\n[VcpCorePlugin] Show*** SupplierID : " + Monitor.Item1.SupplierID + "<--->" + Monitor.Item2.SupplierID +
-                "\n[VcpCorePlugin] Show*** D_Ctrl : " + Monitor.Item1.D_Ctrl + "<--->" + Monitor.Item2.D_Ctrl +
-                "\n[VcpCorePlugin] Show*** scalingFactor : " + Monitor.Item1.scalingFactor.ToString() + "<--->" + Monitor.Item2.scalingFactor.ToString() +
-                "\n//----------------Show END------------//");
+                                "\n[VcpCorePlugin] Show*** monitorInfo : " +
+                                "\n[VcpCorePlugin] Show*** AliasDeviceName : " + Monitor.Item1.AliasDeviceName + "<--->" + Monitor.Item2.AliasDeviceName +
+                                "\n[VcpCorePlugin] Show*** IsDellMonitor : " + Monitor.Item1.IsDellMonitor.ToString() + "<--->" + Monitor.Item2.IsDellMonitor.ToString() +
+                                "\n[VcpCorePlugin] Show*** Index : " + Monitor.Item1.Index.ToString() + "<--->" + Monitor.Item2.Index.ToString() +
+                                "\n[VcpCorePlugin] Show*** CapabilityString : " + Monitor.Item1.CapabilityString + "<--->" + Monitor.Item2.CapabilityString +
+                                "\n[VcpCorePlugin] Show*** DDCisON : " + Monitor.Item1.DDCisON.ToString() + "<--->" + Monitor.Item2.DDCisON.ToString() +
+                                "\n[VcpCorePlugin] Show*** DisplayName : " + Monitor.Item1.DisplayName + "<--->" + Monitor.Item2.DisplayName +
+                                "\n[VcpCorePlugin] Show*** edid : " + Monitor.Item1.edid.Edid + "<--->" + Monitor.Item2.edid.Edid +
+                                "\n[VcpCorePlugin] Show*** edid.ManufactureID : " + Monitor.Item1.edid.ManufactureID + "<--->" + Monitor.Item2.edid.ManufactureID +
+                                "\n[VcpCorePlugin] Show*** edid.PID : " + Monitor.Item1.edid.PID + "<--->" + Monitor.Item2.edid.PID +
+                                "\n[VcpCorePlugin] Show*** edid.VendorID : " + Monitor.Item1.edid.VendorID + "<--->" + Monitor.Item2.edid.VendorID +
+                                "\n[VcpCorePlugin] Show*** edid.Year : " + Monitor.Item1.edid.Year.ToString() + "<--->" + Monitor.Item2.edid.Year.ToString() +
+                                "\n[VcpCorePlugin] Show*** edid.Month : " + Monitor.Item1.edid.Month.ToString() + "<--->" + Monitor.Item2.edid.Month.ToString() +
+                                "\n[VcpCorePlugin] Show*** edid.Week : " + Monitor.Item1.edid.Week.ToString() + "<--->" + Monitor.Item2.edid.Week.ToString() +
+                                "\n[VcpCorePlugin] Show*** edid.ModelName : " + Monitor.Item1.edid.ModelName + "<--->" + Monitor.Item2.edid.ModelName +
+                                "\n[VcpCorePlugin] Show*** edid.EdidVersion : " + Monitor.Item1.edid.EdidVersion + "<--->" + Monitor.Item2.edid.EdidVersion +
+                                "\n[VcpCorePlugin] Show*** edid.VideoInputType : " + Monitor.Item1.edid.VideoInputType + "<--->" + Monitor.Item2.edid.VideoInputType +
+                                "\n[VcpCorePlugin] Show*** edid.Size : " + Monitor.Item1.edid.Size.ToString() + "<--->" + Monitor.Item2.edid.Size.ToString() +
+                                "\n[VcpCorePlugin] Show*** edid.ServiceTag : " + Monitor.Item1.edid.ServiceTag + "<--->" + Monitor.Item2.edid.ServiceTag +
+                                "\n[VcpCorePlugin] Show*** edid.SerialNumber : " + Monitor.Item1.edid.SerialNumber + "<--->" + Monitor.Item2.edid.SerialNumber +
+                                "\n[VcpCorePlugin] Show*** FwVersion : " + Monitor.Item1.FwVersion + "<--->" + Monitor.Item2.FwVersion +
+                                "\n[VcpCorePlugin] Show*** inputSource : " + Monitor.Item1.inputSource + "<--->" + Monitor.Item2.inputSource +
+                                "\n[VcpCorePlugin] Show*** inputCable : " + Monitor.Item1.inputCable + "<--->" + Monitor.Item2.inputCable +
+                                "\n[VcpCorePlugin] Show*** modelName : " + Monitor.Item1.modelName + "<--->" + Monitor.Item2.modelName +
+                                "\n[VcpCorePlugin] Show*** series : " + Monitor.Item1.series + "<--->" + Monitor.Item2.series +
+                                "\n[VcpCorePlugin] Show*** MarketingName : " + Monitor.Item1.MarketingName + "<--->" + Monitor.Item2.MarketingName +
+                                "\n[VcpCorePlugin] Show*** ImageFileName : " + Monitor.Item1.ImageFileName + "<--->" + Monitor.Item2.ImageFileName +
+                                "\n[VcpCorePlugin] Show*** SupplierID : " + Monitor.Item1.SupplierID + "<--->" + Monitor.Item2.SupplierID +
+                                "\n[VcpCorePlugin] Show*** D_Ctrl : " + Monitor.Item1.D_Ctrl + "<--->" + Monitor.Item2.D_Ctrl +
+                                "\n[VcpCorePlugin] Show*** scalingFactor : " + Monitor.Item1.scalingFactor.ToString() + "<--->" + Monitor.Item2.scalingFactor.ToString() +
+                                "\n//----------------Show END------------//");
                 //------------------------------------------------------------------------------------------------
             }
         }
@@ -5710,6 +5727,38 @@ namespace VcpCore.Plugins
         private void agent_UserProcessConnectedHandler(object sender, EventManagerArgs e)
         {
             _logs.DebugMsg($"[VcpCorePlugin] agent_UserProcessConnectedHandler");
+        }
+
+        private enum log_type
+        {
+            info = 0,
+            error
+        }
+
+        /// <summary>
+        /// //
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="log_type">0 means info, others means error</param>
+        private void WriteLog(string text, log_type log_type = log_type.info,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                text = string.Empty;
+
+            text = $"[VcpCorePlugin] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
+#if DEBUG
+            Console.WriteLine(text);
+#endif
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
         }
 
         //---------------------------------------------------

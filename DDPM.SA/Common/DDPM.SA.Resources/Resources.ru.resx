@@ -132,9 +132,6 @@
   <data name="Network_fail" xml:space="preserve">
     <value>Сбой сети</value>
   </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>Не удалось выполнить обновление из-за ошибки сети. Повторите попытку.</value>
-  </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>Загружена микропрограмма стыковочной станции. Отсоедините стыковочную станцию для завершения работы с приложением микропрограммы и снова подключите стыковочную станцию через 1 мин.</value>
   </data>
@@ -236,12 +233,6 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>Ошибка истечения времени ожидания</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>Дважды нажмите левую кнопку мыши, чтобы запустить обновление микропрограммы</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Нажмите клавишу «U» на клавиатуре, чтобы запустить обновление микропрограммы</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Устройство подключено</value>

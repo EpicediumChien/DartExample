@@ -132,9 +132,6 @@
   <data name="Network_fail" xml:space="preserve">
     <value>網路故障</value>
   </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>更新失敗，因為發生網路錯誤。請再試一次。</value>
-  </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>已載入擴充基座韌體。在完成韌體應用程式時拔下擴充基座，並在 1 分鐘後重新連接擴充基座。</value>
   </data>
@@ -236,12 +233,6 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>逾時錯誤</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>請按兩下滑鼠左鍵以開始韌體更新</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>請按下鍵盤上的 "U" 鍵以開始韌體更新</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>已連接裝置</value>

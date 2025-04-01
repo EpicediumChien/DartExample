@@ -132,9 +132,6 @@
   <data name="Network_fail" xml:space="preserve">
     <value>网络故障</value>
   </data>
-  <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>由于网络错误，更新失败。请重试。</value>
-  </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>坞站固件已加载。请断开与坞站的连接以完成固件应用程序，并在 1 分钟后重新连接坞站。</value>
   </data>
@@ -236,12 +233,6 @@
   </data>
   <data name="Timeout_error" xml:space="preserve">
     <value>超时错误</value>
-  </data>
-  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
-    <value>请双击鼠标左键以开始固件更新</value>
-  </data>
-  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>请按键盘上的“U”键以开始固件更新</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>设备已连接</value>
