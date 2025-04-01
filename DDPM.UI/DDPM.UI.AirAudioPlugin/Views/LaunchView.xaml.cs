@@ -50,6 +50,9 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
 
             if (_vm != null)
             {
+                if (_vm.CurrentDeviceInfo == null)
+                    return;
+
                 _deviceManager = _vm._deviceManager;
                 InitializeComponent();
                 _vm.Reset();
@@ -70,7 +73,7 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
                 //txtSystemName2.Text = _vm.VisiblePairedHostName1;
                 txtSystemName3.Text = _vm.VisiblePairedHostName1;
                 txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
-                txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+                txtSlot.Text = $"{_vm.CurrentDeviceInfo.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
                 txtAudioBLText.Text = string.Format(Strings.Paired_Info, _vm.CurrentDeviceInfo.TotalNumberOfPairedHostName);
                 if (_deviceManager != null)
                 {
@@ -392,7 +395,7 @@ namespace DDPM.UI.Plugin.AirAudioPlugin
                 //string ppp = DdpmCommonHelper.DeviceManagerSA.GetFirmwareVersionAsync(_vm!.CurrentDeviceID.ToString()).Result;
                 txtSystemName3.Text = " " + Strings.USBWirelessReceiver;
                 txtFirmware.Text = $"{Strings.ReceiverFirmwareVersion} {_vm.PhysicalDeviceFWVersion}";
-                txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+                txtSlot.Text = $"{_vm.CurrentDeviceInfo.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
                 DongleConnection.Visibility = Visibility.Visible;
             }
             else if (_vm!.ConnectionType == "Bluetooth")//I can't get Headset connection HostName, FW issue?

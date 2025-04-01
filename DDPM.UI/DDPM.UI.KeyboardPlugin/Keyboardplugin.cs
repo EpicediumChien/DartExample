@@ -172,8 +172,8 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             }
             ConfigureServices();
             GetPeripheralsAsync();
-            if (_viewModel != null && _viewModel.SetCurrentDevice(pluginParameter) &&
-                _viewModel.CurrentDeviceInfo!.IsCollabsKeysSupported)
+            if (_viewModel != null && _viewModel.SetCurrentDevice(pluginParameter) && _viewModel.CurrentDeviceInfo != null &&
+                _viewModel.CurrentDeviceInfo.IsCollabsKeysSupported)
             {
                 _log.Debug($"GetCTKMessageHelper is invoked");
                 Task<CTKMessageHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetCTKMessageHelper();
