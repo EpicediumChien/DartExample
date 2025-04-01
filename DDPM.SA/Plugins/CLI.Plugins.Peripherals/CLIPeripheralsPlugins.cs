@@ -3475,6 +3475,16 @@ namespace DDPM.CLI.Plugins.Peripherals
                         return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
 
+
+                    // add start @ 20250401 stephen
+                    foreach (FWUpdateInfo info in fwUpdateInfoPackage.FWUpdateInfo)
+                    {
+                        info.Guid = commandLineInput.remote_mgr_guid;
+                    }
+
+                    _devMgr.updateFWUpdateInfoPackage(fwUpdateInfoPackage);
+                    // add end @ 20250401
+
                     cli_FWU_RESPONSE.FWUpdateRESPONSE.AddRange(fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.Model}, ServiceTag: {_.ServiceTag} to Version: {_.TheLatestVersion}"));
 
                     fwUpdateMonitorInfos.Where(_ => !fwUpdateInfoPackage.FWUpdateInfo.Select(x => x.ServiceTag).Contains(_.edid.ServiceTag))
