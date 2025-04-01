@@ -138,6 +138,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Console.WriteLine(fi.Exists); // 同樣是 false 時，更可能是權限或磁碟問題
 #endif
                         // ReadImportSettingsFile will check file existence
+                        //if (File.Exists(exportpath))
+                        //{
+                        WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Checked exported file exists!");
                         DDPMImpExpSettings dDPMImpExpSettings = new DDPMImpExpSettings();
                         dDPMImpExpSettings = settingsManager.ReadImportSettingsFile(exportpath).Result;
                         if (dDPMImpExpSettings != null)
@@ -185,6 +188,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] dDPMImpExpSettings is null.");
                         }
+                        //}
+                        //else
+                        //{
+                        //    WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] exportpath file not found.");
+                        //}
                     }
                 }
                 else
