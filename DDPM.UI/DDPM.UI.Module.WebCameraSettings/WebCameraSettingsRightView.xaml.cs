@@ -29,7 +29,7 @@ namespace DDPM.UI.Module.WebCameraSettings
 
                 InitializeComponent();
                 _vm = vm;
-                if (_vm.CurrentDeviceInfo == null)
+                if (_vm?.CurrentDeviceInfo == null)
                     return;
 
                 //lock/unlock init, 9/23 add lock
@@ -84,7 +84,7 @@ namespace DDPM.UI.Module.WebCameraSettings
 
         private void InitializeFOV()
         {
-            if (_vm.CurrentDeviceInfo == null)
+            if (_vm?.CurrentDeviceInfo == null)
                 return;
             try
             {
@@ -123,7 +123,7 @@ namespace DDPM.UI.Module.WebCameraSettings
 
         private void InitializeZoom()
         {
-            if (_vm.CurrentDeviceInfo == null)
+            if (_vm?.CurrentDeviceInfo == null)
                 return;
             try
             {
@@ -138,7 +138,7 @@ namespace DDPM.UI.Module.WebCameraSettings
         }
         private void InitializeAutofocus()
         {
-            if (_vm.CurrentDeviceInfo == null)
+            if (_vm?.CurrentDeviceInfo == null)
                 return;
             try
             {
