@@ -12,7 +12,7 @@
         Background="Transparent" ShowInTaskbar="False"
         Title="EzMemLauncherWindow" 
         Height="450" Width="800" 
-        Loaded="Window_Loaded" ContentRendered="Window_ContentRendered">
+        Loaded="Window_Loaded" ContentRendered="Window_ContentRendered" Closing="Window_Closing">
     <Window.Resources>
         <!--<SolidColorBrush x:Key="Default_SA_OSD_Border_BkColor" Color="#141D28" />
         <SolidColorBrush x:Key="Default_SA_OSD_PathColor" Color="#FFFFFF" />-->

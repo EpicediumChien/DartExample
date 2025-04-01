@@ -885,11 +885,23 @@ namespace DDPM.EABroker
 
 
         #region EzMemLaunch
+        //Derek 2025/03/31
+        private void ExitUIThread()
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
+        }
+
         public void ShowForEzMemLauncher(MonitorInfo mi, ISplitCtrl isp)
         {
             Screen? screen = Screen.AllScreens.FirstOrDefault(x => x.DeviceName.Equals(mi.DisplayName, StringComparison.OrdinalIgnoreCase));
             if (screen == null)
+            {
+                ExitUIThread(); //Derek 2025/03/31
                 return;
+            }
 
             splitCtrl.Visibility = Visibility.Visible;
 
@@ -990,9 +1002,14 @@ namespace DDPM.EABroker
                 Close();
             });
         }
+
+
         #endregion
 
-
-
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            _vm.WriteLog($"EzMemLauncherWindow is closing");
+            ExitUIThread(); //Derek 2025/03/31
+        }
     }
 }

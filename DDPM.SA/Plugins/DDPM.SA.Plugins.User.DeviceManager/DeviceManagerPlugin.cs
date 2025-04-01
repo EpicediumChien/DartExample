@@ -12158,6 +12158,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _PopupBase = null;
                 writelog($"_PopupBase PopupBaseCloseEvent2 done");
             }
+
+            //Derek 2025/03/31
+            ExitUIThread();
+        }
+
+        //Derek 2025/03/31
+        private void ExitUIThread()
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
         }
 
         private void OnProgressUpdateEvent(UpdateProgressInfo fWUpdateInfo)

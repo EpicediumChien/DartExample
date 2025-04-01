@@ -105,10 +105,23 @@ namespace DDPM.EABroker
 
         }
 
+        //Derek 2025/03/31
+        private void ExitUIThread()
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
+        }
+
         private void STA_LaunchStart(MonitorInfo mi, int eaId)
         {
             if (_screen == null)
+            {
+                ExitUIThread(); //Derek 2025/03/31
+
                 return;
+            }
 
             //Determine the screen to be arranged
             //Screen? screen = Screen.AllScreens.FirstOrDefault(x => x.DeviceName.Equals(mi.DisplayName, StringComparison.OrdinalIgnoreCase));
@@ -154,6 +167,8 @@ namespace DDPM.EABroker
                 if (idxCustom < 0)
                 {
                     _lastError = $"EAID({eaId}) is not a valid Custom Layout";
+
+                    ExitUIThread(); //Derek 2025/03/31
                     return ;
                 }
 
@@ -166,11 +181,13 @@ namespace DDPM.EABroker
                     if (customList[idxCustom].Settings == null)
                     {
                         _lastError = $"No setting in the overlap Custom Layout";
+                        ExitUIThread(); //Derek 2025/03/31
                         return ;
                     }
                     if (customList[idxCustom].Settings.Count <= 4)
                     {
                         _lastError = $"No setting is empty in the overlap Custom Layout";
+                        ExitUIThread(); //Derek 2025/03/31
                         return;
                     }
                     SplitCtrl0B sp0B = new SplitCtrl0B();
@@ -185,6 +202,7 @@ namespace DDPM.EABroker
                     if (_splitCtrl == null)
                     {
                         _lastError = $"Invalid settings of custom layout ({cellCount}{splitKey})";
+                        ExitUIThread(); //Derek 2025/03/31
                         return ;
                     }
                     _splitCtrl.Settings = new List<double>(customList[idxCustom].Settings);
@@ -198,6 +216,7 @@ namespace DDPM.EABroker
                 if (_splitCtrl == null)
                 {
                     _lastError = $"Invalid EAID({eaId}) of preset layout.";
+                    ExitUIThread(); //Derek 2025/03/31
                     return;
                 }
                 _cellBorderCount = _splitCtrl.CellList.Count;
@@ -210,7 +229,7 @@ namespace DDPM.EABroker
             //    return ;
             //}
 
-            _emLauncherWindow.ShowForEzMemLauncher(mi, _splitCtrl);
+            _emLauncherWindow?.ShowForEzMemLauncher(mi, _splitCtrl);
             _isReadyToArrange = true;
 
         }
