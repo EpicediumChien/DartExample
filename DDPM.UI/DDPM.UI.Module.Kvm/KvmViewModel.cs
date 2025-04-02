@@ -3139,6 +3139,7 @@ namespace DDPM.UI.Module.Kvm
             {
                 if (pcsList["PC1"].InputType != e.value)
                 {
+                    KvmModule.SelectedHomeDevice.MonitorInfo.inputSource = e.value;
                     subInputList = DdpmCommonHelper.DeviceManagerSA.GetSubInputList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
                     if ((inputList != null && inputList.Count > 0) && (subInputList != null && subInputList.Count > 0))
                     {
@@ -3157,17 +3158,46 @@ namespace DDPM.UI.Module.Kvm
                             }
                             subInputs.Add(inputSourceObj);
                         }
-                        pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
-                    }
-                    if (pcsList != null && pcsList.ContainsKey("PC1"))
-                    {
+                        pcsList["PC1"] = original_pcsList[original_pcsList.FirstOrDefault(x => x.Value.InputType == e.value).Key];
+                        pcsList["PC2"] = original_pcsList[original_pcsList.FirstOrDefault(x => x.Value.InputType == subInputs[0].Name).Key];
+                        _PC1selectInput = _inputsList.Find(x => (x.Type == pcsList["PC1"].InputType));
+                        _log?.Info("[KvmViewModel] PC1 input source : " + pcsList["PC1"].InputType);
+                        _PC1selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC1"].USBUpstream));
+                        ModifiedPCinputList();
+                        _PC2selectInput = _inputsList2.Find(x => (x.Type == pcsList["PC2"].InputType));
+                        _PC2selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC2"].USBUpstream));
                         PC1_Input = pcsList["PC1"].InputType;
+                        PC2_Input = pcsList["PC2"].InputType;
+                        if (subInputs.Count > 1)
+                        {
+                            ModifiedPCinputList();
+                            pcsList["PC3"] = original_pcsList[original_pcsList.FirstOrDefault(x => x.Value.InputType == subInputs[1].Name).Key];
+                            _PC3selectInput = _inputsList3.Find(x => (x.Type == pcsList["PC3"].InputType));
+                            _PC3selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC3"].USBUpstream));
+                            PC3_Input = pcsList["PC3"].InputType;
+                            if (subInputs.Count > 2)
+                            {
+                                ModifiedPCinputList();
+                                pcsList["PC4"] = original_pcsList[original_pcsList.FirstOrDefault(x => x.Value.InputType == subInputs[2].Name).Key];
+                                _PC4selectInput = _inputsList4.Find(x => (x.Type == pcsList["PC4"].InputType));
+                                _PC4selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC4"].USBUpstream));
+                                PC4_Input = pcsList["PC4"].InputType;
+                            }
+                        }
                     }
                     else
                     {
                         PC1_Input = e.value;
                     }
                     OnPropertyChanged("PC1_Input");
+                    OnPropertyChanged("PC2_Input");
+                    OnPropertyChanged("PC3_Input");
+                    OnPropertyChanged("PC4_Input");
+                    OnPropertyChanged("PC1Inputs_Selected");
+                    OnPropertyChanged("PC2Inputs_Selected");
+                    OnPropertyChanged("PC3Inputs_Selected");
+                    OnPropertyChanged("PC4Inputs_Selected");
+                    USBDisenable();
                 }
             }
         }

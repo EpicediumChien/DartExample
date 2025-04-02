@@ -12713,29 +12713,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void InitAllDisplayData(List<MonitorInfo> AllMonitors, CancellationToken cancellationToken)
         {
             //InitMonitorSettings();
-            if (AllMonitors != null && AllMonitors.Count > 0)
+            try
             {
-                _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait(cancellationToken);
-
-                for (int i = 0; ((i < AllMonitors.Count) && (!cancellationToken.IsCancellationRequested)); i++)
+                if (AllMonitors != null && AllMonitors.Count > 0)
                 {
-                    MonitorInfo info = AllMonitors[i];
+                    _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait(cancellationToken);
 
-                    _ = _DisplayManagerPlugin.GetVCPCapability(info, 0xE9);
+                    for (int i = 0; ((i < AllMonitors.Count) && (!cancellationToken.IsCancellationRequested)); i++)
+                    {
+                        MonitorInfo info = AllMonitors[i];
 
-                    _ = _DisplayManagerPlugin.GetDisplayPropertiesInfo(info);
+                        _ = _DisplayManagerPlugin.GetVCPCapability(info, 0xE9);
 
-                    if (info.CapabilityString.Contains("F4"))
-                        _ = _DisplayManagerPlugin.GetGamingProperties_SupportedList(info);
+                        _ = _DisplayManagerPlugin.GetDisplayPropertiesInfo(info);
 
-                    _DisplayManagerPlugin.GetUSBUpstreamList(info).Wait(cancellationToken);
+                        if (info.CapabilityString.Contains("F4"))
+                            _ = _DisplayManagerPlugin.GetGamingProperties_SupportedList(info);
+
+                        _DisplayManagerPlugin.GetUSBUpstreamList(info).Wait(cancellationToken);
+
+                        if (!cancellationToken.IsCancellationRequested)
+                            _ = _DisplayManagerPlugin.GetAllUSBUpstream(info);
+                    }
 
                     if (!cancellationToken.IsCancellationRequested)
-                        _ = _DisplayManagerPlugin.GetAllUSBUpstream(info);
+                        UpdateHotkeyInfo(cancellationToken);
                 }
-
-                if (!cancellationToken.IsCancellationRequested)
-                    UpdateHotkeyInfo(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                writelog($"InitAllDisplayData exception : {ex.ToString()}");
             }
         }
 
@@ -12760,7 +12767,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             InitMonitorSettings((e.monitors).ToList(), CancellationToken.None);
 
-            Task.Run(() => InitAllDisplayData((e.monitors).ToList(), CancellationToken.None)).ConfigureAwait(false);
+            Task.Run(() => InitAllDisplayData((e.monitors).ToList(), CancellationToken.None));
 
             DisplaychangedEventArgs _displaychangedEventArgs = new DisplaychangedEventArgs();
             _displaychangedEventArgs.count = e.count;
