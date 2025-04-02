@@ -78,9 +78,11 @@
                       <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
                         <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                         <Border.ToolTip>
-                          <ToolTip Placement="Center" VerticalOffset="40" HorizontalOffset="80">
+                          <!--Elsa 20250401 for PIMS-348390 change Placement="Center" to Placement="Top" VerticalOffset="40" to VerticalOffset="14" HorizontalOffset="80" to HorizontalOffset="11",add MaxWidth="272" Opened="toolTip_Opened" -->
+                          <ToolTip Placement="Top" VerticalOffset="14" HorizontalOffset="11" MaxWidth="272" Opened="toolTip_Opened">
                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                              <TextBlock Text="{Binding [WebCameraColorImage.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" />
+                              <!--Elsa 20250401 for PIMS-348390 change MaxWidth="350" to MaxWidth="230" -->
+                              <TextBlock Text="{Binding [WebCameraColorImage.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="Wrap" />
                             </Border>
                           </ToolTip>
                         </Border.ToolTip>
@@ -164,9 +166,11 @@
                         <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
                           <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                           <Border.ToolTip>
-                            <ToolTip Placement="Center" VerticalOffset="-40">
+                            <!--Elsa 20250401 for PIMS-348390 change Placement="Center" to Placement="Top" VerticalOffset="-40" to VerticalOffset="14",add HorizontalOffset="11",add MaxWidth="272" Opened="toolTip_Opened" -->
+                            <ToolTip Placement="Top" VerticalOffset="14" HorizontalOffset="11" MaxWidth="272" Opened="toolTip_Opened">
                               <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                <TextBlock Text="{Binding [WebCameraColorImage.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap"/>
+                                <!--Elsa 20250401 for PIMS-348390 change MaxWidth="350" to MaxWidth="230" -->
+                                <TextBlock Text="{Binding [WebCameraColorImage.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="Wrap"/>
                               </Border>
                             </ToolTip>
                           </Border.ToolTip>
