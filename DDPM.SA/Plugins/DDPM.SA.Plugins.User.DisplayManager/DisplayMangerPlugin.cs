@@ -36,12 +36,9 @@ using System.Security.Policy;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 using VcpCore.Common;
 using VcpCore.Interfaces;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using static VcpCore.Common.EDIDReader;
-using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 //using WinCopies;
@@ -451,7 +448,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     var monitorInfos = (await _VcpCorePlugin.Re_GetMonitors(Token)).ToList();
 
-                    _AllInfoMonitors = monitorInfos.ToList();
+                    _AllInfoMonitors.Clear();
+                    _AllInfoMonitors.AddRange(monitorInfos.ToList());
 
                     _logs.DebugMsg("[DisplayMangerPlugin] Re_GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
 
