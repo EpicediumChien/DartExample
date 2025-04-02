@@ -171,8 +171,8 @@ namespace DDPM.EABroker
                 fadeOutCtrl.Content = null;
             }
 
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+            //GC.Collect();
+            //GC.WaitForPendingFinalizers();
         }
 
         public bool SetWorkingSplit(SplitJson splitJson, bool showFadeOut=false)
@@ -680,8 +680,10 @@ namespace DDPM.EABroker
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            System.Windows.MessageBox.Show("Window_Closing");
             if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
             {
+                System.Windows.MessageBox.Show("Window_Closing1");
                 System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
             }
         }

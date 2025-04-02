@@ -68,8 +68,8 @@ namespace DDPM.Easy.Common
                 _cellAppInfo = null;
             }
 
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+            //GC.Collect();
+            //GC.WaitForPendingFinalizers();
         }
 
         private string _cellName = "";
@@ -193,12 +193,11 @@ namespace DDPM.Easy.Common
             }
         }
 
-        //2025/03/29 Removed by Derek
         //Unused, do not use and UnitTest
-        //public void AddChild(UIElement ele)
-        //{
-        //    childGrid.Children.Add(ele);
-        //}
+        public void AddChild(UIElement ele)
+        {
+            childGrid.Children.Add(ele);
+        }
 
         #region Em Use
 

@@ -751,7 +751,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (_eaBroker == null)
             {
                 WriteLog("@ STA_EditCommand(), exit due to _eaBroker is null.");
-                ExitUIThread();
+
                 return false;
             }
             //if (_editWindow == null)
@@ -785,7 +785,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     EditStarted(this, $"Cannot find a Screen from monitorInfo. MonitorInfo.DisplayName=[{monitorInfo.DisplayName}]");
                 }
 
-                ExitUIThread();
                 return false;
             }
             bool isVertical = (scr.Bounds.Width < scr.Bounds.Height);
@@ -846,7 +845,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                             _eaBroker.RunningState = eEARunningStates.Waiting;
                         }
 
-                        ExitUIThread();
                         return false;
                     }
 
@@ -987,7 +985,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         EditStarted(this, "Error");
                     }
 
-                    ExitUIThread();
                     return false;
                 }
 
@@ -1079,15 +1076,17 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 //5 Wait for user click "Save" or "Cancel"
             }
 
-            //cts.Cancel();
             return true;
         }
 
         private void _overlapWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
-            _overlapWindow.Closing -= _overlapWindow_Closing;
+            if (_overlapWindow != null)
+            {
+                _overlapWindow.Closing -= _overlapWindow_Closing;
+                _overlapWindow = null;
+            }
 
-            _overlapWindow = null;
             ExitUIThread();
         }
 
@@ -1209,11 +1208,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //Launch the major function in UI Thread
             Thread thread = new Thread(() =>
             {
-                STA_SetEASelectedLayout(monitorInfo, eaId);
+                if (!STA_SetEASelectedLayout(monitorInfo, eaId))
+                    return;
+
                 WriteLog("STA_SetEASelectedLayout thread start");
-                System.Windows.Threading.Dispatcher.Run();
+                //System.Windows.Threading.Dispatcher.Run();
                 WriteLog("STA_SetEASelectedLayout thread end");
-                WriteLog("");
             });
 
             thread.SetApartmentState(ApartmentState.STA);
@@ -1226,18 +1226,18 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private bool STA_SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
         {
             //Robert_Lin, 2024-12-20, LogInfo will be removed, used WriteLog() instead.
-            //Add LogInfo in this file will be chaned to WriteLog()
+            //Add LogInfo in this file will be changed to WriteLog()
 
             if (_eaBroker == null)
             {
                 WriteLog($"STA_SetEASelectedLayout({eaId}) return false: _eaBroker is null.");
-                ExitUIThread();
+
                 return false;
             }
             if (_eaBroker.VM == null)
             {
                 WriteLog($"SetEASelectedLayout({eaId}) return false: EABroker.VM is null.");
-                ExitUIThread();
+
                 return false;
             }
 
@@ -1249,11 +1249,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 _eaBroker.VM.EAPluginLastError = "ReadEAMonitorSettings() return null.";
                 WriteLog($"STA_SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
-                ExitUIThread();
+
                 return false;
             }
 
-            //Update Selected Layout to eaSettngs.SelectedLayout
+            //Update Selected Layout to eaSettings.SelectedLayout
             //
             //If the eaId is a preset layout
             if (ISplitCtrl.IsExistedPresetEAID(eaId))
@@ -1292,7 +1292,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     //Should naver to here, ReadEACustomList() never return null.
                     _eaBroker.VM.EAPluginLastError = "ReadEACustomList() return null.";
                     WriteLog($"STA_SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
-                    ExitUIThread();
+
                     return false;
                 }
             }
@@ -1369,7 +1369,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (!isOKSaveSettings)
             {
                 WriteLog(" SetEASelectedLayout() return false: Fail to write to MonitorSettings file.");
-                ExitUIThread();
+
                 return false;
             }
 
@@ -1392,7 +1392,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 EASettingsChanged(this, eaArgs);
             }
 
-            ExitUIThread();
             return true;
         }
 
