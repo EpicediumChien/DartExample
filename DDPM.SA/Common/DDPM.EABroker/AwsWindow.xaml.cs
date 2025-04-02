@@ -1001,15 +1001,26 @@ namespace DDPM.EABroker
             if (!_areCellRectsRefreshed && flag == 0)
             {
                 _vm.WriteLog($"Create timer for RefreshCellRects(0)");
-                //Derek 2025/03/29 move timer object to class member for resource release
-                //System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(0); }, null, 100, Timeout.Infinite);
 
-                timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(0); }, null, 100, Timeout.Infinite);
+                //Derek 2025/03/29
+                System.Threading.Timer? timer1 = null;
+                try
+                {
+                    timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(0); }, null, 100, Timeout.Infinite);
+                }
+                catch (Exception e)
+                {
+                    _vm.WriteLog($"[AwsWindow] Create timer for RefreshCellRects(0) exception {e.Message}");
+                }
+                finally
+                {
+                    timer1?.Dispose();
+                    timer1 = null;
+                }
+                
             }
             _vm.OnPropertyChanged_AwsIconInfos();
-        }
-        //Derek 2025/03/29
-        System.Threading.Timer? timer1 = null;
+        }        
 
         private bool UI_RefreshAwsIconCellRects(ISplitCtrl awsIcon)
         {
@@ -1395,9 +1406,6 @@ namespace DDPM.EABroker
             try
             {
                 HoveringScreen = null;
-
-                timer1?.Dispose();
-                timer1 = null;
 
                 if (_vm != null)
                 {

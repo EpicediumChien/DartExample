@@ -624,7 +624,20 @@ namespace DDPM.EABroker
                 if (!_areCellRectsRefreshed)
                 {
                     //System.Threading.Timer timer1 = new System.Threading.Timer(refreshCellRects_TimerCallback, null, 100, Timeout.Infinite);
-                    System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(); }, null, 100, Timeout.Infinite);
+                    System.Threading.Timer? timer1 = null;
+                    try
+                    {
+                        timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(); }, null, 100, Timeout.Infinite);
+                    }
+                    catch (Exception e)
+                    {
+                        _vm.WriteLog($"[EAWindow] create timer for RefreshCellRects() exception: {e.Message}");
+                    }
+                    finally
+                    {
+                        timer1?.Dispose();
+                        timer1 = null;
+                    }
                 }
                 else
                 {

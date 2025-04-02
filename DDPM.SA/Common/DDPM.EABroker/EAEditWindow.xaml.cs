@@ -384,11 +384,12 @@ namespace DDPM.EABroker
         {
             if(sender != null)
             {
-                DispatcherTimer timer = sender as DispatcherTimer;
-                if (timer != null) 
+                DispatcherTimer? timer = sender as DispatcherTimer;
+
+                if (timer != null)
                     timer.Stop();
             }
-            if (EditReturn != null)
+            if (EditReturn != null && _inputArgs != null)
                 EditReturn(this, _inputArgs);
         }
         #endregion
