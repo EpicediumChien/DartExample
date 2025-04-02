@@ -12170,7 +12170,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //writelog($"{nameof(OnProgressUpdateEvent)} {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
                 handler.Invoke(this, fWUpdateInfo);
             }
-            if (_UpdateProgress == null)
+            /*Fix PIMS-354303 and PIMS-353296
+             * if (_UpdateProgress == null)
             {
                 writelog($"_UpdateProgress is null");
                 if (_PopupBase == null)
@@ -12184,7 +12185,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //writelog($"popupBaseViewModel UpdateContent");
                 //writelog($"{nameof(OnProgressUpdateEvent)} {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
                 popupBaseViewModel.UpdateContent(LangHelper.Instance["FW_info"], fWUpdateInfo);
-            }
+            }*/
             //writelog($"{nameof(OnProgressUpdateEvent)} done");
         }
 

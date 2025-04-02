@@ -928,9 +928,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} CheckThumbprint Faile");
                                     _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
                                     NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                                    method.DeleteFolder(savePath);
                                     fileLock_2.Unlock();
                                     fileLock.Unlock();
+                                    method.DeleteFolder(savePath);
                                     continue;
                                 }
                                 fwUpdateInfos[i].InstallPaths = exeFilePath;
@@ -1433,6 +1433,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " create log path done but path is null or empty");
                     }
                 }
+                if (fwUpdateInfo.IsUOD)
+                {
+                    NotificationFWupdate(LangHelper.Instance["Dock_FW_info"], $"{fwUpdateInfo.DeviceName} {fwUpdateInfo.Model} {LangHelper.Instance["Dock_FW_is_being_loaded"]}");
+                }
+                else
+                {
+                    string s = LangHelper.Instance["Update_in_progress_body"].Replace("[XXXXXX]", $"{_fWUpdateInfo.DeviceName} ({_fWUpdateInfo.Model})");
+                    NotificationFWupdate(LangHelper.Instance["Update_in_progress"], s);
+                }
                 if (fwUpdateInfo.IsDisplay && IsISPInApp(fwUpdateInfo.InstallPaths, out string upgPath))//新版螢幕韌體更新
                 {
                     _logs.DebugMsg_1($"upgPath : {upgPath}");
@@ -1513,14 +1522,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _namedPipeServer.ClientConnectedEvent += _namedPipeServer_ClientConnectedEvent;
                         _namedPipeServer.ClientDisconnectedEvent += _namedPipeServer_ClientDisconnectedEvent;
                         _logs.DebugMsg_1(fwUpdateInfo.DeviceName + nameof(_namedPipeServer) + " ready");
-                        if (fwUpdateInfo.IsUOD)
-                        {
-                            NotificationFWupdate(LangHelper.Instance["Dock_FW_info"], $"{fwUpdateInfo.DeviceName} {fwUpdateInfo.Model} {LangHelper.Instance["Dock_FW_is_being_loaded"]}");
-                        }
-                        else
-                        {
-                            NotificationFWupdate(LangHelper.Instance["FW_info"], $"{fwUpdateInfo.DeviceName} {fwUpdateInfo.Model} {LangHelper.Instance["FW_is_being_Installing"]}");
-                        }
+                        
                     }
                     arguments = BuildArgs(fwUpdateInfo, _namedPipeName, logPath);
                     _logs.DebugMsg_1($"arguments : ***");
