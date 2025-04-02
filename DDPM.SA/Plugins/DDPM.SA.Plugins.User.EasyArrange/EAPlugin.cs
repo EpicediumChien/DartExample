@@ -711,6 +711,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 if (!STA_EditCommand(monitorInfo, args))
                     return;
+
                 WriteLog("@ EditCommand(), Entering Dispatcher.Run().");
                 System.Windows.Threading.Dispatcher.Run();
                 WriteLog("@ EditCommand(), exit from Dispatcher.Run().");
@@ -845,6 +846,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                             _eaBroker.RunningState = eEARunningStates.Waiting;
                         }
 
+                        ExitUIThread();
                         return false;
                     }
 
@@ -976,6 +978,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 //Non-Overlap edit steps
                 //1 Show the layout for editing
                 _editWindow = new EABroker.EAEditWindow(_log);
+                _editWindow.Closed += _editWindow_Closed;
                 //Robert_Lin 2025-3-19 remove the duplicate code
                 //_saveCustomWindow = new EABroker.SaveCustomWindow(_deviceManagerPlugin);
                 if (!_editWindow.ShowAndEdit(args, workingArea))
@@ -1077,6 +1080,14 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
 
             return true;
+        }
+
+        private void _editWindow_Closed(object? sender, EventArgs e)
+        {
+            if (_editWindow != null)
+                _editWindow.Closed -= _editWindow_Closed;
+
+            ExitUIThread();
         }
 
         private void _overlapWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
@@ -1724,7 +1735,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //Run in a STA Thread
             Thread thread = new Thread(() =>
             {
-                _eaBroker.STA_LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid);
+                if (!_eaBroker.STA_LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid))
+                    return;
+
                 WriteLog("STA_LaunchAndArrangeAppsWithEzArrange thread start");
                 System.Windows.Threading.Dispatcher.Run();
                 WriteLog("STA_LaunchAndArrangeAppsWithEzArrange thread end");

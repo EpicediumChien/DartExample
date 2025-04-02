@@ -301,7 +301,7 @@ namespace DDPM.EABroker
             if (_deviceManagerSA == null)
             {
                 WriteLog("@STA_LaunchAndArrangeAppsWithEzArrange(), _deviceManagerSA is null.");
-                ExitUIThread();
+
                 return false;
             }
 
@@ -333,7 +333,7 @@ namespace DDPM.EABroker
                 if (scr == null)
                 {
                     WriteLog("LaunchAndArrangeAppsWithEzArrange ERROR: the Monitor is not a present screen.");
-                    ExitUIThread();
+                    
                     return false;
                 }
                 targetScreen = scr;
@@ -357,7 +357,7 @@ namespace DDPM.EABroker
                 if (customList == null || customList.Length == 0)
                 {
                     WriteLog("LaunchAndArrangeAppsWithEzArrange ERROR: saved custom list is empty.");
-                    ExitUIThread();
+                    
                     return false;
                 }
                 //B4 Find the Custom layout by EAID
@@ -365,7 +365,7 @@ namespace DDPM.EABroker
                 if (idxCustom < 0)
                 {
                     WriteLog($"LaunchAndArrangeAppsWithEzArrange ERROR: EAID({eaId}) not found in saved custom list.");
-                    ExitUIThread();
+                    
                     return false;
                 }
 
@@ -373,7 +373,7 @@ namespace DDPM.EABroker
                 if (customList[idxCustom].IsOverlapLayout)
                 {
                     WriteLog($"LaunchAndArrangeAppsWithEzArrange ERROR: Layout (EAID={eaId}) is overlap which is not supported.");
-                    ExitUIThread();
+                    
                     return false;
                 }
 
@@ -384,13 +384,13 @@ namespace DDPM.EABroker
                 if (ispLayout == null)
                 {
                     WriteLog($"LaunchAndArrangeAppsWithEzArrange ERROR: Invalid ISplit parameters ({cellCount}{splitKey}) in custom list.");
-                    ExitUIThread();
+                    
                     return false;
                 }
                 if (customList[idxCustom].Settings == null)
                 {
                     WriteLog($"LaunchAndArrangeAppsWithEzArrange ERROR: ISplit({cellCount}{splitKey}) Settings is null in saved custom list.");
-                    ExitUIThread();
+                    
                     return false;
                 }
                 //Copy Settings
@@ -402,10 +402,11 @@ namespace DDPM.EABroker
                 if (ispLayout == null)
                 {
                     WriteLog($"LaunchAndArrangeAppsWithEzArrange ERROR: Invalid EAID ({eaId}) for preset layout.");
-                    ExitUIThread();
+                    
                     return false;
                 }
             }
+
             ispLayout.IsVertical = _isVertical;
             cellBorderCount = ispLayout.CellList.Count;
             int appCount = sortApps.Count;
