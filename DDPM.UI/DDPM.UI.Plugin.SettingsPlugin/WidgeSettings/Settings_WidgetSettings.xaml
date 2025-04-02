@@ -56,7 +56,7 @@
                                     <!-- Robert_Lin 2025-3-6 Add  HorizontalAlignment="Left"  FontWeight="Medium" -->
                                     <UXControls:UXTextBlock Grid.Column="0" x:Name="activateTextBlock" Focusable="True"
                                                             Text="{Binding [Activate_Quick_Access_widget_during_Zoom_conference_calls], Source={x:Static lang:LangHelper.Instance}}"
-                                                            FontSize="16" HorizontalAlignment="Left" FontWeight="Medium"
+                                                            FontSize="16" HorizontalAlignment="Left" FontWeight="Normal"
                                                             FontFamily="Roboto"
                                                             TextBlockType="Caption"
                                                             TextWrapping="WrapWithOverflow"
@@ -92,7 +92,7 @@
                                     <UXControls:UXTextBlock Grid.Column="0" Focusable="True"
                                                             x:Name="enableShortcutTextBlock"
                                                             Text="{Binding [Enable_shortcut_reminder_for_Quick_Accesswidget], Source={x:Static lang:LangHelper.Instance}}"
-                                                            FontSize="16"  HorizontalAlignment="Left" FontWeight="Medium"              
+                                                            FontSize="16"  HorizontalAlignment="Left" FontWeight="Normal"              
                                                             FontFamily="Roboto"
                                                             TextBlockType="Caption"
                                                             TextWrapping="WrapWithOverflow"
