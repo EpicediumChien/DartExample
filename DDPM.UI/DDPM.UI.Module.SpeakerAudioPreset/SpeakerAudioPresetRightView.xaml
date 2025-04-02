@@ -32,8 +32,8 @@
   </UserControl.Resources>
   <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
     <Grid x:Name="MainGrid">
-      <!--Elsa 20250331 for PIMS-348388 change Width="470" to Width="auto",change Margin="0,10,10,0" to Margin="0,10,0,16" -->
-      <Border x:Name="MainBorder" CornerRadius="13" Width="auto" Height="auto"  Margin="0,10,0,16">
+      <!--Elsa 20250331 for PIMS-348388 change Width="470" to Width="auto",change Margin="0,10,10,0" to Margin="0,10,16,16" -->
+      <Border x:Name="MainBorder" CornerRadius="13" Width="auto" Height="auto"  Margin="0,10,16,16">
         <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
 
           <Grid VerticalAlignment="Top" Margin="0,0,0,15">
