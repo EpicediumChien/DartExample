@@ -3048,10 +3048,13 @@ namespace DDPM.UI.Module.Kvm
             if (pcsList != null && pcsList.Count > 0 && subInputList != null && subInputList.Count > 0)
             {
                 pcsList = DdpmCommonHelper.DeviceManagerSA.ChangePC(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList, subInputList, isNext).Result;
-                CurrentInputChange();
-                PC1_Input = pcsList["PC1"].InputType;
-                OnPropertyChanged("PC1_Input");
-                original_pcsList = pcsList.ToDictionary(entry => entry.Key, entry => entry.Value);
+                if (pcsList != null && pcsList.ContainsKey("PC1"))
+                {
+                    CurrentInputChange();
+                    PC1_Input = pcsList["PC1"].InputType;
+                    OnPropertyChanged("PC1_Input");
+                    original_pcsList = pcsList.ToDictionary(entry => entry.Key, entry => entry.Value);
+                }
             }
         }
 
@@ -3154,7 +3157,6 @@ namespace DDPM.UI.Module.Kvm
                             }
                             subInputs.Add(inputSourceObj);
                         }
-                        string currentinput = KvmModule.SelectedHomeDevice.MonitorInfo.inputSource;
                         pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
                     }
                     if (pcsList != null && pcsList.ContainsKey("PC1"))
