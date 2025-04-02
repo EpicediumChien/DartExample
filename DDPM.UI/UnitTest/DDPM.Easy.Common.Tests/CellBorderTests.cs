@@ -163,20 +163,19 @@ namespace DDPM.Easy.Common.Tests
             }
         }
 
-        //Removed by Derek 2025/03/29
         //[Test]
-        //public void TestAddChild()
-        //{
-        //    try
-        //    {
-        //        cellBorder.AddChild(new UIElement());
-        //        Assert.True(true);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Assert.Fail("not invoked");
-        //    }
-        //}
+        public void TestAddChild()
+        {
+            try
+            {
+                cellBorder.AddChild(new UIElement());
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
 
         [Test]
         public void TestIsEmMode()
