@@ -38,6 +38,7 @@ using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
+using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7017,6 +7018,97 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             return Task.FromResult(false);
+        }
+
+        public Task<Dictionary<string, PCsInfo>> ChangePC(MonitorInfo monitorInfo, Dictionary<string, PCsInfo> pcsList, List<UInt16> subInputList, bool isNext)
+        {
+            Dictionary<string, PCsInfo> original_pcsList = new Dictionary<string, PCsInfo>();
+            if (pcsList != null && pcsList.Count > 0 && subInputList != null && subInputList.Count > 0)
+            {
+                original_pcsList = pcsList.ToDictionary(entry => entry.Key, entry => entry.Value);
+                if (original_pcsList != null)
+                {
+                    if (isNext)
+                    {
+                        if (subInputList.Count == 1)
+                        {
+                            pcsList = PCInfoSwap(pcsList, "PC1", "PC2").Result;
+                            InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                            bool res = SetSubInputs(monitorInfo, pc2input, null, null).Result;
+                            string result = res ? "Success" : "Failed";
+                            writelog($"[ChangePC] SubInputs PC Done with {result}.");
+                        }
+                        else if (subInputList.Count == 2)
+                        {
+                            pcsList["PC1"] = original_pcsList["PC2"];
+                            pcsList["PC2"] = original_pcsList["PC3"];
+                            pcsList["PC3"] = original_pcsList["PC1"];
+                            InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                            InputSourceObj pc3input = new InputSourceObj((UInt16)pcsList["PC3"].Code, pcsList["PC3"].InputType);
+                            bool res = SetSubInputs(monitorInfo, pc2input, pc3input, null).Result;
+                            string result = res ? "Success" : "Failed";
+                            writelog($"[ChangePC] SubInputs PC Done with {result}.");
+                        }
+                        else if (subInputList.Count == 3)
+                        {
+                            pcsList["PC1"] = original_pcsList["PC2"];
+                            pcsList["PC2"] = original_pcsList["PC3"];
+                            pcsList["PC3"] = original_pcsList["PC4"];
+                            pcsList["PC4"] = original_pcsList["PC1"];
+                            InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                            InputSourceObj pc3input = new InputSourceObj((UInt16)pcsList["PC3"].Code, pcsList["PC3"].InputType);
+                            InputSourceObj pc4input = new InputSourceObj((UInt16)pcsList["PC4"].Code, pcsList["PC4"].InputType);
+                            bool res = SetSubInputs(monitorInfo, pc2input, pc3input, pc4input).Result;
+                            string result = res ? "Success" : "Failed";
+                            writelog($"[ChangePC] SubInputs PC Done with {result}.");
+                        }
+                    }
+                    else
+                    {
+                        if (subInputList.Count == 1)
+                        {
+                            pcsList = PCInfoSwap(pcsList, "PC1", "PC2").Result;
+                            InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                            bool res = SetSubInputs(monitorInfo, pc2input, null, null).Result;
+                            string result = res ? "Success" : "Failed";
+                            writelog($"[ChangePC] SubInputs PC Done with {result}.");
+                        }
+                        else if (subInputList.Count == 2)
+                        {
+                            pcsList["PC1"] = original_pcsList["PC3"];
+                            pcsList["PC2"] = original_pcsList["PC1"];
+                            pcsList["PC3"] = original_pcsList["PC2"];
+                            InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                            InputSourceObj pc3input = new InputSourceObj((UInt16)pcsList["PC3"].Code, pcsList["PC3"].InputType);
+                            bool res = SetSubInputs(monitorInfo, pc2input, pc3input, null).Result;
+                            string result = res ? "Success" : "Failed";
+                            writelog($"[ChangePC] SubInputs PC Done with {result}.");
+                        }
+                        else if (subInputList.Count == 3)
+                        {
+                            pcsList["PC1"] = original_pcsList["PC4"];
+                            pcsList["PC2"] = original_pcsList["PC1"];
+                            pcsList["PC3"] = original_pcsList["PC2"];
+                            pcsList["PC4"] = original_pcsList["PC3"];
+                            InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                            InputSourceObj pc3input = new InputSourceObj((UInt16)pcsList["PC3"].Code, pcsList["PC3"].InputType);
+                            InputSourceObj pc4input = new InputSourceObj((UInt16)pcsList["PC4"].Code, pcsList["PC4"].InputType);
+                            bool res = SetSubInputs(monitorInfo, pc2input, pc3input, pc4input).Result;
+                            string result = res ? "Success" : "Failed";
+                            writelog($"[ChangePC] SubInputs PC Done with {result}.");
+                        }
+                    }
+                }
+                else 
+                {
+                    writelog("[ChangePC] original_pcsList is null.");
+                }
+            }
+            else
+            {
+                writelog("[ChangePC] pcsList or subInputList is null or count is not > 0.");
+            }
+            return Task.FromResult(pcsList);
         }
 
         #endregion
