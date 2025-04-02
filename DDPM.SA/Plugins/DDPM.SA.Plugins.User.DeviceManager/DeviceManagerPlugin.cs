@@ -585,35 +585,42 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             usbKvmPBPs.Add(usbKvmPBP);
                         }
-                        HotkeySettings localHotkeySettings = _hotkeySettings.SingleOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
-                        if (localHotkeySettings != null)
+                        if (_hotkeySettings != null)
                         {
-                            if (localHotkeySettings.HotkeyOptions.Any(x => x == HotkeyOption.KvmAutoApply))
+                            HotkeySettings localHotkeySettings = _hotkeySettings.SingleOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
+                            if (localHotkeySettings != null)
                             {
-                                //update timer
-                                if (usbKvmPBPs.Any(x => x.isPBPmode))
+                                if (localHotkeySettings.HotkeyOptions.Any(x => x == HotkeyOption.KvmAutoApply))
                                 {
-                                    _USBKVMAutoSwitchTimer.Stop();
-                                    _USBKVMAutoSwitchTimer.Start();
-                                    Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled},and start(), PBPmode ON");
-                                    writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled},and start(), PBPmode ON");
+                                    //update timer
+                                    if (usbKvmPBPs.Any(x => x.isPBPmode))
+                                    {
+                                        _USBKVMAutoSwitchTimer.Stop();
+                                        _USBKVMAutoSwitchTimer.Start();
+                                        Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled},and start(), PBPmode ON");
+                                        writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled},and start(), PBPmode ON");
+                                    }
+                                    else
+                                    {
+                                        _USBKVMAutoSwitchTimer.Stop();
+                                        Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, and stop(), PBPmode OFF");
+                                        writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, and stop(), PBPmode OFF");
+                                    }
                                 }
                                 else
                                 {
-                                    _USBKVMAutoSwitchTimer.Stop();
-                                    Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, and stop(), PBPmode OFF");
-                                    writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, and stop(), PBPmode OFF");
+                                    Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus,the kvm auto switch option is OFF");
+                                    writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,the kvm auto switch option is OFF");
                                 }
                             }
                             else
                             {
-                                Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus,the kvm auto switch option is OFF");
-                                writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,the kvm auto switch option is OFF");
+                                writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,localHotkeySettings is null.");
                             }
                         }
                         else
                         {
-                            writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,hotkeysetting is null.");
+                            writelog($"[USBKVM_Auto_Switch] _hotkeySettings is null.");
                         }
                     }
                 }

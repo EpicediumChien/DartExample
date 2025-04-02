@@ -96,9 +96,9 @@ namespace DDPM.OSDs
                 return;
             }
             this.Top = args.Item1 + 1;
-            this.Left = args.Item1 + 1;
-            this.Width = args.Item1 - 2;
-            this.Height = args.Item1 - 2;
+            this.Left = args.Item2 + 1;
+            this.Width = args.Item3 - 2;
+            this.Height = args.Item4 - 2;
 
         }
         public void AddShowOSDWinInfo(OSDWinInfo oSDWinInfo)
