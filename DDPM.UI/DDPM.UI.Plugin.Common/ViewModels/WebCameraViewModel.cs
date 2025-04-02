@@ -696,15 +696,19 @@ namespace DDPM.UI.Plugin.ViewModels
                     WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
                     _log.Info("WebCameraViewModel ExportWebcamSettings Finish");
                 }
-                if (DdpmCommonHelper.DeviceManagerSA != null)
-                    is_BackgroundBlurVisibility = DdpmCommonHelper.DeviceManagerSA.GetIsPropertyBgBlurSupported(CurrentDeviceInfo.ID.ToString()).Result;
-                if (is_BackgroundBlurVisibility && DdpmCommonHelper.DeviceManagerSA != null)
-                {
-                    IsBgBlurOn = DdpmCommonHelper.DeviceManagerSA.GetIsBgBlurEnable(CurrentDeviceInfo.ID.ToString()).Result;
-                    int DtpBgBlur = DdpmCommonHelper.DeviceManagerSA.GetBgBlur(CurrentDeviceInfo.ID.ToString()).Result;
-                    BgBlur = IsBgBlurOn == false ? 1 : DtpBgBlur == 0 ? 1 : DtpBgBlur;
 
+                if (GlobalDefinitions.isSupport210)
+                {
+                    if (DdpmCommonHelper.DeviceManagerSA != null)
+                        is_BackgroundBlurVisibility = DdpmCommonHelper.DeviceManagerSA.GetIsPropertyBgBlurSupported(CurrentDeviceInfo.ID.ToString()).Result;
+                    if (is_BackgroundBlurVisibility && DdpmCommonHelper.DeviceManagerSA != null)
+                    {
+                        IsBgBlurOn = DdpmCommonHelper.DeviceManagerSA.GetIsBgBlurEnable(CurrentDeviceInfo.ID.ToString()).Result;
+                        int DtpBgBlur = DdpmCommonHelper.DeviceManagerSA.GetBgBlur(CurrentDeviceInfo.ID.ToString()).Result;
+                        BgBlur = IsBgBlurOn == false ? 1 : DtpBgBlur == 0 ? 1 : DtpBgBlur;
+                    }
                 }
+
                 IsMicEnumerationOnEnabled = true;
                 AlertVisibility = Visibility.Collapsed;
             }

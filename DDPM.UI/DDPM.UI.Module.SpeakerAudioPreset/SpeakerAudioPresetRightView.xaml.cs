@@ -18,7 +18,7 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
         private Image? currentNode;
         private Point clickPosition;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         private readonly SoundBarViewModel _vm;
 
@@ -30,7 +30,7 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
         {
             InitializeComponent();
             _vm = vm;
-            _vm!.SoundbarSettingChanged += SoundbarSettingChanged;
+            _vm.SoundbarSettingChanged += SoundbarSettingChanged;
             InitializeAsync();
         }
 
@@ -39,9 +39,14 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
             InitializeAsync();
         }
 
-        private async void InitializeAsync()
+        private void InitializeAsync()
         {
-            _vm._log!.Info("[SpeakerAudioPresetRightView] Before Invoke_PleaseWaitAsync");
+            _vm._log.Info("[SpeakerAudioPresetRightView] Before Invoke_PleaseWaitAsync");
+            if(_vm.SpeakerInfoValueDTP == null)
+            {
+                _vm._log.Info("[SpeakerAudioPresetRightView] SpeakerInfoValueDTP is null");
+                return;
+            }
             if (_vm.SpeakerInfoValueDTP.SpeakerProfile == _vm._default)// || _vm.SpeakerInfoValueDTP.SpeakerProfile == "")
             {
                 if (_vm.IsDTPReady)
@@ -71,37 +76,37 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
                 if (_vm.SpeakerInfoValueDTP.SpeakerBass > 2 || _vm.SpeakerInfoValueDTP.SpeakerBass < -2)
                 {
                     SetNodeValue(Node1, 0);
-                    _vm._log!.Info($"[SpeakerAudioPresetRightView] SpeakerBass SetNodeValue ... Bass 00000");
+                    _vm._log.Info($"[SpeakerAudioPresetRightView] SpeakerBass SetNodeValue ... Bass 00000");
                 }
                 else
                 {
                     //_vm.SpeakerInfoValueDTP.SpeakerBass = _vm._deviceManager.GetBassAsync(_vm.CurrentDeviceID.ToString()).Result;
                     SetNodeValue(Node1, _vm.SpeakerInfoValueDTP.SpeakerBass);
-                    _vm._log!.Info($"[SpeakerAudioPresetRightView] SpeakerBass SetNodeValue ... Bass {_vm.SpeakerInfoValueDTP!.SpeakerBass.ToString()}");
+                    _vm._log.Info($"[SpeakerAudioPresetRightView] SpeakerBass SetNodeValue ... Bass {_vm.SpeakerInfoValueDTP.SpeakerBass.ToString()}");
                 }
 
                 if (_vm.SpeakerInfoValueDTP.SpeakerMidRange > 2 || _vm.SpeakerInfoValueDTP.SpeakerMidRange < -2)
                 {
                     SetNodeValue(Node2, 0);
-                    _vm._log!.Info($"[SpeakerAudioPresetRightView] SpeakerMidRange SetNodeValue ... MidRange 00000");
+                    _vm._log.Info($"[SpeakerAudioPresetRightView] SpeakerMidRange SetNodeValue ... MidRange 00000");
                 }
                 else
                 {
                     //_vm.SpeakerInfoValueDTP.SpeakerMidRange = _vm._deviceManager.GetMidRangeAsync(_vm.CurrentDeviceID.ToString()).Result;
                     SetNodeValue(Node2, _vm.SpeakerInfoValueDTP.SpeakerMidRange);
-                    _vm._log!.Info($"[SpeakerAudioPresetRightView] SpeakerMidRange SetNodeValue ... MidRange {_vm.SpeakerInfoValueDTP!.SpeakerMidRange.ToString()}");
+                    _vm._log.Info($"[SpeakerAudioPresetRightView] SpeakerMidRange SetNodeValue ... MidRange {_vm.SpeakerInfoValueDTP.SpeakerMidRange.ToString()}");
                 }
 
                 if (_vm.SpeakerInfoValueDTP.SpeakerTreble > 2 || _vm.SpeakerInfoValueDTP.SpeakerTreble < -2)
                 {
                     SetNodeValue(Node3, 0);
-                    _vm._log!.Info($"[SpeakerAudioPresetRightView] SpeakerTreble SetNodeValue ... Treble 00000");
+                    _vm._log.Info($"[SpeakerAudioPresetRightView] SpeakerTreble SetNodeValue ... Treble 00000");
                 }
                 else
                 {
                     //_vm.SpeakerInfoValueDTP.SpeakerTreble = _vm._deviceManager.GetTrebleAsync(_vm.CurrentDeviceID.ToString()).Result;
                     SetNodeValue(Node3, _vm.SpeakerInfoValueDTP.SpeakerTreble);
-                    _vm._log!.Info($"[SpeakerAudioPresetRightView] SpeakerTreble SetNodeValue ... Treble {_vm.SpeakerInfoValueDTP!.SpeakerTreble.ToString()}");
+                    _vm._log.Info($"[SpeakerAudioPresetRightView] SpeakerTreble SetNodeValue ... Treble {_vm.SpeakerInfoValueDTP.SpeakerTreble.ToString()}");
                 }
             }
             _vm.CheckPresetsUI();
@@ -117,7 +122,7 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
         {
             if (value < -2 || value > 2)
             {
-                _vm._log!.Info($"[SpeakerAudioPresetRightView] SetNodeValue ...... Value must be between 2 and -2");
+                _vm._log.Info($"[SpeakerAudioPresetRightView] SetNodeValue ...... Value must be between 2 and -2");
                 return;
             }
 
@@ -147,18 +152,21 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
             isDragging = true;
             currentNode = sender as Image;
             clickPosition = e.GetPosition(EqualizerCanvas);
-            currentNode.CaptureMouse();
+            currentNode?.CaptureMouse();
 
             // 儲存初始位置
             //initialPositionNode1 = new Point(Canvas.GetLeft(Node1), Canvas.GetTop(Node1));
             //initialPositionNode2 = new Point(Canvas.GetLeft(Node2), Canvas.GetTop(Node2));
             //initialPositionNode3 = new Point(Canvas.GetLeft(Node3), Canvas.GetTop(Node3));
 
-            // 更換選取後的圖片
-            currentNode.Source = new BitmapImage(new Uri("pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_whitedot.png"));
+            if (currentNode != null)
+            {
+                // 更換選取後的圖片
+                currentNode.Source = new BitmapImage(new Uri("pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_whitedot.png"));
 
-            // 顯示數值
-            ShowNodeValue(currentNode, true);
+                // 顯示數值
+                ShowNodeValue(currentNode, true);
+            }
         }
 
         /// <summary>
@@ -204,20 +212,20 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
                 switch (currentNode.Name)
                 {
                     case "Node1":
-                        _vm._log!.Info($"[SpeakerAudioPresetRightView] SetBassAsync ...... {Node1Text.Text}");
-                        _vm._deviceManager.SetBassAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node1Text.Text));
+                        _vm._log.Info($"[SpeakerAudioPresetRightView] SetBassAsync ...... {Node1Text.Text}");
+                        _vm._deviceManager.SetBassAsync(_vm.CurrentDeviceInfo?.ID.ToString(), int.Parse(Node1Text.Text));
                         _vm.SpeakerInfoValueDTP.SpeakerBass = int.Parse(Node1Text.Text);
                         break;
 
                     case "Node2":
-                        _vm._log!.Info($"[SpeakerAudioPresetRightView] SetMidRangeAsync ...... {Node2Text.Text}");
-                        _vm._deviceManager.SetMidRangeAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node2Text.Text));
+                        _vm._log.Info($"[SpeakerAudioPresetRightView] SetMidRangeAsync ...... {Node2Text.Text}");
+                        _vm._deviceManager.SetMidRangeAsync(_vm.CurrentDeviceInfo?.ID.ToString(), int.Parse(Node2Text.Text));
                         _vm.SpeakerInfoValueDTP.SpeakerMidRange = int.Parse(Node2Text.Text);
                         break;
 
                     case "Node3":
-                        _vm._log!.Info($"[SpeakerAudioPresetRightView] SetTrebleAsync ...... {Node3Text.Text}");
-                        _vm._deviceManager.SetTrebleAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node3Text.Text));
+                        _vm._log.Info($"[SpeakerAudioPresetRightView] SetTrebleAsync ...... {Node3Text.Text}");
+                        _vm._deviceManager.SetTrebleAsync(_vm.CurrentDeviceInfo?.ID.ToString(), int.Parse(Node3Text.Text));
                         _vm.SpeakerInfoValueDTP.SpeakerTreble = int.Parse(Node3Text.Text);
                         break;
                 }

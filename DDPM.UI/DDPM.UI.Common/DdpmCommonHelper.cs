@@ -52,6 +52,9 @@ namespace DDPM.UI.Common
             return null;
         }
 
+        //reload hotkey data if jump from USB KVM hotkey page
+        public static bool isJumpFromUsbKvm { get; set; } = false;
+
         //reload inputsourece name if renamed
         public static bool bInputSourceRenamed { get; set; }
 
@@ -461,7 +464,8 @@ namespace DDPM.UI.Common
                         default:
                             SwitchToDarkMode();
                             break;
-                    };
+                    }
+                    ;
                     resourceManager.SwapDarkAndLightThemes();
                     resourceManager.StageResources();
                     resourceManager.CommitResources();
@@ -585,7 +589,7 @@ namespace DDPM.UI.Common
             using (FileStream fs = new FileStream(pathName, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 pngEnc.Save(fs);
-            }                      
+            }
             return true;
         }
 
@@ -1729,7 +1733,7 @@ namespace DDPM.UI.Common
 
         public static void Set_GlobalSettings(GlobalSettingsType property, bool data)
         {
-            if(DeviceManagerSA == null)
+            if (DeviceManagerSA == null)
             {
                 WriteUILog($"[Set_GlobalSettings] DeviceManagerSA is null");
                 return;
