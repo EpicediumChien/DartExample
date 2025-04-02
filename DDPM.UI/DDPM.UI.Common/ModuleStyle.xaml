@@ -28,7 +28,7 @@
     <!-- #endregion FakeTransparent: When you need a transparent color and need can response mouse click -->
     <SolidColorBrush x:Key="DefaultTheme_TxtColor" Color="#FFFFFF" />
     <SolidColorBrush x:Key="DefaultTheme_ProcessBarTxtColor" Color="#A4B8CD" />
-    <SolidColorBrush x:Key="DefaultTheme_BdBkColor" Color="#FF132F54" />
+    <SolidColorBrush x:Key="DefaultTheme_BdBkColor" Color="#99193457" />
     <SolidColorBrush x:Key="DefaultTheme_BdSolidBkColor" Color="#FF132F54" />
     <SolidColorBrush x:Key="DefaultTheme_BdBdColor" Color="#132F54" />
     <SolidColorBrush x:Key="DefaultTheme_BdSolidBdColor" Color="#1B385F" />
