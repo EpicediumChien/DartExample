@@ -313,10 +313,10 @@ namespace VcpCore.Plugins
             {
                 await Task.Run(() => InitializeMonitorsList(true, token), CancellationToken.None).ConfigureAwait(false);
 
-                if (token.IsCancellationRequested)
-                    _logs.DebugMsg("[VcpCorePlugin] ReGetTask finished faster than CancelStatusCheck");
+                if (!token.IsCancellationRequested)
+                    _logs.DebugMsg("[VcpCorePlugin] ReGetTask finished faster than Cancel");
                 else
-                    _logs.DebugMsg("[VcpCorePlugin] CancelStatusCheck finished faster than ReGetTask");
+                    _logs.DebugMsg("[VcpCorePlugin] Cancel finished faster than ReGetTask");
 
                 _logs.DebugMsg("[VcpCorePlugin] Re_GetMonitors() _AllInfoMonitors_Mix.Count is " + _AllInfoMonitors_Mix.Count);
 
