@@ -18,6 +18,7 @@ namespace VcpCore.Common
         public string ServiceTag { get; set; } = string.Empty;
         public string SerialNumber { get; set; } = string.Empty;
         public string Edid { get; set; } = string.Empty;
+        public string Instance { get; set; } = string.Empty;
 
         public override bool Equals(object obj)
         {
@@ -42,26 +43,28 @@ namespace VcpCore.Common
                 bool b11 = (ServiceTag == other.ServiceTag);
                 bool b12 = (SerialNumber == other.SerialNumber);
                 bool b13 = (Edid == other.Edid);
+                bool b14 = (Instance == other.Instance);
 
-                return (b0 && b1 && b2 && b3 && b4 && b5 && b6 && b7 && b8 && b9 && b10 && b11 && b12 && b13);
+                return (b0 && b1 && b2 && b3 && b4 && b5 && b6 && b7 && b8 && b9 && b10 && b11 && b12 && b13 && b14);
             }
             else
                 return b0;
 
-            //return other is not null &&
-            //       ManufactureID == other.ManufactureID &&
-            //       PID == other.PID &&
-            //       VendorID == other.VendorID &&
-            //       Year == other.Year &&
-            //       Month == other.Month &&
-            //       Week == other.Week &&
-            //       ModelName == other.ModelName &&
-            //       EdidVersion == other.EdidVersion &&
-            //       VideoInputType == other.VideoInputType &&
-            //       Size == other.Size &&
-            //       ServiceTag == other.ServiceTag &&
-            //       SerialNumber == other.SerialNumber &&
-            //       Edid == other.Edid;
+            //return (other is not null) &&
+            //       (ManufactureID == other.ManufactureID) &&
+            //       (PID == other.PID) &&
+            //       (VendorID == other.VendorID) &&
+            //       (Year == other.Year) &&
+            //       (Month == other.Month) &&
+            //       (Week == other.Week) &&
+            //       (ModelName == other.ModelName) &&
+            //       (EdidVersion == other.EdidVersion) &&
+            //       (VideoInputType == other.VideoInputType) &&
+            //       (Size == other.Size) &&
+            //       (ServiceTag == other.ServiceTag) &&
+            //       (SerialNumber == other.SerialNumber) &&
+            //       (Edid == other.Edid) &&
+            //       (Instance == other.Instance);
         }
 
         //If override Equals, need to implement GetHashCode also
@@ -82,6 +85,7 @@ namespace VcpCore.Common
                 ServiceTag,
                 SerialNumber,
                 Edid,
+                Instance,
             }.GetHashCode();
         }
     }
