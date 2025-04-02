@@ -111,10 +111,10 @@ namespace DDPM.SA.Common.Settings
         /// <returns></returns>
         public static bool IsEAInfoWindowVisible()
         {
-            //return 1 == DevSettings.ReadInt("DDPM.SA.EAPlugin.InfoWindow.IsVisible");
+            return 1 == DevSettings.ReadInt("DDPM.SA.EAPlugin.InfoWindow.IsVisible");
 
             //Derek for Debug to show info window, release should use above code
-            return 0 == DevSettings.ReadInt("DDPM.SA.EAPlugin.InfoWindow.IsVisible");
+            //return 0 == DevSettings.ReadInt("DDPM.SA.EAPlugin.InfoWindow.IsVisible");
         }
 
         /// <summary>
