@@ -296,6 +296,7 @@ namespace DDPM.UI.Module.Kvm
             if (DdpmCommonHelper.ModuleOwner != null)
             {
                 DdpmCommonHelper.ModuleOwner.CloseFullView();
+                DdpmCommonHelper.isJumpFromUsbKvm = true;
                 DdpmCommonHelper.ModuleOwner.ShowSpecificModule(Constants.GroupName_InputSource, Constants.ModuleName_DisplayHotkeys);
             }
         }

@@ -28,7 +28,7 @@
     <!-- #endregion FakeTransparent: When you need a transparent color and need can response mouse click -->
     <SolidColorBrush x:Key="DefaultTheme_TxtColor" Color="#FFFFFF" />
     <SolidColorBrush x:Key="DefaultTheme_ProcessBarTxtColor" Color="#A4B8CD" />
-    <SolidColorBrush x:Key="DefaultTheme_BdBkColor" Color="#FF132F54" />
+    <SolidColorBrush x:Key="DefaultTheme_BdBkColor" Color="#99132F54" />
     <SolidColorBrush x:Key="DefaultTheme_BdSolidBkColor" Color="#FF132F54" />
     <SolidColorBrush x:Key="DefaultTheme_BdBdColor" Color="#132F54" />
     <SolidColorBrush x:Key="DefaultTheme_BdSolidBdColor" Color="#1B385F" />
@@ -695,7 +695,8 @@
     <SolidColorBrush x:Key="RightView_Combo_TxtColor" Color="#F5F6F7" />
     <SolidColorBrush x:Key="RightView_Combo_BkColor" Color="#293B4D" />
     <SolidColorBrush x:Key="RightView_Combo_BdColor" Color="#40586D" />
-    <SolidColorBrush x:Key="RightBaseBkColor" Color="#99193457" />
+    <SolidColorBrush x:Key="RightBaseBkColor" Color="#FF0D2443" />
+    <SolidColorBrush x:Key="RightBorderBkColor" Color="#80092C56" />
 
     <SolidColorBrush x:Key="RightView_PercentageTextColor" Color="#A4B8CD" />
     <SolidColorBrush x:Key="PercentageTextColor" Color="#A4B8CD" />

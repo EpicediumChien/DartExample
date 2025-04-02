@@ -37,7 +37,7 @@
             <StackPanel Orientation="Vertical">
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="18,22,0,0">
                 <UXControls:UXTextBlock Name="txtTipSensitivity" Style="{StaticResource ModuleItemStyle}" />
-                <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
+                <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Width="16" Height="16">
                   <Image.ToolTip>
                     <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                       <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
@@ -58,7 +58,7 @@
               </StackPanel>
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="18,25,0,0">
                 <UXControls:UXTextBlock Name="txtTiltSensitivity" Style="{StaticResource ModuleItemStyle}" />
-                <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
+                <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Width="16" Height="16">
                   <Image.ToolTip>
                     <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                       <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
@@ -85,7 +85,7 @@
             <StackPanel Orientation="Vertical">
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="18,25,0,0">
                 <UXControls:UXTextBlock Name="txtPairWithTile" Style="{StaticResource ModuleItemStyle}" />
-                <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
+                <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Width="16" Height="16">
                   <Image.ToolTip>
                     <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                       <Border Style="{StaticResource Tooltip_OutterBorderStyle}">

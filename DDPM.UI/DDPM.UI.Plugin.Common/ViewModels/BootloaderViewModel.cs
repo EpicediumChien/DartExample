@@ -94,7 +94,14 @@ namespace DDPM.UI.Plugin.ViewModels
                     }
                     if (di.ID == CurrentDeviceID)
                     {
-                        CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
+                        if (CurrentDeviceInfo != null)
+                        {
+                            CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
+                        }
+                        else
+                        {
+                            _log?.Info($"[BootloaderViewModel] HandleNotification CurrentDeviceInfo is null ...");
+                        }
 
                         //GenerateInfo();
                     }
