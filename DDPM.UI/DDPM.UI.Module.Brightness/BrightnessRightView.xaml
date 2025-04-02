@@ -336,7 +336,6 @@
                                             Width="16"
                                             Height="16"
                                             Margin="4,0"
-                                            Cursor="Hand"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                             Stretch="Uniform">
                                             <Image.ToolTip>
@@ -543,7 +542,6 @@
                                             Width="16"
                                             Height="16"
                                             Margin="4,0"
-                                            Cursor="Hand"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                             Stretch="Uniform">
                                             <Image.ToolTip>
@@ -2048,7 +2046,6 @@
                                             Width="16"
                                             Height="16"
                                             Margin="4,0"
-                                            Cursor="Hand"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                             Stretch="Uniform">
                                             <Image.ToolTip>
@@ -2727,7 +2724,6 @@
                                             Width="16"
                                             Height="16"
                                             Margin="4,0"
-                                            Cursor="Hand"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                             Stretch="Uniform">
                                             <Image.ToolTip>
