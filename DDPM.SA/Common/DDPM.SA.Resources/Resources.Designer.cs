@@ -1321,7 +1321,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [XXXXXX] has a firmware update in progress. Availability may be intermittent. Do not disconnect the device during the update. .
+        ///   Looks up a localized string similar to [XXXXXX] may be intermittently available. Do not disconnect the device during the update..
         /// </summary>
         internal static string Update_in_progress_body {
             get {

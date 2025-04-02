@@ -126,7 +126,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         string exportpath = path + "\\" + model + ".json";
                         string displayProfilePath = $"{localAppDataPath}\\Dell Display and Peripheral Manager\\Display\\{model}.json";
                         // try fix cannot devManagerSA didn't initialize issue
-                        if(devManagerSA == null)
+                        if (devManagerSA == null)
                             devManagerSA = _baseDeviceManagerSA;
                         if (devManagerSA != null)
                             isSameModelFlag = devManagerSA.ReadSameModelAutoApplySameModelFlag(displayProfilePath, model).Result;
@@ -137,60 +137,61 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         FileInfo fi = new FileInfo(path);
                         Console.WriteLine(fi.Exists); // 同樣是 false 時，更可能是權限或磁碟問題
 #endif
-                        if (File.Exists(exportpath))
+                        // ReadImportSettingsFile will check file existence
+                        //if (File.Exists(exportpath))
+                        //{
+                        DDPMImpExpSettings dDPMImpExpSettings = new DDPMImpExpSettings();
+                        dDPMImpExpSettings = settingsManager.ReadImportSettingsFile(exportpath).Result;
+                        if (dDPMImpExpSettings != null)
                         {
                             WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Checked exported file exists!");
-                            DDPMImpExpSettings dDPMImpExpSettings = new DDPMImpExpSettings();
-                            dDPMImpExpSettings = settingsManager.ReadImportSettingsFile(exportpath).Result;
-                            if (dDPMImpExpSettings != null)
+                            if (dDPMImpExpSettings.MonitorSettings != null
+                                && dDPMImpExpSettings.MonitorSettings.ServiceTag != serviceTag)
                             {
-                                if (dDPMImpExpSettings.MonitorSettings != null
-                                    && dDPMImpExpSettings.MonitorSettings.ServiceTag != serviceTag)
+                                WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Checked import monitor serviceTag is different.");
+                                if (isSameModelFlag)
                                 {
-                                    WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Checked import monitor serviceTag is different.");
-                                    if (isSameModelFlag)
+                                    DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
+                                    if ((int)settingsManagerDev.DisplayImportSettings(exportpath, true, serviceTag, out ImpExpSettings).Result > 0)
                                     {
-                                        DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
-                                        if ((int)settingsManagerDev.DisplayImportSettings(exportpath, true, serviceTag, out ImpExpSettings).Result > 0)
-                                        {
-                                            WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is success");
-                                        }
-                                        else
-                                        {
-                                            WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is fail");
-                                        }
+                                        WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is success");
                                     }
                                     else
                                     {
-                                        WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] isSameModelFlag is false.");
-                                        desc = desc.Replace("%1", model);
-                                        DisplayImportToast(
-                                            new DisplayWindowsToast()
-                                            {
-                                                Title = LangHelper.Instance["App_Name"], //string table: App_Name
-                                                Description = desc,
-                                                Model = model,
-                                                ServiceTag = serviceTag,
-                                                left_btn = LangHelper.Instance["Yes"],        //string table: Yes
-                                                right_btn = LangHelper.Instance["No"]       //string table: No
-                                            }
-                                        );
+                                        WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is fail");
                                     }
                                 }
                                 else
                                 {
-                                    WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] dDPMImpExpSettings.MonitorSettings is null.");
+                                    WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] isSameModelFlag is false.");
+                                    desc = desc.Replace("%1", model);
+                                    DisplayImportToast(
+                                        new DisplayWindowsToast()
+                                        {
+                                            Title = LangHelper.Instance["App_Name"], //string table: App_Name
+                                            Description = desc,
+                                            Model = model,
+                                            ServiceTag = serviceTag,
+                                            left_btn = LangHelper.Instance["Yes"],        //string table: Yes
+                                            right_btn = LangHelper.Instance["No"]       //string table: No
+                                        }
+                                    );
                                 }
                             }
                             else
                             {
-                                WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] dDPMImpExpSettings is null.");
+                                WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] dDPMImpExpSettings.MonitorSettings is null.");
                             }
                         }
                         else
                         {
-                            WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] exportpath file not found.");
+                            WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] dDPMImpExpSettings is null.");
                         }
+                        //}
+                        //else
+                        //{
+                        //    WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] exportpath file not found.");
+                        //}
                     }
                 }
                 else
@@ -410,7 +411,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (alsSynchronizeList.Count == 0)
                 {
                     alsSynchronizeList = _displayManagerPlugin.GetAllExistAlsConfig().Result;
-                }              
+                }
                 //It is mean over 2 monitors.
                 else if (alsSynchronizeList.Count == 2)//Test case for 2 monitors
                 {
@@ -684,7 +685,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 }
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 WriteLog($"[DisplayDeviceHelper] CheckALSOnOff Exception: {e.Message}");
             }

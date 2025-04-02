@@ -132,10 +132,9 @@ namespace DDPM.UI.Plugin.Common
                     var txt = e.changedProperty.Substring(33);
                     if (txt.Length > 30)
                     {
-                        Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
-                        _ = task1.Result;
-                        Task<string> task2 = DdpmCommonHelper.DeviceManagerSA!.KeyCaptureData();
-                        var keystroke = task2.Result;
+                        _ = DdpmCommonHelper.DeviceManagerSA?.FinishKeyCapturePen();
+                        Task<string>? task2 = DdpmCommonHelper.DeviceManagerSA?.KeyCaptureData();
+                        var keystroke = task2?.Result ?? "";
                     }
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -167,9 +166,9 @@ namespace DDPM.UI.Plugin.Common
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
                     if (pType == "KB")
-                        _ = DdpmCommonHelper.DeviceManagerSA!.StopKeyboardKeystrokeRecording(guid).Result;
+                        _ = DdpmCommonHelper.DeviceManagerSA?.StopKeyboardKeystrokeRecording(guid);
                     else
-                        _ = DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(guid).Result;
+                        _ = DdpmCommonHelper.DeviceManagerSA?.StopMouseKeystrokeRecording(guid);
                 }
             }
 
@@ -224,11 +223,14 @@ namespace DDPM.UI.Plugin.Common
 
         private void Keystroke_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            if (DdpmCommonHelper.DeviceManagerSA == null)
+                return;
+
             string ketStroke;
             if (pType == "KB")
-                ketStroke = DdpmCommonHelper.DeviceManagerSA!.GetKeyboardKeystrokeDisplayData(guid).Result;
+                ketStroke = DdpmCommonHelper.DeviceManagerSA.GetKeyboardKeystrokeDisplayData(guid).Result;
             else
-                ketStroke = DdpmCommonHelper.DeviceManagerSA!.GetMouseKeystrokeDisplayData(guid).Result;
+                ketStroke = DdpmCommonHelper.DeviceManagerSA.GetMouseKeystrokeDisplayData(guid).Result;
             txtKeystroke.Text = ketStroke;
             e.Handled = true;
             return;
@@ -345,17 +347,22 @@ namespace DDPM.UI.Plugin.Common
 
         private void StopPenCapture()
         {
-            Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
-            _ = task1.Result;
-            Task<string> task2 = DdpmCommonHelper.DeviceManagerSA!.KeyCaptureData();
-            var keystroke = task2.Result;
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+            if (DdpmCommonHelper.DeviceManagerSA == null)
+                return;
+
+            _ = DdpmCommonHelper.DeviceManagerSA.FinishKeyCapturePen();
+            Task<string> task = DdpmCommonHelper.DeviceManagerSA.KeyCaptureData();
+            var keystroke = task.Result;
+            DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
         }
         private static void RestartPenCapture()
         {
-            Task<bool> task = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
+            if (DdpmCommonHelper.DeviceManagerSA == null)
+                return;
+
+            Task<bool> task = DdpmCommonHelper.DeviceManagerSA.FinishKeyCapturePen();
             _ = task.Result;
-            task = DdpmCommonHelper.DeviceManagerSA!.StartKeyCapturePen();
+            task = DdpmCommonHelper.DeviceManagerSA.StartKeyCapturePen();
             _ = task.Result;
         }
 
@@ -376,9 +383,9 @@ namespace DDPM.UI.Plugin.Common
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
                     if (pType == "KB")
-                        _ = DdpmCommonHelper.DeviceManagerSA!.StopKeyboardKeystrokeRecording(guid).Result;
+                        DdpmCommonHelper.DeviceManagerSA?.StopKeyboardKeystrokeRecording(guid);
                     else if (pType == "MOUSE")
-                        _ = DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(guid).Result;
+                        DdpmCommonHelper.DeviceManagerSA?.StopMouseKeystrokeRecording(guid);
                 }
             }
         }

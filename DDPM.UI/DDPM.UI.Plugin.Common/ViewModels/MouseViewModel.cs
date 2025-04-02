@@ -66,7 +66,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 _selectedApp = value;
-                DdpmCommonHelper.DeviceManagerSA!.SetCurrentSelectedAppSpecificProfile(CurrentDeviceID.ToString(), AppGuids[value]);
+                DdpmCommonHelper.DeviceManagerSA?.SetCurrentSelectedAppSpecificProfile(CurrentDeviceID.ToString(), AppGuids[value]);
             }
         }
 
@@ -77,7 +77,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public new event PropertyChangedEventHandler? PropertyChanged;
 
-        public MouseViewModel(IConsole console, ILog log) : base(console, log, DdpmCommonHelper.DeviceManagerSA!)
+        public MouseViewModel(IConsole console, ILog log) : base(console, log, DdpmCommonHelper.DeviceManagerSA)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
@@ -177,7 +177,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 if (NeedSetting)
                 {
-                    DdpmCommonHelper.DeviceManagerSA!.SetReportRate(CurrentDeviceInfo!.ID.ToString(), hz);
+                    DdpmCommonHelper.DeviceManagerSA?.SetReportRate(CurrentDeviceInfo?.ID.ToString() ?? "", hz);
                 }
             }
             catch (Exception ex)
@@ -244,7 +244,7 @@ namespace DDPM.UI.Plugin.ViewModels
             if (!IsCopilotEnabled)
                 RemoveCopilotAction();
 
-            IsTouchScrollSensitivitySupported = CurrentDeviceInfo!.IsTouchScrollSensitivitySupported;
+            IsTouchScrollSensitivitySupported = CurrentDeviceInfo?.IsTouchScrollSensitivitySupported ?? false;
             //IsTouchScrollSensitivitySupported = true;
             if (IsTouchScrollSensitivitySupported)
             {
@@ -257,7 +257,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 else
                 {
-                    _touchScrollSensitivityLevel = DdpmCommonHelper.DeviceManagerSA.GetTouchScrollSensitivityLevel(CurrentDeviceInfo!.ID.ToString()).Result;
+                    _touchScrollSensitivityLevel = DdpmCommonHelper.DeviceManagerSA.GetTouchScrollSensitivityLevel(CurrentDeviceInfo?.ID.ToString() ?? "").Result;
                     if (_touchScrollSensitivityLevel == -1)
                     {
                         DdpmCommonHelper.WriteUILog("Get TouchScrollSensitivityLevel fail!");
@@ -618,8 +618,8 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void SetTouchScrollSensitivityLevel()
         {
-            //DdpmCommonHelper.DeviceManagerSA!.SetTouchScrollSensitivityLevel(4 - _touchScrollSensitivityLevel, CurrentDeviceInfo!.ID);
-            DdpmCommonHelper.DeviceManagerSA!.SetTouchScrollSensitivityLevel(CurrentDeviceInfo!.ID.ToString(), 4 - _touchScrollSensitivityLevel);
+            //DdpmCommonHelper.DeviceManagerSA?.SetTouchScrollSensitivityLevel(4 - _touchScrollSensitivityLevel, CurrentDeviceInfo.ID);
+            DdpmCommonHelper.DeviceManagerSA?.SetTouchScrollSensitivityLevel(CurrentDeviceInfo?.ID.ToString() ?? "", 4 - _touchScrollSensitivityLevel);
         }
 
         public bool IsTouchScrollSensitivitySupported { get; set; }
@@ -634,19 +634,19 @@ namespace DDPM.UI.Plugin.ViewModels
                     _primaryButtonIndex = value;
                     OnPropertyChanged();
                     //MouseButton button = _primaryButtonIndex == 0 ? MouseButton.Left : MouseButton.Right;
-                    //DdpmCommonHelper.DeviceManagerSA!.SetPrimaryMouseButton(button, CurrentDeviceInfo!.ID);
+                    //DdpmCommonHelper.DeviceManagerSA?.SetPrimaryMouseButton(button, CurrentDeviceInfo.ID);
                     CallUser32dll.SetPrimaryButtonToLeft(_primaryButtonIndex == 0);
                 }
             }
         }
-        public bool IsDPIValueVisible { get => CurrentDeviceInfo!.IsDPILevelSupported || CurrentDeviceInfo.IsDPIValueSupported; }
+        public bool IsDPIValueVisible { get => (CurrentDeviceInfo?.IsDPILevelSupported ?? false) || (CurrentDeviceInfo?.IsDPIValueSupported ?? false); }
         public string DPIMinText
         {
             get
             {
-                if (CurrentDeviceInfo!.IsDPIValueSupported)
+                if (CurrentDeviceInfo?.IsDPIValueSupported ?? false)
                     return CurrentDeviceInfo.DpiMin.ToString();
-                else if (CurrentDeviceInfo.IsDPILevelSupported)
+                else if (CurrentDeviceInfo?.IsDPILevelSupported ?? false)
                     return CurrentDeviceInfo.DpiLevelValues[0];
                 else
                     return "0";
@@ -656,9 +656,9 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if (CurrentDeviceInfo!.IsDPIValueSupported)
+                if (CurrentDeviceInfo?.IsDPIValueSupported ?? false)
                     return CurrentDeviceInfo.DpiMax.ToString();
-                else if (CurrentDeviceInfo.IsDPILevelSupported)
+                else if (CurrentDeviceInfo?.IsDPILevelSupported ?? false)
                     return CurrentDeviceInfo.DpiLevelValues[CurrentDeviceInfo.DpiLevelValues.Length - 1];
                 else
                     return "0";
@@ -668,9 +668,9 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if (CurrentDeviceInfo!.IsDPIValueSupported)
+                if (CurrentDeviceInfo?.IsDPIValueSupported ?? false)
                     return CurrentDeviceInfo.DpiMin;
-                else if (CurrentDeviceInfo.IsDPILevelSupported)
+                else if (CurrentDeviceInfo?.IsDPILevelSupported ?? false)
                     return 1;
                 else
                     return 0;
@@ -680,9 +680,9 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if (CurrentDeviceInfo!.IsDPIValueSupported)
+                if (CurrentDeviceInfo?.IsDPIValueSupported ?? false)
                     return CurrentDeviceInfo.DpiMax;
-                else if (CurrentDeviceInfo.IsDPILevelSupported)
+                else if (CurrentDeviceInfo?.IsDPILevelSupported ?? false)
                     return CurrentDeviceInfo.DpiLevelValues.Length;
                 else
                     return 0;
@@ -692,7 +692,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if (CurrentDeviceInfo!.IsDPIValueSupported)
+                if (CurrentDeviceInfo?.IsDPIValueSupported ?? false)
                     return CurrentDeviceInfo.DpiDelta;
                 else
                     return 1;
@@ -707,7 +707,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 try
                 {
-                    DPIValueText = CurrentDeviceInfo!.IsDPIValueSupported ? value.ToString() : value < CurrentDeviceInfo.DpiLevelValues.Length ? CurrentDeviceInfo.DpiLevelValues[value - 1] : "";
+                    DPIValueText = CurrentDeviceInfo?.IsDPIValueSupported ?? false ? value.ToString() : value < (CurrentDeviceInfo?.DpiLevelValues.Length ?? 0) ? (CurrentDeviceInfo?.DpiLevelValues[value - 1] ?? "") : "";
                     DPITextMargin = GetDpiTextMargin(value);
                     if (value == DPIMax || value == DPIMin || value == -1)
                     {
@@ -776,12 +776,12 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             try
             {
-                if (_DPIValue != int.Parse(CurrentDeviceInfo!.DpiValue) && !isDpiChangePanding)
+                if (_DPIValue != int.Parse(CurrentDeviceInfo?.DpiValue ?? "0") && !isDpiChangePanding)
                 {
-                    if (CurrentDeviceInfo.IsDPIValueSupported)
-                        DdpmCommonHelper.DeviceManagerSA!.SetDPIValue(_DPIValue, CurrentDeviceInfo.ID);
-                    if (CurrentDeviceInfo.IsDPILevelSupported)
-                        DdpmCommonHelper.DeviceManagerSA!.SetDPILevel(_DPIValue, CurrentDeviceInfo.ID);
+                    if (CurrentDeviceInfo?.IsDPIValueSupported ?? false)
+                        DdpmCommonHelper.DeviceManagerSA?.SetDPIValue(_DPIValue, CurrentDeviceInfo.ID);
+                    if (CurrentDeviceInfo?.IsDPILevelSupported ?? false)
+                        DdpmCommonHelper.DeviceManagerSA?.SetDPILevel(_DPIValue, CurrentDeviceInfo.ID);
                 }
             }
             catch (Exception ex)
@@ -808,7 +808,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (DdpmCommonHelper.DeviceManagerSA == null || !DdpmCommonHelper.DeviceManagerSA.RestoreToDefaultMouse(CurrentDeviceID.ToString(), false).Result)
                     return false;
-                DdpmCommonHelper.DeviceManagerSA!.DeleteMouseAllAssignedActions(CurrentDeviceID.ToString());
+                DdpmCommonHelper.DeviceManagerSA?.DeleteMouseAllAssignedActions(CurrentDeviceID.ToString());
                 foreach (var btn in MouseAction.ButtonActions)
                 {
                     if (SelectedApp == "AllApp")
@@ -1096,7 +1096,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     int pkId = (int)(MouseButtonName)Enum.Parse(typeof(MouseButtonName), SelectedButton, true);
                     if (actionID == -1)
                     {
-                        DdpmCommonHelper.DeviceManagerSA!.DeleteMouseAssignedAction(CurrentDeviceID.ToString(), pkId);
+                        DdpmCommonHelper.DeviceManagerSA?.DeleteMouseAssignedAction(CurrentDeviceID.ToString(), pkId);
                     }
                     else
                     {
@@ -1109,16 +1109,16 @@ namespace DDPM.UI.Plugin.ViewModels
                         if (string.IsNullOrEmpty(parameter))
                         {
                             byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
-                            DdpmCommonHelper.DeviceManagerSA!.SetMouseAction(CurrentDeviceID.ToString(), newValue);
+                            DdpmCommonHelper.DeviceManagerSA?.SetMouseAction(CurrentDeviceID.ToString(), newValue);
                         }
                         else
                         {
                             jobj.Add("Command", parameter);
                             byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
                             if (actionID == 14)
-                                DdpmCommonHelper.DeviceManagerSA!.SetMouseAssignKeystrokeAction(CurrentDeviceID.ToString(), newValue);
+                                DdpmCommonHelper.DeviceManagerSA?.SetMouseAssignKeystrokeAction(CurrentDeviceID.ToString(), newValue);
                             else
-                                DdpmCommonHelper.DeviceManagerSA!.SetMouseAssignDialogAction(CurrentDeviceID.ToString(), newValue);
+                                DdpmCommonHelper.DeviceManagerSA?.SetMouseAssignDialogAction(CurrentDeviceID.ToString(), newValue);
                         }
                     }
                     if (RefreshImage)

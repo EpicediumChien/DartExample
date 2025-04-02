@@ -349,7 +349,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         ~LaunchView()
         {
-            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify -= DeviceManagerSA_UIUpdateNotify;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+                DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify -= DeviceManagerSA_UIUpdateNotify;
         }
 
         //private void DeviceManagerSA_DeviceChanged(object? sender, DeviceChangedEventArgs e)
@@ -389,10 +390,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         bool noPresenceFunction = false;
 
-        bool is_WindwosHelloSupport = false;// DdpmCommonHelper.DeviceManagerSA!.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+        bool is_WindwosHelloSupport = false;// DdpmCommonHelper.DeviceManagerSA?.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
 
         //api回傳camera是否支援ESI
-        bool is_EsiSupport = false;// DdpmCommonHelper.DeviceManagerSA!.GetIsESISupported(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+        bool is_EsiSupport = false;// DdpmCommonHelper.DeviceManagerSA?.GetIsESISupported(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
 
         //檢查是否為dell7 camera做程式分支處理
         bool is_camera_dell7 = false;// check_camera_dell7();
@@ -420,7 +421,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB","WB7022"
             };
 
-            string model = _vm.CurrentDeviceInfo!.ModelNumber;
+            string? model = _vm.CurrentDeviceInfo?.ModelNumber;
 
             if (model == null)
             {
@@ -433,7 +434,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             DdpmCommonHelper.WriteUILog($"GetIsAllSupportedResolutionsFound Before {AllSupportedResolutions}");
             //check usb 2.0 / 3.0
-            AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+            AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA?.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo?.ID.ToString() ?? "").Result ?? false;
             DdpmCommonHelper.WriteUILog($"GetIsAllSupportedResolutionsFound After {AllSupportedResolutions}");
             //api回傳camera硬體是否支援windows hello
 
@@ -454,12 +455,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //}
             //SUT 指電腦本身 DUT 外接Cam
             //
-            is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+            is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA?.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo?.ID.ToString() ?? "").Result ?? false;
 
             //Windows.Devices.Sensors.HumanPresenceSensor.GetDefaultAsync()
 
             //api回傳camera是否支援ESI
-            is_EsiSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsESISupported(_vm.CurrentDeviceInfo!.ID.ToString()).Result;//True UPD False MPS
+            is_EsiSupport = DdpmCommonHelper.DeviceManagerSA?.GetIsESISupported(_vm.CurrentDeviceInfo?.ID.ToString() ?? "").Result ?? false;//True UPD False MPS
 
             //檢查是否為dell7 camera做程式分支處理
             is_camera_dell7 = check_camera_dell7(model);
@@ -500,7 +501,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         }
         private void CheckTestCase()
         {
-            string model = _vm.CurrentDeviceInfo!.ModelNumber;
+            string model = _vm.CurrentDeviceInfo?.ModelNumber ?? "";
             noPresenceFunction = false;
             if ((is_camera_dell7 && model.ToUpper() != "U3223QZ") && !AllSupportedResolutions)
             {
@@ -780,7 +781,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB","WB7022"
             };
 
-            string model = _vm.CurrentDeviceInfo!.ModelNumber;
+            string model = _vm.CurrentDeviceInfo?.ModelNumber ?? "";
 
             if (model == null)
             {
@@ -1526,11 +1527,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 //Lock Functionality 9/7
                 //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Webcam]
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA!.ReloadAppConfigData().Result;
-                if (data != null && data.LockSettings != null && DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
+                if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    //RestoreLockIcon.Visibility = Visibility.Visible;
-                    //txtRestore.IsEnabled = false;
+                    DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                    if (data != null && data.LockSettings != null && DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
+                    {
+                        //RestoreLockIcon.Visibility = Visibility.Visible;
+                        //txtRestore.IsEnabled = false;
+                    }
                 }
             }));
         }
@@ -2093,7 +2097,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 CountdownText.Text = _countdownValue.ToString();
                 CountDownBox.Visibility = Visibility.Visible;
                 _timer.Start();
-                //DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.StartRecording);
+                //DdpmCommonHelper.DeviceManagerSA?.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.StartRecording);
             }
             else
             {
@@ -2422,7 +2426,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 var profileName = ((UXTextBlock)sender).Tag.ToString()!;
                 if (profileName != _vm.CurrentProfileName)
                 {
-                    //DdpmCommonHelper.DeviceManagerSA!.SetProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.ProfileIDs[profileName]);
+                    //DdpmCommonHelper.DeviceManagerSA?.SetProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.ProfileIDs[profileName]);
                     _vm.CurrentProfileName = profileName;
                     isProfilePropertyChanged = false;
 
@@ -2446,7 +2450,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     Preview();
 
                     //Derek 1212
-                    DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm.CurrentProfileName, false);
+                    DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile(_vm.CurrentProfileName, false);
                 }
                 btnPreset_Click(this, null);
             }
@@ -2562,7 +2566,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             try
             {
                 var profileName = ((Image)sender).Tag.ToString()!;
-                //DdpmCommonHelper.DeviceManagerSA!.DeleteProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.WebcamSettings.CustomProfiles[profileName].Id);
+                //DdpmCommonHelper.DeviceManagerSA.DeleteProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.WebcamSettings.CustomProfiles[profileName].Id);
                 if (_vm.WebcamSettings.CustomProfiles.ContainsKey(profileName))
                 {
                     _vm.WebcamSettings.CustomProfiles.Remove(profileName);
@@ -2580,7 +2584,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 btnPreset_Click(this, null);
 
                 //Derek 2025/01/18
-                DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm.CurrentProfileName, false);
+                DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile(_vm.CurrentProfileName, false);
             }
             catch (Exception ex)
             {
@@ -2674,42 +2678,42 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     switch (img.Tag.ToString())
                     {
                         case "L":
-                            if (_vm.CurrentProfile.Pan == _vm.CurrentDeviceInfo!.PanMin)
+                            if (_vm.CurrentProfile.Pan == _vm.CurrentDeviceInfo?.PanMin)
                                 return;
 
-                            value = _vm.CurrentProfile.Pan - _vm.CurrentDeviceInfo.PanSteppingDelta;
-                            if (value < _vm.CurrentDeviceInfo!.PanMin)
-                                value = _vm.CurrentDeviceInfo!.PanMin;
+                            value = _vm.CurrentProfile.Pan - _vm.CurrentDeviceInfo?.PanSteppingDelta ?? 1;
+                            if (value < _vm.CurrentDeviceInfo?.PanMin)
+                                value = _vm.CurrentDeviceInfo?.PanMin ?? 0;
 
                             _vm.SetPan(value);
                             break;
                         case "R":
-                            if (_vm.CurrentProfile.Pan == _vm.CurrentDeviceInfo!.PanMax)
+                            if (_vm.CurrentProfile.Pan == _vm.CurrentDeviceInfo?.PanMax)
                                 return;
 
-                            value = _vm.CurrentProfile.Pan + _vm.CurrentDeviceInfo.PanSteppingDelta;
-                            if (value > _vm.CurrentDeviceInfo!.PanMax)
-                                value = _vm.CurrentDeviceInfo!.PanMax;
+                            value = _vm.CurrentProfile.Pan + _vm.CurrentDeviceInfo?.PanSteppingDelta ?? 1;
+                            if (value > _vm.CurrentDeviceInfo?.PanMax)
+                                value = _vm.CurrentDeviceInfo?.PanMax ?? 0;
 
                             _vm.SetPan(value);
                             break;
                         case "T":
-                            if (_vm.CurrentProfile.Tilt == _vm.CurrentDeviceInfo!.TiltMax)
+                            if (_vm.CurrentProfile.Tilt == _vm.CurrentDeviceInfo?.TiltMax)
                                 return;
 
-                            value = _vm.CurrentProfile.Tilt + _vm.CurrentDeviceInfo.TiltSteppingDelta;
-                            if (value > _vm.CurrentDeviceInfo!.TiltMax)
-                                value = _vm.CurrentDeviceInfo!.TiltMax;
+                            value = _vm.CurrentProfile.Tilt + _vm.CurrentDeviceInfo?.TiltSteppingDelta ?? 1;
+                            if (value > _vm.CurrentDeviceInfo?.TiltMax)
+                                value = _vm.CurrentDeviceInfo?.TiltMax ?? 0;
 
                             _vm.SetTilt(value);
                             break;
                         case "D":
-                            if (_vm.CurrentProfile.Tilt == _vm.CurrentDeviceInfo!.TiltMin)
+                            if (_vm.CurrentProfile.Tilt == _vm.CurrentDeviceInfo?.TiltMin)
                                 return;
 
-                            value = _vm.CurrentProfile.Tilt - _vm.CurrentDeviceInfo.TiltSteppingDelta;
-                            if (value < _vm.CurrentDeviceInfo!.TiltMin)
-                                value = _vm.CurrentDeviceInfo!.TiltMin;
+                            value = _vm.CurrentProfile.Tilt - _vm.CurrentDeviceInfo?.TiltSteppingDelta ?? 1;
+                            if (value < _vm.CurrentDeviceInfo?.TiltMin)
+                                value = _vm.CurrentDeviceInfo?.TiltMin ?? 0;
 
                             _vm.SetTilt(value);
                             break;
@@ -2812,7 +2816,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             try
             {
                 var txt = txbName.Text.Trim();
-                //DdpmCommonHelper.DeviceManagerSA!.CreateCustomProfile(_vm.CurrentDeviceInfo!.ID.ToString(), $"Test {_vm.WebcamSettings.CustomProfiles.Count + 1}");
+                //DdpmCommonHelper.DeviceManagerSA?.CreateCustomProfile(_vm.CurrentDeviceInfo!.ID.ToString(), $"Test {_vm.WebcamSettings.CustomProfiles.Count + 1}");
                 _vm.CurrentProfile.Name = txt;
                 Dictionary<string, WebcamProfile> NewProfiles = new();
                 if (EditMode == "EDIT")
@@ -2858,7 +2862,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.TooltipVisibility = Visibility.Collapsed;
 
                 //Derek 2025/01/18
-                DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm.CurrentProfileName, false);
+                DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile(_vm.CurrentProfileName, false);
             }
             catch (Exception ex)
             {
