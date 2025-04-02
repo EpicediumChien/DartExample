@@ -5,6 +5,7 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Plugin.Common;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
@@ -2374,8 +2375,20 @@ namespace DDPM.UI.Module.Brightness
             if (!Start_ALSConfig.isPrimaryMonitorSync && CheckMonitorALSStatus())// user change non-Primary
             {
                 //PIMS-328260
-                string pop_string = Strings.BrightnessPageNotice1;//"This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?";
-                if (DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string, MyModule.GetRightView().Parent))
+                //string pop_string = Strings.BrightnessPageNotice1;//"This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?";
+                MessageModalDialog messageModalDialog;
+                Window mainWindow = System.Windows.Application.Current.MainWindow;
+                messageModalDialog = new(Strings.ImpExp_Warning, Strings.BrightnessPageNotice1, Strings.Continue, Strings.Cancel);
+                if (mainWindow != null)
+                {
+                    messageModalDialog.Owner = mainWindow;
+                    messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                    messageModalDialog.Top = mainWindow.Top + 300;
+                }
+
+                //PIMS-353731 change button text from "Yes"/"No" to "Continue"/"Cancel"
+                //if (DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string, MyModule.GetRightView().Parent))
+                if (messageModalDialog!= null && messageModalDialog.ShowDialog().Value == false)//false means left button is "continue"
                 {
                     _primaryMonitorSyncStatus = true;
                     Start_ALSConfig.isPrimaryMonitorSync = true;// onoff; //PIMS-328260
