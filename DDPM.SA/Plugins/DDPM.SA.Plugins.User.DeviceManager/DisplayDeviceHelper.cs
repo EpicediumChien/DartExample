@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Security;
 using System.Threading.Tasks;
 using VcpCore.Common;
 
@@ -133,65 +134,75 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         else
                             WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Error devManagerSA not initialized.");
                         WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] export path : " + exportpath);
-#if DEBUG
-                        FileInfo fi = new FileInfo(path);
-                        Console.WriteLine(fi.Exists); // 同樣是 false 時，更可能是權限或磁碟問題
-#endif
-                        // ReadImportSettingsFile will check file existence
-                        //if (File.Exists(exportpath))
-                        //{
-                        DDPMImpExpSettings dDPMImpExpSettings = new DDPMImpExpSettings();
-                        dDPMImpExpSettings = settingsManager.ReadImportSettingsFile(exportpath).Result;
-                        if (dDPMImpExpSettings != null)
+
+                        if (File.Exists(exportpath.Trim()))
                         {
-                            WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Checked exported file exists!");
-                            if (dDPMImpExpSettings.MonitorSettings != null
-                                && dDPMImpExpSettings.MonitorSettings.ServiceTag != serviceTag)
+                            DDPMImpExpSettings dDPMImpExpSettings = new DDPMImpExpSettings();
+                            // ReadImportSettingsFile will check file existence
+                            dDPMImpExpSettings = settingsManager.ReadImportSettingsFile(exportpath).Result;
+                            if (dDPMImpExpSettings != null)
                             {
-                                WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Checked import monitor serviceTag is different.");
-                                if (isSameModelFlag)
+                                WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Checked exported file exists!");
+                                if (!string.IsNullOrEmpty(dDPMImpExpSettings.MonitorSettings?.Model)
+                                    && dDPMImpExpSettings.MonitorSettings.ServiceTag != serviceTag)
                                 {
-                                    DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
-                                    if ((int)settingsManagerDev.DisplayImportSettings(exportpath, true, serviceTag, out ImpExpSettings).Result > 0)
+                                    WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Checked import monitor serviceTag is different.");
+                                    if (isSameModelFlag)
                                     {
-                                        WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is success");
+                                        DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
+                                        if ((int)settingsManagerDev.DisplayImportSettings(exportpath, true, serviceTag, out ImpExpSettings).Result > 0)
+                                        {
+                                            WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is success");
+                                        }
+                                        else
+                                        {
+                                            WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is fail");
+                                        }
                                     }
                                     else
                                     {
-                                        WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] Import is fail");
+                                        WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] isSameModelFlag is false.");
+                                        desc = desc.Replace("%1", model);
+                                        DisplayImportToast(
+                                            new DisplayWindowsToast()
+                                            {
+                                                Title = LangHelper.Instance["App_Name"], //string table: App_Name
+                                                Description = desc,
+                                                Model = model,
+                                                ServiceTag = serviceTag,
+                                                left_btn = LangHelper.Instance["Yes"],        //string table: Yes
+                                                right_btn = LangHelper.Instance["No"]       //string table: No
+                                            }
+                                        );
                                     }
                                 }
                                 else
                                 {
-                                    WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] isSameModelFlag is false.");
-                                    desc = desc.Replace("%1", model);
-                                    DisplayImportToast(
-                                        new DisplayWindowsToast()
-                                        {
-                                            Title = LangHelper.Instance["App_Name"], //string table: App_Name
-                                            Description = desc,
-                                            Model = model,
-                                            ServiceTag = serviceTag,
-                                            left_btn = LangHelper.Instance["Yes"],        //string table: Yes
-                                            right_btn = LangHelper.Instance["No"]       //string table: No
-                                        }
-                                    );
+                                    WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] dDPMImpExpSettings.MonitorSettings is null.");
                                 }
                             }
                             else
                             {
-                                WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] dDPMImpExpSettings.MonitorSettings is null.");
+                                WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] dDPMImpExpSettings is null.");
                             }
                         }
                         else
                         {
-                            WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] dDPMImpExpSettings is null.");
+                            WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] exportpath file not found.");
+                            try
+                            {
+                                var files = Directory.GetFiles(exportpath.Trim()); // This will throw if access is denied
+                                Console.WriteLine($"Found {files.Length} files.");
+                            }
+                            catch (UnauthorizedAccessException ex)
+                            {
+                                Console.WriteLine("[CheckAndTriggerToastWhileMonitorPlugged] [Permission Error] You don't have access: " + ex.Message);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("[CheckAndTriggerToastWhileMonitorPlugged] [Other Error] " + ex.Message);
+                            }
                         }
-                        //}
-                        //else
-                        //{
-                        //    WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] exportpath file not found.");
-                        //}
                     }
                 }
                 else
