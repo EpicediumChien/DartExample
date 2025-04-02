@@ -8946,8 +8946,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     if (vcps.Count > 0)
                                     {
                                         //set ImportVCPSequence
-                                        impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;
+                                        impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;                                        
                                         SetVCPSequence(monitorInfo, impVCPSequence, vcps);
+                                        writelog("[DisplayImportSettings] ALSConfig : " + impVCPSequence.ALSConfig.ToString());
                                         foreach (VCPCode code in vcps)
                                         {
                                             if (code.Code != null && (code.Value != null && code.Value.Count > 0))
@@ -8969,11 +8970,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     }
                                                     //get vcp code
                                                     objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
+                                                    writelog("[DisplayImportSettings] GetVCPCapability VCP code : " + code.Code.ToString() + ", Value : " + objGetVCP.value.ToString());
                                                     if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
                                                     {
                                                         //set vcp code
-                                                        writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
-                                                        b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                                        if(SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result)
+                                                        {
+                                                            writelog("[DisplayImportSettings] Set VCP code success : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());
+                                                        }
+                                                        else
+                                                        {
+                                                            writelog("[DisplayImportSettings] Set VCP code fail : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());                                                    
+                                                        }
                                                     }
                                                 }
                                             }
@@ -16835,20 +16843,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (vcps.Exists(x => x.Code == code))
                         {
                             VCPCode vcp = vcps.Find(x => x.Code == code);
-                            writelog("[SetVCPSequence] VCP code : " + vcp.Code.ToString());
                             ObjGetVCP objGetVCP = new ObjGetVCP();
                             objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
+                            writelog("[SetVCPSequence] GetVCPCapability VCP code : " + vcp.Code.ToString() + ", value : " + objGetVCP.value.ToString());
                             if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)vcp.Value[0])
-                            {
-                                writelog("[SetVCPSequence] Set VCP code : " + vcp.Code.ToString());
+                            {                               
                                 if (code == 0x66)
                                 {
-                                    writelog("[SetVCPSequence] ALS");
-                                    bool b = SetVCPCapability(monitorInfo, 0x66, impVCPSequence.ALSConfig).Result;
+                                    if (SetVCPCapability(monitorInfo, 0x66, impVCPSequence.ALSConfig).Result)
+                                    {
+                                        writelog("[SetVCPSequence] Set ALS(0x66) success : Value = " + impVCPSequence.ALSConfig.ToString());
+                                    }
+                                    else
+                                    {
+                                        writelog("[SetVCPSequence] Set ALS(0x66) fail : Value = " + impVCPSequence.ALSConfig.ToString());
+                                    }
                                 }
                                 else
                                 {
-                                    bool b = SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result;
+                                    if (SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result)
+                                    {
+                                        writelog("[SetVCPSequence] Set VCP code success : " + code.ToString() + ", Value : " + vcp.Value[0].ToString());                                       
+                                    }
+                                    else
+                                    {
+                                        writelog("[SetVCPSequence] Set VCP code fail : " + code.ToString() + ", Value : " + vcp.Value[0].ToString());
+                                    }
                                 }
                             }
                         }

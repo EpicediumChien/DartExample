@@ -708,6 +708,7 @@ namespace DDPM.UI.Module.Brightness
                             if (alsList[i].Edid == SelectedHomeDevice.MonitorInfo.edid)
                             {
                                 Start_ALSConfig = alsList[i];
+                                DdpmCommonHelper.WriteUILog($"InitComponentData Start_ALSConfig, ModelName = {Start_ALSConfig?.ModelName}, ALS Value = {Start_ALSConfig?.AllValue.ToString()}");
                             }
                         }
                     }
@@ -718,6 +719,7 @@ namespace DDPM.UI.Module.Brightness
                         if (!alsList.Contains(Start_ALSConfig))
                         {
                             alsList.Add(Start_ALSConfig);
+                            DdpmCommonHelper.WriteUILog($"InitComponentData Re-Get Start_ALSConfig, ModelName = {Start_ALSConfig?.ModelName}, ALS Value = {Start_ALSConfig?.AllValue.ToString()}");
                         }
                     }
                     GetALSContentAndSyncUI(SelectedHomeDevice.MonitorInfo);
@@ -1334,6 +1336,7 @@ namespace DDPM.UI.Module.Brightness
 
         private void GetALSContentAndSyncUI(MonitorInfo mo)
         {
+            DdpmCommonHelper.WriteUILog($"GetALSContentAndSyncUI ... in");
             if (DdpmCommonHelper.DeviceManagerSA == null)
                 return;
 
@@ -1357,7 +1360,17 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("isAlsSupported");
                 NotifyPropertyChanged("IsScheduledShow");
                 NotifyPropertyChanged("IsScheduledLuminanceShow");
+                DdpmCommonHelper.WriteUILog($"******************** GetALSContentAndSyncUI ********************");
+                DdpmCommonHelper.WriteUILog($"ModelName ****************** : {Start_ALSConfig.MoInfo.modelName}");
+                DdpmCommonHelper.WriteUILog($"SupportALS ***************** : {Start_ALSConfig.isSupportALS.ToString()}");
+                DdpmCommonHelper.WriteUILog($"AutoBrightness ************* : {(Start_ALSConfig.isAutoBrightness ? "ON" : "OFF")}");
+                DdpmCommonHelper.WriteUILog($"AutoColorTemp ************** : {(Start_ALSConfig.isAutoColorTemp ? "ON" : "OFF")}");
+                DdpmCommonHelper.WriteUILog($"AutoBrightnessRangeLevel *** : {Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name}");
+                DdpmCommonHelper.WriteUILog($"PrimaryMonitor ************* : {(Start_ALSConfig.isPrimaryMonitorSync ? "ON" : "OFF")}");
+                DdpmCommonHelper.WriteUILog($"ALS Value ****************** : {Start_ALSConfig.AllValue.ToString()}");
+                DdpmCommonHelper.WriteUILog($"******************** GetALSContentAndSyncUI ********************");
             }
+            DdpmCommonHelper.WriteUILog($"GetALSContentAndSyncUI ... out");
         }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
