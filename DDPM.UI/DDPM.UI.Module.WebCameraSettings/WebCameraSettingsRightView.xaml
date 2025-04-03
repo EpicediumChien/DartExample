@@ -191,7 +191,7 @@
                                             <!-- Derek for PIMS-332102 -->
                                             <UXControls:UXTextBlock MaxWidth="270" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraSettings.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                             <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.Placement="Left" -->
-                                            <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                                            <Border Background="{StaticResource FakeTransparent}">
                                                 <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Border.ToolTip>
                                                     <!--Elsa 20250401 for PIMS-348390 change Placement="Bottom" to Placement="Top",change VerticalOffset="15" to VerticalOffset="14",change HorizontalOffset="220" to HorizontalOffset="13",add MaxWidth="272" Opened="toolTip_Opened" -->
@@ -210,7 +210,7 @@
                                         <StackPanel Orientation="Horizontal">
                                             <UXControls:UXTextBlock Margin="0,8,0,8" Text="{Binding [WebCameraSettings.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding Path= IsAutoFramingOn}" />
                                             <!--Elsa 20250401 for PIMS-348390 change ToolTipService.Placement="Center" to ToolTipService.Placement="Top" ToolTipService.VerticalOffset="45" to ToolTipService.VerticalOffset="22"-->
-                                            <Border ToolTipService.Placement="Top" ToolTipService.VerticalOffset="22" Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                                            <Border ToolTipService.Placement="Top" ToolTipService.VerticalOffset="22" Background="{StaticResource FakeTransparent}">
                                                 <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Border.ToolTip>
                                                     <!--Elsa 20250401 for PIMS-348390 add HorizontalOffset="13" MaxWidth="272" Opened="toolTip_Opened" -->
@@ -229,7 +229,7 @@
                                         <StackPanel Orientation="Horizontal">
                                             <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsAutoFramingOn}" />
                                             <!--Elsa 20250401 for PIMS-348390 change ToolTipService.Placement="Center" to ToolTipService.Placement="Top" ToolTipService.VerticalOffset="45" to ToolTipService.VerticalOffset="14"-->
-                                            <Border ToolTipService.Placement="Top" ToolTipService.VerticalOffset="14" Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                                            <Border ToolTipService.Placement="Top" ToolTipService.VerticalOffset="14" Background="{StaticResource FakeTransparent}">
                                                 <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Border.ToolTip>
                                                     <!--Elsa 20250401 for PIMS-348390 add HorizontalOffset="13" MaxWidth="272" Opened="toolTip_Opened" -->
@@ -671,7 +671,7 @@
                                     <StackPanel Orientation="Horizontal">
                                         <UXControls:UXTextBlock MaxWidth="330" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraSettings.25], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                         <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.Placement="Left" ToolTipService.VerticalOffset="-60" -->
-                                        <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                                        <Border Background="{StaticResource FakeTransparent}">
                                             <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                             <Border.ToolTip>
                                                 <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="8" to VerticalOffset="14" HorizontalOffset="6" to HorizontalOffset="13",add MaxWidth="272" Opened="toolTip_Opened" -->
