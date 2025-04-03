@@ -1,4 +1,5 @@
 ﻿//#define SUPPORT_200
+//#define SUPPORT_210
 
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,13 @@ namespace DDPM.SA.Common.Settings
     {
 #if SUPPORT_200
         public const bool isSupport200 = true;
+        public const bool isSupport210 = false;
+#elif SUPPORT_210
+        public const bool isSupport200 = false;
+        public const bool isSupport210 = true;
 #else
         public const bool isSupport200 = false;//for 2.0.1
+        public const bool isSupport210 = false;
 #endif
 
         public const string major_url = "https://clientperipherals.dell.com/DDPM/";

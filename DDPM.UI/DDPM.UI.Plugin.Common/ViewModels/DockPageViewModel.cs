@@ -38,7 +38,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
             _log = log;
             _deviceManager = deviceManager;
-            _log!.Info($"[DockPageViewModel] DockPageViewModel Start ...");
+            _log?.Info($"[DockPageViewModel] DockPageViewModel Start ...");
         }
 
         public override void OnPropertyChanged([CallerMemberName] string propertyName = "")
@@ -63,6 +63,11 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             if (!base.SetCurrentDevice(instanceIDs))
                 return false;
+            if (CurrentDeviceInfo == null)
+            {
+                _log?.Info($"[DockPageViewModel] SetCurrentDevice CurrentDeviceInfo is null ...");
+                return false;
+            }
             //0821 Bruce Add show Dock Fw Version
             Model = Model.Replace("_", " ");
             //_deviceManager.GetDockData(instanceID).Wait();
@@ -81,7 +86,7 @@ namespace DDPM.UI.Plugin.ViewModels
             _isEnableUpdate = false;
             foreach (FWUpdateInfo fWUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
             {
-                if (!fWUpdateInfo.IsDisplay && 
+                if (!fWUpdateInfo.IsDisplay &&
                     fWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "").Equals(instanceIDs))
                 {
                     _isEnableUpdate = true;
@@ -108,7 +113,14 @@ namespace DDPM.UI.Plugin.ViewModels
                     }
                     if (di.ID == CurrentDeviceID)
                     {
-                        CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
+                        if (CurrentDeviceInfo != null)
+                        {
+                            CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
+                        }
+                        else
+                        {
+                            _log?.Info($"[DockPageViewModel] HandleNotification CurrentDeviceInfo is null ...");
+                        }
 
                         //GenerateInfo();
                     }

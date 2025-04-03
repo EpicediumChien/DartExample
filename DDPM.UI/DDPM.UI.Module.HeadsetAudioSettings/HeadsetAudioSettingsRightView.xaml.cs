@@ -21,10 +21,10 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
     public partial class HeadsetAudioSettingsRightView : UserControl, INotifyPropertyChanged
     {
         private bool isDragging = false;
-        private Image currentNode;
+        private Image? currentNode = null;
         private Point clickPosition;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         private readonly HeadsetViewModel _vm;
 
@@ -48,69 +48,74 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             InitializeNodeValue();
         }
 
-        private async void InitializeNodeValue()
+        private void InitializeNodeValue()
         {
-            _vm._log!.Info("[HeadsetAudioSettingsRightView] Before Invoke_PleaseWaitAsync");
-            if (_vm.DeviceInfoDTP!.IsPresetsSupported)
+            _vm._log.Info("[HeadsetAudioSettingsRightView] Before Invoke_PleaseWaitAsync");
+            if (_vm.DeviceInfoDTP == null)
             {
-                if (_vm.DeviceInfoDTP!.Band1Gain > 4 || _vm.DeviceInfoDTP!.Band1Gain < -6)
+                _vm._log.Info("[HeadsetAudioSettingsRightView] DeviceInfoDTP is null");
+                return;
+            }
+            if (_vm.DeviceInfoDTP.IsPresetsSupported)
+            {
+                if (_vm.DeviceInfoDTP.Band1Gain > 4 || _vm.DeviceInfoDTP.Band1Gain < -6)
                 {
                     SetNodeValue(Node1, 0);
-                    _vm._log!.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band1Gain 00000");
+                    _vm._log.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band1Gain 00000");
                 }
                 else
                 {
-                    SetNodeValue(Node1, _vm.DeviceInfoDTP!.Band1Gain);
-                    _vm._log!.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band1Gain {_vm.DeviceInfoDTP!.Band1Gain.ToString()}");
+                    SetNodeValue(Node1, _vm.DeviceInfoDTP.Band1Gain);
+                    _vm._log.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band1Gain {_vm.DeviceInfoDTP.Band1Gain.ToString()}");
                 }
 
-                if (_vm.DeviceInfoDTP!.Band2Gain > 4 || _vm.DeviceInfoDTP!.Band2Gain < -6)
+                if (_vm.DeviceInfoDTP.Band2Gain > 4 || _vm.DeviceInfoDTP.Band2Gain < -6)
                 {
                     SetNodeValue(Node2, 0);
-                    _vm._log!.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band2Gain 00000");
+                    _vm._log.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band2Gain 00000");
                 }
                 else
                 {
-                    SetNodeValue(Node2, _vm.DeviceInfoDTP!.Band2Gain);
-                    _vm._log!.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band2Gain {_vm.DeviceInfoDTP!.Band2Gain.ToString()}");
+                    SetNodeValue(Node2, _vm.DeviceInfoDTP.Band2Gain);
+                    _vm._log.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band2Gain {_vm.DeviceInfoDTP.Band2Gain.ToString()}");
                 }
 
-                if (_vm.DeviceInfoDTP!.Band3Gain > 4 || _vm.DeviceInfoDTP!.Band3Gain < -6)
+                if (_vm.DeviceInfoDTP.Band3Gain > 4 || _vm.DeviceInfoDTP.Band3Gain < -6)
                 {
                     SetNodeValue(Node3, 0);
-                    _vm._log!.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band3Gain 00000");
+                    _vm._log.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band3Gain 00000");
                 }
                 else
                 {
-                    SetNodeValue(Node3, _vm.DeviceInfoDTP!.Band3Gain);
-                    _vm._log!.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band3Gain {_vm.DeviceInfoDTP!.Band3Gain.ToString()}");
+                    SetNodeValue(Node3, _vm.DeviceInfoDTP.Band3Gain);
+                    _vm._log.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band3Gain {_vm.DeviceInfoDTP.Band3Gain.ToString()}");
                 }
 
-                if (_vm.DeviceInfoDTP!.Band4Gain > 4 || _vm.DeviceInfoDTP!.Band4Gain < -6)
+                if (_vm.DeviceInfoDTP.Band4Gain > 4 || _vm.DeviceInfoDTP.Band4Gain < -6)
                 {
                     SetNodeValue(Node4, 0);
-                    _vm._log!.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band4Gain 00000");
+                    _vm._log.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band4Gain 00000");
                 }
                 else
                 {
-                    SetNodeValue(Node4, _vm.DeviceInfoDTP!.Band4Gain);
-                    _vm._log!.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band4Gain {_vm.DeviceInfoDTP!.Band4Gain.ToString()}");
+                    SetNodeValue(Node4, _vm.DeviceInfoDTP.Band4Gain);
+                    _vm._log.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band4Gain {_vm.DeviceInfoDTP.Band4Gain.ToString()}");
                 }
 
-                if (_vm.DeviceInfoDTP!.Band5Gain > 4 || _vm.DeviceInfoDTP!.Band5Gain < -6)
+                if (_vm.DeviceInfoDTP.Band5Gain > 4 || _vm.DeviceInfoDTP.Band5Gain < -6)
                 {
                     SetNodeValue(Node5, 0);
-                    _vm._log!.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band5Gain 00000");
+                    _vm._log.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band5Gain 00000");
                 }
                 else
                 {
-                    SetNodeValue(Node5, _vm.DeviceInfoDTP!.Band5Gain);
-                    _vm._log!.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band5Gain {_vm.DeviceInfoDTP!.Band5Gain.ToString()}");
+                    SetNodeValue(Node5, _vm.DeviceInfoDTP.Band5Gain);
+                    _vm._log.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band5Gain {_vm.DeviceInfoDTP.Band5Gain.ToString()}");
                 }
             }
         }
 
-        private async void InitializeAsync()
+        private void InitializeAsync()
         {
             //lock/unlock init, 9/23 add
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -157,7 +162,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             }
         }
 
-        private void SystemParameters_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void SystemParameters_StaticPropertyChanged(object? sender, PropertyChangedEventArgs? e)
         {
             if (DdpmCommonHelper.PreviousOsTheme == OSThemeEnum.Dark)
             {
@@ -226,13 +231,16 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             isDragging = true;
             currentNode = sender as Image;
             clickPosition = e.GetPosition(EqualizerCanvas);
-            currentNode.CaptureMouse();
+            currentNode?.CaptureMouse();
 
-            // 更換選取後的圖片
-            currentNode.Source = new BitmapImage(new Uri("pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_whitedot.png"));
+            if (currentNode != null)
+            {
+                // 更換選取後的圖片
+                currentNode.Source = new BitmapImage(new Uri("pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_whitedot.png"));
 
-            // 顯示數值
-            ShowNodeValue(currentNode, true);
+                // 顯示數值
+                ShowNodeValue(currentNode, true);
+            }
 
             // 開始拖動時更新陰影效果
             //UpdateShadowVisibility();
@@ -284,23 +292,23 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
                 switch (currentNode.Name)
                 {
                     case "Node1":
-                        _vm._deviceManager.SetBand1GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node1Text.Text)).Wait();
+                        _vm._deviceManager.SetBand1GainAsync(_vm.CurrentDeviceInfo?.ID.ToString(), int.Parse(Node1Text.Text)).Wait();
                         break;
 
                     case "Node2":
-                        _vm._deviceManager.SetBand2GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node2Text.Text)).Wait();
+                        _vm._deviceManager.SetBand2GainAsync(_vm.CurrentDeviceInfo?.ID.ToString(), int.Parse(Node2Text.Text)).Wait();
                         break;
 
                     case "Node3":
-                        _vm._deviceManager.SetBand3GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node3Text.Text)).Wait();
+                        _vm._deviceManager.SetBand3GainAsync(_vm.CurrentDeviceInfo?.ID.ToString(), int.Parse(Node3Text.Text)).Wait();
                         break;
 
                     case "Node4":
-                        _vm._deviceManager.SetBand4GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node4Text.Text)).Wait();
+                        _vm._deviceManager.SetBand4GainAsync(_vm.CurrentDeviceInfo?.ID.ToString(), int.Parse(Node4Text.Text)).Wait();
                         break;
 
                     case "Node5":
-                        _vm._deviceManager.SetBand5GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node5Text.Text)).Wait();
+                        _vm._deviceManager.SetBand5GainAsync(_vm.CurrentDeviceInfo?.ID.ToString(), int.Parse(Node5Text.Text)).Wait();
                         break;
                 }
 

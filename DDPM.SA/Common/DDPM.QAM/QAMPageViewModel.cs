@@ -270,14 +270,14 @@ namespace DDPM.QAM
                         //add event by leo 2025/01/14 end
 
                         case "Webcam_ZoomChanged":
-                            { //leo fixed 2025/01/14
-                                if (int.TryParse(eventMsg.NewValue, out currentValue))
-                                {
-                                    isStatusChangeByDDPM = true;
-                                    ZoomValue = currentValue;
-                                }
+                        { //leo fixed 2025/01/14
+                            if (int.TryParse(eventMsg.NewValue, out currentValue))
+                            {
+                                isStatusChangeByDDPM = true;
+                                ZoomValue = currentValue;
                             }
-                            break;
+                        }
+                        break;
 
                         case "Webcam_FieldOfViewChanged":
                             if (int.TryParse(eventMsg.NewValue, out currentValue))
@@ -810,6 +810,7 @@ namespace DDPM.QAM
             {
                 bool result = DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), _ZoomValue).Result;
                 LogMsg($"QAM set Zoom value to {_ZoomValue}, result is {result}");
+                SetNoneProfile();
             }
             else
                 LogMsg($"QAM Zoom value has modified by UI");
@@ -920,26 +921,26 @@ namespace DDPM.QAM
             return false;
         }
 
-        public bool SaveNoneProfileZOOM()
-        {
-            try
-            {
-                if (null != webcamSettings.NONE && selectedProfileName == "NONE")
-                {
-                    webcamSettings.NONE.Zoom = ZoomValue;
+        //public bool SaveNoneProfileZOOM()
+        //{
+        //    try
+        //    {
+        //        if (null != webcamSettings.NONE && selectedProfileName != "NONE")
+        //        {
+        //            webcamSettings.NONE.Zoom = ZoomValue;
 
-                    SaveSelectProfile();
+        //            SaveSelectProfile();
 
-                    return true;
-                }
-            }
-            catch (Exception e)
-            {
-                LogMsg($"SaveNoneProfileZOOM catch exception: {e.Message}");
-            }
+        //            return true;
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        LogMsg($"SaveNoneProfileZOOM catch exception: {e.Message}");
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
     }
     public class UI_Profile
     {

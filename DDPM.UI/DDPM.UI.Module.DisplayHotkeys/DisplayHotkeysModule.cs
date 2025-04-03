@@ -84,6 +84,11 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 isSelectChanged = false;
                 InitNewViewModel();
             }
+            if (DdpmCommonHelper.isJumpFromUsbKvm)
+            {
+                DdpmCommonHelper.isJumpFromUsbKvm = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

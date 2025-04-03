@@ -242,8 +242,8 @@ namespace VcpCore.Plugins
                 if (_CacheTimer.Enabled) _CacheTimer.Stop();
                 if (_StatusTimer.Enabled) _StatusTimer.Stop();
 
-                _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
-                _AllInfoMonitors = new List<MonitorInfo_complex>();
+                _AllInfoMonitors_Mix.Clear();
+                _AllInfoMonitors.Clear();
 
                 while (!_TaskQueue.IsEmpty())
                 {
@@ -252,8 +252,8 @@ namespace VcpCore.Plugins
                     if (_TaskQueueExecutor.IsBusy) _TaskQueueExecutor.CancelAsync();
                     else
                     {
-                        _TaskQueue = new TaskLockQueue<ParameterType>();
-                        _TaskQueueResult = new ResultLockPool();
+                        _TaskQueue.Clear();
+                        _TaskQueueResult.Clear();
                     }
                     _CancelhashSet.Clear();
                 }
@@ -265,7 +265,7 @@ namespace VcpCore.Plugins
                 DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs()
                 {
                     count = _AllInfoMonitors_Mix.Count,
-                    monitors = new List<MonitorInfo>(),
+                    monitors = _AllInfoMonitors_Mix.Select(M => M.Item2).ToList(),
                 };
                 OnDisplaychanged(_displaychangedEventArgss);
                 //------------------------------------------------------------------------------------------------//
@@ -318,8 +318,6 @@ namespace VcpCore.Plugins
 
                 var CancelStatusCheck = Task.Run(() => CancellationCheck(CToken, in IsFinishedAlready));
                 var ReGetTask = Task.Run(() => InitializeMonitorsList(true, CToken));
-
-                List<MonitorInfo> _AllDisplays = new List<MonitorInfo>();
 
                 if (await Task.WhenAny(ReGetTask, CancelStatusCheck) == ReGetTask)
                 {
@@ -1083,8 +1081,8 @@ namespace VcpCore.Plugins
                     {
                         _logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork TaskQueueExecutor Cancellation Occur...");
                         _logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork _TaskQueue cleaning...");
-                        _TaskQueue = new TaskLockQueue<ParameterType>();
-                        _TaskQueueResult = new ResultLockPool();
+                        _TaskQueue.Clear();
+                        _TaskQueueResult.Clear();
                         _CancelhashSet.Clear();
                         _logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork _TaskQueue.IsEmpty(): " + _TaskQueue.IsEmpty().ToString());
                         e.Cancel = true;
@@ -1258,8 +1256,8 @@ namespace VcpCore.Plugins
                 //_logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork Exception : " + ex.Message);
                 WriteLog("TaskQueueExecutorDoWork Exception : " + ex.Message, log_type.error);
 
-                _TaskQueue = new TaskLockQueue<ParameterType>();
-                _TaskQueueResult = new ResultLockPool();
+                _TaskQueue.Clear();
+                _TaskQueueResult.Clear();
                 _CancelhashSet.Clear();
                 e.Cancel = true;
                 _BworkerCancelAsyncEvent.Set();
@@ -2433,8 +2431,8 @@ namespace VcpCore.Plugins
                     if (_CacheTimer.Enabled) _CacheTimer.Stop();
                     if (_StatusTimer.Enabled) _StatusTimer.Stop();
 
-                    _AllInfoMonitors = new List<MonitorInfo_complex>();
-                    _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                    _AllInfoMonitors.Clear();
+                    _AllInfoMonitors_Mix.Clear();
 
                     while (!_TaskQueue.IsEmpty())
                     {
@@ -2448,8 +2446,8 @@ namespace VcpCore.Plugins
                         }
                         else
                         {
-                            _TaskQueue = new TaskLockQueue<ParameterType>();
-                            _TaskQueueResult = new ResultLockPool();
+                            _TaskQueue.Clear();
+                            _TaskQueueResult.Clear();
                             _CancelhashSet.Clear();
                         }
                     }
@@ -2518,8 +2516,8 @@ namespace VcpCore.Plugins
 
                             if (monitors.Count < 1)
                             {
-                                _AllInfoMonitors = new List<MonitorInfo_complex>();
-                                _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                                _AllInfoMonitors.Clear();
+                                _AllInfoMonitors_Mix.Clear();
                             }
                             else
                             {
@@ -2685,8 +2683,8 @@ namespace VcpCore.Plugins
                         if (_CacheTimer.Enabled) _CacheTimer.Stop();
                         if (_StatusTimer.Enabled) _StatusTimer.Stop();
 
-                        _AllInfoMonitors = new List<MonitorInfo_complex>();
-                        _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                        _AllInfoMonitors.Clear();
+                        _AllInfoMonitors_Mix.Clear();
 
                         while (!_TaskQueue.IsEmpty())
                         {
@@ -2700,8 +2698,8 @@ namespace VcpCore.Plugins
                             }
                             else
                             {
-                                _TaskQueue = new TaskLockQueue<ParameterType>();
-                                _TaskQueueResult = new ResultLockPool();
+                                _TaskQueue.Clear();
+                                _TaskQueueResult.Clear();
                                 _CancelhashSet.Clear();
                             }
                         }
@@ -2724,7 +2722,7 @@ namespace VcpCore.Plugins
                         DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs()
                         {
                             count = _AllInfoMonitors_Mix.Count,
-                            monitors = new List<MonitorInfo>(_AllInfoMonitors_Mix.Select(x => x.Item2).ToList()),
+                            monitors = _AllInfoMonitors_Mix.Select(x => x.Item2).ToList(),
                         };
                         OnDisplaychanged(_displaychangedEventArgss);
                         //------------------------------------------------------------------------------------------------//
@@ -2795,7 +2793,7 @@ namespace VcpCore.Plugins
 
                 if (_AllInfoMonitors.Count > 0)
                 {
-                    _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                    _AllInfoMonitors_Mix.Clear();
 
                     for (int i = 0; i < _AllInfoMonitors.Count; i++)
                     {
@@ -4061,8 +4059,8 @@ namespace VcpCore.Plugins
                     if (capabilitiesStringLength)
                     {
                         num = 4;
-                        var sb = new StringBuilder((int)length);
-                        while (!_CapabilitiesRequestAndCapabilitiesReply(monitorx.hPhysicalMonitor, sb, (uint)sb.Capacity) && num >= 0 && CheckStatus() && (!TimeoutToken.IsCancellationRequested))
+                        var sb = new byte[length];
+                        while (!_CapabilitiesRequestAndCapabilitiesReply(monitorx.hPhysicalMonitor, sb, length) && num >= 0 && CheckStatus() && (!TimeoutToken.IsCancellationRequested))
                         {
                             if (IsDisposed) break;
 
@@ -4071,8 +4069,9 @@ namespace VcpCore.Plugins
                             Task.Delay(250 * (4 - num)).Wait();
                         }
 
-                        if (!string.IsNullOrWhiteSpace(sb.ToString()))
-                            return sb.ToString();
+                        var sbstr = Encoding.Default.GetString(sb, 0, Array.IndexOf(sb, (byte)0));
+                        if (!string.IsNullOrWhiteSpace(sbstr))
+                            return sbstr;
                     }
 
                     count++;

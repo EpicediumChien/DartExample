@@ -230,7 +230,7 @@
           <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal" Margin="18,25,0,18">
               <UXControls:UXTextBlock Text="{Binding [WebCameraCapture.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsNotRecording}" />
-              <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+              <Border Background="{StaticResource FakeTransparent}">
                 <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                 <Border.ToolTip>
                   <!--Elsa 20250401 for PIMS-348390 change Placement="Center" to Placement="Top" VerticalOffset="50" to VerticalOffset="14",add HorizontalOffset="11",add MaxWidth="272" Opened="toolTip_Opened" -->

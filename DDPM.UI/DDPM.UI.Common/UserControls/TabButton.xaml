@@ -18,7 +18,7 @@
                                     Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
     </Border>
     <Image x:Name="InfoIcon" Margin="0,8,8,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Fill" Visibility="Hidden"
-               VerticalAlignment="Top" HorizontalAlignment="Right" Cursor="Hand" Width="16" Height="16">
+               VerticalAlignment="Top" HorizontalAlignment="Right" Width="16" Height="16">
       <Image.ToolTip>
         <!--Elsa 20250401 for PIMS-348390 add HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened" -->
         <ToolTip x:Name="toolTip" Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">

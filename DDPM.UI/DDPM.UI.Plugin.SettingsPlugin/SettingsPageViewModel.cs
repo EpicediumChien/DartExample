@@ -558,6 +558,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 {
                     NoUpdateAlert = Visibility.Visible;
                 }
+                else
+                {
+                    NoUpdateAlert = Visibility.Collapsed;
+                }
             }
             if (NoNetwork == Visibility.Visible || NoUpdateAlert == Visibility.Visible)
             {
@@ -1031,11 +1035,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         break;
                     case DeviceType.LogicalWebcam:
                     case DeviceType.PhysicalWebcam:
-                        if (fwUpdateInfo.Model.Contains("7022"))
+                        /*if (fwUpdateInfo.Model.Contains("7022"))
                         {
                             UXAlertItemVisibility = Visibility.Visible;
                             UXAlertItemMessage = LangHelper.Instance["Update_Webcam_Alert"];
-                        }
+                        }*/
                         break;
                     default:
                         UXAlertItemVisibility = Visibility.Collapsed;

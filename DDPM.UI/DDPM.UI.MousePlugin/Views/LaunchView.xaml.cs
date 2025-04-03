@@ -99,13 +99,13 @@ namespace DDPM.UI.Plugin.MousePlugin
                 //txtOutlook.Text = OutlookCaption;
 
                 InitializeButtonImage();
-                //if(_vm!.IsRestoreEnable) {
+                //if(_vm.IsRestoreEnable) {
                 //  btnRestore.Visibility = Visibility.Visible;
                 //}
                 //else {
                 //  btnRestore.Visibility = Visibility.Collapsed;
                 //}
-                _vm!.IsAllButtonsVisible = Visibility.Visible;
+                _vm.IsAllButtonsVisible = Visibility.Visible;
                 _vm.ActiveModule = null;
 
                 if (_vm.ConnectionType == "Wired")
@@ -275,6 +275,9 @@ namespace DDPM.UI.Plugin.MousePlugin
         /// </summary>
         private void BuildModuleGroups()
         {
+            if (_vm == null)
+                return;
+
             List<ModuleGroup> groups = new();
             ModuleGroup moduleGroup;
 
@@ -284,10 +287,10 @@ namespace DDPM.UI.Plugin.MousePlugin
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Mouse.Cursor.png"),
                 GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.MouseSettings)
             };
-            moduleGroup.AddHeader(Strings.MouseSettingsCaption, new MouseSettingsModule(_vm!));
+            moduleGroup.AddHeader(Strings.MouseSettingsCaption, new MouseSettingsModule(_vm));
             groups.Add(moduleGroup);
 
-            if (_vm!.Model != "MS700" && !_vm.EOLMouseList.Contains(_vm.Model))
+            if (_vm.Model != "MS700" && !_vm.EOLMouseList.Contains(_vm.Model))
             {
                 moduleGroup = new ModuleGroup()
                 {
@@ -295,11 +298,11 @@ namespace DDPM.UI.Plugin.MousePlugin
                     GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Mouse.Mouse.png"),
                     GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.MouseButton)
                 };
-                moduleGroup.AddHeader(Strings.ButtonCustomizationCaption, new ButtonSettingsModule(_vm!));
+                moduleGroup.AddHeader(Strings.ButtonCustomizationCaption, new ButtonSettingsModule(_vm));
                 groups.Add(moduleGroup);
             }
 
-            _vm!.ModuleGroups = groups;
+            _vm.ModuleGroups = groups;
         }
 
         #endregion Init for Modules
@@ -308,7 +311,7 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private void OnVbarItemClicked(VbarItem1 newItem)
         {
-            if (newItem.Id == _vm!.VbarSelectedIndex)
+            if (_vm == null || newItem.Id == _vm.VbarSelectedIndex)
             { return; }
 
             if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm.VbarSelectedIndex + 1])
@@ -341,7 +344,7 @@ namespace DDPM.UI.Plugin.MousePlugin
             _vm.SetLadningMode(false);
             _vm.SelectVBar();
 
-            if (_vm!.VbarSelectedIndex == 0)
+            if (_vm.VbarSelectedIndex == 0)
             { _vm.IsAllButtonsVisible = Visibility.Hidden; }
             else
             { _vm.IsAllButtonsVisible = Visibility.Visible; }
@@ -394,7 +397,7 @@ namespace DDPM.UI.Plugin.MousePlugin
             {
                 UXTextBlock button = (UXTextBlock)sender;
                 var app = button.Name.Replace("txt", "");
-                if (_vm!.SelectedApp == app)
+                if (_vm.SelectedApp == app)
                 { return; }
 
                 _vm.SelectedApp = app;
@@ -412,7 +415,7 @@ namespace DDPM.UI.Plugin.MousePlugin
         {
             try
             {
-                if (_vm!.ConnectionType == "Dongle")
+                if (_vm?.ConnectionType == "Dongle")
                 {
                     UnpairModalDialog unpairModalDialog = new(eDeviceCategory.Mouse);
                     Window parentWindow = Window.GetWindow(this);
@@ -457,7 +460,7 @@ namespace DDPM.UI.Plugin.MousePlugin
         {
             try
             {
-                if (_vm!.VbarSelectedIndex == -1)
+                if (_vm == null || _vm.VbarSelectedIndex == -1)
                 { return; }
 
                 _vm.RightFrameWidthTo = 0;
@@ -489,15 +492,17 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private void BatteryIndicator_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
+            if (_vm == null)
+                return;
             try
             {
-                if (_vm!.ConnectionType == "Dongle")
+                if (_vm.ConnectionType == "Dongle")
                 {
                     txtFirmware.Text = $"{Strings.ReceiverFirmwareVersion} {_vm.PhysicalDeviceFWVersion}";
-                    txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+                    txtSlot.Text = $"{_vm.CurrentDeviceInfo?.MaxPairingSlots ?? 6 - _vm.CurrentDeviceInfo?.PairedDeviceCount ?? 2} of {_vm.CurrentDeviceInfo?.MaxPairingSlots ?? 6} slots available";
                     DongleConnection.Visibility = Visibility.Visible;
                 }
-                else if (_vm!.ConnectionType == "Bluetooth")
+                else if (_vm.ConnectionType == "Bluetooth")
                 {
                     SetBLConnectionStatus();
                     BLConnection.Visibility = Visibility.Visible;
@@ -535,7 +540,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 _vm.ImgBL2 = false;
                 _vm.ImgBL3 = false;
 
-                switch (_vm!.Model)
+                switch (_vm.Model)
                 {
                     case "MS700":
                         txt3.Visibility = Visibility.Visible;
@@ -636,7 +641,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 bool? dialogResult = restoreModalDialog.ShowDialog();
                 if (dialogResult == true)
                 {
-                    _vm!.RestoreToDefault();
+                    _vm?.RestoreToDefault();
                     ((Border)sender).Visibility = Visibility.Collapsed;
                 }
             }
@@ -650,7 +655,7 @@ namespace DDPM.UI.Plugin.MousePlugin
         {
             try
             {
-                switch (_vm!.Model.ToUpper())
+                switch (_vm?.Model.ToUpper())
                 {
                     case "MS300":
                         SectionA.Margin = new Thickness(210, 64, 0, 0);
@@ -753,7 +758,7 @@ namespace DDPM.UI.Plugin.MousePlugin
             try
             {
                 var btnName = ((Image)sender).Name;
-                _vm!.RefreshButtonImageFile(btnName, true, btnName == _vm.SelectedButton);
+                _vm?.RefreshButtonImageFile(btnName, true, btnName == _vm.SelectedButton);
             }
             catch (Exception ex)
             {
@@ -766,7 +771,7 @@ namespace DDPM.UI.Plugin.MousePlugin
             try
             {
                 var btnName = ((Image)sender).Name;
-                _vm!.RefreshButtonImageFile(btnName, false, btnName == _vm.SelectedButton);
+                _vm?.RefreshButtonImageFile(btnName, false, btnName == _vm.SelectedButton);
             }
             catch (Exception ex)
             {
@@ -776,13 +781,16 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private void ButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            if (_vm == null)
+                return;
+
             try
             {
-                if (_vm!.SelectedButton != "")
+                if (_vm.SelectedButton != "")
                 { _vm.RefreshButtonImageFile(_vm.SelectedButton); }
 
                 var btnName = ((Image)sender).Name;
-                _vm!.SelectedButton = btnName;
+                _vm.SelectedButton = btnName;
                 _vm.RefreshButtonImageFile(btnName, false, true);
 
                 if (_vm.VbarSelectedIndex == 1)
@@ -802,6 +810,9 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private void SetAppFocus()
         {
+            if (_vm == null)
+                return;
+
             try
             {
                 bdrAllApp.Visibility = Visibility.Collapsed;
@@ -814,7 +825,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 txtExcel.Foreground = buttonColorFocusedF;
                 txtPowerPoint.Foreground = buttonColorFocusedF;
                 txtOutlook.Foreground = buttonColorFocusedF;
-                switch (_vm!.SelectedApp)
+                switch (_vm.SelectedApp)
                 {
                     case "Word":
                         bdrWord.Visibility = Visibility.Visible;
@@ -868,7 +879,7 @@ namespace DDPM.UI.Plugin.MousePlugin
             try
             {
                 UXTextBlock button = (UXTextBlock)sender;
-                if (button.Name != $"txt{_vm!.SelectedApp}")
+                if (button.Name != $"txt{_vm?.SelectedApp}")
                 {
                     button.Foreground = buttonColorFocusedF;
                 }

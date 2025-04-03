@@ -38,11 +38,10 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private readonly IConsole _console;
         private readonly ILog _log;
-        private readonly IDeviceManagerSA _deviceManager;
+        private readonly IDeviceManagerSA? _deviceManager;
         private string _name = "";
         private string _model = "";
         private string _imageFilePath = "";
-        private string _imageSFilePath = "";
         private string _deviceId = "";
         private string _firmwareVersion = "";
         private string _firmwareVersion2 = "";
@@ -58,7 +57,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         #endregion Variables
 
-        public DeviceInfo CurrentDeviceInfo = new();
+        public DeviceInfo? CurrentDeviceInfo = null;
 
         public ICommand GoBackClickedCommand { get; private set; }
         public ICommand ShowInfoClickedCommand { get; private set; }
@@ -70,7 +69,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool IsDTPReady = false;
         public int CurrentVersion = 0;
 
-        public PeripheralViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager)
+        public PeripheralViewModel(IConsole console, ILog log, IDeviceManagerSA? deviceManager)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
@@ -92,7 +91,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 string regPath = $@"SOFTWARE\Microsoft\Windows NT\CurrentVersion";
                 string regKey = $"CurrentBuild";
-                //var regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey).Result;
+                //var regValue = DdpmCommonHelper.DeviceManagerSA.ReadRegistryData(SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey).Result;
                 var regValue = DdpmCommonHelper.ReadRegistryData(SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
                 if (int.TryParse((string)regValue, out int build))
                 {
@@ -150,10 +149,10 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             //string regPath2 = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
             //string regKey2 = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
-            //var regValue2 = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(RegistryHive.LocalMachine, regPath2, regKey2).Result;
+            //var regValue2 = DdpmCommonHelper.DeviceManagerSA.ReadRegistryData(RegistryHive.LocalMachine, regPath2, regKey2).Result;
             string regPath = $@"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot";
             string regKey = $"TurnOffWindowsCopilot";
-            //var regValue = DdpmCommonHelper.DeviceManagerSA!.ReadRegistryData(RegistryHive.CurrentUser, regPath, regKey).Result;
+            //var regValue = DdpmCommonHelper.DeviceManagerSA.ReadRegistryData(RegistryHive.CurrentUser, regPath, regKey).Result;
             try
             {
                 // Open the registry key under the current user
@@ -225,7 +224,6 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 if (di == null)
                 {
-                    CurrentDeviceInfo = new();
                     return false;
                 }
                 CurrentDeviceInfo = di;
@@ -290,6 +288,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 else
                     ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}{colorCode}.png";
             }
+
+            if (CurrentDeviceInfo == null)
+                return false;
 
             FirmwareVersion = CurrentDeviceInfo.FirmwareVersion;
             var fv = CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
@@ -399,7 +400,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
-            if (di == null)
+            if (di == null || CurrentDeviceInfo == null)
             {
                 DdpmCommonHelper.WriteUILog($"Error: DeviceChanged Event with no device info!");
                 return;
@@ -498,6 +499,9 @@ namespace DDPM.UI.Plugin.ViewModels
         protected void GenerateInfo()
         {
 #if DEBUG
+            if (CurrentDeviceInfo == null)
+                return;
+
             StringBuilder localDeviceInfo = new();
             if (CurrentDeviceInfo.Name.ToUpper().Contains("HEADSET"))
             {

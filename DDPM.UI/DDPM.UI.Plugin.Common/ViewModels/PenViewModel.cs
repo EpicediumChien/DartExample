@@ -46,7 +46,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public new event PropertyChangedEventHandler? PropertyChanged;
 
-        public PenViewModel(IConsole console, ILog log) : base(console, log, DdpmCommonHelper.DeviceManagerSA!)
+        public PenViewModel(IConsole console, ILog log) : base(console, log, DdpmCommonHelper.DeviceManagerSA)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
@@ -85,8 +85,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 return false;
 
             PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
-            TiltSensitivity = CurrentDeviceInfo!.TiltSensitivity <= 0 ? 0 : (CurrentDeviceInfo.TiltSensitivity >= 2 ? 100 : 50);
-            _tipSensitivity = CurrentDeviceInfo.TipSensitivity switch
+            TiltSensitivity = CurrentDeviceInfo?.TiltSensitivity <= 0 ? 0 : (CurrentDeviceInfo?.TiltSensitivity >= 2 ? 100 : 50);
+            _tipSensitivity = CurrentDeviceInfo?.TipSensitivity switch
             {
                 0 => 0,
                 1 => 12.5,
@@ -108,9 +108,9 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             try
             {
-                ////JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserDoublePressValues))!;
+                ////JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo.EraserDoublePressValues))!;
                 Task<string> task;
-                task = DdpmCommonHelper.DeviceManagerSA!.GetEraserSinglePressValues();
+                task = DdpmCommonHelper.DeviceManagerSA?.GetEraserSinglePressValues();
                 var str1 = task.Result;
                 JsonElement jsonObject;
                 jsonObject = JsonSerializer.Deserialize<JsonElement>(str1)!;
@@ -119,7 +119,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _EraserActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
                 }
 
-                task = DdpmCommonHelper.DeviceManagerSA!.GetSideSwitchSinglePressValues();
+                task = DdpmCommonHelper.DeviceManagerSA?.GetSideSwitchSinglePressValues();
                 jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
                 foreach (var jo in jsonObject.EnumerateArray())
                 {
@@ -128,7 +128,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _SideSwitchActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
                 }
 
-                task = DdpmCommonHelper.DeviceManagerSA!.GetMenuSinglePressValues();
+                task = DdpmCommonHelper.DeviceManagerSA?.GetMenuSinglePressValues();
                 jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
                 foreach (var jo in jsonObject.EnumerateArray())
                 {
@@ -137,7 +137,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _MenuActions.Add(id, jo.GetProperty("actionName").GetString()!);
                 }
 
-                task = DdpmCommonHelper.DeviceManagerSA!.GetLaunchableAppValues();
+                task = DdpmCommonHelper.DeviceManagerSA?.GetLaunchableAppValues();
                 var str = task.Result;
                 if (string.IsNullOrEmpty(str))
                 {
@@ -404,7 +404,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void SetTipSensitivity()
         {
-            if (_tipSensitivity != CurrentDeviceInfo!.TipSensitivity)
+            if (_tipSensitivity != CurrentDeviceInfo?.TipSensitivity)
             {
                 var value = _tipSensitivity switch
                 {
@@ -416,7 +416,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     75 => 5,
                     _ => 6
                 };
-                DdpmCommonHelper.DeviceManagerSA!.SetTipSensitivity(itemID, value);
+                DdpmCommonHelper.DeviceManagerSA?.SetTipSensitivity(itemID, value);
                 CheckRestoreStatus();
             }
         }
@@ -441,9 +441,9 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             try
             {
-                if (_tiltSensitivity != CurrentDeviceInfo!.TiltSensitivity)
+                if (_tiltSensitivity != CurrentDeviceInfo?.TiltSensitivity)
                 {
-                    DdpmCommonHelper.DeviceManagerSA!.SetTiltSensitivity(itemID, _tiltSensitivity / 50);
+                    DdpmCommonHelper.DeviceManagerSA?.SetTiltSensitivity(itemID, _tiltSensitivity / 50);
                     CheckRestoreStatus();
                 }
             }
@@ -718,9 +718,12 @@ namespace DDPM.UI.Plugin.ViewModels
             if (PenAction.RestoreToDefault())
             {
                 RefreshButtonInfo();
-                CurrentDeviceInfo!.TiltSensitivity = 0;
+                if (CurrentDeviceInfo != null)
+                {
+                    CurrentDeviceInfo.TiltSensitivity = 0;
+                    CurrentDeviceInfo.TipSensitivity = 3;
+                }
                 TiltSensitivity = 0;
-                CurrentDeviceInfo!.TipSensitivity = 3;
                 TipSensitivity = 50;
                 PenAction.IsTopBarrelHoverClickOn = false;
                 PenAction.IsBottomBarrelHoverClickOn = false;
@@ -772,7 +775,7 @@ namespace DDPM.UI.Plugin.ViewModels
                             byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
                             if (SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
                             {
-                                DdpmCommonHelper.DeviceManagerSA!.SetEraserSinglePressSetting(itemID, newValue);
+                                DdpmCommonHelper.DeviceManagerSA?.SetEraserSinglePressSetting(itemID, newValue);
                             }
                             else if (SelectedBehavior == ButtonBehavior.DoubleClick.ToString())
                             {
@@ -780,7 +783,7 @@ namespace DDPM.UI.Plugin.ViewModels
                                 {
                                     newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":65,\"actionName\":\"{actionName}\"}}");
                                 }
-                                DdpmCommonHelper.DeviceManagerSA!.SetEraserDoublePressSetting(itemID, newValue);
+                                DdpmCommonHelper.DeviceManagerSA?.SetEraserDoublePressSetting(itemID, newValue);
                             }
                             else
                             {
@@ -788,7 +791,7 @@ namespace DDPM.UI.Plugin.ViewModels
                                 {
                                     newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":77,\"actionName\":\"{actionName}\"}}");
                                 }
-                                DdpmCommonHelper.DeviceManagerSA!.SetEraserLongPressSetting(itemID, newValue);
+                                DdpmCommonHelper.DeviceManagerSA?.SetEraserLongPressSetting(itemID, newValue);
                             }
                             break;
                         case "TopBarrelButton":
@@ -797,7 +800,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                             jobj.Add("actionName", actionName);
                             byte[] newValue2 = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
-                            DdpmCommonHelper.DeviceManagerSA!.SetSideTopSwitchSinglePressSetting(itemID, newValue2);
+                            DdpmCommonHelper.DeviceManagerSA?.SetSideTopSwitchSinglePressSetting(itemID, newValue2);
                             break;
                         case "BottomBarrelButton":
                             if (string.IsNullOrEmpty(actionName))
@@ -805,7 +808,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                             jobj.Add("actionName", actionName);
                             byte[] newValue3 = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
-                            DdpmCommonHelper.DeviceManagerSA!.SetSideBottomSwitchSinglePressSetting(itemID, newValue3);
+                            DdpmCommonHelper.DeviceManagerSA?.SetSideBottomSwitchSinglePressSetting(itemID, newValue3);
                             break;
                     }
                     ActionList.ExportActionList(PenAction, "PEN");
@@ -833,13 +836,13 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     if (SelectedButton == PenButtonName.TopBarrelButton.ToString())
                     {
-                        DdpmCommonHelper.DeviceManagerSA!.SetIsSideTopButtonHoverClick(itemID, value);
+                        DdpmCommonHelper.DeviceManagerSA?.SetIsSideTopButtonHoverClick(itemID, value);
                         PenAction.IsTopBarrelHoverClickOn = value;
                         ActionList.ExportActionList(PenAction, "PEN");
                     }
                     if (SelectedButton == PenButtonName.BottomBarrelButton.ToString())
                     {
-                        DdpmCommonHelper.DeviceManagerSA!.SetIsSideBottomButtonHoverClick(itemID, value);
+                        DdpmCommonHelper.DeviceManagerSA?.SetIsSideBottomButtonHoverClick(itemID, value);
                         PenAction.IsBottomBarrelHoverClickOn = value;
                         ActionList.ExportActionList(PenAction, "PEN");
                     }
@@ -874,7 +877,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     { "menuLabel", PenAction.RadialLabels[index] }
                 };
                 byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
-                DdpmCommonHelper.DeviceManagerSA!.SetMenuSinglePressSetting(itemID, newValue);
+                DdpmCommonHelper.DeviceManagerSA?.SetMenuSinglePressSetting(itemID, newValue);
             }
             catch (Exception ex)
             {
@@ -883,12 +886,12 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void UpdateRadialMenuRightClick(bool value)
         {
-            DdpmCommonHelper.DeviceManagerSA!.SetMenuCenterRightClickSetting(itemID, value);
+            DdpmCommonHelper.DeviceManagerSA?.SetMenuCenterRightClickSetting(itemID, value);
         }
 
         public void UnpairPen()
         {
-            DdpmCommonHelper.DeviceManagerSA!.UnPairPen(CurrentDeviceID.ToString());
+            DdpmCommonHelper.DeviceManagerSA?.UnPairPen(CurrentDeviceID.ToString());
             OnGoBackClicked();
         }
     }
