@@ -830,14 +830,14 @@ namespace DDPM.SA.Plugin.CLIManager
                             //Thread.Sleep(10000);
 
                             commandResult = RunDDMCommand($"/get {command}");
-                            if (commandResult.exitCode != 0x0110)
-                            {
-                                retcode = false;
-                                response.Result = "FAIL";
-                                response.Message = commandResult.message;
-                                response.Value = commandResult.value;
-                                break;
-                            }
+                            //if (commandResult.exitCode != 0x0110)
+                            //{
+                            //    retcode = false;
+                            //    response.Result = "FAIL";
+                            //    response.Message = commandResult.message;
+                            //    response.Value = commandResult.value;
+                            //    break;
+                            //}
                         }
                     }
                 }

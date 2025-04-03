@@ -57,8 +57,9 @@
             <Grid>
                 <StackPanel>
                     <Grid>
+                        <!--20250402 Remove Width="648" for Fix open HDR ON brightness and contrast show value number clipping issue-->
                         <Border d:Visibility="Visible"
-                            Width="648"
+                            
                             Height="53"
                             Margin="0,5,0,15"
                             Background="{DynamicResource DefaultTheme_DialogBoxBkColor}"
@@ -336,7 +337,6 @@
                                             Width="16"
                                             Height="16"
                                             Margin="4,0"
-                                            Cursor="Hand"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                             Stretch="Uniform">
                                             <Image.ToolTip>
@@ -543,7 +543,6 @@
                                             Width="16"
                                             Height="16"
                                             Margin="4,0"
-                                            Cursor="Hand"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                             Stretch="Uniform">
                                             <Image.ToolTip>
@@ -1445,15 +1444,24 @@
                                                         <ColumnDefinition Width="*" />
                                                         <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
-
-                                                    <Image
+                                                    <!-- 20250402 Chewlin for PIMS-349265 Remove <Image../> and ADD <ContentControl../>   -->
+                                                    <!--<Image
                                                         Grid.Column="0"
                                                         Width="20"
                                                         Height="20"
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
                                                         Source="{DynamicResource BrightnessImage}"
-                                                        Stretch="UniformToFill" />
+                                                        Stretch="UniformToFill" />-->
+                                                    <ContentControl Grid.Column="0"
+                                                        Width="20"
+                                                        Height="20"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Template="{StaticResource icon_Brightness}"
+                                                        Focusable="True" KeyboardNavigation.IsTabStop="True"
+                                                        AutomationProperties.LabeledBy="{Binding ElementName=labelPreset1Brightness}"
+                                                        Foreground="{DynamicResource DefaultTheme_PathColor}" />        
                                                     <!-- Elsa 20250113 For PIMS [PIMS-333699]change Margin="8,0" Margin="8,-10,0,-40" -->
                                                     <!-- Chewlin 20250324 For Fix Brightness show value move up issue change Margin="8,-10,0,-40" to Margin="8,0"  -->
                                                     <UXControls:UXSlider
@@ -1509,16 +1517,24 @@
                                                         <ColumnDefinition Width="*" />
                                                         <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
-
-                                                    <Image
+                                                    <!-- 20250402 Chewlin for PIMS-349265 Remove <Image../> and ADD <ContentControl../>   -->
+                                                    <!--<Image
                                                         Grid.Column="0"
                                                         Width="20"
                                                         Height="20"
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
                                                         Source="{DynamicResource ContrastImage}"
-                                                        Stretch="UniformToFill" />
-
+                                                        Stretch="UniformToFill" />-->
+                                                    <ContentControl Grid.Column="0"
+                                                        Width="20"
+                                                        Height="20"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Focusable="True" KeyboardNavigation.IsTabStop="True"
+                                                        AutomationProperties.LabeledBy="{Binding ElementName=labelPreset1Contrast}"
+                                                        Template="{StaticResource icon_Contrast}"
+                                                        Foreground="{DynamicResource DefaultTheme_PathColor}" />
                                                     <UXControls:UXSlider
                                                         Name="preset1_C_slider"
                                                         Grid.Column="1"
@@ -1880,15 +1896,24 @@
                                                         <ColumnDefinition Width="*" />
                                                         <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
-
-                                                    <Image
+                                                    <!-- 20250402 Chewlin for PIMS-349265 Remove <Image../> and ADD <ContentControl../>   -->
+                                                    <!--<Image
                                                         Grid.Column="0"
                                                         Width="20"
                                                         Height="20"
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
                                                         Source="{DynamicResource BrightnessImage}"
-                                                        Stretch="UniformToFill" />
+                                                        Stretch="UniformToFill" />-->
+                                                    <ContentControl Grid.Column="0"
+                                                        Width="20"
+                                                        Height="20"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Template="{StaticResource icon_Brightness}"
+                                                        Focusable="True" KeyboardNavigation.IsTabStop="True"
+                                                        AutomationProperties.LabeledBy="{Binding ElementName=labelPreset2Brightness}"
+                                                        Foreground="{DynamicResource DefaultTheme_PathColor}" />
                                                     <!-- Elsa 20250113 For PIMS [PIMS-333699]change Margin="8,0" Margin="8,-10,0,-40" -->
                                                     <!-- Chewlin 20250324 For Fix Brightness show value move up issue change Margin="8,-10,0,-40" to Margin="8,0"  -->
                                                     <UXControls:UXSlider
@@ -1943,16 +1968,24 @@
                                                         <ColumnDefinition Width="*" />
                                                         <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
-
-                                                    <Image
+                                                    <!-- 20250402 Chewlin for PIMS-349265 Remove <Image../> and ADD <ContentControl../>   -->
+                                                    <!--<Image
                                                         Grid.Column="0"
                                                         Width="20"
                                                         Height="20"
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
                                                         Source="{DynamicResource ContrastImage}"
-                                                        Stretch="UniformToFill" />
-
+                                                        Stretch="UniformToFill" />-->
+                                                    <ContentControl Grid.Column="0"
+                                                        Width="20"
+                                                        Height="20"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Focusable="True" KeyboardNavigation.IsTabStop="True"
+                                                        AutomationProperties.LabeledBy="{Binding ElementName=labelPreset2Contrast}"
+                                                        Template="{StaticResource icon_Contrast}"
+                                                        Foreground="{DynamicResource DefaultTheme_PathColor}" />
                                                     <UXControls:UXSlider
                                                         Name="preset2_C_slider"
                                                         Grid.Column="1"
@@ -2048,7 +2081,6 @@
                                             Width="16"
                                             Height="16"
                                             Margin="4,0"
-                                            Cursor="Hand"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                             Stretch="Uniform">
                                             <Image.ToolTip>
@@ -2727,7 +2759,6 @@
                                             Width="16"
                                             Height="16"
                                             Margin="4,0"
-                                            Cursor="Hand"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                             Stretch="Uniform">
                                             <Image.ToolTip>

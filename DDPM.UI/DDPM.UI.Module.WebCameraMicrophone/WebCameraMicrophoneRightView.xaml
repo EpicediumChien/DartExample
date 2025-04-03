@@ -185,7 +185,7 @@
               <!-- #endregion Text "Camera Microphone" -->
 
               <!-- #region info Icon -->
-              <Border Grid.Column="1" Background="{StaticResource FakeTransparent}" Cursor="Hand"  Margin="8,0,0,0"
+              <Border Grid.Column="1" Background="{StaticResource FakeTransparent}" Margin="8,0,0,0"
                                HorizontalAlignment="Left">
                 <ContentControl Template="{StaticResource icon_Info}" Width="16" Height="16"/>
                 <Border.ToolTip>
@@ -227,7 +227,7 @@
             </Grid>
 
             <!-- #region Wraning Icon -->
-            <Image Grid.Column="1" Name="imgWarn" Margin="0,0,10,0" Source="/DDPM.UI.Common;component/Resources/Warring.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16" VerticalAlignment="Center">
+            <Image Grid.Column="1" Name="imgWarn" Margin="0,0,10,0" Source="/DDPM.UI.Common;component/Resources/Warring.png" Stretch="Uniform" Width="16" Height="16" VerticalAlignment="Center">
               <Image.ToolTip>
                 <ToolTip Placement="Right" VerticalOffset="-85" HorizontalOffset="15">
                   <Border Style="{StaticResource Tooltip_OutterBorderStyle}">

@@ -586,68 +586,90 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             }
         }
 
-        private void BatteryIndicator_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        private async void BatteryIndicator_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] BatteryIndicator_MouseEnter ... in");
+            DdpmCommonHelper.WriteUILog("[Headset_LaunchView] BatteryIndicator_MouseEnter ... in");
             try
             {
-                if (_vm!.ConnectionType == "WiredAudio")
+                if (_vm?.ConnectionType == "WiredAudio")
                 {
+                    DdpmCommonHelper.WriteUILog("[Headset_LaunchView] BatteryIndicator_MouseEnter WiredAudio ... ");
                     return;
                 }
-                if (_vm!.ConnectionType == "Dongle")
+
+                if (_vm?.ConnectionType == "Dongle")
                 {
-                    //string pp = DdpmCommonHelper.DeviceManagerSA.GetFirmwareVersionAsyncForDongle(_vm!.CurrentDeviceID.ToString()).Result;
-                    //string ppp = DdpmCommonHelper.DeviceManagerSA.GetFirmwareVersionAsync(_vm!.CurrentDeviceID.ToString()).Result;
                     txtSystemName3.Text = " " + Strings.USBWirelessReceiver;
                     txtFirmware.Text = $"{Strings.ReceiverFirmwareVersion} {_vm.PhysicalDeviceFWVersion}";
                     txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
                     DongleConnection.Visibility = Visibility.Visible;
+                    DdpmCommonHelper.WriteUILog("[Headset_LaunchView] BatteryIndicator_MouseEnter Dongle ... ");
                 }
-                else if (_vm!.ConnectionType == "Bluetooth")//I can't get Headset connection HostName, FW issue?
+                else if (_vm?.ConnectionType == "Bluetooth")
                 {
-                    //_vm.PairedHostName1 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result;
-                    //_vm.PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result;
-                    //_deviceManager.GetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
-                    //string hostName = Dns.GetHostName();
-                    string PairedHostName1 = string.Empty;
-                    string PairedHostName2 = string.Empty;
-                    if (string.IsNullOrEmpty(_vm.PairedHostName1))
-                        PairedHostName1 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
-                    else
-                        PairedHostName1 = _vm.PairedHostName1; //DTH
-                    if (string.IsNullOrEmpty(_vm.PairedHostName2))
-                        PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
-                    else
-                        PairedHostName2 = _vm.PairedHostName2;  //DTH
+                    string pairedHostName1, pairedHostName2;
 
-                    if (string.IsNullOrEmpty(PairedHostName1))
+                    if (DdpmCommonHelper.DeviceManagerSA != null)
                     {
-                        txt1.Style = ConnectionStyle2;
-                        txtBLHost1.Style = ConnectionStyle2;
-                        //imgBL1.Source = img2;
+                        // DTP
+                        pairedHostName1 = await DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString());
+                        if (string.IsNullOrEmpty(pairedHostName1))
+                        {
+                            pairedHostName1 = _vm.PairedHostName1;
+                            DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] BatteryIndicator_MouseEnter Bluetooth DeviceManagerSA not null, GetHeadsetPairedHostName2Async IsNullOrEmpty,  DTH : {_vm.PairedHostName1} ... ");
+                        }
+                        else
+                        {
+                            DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] BatteryIndicator_MouseEnter Bluetooth DeviceManagerSA not null, GetHeadsetPairedHostName2Async DTP pairedHostName1 = {pairedHostName1} ... ");
+                        }
+                        pairedHostName2 = await DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString());
+                        if (string.IsNullOrEmpty(pairedHostName2))
+                        {
+                            pairedHostName2 = _vm.PairedHostName2;
+                            DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] BatteryIndicator_MouseEnter Bluetooth DeviceManagerSA not null, GetHeadsetPairedHostName3Async IsNullOrEmpty,  DTH : {_vm.PairedHostName2} ... ");
+                        }
+                        else
+                        {
+                            DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] BatteryIndicator_MouseEnter Bluetooth DeviceManagerSA not null, GetHeadsetPairedHostName2Async DTP pairedHostName2 = {pairedHostName2} ... ");
+                        }
                     }
                     else
                     {
+                        // DTH
+                        pairedHostName1 = _vm.PairedHostName1;
+                        pairedHostName2 = _vm.PairedHostName2;
+                        DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] BatteryIndicator_MouseEnter Bluetooth DeviceManagerSA null, 1 = {_vm.PairedHostName1} : 2 = {_vm.PairedHostName2} ... ");
+                    }
+
+                    if (string.IsNullOrEmpty(pairedHostName1))
+                    {
+                        Host1.Visibility = Visibility.Collapsed;
+                        txtBLHost1.Text = Strings.ReadyToBePaired;
+                    }
+                    else
+                    {
+                        Host1.Visibility = Visibility.Visible;
                         txt1.Style = ConnectionStyle1;
                         txtBLHost1.Style = ConnectionStyle1;
-                        //imgBL1.Source = img2;
+                        txtBLHost1.Text = pairedHostName1;
                     }
-                    if (string.IsNullOrEmpty(PairedHostName2))
+
+                    if (string.IsNullOrEmpty(pairedHostName2))
                     {
-                        txt2.Style = ConnectionStyle2;
-                        txtBLHost2.Style = ConnectionStyle2;
-                        //imgBL2.Source = img2;
+                        Host2.Visibility = Visibility.Collapsed;
+                        txtBLHost2.Text = Strings.ReadyToBePaired;
                     }
                     else
                     {
+                        Host2.Visibility = Visibility.Visible;
                         txt2.Style = ConnectionStyle1;
                         txtBLHost2.Style = ConnectionStyle1;
-                        //imgBL2.Source = img2;
+                        txtBLHost2.Text = pairedHostName2;
                     }
-                    txtBLHost1.Text = string.IsNullOrEmpty(PairedHostName1) ? Strings.ReadyToBePaired : PairedHostName1;
-                    txtBLHost2.Text = string.IsNullOrEmpty(PairedHostName2) ? Strings.ReadyToBePaired : PairedHostName2;
+
                     BLConnection.Visibility = Visibility.Visible;
+
+                    DdpmCommonHelper.WriteUILog("[Headset_LaunchView] BatteryIndicator_MouseEnter Bluetooth ... ");
                 }
             }
             catch (Exception ex)
