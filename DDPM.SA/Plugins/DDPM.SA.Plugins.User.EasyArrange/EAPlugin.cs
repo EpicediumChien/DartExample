@@ -1808,8 +1808,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
             _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
 
-            EventManagerArgs evtArgs = new EventManagerArgs() { Tag = "init" };
-            _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, evtArgs);
+            //Derek0403 why raise DisplaySettingsChanged event here?
+            //Remove???????
+            //EventManagerArgs evtArgs = new EventManagerArgs() { Tag = "init" };
+            //_agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, evtArgs);
 
             //Robert_Lin, 2024-12-10
             _agent.RegisterForEvent(AgentEventNames.AllInfoMonitorsChanged, AllInfoMonitorChangedHandler);
@@ -1877,17 +1879,18 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private void DisplaySettingsChangedHandler(object sender, EventManagerArgs e)
         {
-            _log?.Info($"@ OnDisplaychanged");
+            _log?.Info($"@[EAPlugin] DisplaySettingsChangedHandler");
 
             if (_eaBroker != null)
             {
                 bool isInit = false;
 
-                if (e.Tag != null &&
-                    e.Tag is string &&
-                    e.Tag == "init")
+                //if (e.Tag != null &&
+                //    e.Tag is string &&
+                //    e.Tag == "init")
+                if (e.Tag is not null and string and "init")
                 {
-                    isInit = true;                    
+                    isInit = true;
                 }
 
                 //If we are in Edit state, then cancel the editing
@@ -1897,6 +1900,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     
                 }
 
+                _log?.Info($"@[EAPlugin] isInit={isInit} before call _eaBroker.Handle_DisplaySettingsChanged");
                 _eaBroker.Handle_DisplaySettingsChanged(isInit);
                 //Move blew statement into Handle_DisplaySettingsChanged()
                 //_eaBroker.VM.RefreshWorkWindows();
@@ -1904,7 +1908,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             else
             {
-                WriteLog("@ OnDisplaychanged(), _eaBroker is null.");
+                WriteLog("@ DisplaySettingsChangedHandler(), _eaBroker is null.");
             }
         }
 

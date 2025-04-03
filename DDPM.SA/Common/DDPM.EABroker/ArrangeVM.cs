@@ -131,8 +131,9 @@ namespace DDPM.EABroker
             _easyArrangeService = eaService;
             _settingsManager = settingsManager;
 
+            //Derek0403 經測試可以移掉？
             WriteLog($"[ArrangeVM] ReloadEzSettingsFromUserSettingsFile by InitInterfaces"); //add for debug
-            ReloadEzSettingsFromUserSettingsFile();
+            //ReloadEzSettingsFromUserSettingsFile();
         }
         #endregion
 
@@ -717,6 +718,7 @@ namespace DDPM.EABroker
                     //To detect IsSpanMultiMonitors changed
                     bool isSpanOnOffChanged = (IsSpanMultiMonitors != ezSettings.IsSpanAcrossMultiMonitors);
                     IsSpanMultiMonitors = ezSettings.IsSpanAcrossMultiMonitors;
+                    ezSettings = null;
 
                     if (isSpanOnOffChanged)
                     {
@@ -933,7 +935,7 @@ namespace DDPM.EABroker
         //(v2)Robert_Lin, 2024-11-18, new version consider when SpanScreen is ON
         public void RefreshWorkWindows(bool isInit = false)
         {
-            WriteLog("@ ArrangeVM.RefreshWorkWindows()");
+            WriteLog($"@ ArrangeVM.RefreshWorkWindows() isInit = {isInit}");
             bool isSupportNonDellMonitors = false;
 
             WriteLog($"[ArrangeVM] ReloadEzSettingsFromUserSettingsFile by RefreshWorkWindows"); //add for debug
