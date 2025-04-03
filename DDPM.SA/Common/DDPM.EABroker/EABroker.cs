@@ -207,7 +207,10 @@ namespace DDPM.EABroker
         public void NotifySettingsManagerIsInitializedDone()
         {
             if (_vm != null)
+            {
+                WriteLog($"[EABroker] ReloadEzSettingsFromUserSettingsFile by NotifySettingsManagerIsInitializedDone"); //add for debug
                 _vm.ReloadEzSettingsFromUserSettingsFile();
+            }
         }
 
         //Derek 2025/0401 due to reference = 0
@@ -249,6 +252,7 @@ namespace DDPM.EABroker
                     _ = _deviceManagerSA.SendEANotify(eAArgs);
                 }
 
+                _vm.WriteLog("@EABroker RefreshWorkWindows call from Handle_DisplaySettingsChanged()");
                 _vm.RefreshWorkWindows(isInit);
             }
         }
@@ -257,7 +261,7 @@ namespace DDPM.EABroker
         {
             if (_vm != null)
             {
-                _vm.WriteLog("@EABroker.Handle_DisplaySettingsChanged()");
+                _vm.WriteLog("@EABroker.Handle_AllInfoMonitorChanged()");
                 //Check for Span across multiple monitors
                 //
                 //1 Save original settings
@@ -278,6 +282,7 @@ namespace DDPM.EABroker
                     _ = _deviceManagerSA.SendEANotify(eAArgs);
                 }
 
+                WriteLog($"[ArrangeVM] RefreshWorkWindows call from Handle_AllInfoMonitorChanged");
                 _vm.RefreshWorkWindows(isInit);
             }
         }

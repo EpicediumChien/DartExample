@@ -224,6 +224,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         {
                             ConfigureServices();
                             //Only after DisplayManager is ready to use, will start the EasyArrange service
+                            WriteLog($"EABroker_Start from GetCurrentDeviceManagerPluginCondition");
                             EABroker_Start();
                         }
                     }
@@ -276,6 +277,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         {
                             ConfigureServices();
                             //Only after DisplayManager is ready to use, will start the EasyArrange service
+                            WriteLog($"EABroker_Start from GetCurrentDisplayManagerPluginCondition");
                             EABroker_Start();
                         }
                     }
@@ -338,6 +340,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         {
                             ConfigureServices();
                             //Only after all required Plugins are ready to use, will start the EasyArrange service
+                            WriteLog($"EABroker_Start from GetCurrentSettingsManagerPluginCondition");
                             EABroker_Start();
                         }
                     }
@@ -1112,6 +1115,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 if (_deviceManagerPlugin != null)
                 {
+                    WriteLog($"[EAPlugin] ReloadEzSettingsFromUserSettingsFile by ReloadEzSettings"); //add for debug
                     _eaBroker.VM.ReloadEzSettingsFromUserSettingsFile();
                     return Task.FromResult(true);
                 }
@@ -1803,6 +1807,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             //Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
             _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
+
             EventManagerArgs evtArgs = new EventManagerArgs() { Tag = "init" };
             _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, evtArgs);
 

@@ -131,6 +131,7 @@ namespace DDPM.EABroker
             _easyArrangeService = eaService;
             _settingsManager = settingsManager;
 
+            WriteLog($"[ArrangeVM] ReloadEzSettingsFromUserSettingsFile by InitInterfaces"); //add for debug
             ReloadEzSettingsFromUserSettingsFile();
         }
         #endregion
@@ -719,13 +720,14 @@ namespace DDPM.EABroker
 
                     if (isSpanOnOffChanged)
                     {
+                        WriteLog($"[ArrangeVM] RefreshWorkWindows call from ReloadEzSettingsFromUserSettingsFile when isSpanOnOffChanged=true");
                         RefreshWorkWindows();
                     }
 
                     ////Robert_Lin, 2024-10-20 Debug purpose, need to comment out in release build
                     //IsAwsEnabled = true;
 
-                    WriteLog($"@ArrangeVM.ReloadEzSettingsFromUserSettingsFile(): IsOnlyShift={IsOnlyShift}, IsAwsEnabled={IsAwsEnabled}, IsWithoutGap={IsWithoutGap}, IsSpanMultiMonitors={IsSpanMultiMonitors}");
+                    WriteLog($"@ArrangeVM.ReloadEzSettingsFromUserSettingsFile(): IsOnlyShift={IsOnlyShift}, IsAwsEnabled={IsAwsEnabled}, IsWithoutGap={IsWithoutGap}, IsSpanMultiMonitors={IsSpanMultiMonitors}, isSpanOnOffChanged={isSpanOnOffChanged}");
                     return true;
                 }
             }
@@ -934,6 +936,7 @@ namespace DDPM.EABroker
             WriteLog("@ ArrangeVM.RefreshWorkWindows()");
             bool isSupportNonDellMonitors = false;
 
+            WriteLog($"[ArrangeVM] ReloadEzSettingsFromUserSettingsFile by RefreshWorkWindows"); //add for debug
             ReloadEzSettingsFromUserSettingsFile();
             RefreshScreenScale();
 
@@ -1096,6 +1099,7 @@ namespace DDPM.EABroker
                 {
                     try
                     {
+                        WriteLog($"[ArrangeVM] create timer and raise DisplaySettingsChanged event");
                         _agent?.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
                     }
                     catch (Exception e)
@@ -1107,6 +1111,7 @@ namespace DDPM.EABroker
                         // 任务执行完成后释放定时器资源
                         timer1?.Dispose();
                         timer1 = null;
+                        WriteLog($"[ArrangeVM] create timer has been Dispose");
                     }
                     //_agent?.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
                 }, null, 2000, Timeout.Infinite);

@@ -7390,7 +7390,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     //Check if value is changed
                     if (ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors == newValue)
+                    {
+                        ddpmSettings = null;
                         return Task.FromResult(true);
+                    }
 
                     //Apply new setting value
                     ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors = newValue;
@@ -7403,9 +7406,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
 
                         SendEasyArrangeTelemetry("span_monitors");
+                        ddpmSettings = null;
                         return Task.FromResult(true);
                     }
                 }
+
+                ddpmSettings = null;
             }
             //Read DDPMSettings
             //Fail to read, will return false
