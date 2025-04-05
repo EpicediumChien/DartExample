@@ -340,14 +340,16 @@
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                             Stretch="Uniform">
                                             <Image.ToolTip>
-                                                <ToolTip>
+                                                <!--Elsa 20250401 for PIMS-348390 add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened"-->
+                                                <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                         <Border.Resources>
                                                             <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding [Brightness.5], Source={x:Static lang:LangHelper.Instance}}" />
+                                                                <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow"-->
+                                                                <TextBlock Text="{Binding [Brightness.5], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
@@ -1367,14 +1369,15 @@
                                                                 Stretch="Uniform">
                                                             <!--20250324 Chewlin for Fix PIMS-348382 Fix Tooltip issue ADD Placement="Top" HorizontalOffset="0" VerticalOffset="12", HorizontalAlignment="Left" MaxWidth="272" TextWrapping="WrapWithOverflow"-->
                                                             <Image.ToolTip>
-                                                                <ToolTip Placement="Top" HorizontalOffset="0" VerticalOffset="12">
+                                                                <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2",add MaxWidth="272" -->
+                                                                <ToolTip Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272">
                                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                                             <Border.Resources>
                                                                                 <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                                             </Border.Resources>
                                                                             <StackPanel>
                                                                                 <StackPanel Orientation="Horizontal">
-                                                                                <TextBlock Text="{Binding [Brightness.17], Source={x:Static lang:LangHelper.Instance}}" HorizontalAlignment="Left" MaxWidth="272" TextWrapping="WrapWithOverflow"/>
+                                                                                <TextBlock Text="{Binding [Brightness.17], Source={x:Static lang:LangHelper.Instance}}" HorizontalAlignment="Left" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                                                 </StackPanel>
                                                                             </StackPanel>
                                                                         </Border>
@@ -1817,14 +1820,15 @@
                                                                 Stretch="Uniform">
                                                             <!--20250324 Chewlin for Fix PIMS-348382 Fix Tooltip issue ADD Placement="Top" HorizontalOffset="0" VerticalOffset="12", HorizontalAlignment="Left" MaxWidth="272" TextWrapping="WrapWithOverflow"-->
                                                             <Image.ToolTip>
-                                                                <ToolTip Placement="Top" HorizontalOffset="0" VerticalOffset="12">
+                                                                <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2",add MaxWidth="272" -->
+                                                                <ToolTip Placement="Top" HorizontalOffset="2" VerticalOffset="12" MaxWidth="272">
                                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                                             <Border.Resources>
                                                                                 <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                                             </Border.Resources>
                                                                             <StackPanel>
                                                                                 <StackPanel Orientation="Horizontal">
-                                                                                <TextBlock Text="{Binding [Brightness.17], Source={x:Static lang:LangHelper.Instance}}" HorizontalAlignment="Left" MaxWidth="272" TextWrapping="WrapWithOverflow" />
+                                                                                <TextBlock Text="{Binding [Brightness.17], Source={x:Static lang:LangHelper.Instance}}" HorizontalAlignment="Left" MaxWidth="230" TextWrapping="WrapWithOverflow" />
                                                                                 </StackPanel>
                                                                             </StackPanel>
                                                                         </Border>
@@ -2084,14 +2088,16 @@
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
                                             Stretch="Uniform">
                                             <Image.ToolTip>
-                                                <ToolTip>
+                                                <!--Elsa 20250401 for PIMS-348390 add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened" -->
+                                                <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                         <Border.Resources>
                                                             <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding [Brightness.21], Source={x:Static lang:LangHelper.Instance}}" />
+                                                                <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow" -->
+                                                                <TextBlock Text="{Binding [Brightness.21], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow" />
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>

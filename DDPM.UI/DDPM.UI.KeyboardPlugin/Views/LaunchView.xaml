@@ -486,12 +486,13 @@
                 <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
               </Image.InputBindings>
               <Image.ToolTip>
-                <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="6" to VerticalOffset="12" HorizontalOffset="8" to HorizontalOffset="2" -->
+                <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2">
                   <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                     <Border.Resources>
                       <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                     </Border.Resources>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal">              
                       <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
                     </StackPanel>
                   </Border>

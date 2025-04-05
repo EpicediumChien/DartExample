@@ -7,6 +7,7 @@ using UserControl = System.Windows.Controls.UserControl;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.ComponentModel;
+using System.Windows;
 
 namespace DDPM.UI.Module.HeadsetAutomatedActions
 {
@@ -65,6 +66,35 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
                     _vm.isWearTabStopped = !locked;
                 }
             }));
+        }
+        private double GetScreenScaleX()
+        {
+            var source = PresentationSource.FromVisual(this);
+            if (source?.CompositionTarget != null)
+            {
+                return source.CompositionTarget.TransformToDevice.M11;
+            }
+            return 1;
+        }
+
+        private void toolTip_Opened(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Controls.ToolTip? target = sender as System.Windows.Controls.ToolTip;
+            if (target == null)
+                return;
+            double screenScaleX = GetScreenScaleX();
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
+            double winRightX = (mainWindow.Left + mainWindow!.ActualWidth) * screenScaleX;
+            double mousepositionX = System.Windows.Forms.Cursor.Position.X;
+            double mouseaddtooltip = mousepositionX + target.ActualWidth * screenScaleX;
+            if (winRightX > mouseaddtooltip)
+            {
+                target.HorizontalOffset = 2;
+            }
+            else
+            {
+                target.HorizontalOffset = -1 * target.ActualWidth + 14;
+            }
         }
     }
 

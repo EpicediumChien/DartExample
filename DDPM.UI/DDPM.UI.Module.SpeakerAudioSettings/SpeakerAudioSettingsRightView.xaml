@@ -35,7 +35,7 @@
         <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
           <Grid VerticalAlignment="Top" Margin="0,0,0,15">
             <!--Elsa 20250320 for PIMS-348395 change Margin="0,0,0,0" to Margin="0,0,0,-8" add AudioSettingsBorder and AudioSettingsStackPanel -->
-            <Border x:Name="AudioSettingsBorder" CornerRadius="6" Width="438" Height="Auto" VerticalAlignment="Top">
+            <Border x:Name="AudioSettingsBorder" CornerRadius="6" Width="auto" Height="Auto" VerticalAlignment="Top">
               <StackPanel x:Name="AudioSettingsStackPanel" Orientation="Vertical">
                 <Border x:Name="MainContentBorder" Style="{DynamicResource RightGroupBorderStyleForHeadset}" CornerRadius="6" Width="438" Height="auto" VerticalAlignment="Top" Margin="0,0,0,-8">
                   <StackPanel x:Name="MainContentStackPanel" Orientation="Vertical" Margin="0,20,0,10">
@@ -56,14 +56,15 @@
                       <Image x:Name="IntelligentMicNoiseCancellationImage" Grid.Column="1" Width="16" Height="16" Margin="8,8,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                         <Image.ToolTip>
                           <!--Chwewlin 20250210 fix Speakerphone AudioSetting ToolTip over the e DDPM page border issue  ADD Placement="Left" VerticalOffset="30" HorizontalOffset="30"-->
-                          <ToolTip Placement="Left" VerticalOffset="30" HorizontalOffset="30">
+                          <!--Elsa 20250401 for PIMS-348390 change Placement="Left" to Placement="Top",change VerticalOffset="30" to VerticalOffset="12",change HorizontalOffset="30" to HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
+                          <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                               <Border.Resources>
                                 <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                               </Border.Resources>
                               <StackPanel>
                                 <StackPanel Orientation="Horizontal">
-                                  <TextBlock Text="{Binding IntelligentMicNoiseCancellationToolTip}" />
+                                  <TextBlock Text="{Binding IntelligentMicNoiseCancellationToolTip}" MaxWidth="230" TextWrapping="WrapWithOverflow" />
                                 </StackPanel>
                               </StackPanel>
                             </Border>
@@ -87,14 +88,15 @@
                         <Image x:Name="MuteSoundNotificationImage" Grid.Column="1" Width="16" Height="16" Margin="8,8,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                           <Image.ToolTip>
                             <!--Chwewlin 20250210 fix Speakerphone AudioSetting ToolTip over the DDPM page border issue  ADD Placement="Left" VerticalOffset="30" HorizontalOffset="30"-->
-                            <ToolTip Placement="Left" VerticalOffset="30" HorizontalOffset="30">
+                            <!--Elsa 20250401 for PIMS-348390 change Placement="Left" to Placement="Top",change VerticalOffset="30" to VerticalOffset="12",change HorizontalOffset="30" to HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
+                            <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                               <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                 <Border.Resources>
                                   <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                 </Border.Resources>
                                 <StackPanel>
                                   <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding MuteSoundNotificationToolTip}" />
+                                    <TextBlock Text="{Binding MuteSoundNotificationToolTip}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                   </StackPanel>
                                 </StackPanel>
                               </Border>
@@ -116,14 +118,15 @@
                         <Image x:Name="VolumeAdjustmentToneImage" Grid.Column="1" Width="16" Height="16" Margin="8,8,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                           <Image.ToolTip>
                             <!--Chwewlin 20250210 fix Speakerphone AudioSetting ToolTip over the DDPM page border issue  ADD Placement="Left" VerticalOffset="30" HorizontalOffset="30"-->
-                            <ToolTip Placement="Left" VerticalOffset="30" HorizontalOffset="30">
+                            <!--Elsa 20250401 for PIMS-348390 change Placement="Left" to Placement="Top",change VerticalOffset="30" to VerticalOffset="12",change HorizontalOffset="30" to HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
+                            <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                               <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                 <Border.Resources>
                                   <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                 </Border.Resources>
                                 <StackPanel>
                                   <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding VolumeAdjustmentToneToolTip}" />
+                                    <TextBlock Text="{Binding VolumeAdjustmentToneToolTip}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                   </StackPanel>
                                 </StackPanel>
                               </Border>

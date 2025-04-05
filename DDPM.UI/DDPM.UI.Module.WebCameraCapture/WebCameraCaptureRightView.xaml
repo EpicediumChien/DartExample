@@ -233,9 +233,11 @@
               <Border Background="{StaticResource FakeTransparent}">
                 <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                 <Border.ToolTip>
-                  <ToolTip VerticalOffset="50" Placement="Center">
+                  <!--Elsa 20250401 for PIMS-348390 change Placement="Center" to Placement="Top" VerticalOffset="50" to VerticalOffset="14",add HorizontalOffset="11",add MaxWidth="272" Opened="toolTip_Opened" -->
+                  <ToolTip VerticalOffset="14" Placement="Top" HorizontalOffset="11" MaxWidth="272" Opened="toolTip_Opened">
                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                      <TextBlock MaxWidth="350" TextWrapping="WrapWithOverflow" Text="{Binding [WebCameraCapture.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" />
+                      <!--Elsa 20250401 for PIMS-348390 change MaxWidth="350" to MaxWidth="230" -->
+                      <TextBlock MaxWidth="230" TextWrapping="WrapWithOverflow" Text="{Binding [WebCameraCapture.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" />
                     </Border>
                   </ToolTip>
                 </Border.ToolTip>
