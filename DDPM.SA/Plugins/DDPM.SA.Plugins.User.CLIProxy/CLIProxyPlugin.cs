@@ -815,13 +815,17 @@ namespace DDPM.SA.Plugin.User.CLIManager
         private void _CliManagerPlugin_CLIToastEvent(object? sender, CLIEventToastArgs e)
         {
             var header = string.Empty;
+            bool is_model = false;
             if (e.defer_item.commanddata.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase) || e.defer_item.commanddata.Contains("dock=fwupdate", StringComparison.OrdinalIgnoreCase))
             {
-                header = e.is_defer ? "Update available" : "Update will be applied";
-
+                
                 var deviceType = e.defer_item.commanddata.ToLower()
                                                          .Split()
                                                          .FirstOrDefault(_ => _.Contains("value"));
+
+                var devicemodel = e.defer_item.commanddata.ToLower()
+                                                         .Split()
+                                                         .FirstOrDefault(_ => _.Contains("model"));
 
                 var deviceName = "[Device Marketing Name with Model in parenthesis]";
 
@@ -839,7 +843,31 @@ namespace DDPM.SA.Plugin.User.CLIManager
                     }
                 }
 
-                e.toast_message = e.is_defer ? $"{deviceName} has a pending firmware update. During update, device may be intermittently available. Do not disconnect the device during the update. This update can be deferred {e.defer_item.count + 1} times before it is required." : $"There is a required firmware update for {deviceName}. During update, device may be intermittently available. Do not disconnect the device during the update.";
+                if (!string.IsNullOrWhiteSpace(devicemodel))
+                {
+                    devicemodel = devicemodel.Split('=')[1].Split(',')[0];
+
+                    if (deviceType.Equals("display"))
+                    {
+                        devicemodel = _DevManagerPlugin.GetMonitors().Result.FirstOrDefault()?.modelName ?? devicemodel;
+                    }
+                    else
+                    {
+                        devicemodel = _DevManagerPlugin.GetDevices().Result?.deviceInfo.FirstOrDefault(_ => _.LogicalDeviceType.Contains(devicemodel, StringComparison.OrdinalIgnoreCase))?.ModelNumber ?? devicemodel;
+                    }
+                    is_model = true;
+                }
+
+                var delldevicetype = getdevicetype(deviceName);
+
+                if (is_model && deviceType.Equals("display"))
+                    header = e.is_defer ? $"Dell Display {devicemodel.ToUpper()} firmware update" : "Update will be applied";
+                else if (is_model && !deviceType.Equals("display"))
+                    header = e.is_defer ? $"{delldevicetype} {devicemodel.ToUpper()} firmware update" : "Update will be applied";
+                else
+                    header = e.is_defer ? $"{delldevicetype} {deviceName} firmware update" : "Update will be applied";
+
+                e.toast_message = e.is_defer ? $"During update, device usage may be intermittent. Do not disconnect the device. This update can be deferred {e.defer_item.count + 1} times." : $"There is a required firmware update for {deviceName}. During update, device may be intermittently available. Do not disconnect the device during the update.";
             }
             else if (e.toast_message.Contains("app=update", StringComparison.OrdinalIgnoreCase))
             {
@@ -872,6 +900,31 @@ namespace DDPM.SA.Plugin.User.CLIManager
             }
 
 
+        }
+
+        private string getdevicetype(string devicetype)
+        {
+            if (devicetype.Contains("WB", StringComparison.OrdinalIgnoreCase))
+            {
+                devicetype = "Dell Webcam";
+            }
+            else if (devicetype.Contains("WL", StringComparison.OrdinalIgnoreCase))
+            {
+                devicetype = "Dell Headset";
+            }
+            else if (devicetype.Contains("SP", StringComparison.OrdinalIgnoreCase))
+            {
+                devicetype = "Dell Soundbar";
+            }
+            else if (devicetype.Contains("MS", StringComparison.OrdinalIgnoreCase))
+            {
+                devicetype = "Dell Mouse";
+            }
+            else if (devicetype.Contains("KB", StringComparison.OrdinalIgnoreCase))
+            {
+                devicetype = "Dell Keyboard";
+            }
+            return devicetype;
         }
 
         private void initOnActivated()
