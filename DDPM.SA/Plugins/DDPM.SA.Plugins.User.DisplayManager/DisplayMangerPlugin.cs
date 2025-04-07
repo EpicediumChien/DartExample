@@ -2080,6 +2080,46 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
+
+        /// <summary>
+        /// Update Import ALS Value
+        /// </summary>
+        /// <returns>bool type</returns>
+        public Task<bool> UpdateImportAlsValueAsync(MonitorInfo monitorInfos, uint value)
+        {
+            try
+            {
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync ... in");
+                List<ALSConfig> als_connecte = new List<ALSConfig>();
+                ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(monitorInfos.edid));
+                if (aconfig != null)
+                {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync find aconfig  monitor, " + aconfig.DisplayName.ToString() + " || " + aconfig.serialNumber.ToString());
+                    ParseBitDefineToAlsObject(value, ref aconfig);
+                    ParseMonitorInfo(monitorInfos, ref aconfig);
+                }
+                else
+                {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync can not find aconfig  monitor");
+                    aconfig = new ALSConfig();
+                    GetALSupport(monitorInfos, ref aconfig);
+                    if (aconfig.result == true && aconfig.isSupportALS != 0)//Read the ALS value only if ALS is supported
+                    {
+                        GetALSAll(monitorInfos, ref aconfig);
+                    }
+                    ParseMonitorInfo(monitorInfos, ref aconfig);
+                    AllALSConfig.Add(aconfig);               
+                }
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync ... out");
+                return Task.FromResult(true);
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"UpdateImportAlsValueAsync Exception {ex.Message}", log_type.error);
+                return Task.FromResult(false);
+            }
+        }
+
         /// <summary>
         /// Update Connected ALS Config
         /// </summary>

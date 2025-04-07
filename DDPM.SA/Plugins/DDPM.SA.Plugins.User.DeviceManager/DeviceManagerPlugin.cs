@@ -17055,6 +17055,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     if (SetVCPCapability(monitorInfo, 0x66, impVCPSequence.ALSConfig).Result)
                                     {
                                         writelog("[SetVCPSequence] Set ALS(0x66) success : Value = " + impVCPSequence.ALSConfig.ToString());
+                                        if(_DisplayManagerPlugin.UpdateImportAlsValueAsync(monitorInfo, impVCPSequence.ALSConfig).Result)
+                                            writelog("[SetVCPSequence] UpdateImportAlsValueAsync success ...");
+                                        else
+                                            writelog("[SetVCPSequence] UpdateImportAlsValueAsync fail ...");
                                     }
                                     else
                                     {

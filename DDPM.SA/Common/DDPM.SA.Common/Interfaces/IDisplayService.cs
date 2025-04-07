@@ -129,6 +129,8 @@ namespace DDPM.SA.Common
 
         #region ALS functions
 
+        Task<bool> UpdateImportAlsValueAsync(MonitorInfo monitorInfos, uint value);
+
         Task<ALSConfig> GetALSFeatureValue(MonitorInfo monitorInfos, ALSFeatureQueryType type, int value);
 
         Task<bool> SetALSFeatureValue(MonitorInfo monitorInfos, ref ALSConfig param, ALSFeatureQueryType type, string value);
