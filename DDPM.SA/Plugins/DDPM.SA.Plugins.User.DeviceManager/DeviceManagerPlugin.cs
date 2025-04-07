@@ -16192,12 +16192,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (ss[0] == "03" || ss[0] == "0F")
                 {
                     rc = GetVCPCapability(monitorInfo, 0xE0).Result;
-                    getvalue = (Convert.ToInt32(rc.value) & 0x0c);
+                    if (int.TryParse(rc.value.ToString(), out int crtValue))
+                    {
+                        getvalue = (crtValue & 0x0c);
+                    }
                 }
                 else if (ss[0] == "13")
                 {
                     rc = GetVCPCapability(monitorInfo, 0xE0).Result;
-                    getvalue = (Convert.ToInt32(rc.value) & 0x1c);
+                    if (int.TryParse(rc.value.ToString(), out int crtValue))
+                    {
+                        getvalue = (crtValue & 0x1c);
+                    }
                 }
                 if (getvalue != 0)
                 {
@@ -16248,12 +16254,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (ss[0] == "03" || ss[0] == "0F")
                 {
                     rc = GetVCPCapability(monitorInfo, 0xE0).Result;
-                    getvalue = (Convert.ToInt32(rc.value) & 0x0c);
+                    if (int.TryParse(rc.value.ToString(), out int crtValue))
+                    {
+                        getvalue = (crtValue & 0x0c);
+                    }
                 }
                 else if (ss[0] == "13")
                 {
                     rc = GetVCPCapability(monitorInfo, 0xE0).Result;
-                    getvalue = (Convert.ToInt32(rc.value) & 0x1c);
+                    if (int.TryParse(rc.value.ToString(), out int crtValue))
+                    {
+                        getvalue = (crtValue & 0x1c);
+                    }
                 }
                 if (getvalue != 0)
                 {
