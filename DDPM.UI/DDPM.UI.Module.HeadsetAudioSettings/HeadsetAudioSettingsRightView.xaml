@@ -158,7 +158,7 @@
         <Grid x:Name="MainGrid">
             <!--Elsa 20250331 for PIMS-348388 change Width="520" to Width="auto" Margin="0,10,10,0" to Margin="0,10,0,16" -->
             <Border x:Name="MainBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="13" Width="auto" Height="auto"  Margin="0,10,0,16">
-                <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
+                <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16, 24, 16, 16">
                     <Grid x:Name="TitleGrid" VerticalAlignment="Top" Margin="0,0,0,0">
                         <!-- Derek 0107 for PIMS-335202 change Width="200" to Width="550"  -->
                         <UXControls:UXTextBlock x:Name="AudioSettingsTextBlock" 

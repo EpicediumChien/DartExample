@@ -11,235 +11,235 @@
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              mc:Ignorable="d"
              d:DesignHeight="655" d:DesignWidth="520" Unloaded="Leave">
-  <UserControl.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <!--<ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />-->
-        <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
-      </ResourceDictionary.MergedDictionaries>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />-->
+                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
+            </ResourceDictionary.MergedDictionaries>
 
-      <ImageBrush x:Key="UnselectedNodeImage" ImageSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" />
-      <ImageBrush x:Key="SelectedNodeImage" ImageSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_whitedot.png" />
+            <ImageBrush x:Key="UnselectedNodeImage" ImageSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Dot.png" />
+            <ImageBrush x:Key="SelectedNodeImage" ImageSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_whitedot.png" />
 
-      <SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54" />
-      <SolidColorBrush x:Key="SplitItem_NormalBdColor" Color="#FF0B1E38" />
-      <SolidColorBrush x:Key="SplitItem_SelectedColor" Color="#FF5CC1EE" />
+            <SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54" />
+            <SolidColorBrush x:Key="SplitItem_NormalBdColor" Color="#FF0B1E38" />
+            <SolidColorBrush x:Key="SplitItem_SelectedColor" Color="#FF5CC1EE" />
 
-      <LinearGradientBrush x:Key="SplitItem_HoverBdColor" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Offset="0" Color="#FF0672CB" />
-        <GradientStop Offset="0.5" Color="#FF0078D4" />
-        <GradientStop Offset="1" Color="#FF6E69CF" />
-      </LinearGradientBrush>
+            <LinearGradientBrush x:Key="SplitItem_HoverBdColor" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Offset="0" Color="#FF0672CB" />
+                <GradientStop Offset="0.5" Color="#FF0078D4" />
+                <GradientStop Offset="1" Color="#FF6E69CF" />
+            </LinearGradientBrush>
 
-      <!-- Border Style of Normal State -->
-      <Style x:Key="SplitItemBorder_Normal" TargetType="Border">
-        <Setter Property="BorderBrush" Value="{StaticResource SplitItem_NormalBdColor}" />
-        <Setter Property="BorderThickness" Value="4" />
-        <Setter Property="Padding" Value="0" />
-      </Style>
+            <!-- Border Style of Normal State -->
+            <Style x:Key="SplitItemBorder_Normal" TargetType="Border">
+                <Setter Property="BorderBrush" Value="{StaticResource SplitItem_NormalBdColor}" />
+                <Setter Property="BorderThickness" Value="4" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
 
-      <!-- Border Style of Hover State -->
-      <Style x:Key="SplitItemBorder_Hover" TargetType="Border">
-        <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
-        <Setter Property="BorderThickness" Value="4" />
-        <Setter Property="Padding" Value="0" />
-      </Style>
+            <!-- Border Style of Hover State -->
+            <Style x:Key="SplitItemBorder_Hover" TargetType="Border">
+                <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
+                <Setter Property="BorderThickness" Value="4" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
 
-      <!-- Border Style of Selected State -->
-      <Style x:Key="SplitItemBorder_Selected" TargetType="Border">
-        <Setter Property="BorderBrush" Value="{StaticResource SplitItem_SelectedColor}" />
-        <Setter Property="BorderThickness" Value="1.5" />
-      </Style>
+            <!-- Border Style of Selected State -->
+            <Style x:Key="SplitItemBorder_Selected" TargetType="Border">
+                <Setter Property="BorderBrush" Value="{StaticResource SplitItem_SelectedColor}" />
+                <Setter Property="BorderThickness" Value="1.5" />
+            </Style>
 
-      <Style x:Key="CollaborationButtonPressedStyle" TargetType="UXControls:UXButton">
-        <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
-      </Style>
+            <Style x:Key="CollaborationButtonPressedStyle" TargetType="UXControls:UXButton">
+                <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
+            </Style>
 
-      <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
-      <Style x:Key="DotStyle" TargetType="Ellipse">
-        <Setter Property="Fill" Value="Blue" />
-        <Setter Property="Width" Value="10" />
-        <Setter Property="Height" Value="10" />
-      </Style>
+            <Style x:Key="DotStyle" TargetType="Ellipse">
+                <Setter Property="Fill" Value="Blue" />
+                <Setter Property="Width" Value="10" />
+                <Setter Property="Height" Value="10" />
+            </Style>
 
-      <Style x:Key="LineStyle" TargetType="Path">
-        <Setter Property="Stroke" Value="Blue" />
-        <Setter Property="StrokeThickness" Value="2" />
-      </Style>
+            <Style x:Key="LineStyle" TargetType="Path">
+                <Setter Property="Stroke" Value="Blue" />
+                <Setter Property="StrokeThickness" Value="2" />
+            </Style>
 
-      <LinearGradientBrush x:Key="GradientBrush" StartPoint="0,0" EndPoint="0,0.4">
-        <GradientStop Color="Transparent" Offset="0.5" />
-        <GradientStop Color="#0672CB" Offset="0" />
-      </LinearGradientBrush>
+            <LinearGradientBrush x:Key="GradientBrush" StartPoint="0,0" EndPoint="0,0.4">
+                <GradientStop Color="Transparent" Offset="0.5" />
+                <GradientStop Color="#0672CB" Offset="0" />
+            </LinearGradientBrush>
 
-      <LinearGradientBrush x:Key="NormalBackground" StartPoint="0,0" EndPoint="1,0">
-        <GradientStop Color="#0B1E38" Offset="0.0" />
-        <GradientStop Color="#0B1E38" Offset="1.0" />
-      </LinearGradientBrush>
-      <LinearGradientBrush x:Key="PressedBackground" StartPoint="0,0" EndPoint="1,0">
-        <GradientStop Color="#0672CB" Offset="0.0" />
-        <GradientStop Color="#0078D4" Offset="0.46" />
-        <GradientStop Color="#6E69CF" Offset="1.1831" />
-      </LinearGradientBrush>
-      <LinearGradientBrush x:Key="PressedBorderBrush" StartPoint="0,0" EndPoint="1,0">
-        <GradientStop Color="#55B4FD" Offset="0.0045" />
-        <GradientStop Color="#6E69CF" Offset="1.0" />
-      </LinearGradientBrush>
-    </ResourceDictionary>
-  </UserControl.Resources>
-  <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-    <Grid Margin="0,0,0,15">
-      <!--Elsa 20250331 for PIMS-348388 change Width="520" to Width="auto",change Margin="0,10,10,0" to Margin="0,10,16,1" -->
-      <Border x:Name="MainBorder" CornerRadius="13" Width="auto" Margin="0,10,16,1">
-        <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
-          <Grid>
-            <!-- Derek 0107 for PIMS-335063 change Width="200" to Width="550"  -->
-            <UXControls:UXTextBlock x:Name="DeviceSettingsTextBlock" 
+            <LinearGradientBrush x:Key="NormalBackground" StartPoint="0,0" EndPoint="1,0">
+                <GradientStop Color="#0B1E38" Offset="0.0" />
+                <GradientStop Color="#0B1E38" Offset="1.0" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="PressedBackground" StartPoint="0,0" EndPoint="1,0">
+                <GradientStop Color="#0672CB" Offset="0.0" />
+                <GradientStop Color="#0078D4" Offset="0.46" />
+                <GradientStop Color="#6E69CF" Offset="1.1831" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="PressedBorderBrush" StartPoint="0,0" EndPoint="1,0">
+                <GradientStop Color="#55B4FD" Offset="0.0045" />
+                <GradientStop Color="#6E69CF" Offset="1.0" />
+            </LinearGradientBrush>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="0,0,0,15">
+            <!--Elsa 20250331 for PIMS-348388 change Width="520" to Width="auto",change Margin="0,10,10,0" to Margin="0,10,16,1" -->
+            <Border x:Name="MainBorder" CornerRadius="13" Width="auto" Margin="0,10,16,1">
+                <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16, 24, 16, 16">
+                    <Grid>
+                        <!-- Derek 0107 for PIMS-335063 change Width="200" to Width="550"  -->
+                        <UXControls:UXTextBlock x:Name="DeviceSettingsTextBlock" 
                                                 Style="{StaticResource ModuleCaptionStyle}" 
                                                 Text="{Binding [DeviceSettings], Source={x:Static lang:LangHelper.Instance}}" 
                                                 FontFamily="Roboto" FontSize="20" Height="28" Width="550" 
                                                 VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
                                                 HorizontalAlignment="Left" 
                                                 Margin="0,6,20,22" />
-          </Grid>
+                    </Grid>
 
-          <!-- Busy Light -->
-          <Border x:Name="BusyLightOuterBorder" CornerRadius="6" Width="488" Height="auto" VerticalAlignment="Top" Margin="0,0,0,0">
-            <StackPanel x:Name="BusyLightStackPanel" Orientation="Vertical" Margin="0,20,0,10">
-              <Grid x:Name="BusyLightGrid">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="Auto" />
-                  <ColumnDefinition Width="Auto" />
-                  <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <UXControls:UXTextBlock x:Name="BusyLightText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Text="{Binding [HeadsetDeviceSettings.0], Source={x:Static lang:LangHelper.Instance}}" Margin="20,8,0,20" />
-                <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.HorizontalOffset="-100" -->
-                <Image x:Name="BusyLightImage" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,0,0,10" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
-                  <Image.ToolTip>
-                    <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="6" to VerticalOffset="12", change HorizontalOffset="8" to "HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
-                    <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
-                      <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                        <Border.Resources>
-                          <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                        </Border.Resources>
-                        <StackPanel Orientation="Horizontal">
-                          <!--Elsa 20250401 for PIMS-348390 add TextWrapping="WrapWithOverflow" MaxWidth="230" -->
-                          <TextBlock Text="{Binding BusyLightToolTip}" TextWrapping="WrapWithOverflow" MaxWidth="230" />
-                        </StackPanel>
-                      </Border>
-                    </ToolTip>
-                  </Image.ToolTip>
-                </Image>
-                <UXControls:UXToggleSwitch x:Name="BusyLightToggleSwitch" FontSize="16" Content="{Binding Path=BusyLight_String, FallbackValue='OFF'}" IsChecked="{Binding Path=BusyLightStatus}" IsEnabled="{Binding Path=SupportedBusyLight}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,8" />
-              </Grid>
-              <Grid>
-                <!-- Voice Guidance -->
-                <Grid Visibility="{Binding VoiceGuidancePageShow, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="VoiceGuidanceGrid">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                  </Grid.ColumnDefinitions>
-                  <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                  </Grid.RowDefinitions>
-                  <UXControls:UXTextBlock x:Name="VoiceGuidanceText" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Text="{Binding [HeadsetDeviceSettings.1], Source={x:Static lang:LangHelper.Instance}}" Margin="20,20,0,10" />
-                  <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.HorizontalOffset="-100" -->
-                  <Image x:Name="VoiceGuidanceImage" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Left" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Margin="8,20,0,10">
-                    <Image.ToolTip>
-                      <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="6" to VerticalOffset="12", change HorizontalOffset="8" to "HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
-                      <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
-                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                          <Border.Resources>
-                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                          </Border.Resources>
-                          <StackPanel Orientation="Horizontal">
-                            <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" -->
-                            <TextBlock Text="{Binding VoiceGuidanceToolTip}" TextWrapping="WrapWithOverflow" MaxWidth="230"/>
-                          </StackPanel>
-                        </Border>
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
+                    <!-- Busy Light -->
+                    <Border x:Name="BusyLightOuterBorder" CornerRadius="6" Width="488" Height="auto" VerticalAlignment="Top" Margin="0,0,0,0">
+                        <StackPanel x:Name="BusyLightStackPanel" Orientation="Vertical" Margin="0,20,0,10">
+                            <Grid x:Name="BusyLightGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <UXControls:UXTextBlock x:Name="BusyLightText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Text="{Binding [HeadsetDeviceSettings.0], Source={x:Static lang:LangHelper.Instance}}" Margin="20,8,0,20" />
+                                <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.HorizontalOffset="-100" -->
+                                <Image x:Name="BusyLightImage" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,0,0,10" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                                    <Image.ToolTip>
+                                        <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="6" to VerticalOffset="12", change HorizontalOffset="8" to "HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
+                                        <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <Border.Resources>
+                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                </Border.Resources>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <!--Elsa 20250401 for PIMS-348390 add TextWrapping="WrapWithOverflow" MaxWidth="230" -->
+                                                    <TextBlock Text="{Binding BusyLightToolTip}" TextWrapping="WrapWithOverflow" MaxWidth="230" />
+                                                </StackPanel>
+                                            </Border>
+                                        </ToolTip>
+                                    </Image.ToolTip>
+                                </Image>
+                                <UXControls:UXToggleSwitch x:Name="BusyLightToggleSwitch" FontSize="16" Content="{Binding Path=BusyLight_String, FallbackValue='OFF'}" IsChecked="{Binding Path=BusyLightStatus}" IsEnabled="{Binding Path=SupportedBusyLight}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,8" />
+                            </Grid>
+                            <Grid>
+                                <!-- Voice Guidance -->
+                                <Grid Visibility="{Binding VoiceGuidancePageShow, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="VoiceGuidanceGrid">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <UXControls:UXTextBlock x:Name="VoiceGuidanceText" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Text="{Binding [HeadsetDeviceSettings.1], Source={x:Static lang:LangHelper.Instance}}" Margin="20,20,0,10" />
+                                    <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.HorizontalOffset="-100" -->
+                                    <Image x:Name="VoiceGuidanceImage" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Left" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Margin="8,20,0,10">
+                                        <Image.ToolTip>
+                                            <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="6" to VerticalOffset="12", change HorizontalOffset="8" to "HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
+                                            <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                    <Border.Resources>
+                                                        <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                    </Border.Resources>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" -->
+                                                        <TextBlock Text="{Binding VoiceGuidanceToolTip}" TextWrapping="WrapWithOverflow" MaxWidth="230"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
 
-                  <!-- Voice Guidance Buttons -->
-                  <StackPanel x:Name="VoiceGuidanceStackPanel" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,0">
-                    <UXControls:UXToggleSwitch x:Name="EssentialButton" Grid.Row="1" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}" Background="{DynamicResource ToggleSwitch_NormalBackground}"
+                                    <!-- Voice Guidance Buttons -->
+                                    <StackPanel x:Name="VoiceGuidanceStackPanel" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,0">
+                                        <UXControls:UXToggleSwitch x:Name="EssentialButton" Grid.Row="1" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}" Background="{DynamicResource ToggleSwitch_NormalBackground}"
                                                                    Width="224" Height="52" Margin="0,8,0,20" Padding="16"  IsChecked="{Binding IsEssentialChecked, Mode=TwoWay}">
-                      <UXControls:UXToggleSwitch.Template>
-                        <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                          <Border x:Name="EssentialButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
-                            <Grid>
-                              <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <UXControls:UXTextBlock x:Name="EssentialButtonTextBlock" Text="{Binding [HeadsetDeviceSettings.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />
-                              </StackPanel>
-                            </Grid>
-                          </Border>
-                          <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                              <Setter TargetName="EssentialButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
-                              <Setter TargetName="EssentialButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                              <Setter TargetName="EssentialButtonTextBlock" Property="Foreground" Value="White" />
-                            </Trigger>
-                          </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                      </UXControls:UXToggleSwitch.Template>
-                    </UXControls:UXToggleSwitch>
-                    <UXControls:UXToggleSwitch x:Name="AllButton" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}" Background="{DynamicResource ToggleSwitch_NormalBackground}"
+                                            <UXControls:UXToggleSwitch.Template>
+                                                <ControlTemplate TargetType="UXControls:UXToggleSwitch">
+                                                    <Border x:Name="EssentialButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                        <Grid>
+                                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                <UXControls:UXTextBlock x:Name="EssentialButtonTextBlock" Text="{Binding [HeadsetDeviceSettings.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsChecked" Value="True">
+                                                            <Setter TargetName="EssentialButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
+                                                            <Setter TargetName="EssentialButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                            <Setter TargetName="EssentialButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </UXControls:UXToggleSwitch.Template>
+                                        </UXControls:UXToggleSwitch>
+                                        <UXControls:UXToggleSwitch x:Name="AllButton" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}" Background="{DynamicResource ToggleSwitch_NormalBackground}"
                                                                    Width="224" Height="52" Margin="8,8,0,20" Padding="16" IsChecked="{Binding IsAllChecked, Mode=TwoWay}">
-                      <UXControls:UXToggleSwitch.Template>
-                        <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                          <Border x:Name="AllButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
-                            <Grid>
-                              <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <UXControls:UXTextBlock x:Name="AllButtonTextBlock" Text="{Binding [HeadsetDeviceSettings.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />
-                              </StackPanel>
+                                            <UXControls:UXToggleSwitch.Template>
+                                                <ControlTemplate TargetType="UXControls:UXToggleSwitch">
+                                                    <Border x:Name="AllButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                        <Grid>
+                                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                <UXControls:UXTextBlock x:Name="AllButtonTextBlock" Text="{Binding [HeadsetDeviceSettings.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsChecked" Value="True">
+                                                            <Setter TargetName="AllButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
+                                                            <Setter TargetName="AllButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                            <Setter TargetName="AllButtonTextBlock" Property="Foreground" Value="White" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </UXControls:UXToggleSwitch.Template>
+                                        </UXControls:UXToggleSwitch>
+                                    </StackPanel>
+                                </Grid>
                             </Grid>
-                          </Border>
-                          <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                              <Setter TargetName="AllButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
-                              <Setter TargetName="AllButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                              <Setter TargetName="AllButtonTextBlock" Property="Foreground" Value="White" />
-                            </Trigger>
-                          </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                      </UXControls:UXToggleSwitch.Template>
-                    </UXControls:UXToggleSwitch>
-                  </StackPanel>
-                </Grid>
-              </Grid>
-            </StackPanel>
-          </Border>
+                        </StackPanel>
+                    </Border>
 
-          <!-- Download Dell Audio Section -->
-          <Grid Visibility="{Binding DeviceSettingsDownloadDellAudioPageShow, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Border x:Name="DownDellAudioBoard" CornerRadius="6" Width="488" Height="auto" VerticalAlignment="Top" Margin="0,20,0,20">
-              <StackPanel x:Name="AdditionalSectionStackPanel" Orientation="Vertical" Margin="16">
-                <Grid>
-                  <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                  </Grid.RowDefinitions>
+                    <!-- Download Dell Audio Section -->
+                    <Grid Visibility="{Binding DeviceSettingsDownloadDellAudioPageShow, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Border x:Name="DownDellAudioBoard" CornerRadius="6" Width="488" Height="auto" VerticalAlignment="Top" Margin="0,20,0,20">
+                            <StackPanel x:Name="AdditionalSectionStackPanel" Orientation="Vertical" Margin="16">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
 
-                  <!-- Title -->
-                  <UXControls:UXTextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding [HeadsetDeviceSettings.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" FontWeight="Bold" Margin="8,20,0,20" />
-                  <Path Grid.Row="0" x:Name="DownDellAudioCloseIcon" Stretch="Fill" VerticalAlignment="Center" Width="20" Height="20" MouseLeftButtonDown="CloseDescription" Cursor="Hand" Margin="410,20,0,20" Data="M20 1.025L18.975 0L10 9L1.025 0.0625L0 1.0875L8.9375 10L0.0625 18.9125L1.0875 20L10 11.0625L18.9125 20L19.9375 18.975L11 10L20 1.025Z" 
+                                    <!-- Title -->
+                                    <UXControls:UXTextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding [HeadsetDeviceSettings.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" FontWeight="Bold" Margin="8,20,0,20" />
+                                    <Path Grid.Row="0" x:Name="DownDellAudioCloseIcon" Stretch="Fill" VerticalAlignment="Center" Width="20" Height="20" MouseLeftButtonDown="CloseDescription" Cursor="Hand" Margin="410,20,0,20" Data="M20 1.025L18.975 0L10 9L1.025 0.0625L0 1.0875L8.9375 10L0.0625 18.9125L1.0875 20L10 11.0625L18.9125 20L19.9375 18.975L11 10L20 1.025Z" 
                                           Fill="{DynamicResource DefaultTheme_PathColor}"/>
-                  <!-- Icon and Description -->
-                  <Image Grid.Row="1" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_DownDellAudio.png" Width="72" Height="72" HorizontalAlignment="Left" Margin="8,0,0,0" />
-                  <UXControls:UXTextBlock Grid.Row="1" TextWrapping="Wrap" FontSize="14" Text="{Binding [HeadsetDeviceSettings.5], Source={x:Static lang:LangHelper.Instance}}" VerticalAlignment="Center" Width="368" HorizontalAlignment="Right" Margin="0,20,0,20" />
+                                    <!-- Icon and Description -->
+                                    <Image Grid.Row="1" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_DownDellAudio.png" Width="72" Height="72" HorizontalAlignment="Left" Margin="8,0,0,0" />
+                                    <UXControls:UXTextBlock Grid.Row="1" TextWrapping="Wrap" FontSize="14" Text="{Binding [HeadsetDeviceSettings.5], Source={x:Static lang:LangHelper.Instance}}" VerticalAlignment="Center" Width="368" HorizontalAlignment="Right" Margin="0,20,0,20" />
 
-                  <Button x:Name="LearnmoreButton" Grid.Row="2" Grid.Column="0" Style="{StaticResource PrimaryButtonStyle}" Width="135" Height="40" Margin="8,8,0,0" HorizontalAlignment="Left" Tag="4"  Content="{Binding [HeadsetDeviceSettings.6], Source={x:Static lang:LangHelper.Instance}}" Click="LearnmoreButton_Click"/>
-                </Grid>
-              </StackPanel>
+                                    <Button x:Name="LearnmoreButton" Grid.Row="2" Grid.Column="0" Style="{StaticResource PrimaryButtonStyle}" Width="135" Height="40" Margin="8,8,0,0" HorizontalAlignment="Left" Tag="4"  Content="{Binding [HeadsetDeviceSettings.6], Source={x:Static lang:LangHelper.Instance}}" Click="LearnmoreButton_Click"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </StackPanel>
             </Border>
-          </Grid>
-        </StackPanel>
-      </Border>
-    </Grid>
-  </UXControls:UXScrollViewer>
+        </Grid>
+    </UXControls:UXScrollViewer>
 </UserControl>
