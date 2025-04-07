@@ -23,6 +23,7 @@ namespace DDPM.SA.Common.Settings
         private static readonly string target_folder =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
 
+        public string SettingVersion = "";
         public string VideoCaptureFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
         public bool WebcamCountdown = false;
         public bool WebcamGrid = false;
@@ -92,7 +93,7 @@ namespace DDPM.SA.Common.Settings
             }
         }
 
-        public void UpdateSupportedResolutions(DeviceInfo di = null, IDeviceManagerSA devMgr = null, ILog log = null)
+        private void UpdateSupportedResolutions(DeviceInfo di = null, IDeviceManagerSA devMgr = null, ILog log = null)
         {
             if (di != null && devMgr != null)
             {
@@ -153,215 +154,224 @@ namespace DDPM.SA.Common.Settings
                     }
                 }
                 log?.Info(@$"Get PresetProfiles {CustomProfiles.Keys}");
-                PresetProfiles.Clear();
-                var presetProfiles = di.PresetProfiles?.ToObject<List<WebcamProfile>>()?.ToList();
-                log?.Error($"presetProfiles count {presetProfiles?.Count}!");
-                WebcamProfile profile = new();
-                profile.Name = "Default";
-                profile.Description = "default";
-                profile.IsHDROn = false;
-                profile.Brightness = 128;
-                profile.Contrast = 128;
-                profile.Saturation = 128;
-                profile.Sharpness = 128;
-                profile.IsAutoFramingOn = false;
-                profile.FieldOfView = 78;
-                profile.IsAutoWhiteBalanceOn = true;
-                profile.AutoWhiteBalance = 5000;
 
-                // << 250314 add by Hess for V2.0.2 new requirement
-                profile.Priority = 0;                     //Exposure
-                profile.IsFocusOn = true;
-                profile.Focus = di.FocusMin;
-                profile.Zoom = di.ZoomMin;
-                profile.AntiFlicker = 2;                  //60Hz
-                profile.AutoFramingSensitivity = 1;       //Normal
-                profile.AutoFramingFrameSize = 1;         //Standard
-                profile.IsAutoFramingTransitionOn = true;
-                profile.Pan = 0;
-                profile.Tilt = 0;
-                // >>
-                PresetProfiles.TryAdd(profile.Name, profile);
-
-                profile = new();
-                profile.Name = "Smooth";
-                profile.Description = "Smooth";
-                profile.IsHDROn = true;
-                profile.Brightness = 160;
-                profile.Contrast = 128;
-                profile.Saturation = 128;
-                profile.Sharpness = 0;
-                profile.IsAutoFramingOn = false;
-                profile.FieldOfView = 78;
-                profile.IsAutoWhiteBalanceOn = true;
-                profile.AutoWhiteBalance = 5000;
-
-                // << 250314 add by Hess for V2.0.2 new requirement
-                profile.Priority = 0;                     //Exposure
-                profile.IsFocusOn = true;
-                profile.Focus = di.FocusMin;
-                profile.Zoom = di.ZoomMin;
-                profile.AntiFlicker = 2;                  //60Hz
-                profile.AutoFramingSensitivity = 1;       //Normal
-                profile.AutoFramingFrameSize = 1;         //Standard
-                profile.IsAutoFramingTransitionOn = true;
-                profile.Pan = 0;
-                profile.Tilt = 0;
-                // >>
-                PresetProfiles.TryAdd(profile.Name, profile);
-
-                profile = new();
-                profile.Name = "Vibrant";
-                profile.Description = "Vibrant";
-                profile.IsHDROn = true;
-                profile.Brightness = 192;
-                profile.Contrast = 167;
-                profile.Saturation = 152;
-                profile.Sharpness = 181;
-                profile.IsAutoFramingOn = false;
-                profile.FieldOfView = 78;
-                profile.IsAutoWhiteBalanceOn = true;
-                profile.AutoWhiteBalance = 5000;
-
-                // << 250314 add by Hess for V2.0.2 new requirement
-                profile.Priority = 0;                     //Exposure
-                profile.IsFocusOn = true;
-                profile.Focus = di.FocusMin;
-                profile.Zoom = di.ZoomMin;
-                profile.AntiFlicker = 2;                  //60Hz
-                profile.AutoFramingSensitivity = 1;       //Normal
-                profile.AutoFramingFrameSize = 1;         //Standard
-                profile.IsAutoFramingTransitionOn = true;
-                profile.Pan = 0;
-                profile.Tilt = 0;
-                // >>
-                PresetProfiles.TryAdd(profile.Name, profile);
-
-                profile = new();
-                profile.Name = "Warm";
-                profile.Description = "Warm";
-                profile.IsHDROn = true;
-                profile.Brightness = 169;
-                profile.Contrast = 166;
-                profile.Saturation = 134;
-                profile.Sharpness = 168;
-                profile.IsAutoFramingOn = false;
-                profile.FieldOfView = 78;
-                profile.IsAutoWhiteBalanceOn = true;
-                profile.AutoWhiteBalance = 5950;
-
-                // << 250314 add by Hess for V2.0.2 new requirement
-                profile.Priority = 0;                     //Exposure
-                profile.IsFocusOn = true;
-                profile.Focus = di.FocusMin;
-                profile.Zoom = di.ZoomMin;
-                profile.AntiFlicker = 2;                  //60Hz
-                profile.AutoFramingSensitivity = 1;       //Normal
-                profile.AutoFramingFrameSize = 1;         //Standard
-                profile.IsAutoFramingTransitionOn = true;
-                profile.Pan = 0;
-                profile.Tilt = 0;
-                // >>
-                PresetProfiles.TryAdd(profile.Name, profile);
-
-                switch (di.ModelNumber.ToUpper())
-                {
-                    case "P2424HEB":
-                    case "P2724DEB":
-                    case "P3424WEB":
-                        //PresetProfiles["Default"].IsFocusOn = true;
-                        //PresetProfiles["Warm"].IsFocusOn = true;
-                        //PresetProfiles["Vibrant"].IsFocusOn = true;
-                        //PresetProfiles["Smooth"].IsFocusOn = true;
-                        break;
-                    case "U3223QZ":
-                        PresetProfiles["Default"].FieldOfView = 90;
-                        //PresetProfiles["Default"].IsFocusOn = true;
-                        PresetProfiles["Smooth"].IsHDROn = false;
-                        PresetProfiles["Smooth"].FieldOfView = 90;
-                        PresetProfiles["Smooth"].Brightness = 93;
-                        PresetProfiles["Smooth"].Contrast = 27;
-                        PresetProfiles["Smooth"].Sharpness = 27;
-                        //PresetProfiles["Smooth"].IsFocusOn = true;
-                        PresetProfiles["Vibrant"].IsHDROn = false;
-                        PresetProfiles["Vibrant"].FieldOfView = 90;
-                        PresetProfiles["Vibrant"].Brightness = 128;
-                        PresetProfiles["Vibrant"].Contrast = 191;
-                        PresetProfiles["Vibrant"].Saturation = 157;
-                        PresetProfiles["Vibrant"].Sharpness = 163;
-                        //PresetProfiles["Vibrant"].IsFocusOn = true;
-                        PresetProfiles["Warm"].IsHDROn = false;
-                        PresetProfiles["Warm"].FieldOfView = 90;
-                        PresetProfiles["Warm"].Brightness = 93;
-                        PresetProfiles["Warm"].Contrast = 128;
-                        PresetProfiles["Warm"].Saturation = 129;
-                        PresetProfiles["Warm"].Sharpness = 63;
-                        //PresetProfiles["Warm"].IsFocusOn = true;
-                        break;
-                    case "U3224KB":
-                    case "U3224KBA":
-                        PresetProfiles["Default"].FieldOfView = 90;
-                        //PresetProfiles["Default"].IsFocusOn = true;
-                        //PresetProfiles["Default"].Focus = 1;
-                        PresetProfiles["Smooth"].FieldOfView = 90;
-                        PresetProfiles["Smooth"].Sharpness = 250;
-                        //PresetProfiles["Smooth"].IsFocusOn = true;
-                        PresetProfiles["Vibrant"].FieldOfView = 90;
-                        PresetProfiles["Vibrant"].Brightness = 200;
-                        PresetProfiles["Vibrant"].Contrast = 162;
-                        PresetProfiles["Vibrant"].Saturation = 128;
-                        PresetProfiles["Vibrant"].Sharpness = 180;
-                        //PresetProfiles["Vibrant"].IsFocusOn = true;
-                        PresetProfiles["Warm"].FieldOfView = 90;
-                        PresetProfiles["Warm"].Brightness = 204;
-                        PresetProfiles["Warm"].Contrast = 147;
-                        PresetProfiles["Warm"].Saturation = 155;
-                        PresetProfiles["Warm"].Sharpness = 128;
-                        //PresetProfiles["Warm"].IsFocusOn = true;
-                        break;
-                    case "WB5023":
-                        //PresetProfiles["Default"].IsFocusOn = true;
-                        //PresetProfiles["Warm"].IsFocusOn = true;
-                        //PresetProfiles["Vibrant"].IsFocusOn = true;
-                        //PresetProfiles["Smooth"].IsFocusOn = true;
-                        break;
-                    case "WB3023":
-                        //PresetProfiles["Default"].IsFocusOn = true;
-                        //PresetProfiles["Default"].Focus = 1;
-                        PresetProfiles["Default"].AutoFramingSensitivity = 0;
-                        PresetProfiles["Default"].AutoFramingFrameSize = 0;
-                        PresetProfiles["Default"].IsAutoFramingTransitionOn = false;
-                        //PresetProfiles["Warm"].IsFocusOn = true;
-                        PresetProfiles["Warm"].AutoFramingSensitivity = 0;
-                        PresetProfiles["Warm"].AutoFramingFrameSize = 0;
-                        PresetProfiles["Warm"].IsAutoFramingTransitionOn = false;
-                        //PresetProfiles["Vibrant"].IsFocusOn = true;
-                        PresetProfiles["Vibrant"].AutoFramingSensitivity = 0;
-                        PresetProfiles["Vibrant"].AutoFramingFrameSize = 0;
-                        PresetProfiles["Vibrant"].IsAutoFramingTransitionOn = false;
-                        //PresetProfiles["Smooth"].IsFocusOn = true;
-                        PresetProfiles["Smooth"].AutoFramingSensitivity = 0;
-                        PresetProfiles["Smooth"].AutoFramingFrameSize = 0;
-                        PresetProfiles["Smooth"].IsAutoFramingTransitionOn = false;
-                        break;
-                    case "WB7022":
-                        PresetProfiles["Default"].FieldOfView = 90;
-                        //PresetProfiles["Default"].IsFocusOn = true;
-                        PresetProfiles["Smooth"].FieldOfView = 90;
-                        //PresetProfiles["Smooth"].IsFocusOn = true;
-                        PresetProfiles["Vibrant"].FieldOfView = 90;
-                        //PresetProfiles["Vibrant"].IsFocusOn = true;
-                        PresetProfiles["Warm"].FieldOfView = 90;
-                        //PresetProfiles["Warm"].IsFocusOn = true;
-                        break;
-                    default:
-                        break;
-                }
+                LoadPresetProfile(this, di);
                 log?.Error($"if (presetProfiles != null) {PresetProfiles.Keys}");
+
                 if (string.IsNullOrEmpty(di.Message))
+                {
+                    var presetProfiles = di.PresetProfiles?.ToObject<List<WebcamProfile>>()?.ToList();
+                    log?.Error($"presetProfiles count {presetProfiles?.Count}!");
                     SetDPeMDefaultSettings(presetProfiles, PresetProfiles, log);
+                }
                 var HasNewDefault = CustomProfiles.Values.Any(x => x.Name.Contains(di.ProfileName)) && WebcamProfileNames.Any(y => y == di.ProfileName);
                 SelectedProfileName = di.ProfileName != string.Empty ? HasNewDefault == true ? di.ProfileName + "*" : di.ProfileName : "Default";
+            }
+        }
+
+        private static void LoadPresetProfile(WebcamSettings ws, DeviceInfo di)
+        {
+            ws.PresetProfiles.Clear();
+            WebcamProfile profile = new();
+            profile.Name = "Default";
+            profile.Description = "default";
+            profile.IsHDROn = false;
+            profile.Brightness = 128;
+            profile.Contrast = 128;
+            profile.Saturation = 128;
+            profile.Sharpness = 128;
+            profile.IsAutoFramingOn = false;
+            profile.FieldOfView = 78;
+            profile.IsAutoWhiteBalanceOn = true;
+            profile.AutoWhiteBalance = 5000;
+
+            // << 250314 add by Hess for V2.0.2 new requirement
+            profile.Priority = 0;                     //Exposure
+            profile.IsFocusOn = true;
+            profile.Focus = di.FocusMin;
+            profile.Zoom = di.ZoomMin;
+            profile.AntiFlicker = 2;                  //60Hz
+            profile.AutoFramingSensitivity = 1;       //Normal
+            profile.AutoFramingFrameSize = 1;         //Standard
+            profile.IsAutoFramingTransitionOn = true;
+            profile.Pan = 0;
+            profile.Tilt = 0;
+            // >>
+            ws.PresetProfiles.TryAdd(profile.Name, profile);
+
+            profile = new();
+            profile.Name = "Smooth";
+            profile.Description = "Smooth";
+            profile.IsHDROn = true;
+            profile.Brightness = 160;
+            profile.Contrast = 128;
+            profile.Saturation = 128;
+            profile.Sharpness = 0;
+            profile.IsAutoFramingOn = false;
+            profile.FieldOfView = 78;
+            profile.IsAutoWhiteBalanceOn = true;
+            profile.AutoWhiteBalance = 5000;
+
+            // << 250314 add by Hess for V2.0.2 new requirement
+            profile.Priority = 0;                     //Exposure
+            profile.IsFocusOn = true;
+            profile.Focus = di.FocusMin;
+            profile.Zoom = di.ZoomMin;
+            profile.AntiFlicker = 2;                  //60Hz
+            profile.AutoFramingSensitivity = 1;       //Normal
+            profile.AutoFramingFrameSize = 1;         //Standard
+            profile.IsAutoFramingTransitionOn = true;
+            profile.Pan = 0;
+            profile.Tilt = 0;
+            // >>
+            ws.PresetProfiles.TryAdd(profile.Name, profile);
+
+            profile = new();
+            profile.Name = "Vibrant";
+            profile.Description = "Vibrant";
+            profile.IsHDROn = true;
+            profile.Brightness = 192;
+            profile.Contrast = 167;
+            profile.Saturation = 152;
+            profile.Sharpness = 181;
+            profile.IsAutoFramingOn = false;
+            profile.FieldOfView = 78;
+            profile.IsAutoWhiteBalanceOn = true;
+            profile.AutoWhiteBalance = 5000;
+
+            // << 250314 add by Hess for V2.0.2 new requirement
+            profile.Priority = 0;                     //Exposure
+            profile.IsFocusOn = true;
+            profile.Focus = di.FocusMin;
+            profile.Zoom = di.ZoomMin;
+            profile.AntiFlicker = 2;                  //60Hz
+            profile.AutoFramingSensitivity = 1;       //Normal
+            profile.AutoFramingFrameSize = 1;         //Standard
+            profile.IsAutoFramingTransitionOn = true;
+            profile.Pan = 0;
+            profile.Tilt = 0;
+            // >>
+            ws.PresetProfiles.TryAdd(profile.Name, profile);
+
+            profile = new();
+            profile.Name = "Warm";
+            profile.Description = "Warm";
+            profile.IsHDROn = true;
+            profile.Brightness = 169;
+            profile.Contrast = 166;
+            profile.Saturation = 134;
+            profile.Sharpness = 168;
+            profile.IsAutoFramingOn = false;
+            profile.FieldOfView = 78;
+            profile.IsAutoWhiteBalanceOn = true;
+            profile.AutoWhiteBalance = 5950;
+
+            // << 250314 add by Hess for V2.0.2 new requirement
+            profile.Priority = 0;                     //Exposure
+            profile.IsFocusOn = true;
+            profile.Focus = di.FocusMin;
+            profile.Zoom = di.ZoomMin;
+            profile.AntiFlicker = 2;                  //60Hz
+            profile.AutoFramingSensitivity = 1;       //Normal
+            profile.AutoFramingFrameSize = 1;         //Standard
+            profile.IsAutoFramingTransitionOn = true;
+            profile.Pan = 0;
+            profile.Tilt = 0;
+            // >>
+            ws.PresetProfiles.TryAdd(profile.Name, profile);
+
+            switch (di.ModelNumber.ToUpper())
+            {
+                case "P2424HEB":
+                case "P2724DEB":
+                case "P3424WEB":
+                    //PresetProfiles["Default"].IsFocusOn = true;
+                    //PresetProfiles["Warm"].IsFocusOn = true;
+                    //PresetProfiles["Vibrant"].IsFocusOn = true;
+                    //PresetProfiles["Smooth"].IsFocusOn = true;
+                    break;
+                case "U3223QZ":
+                    ws.PresetProfiles["Default"].FieldOfView = 90;
+                    //PresetProfiles["Default"].IsFocusOn = true;
+                    ws.PresetProfiles["Smooth"].IsHDROn = false;
+                    ws.PresetProfiles["Smooth"].FieldOfView = 90;
+                    ws.PresetProfiles["Smooth"].Brightness = 93;
+                    ws.PresetProfiles["Smooth"].Contrast = 27;
+                    ws.PresetProfiles["Smooth"].Sharpness = 27;
+                    //PresetProfiles["Smooth"].IsFocusOn = true;
+                    ws.PresetProfiles["Vibrant"].IsHDROn = false;
+                    ws.PresetProfiles["Vibrant"].FieldOfView = 90;
+                    ws.PresetProfiles["Vibrant"].Brightness = 128;
+                    ws.PresetProfiles["Vibrant"].Contrast = 191;
+                    ws.PresetProfiles["Vibrant"].Saturation = 157;
+                    ws.PresetProfiles["Vibrant"].Sharpness = 163;
+                    //PresetProfiles["Vibrant"].IsFocusOn = true;
+                    ws.PresetProfiles["Warm"].IsHDROn = false;
+                    ws.PresetProfiles["Warm"].FieldOfView = 90;
+                    ws.PresetProfiles["Warm"].Brightness = 93;
+                    ws.PresetProfiles["Warm"].Contrast = 128;
+                    ws.PresetProfiles["Warm"].Saturation = 129;
+                    ws.PresetProfiles["Warm"].Sharpness = 63;
+                    //PresetProfiles["Warm"].IsFocusOn = true;
+                    break;
+                case "U3224KB":
+                case "U3224KBA":
+                    ws.PresetProfiles["Default"].FieldOfView = 90;
+                    //PresetProfiles["Default"].IsFocusOn = true;
+                    //PresetProfiles["Default"].Focus = 1;
+                    ws.PresetProfiles["Smooth"].FieldOfView = 90;
+                    ws.PresetProfiles["Smooth"].Sharpness = 250;
+                    //PresetProfiles["Smooth"].IsFocusOn = true;
+                    ws.PresetProfiles["Vibrant"].FieldOfView = 90;
+                    ws.PresetProfiles["Vibrant"].Brightness = 200;
+                    ws.PresetProfiles["Vibrant"].Contrast = 162;
+                    ws.PresetProfiles["Vibrant"].Saturation = 128;
+                    ws.PresetProfiles["Vibrant"].Sharpness = 180;
+                    //PresetProfiles["Vibrant"].IsFocusOn = true;
+                    ws.PresetProfiles["Warm"].FieldOfView = 90;
+                    ws.PresetProfiles["Warm"].Brightness = 204;
+                    ws.PresetProfiles["Warm"].Contrast = 147;
+                    ws.PresetProfiles["Warm"].Saturation = 155;
+                    ws.PresetProfiles["Warm"].Sharpness = 128;
+                    //PresetProfiles["Warm"].IsFocusOn = true;
+                    break;
+                case "WB5023":
+                    //PresetProfiles["Default"].IsFocusOn = true;
+                    //PresetProfiles["Warm"].IsFocusOn = true;
+                    //PresetProfiles["Vibrant"].IsFocusOn = true;
+                    //PresetProfiles["Smooth"].IsFocusOn = true;
+                    break;
+                case "WB3023":
+                    //PresetProfiles["Default"].IsFocusOn = true;
+                    //PresetProfiles["Default"].Focus = 1;
+                    ws.PresetProfiles["Default"].AutoFramingSensitivity = 0;
+                    ws.PresetProfiles["Default"].AutoFramingFrameSize = 0;
+                    ws.PresetProfiles["Default"].IsAutoFramingTransitionOn = false;
+                    //PresetProfiles["Warm"].IsFocusOn = true;
+                    ws.PresetProfiles["Warm"].AutoFramingSensitivity = 0;
+                    ws.PresetProfiles["Warm"].AutoFramingFrameSize = 0;
+                    ws.PresetProfiles["Warm"].IsAutoFramingTransitionOn = false;
+                    //PresetProfiles["Vibrant"].IsFocusOn = true;
+                    ws.PresetProfiles["Vibrant"].AutoFramingSensitivity = 0;
+                    ws.PresetProfiles["Vibrant"].AutoFramingFrameSize = 0;
+                    ws.PresetProfiles["Vibrant"].IsAutoFramingTransitionOn = false;
+                    //PresetProfiles["Smooth"].IsFocusOn = true;
+                    ws.PresetProfiles["Smooth"].AutoFramingSensitivity = 0;
+                    ws.PresetProfiles["Smooth"].AutoFramingFrameSize = 0;
+                    ws.PresetProfiles["Smooth"].IsAutoFramingTransitionOn = false;
+                    break;
+                case "WB7022":
+                    ws.PresetProfiles["Default"].FieldOfView = 90;
+                    //PresetProfiles["Default"].IsFocusOn = true;
+                    ws.PresetProfiles["Smooth"].FieldOfView = 90;
+                    //PresetProfiles["Smooth"].IsFocusOn = true;
+                    ws.PresetProfiles["Vibrant"].FieldOfView = 90;
+                    //PresetProfiles["Vibrant"].IsFocusOn = true;
+                    ws.PresetProfiles["Warm"].FieldOfView = 90;
+                    //PresetProfiles["Warm"].IsFocusOn = true;
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -616,7 +626,8 @@ namespace DDPM.SA.Common.Settings
                             {
                                 tmp = JsonConvert.DeserializeObject<WebcamSettings>(jsonString) ?? new WebcamSettings(di, devMgr, log);
                                 tmp = ReAlignWebcamResolution(tmp, model, di, devMgr, log);
-                                //return tmp;
+                                if (tmp.SettingVersion != "2.0.2.4")
+                                { LoadPresetProfile(tmp, di); }
                             }
                             else
                                 log?.Error($"[ImportWebcamSettings][ReadSerializedContentFromFile] empty string output(model:{model})");
@@ -638,6 +649,8 @@ namespace DDPM.SA.Common.Settings
                     log?.Info(@$"[WebcamSettings] ImportWebcamSettings DeviceInfo:{di}!");
                     //tmp = ReAlignWebcamResolution(tmp, model, di, devMgr, log);
                 }
+
+                tmp.SettingVersion = "2.0.2.4";
                 if (!ExportWebcamSettings(tmp, model, devMgr, log))
                 {
                     log?.Info(@$"[WebcamSettings][ImportWebcamSettings] try to use ExportWebcamSettings to init file fail");
@@ -647,6 +660,7 @@ namespace DDPM.SA.Common.Settings
             {
                 log?.Info("DDPM.SA.Common\\Settings\\WebcamSettings.cs ImportWebcamSettings ex:" + ex.Message);
             }
+
             return tmp;
         }
     }
