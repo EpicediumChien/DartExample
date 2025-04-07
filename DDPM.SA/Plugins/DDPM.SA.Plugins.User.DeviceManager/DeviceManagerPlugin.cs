@@ -38,7 +38,6 @@ using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
-using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -10118,6 +10117,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetWebcamSerialNumber(Guid));
         }
+
         public async Task<int> GetBgBlur(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetBgBlur(Guid));
@@ -10127,6 +10127,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsBgBlurEnable(Guid));
         }
+
         public async Task<bool> GetIsPropertyBgBlurSupported(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsPropertyBgBlurSupported(Guid));
@@ -11996,18 +11997,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         if (_ReGetcancellationTokenSource != null)
                         {
-                            writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _ReGetcancellationTokenSource trigger cancel ...");
+                            writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _ReGetcancellationTokenSource trigger cancel in XXX ...");
+                            await _ReGetcancellationTokenSource.CancelAsync();
 
-                            if (_ReGetcancellationTokenSource is not null)
-                            {
-                                _ReGetcancellationTokenSource.Dispose();
-                                _ReGetcancellationTokenSource = null;
-                            }
+                            _ReGetcancellationTokenSource.Dispose();
+                            _ReGetcancellationTokenSource = null;
                         }
                     }
                     catch (TaskCanceledException)
                     {
-                        writelog("[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
+                        writelog("[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened in XXX ...");
 
                         if (_ReGetcancellationTokenSource is not null)
                         {
@@ -12017,7 +12016,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     catch (OperationCanceledException)
                     {
-                        writelog("[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
+                        writelog("[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened in XXX ...");
 
                         if (_ReGetcancellationTokenSource is not null)
                         {
@@ -12027,7 +12026,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     catch (Exception ex)
                     {
-                        writelog($"[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() ...there is an exception-- ({ex.Message})");
+                        writelog($"[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() in XXX ...there is an exception-- ({ex.Message})");
 
                         if (_ReGetcancellationTokenSource is not null)
                         {
@@ -12043,8 +12042,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             var token = _ReGetcancellationTokenSource.Token;
 
                             writelog("[DeviceMangerPlugin] SystemEventsDisplaySettingsChangedAsync() into Re-GetDevices ...");
-                            //Call VCP to catch updated monitor info
-                            var NewMonitors = (_DisplayManagerPlugin.Re_GetMonitors(token).Result).ToList();
+
+                            var NewMonitors = (await _DisplayManagerPlugin.Re_GetMonitors(token)).ToList();
                             _AllInfoMonitors = new(NewMonitors);
 
                             writelog($"[DeviceMangerPlugin] SystemEventsDisplaySettingsChangedAsync() get monitor count {NewMonitors.Count} ...");
@@ -12058,7 +12057,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     if (T1.IsCompleted)
                                     {
                                         writelog($"[DeviceMangerPlugin] InitMonitorSettings Is Completed ...");
-                                        break;
+                                        return;
                                     }
                                 }
                                 writelog($"[DeviceMangerPlugin] T3 Is Completed ...");
@@ -18770,7 +18769,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-
                                         if (_OSD_Controler.ExistMultipleOSD())
                                         {
                                             //default guid {7471D427-F152-4E19-918E-F84FF12FBBEE}
@@ -18817,7 +18815,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-
                                         if (_OSD_Controler.ExistMultipleOSD())
                                         {
                                             //default guid {0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09}
@@ -19025,7 +19022,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-
                                         if (_OSD_Controler.ExistMultipleOSD())
                                         {
                                             //default guid {2DB1454E-A3D4-4380-A1A3-2483FE38E3D8}
