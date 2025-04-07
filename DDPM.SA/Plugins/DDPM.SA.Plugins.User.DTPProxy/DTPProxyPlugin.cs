@@ -9095,6 +9095,32 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
 
         /////////////////////////Get////////////////////////////////
+        public async Task<string> GetWiredAudioSerialNumberAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "SerialNumber");
+                    writelog($"[DTPProxyPlugin] [Speaker] GetWiredAudioSerialNumberAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [Speaker] GetWiredAudioSerialNumberAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Speaker] GetWiredAudioSerialNumberAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
 
         public async Task<JArray> GetSpeakerDeviceItemsExAsync()
         {
