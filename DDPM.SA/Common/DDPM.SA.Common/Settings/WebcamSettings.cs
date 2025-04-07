@@ -627,11 +627,7 @@ namespace DDPM.SA.Common.Settings
                                 tmp = JsonConvert.DeserializeObject<WebcamSettings>(jsonString) ?? new WebcamSettings(di, devMgr, log);
                                 tmp = ReAlignWebcamResolution(tmp, model, di, devMgr, log);
                                 if (tmp.SettingVersion != "2.0.2.4")
-                                {
-                                    LoadPresetProfile(tmp, di);
-                                    tmp.SettingVersion = "2.0.2.4";
-                                }
-                                //return tmp;
+                                { LoadPresetProfile(tmp, di); }
                             }
                             else
                                 log?.Error($"[ImportWebcamSettings][ReadSerializedContentFromFile] empty string output(model:{model})");
@@ -654,6 +650,7 @@ namespace DDPM.SA.Common.Settings
                     //tmp = ReAlignWebcamResolution(tmp, model, di, devMgr, log);
                 }
 
+                tmp.SettingVersion = "2.0.2.4";
                 if (!ExportWebcamSettings(tmp, model, devMgr, log))
                 {
                     log?.Info(@$"[WebcamSettings][ImportWebcamSettings] try to use ExportWebcamSettings to init file fail");

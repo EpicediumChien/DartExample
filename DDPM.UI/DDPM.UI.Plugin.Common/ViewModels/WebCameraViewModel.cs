@@ -716,6 +716,8 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool IsUSB3 = false;
         private void InitializeWebcam()
         {
+            Model = "U3224KB";
+            CurrentDeviceInfo!.ModelNumber = "U3224KB";
             try
             {
                 WebcamSettings = WebcamSettings.ImportWebcamSettings(Model, CurrentDeviceInfo, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
@@ -1607,7 +1609,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public Visibility PriorityVisibility
         {
-            get => CurrentDeviceInfo.IsPropertyPrioritySupported ? Visibility.Visible : Visibility.Collapsed;
+            get => CurrentDeviceInfo?.IsPropertyPrioritySupported ?? false ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private int _priority = 0;
@@ -1619,7 +1621,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (value != _priority)
                 {
                     _priority = value;
-                    DdpmCommonHelper.DeviceManagerSA?.SetPriority(CurrentDeviceInfo.ID.ToString(), value);
+                    DdpmCommonHelper.DeviceManagerSA?.SetPriority(CurrentDeviceInfo?.ID.ToString(), value);
                     SetProfileProperty(nameof(Priority), value, OperationModule.CameraControl);
                     OnPropertyChanged();
                 }
