@@ -101,7 +101,7 @@
                                                 FontFamily="Roboto" FontSize="20" Height="28" Width="550" 
                                                 VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
                                                 HorizontalAlignment="Left" 
-                                                Margin="0,20,20,20" />
+                                                Margin="0,6,20,22" />
           </Grid>
 
           <!-- Busy Light -->

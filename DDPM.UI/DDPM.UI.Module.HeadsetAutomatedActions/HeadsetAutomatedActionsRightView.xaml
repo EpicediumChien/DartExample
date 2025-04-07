@@ -103,7 +103,8 @@
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
           </Grid.ColumnDefinitions>
-          <UXControls:UXTextBlock Grid.Column="0" x:Name="txtCaption" Style="{StaticResource ModuleCaptionStyle}" Text="{Binding [AutomatedActions], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="{DynamicResource TextBlock_ForegroundColor}" Height="28" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
+          <UXControls:UXTextBlock Grid.Column="0" x:Name="txtCaption" Style="{StaticResource ModuleCaptionStyle}" Text="{Binding [AutomatedActions], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" 
+                                  Foreground="{DynamicResource TextBlock_ForegroundColor}" Height="28" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,6,20,22" />
           <Image Name="LockIconMic" Visibility="{Binding isWearLocked}" Grid.Column="1" Margin="0,0,0,5"
                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
                            VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
