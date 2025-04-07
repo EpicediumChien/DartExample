@@ -114,7 +114,7 @@
                     <Path Data="M8 5.05005C8.55228 5.05005 9 4.60233 9 4.05005C9 3.49776 8.55228 3.05005 8 3.05005C7.44772 3.05005 7 3.49776 7 4.05005C7 4.60233 7.44772 5.05005 8 5.05005Z
                       M8.75 6.44995H7.25V12.65H8.75V6.44995Z
                       M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"
-                      Fill="{DynamicResource Default_SA_QAM_Path_IsTrigger_Color}"
+                      Fill="{DynamicResource Default_Info_Color}"
                       Margin="2"
                       VerticalAlignment="Center" />
                     <Border.ToolTip>
