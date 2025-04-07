@@ -10,6 +10,7 @@ using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -139,6 +140,29 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             {
                 DdpmCommonHelper.WriteUILog($"[SoundBar_LaunchView] LaunchView_LoadedStatus Exception = {ex.Message}");
             }
+        }
+
+        private string GetDNSHostName()
+        {
+            string hostName = string.Empty;
+
+            try
+            {
+                hostName = Dns.GetHostName();
+
+                Match match = Regex.Match(hostName, @"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$");
+
+                if (!match.Success || hostName.Length > 63 || hostName.Length < 1)
+                {
+                    hostName = "_ERROR";
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("$\"[SoundBarPlugin] GetDNSHostName Exception : " + ex.Message);
+            }
+
+            return hostName;
         }
 
         private void ImageUpdate(OSThemeEnum oSThemeEnum)
@@ -499,7 +523,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                 }
                 else
                 {
-                    string hostName = Dns.GetHostName();
+                    string hostName = GetDNSHostName();
                     if (_vm.VisiblePairedHostName1 == hostName)
                     {
                         txt1.Style = ConnectionStyle1;

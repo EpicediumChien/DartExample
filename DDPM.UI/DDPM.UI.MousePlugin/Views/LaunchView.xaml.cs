@@ -12,6 +12,7 @@ using Dell.Client.Framework.UX.WPF.Controls;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -156,6 +157,29 @@ namespace DDPM.UI.Plugin.MousePlugin
             LeftBorder.SizeChanged -= CapAreaSizeChange;
             LeftBorder.SizeChanged += CapAreaSizeChange;
             DdpmCommonHelper.WriteUILog($"Mouse UI LaunchView End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
+        }
+
+        private string GetDNSHostName()
+        {
+            string hostName = string.Empty;
+
+            try
+            {
+                hostName = Dns.GetHostName();
+
+                Match match = Regex.Match(hostName, @"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$");
+
+                if (!match.Success || hostName.Length > 63 || hostName.Length < 1)
+                {
+                    hostName = "_ERROR";
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("$\"[MousePlugin] GetDNSHostName Exception : " + ex.Message);
+            }
+
+            return hostName;
         }
 
         private void LaunchView_Loaded(object sender, RoutedEventArgs e)
@@ -527,7 +551,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 if (_vm == null)
                     return;
 
-                string hostName = Dns.GetHostName();
+                string hostName = GetDNSHostName();
 
                 txt1.Style = ConnectionStyle2;
                 txtBLHost1.Style = ConnectionStyle2;
