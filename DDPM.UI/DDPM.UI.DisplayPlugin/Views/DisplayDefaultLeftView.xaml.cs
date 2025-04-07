@@ -127,7 +127,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                     bool? rst = DdpmCommonHelper.DeviceManagerSA?.SetMonitorProfile(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "Standard").Result;
                     if (rst == null)
                     {
-                        DdpmCommonHelper.WriteUILog("[Restore_Click] get null resut");
+                        DdpmCommonHelper.WriteUILog("[Restore_Click] get null result");
                     }
                     else
                     {
