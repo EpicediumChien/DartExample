@@ -32,12 +32,12 @@
   </UserControl.Resources>
   <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
     <Grid x:Name="MainGrid">
-      <!--Elsa 20250331 for PIMS-348388 change Width="470" to Width="auto",change Margin="0,10,10,0" to Margin="0,10,0,16" -->
-      <Border x:Name="MainBorder" CornerRadius="13" Width="auto" Height="auto"  Margin="0,10,0,16">
+      <!--Elsa 20250331 for PIMS-348388 change Width="470" to Width="auto",change Margin="0,10,10,0" to Margin="0,10,16,16" -->
+      <Border x:Name="MainBorder" CornerRadius="13" Width="auto" Height="auto"  Margin="0,10,16,16">
         <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
 
           <Grid VerticalAlignment="Top" Margin="0,0,0,15">
-            <Border x:Name="AudioPresetBorder" CornerRadius="6" Width="488" Height="Auto" VerticalAlignment="Top">
+            <Border x:Name="AudioPresetBorder" CornerRadius="6" Width="auto" Height="Auto" VerticalAlignment="Top">
               <StackPanel x:Name="AudioModesStackPanel" Orientation="Vertical">
                 <Grid x:Name="TitleGrid" VerticalAlignment="Top" Margin="20,0,0,0">
                   <!--Chewlin 20250219 change Width="280" to MaxWidth="310" Fix ES-XL language Audio Preset Title Clipping issue(No Pims Number) -->
@@ -150,9 +150,9 @@
               </StackPanel>
             </Border>
           </Grid>
-          <!--Elsa 20250320 for PIMS-348396 change Margin="0,0,0,0" to Margin="-8,0,0,0" add Border and StackPanel-->
-          <Grid Visibility="{Binding IsDefaultChecked, Converter={StaticResource BooleanToVisibilityConverter}}"  x:Name="AudioEqualizerGrid" Grid.Row="4" Grid.ColumnSpan="1" Width="456" Height="344" VerticalAlignment="Top" Margin="-8,0,0,0">
-            <Border x:Name="AudioEqualizer" CornerRadius="6" Width="438" Height="Auto" VerticalAlignment="Top">
+          <!--Elsa 20250320 for PIMS-348396 change Margin="-8,0,0,0" to Margin="0,0,0,0" add Border and StackPanel,change Width="456" to Width="auto"-->
+          <Grid Visibility="{Binding IsDefaultChecked, Converter={StaticResource BooleanToVisibilityConverter}}"  x:Name="AudioEqualizerGrid" Grid.Row="4" Grid.ColumnSpan="1" Width="auto" Height="344" VerticalAlignment="Top" Margin="0,0,0,0">
+            <Border x:Name="AudioEqualizer" CornerRadius="6" Width="auto" Height="Auto" VerticalAlignment="Top">
               <StackPanel x:Name="AudioEqualizerStackPanel" Orientation="Vertical">
                 <Grid>
                   <Grid.RowDefinitions>

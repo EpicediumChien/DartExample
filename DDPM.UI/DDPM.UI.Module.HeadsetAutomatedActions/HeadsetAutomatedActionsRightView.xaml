@@ -136,13 +136,15 @@
                 <UXControls:UXTextBlock x:Name="WearDetectionText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAutomatedActions.0], Source={x:Static lang:LangHelper.Instance}}" Margin="18,0,0,0" />
                 <Image x:Name="WearDetectionImage" Grid.Column="1" Width="16" Height="16" Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                   <Image.ToolTip>
-                    <ToolTip Placement="Top" VerticalOffset="18" HorizontalOffset="6">
+                    <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="18" to VerticalOffset="12", change "HorizontalOffset="8" to HorizontalOffset="2" ,add MaxWidth="272" Opened="toolTip_Opened" -->
+                    <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                       <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                         <Border.Resources>
                           <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                         </Border.Resources>
                         <StackPanel Orientation="Horizontal">
-                          <TextBlock Text="{Binding WearDetectionToolTip}" TextWrapping="WrapWithOverflow"/>
+                           <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" -->
+                           <TextBlock Text="{Binding WearDetectionToolTip}" TextWrapping="WrapWithOverflow" MaxWidth="230"/>
                         </StackPanel>
                       </Border>
                     </ToolTip>
@@ -319,13 +321,15 @@
 
                       <Image x:Name="PauseMusicImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                         <Image.ToolTip>
-                          <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                          <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="8" to VerticalOffset="12", change HorizontalOffset="6" to HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
+                          <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                               <Border.Resources>
                                 <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                               </Border.Resources>
                               <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding PauseMusicToolTip}" MaxWidth="350" TextWrapping="WrapWithOverflow"/>
+                                <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" -->
+                                <TextBlock Text="{Binding PauseMusicToolTip}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                               </StackPanel>
                             </Border>
                           </ToolTip>
@@ -370,15 +374,18 @@
                           <Binding Path="[HeadsetAutomatedActions.6]" Source="{x:Static lang:LangHelper.Instance}" />
                         </UXControls:UXTextBlock.Text>
                       </UXControls:UXTextBlock>
-                      <Image ToolTipService.HorizontalOffset="-200" x:Name="MuteMicrophoneImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                      <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.HorizontalOffset="-200" -->
+                      <Image x:Name="MuteMicrophoneImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                         <Image.ToolTip>
-                          <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                          <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="8" to VerticalOffset="12", change HorizontalOffset="6" to "HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
+                          <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                               <Border.Resources>
                                 <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                               </Border.Resources>
                               <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding MuteMicrophoneToolTip}" MaxWidth="350" TextWrapping="WrapWithOverflow"/>
+                              <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" -->
+                                <TextBlock Text="{Binding MuteMicrophoneToolTip}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                               </StackPanel>
                             </Border>
                           </ToolTip>
@@ -425,15 +432,18 @@
                           <Binding Path="[HeadsetAutomatedActions.7]" Source="{x:Static lang:LangHelper.Instance}" />
                         </UXControls:UXTextBlock.Text>
                       </UXControls:UXTextBlock>
-                      <Image ToolTipService.HorizontalOffset="-250" x:Name="QuickPauseImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                      <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.HorizontalOffset="-250" -->
+                      <Image x:Name="QuickPauseImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                         <Image.ToolTip>
-                          <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                          <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="8" to VerticalOffset="12", change HorizontalOffset="6" to "HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
+                          <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                               <Border.Resources>
                                 <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                               </Border.Resources>
                               <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding QuickPauseToolTip}" TextWrapping="WrapWithOverflow"/>
+                                <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" -->
+                                <TextBlock Text="{Binding QuickPauseToolTip}" TextWrapping="WrapWithOverflow" MaxWidth="230"/>
                               </StackPanel>
                             </Border>
                           </ToolTip>

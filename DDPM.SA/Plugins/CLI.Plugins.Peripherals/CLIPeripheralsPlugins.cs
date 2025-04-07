@@ -3214,6 +3214,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 ss0 = ss_1[0];
                             else if (ss_1[0].ToUpper() == "AUDIO" && device0.LogicalDeviceType.ToString().ToUpper().Contains("HEADSET")) 
                                 ss0 = "HEADSET";
+                            else if(device0.LogicalDeviceType.ToString().ToUpper().Contains("HEADSET"))
+                                ss0 = "HEADSET";
 
                             var device = fwUpdateDeviceInfos.FirstOrDefault(_ => _.ModelNumber.Equals(info.Model, StringComparison.OrdinalIgnoreCase) &&
                                                             _.LogicalDeviceType.ToString().ToUpper().Contains(ss0));

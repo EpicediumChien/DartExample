@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Window = System.Windows.Window;
 
 namespace DDPM.UI.Module.Color
 {
@@ -766,6 +767,36 @@ namespace DDPM.UI.Module.Color
                             vm.Handle_ICC_profile_hyperlink_ClickCommand();
                     }
                 }
+            }
+        }
+
+        private double GetScreenScaleX()
+        {
+            var source = PresentationSource.FromVisual(this);
+            if (source?.CompositionTarget != null)
+            {
+                return source.CompositionTarget.TransformToDevice.M11;
+            }
+            return 1;
+        }
+
+        private void toolTip_Opened(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Controls.ToolTip? target = sender as System.Windows.Controls.ToolTip;
+            if (target == null)
+                return;
+            double screenScaleX = GetScreenScaleX();
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
+            double winRightX = (mainWindow.Left + mainWindow!.ActualWidth) * screenScaleX;
+            double mousepositionX = System.Windows.Forms.Cursor.Position.X;
+            double mouseaddtooltip = mousepositionX + target.ActualWidth * screenScaleX;
+            if (winRightX > mouseaddtooltip)
+            {
+                target.HorizontalOffset = 2;
+            }
+            else
+            {
+                target.HorizontalOffset = -1 * target.ActualWidth + 14;
             }
         }
     }

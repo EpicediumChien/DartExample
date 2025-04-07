@@ -427,13 +427,15 @@
                                     </Image.ToolTip>
                                 
                                 -->
-                            <Border Grid.Column="4" Margin="10,0,0,0"
-                                    ToolTipService.Placement="Center" ToolTipService.VerticalOffset="40" Background="{StaticResource FakeTransparent}">
+                            <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.Placement="Center" ToolTipService.VerticalOffset="40"-->
+                            <Border Grid.Column="4" Margin="10,0,0,0" Background="{StaticResource FakeTransparent}">
                                 <ContentControl Template="{StaticResource icon_Info}" Width="16" Height="16"/>
                                 <Border.ToolTip>
-                                    <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                    <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="8" to VerticalOffset="12" HorizontalOffset="6" to HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened"-->
+                                    <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                            <TextBlock Text="{Binding [Color.9], Source={x:Static lang:LangHelper.Instance}}"
+                                            <!--Elsa 20250401 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow"-->
+                                            <TextBlock Text="{Binding [Color.9], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow"
                                                            Style="{StaticResource Tooltip_TextBlockStyle}" />
                                         </Border>
                                     </ToolTip>
