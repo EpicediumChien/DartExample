@@ -5089,6 +5089,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //////////////////////////////////Get///////////////////////////////////
 
+        public async Task<string> GetWiredAudioSerialNumberAsync(string item)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetWiredAudioSerialNumberAsync(item);
+                if (result != null)
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioSerialNumberAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioSerialNumberAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioSerialNumberAsync failed for {item} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
         public async Task<string> GetProfileNameAsync(string item)
         {
             try
