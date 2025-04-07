@@ -16195,6 +16195,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (int.TryParse(rc.value.ToString(), out int crtValue))
                     {
                         getvalue = (crtValue & 0x0c);
+                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,OdeValue={rc.value.ToString()}, NewValue ={getvalue}");
+                    }
+                    else
+                    {
+                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
                     }
                 }
                 else if (ss[0] == "13")
@@ -16203,6 +16208,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (int.TryParse(rc.value.ToString(), out int crtValue))
                     {
                         getvalue = (crtValue & 0x1c);
+                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,OdeValue={rc.value.ToString()}, NewValue ={getvalue}");
+                    }
+                    else
+                    {
+                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
                     }
                 }
                 if (getvalue != 0)
@@ -16257,6 +16267,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (int.TryParse(rc.value.ToString(), out int crtValue))
                     {
                         getvalue = (crtValue & 0x0c);
+                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,OdeValue={rc.value.ToString()}, NewValue ={getvalue}");
+                    }
+                    else
+                    {
+                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
                     }
                 }
                 else if (ss[0] == "13")
@@ -16265,6 +16280,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (int.TryParse(rc.value.ToString(), out int crtValue))
                     {
                         getvalue = (crtValue & 0x1c);
+                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,OdeValue={rc.value.ToString()}, NewValue ={getvalue}");
+                    }
+                    else
+                    {
+                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
                     }
                 }
                 if (getvalue != 0)
