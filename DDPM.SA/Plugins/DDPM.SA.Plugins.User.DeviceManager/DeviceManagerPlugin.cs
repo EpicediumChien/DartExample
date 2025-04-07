@@ -6359,6 +6359,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         public Task<bool> CallDDPMUI(string DDPMPath)
+
         {
             writelog($"{nameof(CallDDPMUI)} start");
             bool ret = false;
@@ -6377,10 +6378,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             foreach (Process process in processes)
                             {
-                                // Close process by sending a close message to its main window.
-                                process.CloseMainWindow();
-                                // Free resources associated with process.
-                                process.Close();
+                                try
+                                {
+                                    // Close process by sending a close message to its main window.
+                                    process.CloseMainWindow();
+                                    // Free resources associated with process.
+                                    process.Close();
+                                }
+                                finally
+                                {
+                                    process.Dispose();
+                                }
                             }
                         }
                         Task.Delay(5000).Wait();
@@ -6391,15 +6399,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     writelog($"CloseDDPM Error:{ex.Message}");
                 }
-                try
+                finally
                 {
-                    writelog($"RunDDPM start");
-                    Process.Start(DDPMPath + "\\DDPM.exe");
-                    writelog($"RunDDPM done");
-                }
-                catch (Exception ex)
-                {
-                    writelog($"RunDDPM Error:{ex.Message}");
+                    try
+                    {
+                        writelog($"RunDDPM start");
+                        Process.Start(DDPMPath + "\\DDPM.exe");
+                        writelog($"RunDDPM done");
+                    }
+                    catch (Exception ex)
+                    {
+                        writelog($"RunDDPM Error:{ex.Message}");
+                    }
                 }
             }
             writelog($"{nameof(CallDDPMUI)} done");
