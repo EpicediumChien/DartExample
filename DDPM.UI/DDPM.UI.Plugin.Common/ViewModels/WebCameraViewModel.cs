@@ -716,8 +716,8 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool IsUSB3 = false;
         private void InitializeWebcam()
         {
-            Model = "U3224KB";
-            CurrentDeviceInfo!.ModelNumber = "U3224KB";
+            //Model = "U3224KB";
+            //CurrentDeviceInfo!.ModelNumber = "U3224KB";
             try
             {
                 WebcamSettings = WebcamSettings.ImportWebcamSettings(Model, CurrentDeviceInfo, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
