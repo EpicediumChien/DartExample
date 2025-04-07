@@ -353,18 +353,7 @@ namespace DDPM.UI.Module.Color
 
             //System.Diagnostics.Process.Start(psi);
             DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(null, psi);
-        }
-
-        private void ICC_profile_config_Click(object sender, RoutedEventArgs e)
-        {
-            var psi = new System.Diagnostics.ProcessStartInfo();
-
-            psi.FileName = "ms-settings:display";
-            psi.UseShellExecute = true;
-
-            //System.Diagnostics.Process.Start(psi);
-            DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(null, psi);
-        }
+        }       
 
         private void expanderHasExpanded(object sender, RoutedEventArgs args)
         {
