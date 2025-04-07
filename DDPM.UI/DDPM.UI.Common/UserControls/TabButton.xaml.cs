@@ -252,6 +252,8 @@ namespace DDPM.UI.Common
                 1.0);
             return formattedText.Width;
         }
+
+        //Elsa add for tooltip issue fix
         private double GetScreenScaleX()
         {
             var source = PresentationSource.FromVisual(this);
@@ -262,6 +264,7 @@ namespace DDPM.UI.Common
             return 1;
         }
 
+        //Elsa add for tooltip issue fix
         private void toolTip_Opened(object sender, RoutedEventArgs e)
         {
             System.Windows.Controls.ToolTip? target = sender as System.Windows.Controls.ToolTip;

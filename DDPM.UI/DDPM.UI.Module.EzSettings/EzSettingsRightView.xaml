@@ -51,7 +51,8 @@
                                     <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
                                         <Grid.ToolTip>
                                             <!--20250327 Chewlin for PIMS-348209 ADD MaxWidth="272" HorizontalOffset="0" and change Placement="Center" to "Top" change VerticalOffset="45" to "12" -->
-                                            <ToolTip MaxWidth="272" Placement="Top" HorizontalOffset="0" VerticalOffset="12">
+                                            <!--Elsa 20250407 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                            <ToolTip MaxWidth="272" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                     <Grid>
                                                         <!--20250327 Chewlin for PIMS-348209 ADD HorizontalAlignment="Left" change TextWrapping=Wrap to "WrapWithOverflow" MaxWidth="350" to 272 -->
@@ -194,7 +195,8 @@
                                     <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
                                         <Grid.ToolTip>
                                             <!--20250327 Chewlin for PIMS-348209 ADD MaxWidth="272"  HorizontalOffset="0" VerticalOffset="12" change Placement=Left to "Top" -->
-                                            <ToolTip MaxWidth="272" Placement="Top" HorizontalOffset="0" VerticalOffset="12">
+                                            <!--Elsa 20250407 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                            <ToolTip MaxWidth="272" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}"
                                                    MaxWidth="360">
                                                     <!--20250327 Chewlin for PIMS-348209 ADD HorizontalAlignment="Left" TextWrapping="WrapWithOverflow" change MaxWidth="350" to 272-->
