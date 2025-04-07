@@ -94,7 +94,7 @@
       <StackPanel Orientation="Vertical" Margin="16">
 
         <Grid VerticalAlignment="Top" Margin="0,0,0,15">
-          <Border CornerRadius="6" Width="470" Height="auto" VerticalAlignment="Top">
+          <Border CornerRadius="6" Width="auto" Height="auto" VerticalAlignment="Top">
             <StackPanel Orientation="Vertical">
               <Grid  VerticalAlignment="Top" Margin="20,0,0,0">
                 <UXControls:UXTextBlock x:Name="InteractionsTextBlock" Text="{Binding [SpeakerInteractions.0], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />

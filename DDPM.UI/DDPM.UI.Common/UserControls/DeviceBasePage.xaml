@@ -296,8 +296,9 @@
                                     
                                     <!-- ToolTip -->
                                     <Button.ToolTip>
+                                        <!--Elsa 20250401 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
                                         <ToolTip BorderThickness="0" Background="Transparent" 
-                                                 Placement="Top" HorizontalOffset="0" VerticalOffset="12">
+                                                 Placement="Top" HorizontalOffset="2" VerticalOffset="12">
                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                 <TextBlock Text="{Binding SelectedHomeDevice.DeviceInfoToolTipText}"
                                                            Style="{StaticResource Tooltip_TextBlockStyle}" LineHeight="20"/>

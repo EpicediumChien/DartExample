@@ -63,6 +63,7 @@ namespace VcpCore.Common
                                                 if (blocks != null)
                                                 {
                                                     EdidParser classEdidParser = new EdidParser();
+                                                    edid.Instance = InstanceName_spilit[1];
                                                     edid.VideoInputType = Display_Parameters.Video_Input_Definition(blocks);
                                                     edid.EdidVersion = Vendor_Product_Identification.EDIDVersion(blocks);
                                                     classEdidParser.Push(blocks);
