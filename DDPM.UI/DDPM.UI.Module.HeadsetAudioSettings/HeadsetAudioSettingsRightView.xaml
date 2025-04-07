@@ -879,25 +879,25 @@
                                                     <TextBlock x:Name="Node5Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                 </Border>
 
-                                                <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="-5,51,0,0">
-                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.12], Source={x:Static lang:LangHelper.Instance},StringFormat={}0 {0}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
-                                                </StackPanel>
+                        <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="-5,57,0,0">
+                          <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.12], Source={x:Static lang:LangHelper.Instance},StringFormat={}0 {0}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
+                        </StackPanel>
 
                                                 <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="40,165,0,0">
                                                     <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.13], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
                                                 </StackPanel>
 
-                                                <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="205,165,0,0">
-                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.14], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
-                                                </StackPanel>
+                        <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="220,165,0,0">
+                          <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.14], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
+                        </StackPanel>
 
-                                                <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="395,165,0,0">
-                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.15], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
-                                                </StackPanel>
-                                            </Canvas>
-                                        </StackPanel>
-                                    </Grid>
-                                </Grid>
+                        <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="400,165,0,0">
+                          <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.15], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
+                        </StackPanel>
+                      </Canvas>
+                    </StackPanel>
+                  </Grid>
+                </Grid>
 
                                 <!-- Second Section -->
                                 <StackPanel x:Name="MicNoiseCancellationPageShow" Visibility="{Binding IsCollaborationChecked, Converter={StaticResource CollaborationCheckedToVisibilityConverter}, ConverterParameter=MicNoiseCancellationPageShow}">

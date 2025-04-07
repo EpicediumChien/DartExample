@@ -368,7 +368,8 @@ namespace DDPM.SA.Common
         Task<bool> SetResetToDefaultAsyncForSoundbar(string Guid, bool newValue);
 
         ////////////////////////////////Get////////////////////////////////
-
+        
+        Task<string> GetWiredAudioSerialNumberAsync(string item);
         Task<string> GetProfileNameAsync(string item);
         Task<string> GetProfileAsync(string item);
         Task<int> GetBassAsync(string Guid);

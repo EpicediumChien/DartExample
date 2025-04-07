@@ -1484,6 +1484,8 @@ namespace DDPM.SA.Common
 
         ////////////////////////////////Get////////////////////////////////
 
+        Task<string> GetWiredAudioSerialNumberAsync(string item);
+
         Task<string> GetProfileNameAsync(string item);
 
         Task<string> GetProfileAsync(string item);

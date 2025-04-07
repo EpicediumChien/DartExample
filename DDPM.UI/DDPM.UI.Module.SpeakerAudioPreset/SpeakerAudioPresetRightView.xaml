@@ -205,7 +205,7 @@
                       <TextBlock x:Name="Node3Text" Text="0" Foreground="{DynamicResource TextBlock_ForegroundColor}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
 
-                    <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="20,58,0,0">
+                    <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="13,72,0,0">
                       <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.12], Source={x:Static lang:LangHelper.Instance},StringFormat={}0 {0}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
                     </StackPanel>
 
@@ -213,11 +213,11 @@
                       <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.13], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
                     </StackPanel>
 
-                    <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="195,165,0,0">
+                    <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="210,165,0,0">
                       <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.14], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
                     </StackPanel>
 
-                    <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="335,165,0,0">
+                    <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="340,165,0,0">
                       <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.15], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" />
                     </StackPanel>
                   </Canvas>
