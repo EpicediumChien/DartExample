@@ -104,7 +104,7 @@
                                         <StackPanel Orientation="Horizontal">
                                             <!-- Derek for PIMS-332102 -->
                                             <UXControls:UXTextBlock MaxWidth="270" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraSettings.28], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                                            <Border ToolTipService.Placement="Left" Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                                            <Border ToolTipService.Placement="Left" Background="{StaticResource FakeTransparent}">
                                                 <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Border.ToolTip>
                                                     <ToolTip Placement="Bottom" VerticalOffset="15" HorizontalOffset="220">
@@ -190,12 +190,15 @@
                                         <StackPanel Orientation="Horizontal">
                                             <!-- Derek for PIMS-332102 -->
                                             <UXControls:UXTextBlock MaxWidth="270" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraSettings.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                                            <Border ToolTipService.Placement="Left" Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                                            <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.Placement="Left" -->
+                                            <Border Background="{StaticResource FakeTransparent}">
                                                 <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Border.ToolTip>
-                                                    <ToolTip Placement="Bottom" VerticalOffset="15" HorizontalOffset="220">
+                                                    <!--Elsa 20250401 for PIMS-348390 change Placement="Bottom" to Placement="Top",change VerticalOffset="15" to VerticalOffset="14",change HorizontalOffset="220" to HorizontalOffset="13",add MaxWidth="272" Opened="toolTip_Opened" -->
+                                                    <ToolTip Placement="Top" VerticalOffset="14" HorizontalOffset="13" MaxWidth="272" Opened="toolTip_Opened">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
+                                                            <!--Elsa 20250401 for PIMS-348390 change MaxWidth="350" to MaxWidth="230" -->
+                                                            <TextBlock Text="{Binding [WebCameraSettings.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="Wrap" Padding="5,0,5,0" />
                                                         </Border>
                                                     </ToolTip>
                                                 </Border.ToolTip>
@@ -206,12 +209,15 @@
                                     <Grid Margin="32,12,16,0" Visibility="{Binding AutoFramingTransitionVisibility}">
                                         <StackPanel Orientation="Horizontal">
                                             <UXControls:UXTextBlock Margin="0,8,0,8" Text="{Binding [WebCameraSettings.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding Path= IsAutoFramingOn}" />
-                                            <Border ToolTipService.Placement="Center" ToolTipService.VerticalOffset="45" Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                                            <!--Elsa 20250401 for PIMS-348390 change ToolTipService.Placement="Center" to ToolTipService.Placement="Top" ToolTipService.VerticalOffset="45" to ToolTipService.VerticalOffset="22"-->
+                                            <Border ToolTipService.Placement="Top" ToolTipService.VerticalOffset="22" Background="{StaticResource FakeTransparent}">
                                                 <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Border.ToolTip>
-                                                    <ToolTip>
+                                                    <!--Elsa 20250401 for PIMS-348390 add HorizontalOffset="13" MaxWidth="272" Opened="toolTip_Opened" -->
+                                                    <ToolTip HorizontalOffset="13" MaxWidth="272" Opened="toolTip_Opened">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0"/>
+                                                            <!--Elsa 20250401 for PIMS-348390 change MaxWidth="350" to MaxWidth="230" -->
+                                                            <TextBlock Text="{Binding [WebCameraSettings.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="Wrap" Padding="5,0,5,0"/>
                                                         </Border>
                                                     </ToolTip>
                                                 </Border.ToolTip>
@@ -222,12 +228,15 @@
                                     <StackPanel Orientation="Vertical" Margin="32,22,16,16" Visibility="{Binding AutoFramingSensitivityVisibility}">
                                         <StackPanel Orientation="Horizontal">
                                             <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsAutoFramingOn}" />
-                                            <Border ToolTipService.Placement="Center" ToolTipService.VerticalOffset="45" Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                                            <!--Elsa 20250401 for PIMS-348390 change ToolTipService.Placement="Center" to ToolTipService.Placement="Top" ToolTipService.VerticalOffset="45" to ToolTipService.VerticalOffset="14"-->
+                                            <Border ToolTipService.Placement="Top" ToolTipService.VerticalOffset="14" Background="{StaticResource FakeTransparent}">
                                                 <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Border.ToolTip>
-                                                    <ToolTip>
+                                                    <!--Elsa 20250401 for PIMS-348390 add HorizontalOffset="13" MaxWidth="272" Opened="toolTip_Opened" -->
+                                                    <ToolTip HorizontalOffset="13" MaxWidth="272" Opened="toolTip_Opened">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
+                                                            <!--Elsa 20250401 for PIMS-348390 change MaxWidth="350" to MaxWidth="230" -->
+                                                            <TextBlock Text="{Binding [WebCameraSettings.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="Wrap" Padding="5,0,5,0" />
                                                         </Border>
                                                     </ToolTip>
                                                 </Border.ToolTip>
@@ -301,12 +310,14 @@
                                     <StackPanel Orientation="Vertical" Margin="32,2,16,16" Visibility="{Binding AutoFramingSizeVisibility}">
                                         <StackPanel Orientation="Horizontal">
                                             <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsAutoFramingOn}" />
-                                            <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                                            <Border Background="{StaticResource FakeTransparent}">
                                                 <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Border.ToolTip>
-                                                    <ToolTip Placement="Center" VerticalOffset="40">
+                                                    <!--Elsa 20250401 for PIMS-348390 change Placement="Center" to Placement="Top" VerticalOffset="40" to VerticalOffset="14", add HorizontalOffset="13" MaxWidth="272" Opened="toolTip_Opened" -->
+                                                    <ToolTip Placement="Top" VerticalOffset="14" HorizontalOffset="13" MaxWidth="272" Opened="toolTip_Opened">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.27], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
+                                                            <!--Elsa 20250401 for PIMS-348390 change MaxWidth="350" to MaxWidth="230" -->
+                                                            <TextBlock Text="{Binding [WebCameraSettings.27], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="Wrap" Padding="5,0,5,0" />
                                                         </Border>
                                                     </ToolTip>
                                                 </Border.ToolTip>
@@ -384,12 +395,14 @@
                                     <StackPanel Orientation="Vertical" Margin="16,25,16,16">
                                         <StackPanel Orientation="Horizontal">
                                             <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.12], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}"/>
-                                            <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                                            <Border Background="{StaticResource FakeTransparent}">
                                                 <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Border.ToolTip>
-                                                    <ToolTip Placement="Center" VerticalOffset="40">
+                                                    <!--Elsa 20250401 for PIMS-348390 change Placement="Center" to Placement="Top" VerticalOffset="40" to VerticalOffset="14", add HorizontalOffset="13" MaxWidth="272" Opened="toolTip_Opened" -->
+                                                    <ToolTip Placement="Top" VerticalOffset="14" HorizontalOffset="13" MaxWidth="272" Opened="toolTip_Opened">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.13], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="WrapWithOverflow" Padding="5,0,5,0" />
+                                                            <!--Elsa 20250401 for PIMS-348390 change MaxWidth="350" to MaxWidth="230" -->
+                                                            <TextBlock Text="{Binding [WebCameraSettings.13], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="WrapWithOverflow" Padding="5,0,5,0" />
                                                         </Border>
                                                     </ToolTip>
                                                 </Border.ToolTip>
@@ -529,12 +542,14 @@
                                     <Grid Margin="16,25,16,0">
                                         <StackPanel Orientation="Horizontal">
                                             <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [WebCameraSettings.16], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsNotAutoFramingOn}" />
-                                            <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                                            <Border Background="{StaticResource FakeTransparent}">
                                                 <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Border.ToolTip>
-                                                    <ToolTip Placement="Center" VerticalOffset="40" HorizontalOffset="-30">
+                                                    <!--Elsa 20250401 for PIMS-348390 change Placement="Center" to Placement="Top" VerticalOffset="40" to VerticalOffset="14" HorizontalOffset="-30" to HorizontalOffset="13",add MaxWidth="272" Opened="toolTip_Opened" -->
+                                                    <ToolTip Placement="Top" VerticalOffset="14" HorizontalOffset="13" MaxWidth="272" Opened="toolTip_Opened">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.17], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
+                                                            <!--Elsa 20250401 for PIMS-348390 change MaxWidth="350" to MaxWidth="230" -->
+                                                            <TextBlock Text="{Binding [WebCameraSettings.17], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="Wrap" Padding="5,0,5,0" />
                                                         </Border>
                                                     </ToolTip>
                                                 </Border.ToolTip>
@@ -552,12 +567,14 @@
                                 <StackPanel Orientation="Vertical" Margin="16,22,16,10">
                                     <StackPanel Orientation="Horizontal">
                                         <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.18], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                                        <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                                        <Border Background="{StaticResource FakeTransparent}">
                                             <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                             <Border.ToolTip>
-                                                <ToolTip Placement="Center" VerticalOffset="50">
+                                                <!--Elsa 20250401 for PIMS-348390 change Placement="Center" to Placement="Top" VerticalOffset="50" to VerticalOffset="14",add HorizontalOffset="13" MaxWidth="272" Opened="toolTip_Opened" -->
+                                                <ToolTip Placement="Top" VerticalOffset="14" HorizontalOffset="13" MaxWidth="272" Opened="toolTip_Opened">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                        <TextBlock Text="{Binding [WebCameraSettings.19], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
+                                                        <!--Elsa 20250401 for PIMS-348390 change MaxWidth="350" to MaxWidth="230" -->
+                                                        <TextBlock Text="{Binding [WebCameraSettings.19], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="Wrap" Padding="5,0,5,0" />
                                                     </Border>
                                                 </ToolTip>
                                             </Border.ToolTip>
@@ -653,12 +670,15 @@
                                 <Grid Margin="18,27,16,27">
                                     <StackPanel Orientation="Horizontal">
                                         <UXControls:UXTextBlock MaxWidth="330" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraSettings.25], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                                        <Border ToolTipService.Placement="Left" ToolTipService.VerticalOffset="-60" Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                                        <!--Elsa 20250401 for PIMS-348390 remove ToolTipService.Placement="Left" ToolTipService.VerticalOffset="-60" -->
+                                        <Border Background="{StaticResource FakeTransparent}">
                                             <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                             <Border.ToolTip>
-                                                <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                <!--Elsa 20250401 for PIMS-348390 change VerticalOffset="8" to VerticalOffset="14" HorizontalOffset="6" to HorizontalOffset="13",add MaxWidth="272" Opened="toolTip_Opened" -->
+                                                <ToolTip Placement="Top" VerticalOffset="14" HorizontalOffset="13" MaxWidth="272" Opened="toolTip_Opened">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                        <TextBlock Text="{Binding [WebCameraSettings.26], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
+                                                        <!--Elsa 20250401 for PIMS-348390 change MaxWidth="350" to MaxWidth="230" -->
+                                                        <TextBlock Text="{Binding [WebCameraSettings.26], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="230" TextWrapping="Wrap" Padding="5,0,5,0" />
                                                     </Border>
                                                 </ToolTip>
                                             </Border.ToolTip>
@@ -678,10 +698,11 @@
                                 <Grid Margin="18,22,16,22">
                                     <StackPanel Orientation="Horizontal">
                                         <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.10], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                        <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                                        <Border Background="{StaticResource FakeTransparent}">
                                             <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                             <Border.ToolTip>
-                                                <ToolTip Placement="Center" VerticalOffset="-35" HorizontalOffset="-30">
+                                                <!--Elsa 20250401 for PIMS-348390 change Placement="Center" to Placement="Top" VerticalOffset="-35" to VerticalOffset="20" HorizontalOffset="-30" to HorizontalOffset="13",add MaxWidth="272" Opened="toolTip_Opened" -->
+                                                <ToolTip Placement="Top" VerticalOffset="20" HorizontalOffset="13" MaxWidth="272" Opened="toolTip_Opened">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                         <TextBlock Text="{Binding [WebCameraPresenceDetection.11], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="WrapWithOverflow" Padding="5,0,5,0" />
                                                     </Border>

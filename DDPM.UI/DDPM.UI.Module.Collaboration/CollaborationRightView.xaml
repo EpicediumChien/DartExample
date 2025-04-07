@@ -87,15 +87,17 @@
                                                         TextBlockType="Caption" MouseEnter="MessageBox_MouseEnter"
                                                         VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding [Collaboration.0], Source={x:Static lang:LangHelper.Instance}}"/>
                                 <Image Margin="9,28,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Uniform"
-                                       VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="16" Height="16">
+                                       VerticalAlignment="Top" HorizontalAlignment="Left" Width="16" Height="16">
                                     <Image.ToolTip>
-                    <ToolTip Placement="Left" VerticalOffset="8" HorizontalOffset="6">
+                    <!--Elsa 20250401 for PIMS-348390 change Placement="Left" to Placement="Top",change VerticalOffset="8" to VerticalOffset="12",change HorizontalOffset="6" to HorizontalOffset="2",add MaxWidth="272" Opened="toolTip_Opened" -->
+                    <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                 <Border.Resources>
                                                     <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                 </Border.Resources>
                         <StackPanel Orientation="Horizontal">
-                          <TextBlock Name="txtCollabsTooltip" TextWrapping="WrapWithOverflow" MaxWidth="350" Text="{Binding [Collaboration.1], Source={x:Static lang:LangHelper.Instance}}"/>
+                          <!--Elsa 20250401 for PIMS-348390 change MaxWidth="350" to MaxWidth="230" -->
+                          <TextBlock Name="txtCollabsTooltip" TextWrapping="WrapWithOverflow" MaxWidth="230" Text="{Binding [Collaboration.1], Source={x:Static lang:LangHelper.Instance}}"/>
                                                 </StackPanel>
                                             </Border>
                                         </ToolTip>

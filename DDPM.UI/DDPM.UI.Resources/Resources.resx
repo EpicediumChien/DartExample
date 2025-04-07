@@ -2112,7 +2112,7 @@
     <value>Automatic actions when you remove your headset</value>
   </data>
   <data name="HeadsetAutomatedActions.10" xml:space="preserve">
-    <value>Pauses music automatically when headset is removed. Music will resume automatically when headset is put on.</value>
+    <value>Pauses music automatically when the headset is removed. Music will automatically resume when headset is put on.</value>
   </data>
   <data name="HeadsetAutomatedActions.11" xml:space="preserve">
     <value>Mutes microphone automatically when headset is removed</value>

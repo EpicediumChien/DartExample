@@ -5,6 +5,7 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Plugin.Common;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
@@ -708,6 +709,7 @@ namespace DDPM.UI.Module.Brightness
                             if (alsList[i].Edid == SelectedHomeDevice.MonitorInfo.edid)
                             {
                                 Start_ALSConfig = alsList[i];
+                                DdpmCommonHelper.WriteUILog($"InitComponentData Start_ALSConfig, ModelName = {Start_ALSConfig?.ModelName}, ALS Value = {Start_ALSConfig?.AllValue.ToString()}");
                             }
                         }
                     }
@@ -718,6 +720,7 @@ namespace DDPM.UI.Module.Brightness
                         if (!alsList.Contains(Start_ALSConfig))
                         {
                             alsList.Add(Start_ALSConfig);
+                            DdpmCommonHelper.WriteUILog($"InitComponentData Re-Get Start_ALSConfig, ModelName = {Start_ALSConfig?.ModelName}, ALS Value = {Start_ALSConfig?.AllValue.ToString()}");
                         }
                     }
                     GetALSContentAndSyncUI(SelectedHomeDevice.MonitorInfo);
@@ -1334,6 +1337,7 @@ namespace DDPM.UI.Module.Brightness
 
         private void GetALSContentAndSyncUI(MonitorInfo mo)
         {
+            DdpmCommonHelper.WriteUILog($"GetALSContentAndSyncUI ... in");
             if (DdpmCommonHelper.DeviceManagerSA == null)
                 return;
 
@@ -1357,7 +1361,17 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("isAlsSupported");
                 NotifyPropertyChanged("IsScheduledShow");
                 NotifyPropertyChanged("IsScheduledLuminanceShow");
+                DdpmCommonHelper.WriteUILog($"******************** GetALSContentAndSyncUI ********************");
+                DdpmCommonHelper.WriteUILog($"ModelName ****************** : {Start_ALSConfig.MoInfo.modelName}");
+                DdpmCommonHelper.WriteUILog($"SupportALS ***************** : {Start_ALSConfig.isSupportALS.ToString()}");
+                DdpmCommonHelper.WriteUILog($"AutoBrightness ************* : {(Start_ALSConfig.isAutoBrightness ? "ON" : "OFF")}");
+                DdpmCommonHelper.WriteUILog($"AutoColorTemp ************** : {(Start_ALSConfig.isAutoColorTemp ? "ON" : "OFF")}");
+                DdpmCommonHelper.WriteUILog($"AutoBrightnessRangeLevel *** : {Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name}");
+                DdpmCommonHelper.WriteUILog($"PrimaryMonitor ************* : {(Start_ALSConfig.isPrimaryMonitorSync ? "ON" : "OFF")}");
+                DdpmCommonHelper.WriteUILog($"ALS Value ****************** : {Start_ALSConfig.AllValue.ToString()}");
+                DdpmCommonHelper.WriteUILog($"******************** GetALSContentAndSyncUI ********************");
             }
+            DdpmCommonHelper.WriteUILog($"GetALSContentAndSyncUI ... out");
         }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -2374,8 +2388,20 @@ namespace DDPM.UI.Module.Brightness
             if (!Start_ALSConfig.isPrimaryMonitorSync && CheckMonitorALSStatus())// user change non-Primary
             {
                 //PIMS-328260
-                string pop_string = Strings.BrightnessPageNotice1;//"This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?";
-                if (DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string, MyModule.GetRightView().Parent))
+                //string pop_string = Strings.BrightnessPageNotice1;//"This is not your primary monitor. Do you want to proceed with the change and set this as primary Monitor for Sync?";
+                MessageModalDialog messageModalDialog;
+                Window mainWindow = System.Windows.Application.Current.MainWindow;
+                messageModalDialog = new(Strings.ImpExp_Warning, Strings.BrightnessPageNotice1, Strings.Continue, Strings.Cancel);
+                if (mainWindow != null)
+                {
+                    messageModalDialog.Owner = mainWindow;
+                    messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                    messageModalDialog.Top = mainWindow.Top + 300;
+                }
+
+                //PIMS-353731 change button text from "Yes"/"No" to "Continue"/"Cancel"
+                //if (DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string, MyModule.GetRightView().Parent))
+                if (messageModalDialog!= null && messageModalDialog.ShowDialog().Value == false)//false means left button is "continue"
                 {
                     _primaryMonitorSyncStatus = true;
                     Start_ALSConfig.isPrimaryMonitorSync = true;// onoff; //PIMS-328260

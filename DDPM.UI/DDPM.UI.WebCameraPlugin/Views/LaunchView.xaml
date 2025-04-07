@@ -172,7 +172,8 @@
                                     <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
                                 </Border.InputBindings>
                                 <Border.ToolTip>
-                                    <ToolTip Placement="MousePoint" VerticalOffset="-50" HorizontalOffset="-5">
+                                    <!--Elsa 20250401 for PIMS-348390 change Placement="MousePoint" to Placement="Top" VerticalOffset="-50" to VerticalOffset="34" HorizontalOffset="-5" to HorizontalOffset="11" -->
+                                    <ToolTip Placement="Top" VerticalOffset="34" HorizontalOffset="11">
                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                             <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding FirmwareVersion2}" />
                                         </Border>

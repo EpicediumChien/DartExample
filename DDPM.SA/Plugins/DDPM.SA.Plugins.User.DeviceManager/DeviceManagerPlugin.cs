@@ -585,35 +585,42 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             usbKvmPBPs.Add(usbKvmPBP);
                         }
-                        HotkeySettings localHotkeySettings = _hotkeySettings.SingleOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
-                        if (localHotkeySettings != null)
+                        if (_hotkeySettings != null)
                         {
-                            if (localHotkeySettings.HotkeyOptions.Any(x => x == HotkeyOption.KvmAutoApply))
+                            HotkeySettings localHotkeySettings = _hotkeySettings.SingleOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
+                            if (localHotkeySettings != null)
                             {
-                                //update timer
-                                if (usbKvmPBPs.Any(x => x.isPBPmode))
+                                if (localHotkeySettings.HotkeyOptions.Any(x => x == HotkeyOption.KvmAutoApply))
                                 {
-                                    _USBKVMAutoSwitchTimer.Stop();
-                                    _USBKVMAutoSwitchTimer.Start();
-                                    Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled},and start(), PBPmode ON");
-                                    writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled},and start(), PBPmode ON");
+                                    //update timer
+                                    if (usbKvmPBPs.Any(x => x.isPBPmode))
+                                    {
+                                        _USBKVMAutoSwitchTimer.Stop();
+                                        _USBKVMAutoSwitchTimer.Start();
+                                        Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled},and start(), PBPmode ON");
+                                        writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled},and start(), PBPmode ON");
+                                    }
+                                    else
+                                    {
+                                        _USBKVMAutoSwitchTimer.Stop();
+                                        Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, and stop(), PBPmode OFF");
+                                        writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, and stop(), PBPmode OFF");
+                                    }
                                 }
                                 else
                                 {
-                                    _USBKVMAutoSwitchTimer.Stop();
-                                    Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, and stop(), PBPmode OFF");
-                                    writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, and stop(), PBPmode OFF");
+                                    Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus,the kvm auto switch option is OFF");
+                                    writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,the kvm auto switch option is OFF");
                                 }
                             }
                             else
                             {
-                                Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus,the kvm auto switch option is OFF");
-                                writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,the kvm auto switch option is OFF");
+                                writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,localHotkeySettings is null.");
                             }
                         }
                         else
                         {
-                            writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,hotkeysetting is null.");
+                            writelog($"[USBKVM_Auto_Switch] _hotkeySettings is null.");
                         }
                     }
                 }
@@ -8939,8 +8946,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     if (vcps.Count > 0)
                                     {
                                         //set ImportVCPSequence
-                                        impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;
+                                        impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;                                        
                                         SetVCPSequence(monitorInfo, impVCPSequence, vcps);
+                                        writelog("[DisplayImportSettings] ALSConfig : " + impVCPSequence.ALSConfig.ToString());
                                         foreach (VCPCode code in vcps)
                                         {
                                             if (code.Code != null && (code.Value != null && code.Value.Count > 0))
@@ -8962,11 +8970,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     }
                                                     //get vcp code
                                                     objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
+                                                    writelog("[DisplayImportSettings] GetVCPCapability VCP code : " + code.Code.ToString() + ", Value : " + objGetVCP.value.ToString());
                                                     if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
                                                     {
                                                         //set vcp code
-                                                        writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
-                                                        b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                                        if(SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result)
+                                                        {
+                                                            writelog("[DisplayImportSettings] Set VCP code success : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());
+                                                        }
+                                                        else
+                                                        {
+                                                            writelog("[DisplayImportSettings] Set VCP code fail : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());                                                    
+                                                        }
                                                     }
                                                 }
                                             }
@@ -12170,7 +12185,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //writelog($"{nameof(OnProgressUpdateEvent)} {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
                 handler.Invoke(this, fWUpdateInfo);
             }
-            if (_UpdateProgress == null)
+            /*Fix PIMS-354303 and PIMS-353296
+             * if (_UpdateProgress == null)
             {
                 writelog($"_UpdateProgress is null");
                 if (_PopupBase == null)
@@ -12184,7 +12200,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //writelog($"popupBaseViewModel UpdateContent");
                 //writelog($"{nameof(OnProgressUpdateEvent)} {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
                 popupBaseViewModel.UpdateContent(LangHelper.Instance["FW_info"], fWUpdateInfo);
-            }
+            }*/
             //writelog($"{nameof(OnProgressUpdateEvent)} done");
         }
 
@@ -16828,20 +16844,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (vcps.Exists(x => x.Code == code))
                         {
                             VCPCode vcp = vcps.Find(x => x.Code == code);
-                            writelog("[SetVCPSequence] VCP code : " + vcp.Code.ToString());
                             ObjGetVCP objGetVCP = new ObjGetVCP();
                             objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
+                            writelog("[SetVCPSequence] GetVCPCapability VCP code : " + vcp.Code.ToString() + ", value : " + objGetVCP.value.ToString());
                             if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)vcp.Value[0])
-                            {
-                                writelog("[SetVCPSequence] Set VCP code : " + vcp.Code.ToString());
+                            {                               
                                 if (code == 0x66)
                                 {
-                                    writelog("[SetVCPSequence] ALS");
-                                    bool b = SetVCPCapability(monitorInfo, 0x66, impVCPSequence.ALSConfig).Result;
+                                    if (SetVCPCapability(monitorInfo, 0x66, impVCPSequence.ALSConfig).Result)
+                                    {
+                                        writelog("[SetVCPSequence] Set ALS(0x66) success : Value = " + impVCPSequence.ALSConfig.ToString());
+                                    }
+                                    else
+                                    {
+                                        writelog("[SetVCPSequence] Set ALS(0x66) fail : Value = " + impVCPSequence.ALSConfig.ToString());
+                                    }
                                 }
                                 else
                                 {
-                                    bool b = SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result;
+                                    if (SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result)
+                                    {
+                                        writelog("[SetVCPSequence] Set VCP code success : " + code.ToString() + ", Value : " + vcp.Value[0].ToString());                                       
+                                    }
+                                    else
+                                    {
+                                        writelog("[SetVCPSequence] Set VCP code fail : " + code.ToString() + ", Value : " + vcp.Value[0].ToString());
+                                    }
                                 }
                             }
                         }
