@@ -503,83 +503,87 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             RefreshUI();
             Log?.Info($"CheckUpdate done");
         }
+        private static readonly object lockObject = new object();
         public void SetUpdateInfoUI(FWUpdateInfoPackage fwUpdateInfoPackage, SWUpdateInfoPackage swUpdateInfoPackage)
         {
-            Log?.Info($"SetUpdateInfoUI start");
-            LastCheckDate = fwUpdateInfoPackage.TheLastCheckTime.ToString();
-            FWUpdateInfoPackage = fwUpdateInfoPackage;
-            SWUpdateInfoPackage = swUpdateInfoPackage;
-            Critical_UpdateList_UI = new List<UIUpdateInfo>();
-            Recommended_UpdateList_UI = new List<UIUpdateInfo>();
-            Optional_UpdateList_UI = new List<UIUpdateInfo>();
-            if (!NetworkInterface.GetIsNetworkAvailable())
+            lock (lockObject)
             {
-                NoNetwork = Visibility.Visible;
-            }
-            else
-            {
-                NoNetwork = Visibility.Collapsed;
-                List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA.GetDevices().Result.deviceInfo;
-                int ioDongleCount = DdpmCommonHelper.DeviceManagerSA.GetIODongleCountGen3AgoCount().Result;
-                Log?.Info($"fwUpdateInfoPackage.FWUpdateInfo.Count : {fwUpdateInfoPackage.FWUpdateInfo.Count}");
-                Log?.Info($"ioDongleCount : {ioDongleCount}");
-                foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
+                Log?.Info($"SetUpdateInfoUI start");
+                LastCheckDate = fwUpdateInfoPackage.TheLastCheckTime.ToString();
+                FWUpdateInfoPackage = fwUpdateInfoPackage;
+                SWUpdateInfoPackage = swUpdateInfoPackage;
+                Critical_UpdateList_UI = new List<UIUpdateInfo>();
+                Recommended_UpdateList_UI = new List<UIUpdateInfo>();
+                Optional_UpdateList_UI = new List<UIUpdateInfo>();
+                if (!NetworkInterface.GetIsNetworkAvailable())
                 {
-                    UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos, ioDongleCount);
-                    if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)//如果不能選擇是否更新為強制更新
-                    {
-                        Log?.Info($"Critical_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
-                        Critical_UpdateList_UI.Add(uiUpdateInfo);
-                    }
-                    else if (uiUpdateInfo.IsCheckUpdate)//如果為true為建議更新
-                    {
-                        Log?.Info($"Recommended_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
-                        Recommended_UpdateList_UI.Add(uiUpdateInfo);
-                    }
-                    else//剩下的為選用更新
-                    {
-                        Log?.Info($"Optional_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
-                        Optional_UpdateList_UI.Add(uiUpdateInfo);
-                    }
-                }
-                Log?.Info($"swUpdateInfoPackage.SWUpdateInfo.Count : {swUpdateInfoPackage.SWUpdateInfo.Count}");
-                foreach (SWUpdateInfo swUpdateInfo in swUpdateInfoPackage.SWUpdateInfo)
-                {
-                    UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(swUpdateInfo);
-                    if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)
-                    {
-                        Log?.Info($"Critical_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
-                        Critical_UpdateList_UI.Add(uiUpdateInfo);
-                    }
-                }
-                if ((Critical_UpdateList_UI?.Count <= 0 &&
-                    Recommended_UpdateList_UI?.Count <= 0 &&
-                    Optional_UpdateList_UI?.Count <= 0))
-                {
-                    NoUpdateAlert = Visibility.Visible;
+                    NoNetwork = Visibility.Visible;
                 }
                 else
                 {
-                    NoUpdateAlert = Visibility.Collapsed;
-                }
-            }
-            if (NoNetwork == Visibility.Visible || NoUpdateAlert == Visibility.Visible)
-            {
-                System.Timers.Timer timer = new System.Timers.Timer();
-                timer.Interval = TimeSpan.FromSeconds(5).TotalMilliseconds;
-                timer.Elapsed += (sender, args) =>
-                {
-                    timer.Stop();
                     NoNetwork = Visibility.Collapsed;
-                    NoUpdateAlert = Visibility.Collapsed;
-                    RefreshUI();
-                };
-                timer.Start();
+                    List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA.GetDevices().Result.deviceInfo;
+                    int ioDongleCount = DdpmCommonHelper.DeviceManagerSA.GetIODongleCountGen3AgoCount().Result;
+                    Log?.Info($"fwUpdateInfoPackage.FWUpdateInfo.Count : {fwUpdateInfoPackage.FWUpdateInfo.Count}");
+                    Log?.Info($"ioDongleCount : {ioDongleCount}");
+                    foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
+                    {
+                        UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos, ioDongleCount);
+                        if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)//如果不能選擇是否更新為強制更新
+                        {
+                            Log?.Info($"Critical_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
+                            Critical_UpdateList_UI.Add(uiUpdateInfo);
+                        }
+                        else if (uiUpdateInfo.IsCheckUpdate)//如果為true為建議更新
+                        {
+                            Log?.Info($"Recommended_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
+                            Recommended_UpdateList_UI.Add(uiUpdateInfo);
+                        }
+                        else//剩下的為選用更新
+                        {
+                            Log?.Info($"Optional_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
+                            Optional_UpdateList_UI.Add(uiUpdateInfo);
+                        }
+                    }
+                    Log?.Info($"swUpdateInfoPackage.SWUpdateInfo.Count : {swUpdateInfoPackage.SWUpdateInfo.Count}");
+                    foreach (SWUpdateInfo swUpdateInfo in swUpdateInfoPackage.SWUpdateInfo)
+                    {
+                        UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(swUpdateInfo);
+                        if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)
+                        {
+                            Log?.Info($"Critical_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
+                            Critical_UpdateList_UI.Add(uiUpdateInfo);
+                        }
+                    }
+                    if ((Critical_UpdateList_UI?.Count <= 0 &&
+                        Recommended_UpdateList_UI?.Count <= 0 &&
+                        Optional_UpdateList_UI?.Count <= 0))
+                    {
+                        NoUpdateAlert = Visibility.Visible;
+                    }
+                    else
+                    {
+                        NoUpdateAlert = Visibility.Collapsed;
+                    }
+                }
+                if (NoNetwork == Visibility.Visible || NoUpdateAlert == Visibility.Visible)
+                {
+                    System.Timers.Timer timer = new System.Timers.Timer();
+                    timer.Interval = TimeSpan.FromSeconds(5).TotalMilliseconds;
+                    timer.Elapsed += (sender, args) =>
+                    {
+                        timer.Stop();
+                        NoNetwork = Visibility.Collapsed;
+                        NoUpdateAlert = Visibility.Collapsed;
+                        RefreshUI();
+                    };
+                    timer.Start();
+                }
+                Log?.Info($"Critical_UpdateList_UI.Count : {Critical_UpdateList_UI.Count}");
+                Log?.Info($"Recommended_UpdateList_UI.Count : {Recommended_UpdateList_UI.Count}");
+                Log?.Info($"Optional_UpdateList_UI.Count : {Optional_UpdateList_UI.Count}");
+                Log?.Info($"SetUpdateInfoUI done");
             }
-            Log?.Info($"Critical_UpdateList_UI.Count : {Critical_UpdateList_UI.Count}");
-            Log?.Info($"Recommended_UpdateList_UI.Count : {Recommended_UpdateList_UI.Count}");
-            Log?.Info($"Optional_UpdateList_UI.Count : {Optional_UpdateList_UI.Count}");
-            Log?.Info($"SetUpdateInfoUI done");
         }
 
         public bool IsCanUpdate()
