@@ -160,6 +160,20 @@ namespace DDPM.Easy.Common.Tests
             Assert.That(splitCtrl0A.SplitMode, Is.EqualTo(SplitMode));
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            if (splitCtrl0A != null)
+            {
+                splitCtrl0A.Dispose();
+                splitCtrl0A = null;
+            }
+            if (vm != null)
+            {
+                vm.Dispose();
+                vm = null;
+            }
+        }
 
     }
 }

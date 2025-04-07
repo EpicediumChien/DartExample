@@ -19,8 +19,12 @@ namespace DDPM.Easy.Common
     /// <summary>
     /// Interaction logic for SplitCtrl6I.xaml
     /// </summary>
-    public partial class SplitCtrl6I : UserControl, ISplitCtrl
+    public partial class SplitCtrl6I : UserControl, ISplitCtrl, IDisposable
     {
+        #region Private members
+        private bool _isDisposed = false;
+        #endregion Private members
+
         #region ctor
         public SplitCtrl6I()
         {
@@ -102,6 +106,27 @@ namespace DDPM.Easy.Common
             cellListV.Add(new CellObj("6I6", cell_6I6) { rcRatio = new Rect(0.3, 0, 0.7, 1 / 2) });
         }
 
+        protected void ClearCellList()
+        {
+            if (cellListH != null)
+            {
+                foreach (CellObj cell in cellListH)
+                {
+                    cell.Dispose();
+                }
+                cellListH.Clear();
+                cellListH = null;
+            }
+            if (cellListV != null)
+            {
+                foreach (CellObj cell in cellListV)
+                {
+                    cell.Dispose();
+                }
+                cellListV.Clear();
+                cellListV = null;
+            }
+        }
         /// <summary>
         /// Convert ISplitCtrl.Settings to CellList[i].rcRect
         /// </summary>
@@ -173,6 +198,7 @@ namespace DDPM.Easy.Common
         #endregion Cell List
 
         #region CellBorders
+        //CellBorders should be used in SplitCtrl0B only
         private List<CellBorder> celBordersH = new List<CellBorder>();
         private List<CellBorder> celBordersV = new List<CellBorder>();
 
@@ -186,6 +212,27 @@ namespace DDPM.Easy.Common
                     return celBordersH;
             }
             set { }
+        }
+        private void ClearCellBorders()
+        {
+            if (celBordersH != null)
+            {
+                foreach (CellBorder cellBd in celBordersH)
+                {
+                    cellBd.Dispose();
+                }
+                celBordersH.Clear();
+                celBordersH = null;
+            }
+            if (celBordersV != null)
+            {
+                foreach (CellBorder cellBd in celBordersV)
+                {
+                    cellBd.Dispose();
+                }
+                celBordersV.Clear();
+                celBordersV = null;
+            }
         }
         #endregion
 
@@ -209,6 +256,19 @@ namespace DDPM.Easy.Common
             HSplitterList.Add(H3);
         }
 
+        private void ClearSplitterList()
+        {
+            if (VSplitterList != null)
+            {
+                VSplitterList.Clear();
+                VSplitterList = null;
+            }
+            if (HSplitterList != null)
+            {
+                HSplitterList.Clear();
+                HSplitterList = null;
+            }
+        }
         #endregion Splitter List
 
         #region Settings
@@ -259,5 +319,50 @@ namespace DDPM.Easy.Common
             }
         }
         #endregion FriendlyName      
+
+        #region Dispose and Destructor
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    // 釋放託管資源
+                    if (vm != null)
+                    {
+                        vm.Dispose();
+                        vm = null;
+                    }
+                    ClearCellList();
+                    ClearCellBorders();
+                    ClearSplitterList();
+
+                    if (DefaultSettings != null)
+                    {
+                        DefaultSettings.Clear();
+                    }
+                }
+
+                // 釋放非託管資源
+                //if (unmanagedResource != IntPtr.Zero)
+                //{
+                //    // 釋放資源
+                //    unmanagedResource = IntPtr.Zero;
+                //}
+
+                _isDisposed = true;
+            }
+        }
+        ~SplitCtrl6I()
+        {
+            Dispose(false);
+        }
+        #endregion
+
     }
 }

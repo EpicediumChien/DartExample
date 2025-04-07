@@ -7,8 +7,12 @@ namespace DDPM.Easy.Common
     /// <summary>
     /// Interaction logic for SplitCtrl2D.xaml
     /// </summary>
-    public partial class SplitCtrl2D : UserControl, ISplitCtrl
+    public partial class SplitCtrl2D : UserControl, ISplitCtrl, IDisposable
     {
+        #region Private members
+        private bool _isDisposed = false;
+        #endregion Private members
+
         #region ctor
 
         public SplitCtrl2D()
@@ -84,6 +88,27 @@ namespace DDPM.Easy.Common
             cellListV.Add(new CellObj("2D2", cell_2D2) { rcRatio = new Rect(0, 0.3, 1, 0.7) });
         }
 
+        protected void ClearCellList()
+        {
+            if (cellListH != null)
+            {
+                foreach (CellObj cell in cellListH)
+                {
+                    cell.Dispose();
+                }
+                cellListH.Clear();
+                cellListH = null;
+            }
+            if (cellListV != null)
+            {
+                foreach (CellObj cell in cellListV)
+                {
+                    cell.Dispose();
+                }
+                cellListV.Clear();
+                cellListV = null;
+            }
+        }
         /// <summary>
         /// Convert ISplitCtrl.Settings to CellList[i].rcRect
         /// </summary>
@@ -142,6 +167,27 @@ namespace DDPM.Easy.Common
             }
             set { }
         }
+        private void ClearCellBorders()
+        {
+            if (celBordersH != null)
+            {
+                foreach (CellBorder cellBd in celBordersH)
+                {
+                    cellBd.Dispose();
+                }
+                celBordersH.Clear();
+                celBordersH = null;
+            }
+            if (celBordersV != null)
+            {
+                foreach (CellBorder cellBd in celBordersV)
+                {
+                    cellBd.Dispose();
+                }
+                celBordersV.Clear();
+                celBordersV = null;
+            }
+        }
         #endregion
 
         #region Splitter List
@@ -158,6 +204,19 @@ namespace DDPM.Easy.Common
             HSplitterList.Add(H1);
         }
 
+        private void ClearSplitterList()
+        {
+            if (VSplitterList != null)
+            {
+                VSplitterList.Clear();
+                VSplitterList = null;
+            }
+            if (HSplitterList != null)
+            {
+                HSplitterList.Clear();
+                HSplitterList = null;
+            }
+        }
         #endregion Splitter List
 
         #region Settings
@@ -208,5 +267,49 @@ namespace DDPM.Easy.Common
             }
         }
         #endregion FriendlyName
+
+        #region Dispose and Destructor
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    // 釋放託管資源
+                    if (vm != null)
+                    {
+                        vm.Dispose();
+                        vm = null;
+                    }
+                    ClearCellList();
+                    ClearCellBorders();
+                    ClearSplitterList();
+
+                    if (DefaultSettings != null)
+                    {
+                        DefaultSettings.Clear();
+                    }
+                }
+
+                // 釋放非託管資源
+                //if (unmanagedResource != IntPtr.Zero)
+                //{
+                //    // 釋放資源
+                //    unmanagedResource = IntPtr.Zero;
+                //}
+
+                _isDisposed = true;
+            }
+        }
+        ~SplitCtrl2D()
+        {
+            Dispose(false);
+        }
+        #endregion
     }
 }

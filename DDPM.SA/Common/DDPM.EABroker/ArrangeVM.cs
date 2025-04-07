@@ -23,6 +23,9 @@ using System.Windows.Media.Media3D;
 using static VcpCore.Common.User32;
 using Rect = System.Windows.Rect;
 using nsWinEventHook;
+using System.Diagnostics.CodeAnalysis;
+using System.Security.Cryptography.X509Certificates;
+using System.Windows.Controls;
 
 namespace DDPM.EABroker
 {
@@ -82,6 +85,14 @@ namespace DDPM.EABroker
         private ISplitCtrl _awsIcon2;
         private ISplitCtrl _awsIcon3;
         private ISplitCtrl _awsIcon4;
+
+        //AWS Icons Rect
+        private Rect _rcIcon0 = new Rect();
+        private Rect _rcIcon1 = new Rect();
+        private Rect _rcIcon2 = new Rect();
+        private Rect _rcIcon3 = new Rect();
+        private Rect _rcIcon4 = new Rect();
+
 
         private ISplitCtrl? _hoveringAwsIcon; //Point to one of {_awsIcon1 ~ _awsIcon4 }
         private CellObj? _hoveringAwsCellObj;
@@ -467,6 +478,7 @@ namespace DDPM.EABroker
                 bool isEqualed = (value.Equals(_workScreen));
                 SetProperty(ref _workScreen, value);
                 OnPropertyChanged("WorkScreenName");
+                OnPropertyChanged("WorkScreenInfoText");
                 if (!isEqualed && WorkScreenChanged != null)
                 {
                     Task.Run(() => WorkScreenChanged.Invoke(this, _workScreen));
@@ -482,6 +494,16 @@ namespace DDPM.EABroker
                 if (_workScreen == null)
                     return "";
                 return _workScreen.DeviceName;
+            }
+        }
+
+        public string WorkScreenInfoText
+        {
+            get
+            {
+                if (WorkScreen == null)
+                    return "(null)";
+                return $"DeviceName=[{WorkScreen.DeviceName}], Bounds=[{FormatRectangle(WorkScreen.Bounds)}], WorkingArea=[{FormatRectangle(WorkScreen.WorkingArea)}]";
             }
         }
 
@@ -1594,6 +1616,74 @@ namespace DDPM.EABroker
                 }
             }
         }
+
+        //
+        // AWS Icon Rects
+        public Rect rcIcont0
+        {
+            get => _rcIcon0;
+            set
+            {
+                SetProperty(ref _rcIcon0, value);
+                OnPropertyChanged("rcIcon0Text");
+            }
+        }
+        public Rect rcIcont1
+        {
+            get => _rcIcon1;
+            set
+            {
+                SetProperty(ref _rcIcon1, value);
+                OnPropertyChanged("rcIcon1Text");
+            }
+        }
+        public Rect rcIcont2
+        {
+            get => _rcIcon2;
+            set
+            {
+                SetProperty(ref _rcIcon2, value);
+                OnPropertyChanged("rcIcon2Text");
+            }
+        }
+        public Rect rcIcont3
+        {
+            get => _rcIcon3;
+            set
+            {
+                SetProperty(ref _rcIcon3, value);
+                OnPropertyChanged("rcIcon3Text");
+            }
+        }
+        public Rect rcIcont4
+        {
+            get => _rcIcon4;
+            set
+            {
+                SetProperty(ref _rcIcon4, value);
+                OnPropertyChanged("rcIcon4Text");
+            }
+        }
+        public string rcIcon0Text
+        {
+            get { return FormatRect(_rcIcon0); }
+        }
+        public string rcIcon1Text
+        {
+            get { return FormatRect(_rcIcon1); }
+        }
+        public string rcIcon2Text
+        {
+            get { return FormatRect(_rcIcon2); }
+        }
+        public string rcIcon3Text
+        {
+            get { return FormatRect(_rcIcon3); }
+        }
+        public string rcIcon4Text
+        {
+            get { return FormatRect(_rcIcon4); }
+        }
         #endregion
 
         #region UI Rect Functions
@@ -1627,6 +1717,10 @@ namespace DDPM.EABroker
             return $"({rc.Left:F2},{rc.Top:F2})-({rc.Right:F2},{rc.Bottom:F2}){rc.Width:F2}x{rc.Height:F2}";
         }
 
+        public static string FormatRectangle(Rectangle rc)
+        {
+            return $"({rc.Left:F2},{rc.Top:F2})-({rc.Right:F2},{rc.Bottom:F2}){rc.Width:F2}x{rc.Height:F2}";
+        }
         public static Rect RectFromRectangle(Rectangle rectangle)
         {
             Rect rcOut = new Rect();

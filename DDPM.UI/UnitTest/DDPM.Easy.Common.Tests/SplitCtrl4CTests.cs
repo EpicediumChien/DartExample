@@ -1,4 +1,5 @@
-﻿using NGA.UnitTest.PrivateObject;
+﻿using DDPM.UI.Common.EAEM;
+using NGA.UnitTest.PrivateObject;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -164,6 +165,21 @@ namespace DDPM.Easy.Common.Tests
             splitCtrl4C.FriendlyName = "FriendlyName";
             // Assert
             Assert.That(splitCtrl4C.FriendlyName, Is.EqualTo("FriendlyName"));
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (splitCtrl4C != null)
+            {
+                splitCtrl4C.Dispose();
+                splitCtrl4C = null;
+            }
+            if (vm != null)
+            {
+                vm.Dispose();
+                vm = null;
+            }
         }
     }
 }

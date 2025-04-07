@@ -5,8 +5,12 @@ using System.Windows;
 
 namespace DDPM.Easy.Common
 {
-    public class SplitCtrlVM : ObservableObject
+    public class SplitCtrlVM : ObservableObject, IDisposable
     {
+        #region Private members
+        private bool _isDisposed = false;
+        #endregion Private members
+
         #region SplitMode
 
         private eSplitModes splitMode = eSplitModes.Icon;
@@ -189,5 +193,41 @@ namespace DDPM.Easy.Common
         }
 
         #endregion HoveringCell (updated by WorkWindow)
+
+        #region Dispose and Destructor
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    // 釋放託管資源
+                    if (settings != null)
+                    {
+                        settings.Clear();
+                        settings = null;
+                    }
+                }
+
+                // 釋放非託管資源
+                //if (unmanagedResource != IntPtr.Zero)
+                //{
+                //    // 釋放資源
+                //    unmanagedResource = IntPtr.Zero;
+                //}
+
+                _isDisposed = true;
+            }
+        }
+        ~SplitCtrlVM()
+        {
+            Dispose(false);
+        }
+        #endregion
     }
 }

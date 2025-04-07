@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -19,10 +20,11 @@ namespace DDPM.Easy.Common
     /// <summary>
     /// Interaction logic for CellBorder.xaml
     /// </summary>
-    public partial class CellBorder : UserControl
+    public partial class CellBorder : UserControl, IDisposable
     {
         private static double _screenScale = -1;
-        
+        private bool _isDisposed = false;
+
 
         public CellBorder()
         {
@@ -101,7 +103,10 @@ namespace DDPM.Easy.Common
 
 
 
-
+        /// <summary>
+        /// Unused proprety, do not use and UnitTest
+        /// Use Radius instead
+        /// </summary>
         public CornerRadius CornerRadius
         {
             get { return (CornerRadius)GetValue(CornerRadiusProperty); }
@@ -215,7 +220,9 @@ namespace DDPM.Easy.Common
                         }
                     }
 
-                    _cellAppInfo.Clear();
+                    //Robert_Lin 2025-3-30 unse new added method to release resources
+                    //_cellAppInfo.Clear();
+                    ClearCellAppInfos();
                     CellAppData appInfo = new CellAppData();
                     appInfo.Number = cellNumber;
                     appInfo.FileName = fileName;
@@ -283,8 +290,22 @@ namespace DDPM.Easy.Common
 
             public CellAppData() { }
         }
+
+        //Robert_Lin 2025-3-30 added to release resources
+        private void ClearCellAppInfos()
+        {
+            if (_cellAppInfo == null)
+                return;
+
+            foreach (var item in _cellAppInfo)
+            {
+                item.Value.Image = null;
+                item.Value.Cell = null;
+            }
+            _cellAppInfo.Clear();
+        }
         #endregion
-        
+
         private void UserControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is bool)
@@ -304,5 +325,70 @@ namespace DDPM.Easy.Common
             double h = ActualHeight * _screenScale;
             rect = new Rect(ptTopLeft.X, ptTopLeft.Y, w, h);
         }
+
+        #region Dispose and Destructor
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    // 釋放託管資源
+                    ClearCellAppInfos();
+
+                }
+
+                // 釋放非託管資源
+                //if (unmanagedResource != IntPtr.Zero)
+                //{
+                //    // 釋放資源
+                //    unmanagedResource = IntPtr.Zero;
+                //}
+
+                _isDisposed = true;
+            }
+        }
+        ~CellBorder()
+        {
+            Dispose(false);
+        }
+        #endregion
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            //Reference to [https://stackoverflow.com/questions/27729881/which-event-fires-after-all-items-are-loaded-and-shown-in-a-listview]
+            //To get into RenderingDone() when UI is render done.
+        //    Dispatcher.BeginInvoke(new Action(RenderingDone), System.Windows.Threading.DispatcherPriority.ContextIdle, null);
+        }
+        private void RenderingDone()
+        {
+            System.Windows.Point ptTopLeft = PointToScreen(new System.Windows.Point(0, 0));
+            double w=0, h = 0;
+            Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            if (ActualWidth != 0)
+            {
+                w = ActualWidth * _screenScale;
+            }
+            else
+            {
+                w = DesiredSize.Width * _screenScale;
+            }
+
+            if (ActualHeight != 0)
+            {
+                h = ActualHeight * _screenScale;
+            }
+            else
+            {
+                h = DesiredSize.Height * _screenScale;
+            }
+     //       rect = new Rect(ptTopLeft.X, ptTopLeft.Y, w, h);
+        }
+
     }
 }
