@@ -331,12 +331,14 @@ namespace DDPM.UI.Module.Brightness
             {
                 IsBusy = true;
                 NotifyPropertyChanged("IsBusy");
+                DdpmCommonHelper.WriteUILog($"SaveHotkeySettings IsBusy : true ...");
                 bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(monitorInfo, hotkeyInfo).Result;
                 if (saveSettings)
                 {
                     DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
                     IsBusy = false;
                     NotifyPropertyChanged("IsBusy");
+                    DdpmCommonHelper.WriteUILog($"SaveHotkeySettings IsBusy : false ...");
                 }
                 else
                 {
@@ -358,6 +360,7 @@ namespace DDPM.UI.Module.Brightness
             bw.RunWorkerAsync();
             IsBusy = true;
             NotifyPropertyChanged("IsBusy");
+            DdpmCommonHelper.WriteUILog($"Invoke_RefreshHotkeySettings IsBusy : true ...");
         }
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
@@ -423,6 +426,7 @@ namespace DDPM.UI.Module.Brightness
                 RefreshUI();
                 IsBusy = false;
                 NotifyPropertyChanged("IsBusy");
+                DdpmCommonHelper.WriteUILog($"RunWorkerCompleted_RefreshData IsBusy : false ...");
             }));
 
             //Handling the result and final process
@@ -485,12 +489,15 @@ namespace DDPM.UI.Module.Brightness
 
                     IsBusyALS = true;
                     NotifyPropertyChanged("IsBusyALS");
-
+                    DdpmCommonHelper.WriteUILog($"OnVCPChangedEvent IsBusyALS : true ...");
                     //2.if yes, then update the vcp value to each option
                     GetALSContentAndSyncUI(SelectedHomeDevice.MonitorInfo);
                     IsBusyALS = !AreAllConfigsNotBusy(tmp);
                     if (!IsBusyALS)
+                    {
                         NotifyPropertyChanged("IsBusyALS");
+                        DdpmCommonHelper.WriteUILog($"OnVCPChangedEvent IsBusyALS : false ...");
+                    }
                     DdpmCommonHelper.WriteUILog($"[OnVCPChangedEvent][BrightnessViewModel] ModelName = {SelectedHomeDevice.MonitorInfo.modelName}, IsBusyALS = {IsBusyALS.ToString()}");
                 }
                 catch (Exception ex)
@@ -553,6 +560,7 @@ namespace DDPM.UI.Module.Brightness
 
         public BrightnessViewModel()
         {
+            DdpmCommonHelper.WriteUILog($"BrightnessViewModel in ...");
             isNormalBrightness = Visibility.Collapsed;
             isAlsSupported = Visibility.Collapsed;
             isLuminanceSupport = Visibility.Collapsed;
@@ -586,6 +594,7 @@ namespace DDPM.UI.Module.Brightness
             syncUIvalue_bw.ProgressChanged += new ProgressChangedEventHandler(SyncUIValue_ProgressChanged);
             syncUIvalue_bw.WorkerReportsProgress = true;
             syncUIvalue_bw.WorkerSupportsCancellation = true;
+            DdpmCommonHelper.WriteUILog($"BrightnessViewModel out ...");
         }
 
         private void ALSFontColorUpdate(OSThemeEnum oSThemeEnum)
@@ -647,11 +656,13 @@ namespace DDPM.UI.Module.Brightness
 
         private void InitComponentData()
         {
+            DdpmCommonHelper.WriteUILog($"InitComponentData in ...");
             Trace.WriteLine($"1. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
             if (SelectedHomeDevice == null)
             {
                 IsBusy = false;
                 NotifyPropertyChanged("IsBusy");
+                DdpmCommonHelper.WriteUILog($"InitComponentData IsBusy : false ...");
                 return;
             }
 
@@ -661,7 +672,10 @@ namespace DDPM.UI.Module.Brightness
                 if (DdpmCommonHelper.ModuleOwner != null)
                     isShowSynchronize = DdpmCommonHelper.ModuleOwner.HomeDevices.Count > 1 ? Visibility.Visible : Visibility.Collapsed;
                 else
+                {
                     isShowSynchronize = Visibility.Collapsed;
+                    DdpmCommonHelper.WriteUILog($"InitComponentData DdpmCommonHelper.DeviceManagerSA = null ...");
+                }
                 NotifyPropertyChanged("isShowSynchronize");
 
                 Trace.WriteLine($"3. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
@@ -702,8 +716,10 @@ namespace DDPM.UI.Module.Brightness
                     //fixed releate PIMS-287891
                     List<ALSConfig> alsList = new List<ALSConfig>();
                     alsList = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
+                    DdpmCommonHelper.WriteUILog($"InitComponentData after GetAllExistAlsConfig ...");
                     if (alsList.Count > 0) // Check Start_ALSConfig whether exist
                     {
+                        DdpmCommonHelper.WriteUILog($"InitComponentData GetAllExistAlsConfig ALS Count : {alsList.Count.ToString()} ...");
                         for (int i = 0; i < alsList.Count; i++)
                         {
                             if (alsList[i].Edid == SelectedHomeDevice.MonitorInfo.edid)
@@ -717,7 +733,7 @@ namespace DDPM.UI.Module.Brightness
                     if (Start_ALSConfig.AllValue == 0 && isLuminance == false)//Need to Re-Get value
                     {
                         Start_ALSConfig = DdpmCommonHelper.DeviceManagerSA.GetALSFeatureValue(SelectedHomeDevice.MonitorInfo, ALSFeatureQueryType.All, 0).Result;
-                        if (!alsList.Contains(Start_ALSConfig))
+                        if (!alsList.Any(als => als.Edid == Start_ALSConfig.Edid))
                         {
                             alsList.Add(Start_ALSConfig);
                             DdpmCommonHelper.WriteUILog($"InitComponentData Re-Get Start_ALSConfig, ModelName = {Start_ALSConfig?.ModelName}, ALS Value = {Start_ALSConfig?.AllValue.ToString()}");
@@ -734,6 +750,7 @@ namespace DDPM.UI.Module.Brightness
 
                 //Lock/unlock mask and tabstop init here
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;//Be careful if spend much time here
+                DdpmCommonHelper.WriteUILog($"InitComponentData after ReadDDPMSettings ...");
                 Update_ALSLockStatus(data.LockSettings.Lock_Display_AutoBriTemp);
                 Update_BriContLockStatus(data.LockSettings.Lock_Display_BriCont);
                 Update_SyncLockStatus((data.LockSettings.Lock_Display_BriCont || data.LockSettings.Lock_Display_ColorPreset || data.LockSettings.Lock_Display_AutoBriTemp));
@@ -745,6 +762,7 @@ namespace DDPM.UI.Module.Brightness
                 Trace.WriteLine($"[SettingsPage] Apply Auto Brightness(Lock) : {data.LockSettings.Lock_Display_AutoBriTemp}");
                 Trace.WriteLine($"[SettingsPage] Apply Synchroniz Button(Lock) : {(data.LockSettings.Lock_Display_BriCont || data.LockSettings.Lock_Display_ColorPreset || data.LockSettings.Lock_Display_AutoBriTemp)}");
             }
+            DdpmCommonHelper.WriteUILog($"InitComponentData out ...");
         }
 
         private void SetDefaultExpanded(ALSConfig data, bool isLuminance)
@@ -816,346 +834,6 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        //public void CheckisShowSynchronize(List<ALSConfig> alsSynchronizeList)//PIMS-285802 PIMS-285804
-        //{
-        //    if (SelectedHomeDevice == null || DdpmCommonHelper.DeviceManagerSA == null)
-        //        return;
-
-        //    //Re-Check isShowSynchronize
-        //    if (DdpmCommonHelper.ModuleOwner.HomeDevices.Count > 1)//Only check if there is more than one monitor.
-        //    {
-        //        if (alsSynchronizeList.Count == 0)
-        //        {
-        //            alsSynchronizeList = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
-        //        }
-        //        //int _isMutliAlsMonitorCount = 0;
-        //        //bool _isAlSON = true;
-        //        //foreach (var al in alsSynchronizeList)//ALS monitor count
-        //        //{
-        //        //    if (al.isSupportALS == 2)
-        //        //        _isMutliAlsMonitorCount++;
-        //        //    if (al.isAutoBrightness == true || al.isAutoColorTemp == true)
-        //        //        _isAlSON = true;
-        //        //}
-        //        //It is mean over 2 monitors.
-        //        else if (alsSynchronizeList.Count == 2)//Test case for 2 monitors
-        //        {
-        //            //25 Test Scenario : 2 same monitors with ALS Function
-        //            if (alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName)
-        //            {
-        //                if (alsSynchronizeList[0].isSupportALS == 2 && alsSynchronizeList[1].isSupportALS == 2)
-        //                {
-        //                    if (CheckALSOnOff(alsSynchronizeList) == false)
-        //                    {
-        //                        SynchronizeBtnExpectedResult("C");
-        //                        return;
-        //                    }
-        //                    else
-        //                    {
-        //                        SynchronizeBtnExpectedResult("D");
-        //                        return;
-        //                    }
-        //                }
-        //            }
-        //            //26 Test Scenario : 2 different monitors with ALS Function
-        //            if (alsSynchronizeList[0].ModelName != alsSynchronizeList[1].ModelName)
-        //            {
-        //                if (alsSynchronizeList[0].isSupportALS == 2 && alsSynchronizeList[1].isSupportALS == 2)
-        //                {
-        //                    if (CheckALSOnOff(alsSynchronizeList) == false)
-        //                    {
-        //                        SynchronizeBtnExpectedResult("C");
-        //                        return;
-        //                    }
-        //                    else
-        //                    {
-        //                        SynchronizeBtnExpectedResult("D");
-        //                        return;
-        //                    }
-        //                }
-        //            }
-        //            //13 Test Scenario : 2 same UP series monitors
-        //            if (alsSynchronizeList[0].ModelName.Contains("UP") && alsSynchronizeList[1].ModelName.Contains("UP"))
-        //            {
-        //                if (alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName)
-        //                {
-        //                    SynchronizeBtnExpectedResult("A");
-        //                    return;
-        //                }
-        //            }
-        //            //14 Test Scenario : 2 same non UP series monitors without ALS function
-        //            if (!alsSynchronizeList[0].ModelName.Contains("UP") && !alsSynchronizeList[1].ModelName.Contains("UP"))
-        //            {
-        //                if (alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName)
-        //                {
-        //                    if (alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 0)
-        //                    {
-        //                        //Expected Result B:
-        //                        SynchronizeBtnExpectedResult("B");
-        //                        return;
-        //                    }
-        //                }
-        //            }
-        //            //15 Test Scenario : 2 different UP series monitors
-        //            if (alsSynchronizeList[0].ModelName.Contains("UP") && alsSynchronizeList[1].ModelName.Contains("UP"))
-        //            {
-        //                if (alsSynchronizeList[0].ModelName != alsSynchronizeList[1].ModelName)
-        //                {
-        //                    //Expected Result E.
-        //                    SynchronizeBtnExpectedResult("E");
-        //                    return;
-        //                }
-        //            }
-        //            //16 Test Scenario : 2 different Non UP series monitors without ALS function
-        //            if (!alsSynchronizeList[0].ModelName.Contains("UP") && !alsSynchronizeList[1].ModelName.Contains("UP"))
-        //            {
-        //                if (alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 0)
-        //                {
-        //                    //Expected Result B.
-        //                    SynchronizeBtnExpectedResult("B");
-        //                    return;
-        //                }
-        //            }
-        //            //17 Test Scenario : UP monitor and Non UP series monitor without ALS function
-        //            if ((alsSynchronizeList[0].ModelName.Contains("UP") || alsSynchronizeList[1].ModelName.Contains("UP")) && (!alsSynchronizeList[0].ModelName.Contains("UP") || !alsSynchronizeList[1].ModelName.Contains("UP")))
-        //            {
-        //                if (alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 0)
-        //                {
-        //                    //"Synchronize between monitors" is NOT displayed.
-        //                    SynchronizeBtnExpectedResult("E");
-        //                    return;
-        //                }
-        //            }
-        //            //18 Test Scenario : UP monitor and ALS function monitor
-        //            if (alsSynchronizeList[0].ModelName.Contains("UP") || alsSynchronizeList[1].ModelName.Contains("UP"))
-        //            {
-        //                if ((alsSynchronizeList[0].isSupportALS == 2) ^ (alsSynchronizeList[1].isSupportALS == 2))
-        //                {
-        //                    //"Synchronize between monitors" is NOT displayed.
-        //                    SynchronizeBtnExpectedResult("E");
-        //                    return;
-        //                }
-        //            }
-        //            //else
-        //            //{
-        //            //19 Test Scenario : G series monitor and S series monitor
-        //            //20 Test Scenario : AW series Freesync monitor and U series monitor
-        //            //21 Test Scenario : C series, SE series, E series and P series monitors
-        //            //Expected Result B:
-        //            SynchronizeBtnExpectedResult("B");
-        //            return;
-        //            //}
-        //        }
-        //        else if (alsSynchronizeList.Count == 3)//Test case for 3 monitors
-        //        {
-        //            //0x12 = non Luminance
-        //            //22 Test Scenario : 2 monitors with Brightness/Contrast and 1 monitor with Luminance
-        //            if (CheckLuminanceMonitorCount() == 2)
-        //            {
-        //                ObjGetVCP obj = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x12, 0).Result;
-        //                if (obj.result)
-        //                {
-        //                    //Result same as Expected Result B and not apply to DUT3.
-        //                    SynchronizeBtnExpectedResult("B");
-        //                    return;
-        //                }
-        //                else
-        //                {
-        //                    //"Synchronize between monitors" is NOT displayed.
-        //                    SynchronizeBtnExpectedResult("E");
-        //                    return;
-        //                }
-        //            }
-        //            //23 Test Scenario : 1 monitor with Brightness/Contrast and 2 monitors with Luminance
-        //            if (CheckLuminanceMonitorCount() == 1)
-        //            {
-        //                ObjGetVCP obj = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x12, 0).Result;
-        //                if (obj.result)
-        //                {
-        //                    //Result same as Expected Result B and not apply to DUT3.
-        //                    SynchronizeBtnExpectedResult("A");
-        //                    return;
-        //                }
-        //                else
-        //                {
-        //                    //"Synchronize between monitors" is NOT displayed.
-        //                    SynchronizeBtnExpectedResult("E");
-        //                    return;
-        //                }
-        //            }
-        //            //27 Test Scenario : 1 ALS monitor(ALS = ON) and 2 non ALS monitors
-        //            //28 Test Scenario : 1 ALS monitor(ALS = OFF) and 2 non ALS monitors
-        //            if (CheckALSMonitorCount(alsSynchronizeList) == 1)
-        //            {
-        //                if (Start_ALSConfig.isSupportALS == 2)
-        //                {
-        //                    if (Start_ALSConfig.isAutoBrightness == true || Start_ALSConfig.isAutoColorTemp == true)
-        //                    {
-        //                        //a) DUT3 is monitor with ALS function.
-        //                        //"Synchronize between monitors" is displayed on DUT3 but greyed out.
-        //                        SynchronizeBtnExpectedResult("D");
-        //                        return;
-        //                    }
-        //                    else
-        //                    {
-        //                        SynchronizeBtnExpectedResult("B");
-        //                        return;
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    //b) DUT1 and DUT2 are monitors without ALS function.
-        //                    SynchronizeBtnExpectedResult("B");
-        //                    return;
-        //                }
-        //            }
-        //            //29 Test Scenario : 2 ALS monitors(ALS = ON) and 1 non ALS monitor
-        //            //30 Test Scenario : 2 ALS monitors(ALS = OFF) and 1 non ALS monitor
-        //            if (CheckALSMonitorCount(alsSynchronizeList) == 2)
-        //            {
-        //                if (CheckALSOnOff(alsSynchronizeList))
-        //                {
-        //                    //a) DUT1 and DUT2 are monitors with ALS function.
-        //                    //"Synchronize between monitors" is displayed on DUT1 and DUT2 but greyed out.
-        //                    SynchronizeBtnExpectedResult("D");
-        //                    return;
-        //                }
-        //                else
-        //                {
-        //                    //"Synchronize between monitors" is displayed.no greyed out.
-        //                    SynchronizeBtnExpectedResult("B");
-        //                    return;
-        //                }
-        //            }
-        //        }
-        //        else//Test case for 4 monitors
-        //        {
-        //            //24 Test Scenario : 2 monitors with Brightness/Contrast and 2 monitors with Luminance
-        //            if (CheckLuminanceMonitorCount() == 2)
-        //            {
-        //                ObjGetVCP obj = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x12, 0).Result;
-        //                if (obj.result)
-        //                {
-        //                    //Result same as Expected Result B and not apply to DUT3.
-        //                    SynchronizeBtnExpectedResult("B");
-        //                    return;
-        //                }
-        //                else
-        //                {
-        //                    //"Synchronize between monitors" is NOT displayed.
-        //                    SynchronizeBtnExpectedResult("A");
-        //                    return;
-        //                }
-        //            }
-        //            //31 Test Scenario : 2 ALS monitors(ALS = ON) and 2 non ALS monitor
-        //            if (CheckALSMonitorCount(alsSynchronizeList) == 2)
-        //            {
-        //                //d) Turn on ALS Function on DUT1 and DUT2. Go to Software > Brightness / Contrast > Auto > Turn On Auto Brightness / Auto Color Temperature.
-        //                if (CheckALSOnOff(alsSynchronizeList))
-        //                {
-        //                    //"Synchronize between monitors" is displayed but greyed out on both DUT1 and DUT2.
-        //                    SynchronizeBtnExpectedResult("D");
-        //                    return;
-        //                }
-        //                else
-        //                {
-        //                    SynchronizeBtnExpectedResult("B");
-        //                    return;
-        //                }
-        //            }
-        //            //32 Test Scenario : 4 same non-UP models without ALS function
-        //            //33 Test Scenario : 4 same UP models
-        //            if (CheckALSMonitorCount(alsSynchronizeList) == 0)
-        //            {
-        //                //"Synchronize between monitors" is displayed and not greyed out with default is OFF.
-        //                //"Synchronize between monitors" is displayed and not greyed out with default is OFF.
-        //                SynchronizeBtnExpectedResult("B");
-        //                return;
-        //            }
-        //        }
-        //    }
-        //    else//It is mean only 1 monitors.
-        //    {
-        //        //3 Test Scenario : Non UP series Monitor does not support ALS
-        //        if (!alsSynchronizeList[0].ModelName.Contains("UP") && alsSynchronizeList[0].isSupportALS == 0)
-        //        {
-        //            //Make sure "Synchronize between monitors" is NOT displayed on both Manual and Schedule.
-        //            SynchronizeBtnExpectedResult("E");
-        //            return;
-        //        }
-        //        //4 Test Scenario : Monitor support ALS
-        //        if (alsSynchronizeList[0].isSupportALS == 2)
-        //        {
-        //            //Make sure "Synchronize between monitors" is NOT displayed.
-        //            SynchronizeBtnExpectedResult("E");
-        //            return;
-        //        }
-        //        //5 Test Scenario : UP series Monitor
-        //        if (alsSynchronizeList[0].ModelName.Contains("UP"))
-        //        {
-        //            //Make sure "Synchronize between monitors" is NOT displayed on both Manual and Schedule.
-        //            SynchronizeBtnExpectedResult("E");
-        //            return;
-        //        }
-        //    }
-        //    SynchronizeBtnExpectedResult("default");
-        //}
-
-        ///// <summary>
-        /////  Check the number of Luminance Monitor.0x12 = non Luminance
-        ///// </summary>
-        ///// <returns>Return Luminance count</returns>
-        //private int CheckLuminanceMonitorCount()
-        //{
-        //    int _isLuminanceCount = 0;
-        //    if (ModuleOwner != null)
-        //    {
-        //        foreach (HomeDevice hd in ModuleOwner!.HomeDevices!)
-        //        {
-        //            if (hd.MonitorInfo!.CapabilityDic.ContainsKey("12"))
-        //            {
-        //                _isLuminanceCount++;
-        //            }
-        //        }
-        //    }
-        //    return _isLuminanceCount;
-        //}
-
-        ///// <summary>
-        ///// Check if AutoBrightness/AutoColorTemp is enabled.
-        ///// </summary>
-        ///// <param name="aLSList">ALS value list</param>
-        ///// <returns>Return true or false</returns>
-        //private bool CheckALSOnOff(List<ALSConfig> aLSList)
-        //{
-        //    bool _isAlSON = false;
-        //    foreach (var als in aLSList)
-        //    {
-        //        if (als.isAutoBrightness == true || als.isAutoColorTemp == true)
-        //        {
-        //            _isAlSON = true;
-        //            break;
-        //        }
-        //    }
-        //    return _isAlSON;
-        //}
-
-        ///// <summary>
-        ///// Check the number of ALS Monitor.
-        ///// </summary>
-        ///// <param name="aLSList">ALS value list</param>
-        ///// <returns>Return ALS Monitor count</returns>
-        //private int CheckALSMonitorCount(List<ALSConfig> aLSList)
-        //{
-        //    int _isMutliAlsMonitorCount = 0;
-        //    foreach (var als in aLSList)
-        //    {
-        //        if (als.isSupportALS == 2)
-        //            _isMutliAlsMonitorCount++;
-        //    }
-        //    return _isMutliAlsMonitorCount;
-        //}
-
         ///<summary>
         ///Expected Result A: "Synchronize between monitors" is displayed and not greyed out with default is OFF.
         ///Expected Result B: "Synchronize between monitors" is displayed and not greyed out with default is OFF.
@@ -1207,6 +885,7 @@ namespace DDPM.UI.Module.Brightness
             bw.RunWorkerAsync();
             IsBusy = true;
             NotifyPropertyChanged("IsBusy");
+            DdpmCommonHelper.WriteUILog($"Invoke_RefreshBrightnessPage IsBusy : true ...");
         }
 
         private void DoWork_RefreshBrightnessPage(object sender, DoWorkEventArgs e)
@@ -1221,6 +900,7 @@ namespace DDPM.UI.Module.Brightness
                 RefreshUI();
                 IsBusy = false;
                 NotifyPropertyChanged("IsBusy");
+                DdpmCommonHelper.WriteUILog($"RunWorkerCompleted_RefreshBrightnessPage IsBusy : false ...");
             }));
 
             Invoke_RefreshHotkeySettings();
@@ -1240,6 +920,7 @@ namespace DDPM.UI.Module.Brightness
             bw.RunWorkerAsync();
             IsBusy = true;
             NotifyPropertyChanged("IsBusy");
+            DdpmCommonHelper.WriteUILog($"Invoke_RefreshManualValue IsBusy : true ...");
         }
 
         private void DoWork_RefreshManualValue(object sender, DoWorkEventArgs e)
@@ -1267,6 +948,7 @@ namespace DDPM.UI.Module.Brightness
                 }
                 IsBusy = false;
                 NotifyPropertyChanged("IsBusy");
+                DdpmCommonHelper.WriteUILog($"RunWorkerCompleted_RefreshManualValue IsBusy : false ...");
             }));
 
             Invoke_RefreshScheduleValue();
@@ -1284,6 +966,7 @@ namespace DDPM.UI.Module.Brightness
             bw.RunWorkerAsync();
             IsBusy = true;
             NotifyPropertyChanged("IsBusy");
+            DdpmCommonHelper.WriteUILog($"Invoke_RefreshScheduleValue IsBusy : true ...");
         }
 
         private void DoWork_RefreshScheduleValue(object sender, DoWorkEventArgs e)
@@ -1293,6 +976,7 @@ namespace DDPM.UI.Module.Brightness
                 RefreshUI();
                 IsBusy = false;
                 NotifyPropertyChanged("IsBusy");
+                DdpmCommonHelper.WriteUILog($"DoWork_RefreshScheduleValue IsBusy : false ...");
             }));
 
             UpdateScheduleInfo();
@@ -1338,40 +1022,56 @@ namespace DDPM.UI.Module.Brightness
         private void GetALSContentAndSyncUI(MonitorInfo mo)
         {
             DdpmCommonHelper.WriteUILog($"GetALSContentAndSyncUI ... in");
-            if (DdpmCommonHelper.DeviceManagerSA == null)
-                return;
-
-            if (Start_ALSConfig == null)
-                isAlsSupported = Visibility.Collapsed;
-            else
+            try
             {
-                if (Start_ALSConfig.isSupportALS == 0)
-                {
+                if (DdpmCommonHelper.DeviceManagerSA == null)
+                    return;
+
+                if (Start_ALSConfig == null)
                     isAlsSupported = Visibility.Collapsed;
-                }
                 else
                 {
-                    isAlsSupported = Visibility.Visible;
-                    Update_AutoBrightnessStatus(Start_ALSConfig.isAutoBrightness);
-                    Update_AutoColorTempStatus(Start_ALSConfig.isAutoColorTemp);
-                    Update_PrimaryMonitorSyncStatus(Start_ALSConfig.isPrimaryMonitorSync);
-                    Update_AutoBrightnessRangeLevelStatus(Start_ALSConfig.AutoBrightnessRangeLevel);
-                    Update_SupportedPrimaryMonitorSync(Start_ALSConfig.isAutoBrightness, Start_ALSConfig.isAutoColorTemp);
+                    if (Start_ALSConfig.isSupportALS == 0)
+                    {
+                        isAlsSupported = Visibility.Collapsed;
+                        DdpmCommonHelper.WriteUILog($"GetALSContentAndSyncUI {mo.modelName} No support ALS ...");
+                    }
+                    else
+                    {
+                        isAlsSupported = Visibility.Visible;
+                        Update_AutoBrightnessStatus(Start_ALSConfig.isAutoBrightness);
+                        Update_AutoColorTempStatus(Start_ALSConfig.isAutoColorTemp);
+                        Update_PrimaryMonitorSyncStatus(Start_ALSConfig.isPrimaryMonitorSync);
+                        Update_AutoBrightnessRangeLevelStatus(Start_ALSConfig.AutoBrightnessRangeLevel);
+                        Update_SupportedPrimaryMonitorSync(Start_ALSConfig.isAutoBrightness, Start_ALSConfig.isAutoColorTemp);
+                    }
+                    NotifyPropertyChanged("isAlsSupported");
+                    NotifyPropertyChanged("IsScheduledShow");
+                    NotifyPropertyChanged("IsScheduledLuminanceShow");
+                    DdpmCommonHelper.WriteUILog($"******************** GetALSContentAndSyncUI ********************");
+                    DdpmCommonHelper.WriteUILog($"ModelName ****************** : {Start_ALSConfig.MoInfo.modelName}");
+                    DdpmCommonHelper.WriteUILog($"SupportALS ***************** : {Start_ALSConfig.isSupportALS.ToString()}");
+                    DdpmCommonHelper.WriteUILog($"AutoBrightness ************* : {(Start_ALSConfig.isAutoBrightness ? "ON" : "OFF")}");
+                    DdpmCommonHelper.WriteUILog($"AutoColorTemp ************** : {(Start_ALSConfig.isAutoColorTemp ? "ON" : "OFF")}");
+                    if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
+                    {
+                        DdpmCommonHelper.WriteUILog($"AutoBrightnessRangeLevel *** : {Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name}");
+                    }
+                    else
+                    {
+                        DdpmCommonHelper.WriteUILog("AutoBrightnessRangeLevel is empty or null.");
+                    }
+                    //DdpmCommonHelper.WriteUILog($"AutoBrightnessRangeLevel *** : {Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name}");
+                    DdpmCommonHelper.WriteUILog($"PrimaryMonitor ************* : {(Start_ALSConfig.isPrimaryMonitorSync ? "ON" : "OFF")}");
+                    DdpmCommonHelper.WriteUILog($"ALS Value ****************** : {Start_ALSConfig.AllValue.ToString()}");
+                    DdpmCommonHelper.WriteUILog($"******************** GetALSContentAndSyncUI ********************");
                 }
-                NotifyPropertyChanged("isAlsSupported");
-                NotifyPropertyChanged("IsScheduledShow");
-                NotifyPropertyChanged("IsScheduledLuminanceShow");
-                DdpmCommonHelper.WriteUILog($"******************** GetALSContentAndSyncUI ********************");
-                DdpmCommonHelper.WriteUILog($"ModelName ****************** : {Start_ALSConfig.MoInfo.modelName}");
-                DdpmCommonHelper.WriteUILog($"SupportALS ***************** : {Start_ALSConfig.isSupportALS.ToString()}");
-                DdpmCommonHelper.WriteUILog($"AutoBrightness ************* : {(Start_ALSConfig.isAutoBrightness ? "ON" : "OFF")}");
-                DdpmCommonHelper.WriteUILog($"AutoColorTemp ************** : {(Start_ALSConfig.isAutoColorTemp ? "ON" : "OFF")}");
-                DdpmCommonHelper.WriteUILog($"AutoBrightnessRangeLevel *** : {Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name}");
-                DdpmCommonHelper.WriteUILog($"PrimaryMonitor ************* : {(Start_ALSConfig.isPrimaryMonitorSync ? "ON" : "OFF")}");
-                DdpmCommonHelper.WriteUILog($"ALS Value ****************** : {Start_ALSConfig.AllValue.ToString()}");
-                DdpmCommonHelper.WriteUILog($"******************** GetALSContentAndSyncUI ********************");
+                DdpmCommonHelper.WriteUILog($"GetALSContentAndSyncUI ... out");
             }
-            DdpmCommonHelper.WriteUILog($"GetALSContentAndSyncUI ... out");
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"GetALSContentAndSyncUI exception with {ex.Message}");
+            }
         }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -2363,6 +2063,7 @@ namespace DDPM.UI.Module.Brightness
 
         private void SetBrightnessLevelDataToObject(int level)
         {
+            DdpmCommonHelper.WriteUILog($"SetBrightnessLevelDataToObject in ...");
             if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
             {
                 Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value = level;
@@ -2373,6 +2074,7 @@ namespace DDPM.UI.Module.Brightness
                 else
                     Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelHigh; //"High";
             }
+            DdpmCommonHelper.WriteUILog($"SetBrightnessLevelDataToObject out ...");
         }
 
         /// <summary>
@@ -2381,6 +2083,7 @@ namespace DDPM.UI.Module.Brightness
         /// <param name="onoff">UI PrimaryMonitorSync status</param>
         private void ALSSettingsChangesOnNonPrimary(bool onoff, string property = "AUTOBRI", int level = 0)
         {
+            DdpmCommonHelper.WriteUILog($"ALSSettingsChangesOnNonPrimary in ...");
             int level_keep = 0;
             if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
                 level_keep = (int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value;
@@ -2401,7 +2104,7 @@ namespace DDPM.UI.Module.Brightness
 
                 //PIMS-353731 change button text from "Yes"/"No" to "Continue"/"Cancel"
                 //if (DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string, MyModule.GetRightView().Parent))
-                if (messageModalDialog!= null && messageModalDialog.ShowDialog().Value == false)//false means left button is "continue"
+                if (messageModalDialog != null && messageModalDialog.ShowDialog().Value == false)//false means left button is "continue"
                 {
                     _primaryMonitorSyncStatus = true;
                     Start_ALSConfig.isPrimaryMonitorSync = true;// onoff; //PIMS-328260
@@ -2459,6 +2162,7 @@ namespace DDPM.UI.Module.Brightness
                 }
                 SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
             }
+            DdpmCommonHelper.WriteUILog($"ALSSettingsChangesOnNonPrimary out ...");
         }
 
         public double ContrastValue
@@ -3149,6 +2853,7 @@ namespace DDPM.UI.Module.Brightness
         /// <returns>Sucess or Fail</returns>
         public bool SetALSAll(ALSConfig alsConfig, ALSFeatureQueryType type, int val)
         {
+            DdpmCommonHelper.WriteUILog($"SetALSAll in ...");
             return DdpmCommonHelper.DeviceManagerSA.SetALSFeatureValue(SelectedHomeDevice.MonitorInfo, Start_ALSConfig, ALSFeatureQueryType.All, "").Result;
         }
 
@@ -3221,6 +2926,7 @@ namespace DDPM.UI.Module.Brightness
                         //CheckIfNeedToTurnPrimarySyncOff();
                         IsBusy = false;
                         NotifyPropertyChanged("IsBusy");
+                        DdpmCommonHelper.WriteUILog($"AutoBrightnessStatus IsBusy : false ...");
                         return;
                     }
                     //story: https://jira.cpg.dell.com/browse/DDPMW-769, set color preset to custom at the same time
@@ -3236,6 +2942,7 @@ namespace DDPM.UI.Module.Brightness
                     }
                     IsBusy = false;
                     NotifyPropertyChanged("IsBusy");
+                    DdpmCommonHelper.WriteUILog($"AutoBrightnessStatus IsBusy : false ...");
                 }));
             }
         }
@@ -3245,11 +2952,13 @@ namespace DDPM.UI.Module.Brightness
         /// </summary>
         public void Update_AutoBrightnessStatus(bool value)
         {
+            DdpmCommonHelper.WriteUILog($"Update_AutoBrightnessStatus {value.ToString()} in ...");
             _autoBrightnessStatus = value;
             NotifyPropertyChanged("AutoBrightnessStatus");
             NotifyPropertyChanged("AutoBrightness_String");
             NotifyPropertyChanged("AutoBrightnessRangeLevelVisible");
             NotifyPropertyChanged("AutoBrightnessRangeLevelVisible_invert");
+            DdpmCommonHelper.WriteUILog($"Update_AutoBrightnessStatus out ...");
         }
 
         /// <summary>
@@ -3278,6 +2987,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 IsBusy = true;
                 NotifyPropertyChanged("IsBusy");
+                DdpmCommonHelper.WriteUILog($"AutoColorTempStatus IsBusy : true ...");
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     _autoColorTempStatus = value;
@@ -3288,6 +2998,7 @@ namespace DDPM.UI.Module.Brightness
                     //Update_SupportedPrimaryMonitorSync(_autoBrightnessStatus, value);
                     IsBusy = false;
                     NotifyPropertyChanged("IsBusy");
+                    DdpmCommonHelper.WriteUILog($"AutoColorTempStatus IsBusy : false ...");
                 }));
             }
         }
@@ -3297,9 +3008,11 @@ namespace DDPM.UI.Module.Brightness
         /// </summary>
         public void Update_AutoColorTempStatus(bool value)
         {
+            DdpmCommonHelper.WriteUILog($"Update_AutoColorTempStatus {value.ToString()} in ...");
             _autoColorTempStatus = value;
             NotifyPropertyChanged("AutoColorTempStatus");
             NotifyPropertyChanged("AutoColorTemp_String");
+            DdpmCommonHelper.WriteUILog($"Update_AutoColorTempStatus out ...");
         }
 
         /// <summary>
@@ -3358,9 +3071,11 @@ namespace DDPM.UI.Module.Brightness
         /// <param name="value"></param>
         public void Update_PrimaryMonitorSyncStatus(bool value)
         {
+            DdpmCommonHelper.WriteUILog($"Update_PrimaryMonitorSyncStatus {value.ToString()} in ...");
             _primaryMonitorSyncStatus = value;
             NotifyPropertyChanged("PrimaryMonitorSyncStatus");
             NotifyPropertyChanged("PrimaryMonitorSync_String");
+            DdpmCommonHelper.WriteUILog($"Update_PrimaryMonitorSyncStatus out ...");
         }
 
         /// <summary>
@@ -3403,8 +3118,16 @@ namespace DDPM.UI.Module.Brightness
 
         public void Update_AutoBrightnessRangeLevelStatus(List<AutoBrightnessRangeLevel> value)
         {
+            DdpmCommonHelper.WriteUILog($"Update_PrimaryMonitorSyncStatus in ...");
+            if (value == null || value.Count == 0)
+            {
+                DdpmCommonHelper.WriteUILog("Update_AutoBrightnessRangeLevelStatus: value is null or empty.");
+                return;
+            }
+
             if (_autoBrightnessRangeLevel == null || _autoBrightnessRangeLevel[0].level_value != value[0].level_value)
             {
+                DdpmCommonHelper.WriteUILog($"Update_PrimaryMonitorSyncStatus {value[0].level_value} ...");
                 _autoBrightnessRangeLevel = value;
                 _autoBrightnessRangeLevel[0].level_value = value[0].level_value;
                 if (value[0].level_value == 0)
@@ -3416,6 +3139,7 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_SelectedIndex");
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
             }
+            DdpmCommonHelper.WriteUILog($"Update_AutoBrightnessRangeLevelStatus out ...");
         }
 
         public int AutoBrightnessSelectedIndex { get; set; } = 0;
@@ -3462,6 +3186,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 IsBusy = true;
                 NotifyPropertyChanged("IsBusy");
+                DdpmCommonHelper.WriteUILog($"AutoBrightnessRangeLevel_SelectedIndex IsBusy : true ...");
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     if ((int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value != value)
@@ -3482,6 +3207,7 @@ namespace DDPM.UI.Module.Brightness
                     NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
                     IsBusy = false;
                     NotifyPropertyChanged("IsBusy");
+                    DdpmCommonHelper.WriteUILog($"AutoBrightnessRangeLevel_SelectedIndex IsBusy : false ...");
                 }));
             }
         }
@@ -3516,6 +3242,7 @@ namespace DDPM.UI.Module.Brightness
 
         public void Update_SupportedPrimaryMonitorSync(bool isAutoBrightness, bool isAutoColorTemp)
         {
+            DdpmCommonHelper.WriteUILog($"Update_SupportedPrimaryMonitorSync AutoBrightness:{isAutoBrightness.ToString()},  AutoColorTemp:{isAutoColorTemp.ToString()}, in ...");
             if (isAutoBrightness == false && isAutoColorTemp == false)
             {
                 _supportedPrimaryMonitorSync = false;
@@ -3530,6 +3257,7 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("PrimaryMonitorForSyncVisible_invert");
                 NotifyPropertyChanged("SupportedPrimaryMonitorSync");
             }
+            DdpmCommonHelper.WriteUILog($"Update_SupportedPrimaryMonitorSync out ...");
         }
 
         /// <summary>
@@ -3538,30 +3266,38 @@ namespace DDPM.UI.Module.Brightness
         /// <returns>True is > 2 ALS monitor and some one monitor PrimaryMonitorSync on</returns>
         public bool CheckMonitorALSStatus()
         {
+            DdpmCommonHelper.WriteUILog($"CheckMonitorALSStatus in ...");
             List<ALSConfig> alsList = new List<ALSConfig>();
             alsList = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
             int alsSupportCount = 0;
             int alsPrimaryMSOn = 0;
-            foreach (var als in alsList)
+            bool result = false;
+            for (int i = 0; i < alsList.Count; i++)
             {
-                if (als.isSupportALS == 2)
+                if (alsList[i].isSupportALS == 2)
                 {
                     alsSupportCount++;
-                    if (als.isPrimaryMonitorSync)
+                    if (alsList[i].isPrimaryMonitorSync)
+                    {
                         alsPrimaryMSOn++;
+                    }
                 }
             }
             if (alsSupportCount <= 1)//1 ALS monitor Not processed, 0 or 1 ALS monitor
-                return false;
+            {
+                result = false;
+            }
             else
             {
                 if (alsPrimaryMSOn == 0)// > 2 LS monitor, but PrimaryMonitorSync all off
-                    return false;
+                    result = false;
                 else
                 {
-                    return true;
+                    result = true;
                 }
             }
+            DdpmCommonHelper.WriteUILog($"CheckMonitorALSStatus out ...");
+            return result;
         }
 
         private bool _isDarkTheme;
@@ -3590,7 +3326,7 @@ namespace DDPM.UI.Module.Brightness
                 if (syncUIvalue_bw != null)
                 {
                     if (!syncUIvalue_bw.IsBusy)
-                        syncUIvalue_bw.RunWorkerAsync();
+                        syncUIvalue_bw.RunWorkerAsync();                   
                 }
                 else
                 {
@@ -3683,6 +3419,7 @@ namespace DDPM.UI.Module.Brightness
             bw.RunWorkerAsync();
             IsBusy = true;
             NotifyPropertyChanged("IsBusy");
+            DdpmCommonHelper.WriteUILog($"Luminance_Sync IsBusy : true ...");
         }
 
         private void LuminanceSync(object sender, DoWorkEventArgs e)
@@ -3698,6 +3435,7 @@ namespace DDPM.UI.Module.Brightness
             NotifyPropertyChanged("ContrastValue");
             NotifyPropertyChanged("IsBusy");
             NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
+            DdpmCommonHelper.WriteUILog($"LuminanceSync_finish IsBusy : false ...");
         }
 
         public void BR_Con_Sync()
@@ -3712,6 +3450,7 @@ namespace DDPM.UI.Module.Brightness
             bw.RunWorkerAsync();
             IsBusy = true;
             NotifyPropertyChanged("IsBusy");
+            DdpmCommonHelper.WriteUILog($"BR_Con_Sync IsBusy : true ...");
         }
 
         private void BRConSync(object sender, DoWorkEventArgs e)
@@ -3728,6 +3467,7 @@ namespace DDPM.UI.Module.Brightness
             NotifyPropertyChanged("ContrastValue");
             NotifyPropertyChanged("IsBusy");
             NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
+            DdpmCommonHelper.WriteUILog($"BRConSync_finish IsBusy : false ...");
         }
 
         public void Invoke_ColorPreset_Sync()
@@ -3834,6 +3574,7 @@ namespace DDPM.UI.Module.Brightness
             bw.RunWorkerAsync();
             IsBusy = true;
             NotifyPropertyChanged("IsBusy");
+            DdpmCommonHelper.WriteUILog($"ResetClick IsBusy : true ...");
         }
 
         private void Reset_Click(object sender, DoWorkEventArgs e)
@@ -3865,6 +3606,7 @@ namespace DDPM.UI.Module.Brightness
             NotifyPropertyChanged("ContrastValue");
             NotifyPropertyChanged("IsBusy");
             NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
+            DdpmCommonHelper.WriteUILog($"Reset_Click_finish IsBusy : false ...");
         }
 
         public Visibility isShowSynchronize { get; set; } = Visibility.Visible;
@@ -3895,10 +3637,13 @@ namespace DDPM.UI.Module.Brightness
 
             IsBusyALS = true;
             NotifyPropertyChanged("IsBusyALS");
-
+            DdpmCommonHelper.WriteUILog($"SetIsBusy IsBusyALS : true ...");
             IsBusyALS = !AreAllConfigsNotBusy(tmp);
             if (!IsBusyALS)
+            {
                 NotifyPropertyChanged("IsBusyALS");
+                DdpmCommonHelper.WriteUILog($"SetIsBusy IsBusyALS : false ...");
+            }
             DdpmCommonHelper.WriteUILog($"[SetIsBusy][BrightnessViewModel] ModelName = {SelectedHomeDevice.MonitorInfo.modelName}, IsBusyALS = {IsBusyALS.ToString()}");
         }
 
