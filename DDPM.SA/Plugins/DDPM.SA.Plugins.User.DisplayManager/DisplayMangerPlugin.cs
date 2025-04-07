@@ -2094,7 +2094,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(monitorInfos.edid));
                 if (aconfig != null)
                 {
-                    _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync find aconfig  monitor, " + aconfig.DisplayName.ToString() + " || " + aconfig.serialNumber.ToString());
                     ParseBitDefineToAlsObject(value, ref aconfig);
                     ParseMonitorInfo(monitorInfos, ref aconfig);
                 }
@@ -2110,6 +2109,20 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     ParseMonitorInfo(monitorInfos, ref aconfig);
                     AllALSConfig.Add(aconfig);               
                 }
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync       modelName = {monitorInfos.modelName}");
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync           value = {value.ToString()}");
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync  AutoBrightness = {aconfig.isAutoBrightness.ToString()}");
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync  AutoColorTemp  = {aconfig.isAutoColorTemp.ToString()}");
+                if (aconfig.AutoBrightnessRangeLevel != null && aconfig.AutoBrightnessRangeLevel.Count > 0)
+                {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync RangeLevelValue = {aconfig.AutoBrightnessRangeLevel[0].level_value.ToString()}");
+                }
+                else
+                {
+                    _logs.DebugMsg("[DisplayMangerPlugin] UpdateImportAlsValueAsync RangeLevelValue is empty or null.");
+                }
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync RangeLevelValue = {aconfig.AutoBrightnessRangeLevel[0].level_value.ToString()}");
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync  PrimaryMonitor = {aconfig.isPrimaryMonitorSync.ToString()}");
                 _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync ... out");
                 return Task.FromResult(true);
             }
