@@ -9049,7 +9049,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     if (vcps.Count > 0)
                                     {
                                         //set ImportVCPSequence
-                                        impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;                                        
+                                        impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;
                                         SetVCPSequence(monitorInfo, impVCPSequence, vcps);
                                         writelog("[DisplayImportSettings] ALSConfig : " + impVCPSequence.ALSConfig.ToString());
                                         foreach (VCPCode code in vcps)
@@ -9077,13 +9077,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
                                                     {
                                                         //set vcp code
-                                                        if(SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result)
+                                                        if (SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result)
                                                         {
                                                             writelog("[DisplayImportSettings] Set VCP code success : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());
                                                         }
                                                         else
                                                         {
-                                                            writelog("[DisplayImportSettings] Set VCP code fail : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());                                                    
+                                                            writelog("[DisplayImportSettings] Set VCP code fail : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());
                                                         }
                                                     }
                                                 }
@@ -16295,13 +16295,38 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string capability = monitorInfo.CapabilityString;
             if (capability.Contains("E0("))
             {
+                int getvalue = 0;
                 string[] ss = capability.Split("E0(");
                 ss = ss[1].Split(")");
                 ss = ss[0].Split(" ");
                 if (ss[0] == "03" || ss[0] == "0F")
                 {
                     rc = GetVCPCapability(monitorInfo, 0xE0).Result;
-                    int getvalue = (Convert.ToInt32(rc.value) & 0x0c);
+                    if (int.TryParse(rc.value.ToString(), out int crtValue))
+                    {
+                        getvalue = (crtValue & 0x0c);
+                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,OdeValue={rc.value.ToString()}, NewValue ={getvalue}");
+                    }
+                    else
+                    {
+                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
+                    }
+                }
+                else if (ss[0] == "13")
+                {
+                    rc = GetVCPCapability(monitorInfo, 0xE0).Result;
+                    if (int.TryParse(rc.value.ToString(), out int crtValue))
+                    {
+                        getvalue = (crtValue & 0x1c);
+                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,OdeValue={rc.value.ToString()}, NewValue ={getvalue}");
+                    }
+                    else
+                    {
+                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
+                    }
+                }
+                if (getvalue != 0)
+                {
                     if (cs)
                     {
                         bool ret = SetVCPCapability(monitorInfo, 0xE0, (1 | (uint)getvalue)).Result;
@@ -16312,6 +16337,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
                         writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
                     }
+                }
+                else
+                {
+                    writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] no vcp commands to be issued.");
                 }
             }
             else
@@ -16338,13 +16367,38 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string capability = monitorInfo.CapabilityString;
             if (capability.Contains("E0("))
             {
+                int getvalue = 0;
                 string[] ss = capability.Split("E0(");
                 ss = ss[1].Split(")");
                 ss = ss[0].Split(" ");
                 if (ss[0] == "03" || ss[0] == "0F")
                 {
                     rc = GetVCPCapability(monitorInfo, 0xE0).Result;
-                    int getvalue = (Convert.ToInt32(rc.value) & 0x0c);
+                    if (int.TryParse(rc.value.ToString(), out int crtValue))
+                    {
+                        getvalue = (crtValue & 0x0c);
+                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,OdeValue={rc.value.ToString()}, NewValue ={getvalue}");
+                    }
+                    else
+                    {
+                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
+                    }
+                }
+                else if (ss[0] == "13")
+                {
+                    rc = GetVCPCapability(monitorInfo, 0xE0).Result;
+                    if (int.TryParse(rc.value.ToString(), out int crtValue))
+                    {
+                        getvalue = (crtValue & 0x1c);
+                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,OdeValue={rc.value.ToString()}, NewValue ={getvalue}");
+                    }
+                    else
+                    {
+                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
+                    }
+                }
+                if (getvalue != 0)
+                {
                     if (cs)
                     {
                         bool ret = SetVCPCapability(monitorInfo, 0xE0, (2 | (uint)getvalue)).Result;
@@ -16355,6 +16409,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
                         writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
                     }
+                }
+                else
+                {
+                    writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] no vcp commands to be issued.");
                 }
             }
             else
@@ -16958,7 +17016,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
                             writelog("[SetVCPSequence] GetVCPCapability VCP code : " + vcp.Code.ToString() + ", value : " + objGetVCP.value.ToString());
                             if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)vcp.Value[0])
-                            {                               
+                            {
                                 if (code == 0x66)
                                 {
                                     if (SetVCPCapability(monitorInfo, 0x66, impVCPSequence.ALSConfig).Result)
@@ -16974,7 +17032,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     if (SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result)
                                     {
-                                        writelog("[SetVCPSequence] Set VCP code success : " + code.ToString() + ", Value : " + vcp.Value[0].ToString());                                       
+                                        writelog("[SetVCPSequence] Set VCP code success : " + code.ToString() + ", Value : " + vcp.Value[0].ToString());
                                     }
                                     else
                                     {
