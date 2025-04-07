@@ -38,6 +38,7 @@ using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
+using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7026,6 +7027,108 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        private Dictionary<string, PCsInfo> HandleNextCase(MonitorInfo monitorInfo, Dictionary<string, PCsInfo> pcsList, List<UInt16> subInputList)
+        {
+            writelog("[HandleNextCase] HandleNextCase");
+            Dictionary<string, PCsInfo> New_pcsList = new Dictionary<string, PCsInfo>();
+            if (subInputList.Count == 1)
+            {
+                New_pcsList = PCInfoSwap(pcsList, "PC1", "PC2").Result;
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, null, null).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 1.");
+            }
+            else if (subInputList.Count == 2)
+            {
+                New_pcsList["PC1"] = pcsList["PC2"];
+                New_pcsList["PC2"] = pcsList["PC3"];
+                New_pcsList["PC3"] = pcsList["PC1"];
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                InputSourceObj pc3input = new InputSourceObj((UInt16)New_pcsList["PC3"].Code, New_pcsList["PC3"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, pc3input, null).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 2.");
+            }
+            else if (subInputList.Count == 3)
+            {
+                New_pcsList["PC1"] = pcsList["PC2"];
+                New_pcsList["PC2"] = pcsList["PC3"];
+                New_pcsList["PC3"] = pcsList["PC4"];
+                New_pcsList["PC4"] = pcsList["PC1"];
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                InputSourceObj pc3input = new InputSourceObj((UInt16)New_pcsList["PC3"].Code, New_pcsList["PC3"].InputType);
+                InputSourceObj pc4input = new InputSourceObj((UInt16)New_pcsList["PC4"].Code, New_pcsList["PC4"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, pc3input, pc4input).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 3.");
+            }
+
+            return New_pcsList;
+        }
+
+        private Dictionary<string, PCsInfo> HandlePreviousCase(MonitorInfo monitorInfo, Dictionary<string, PCsInfo> pcsList, List<UInt16> subInputList)
+        {
+            writelog("[HandlePreviousCase] HandlePreviousCase");
+            Dictionary<string, PCsInfo> New_pcsList = new Dictionary<string, PCsInfo>();
+            if (subInputList.Count == 1)
+            {
+                New_pcsList = PCInfoSwap(pcsList, "PC1", "PC2").Result;
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, null, null).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 1.");
+            }
+            else if (subInputList.Count == 2)
+            {
+                New_pcsList["PC1"] = pcsList["PC3"];
+                New_pcsList["PC2"] = pcsList["PC1"];
+                New_pcsList["PC3"] = pcsList["PC2"];
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                InputSourceObj pc3input = new InputSourceObj((UInt16)New_pcsList["PC3"].Code, New_pcsList["PC3"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, pc3input, null).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 2.");
+            }
+            else if (subInputList.Count == 3)
+            {
+                New_pcsList["PC1"] = pcsList["PC4"];
+                New_pcsList["PC2"] = pcsList["PC1"];
+                New_pcsList["PC3"] = pcsList["PC2"];
+                New_pcsList["PC4"] = pcsList["PC3"];
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                InputSourceObj pc3input = new InputSourceObj((UInt16)New_pcsList["PC3"].Code, New_pcsList["PC3"].InputType);
+                InputSourceObj pc4input = new InputSourceObj((UInt16)New_pcsList["PC4"].Code, New_pcsList["PC4"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, pc3input, pc4input).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 3.");
+            }
+
+            return New_pcsList;
+        }
+
+        public Task<Dictionary<string, PCsInfo>> ChangePC(MonitorInfo monitorInfo, Dictionary<string, PCsInfo> pcsList, List<UInt16> subInputList, bool isNext)
+        {
+            writelog("[ChangePC] ChangePC");
+            Dictionary<string, PCsInfo> New_pcsList = new Dictionary<string, PCsInfo>();
+            if (pcsList != null && pcsList.Count > 0 && subInputList != null && subInputList.Count > 0)
+            {
+                if (isNext)
+                {
+                    New_pcsList = HandleNextCase(monitorInfo, pcsList, subInputList);
+                }
+                else
+                {
+                    New_pcsList = HandlePreviousCase(monitorInfo, pcsList, subInputList);
+                }
+            }
+            else
+            {
+                writelog("[ChangePC] pcsList or subInputList is null or count is not > 0.");
+            }
+            return Task.FromResult(New_pcsList);
+        }
+
         #endregion
 
         #region ALS feature functions
@@ -12637,29 +12740,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void InitAllDisplayData(List<MonitorInfo> AllMonitors, CancellationToken cancellationToken)
         {
             //InitMonitorSettings();
-            if (AllMonitors != null && AllMonitors.Count > 0)
+            try
             {
-                _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait(cancellationToken);
-
-                for (int i = 0; ((i < AllMonitors.Count) && (!cancellationToken.IsCancellationRequested)); i++)
+                if (AllMonitors != null && AllMonitors.Count > 0)
                 {
-                    MonitorInfo info = AllMonitors[i];
+                    _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait(cancellationToken);
 
-                    _ = _DisplayManagerPlugin.GetVCPCapability(info, 0xE9);
+                    for (int i = 0; ((i < AllMonitors.Count) && (!cancellationToken.IsCancellationRequested)); i++)
+                    {
+                        MonitorInfo info = AllMonitors[i];
 
-                    _ = _DisplayManagerPlugin.GetDisplayPropertiesInfo(info);
+                        _ = _DisplayManagerPlugin.GetVCPCapability(info, 0xE9);
 
-                    if (info.CapabilityString.Contains("F4"))
-                        _ = _DisplayManagerPlugin.GetGamingProperties_SupportedList(info);
+                        _ = _DisplayManagerPlugin.GetDisplayPropertiesInfo(info);
 
-                    _DisplayManagerPlugin.GetUSBUpstreamList(info).Wait(cancellationToken);
+                        if (info.CapabilityString.Contains("F4"))
+                            _ = _DisplayManagerPlugin.GetGamingProperties_SupportedList(info);
+
+                        _DisplayManagerPlugin.GetUSBUpstreamList(info).Wait(cancellationToken);
+
+                        if (!cancellationToken.IsCancellationRequested)
+                            _ = _DisplayManagerPlugin.GetAllUSBUpstream(info);
+                    }
 
                     if (!cancellationToken.IsCancellationRequested)
-                        _ = _DisplayManagerPlugin.GetAllUSBUpstream(info);
+                        UpdateHotkeyInfo(cancellationToken);
                 }
-
-                if (!cancellationToken.IsCancellationRequested)
-                    UpdateHotkeyInfo(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                writelog($"InitAllDisplayData exception : {ex.ToString()}");
             }
         }
 
@@ -12684,7 +12794,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             InitMonitorSettings((e.monitors).ToList(), CancellationToken.None);
 
-            Task.Run(() => InitAllDisplayData((e.monitors).ToList(), CancellationToken.None)).ConfigureAwait(false);
+            Task.Run(() => InitAllDisplayData((e.monitors).ToList(), CancellationToken.None));
 
             DisplaychangedEventArgs _displaychangedEventArgs = new DisplaychangedEventArgs();
             _displaychangedEventArgs.count = e.count;
