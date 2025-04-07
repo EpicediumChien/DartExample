@@ -121,6 +121,27 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 // 20240627 jim modify
                 r = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x04, 1).Result;
 
+                //PIMS-353317 Dean, if Set to default then let profile to be standard or Native if support profile
+                Task.Run(() =>
+                {
+                    bool? rst = DdpmCommonHelper.DeviceManagerSA?.SetMonitorProfile(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "Standard").Result;
+                    if (rst == null)
+                    {
+                        DdpmCommonHelper.WriteUILog("[Restore_Click] get null resut");
+                    }
+                    else
+                    {
+                        if (rst == true)
+                        {
+                            DdpmCommonHelper.WriteUILog("[Restore_Click] SetMonitorProfile with Standard/Native success");
+                        }
+                        else
+                        {
+                            DdpmCommonHelper.WriteUILog("[Restore_Click] SetMonitorProfile Standard/Native failed");
+                        }
+                    }
+                });
+
                 // 20240627 jim add
                 //Return to DdpmHomePage
                 IConsole? console = DisplayPlugin.PluginIoc.GetService<IConsole>();
