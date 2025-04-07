@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using DDPM.UI.Common.EAEM;
+using Moq;
 using NGA.UnitTest.PrivateObject;
 using System;
 using System.Collections;
@@ -197,6 +198,21 @@ namespace DDPM.Easy.Common.Tests
             Assert.That(splitCtrl0B.HoveringCell, Is.EqualTo("HoveringCell"));
         }
 
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (splitCtrl0B != null)
+            {
+                splitCtrl0B.Dispose();
+                splitCtrl0B = null;
+            }
+            if (vm != null)
+            {
+                vm.Dispose();
+                vm = null;
+            }
+        }
 
     }
 }

@@ -35,7 +35,9 @@ namespace DDPM.EABroker
         //AwsWindow Rect on VirtualScreen
         private Rect _rcAwsWindow = new Rect();
 
-        //5 Icons
+        //5 Icons 
+        readonly double _cxIcon = 120;
+        readonly double _cyIcon = 129;
         private Rect _rcIcon0 = new Rect();
         private Rect _rcIcon1 = new Rect();
         private Rect _rcIcon2 = new Rect();
@@ -223,13 +225,34 @@ namespace DDPM.EABroker
             //}));
         }
 
+        /// <summary>
+        /// Calculate the Rect of Icons (AwsIcon0~AwsIcon4) and then store to ArrangeVM.rcIcon0~rcIcon4
+        /// The coordinates are based on VirtualScreen
+        /// </summary>
         private void RefreshAwsIconRects()
         {
-            _rcIcon0 = _vm.GetFrameworkElementRect(_vm.AwsIcon0.UC);
-            _rcIcon1 = _vm.GetFrameworkElementRect(_vm.AwsIcon1.UC);
-            _rcIcon2 = _vm.GetFrameworkElementRect(_vm.AwsIcon2.UC);
-            _rcIcon3 = _vm.GetFrameworkElementRect(_vm.AwsIcon3.UC);
-            _rcIcon4 = _vm.GetFrameworkElementRect(_vm.AwsIcon4.UC);
+            double dx = (_cxAwsWindow - _cxIcon * 5) / 10;
+            double dy = (_cyAwsWindow - _cyIcon) / 2;
+
+            double xWindow = _vm.xAwsWindow;
+            double yWindow = _vm.yAwsWindow;
+
+            _rcIcon0 = new Rect(_vm.ScreenScale * (xWindow + dx), _vm.ScreenScale * (yWindow + dy), _vm.ScreenScale * _cxIcon, _vm.ScreenScale *_cyIcon);
+            _rcIcon1 = new Rect(_vm.ScreenScale * (xWindow + 3 * dx + _cxIcon), _vm.ScreenScale * (yWindow + dy), _vm.ScreenScale * _cxIcon, _vm.ScreenScale * _cyIcon);
+            _rcIcon2 = new Rect(_vm.ScreenScale * (xWindow + 5 * dx + 2 * _cxIcon), _vm.ScreenScale * (yWindow + dy), _vm.ScreenScale * _cxIcon, _vm.ScreenScale * _cyIcon);
+            _rcIcon3 = new Rect(_vm.ScreenScale * (xWindow + 7 * dx + 3 * _cxIcon), _vm.ScreenScale * (yWindow + dy), _vm.ScreenScale * _cxIcon, _vm.ScreenScale * _cyIcon);
+            _rcIcon4 = new Rect(_vm.ScreenScale * (xWindow + 9 * dx + 4 * _cxIcon), _vm.ScreenScale * (yWindow + dy), _vm.ScreenScale * _cxIcon, _vm.ScreenScale * _cyIcon);
+
+            //_rcIcon0 = _vm.GetFrameworkElementRect(_vm.AwsIcon0.UC);
+            //_rcIcon1 = _vm.GetFrameworkElementRect(_vm.AwsIcon1.UC);
+            //_rcIcon2 = _vm.GetFrameworkElementRect(_vm.AwsIcon2.UC);
+            //_rcIcon3 = _vm.GetFrameworkElementRect(_vm.AwsIcon3.UC);
+            //_rcIcon4 = _vm.GetFrameworkElementRect(_vm.AwsIcon4.UC);
+            _vm.rcIcont0 = _rcIcon0;
+            _vm.rcIcont1 = _rcIcon1;
+            _vm.rcIcont2 = _rcIcon2;
+            _vm.rcIcont3 = _rcIcon3;
+            _vm.rcIcont4 = _rcIcon4;
         }
 
         private void RefreshCellBordersInAwsIcons()
@@ -257,7 +280,8 @@ namespace DDPM.EABroker
                 else
                 {
                     SplitCtrl0B splitCtrl0B = (SplitCtrl0B)_vm.AwsIcon1;
-                    splitCtrl0B.ApplySettingsToCellList(new Rect(rcIcon.Left, rcIcon.Top, rcIcon.Width, rcIcon.Height));
+                    //Robert_Lin 2025-4-1 trial workaround. It seems not solve the problem.
+                    splitCtrl0B.ApplySettingsToCellList(new Rect(rcIcon.Left, rcIcon.Top, rcIcon.Width*_vm.ScreenScale, rcIcon.Height*_vm.ScreenScale));
                 }
             }
             if (_vm.AwsIcon2.IsAddedCustomLayout)
@@ -823,7 +847,7 @@ namespace DDPM.EABroker
 
             Trace.WriteLine("@ Dispatcher_RefreshCellRects()");
 
-            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon0))
+            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon0, _vm.rcIcont0))
             {
                 _areCellRectsRefreshed = false;
             }
@@ -867,7 +891,7 @@ namespace DDPM.EABroker
                 }
             }
             */
-            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon1))
+            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon1, _vm.rcIcont1))
             {
                 _areCellRectsRefreshed = false;
             }
@@ -912,7 +936,7 @@ namespace DDPM.EABroker
                 }
             }
             */
-            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon2))
+            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon2, _vm.rcIcont2))
             {
                 _areCellRectsRefreshed = false;
             }
@@ -959,7 +983,7 @@ namespace DDPM.EABroker
                 }
             }
             */
-            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon3))
+            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon3, _vm.rcIcont3))
             {
                 _areCellRectsRefreshed = false;
             }
@@ -1004,7 +1028,7 @@ namespace DDPM.EABroker
                 }
             }
             */
-            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon4))
+            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon4, _vm.rcIcont4))
             {
                 _areCellRectsRefreshed = false;
             }
@@ -1016,7 +1040,7 @@ namespace DDPM.EABroker
             _vm.OnPropertyChanged_AwsIconInfos();
         }
 
-        private bool UI_RefreshAwsIconCellRects(ISplitCtrl awsIcon)
+        private bool UI_RefreshAwsIconCellRects(ISplitCtrl awsIcon, Rect rcIcon)
         {
             bool isCellRectsRefreshed = true;
 
@@ -1048,6 +1072,19 @@ namespace DDPM.EABroker
                         continue;
 
                     objCell.rc = _vm.GetFrameworkElementRect(objCell.CellBd);
+
+                    //var transformToWnd = awsIcon.UC.TransformToVisual(this);
+                    //var posIconToWnd = transformToWnd.Transform(new System.Windows.Point(0, 0));
+
+                    ////Transform CellBorder position to related to AwsIcon
+                    //var transformToIcon = objCell.CellBd.TransformToVisual(awsIcon.UC);
+                    //var posCellToSplit = transformToIcon.Transform(new System.Windows.Point(0, 0));
+
+                    ////Get the position of Virtual Screen
+                    //var posVscr = new System.Windows.Point(SystemParameters.VirtualScreenLeft, SystemParameters.VirtualScreenTop);
+                    ////Calculate the relate pos of Cell to Virtual Screen
+                    //var posCellToVscr = new System.Windows.Point(posCellToSplit.X + rcIcon.Left, posCellToSplit.Y + rcIcon.Top);
+
                     if (objCell.rc.IsEmpty)
                     {
                         isCellRectsRefreshed = false;
