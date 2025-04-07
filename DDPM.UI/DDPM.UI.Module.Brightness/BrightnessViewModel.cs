@@ -461,6 +461,7 @@ namespace DDPM.UI.Module.Brightness
         /// <param name="e">changed event</param>
         private void OnVCPChangedEvent(object? sender, VCPchangedEventArgs e)
         {
+            DdpmCommonHelper.WriteUILog($"OnVCPChangedEvent {e.vcpcode} ... in");
             if (e.vcpcode.Equals("66"))//ALS changes by OSD menu
             {
                 MonitorInfo? mo = DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo;
@@ -1038,12 +1039,14 @@ namespace DDPM.UI.Module.Brightness
                     }
                     else
                     {
+                        DdpmCommonHelper.WriteUILog($"GetALSContentAndSyncUI before Update ...");
                         isAlsSupported = Visibility.Visible;
                         Update_AutoBrightnessStatus(Start_ALSConfig.isAutoBrightness);
                         Update_AutoColorTempStatus(Start_ALSConfig.isAutoColorTemp);
                         Update_PrimaryMonitorSyncStatus(Start_ALSConfig.isPrimaryMonitorSync);
                         Update_AutoBrightnessRangeLevelStatus(Start_ALSConfig.AutoBrightnessRangeLevel);
                         Update_SupportedPrimaryMonitorSync(Start_ALSConfig.isAutoBrightness, Start_ALSConfig.isAutoColorTemp);
+                        DdpmCommonHelper.WriteUILog($"GetALSContentAndSyncUI after Update ...");
                     }
                     NotifyPropertyChanged("isAlsSupported");
                     NotifyPropertyChanged("IsScheduledShow");
@@ -1055,7 +1058,7 @@ namespace DDPM.UI.Module.Brightness
                     DdpmCommonHelper.WriteUILog($"AutoColorTemp ************** : {(Start_ALSConfig.isAutoColorTemp ? "ON" : "OFF")}");
                     if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
                     {
-                        DdpmCommonHelper.WriteUILog($"AutoBrightnessRangeLevel *** : {Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name}");
+                        DdpmCommonHelper.WriteUILog($"AutoBrightnessRangeLevel *** : {Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value.ToString()}");
                     }
                     else
                     {
