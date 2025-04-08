@@ -314,12 +314,13 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         {
             FWUpdateInfoPackage fwUpdateInfoPackage = new FWUpdateInfoPackage();
             SWUpdateInfoPackage swUpdateInfoPackage = new SWUpdateInfoPackage();
+            CancellationTokenSource cts = new CancellationTokenSource();
             var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
             deviceManagerSAMock.Setup(x => x.GetDevices(It.IsAny<bool>())).Returns(Task.FromResult(new DeviceHelper() { deviceInfo = new List<DeviceInfo>() }));
             try
             {
-                settingsPageViewModel.SetUpdateInfoUI(fwUpdateInfoPackage, swUpdateInfoPackage);
+                settingsPageViewModel.SetUpdateInfoUI(fwUpdateInfoPackage, swUpdateInfoPackage, cts);
                 Assert.True(true);
             }
             catch (Exception ex)

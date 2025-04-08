@@ -13,6 +13,7 @@ using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
 using Microsoft.VisualBasic.Logging;
 using Microsoft.Win32;
+using Newtonsoft.Json.Linq;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -231,7 +232,12 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     OnPropertyChanged("IsBusy_UpdatePage");
                     return;
                 }
-                SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, true).Result);
+                if (_CTS != null)
+                {
+                    _CTS.Cancel();
+                }
+                _CTS = new CancellationTokenSource();
+                SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, true).Result, _CTS);
                 RefreshUI();
             }
             catch (Exception ex)
@@ -499,15 +505,24 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 return;
             }
             Log?.Info($"CheckUpdate start");
-            SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, true).Result);
+            if (_CTS != null)
+            {
+                _CTS.Cancel();
+            }
+            _CTS = new CancellationTokenSource();
+            SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, true).Result, _CTS);
             RefreshUI();
             Log?.Info($"CheckUpdate done");
         }
-        private static readonly object lockObject = new object();
-        public void SetUpdateInfoUI(FWUpdateInfoPackage fwUpdateInfoPackage, SWUpdateInfoPackage swUpdateInfoPackage)
+        //private static readonly object lockObject = new object();
+        private CancellationTokenSource _CTS;
+
+        public void SetUpdateInfoUI(FWUpdateInfoPackage fwUpdateInfoPackage, SWUpdateInfoPackage swUpdateInfoPackage, CancellationTokenSource cts)
         {
-            lock (lockObject)
+            //lock (lockObject)
+            try
             {
+                //cts.Token.ThrowIfCancellationRequested();
                 Log?.Info($"SetUpdateInfoUI start");
                 LastCheckDate = fwUpdateInfoPackage.TheLastCheckTime.ToString();
                 FWUpdateInfoPackage = fwUpdateInfoPackage;
@@ -522,12 +537,16 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 else
                 {
                     NoNetwork = Visibility.Collapsed;
+                    //cts.Token.ThrowIfCancellationRequested();
                     List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA.GetDevices().Result.deviceInfo;
+                    //cts.Token.ThrowIfCancellationRequested();
                     int ioDongleCount = DdpmCommonHelper.DeviceManagerSA.GetIODongleCountGen3AgoCount().Result;
+                    //cts.Token.ThrowIfCancellationRequested();
                     Log?.Info($"fwUpdateInfoPackage.FWUpdateInfo.Count : {fwUpdateInfoPackage.FWUpdateInfo.Count}");
                     Log?.Info($"ioDongleCount : {ioDongleCount}");
                     foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
                     {
+                        //cts.Token.ThrowIfCancellationRequested();
                         UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos, ioDongleCount);
                         if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)//如果不能選擇是否更新為強制更新
                         {
@@ -544,16 +563,19 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                             Log?.Info($"Optional_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
                             Optional_UpdateList_UI.Add(uiUpdateInfo);
                         }
+                        //cts.Token.ThrowIfCancellationRequested();
                     }
                     Log?.Info($"swUpdateInfoPackage.SWUpdateInfo.Count : {swUpdateInfoPackage.SWUpdateInfo.Count}");
                     foreach (SWUpdateInfo swUpdateInfo in swUpdateInfoPackage.SWUpdateInfo)
                     {
+                        //cts.Token.ThrowIfCancellationRequested();
                         UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(swUpdateInfo);
                         if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)
                         {
                             Log?.Info($"Critical_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
                             Critical_UpdateList_UI.Add(uiUpdateInfo);
                         }
+                        //cts.Token.ThrowIfCancellationRequested();
                     }
                     if ((Critical_UpdateList_UI?.Count <= 0 &&
                         Recommended_UpdateList_UI?.Count <= 0 &&
@@ -568,6 +590,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 }
                 if (NoNetwork == Visibility.Visible || NoUpdateAlert == Visibility.Visible)
                 {
+                    //cts.Token.ThrowIfCancellationRequested();
                     System.Timers.Timer timer = new System.Timers.Timer();
                     timer.Interval = TimeSpan.FromSeconds(5).TotalMilliseconds;
                     timer.Elapsed += (sender, args) =>
@@ -583,6 +606,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 Log?.Info($"Recommended_UpdateList_UI.Count : {Recommended_UpdateList_UI.Count}");
                 Log?.Info($"Optional_UpdateList_UI.Count : {Optional_UpdateList_UI.Count}");
                 Log?.Info($"SetUpdateInfoUI done");
+            }
+            catch (OperationCanceledException)
+            {
+                Log?.Info("SetUpdateInfoUI canceled");
             }
         }
 
