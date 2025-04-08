@@ -102,6 +102,18 @@ namespace DDPM.UI.Common.Method
             return false;
         }
 
+        public static int GetOsBuild() 
+        {
+            string deviceFamilyVersion = Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamilyVersion;
+            ulong version = ulong.Parse(deviceFamilyVersion);
+            ulong major = (version & 0xFFFF000000000000L) >> 48;
+            ulong minor = (version & 0x0000FFFF00000000L) >> 32;
+            ulong build = (version & 0x00000000FFFF0000L) >> 16;
+            ulong revision = (version & 0x000000000000FFFFL);
+            var osVersion = $"{major}.{minor}.{build}.{revision}";
+            return (int)build;
+        }
+
         public static string GetComputerManufacturer()
         {
             //ManagementClass mc = new ManagementClass("Win32_ComputerSystem");
