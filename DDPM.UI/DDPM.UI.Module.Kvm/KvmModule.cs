@@ -94,6 +94,7 @@ namespace DDPM.UI.Module.Kvm
             }
             DdpmCommonHelper.ModuleOwner.LoadLeftView();
             vm.Invoke_RefreshData();
+            vm.Invoke_RefreshHotkeySettings();
         }
 
         public void OnActivated()

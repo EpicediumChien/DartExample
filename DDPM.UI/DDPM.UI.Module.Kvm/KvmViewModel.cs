@@ -516,7 +516,7 @@ namespace DDPM.UI.Module.Kvm
 
         public bool LockSendNoKVM { get; set; } = false;
 
-        public Visibility ArrowinFullscreen {  get; set; } = Visibility.Collapsed;
+        public Visibility ArrowinFullscreen { get; set; } = Visibility.Collapsed;
 
         #region Hotkey
 
@@ -599,7 +599,7 @@ namespace DDPM.UI.Module.Kvm
         }
         private void saveKvmHotkeyOption()
         {
-            HotkeySettings hotkeySettings = new HotkeySettings
+            /*HotkeySettings hotkeySettings = new HotkeySettings
             {
                 //DeviceInfo = KvmModule.SelectedHomeDevice.MonitorInfo.edid,
                 ModelName = "DDPM",
@@ -607,7 +607,29 @@ namespace DDPM.UI.Module.Kvm
                 ServiceTag = "DDPM",
                 HotkeyOptions = new List<HotkeyOption> { _autoSwitchChecked ? HotkeyOption.KvmAutoApply : HotkeyOption.None }
             };
-            DdpmCommonHelper.DeviceManagerSA.SaveHotkeyOptionOnly(hotkeySettings);
+            DdpmCommonHelper.DeviceManagerSA.SaveHotkeyOptionOnly(hotkeySettings);*/
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                MonitorInfo? monitorInfo = KvmModule?.SelectedHomeDevice?.MonitorInfo;
+                if (monitorInfo != null)
+                {
+                    HotkeyOption hotkeyOption = _autoSwitchChecked ? HotkeyOption.KvmAutoApply : HotkeyOption.None;
+                    bool result = DdpmCommonHelper.DeviceManagerSA.SaveHotkeyOptionOnly(monitorInfo, hotkeyOption).Result;
+                    if (result)
+                    {
+                        DdpmCommonHelper.WriteUILog($"[USBKVMHotkey]saveKvmHotkeyOption success.[{monitorInfo.AliasDeviceName},{monitorInfo.edid.ServiceTag},{hotkeyOption}]");
+                    }
+                    else
+                    {
+                        DdpmCommonHelper.WriteUILog($"[USBKVMHotkey]saveKvmHotkeyOption fail.[{monitorInfo.AliasDeviceName},{monitorInfo.edid.ServiceTag},{hotkeyOption}]");
+                    }
+
+                }
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"[USBKVMHotkey]saveKvmHotkeyOption selected monitor is null.");
+                }
+            }
         }
 
         public void Invoke_RefreshHotkeySettings()
@@ -768,7 +790,20 @@ namespace DDPM.UI.Module.Kvm
                             _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}";
                         }
                     }
-                    if (curHotkey.HotkeyOptions.Count > 0 &&
+                    if (selectedHomeDevice != null && selectedHomeDevice.MonitorInfo != null)
+                    {
+
+                        HotkeyOption hotkeyOption = DdpmCommonHelper.DeviceManagerSA.ReadHotkeyOption(selectedHomeDevice.MonitorInfo).Result;
+                        if (IsPBPMode(selectedHomeDevice.MonitorInfo, _curPxpMode))
+                        {
+                            _autoSwitchChecked = hotkeyOption == HotkeyOption.KvmAutoApply;
+                        }
+                        else
+                        {
+                            _autoSwitchChecked = false;
+                        }
+                    }
+                    /*if (curHotkey.HotkeyOptions.Count > 0 &&
                         curHotkey.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)) &&
                         selectedHomeDevice != null && selectedHomeDevice.MonitorInfo != null)
                     {
@@ -780,7 +815,7 @@ namespace DDPM.UI.Module.Kvm
                         {
                             _autoSwitchChecked = false;
                         }
-                    }
+                    }*/
                 }
 
                 OnPropertyChanged("KvmHotkeyTooltip");
@@ -1441,7 +1476,7 @@ namespace DDPM.UI.Module.Kvm
                         if (mi.CapabilityDic.ContainsKey("E9"))
                         {
                             _log?.Info("[KvmViewModel]Have 0xE9");
-                            
+
                             if (!isScreenPartition)
                             {
                                 string _pxpString = string.Empty;
