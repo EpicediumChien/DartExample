@@ -33,6 +33,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 {
     public class SettingsPageViewModel : ObservableObject, ISettingsPageViewModel
     {
+        private static readonly object lockObject = new object();
         private List<HomeDevice> _homeDevices = new List<HomeDevice>();
         public bool[] IsSelected { get; set; } = new bool[5];
         public ILog? Log { get; set; }
@@ -507,7 +508,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
         public void SetUpdateInfoUI(FWUpdateInfoPackage fwUpdateInfoPackage, SWUpdateInfoPackage swUpdateInfoPackage)
         {
-            //lock (lockObject)
+            lock (lockObject)
             {
                 Log?.Info($"SetUpdateInfoUI start");
                 LastCheckDate = fwUpdateInfoPackage.TheLastCheckTime.ToString();
