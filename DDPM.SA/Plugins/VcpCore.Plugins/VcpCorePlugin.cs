@@ -261,18 +261,23 @@ namespace VcpCore.Plugins
                 _AllInfoMonitors_Mix.Clear();
                 _AllInfoMonitors.Clear();
 
-                while (!_TaskQueue.IsEmpty())
+                do
                 {
                     if (IsDisposed) break;
 
-                    if (_TaskQueueExecutor.IsBusy) _TaskQueueExecutor.CancelAsync();
+                    if (_TaskQueueExecutor.IsBusy)
+                    {
+                        _TaskQueueExecutor.CancelAsync();
+                        _BworkerCancelAsyncEvent.WaitOne(Timeout.Infinite);
+                        _logs.DebugMsg("[VcpCorePlugin] _TaskQueueExecutor Cancel succes III");
+                    }
                     else
                     {
                         _TaskQueue.Clear();
                         _TaskQueueResult.Clear();
+                        _CancelhashSet.Clear();
                     }
-                    _CancelhashSet.Clear();
-                }
+                } while (!_TaskQueue.IsEmpty());
 
                 _AddSignalfor0X52 = 0;
                 _AddSignalforStatusCheck = 0;
