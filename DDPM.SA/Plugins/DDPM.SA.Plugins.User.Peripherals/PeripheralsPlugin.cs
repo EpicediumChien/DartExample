@@ -4101,19 +4101,44 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         {
             StopCopilotRegistryMonitor();
         }
-        public Task<bool> StopCopilotRegistryMonitor()
+        //public Task<bool> StopCopilotRegistryMonitor()
+        //{
+        //    writelog("PeripheralPlugin StopRegistryMonitor_ICC requested ...");
+
+        //    if (registryMonitor_Copilot != null)
+        //    {
+        //        registryMonitor_Copilot.Stop();
+        //        registryMonitor_Copilot.RegChanged -= new EventHandler(OnRegChanged_Copilot);
+        //        registryMonitor_Copilot = null;
+        //        return System.Threading.Tasks.Task.FromResult(true);
+        //    }
+        //    registryMonitor_Copilot = null;
+        //    return System.Threading.Tasks.Task.FromResult(false);
+        //}
+        public async Task<bool> StopCopilotRegistryMonitor()
         {
             writelog("PeripheralPlugin StopRegistryMonitor_ICC requested ...");
 
-            if (registryMonitor_Copilot != null)
+            try
             {
-                registryMonitor_Copilot.Stop();
-                registryMonitor_Copilot.RegChanged -= new EventHandler(OnRegChanged_Copilot);
-                registryMonitor_Copilot = null;
-                return System.Threading.Tasks.Task.FromResult(true);
+                if (registryMonitor_Copilot != null)
+                {
+                    registryMonitor_Copilot.Stop();
+                    registryMonitor_Copilot.RegChanged -= new EventHandler(OnRegChanged_Copilot);
+                    registryMonitor_Copilot.Dispose();
+                    return await Task.FromResult(true);
+                }
             }
-            registryMonitor_Copilot = null;
-            return System.Threading.Tasks.Task.FromResult(false);
+            catch (Exception ex)
+            {
+                writelog($"Error stopping registry monitor: {ex.Message}");
+            }
+            finally
+            {
+                registryMonitor_Copilot = null;
+            }
+
+            return await Task.FromResult(false);
         }
         #endregion
         private void writelog(string text,
