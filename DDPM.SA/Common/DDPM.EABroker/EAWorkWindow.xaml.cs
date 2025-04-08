@@ -693,10 +693,10 @@ namespace DDPM.EABroker
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            System.Windows.MessageBox.Show("Window_Closing");
+            //System.Windows.MessageBox.Show("Window_Closing");
             if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
             {
-                System.Windows.MessageBox.Show("Window_Closing1");
+                //System.Windows.MessageBox.Show("Window_Closing1");
                 System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
             }
         }

@@ -164,7 +164,7 @@ namespace DDPM.Easy.Common.Tests
             }
         }
 
-        //[Test]
+        [Test]
         public void TestAddChild()
         {
             try

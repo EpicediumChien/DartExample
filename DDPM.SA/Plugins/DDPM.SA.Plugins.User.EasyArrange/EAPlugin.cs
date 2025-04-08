@@ -127,7 +127,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     EABroker_Stop();
                     _agent = null;
 
-                    _HotkeyPlugin.Hook();
+                    _HotkeyPlugin.Unhook();
                     _HotkeyPlugin.KeyUp -= Keyboard_KeyUpProc;
                     _HotkeyPlugin.KeyDown -= Keyboard_KeyDownProc;
                 }

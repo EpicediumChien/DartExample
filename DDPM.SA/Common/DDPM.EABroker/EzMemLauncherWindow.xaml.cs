@@ -881,13 +881,13 @@ namespace DDPM.EABroker
             }
         }
 
-        public void ShowForEzMemLauncher(MonitorInfo mi, ISplitCtrl isp)
+        public bool ShowForEzMemLauncher(MonitorInfo mi, ISplitCtrl isp)
         {
             Screen? screen = Screen.AllScreens.FirstOrDefault(x => x.DeviceName.Equals(mi.DisplayName, StringComparison.OrdinalIgnoreCase));
             if (screen == null)
             {
-                ExitUIThread(); //Derek 2025/03/31
-                return;
+                
+                return false;
             }
 
             splitCtrl.Visibility = Visibility.Visible;
@@ -918,6 +918,8 @@ namespace DDPM.EABroker
             ContentRendered += Window_ContentRendered;
             Topmost = true;
             Show();
+
+            return true;
         }
 
 
@@ -997,8 +999,8 @@ namespace DDPM.EABroker
         {
             _vm.WriteLog($"EzMemLauncherWindow is closing");
 
+            ContentRendered -= Window_ContentRendered;
             ExitUIThread(); //Derek 2025/03/31
-            ContentRendered -= Window_ContentRendered;            
         }
     }
 }
