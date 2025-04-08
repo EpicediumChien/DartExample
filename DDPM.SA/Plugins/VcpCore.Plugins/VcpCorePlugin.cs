@@ -41,7 +41,11 @@ using static Dell.Client.Framework.Interfaces.AgentEvents;
 using static VcpCore.Common.dxva2;
 using static VcpCore.Common.User32;
 using IDs = VcpCore.Common.IDs;
+using LocalMonitorsData = (VcpCore.Common.MonitorInfo_complex MonitorInfosComplex, VcpCore.Common.MonitorInfo MonitorInfos);
+using STR_FwVersion = (string FW, string Scalar, string SI);
+using STR_Inputs = (string Cable, string inputSource);
 using Timer = System.Timers.Timer;
+using UpdateMyselfResult = (bool IsConnectAllCorrect, bool IsUpdate);
 
 namespace VcpCore.Plugins
 {
@@ -67,7 +71,7 @@ namespace VcpCore.Plugins
         private static Logs _logs;
 
         private static List<MonitorInfo_complex> _AllInfoMonitors;
-        private static List<(MonitorInfo_complex, MonitorInfo)> _AllInfoMonitors_Mix;
+        private static List<LocalMonitorsData> _AllInfoMonitors_Mix;
         private static Dictionary<string, Dictionary<string, string>> _ColorPresets;
         private static TaskLockQueue<ParameterType> _TaskQueue;
         private static BackgroundWorker _TaskQueueExecutor;
@@ -141,7 +145,7 @@ namespace VcpCore.Plugins
             _logs ??= new Logs(Log);
             _TaskQueueResult ??= new ResultLockPool();
             _AllInfoMonitors ??= new List<MonitorInfo_complex>();
-            _AllInfoMonitors_Mix ??= new List<(MonitorInfo_complex, MonitorInfo)>();
+            _AllInfoMonitors_Mix ??= new List<LocalMonitorsData>();
             _CacheTable ??= new VcpLockCache(_logs);
             _CancelhashSet ??= new HashSet<Guid>();
             _ColorPresets ??= new Dictionary<string, Dictionary<string, string>>();
@@ -265,7 +269,7 @@ namespace VcpCore.Plugins
                 DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs()
                 {
                     count = _AllInfoMonitors_Mix.Count,
-                    monitors = _AllInfoMonitors_Mix.Select(M => M.Item2).ToList(),
+                    monitors = _AllInfoMonitors_Mix.Select(M => M.MonitorInfos).ToList(),
                 };
                 OnDisplaychanged(_displaychangedEventArgss);
                 //------------------------------------------------------------------------------------------------//
@@ -296,7 +300,7 @@ namespace VcpCore.Plugins
 
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received Monitors List requested ...");
 
-            List<MonitorInfo> _AllDisplays = _AllInfoMonitors_Mix.Select(M => M.Item2).ToList();
+            List<MonitorInfo> _AllDisplays = _AllInfoMonitors_Mix.Select(M => M.MonitorInfos).ToList();
 
             _logs.DebugMsg("[VcpCorePlugin] AllInfoMonitors count is " + _AllDisplays.Count.ToString());
 
@@ -363,7 +367,7 @@ namespace VcpCore.Plugins
                 }
 
                 _logs.DebugMsg("[VcpCorePlugin] Re_GetMonitors() _AllInfoMonitors_Mix.Count is " + _AllInfoMonitors_Mix.Count);
-                return _AllInfoMonitors_Mix.Select(x => x.Item2).ToList();
+                return _AllInfoMonitors_Mix.Select(x => x.MonitorInfos).ToList();
             }
             catch (Exception e)
             {
@@ -486,13 +490,13 @@ namespace VcpCore.Plugins
                 {
                     if (IsDisposed) break;
 
-                    if (monitorInfo.Equals(moX.Item2))
+                    if (monitorInfo.Equals(moX.MonitorInfos))
                     {
-                        if (moX.Item2.DDCisON)
+                        if (moX.MonitorInfos.DDCisON)
                         {
                             object or;
 
-                            if ((or = _CacheTable.GetFromCacheTable(moX.Item1, "CapabilityString".ToLower(CultureInfo.InvariantCulture))) != null)
+                            if ((or = _CacheTable.GetFromCacheTable(moX.MonitorInfosComplex, "CapabilityString".ToLower(CultureInfo.InvariantCulture))) != null)
                                 return Task.FromResult(or.ToString());
                             else
                             {
@@ -500,7 +504,7 @@ namespace VcpCore.Plugins
                                 Guid _guid = Guid.NewGuid();
                                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                                ParameterType parameterType = new ParameterType(Queue_CommandType.GetCapabilitiesString, new Type_GetCapabilitiesString(_guid, moX.Item1, guid));
+                                ParameterType parameterType = new ParameterType(Queue_CommandType.GetCapabilitiesString, new Type_GetCapabilitiesString(_guid, moX.MonitorInfosComplex, guid));
                                 _TaskQueue.Enqueue(parameterType, priority);
 
                                 Launch_TaskQueueExecutor();
@@ -549,13 +553,13 @@ namespace VcpCore.Plugins
                 {
                     if (IsDisposed) break;
 
-                    if (monitorInfo.Equals(moX.Item2))
+                    if (monitorInfo.Equals(moX.MonitorInfos))
                     {
-                        if (moX.Item2.DDCisON)
+                        if (moX.MonitorInfos.DDCisON)
                         {
                             object or;
 
-                            if ((or = _CacheTable.GetFromCacheTable(moX.Item1, "Capabilities".ToLower(CultureInfo.InvariantCulture))) != null)
+                            if ((or = _CacheTable.GetFromCacheTable(moX.MonitorInfosComplex, "Capabilities".ToLower(CultureInfo.InvariantCulture))) != null)
                                 return Task.FromResult(or.ToString());
                             else
                             {
@@ -563,7 +567,7 @@ namespace VcpCore.Plugins
                                 Guid _guid = Guid.NewGuid();
                                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                                ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapabilities, new Type_GetVCPCapabilities(_guid, moX.Item1, guid));
+                                ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapabilities, new Type_GetVCPCapabilities(_guid, moX.MonitorInfosComplex, guid));
                                 _TaskQueue.Enqueue(parameterType, priority);
 
                                 Launch_TaskQueueExecutor();
@@ -614,15 +618,15 @@ namespace VcpCore.Plugins
                 {
                     if (IsDisposed) break;
 
-                    if (monitorInfo.Equals(moX.Item2))
+                    if (monitorInfo.Equals(moX.MonitorInfos))
                     {
-                        if (moX.Item2.DDCisON)
+                        if (moX.MonitorInfos.DDCisON)
                         {
-                            if (IsVcpFunctionSupport(moX.Item1, code))
+                            if (IsVcpFunctionSupport(moX.MonitorInfosComplex, code))
                             {
                                 object or;
 
-                                if ((or = _CacheTable.GetFromCacheTable(moX.Item1, code)) != null)
+                                if ((or = _CacheTable.GetFromCacheTable(moX.MonitorInfosComplex, code)) != null)
                                     return Task.FromResult(new ObjGetVCP() { value = or, result = true });
                                 else
                                 {
@@ -630,7 +634,7 @@ namespace VcpCore.Plugins
                                     Guid _guid = Guid.NewGuid();
                                     _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                                    ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapability_I, new Type_GetVCPCapability_I(_guid, moX.Item1, code, guid, opt));
+                                    ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapability_I, new Type_GetVCPCapability_I(_guid, moX.MonitorInfosComplex, code, guid, opt));
                                     _TaskQueue.Enqueue(parameterType, priority);
 
                                     Launch_TaskQueueExecutor();
@@ -687,13 +691,13 @@ namespace VcpCore.Plugins
                 {
                     if (IsDisposed) break;
 
-                    if (monitorInfo.Equals(moX.Item2))
+                    if (monitorInfo.Equals(moX.MonitorInfos))
                     {
-                        if (moX.Item2.DDCisON)
+                        if (moX.MonitorInfos.DDCisON)
                         {
                             object or;
 
-                            if ((or = _CacheTable.GetFromCacheTable(moX.Item1, FunctionName.ToLower(CultureInfo.InvariantCulture))) != null)
+                            if ((or = _CacheTable.GetFromCacheTable(moX.MonitorInfosComplex, FunctionName.ToLower(CultureInfo.InvariantCulture))) != null)
                                 return Task.FromResult(new ObjGetVCP() { value = or, result = true });
                             else
                             {
@@ -701,7 +705,7 @@ namespace VcpCore.Plugins
                                 Guid _guid = Guid.NewGuid();
                                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                                ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapability_II, new Type_GetVCPCapability_II(_guid, moX.Item1, FunctionName, guid, opt));
+                                ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapability_II, new Type_GetVCPCapability_II(_guid, moX.MonitorInfosComplex, FunctionName, guid, opt));
                                 _TaskQueue.Enqueue(parameterType, priority);
 
                                 Launch_TaskQueueExecutor();
@@ -752,17 +756,17 @@ namespace VcpCore.Plugins
                 {
                     if (IsDisposed) break;
 
-                    if (monitorInfo.Equals(moX.Item2))
+                    if (monitorInfo.Equals(moX.MonitorInfos))
                     {
-                        if (moX.Item2.DDCisON)
+                        if (moX.MonitorInfos.DDCisON)
                         {
-                            if (IsVcpFunctionSupport(moX.Item1, code))
+                            if (IsVcpFunctionSupport(moX.MonitorInfosComplex, code))
                             {
                                 //
                                 Guid _guid = Guid.NewGuid();
                                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                                ParameterType parameterType = new ParameterType(Queue_CommandType.SetVCPCapability_I, new Type_SetVCPCapability_I(_guid, moX.Item1, code, val, guid));
+                                ParameterType parameterType = new ParameterType(Queue_CommandType.SetVCPCapability_I, new Type_SetVCPCapability_I(_guid, moX.MonitorInfosComplex, code, val, guid));
                                 _TaskQueue.Enqueue(parameterType, priority);
 
                                 Launch_TaskQueueExecutor();
@@ -818,15 +822,15 @@ namespace VcpCore.Plugins
                 {
                     if (IsDisposed) break;
 
-                    if (monitorInfo.Equals(moX.Item2))
+                    if (monitorInfo.Equals(moX.MonitorInfos))
                     {
-                        if (moX.Item2.DDCisON)
+                        if (moX.MonitorInfos.DDCisON)
                         {
                             //
                             Guid _guid = Guid.NewGuid();
                             _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                            ParameterType parameterType = new ParameterType(Queue_CommandType.SetVCPCapability_II, new Type_SetVCPCapability_II(_guid, moX.Item1, FunctionName, val, guid));
+                            ParameterType parameterType = new ParameterType(Queue_CommandType.SetVCPCapability_II, new Type_SetVCPCapability_II(_guid, moX.MonitorInfosComplex, FunctionName, val, guid));
                             _TaskQueue.Enqueue(parameterType, priority);
 
                             Launch_TaskQueueExecutor();
@@ -1296,7 +1300,7 @@ namespace VcpCore.Plugins
                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] TargetMonitor DisplayName is " + monitorInfoX.DisplayName);
                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] TargetMonitor AliasDeviceName is " + monitorInfoX.AliasDeviceName);
 
-                if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(t => t.Item1.edid.Equals(monitorInfoX.edid))))
+                if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(t => t.MonitorInfosComplex.edid.Equals(monitorInfoX.edid))))
                 {
                     if (!string.IsNullOrWhiteSpace(monitorInfoX.CapabilityString))
                     {
@@ -1354,7 +1358,7 @@ namespace VcpCore.Plugins
                     return rcCache;
                 else
                 {
-                    if (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(t => t.Item1.edid.Equals(monitorInfoX.edid))))
+                    if (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(t => t.MonitorInfosComplex.edid.Equals(monitorInfoX.edid))))
                     {
                         string rcString = string.Empty;
                         if (!string.IsNullOrWhiteSpace(monitorInfoX.CapabilityString))
@@ -1528,7 +1532,7 @@ namespace VcpCore.Plugins
             {
                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin started GetVCPCapability_ ...");
 
-                if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(t => t.Item1.edid.Equals(monitorInfoX.edid))))
+                if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(t => t.MonitorInfosComplex.edid.Equals(monitorInfoX.edid))))
                 {
                     object r = null;
                     if (monitorInfoX.DDCisON)
@@ -1571,7 +1575,7 @@ namespace VcpCore.Plugins
             {
                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin started GetVCPCapability_ ...");
 
-                if (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(t => t.Item1.edid.Equals(monitorInfoX.edid))))
+                if (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(t => t.MonitorInfosComplex.edid.Equals(monitorInfoX.edid))))
                 {
                     object ro = null;
                     if (monitorInfoX.DDCisON)
@@ -1589,21 +1593,21 @@ namespace VcpCore.Plugins
                                     if (IsVcpFunctionSupport(monitorInfoX, 0x60))
                                     {
                                         var tmp = GetInputSource(monitorInfoX);
-                                        var monitor = _AllInfoMonitors_Mix.FirstOrDefault(t => t.Item1.edid.Equals(monitorInfoX.edid));
-                                        if (monitor.Item1 != null && monitor.Item2 != null)
+                                        var monitor = _AllInfoMonitors_Mix.FirstOrDefault(t => t.MonitorInfosComplex.edid.Equals(monitorInfoX.edid));
+                                        if (monitor.MonitorInfosComplex != null && monitor.MonitorInfos != null)
                                         {
-                                            monitor.Item1.inputSource = tmp.Item2;
-                                            monitor.Item1.inputCable = tmp.Item1;
-                                            monitor.Item2.inputSource = tmp.Item2;
-                                            monitor.Item2.inputCable = tmp.Item1;
+                                            monitor.MonitorInfosComplex.inputSource = tmp.inputSource;
+                                            monitor.MonitorInfosComplex.inputCable = tmp.Cable;
+                                            monitor.MonitorInfos.inputSource = tmp.inputSource;
+                                            monitor.MonitorInfos.inputCable = tmp.Cable;
 
                                             Initialize2TypesMonitorInfo(false, CancellationToken.None);
 
-                                            ro = tmp.Item2;
+                                            ro = tmp.inputSource;
                                         }
                                         else
                                         {
-                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability monitor.Item1 or monitor.Item2 = null");
+                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability monitor.MonitorInfosComplex or monitor.MonitorInfos = null");
                                         }
                                     }
                                     else
@@ -1763,7 +1767,7 @@ namespace VcpCore.Plugins
             {
                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin started SetVCPCapability_ ...");
 
-                if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(t => t.Item1.edid.Equals(monitorInfoX.edid))))
+                if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(t => t.MonitorInfosComplex.edid.Equals(monitorInfoX.edid))))
                 {
                     bool rc = false;
                     if (monitorInfoX.DDCisON)
@@ -1821,7 +1825,7 @@ namespace VcpCore.Plugins
             {
                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin started SetVCPCapability_ ...");
 
-                if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(t => t.Item1.edid.Equals(monitorInfoX.edid))))
+                if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(t => t.MonitorInfosComplex.edid.Equals(monitorInfoX.edid))))
                 {
                     bool rc = false;
                     if (monitorInfoX.DDCisON)
@@ -1845,7 +1849,7 @@ namespace VcpCore.Plugins
                                         VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                         _VCPchangedEventArgs.vcpcode = FunctionName.ToLower(CultureInfo.InvariantCulture);
                                         _VCPchangedEventArgs.value = val;
-                                        _VCPchangedEventArgs.monitor = (_AllInfoMonitors_Mix.Find(M => M.Item1.edid.Equals(monitorInfoX.edid))).Item2.Clone();
+                                        _VCPchangedEventArgs.monitor = (_AllInfoMonitors_Mix.Find(M => M.MonitorInfosComplex.edid.Equals(monitorInfoX.edid))).MonitorInfos.Clone();
 
                                         OnVCPchanged(_VCPchangedEventArgs);
                                     }
@@ -1923,7 +1927,7 @@ namespace VcpCore.Plugins
                                                 VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                                 _VCPchangedEventArgs.vcpcode = FunctionName.ToLower(CultureInfo.InvariantCulture);
                                                 _VCPchangedEventArgs.value = val;
-                                                _VCPchangedEventArgs.monitor = (_AllInfoMonitors_Mix.Find(M => M.Item1.edid.Equals(monitorInfoX.edid))).Item2.Clone();
+                                                _VCPchangedEventArgs.monitor = (_AllInfoMonitors_Mix.Find(M => M.MonitorInfosComplex.edid.Equals(monitorInfoX.edid))).MonitorInfos.Clone();
 
                                                 OnVCPchanged(_VCPchangedEventArgs);
                                             }
@@ -1951,7 +1955,7 @@ namespace VcpCore.Plugins
                                                 VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                                 _VCPchangedEventArgs.vcpcode = FunctionName.ToLower(CultureInfo.InvariantCulture);
                                                 _VCPchangedEventArgs.value = val;
-                                                _VCPchangedEventArgs.monitor = (_AllInfoMonitors_Mix.Find(M => M.Item1.edid.Equals(monitorInfoX.edid))).Item2.Clone() ?? new MonitorInfo();
+                                                _VCPchangedEventArgs.monitor = (_AllInfoMonitors_Mix.Find(M => M.MonitorInfosComplex.edid.Equals(monitorInfoX.edid))).MonitorInfos.Clone() ?? new MonitorInfo();
 
                                                 OnVCPchanged(_VCPchangedEventArgs);
                                             }
@@ -1996,7 +2000,7 @@ namespace VcpCore.Plugins
                     {
                         if (IsDisposed) break;
 
-                        var monitorInfoX = _AllInfoMonitors_Mix[i].Item1;
+                        var monitorInfoX = _AllInfoMonitors_Mix[i].MonitorInfosComplex;
 
                         if (monitorInfoX.DDCisON)
                         {
@@ -2052,52 +2056,52 @@ namespace VcpCore.Plugins
 
                         var monitor = _AllInfoMonitors_Mix[count];
 
-                        _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck " + monitor.Item1.AliasDeviceName);
+                        _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck " + monitor.MonitorInfosComplex.AliasDeviceName);
 
-                        object_0x02 = Get_VCPCapability(monitor.Item1, 0x02, 0, IsOutInitialize);
+                        object_0x02 = Get_VCPCapability(monitor.MonitorInfosComplex, 0x02, 0, IsOutInitialize);
 
                         if (object_0x02 != null)
                         {
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck 0x02 is " + ((uint)object_0x02).ToString("X"));
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck DDC/CI is connected");
 
-                            var ori_DDCCIStatus = monitor.Item1.DDCisON;
+                            var ori_DDCCIStatus = monitor.MonitorInfosComplex.DDCisON;
 
-                            monitor.Item1.DDCisON = true;
-                            monitor.Item2.DDCisON = true;
+                            monitor.MonitorInfosComplex.DDCisON = true;
+                            monitor.MonitorInfos.DDCisON = true;
 
                             var rt = UpdateMyself(ref monitor, CancellationToken.None);
 
-                            if (rt.Item1)
+                            if (rt.IsConnectAllCorrect)
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck UpdateMyself all Sucess");
                             else
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck UpdateMyself has Fail");
 
-                            if (rt.Item2)
+                            if (rt.IsUpdate)
                             {
                                 OnMonitorinfoUpdatechanged(new MonitorinfoUpdateEventArgs()
                                 {
-                                    edid = monitor.Item1.edid,
-                                    monitor = monitor.Item2.Clone(),
+                                    edid = monitor.MonitorInfosComplex.edid,
+                                    monitor = monitor.MonitorInfos.Clone(),
                                 });
                             }
 
-                            if (!string.IsNullOrWhiteSpace(monitor.Item1.CapabilityString))
+                            if (!string.IsNullOrWhiteSpace(monitor.MonitorInfosComplex.CapabilityString))
                             {
-                                monitor.Item1.DDCCIFail = 0;
+                                monitor.MonitorInfosComplex.DDCCIFail = 0;
 
                                 if (!ori_DDCCIStatus)
                                 {
                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck prepare DDC/CI broadcast off -> on");
 
-                                    monitor.Item1.DDCisON = true;
-                                    monitor.Item2.DDCisON = true;
+                                    monitor.MonitorInfosComplex.DDCisON = true;
+                                    monitor.MonitorInfos.DDCisON = true;
 
                                     Initialize2TypesMonitorInfo(false, CancellationToken.None);
 
                                     DDCCIchangedEventArgs _ddcceventArg = new DDCCIchangedEventArgs();
                                     _ddcceventArg.DDCisON = true;
-                                    _ddcceventArg.monitors = monitor.Item2.Clone();
+                                    _ddcceventArg.monitors = monitor.MonitorInfos.Clone();
 
                                     OnDDCCIStatuschanged(_ddcceventArg);
                                 }
@@ -2108,8 +2112,8 @@ namespace VcpCore.Plugins
                             {
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck CapabilityString is empty");
 
-                                monitor.Item1.DDCisON = false;
-                                monitor.Item2.DDCisON = false;
+                                monitor.MonitorInfosComplex.DDCisON = false;
+                                monitor.MonitorInfos.DDCisON = false;
                                 Initialize2TypesMonitorInfo(false, CancellationToken.None);
                             }
                         }
@@ -2118,30 +2122,30 @@ namespace VcpCore.Plugins
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck 0x02 is null");
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck DDC/CI is disconnected");
 
-                            if (monitor.Item1.DDCCIFail == 0)
+                            if (monitor.MonitorInfosComplex.DDCCIFail == 0)
                             {
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck VCP 0x02 First Fail Try Renew hPhysicalMonitor if possible");
-                                RenewPhysicalMonitor(ref monitor.Item1);
+                                RenewPhysicalMonitor(ref monitor.MonitorInfosComplex);
                             }
 
-                            monitor.Item1.DDCCIFail++;
+                            monitor.MonitorInfosComplex.DDCCIFail++;
 
-                            if (monitor.Item1.DDCCIFail >= 3)
+                            if (monitor.MonitorInfosComplex.DDCCIFail >= 3)
                             {
-                                monitor.Item1.DDCCIFail = 3;
+                                monitor.MonitorInfosComplex.DDCCIFail = 3;
 
-                                if (monitor.Item1.DDCisON)
+                                if (monitor.MonitorInfosComplex.DDCisON)
                                 {
                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck prepare DDC/CI broadcast on -> off");
 
-                                    monitor.Item1.DDCisON = false;
-                                    monitor.Item2.DDCisON = false;
+                                    monitor.MonitorInfosComplex.DDCisON = false;
+                                    monitor.MonitorInfos.DDCisON = false;
 
                                     Initialize2TypesMonitorInfo(false, CancellationToken.None);
 
                                     DDCCIchangedEventArgs _ddcceventArg = new DDCCIchangedEventArgs();
                                     _ddcceventArg.DDCisON = false;
-                                    _ddcceventArg.monitors = monitor.Item2.Clone();
+                                    _ddcceventArg.monitors = monitor.MonitorInfos.Clone();
 
                                     OnDDCCIStatuschanged(_ddcceventArg);
                                 }
@@ -2179,17 +2183,17 @@ namespace VcpCore.Plugins
 
                         var monitor = _AllInfoMonitors_Mix[count];
 
-                        _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] " + monitor.Item1.AliasDeviceName + " Watching 0x52");
+                        _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] " + monitor.MonitorInfosComplex.AliasDeviceName + " Watching 0x52");
 
-                        if (monitor.Item1.DDCisON)
+                        if (monitor.MonitorInfosComplex.DDCisON)
                         {
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x52_ DDC/CI is connected");
 
-                            object_0x02 = Get_VCPCapability(monitor.Item1, 0x02, 0, IsOutInitialize);
+                            object_0x02 = Get_VCPCapability(monitor.MonitorInfosComplex, 0x02, 0, IsOutInitialize);
 
                             if (object_0x02 != null)
                             {
-                                monitor.Item1.DDCCIFail = 0;
+                                monitor.MonitorInfosComplex.DDCCIFail = 0;
 
                                 var FailTimes = 0;
                                 while ((object_0x02 != null) && (((uint)object_0x02) != 1) && (FailTimes < 5) && IsOutInitialize)
@@ -2198,13 +2202,13 @@ namespace VcpCore.Plugins
 
                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x52_ VCP 0x02 is " + ((uint)object_0x02).ToString("X"));
 
-                                    object_0x52 = Get_VCPCapability(monitor.Item1, 0x52, 0, IsOutInitialize);
+                                    object_0x52 = Get_VCPCapability(monitor.MonitorInfosComplex, 0x52, 0, IsOutInitialize);
 
                                     if (object_0x52 != null)
                                     {
                                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x52_ VCP 0x52 is " + ((uint)object_0x52).ToString("X"));
 
-                                        var object_0x52_value = Get_VCPCapability(monitor.Item1, Convert.ToByte(object_0x52), 0, IsOutInitialize);
+                                        var object_0x52_value = Get_VCPCapability(monitor.MonitorInfosComplex, Convert.ToByte(object_0x52), 0, IsOutInitialize);
 
                                         if (object_0x52_value != null)
                                         {
@@ -2219,7 +2223,7 @@ namespace VcpCore.Plugins
 
                                                 if (!string.IsNullOrWhiteSpace(rc_str))
                                                 {
-                                                    //_CacheTable.SetToCacheTable(monitor.Item1, Convert.ToByte(object_0x52), val);
+                                                    //_CacheTable.SetToCacheTable(monitor.MonitorInfosComplex, Convert.ToByte(object_0x52), val);
 
                                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ 0x52 ctr code is " + ((uint)object_0x52).ToString("X"));
                                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ 0x52 ctr code value is " + NodeFormatter.FormatVCP_E2(rc_str.ToLower(CultureInfo.InvariantCulture)));
@@ -2227,7 +2231,7 @@ namespace VcpCore.Plugins
                                                     VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                                     _VCPchangedEventArgs.vcpcode = ((uint)object_0x52).ToString("X");
                                                     _VCPchangedEventArgs.value = NodeFormatter.FormatVCP_E2(rc_str.ToLower(CultureInfo.InvariantCulture));
-                                                    _VCPchangedEventArgs.monitor = monitor.Item2.Clone();
+                                                    _VCPchangedEventArgs.monitor = monitor.MonitorInfos.Clone();
 
                                                     OnVCPchanged(_VCPchangedEventArgs);
                                                 }
@@ -2241,7 +2245,7 @@ namespace VcpCore.Plugins
                                                 if (!string.IsNullOrWhiteSpace(rc_str))
                                                 {
                                                     List<InputSourceObject> r = new List<InputSourceObject>();
-                                                    var R = _CacheTable.GetFromCacheTable(monitor.Item1, "inputsourcelist".ToLower(CultureInfo.InvariantCulture));
+                                                    var R = _CacheTable.GetFromCacheTable(monitor.MonitorInfosComplex, "inputsourcelist".ToLower(CultureInfo.InvariantCulture));
                                                     if (R != null)
                                                         r.AddRange(R as List<InputSourceObject>);
 
@@ -2264,15 +2268,15 @@ namespace VcpCore.Plugins
 
                                                     if (rv)
                                                     {
-                                                        monitor.Item1.inputSource = n;
-                                                        monitor.Item2.inputSource = n;
+                                                        monitor.MonitorInfosComplex.inputSource = n;
+                                                        monitor.MonitorInfos.inputSource = n;
                                                         rstring = n;
                                                     }
                                                     else
                                                     {
                                                         string rs = System.Text.RegularExpressions.Regex.Replace(n, @"\d", string.Empty);
-                                                        monitor.Item1.inputSource = rs;
-                                                        monitor.Item2.inputSource = rs;
+                                                        monitor.MonitorInfosComplex.inputSource = rs;
+                                                        monitor.MonitorInfos.inputSource = rs;
                                                         rstring = rs;
                                                     }
 
@@ -2286,14 +2290,14 @@ namespace VcpCore.Plugins
                                                     VCPchangedEventArgs _VCPchangedEventArgsII = new VCPchangedEventArgs();
                                                     _VCPchangedEventArgsII.vcpcode = "input select";
                                                     _VCPchangedEventArgsII.value = rstring;
-                                                    _VCPchangedEventArgsII.monitor = monitor.Item2.Clone();
+                                                    _VCPchangedEventArgsII.monitor = monitor.MonitorInfos.Clone();
 
                                                     OnVCPchanged(_VCPchangedEventArgsII);
                                                 }
                                             }
                                             else
                                             {
-                                                _CacheTable.SetToCacheTable(monitor.Item1, Convert.ToByte(object_0x52), (Convert.ToUInt32(object_0x52_value)));
+                                                _CacheTable.SetToCacheTable(monitor.MonitorInfosComplex, Convert.ToByte(object_0x52), (Convert.ToUInt32(object_0x52_value)));
 
                                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ 0x52 ctr code is " + ((uint)object_0x52).ToString("X"));
                                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ 0x52 ctr code value is " + ((uint)object_0x52_value).ToString());
@@ -2301,7 +2305,7 @@ namespace VcpCore.Plugins
                                                 VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                                 _VCPchangedEventArgs.vcpcode = ((uint)object_0x52).ToString("X");
                                                 _VCPchangedEventArgs.value = ((uint)object_0x52_value).ToString();
-                                                _VCPchangedEventArgs.monitor = monitor.Item2.Clone();
+                                                _VCPchangedEventArgs.monitor = monitor.MonitorInfos.Clone();
 
                                                 OnVCPchanged(_VCPchangedEventArgs);
                                             }
@@ -2312,7 +2316,7 @@ namespace VcpCore.Plugins
                                     else
                                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x52_ Get VCP 0x52 is null");
 
-                                    rc = Set_VCPCapability(monitor.Item1, 0x02, 0x01, IsOutInitialize);
+                                    rc = Set_VCPCapability(monitor.MonitorInfosComplex, 0x02, 0x01, IsOutInitialize);
 
                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x52_ set VCP 0x02 to 1 : " + (rc ? "Sucess" : "Fail"));
 
@@ -2321,7 +2325,7 @@ namespace VcpCore.Plugins
 
                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x52_ FailTimes : " + FailTimes.ToString());
 
-                                    object_0x02 = Get_VCPCapability(monitor.Item1, 0x02, 0, IsOutInitialize);
+                                    object_0x02 = Get_VCPCapability(monitor.MonitorInfosComplex, 0x02, 0, IsOutInitialize);
 
                                     if ((object_0x02 != null) && (((uint)object_0x02) == 1))
                                         object_0x02 = 0x0;
@@ -2332,30 +2336,30 @@ namespace VcpCore.Plugins
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x52_ VCP 0x02 is null");
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x52_ DDC/CI is disconnected");
 
-                                if (monitor.Item1.DDCCIFail == 0)
+                                if (monitor.MonitorInfosComplex.DDCCIFail == 0)
                                 {
                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x52_ VCP 0x02 First Fail Try Renew hPhysicalMonitor if possible");
-                                    RenewPhysicalMonitor(ref monitor.Item1);
+                                    RenewPhysicalMonitor(ref monitor.MonitorInfosComplex);
                                 }
 
-                                monitor.Item1.DDCCIFail++;
+                                monitor.MonitorInfosComplex.DDCCIFail++;
 
-                                if (monitor.Item1.DDCCIFail >= 3)
+                                if (monitor.MonitorInfosComplex.DDCCIFail >= 3)
                                 {
-                                    monitor.Item1.DDCCIFail = 3;
+                                    monitor.MonitorInfosComplex.DDCCIFail = 3;
 
-                                    if (monitor.Item1.DDCisON)
+                                    if (monitor.MonitorInfosComplex.DDCisON)
                                     {
                                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x52_ prepare DDC/CI broadcast on -> off");
 
-                                        monitor.Item1.DDCisON = false;
-                                        monitor.Item2.DDCisON = false;
+                                        monitor.MonitorInfosComplex.DDCisON = false;
+                                        monitor.MonitorInfos.DDCisON = false;
 
                                         Initialize2TypesMonitorInfo(false, CancellationToken.None);
 
                                         DDCCIchangedEventArgs _ddcceventArg = new DDCCIchangedEventArgs();
                                         _ddcceventArg.DDCisON = false;
-                                        _ddcceventArg.monitors = monitor.Item2.Clone();
+                                        _ddcceventArg.monitors = monitor.MonitorInfos.Clone();
 
                                         OnDDCCIStatuschanged(_ddcceventArg);
                                     }
@@ -2564,7 +2568,7 @@ namespace VcpCore.Plugins
                             DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs()
                             {
                                 count = _AllInfoMonitors_Mix.Count,
-                                monitors = _AllInfoMonitors_Mix.Select(x => x.Item2).ToList(),
+                                monitors = _AllInfoMonitors_Mix.Select(x => x.MonitorInfos).ToList(),
                             };
                             OnDisplaychanged(_displaychangedEventArgss);
                         }
@@ -2704,7 +2708,7 @@ namespace VcpCore.Plugins
                         DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs()
                         {
                             count = _AllInfoMonitors_Mix.Count,
-                            monitors = _AllInfoMonitors_Mix.Select(x => x.Item2).ToList(),
+                            monitors = _AllInfoMonitors_Mix.Select(x => x.MonitorInfos).ToList(),
                         };
                         OnDisplaychanged(_displaychangedEventArgss);
                         //------------------------------------------------------------------------------------------------//
@@ -2824,24 +2828,24 @@ namespace VcpCore.Plugins
                         if (token.IsCancellationRequested)
                             return;
 
-                        if (Monitor.Item1.DDCisON)
+                        if (Monitor.MonitorInfosComplex.DDCisON)
                         {
-                            _ = GetVCPCapability_(Monitor.Item1, "inputsourcelist", 0);
-                            var tmp = GetInputSource(Monitor.Item1);
-                            Monitor.Item1.inputSource = tmp.Item2;
-                            Monitor.Item1.inputCable = tmp.Item1;
-                            Monitor.Item2.inputSource = tmp.Item2;
-                            Monitor.Item2.inputCable = tmp.Item1;
+                            _ = GetVCPCapability_(Monitor.MonitorInfosComplex, "inputsourcelist", 0);
+                            var tmp = GetInputSource(Monitor.MonitorInfosComplex);
+                            Monitor.MonitorInfosComplex.inputSource = tmp.inputSource;
+                            Monitor.MonitorInfosComplex.inputCable = tmp.Cable;
+                            Monitor.MonitorInfos.inputSource = tmp.inputSource;
+                            Monitor.MonitorInfos.inputCable = tmp.Cable;
 
-                            if (string.IsNullOrWhiteSpace(tmp.Item1) || string.IsNullOrWhiteSpace(tmp.Item2))
-                                _logs.DebugMsg("[VcpCorePlugin] Initialize2TypesMonitorInfo (forwardMode=true) " + Monitor.Item1.modelName + " inputSource or inputCable is null ...");
+                            if (string.IsNullOrWhiteSpace(tmp.Cable) || string.IsNullOrWhiteSpace(tmp.inputSource))
+                                _logs.DebugMsg("[VcpCorePlugin] Initialize2TypesMonitorInfo (forwardMode=true) " + Monitor.MonitorInfosComplex.modelName + " inputSource or inputCable is null ...");
                             else
-                                _logs.DebugMsg("[VcpCorePlugin] Initialize2TypesMonitorInfo (forwardMode=true) " + Monitor.Item1.modelName + " inputSource inputCable all pass ...");
+                                _logs.DebugMsg("[VcpCorePlugin] Initialize2TypesMonitorInfo (forwardMode=true) " + Monitor.MonitorInfosComplex.modelName + " inputSource inputCable all pass ...");
                         }
                     }
 
                     _AllInfoMonitors.Clear();
-                    _AllInfoMonitors.AddRange(_AllInfoMonitors_Mix.Select(M => M.Item1).ToList());
+                    _AllInfoMonitors.AddRange(_AllInfoMonitors_Mix.Select(M => M.MonitorInfosComplex).ToList());
 
                     _logs.DebugMsg("//----------------Show MonitorInfo(forwardMode=true)------------//");
                     ShowMyMonitorInfo();
@@ -2856,7 +2860,7 @@ namespace VcpCore.Plugins
                 if (_AllInfoMonitors_Mix.Count > 0)
                 {
                     _AllInfoMonitors.Clear();
-                    _AllInfoMonitors.AddRange(_AllInfoMonitors_Mix.Select(M => M.Item1).ToList());
+                    _AllInfoMonitors.AddRange(_AllInfoMonitors_Mix.Select(M => M.MonitorInfosComplex).ToList());
                 }
 
                 _logs.DebugMsg("//----------------Show MonitorInfo(forwardMode=false)------------//");
@@ -3440,9 +3444,9 @@ namespace VcpCore.Plugins
                                     token.ThrowIfCancellationRequested();  //*****EXTRA CHECK*****//
 
                                     var FwTmp = FwVersion(in _TargetMonitor, _TargetMonitor.modelName, token);
-                                    _TargetMonitor.FwVersion = FwTmp.Item1;
-                                    _TargetMonitor.D_Ctrl = FwTmp.Item2;
-                                    _TargetMonitor.SupplierID = FwTmp.Item3;
+                                    _TargetMonitor.FwVersion = FwTmp.FW;
+                                    _TargetMonitor.D_Ctrl = FwTmp.Scalar;
+                                    _TargetMonitor.SupplierID = FwTmp.SI;
                                 }
                                 else
                                 {
@@ -3614,7 +3618,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        private (string, string) GetInputSource(MonitorInfo_complex monitorInfo_)
+        private STR_Inputs GetInputSource(MonitorInfo_complex monitorInfo_)
         {
             try
             {
@@ -3696,11 +3700,11 @@ namespace VcpCore.Plugins
             {
                 Monitor.Enter(SetVCPLock);
 
-                if (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.Item1.edid.Equals(monitorInfoX.edid))))
+                if (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.MonitorInfosComplex.edid.Equals(monitorInfoX.edid))))
                 {
                     int count = 0;
 
-                    var mo_tmp = (_AllInfoMonitors_Mix.Find(M => M.Item1.edid.Equals(monitorInfoX.edid))).Item2.Clone() ?? new MonitorInfo();
+                    var mo_tmp = (_AllInfoMonitors_Mix.Find(M => M.MonitorInfosComplex.edid.Equals(monitorInfoX.edid))).MonitorInfos.Clone() ?? new MonitorInfo();
 
                     do
                     {
@@ -3759,9 +3763,9 @@ namespace VcpCore.Plugins
                 Monitor.Enter(GetVCPLock);
 
                 _logs.DebugMsg("[VcpCorePlugin] Get_VCPCapability conditional expressions I : " + IsDetecting.ToString());
-                _logs.DebugMsg("[VcpCorePlugin] Get_VCPCapability conditional expressions II : " + (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.Item1.edid.Equals(monitorInfoX.edid)))).ToString());
+                _logs.DebugMsg("[VcpCorePlugin] Get_VCPCapability conditional expressions II : " + (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.MonitorInfosComplex.edid.Equals(monitorInfoX.edid)))).ToString());
 
-                if ((IsDetecting) || (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.Item1.edid.Equals(monitorInfoX.edid)))))
+                if ((IsDetecting) || (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.MonitorInfosComplex.edid.Equals(monitorInfoX.edid)))))
                 {
                     int count = 0;
 
@@ -4654,12 +4658,12 @@ namespace VcpCore.Plugins
             }
         }
 
-        private (bool, bool) UpdateMyself(ref (MonitorInfo_complex, MonitorInfo) Monitor, CancellationToken token)
+        private UpdateMyselfResult UpdateMyself(ref LocalMonitorsData Monitor, CancellationToken token)
         {
             try
             {
-                var _TargetMonitorx = Monitor.Item1;
-                var _TargetMonitor = Monitor.Item2;
+                var _TargetMonitorx = Monitor.MonitorInfosComplex;
+                var _TargetMonitor = Monitor.MonitorInfos;
 
                 _logs.DebugMsg("[VcpCorePlugin] UpdateMyself  Let's go ...");
                 _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} UpdateMyself ...");
@@ -4844,9 +4848,9 @@ namespace VcpCore.Plugins
                     (string.IsNullOrWhiteSpace(_TargetMonitorx.SupplierID)))
                 {
                     var FwTmp = FwVersion(in _TargetMonitorx, _TargetMonitorx.modelName, CancellationToken.None);
-                    _TargetMonitorx.FwVersion = FwTmp.Item1;
-                    _TargetMonitorx.D_Ctrl = FwTmp.Item2;
-                    _TargetMonitorx.SupplierID = FwTmp.Item3;
+                    _TargetMonitorx.FwVersion = FwTmp.FW;
+                    _TargetMonitorx.D_Ctrl = FwTmp.Scalar;
+                    _TargetMonitorx.SupplierID = FwTmp.SI;
 
                     if ((string.IsNullOrWhiteSpace(_TargetMonitorx.FwVersion)) ||
                         (string.IsNullOrWhiteSpace(_TargetMonitorx.D_Ctrl)) ||
@@ -4872,11 +4876,11 @@ namespace VcpCore.Plugins
                 {
                     _ = GetVCPCapability_(_TargetMonitorx, "inputsourcelist", 0);
                     var Input = GetInputSource(_TargetMonitorx);
-                    _TargetMonitorx.inputSource = Input.Item2;
-                    _TargetMonitorx.inputCable = Input.Item1;
+                    _TargetMonitorx.inputSource = Input.inputSource;
+                    _TargetMonitorx.inputCable = Input.Cable;
 
-                    if (string.IsNullOrWhiteSpace(Input.Item1) ||
-                        string.IsNullOrWhiteSpace(Input.Item2))
+                    if (string.IsNullOrWhiteSpace(Input.Cable) ||
+                        string.IsNullOrWhiteSpace(Input.inputSource))
                     {
                         IsConnectAllCorrect &= false;
                         _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} UpdateMyself inputSource or inputCable is null ...");
@@ -5096,7 +5100,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        private (string, string, string) FwVersion(in MonitorInfo_complex monitorx, string modelName, CancellationToken token)
+        private STR_FwVersion FwVersion(in MonitorInfo_complex monitorx, string modelName, CancellationToken token)
         {
             if (FWVersionTable.HideFWModel.Contains(modelName, StringComparer.InvariantCultureIgnoreCase))
             {
@@ -5106,7 +5110,7 @@ namespace VcpCore.Plugins
             }
 
             int count = 0;
-            var Version = (string.Empty, string.Empty, string.Empty);
+            STR_FwVersion Version = (string.Empty, string.Empty, string.Empty);
             object OFWstring = null;
             object ScalarICID = null;
             object OEMID = null;
@@ -5140,9 +5144,9 @@ namespace VcpCore.Plugins
 
                     Version = getFW2(modelName.ToUpper(CultureInfo.InvariantCulture), Convert.ToInt32(Convert.ToUInt32(OFWstring)), Convert.ToInt32(Convert.ToUInt32(ScalarICID)), Convert.ToInt32(Convert.ToUInt32(OEMID)));
 
-                    if (!string.IsNullOrWhiteSpace(Version.Item1))
+                    if (!string.IsNullOrWhiteSpace(Version.FW))
                     {
-                        _logs.DebugMsg("[VcpCorePlugin] FwVersion : " + Version.Item1);
+                        _logs.DebugMsg("[VcpCorePlugin] FwVersion : " + Version.FW);
                         return Version;
                     }
                 }
@@ -5171,7 +5175,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        private (string, string, string) getFW2(string name = "", int C9 = -1, int C8 = -1, int FD = -1)
+        private STR_FwVersion getFW2(string name = "", int C9 = -1, int C8 = -1, int FD = -1)
         {
             try
             {
@@ -5511,6 +5515,7 @@ namespace VcpCore.Plugins
                                 "\n[VcpCorePlugin] Show*** edid.EdidVersion : " + (_monitor?.edid.EdidVersion ?? string.Empty) + (_monitor_complex?.edid.EdidVersion ?? string.Empty) +
                                 "\n[VcpCorePlugin] Show*** edid.VideoInputType : " + (_monitor?.edid.VideoInputType ?? string.Empty) + (_monitor_complex?.edid.VideoInputType ?? string.Empty) +
                                 "\n[VcpCorePlugin] Show*** edid.Size : " + (_monitor?.edid.Size.ToString() ?? string.Empty) + (_monitor_complex?.edid.Size.ToString() ?? string.Empty) +
+                                "\n[VcpCorePlugin] Show*** edid.Instance : " + (_monitor?.edid.Instance ?? string.Empty) + (_monitor_complex?.edid.Instance ?? string.Empty) +
                                 "\n[VcpCorePlugin] Show*** edid.ServiceTag : " + (_monitor?.edid.ServiceTag ?? string.Empty) + (_monitor_complex?.edid.ServiceTag ?? string.Empty) +
                                 "\n[VcpCorePlugin] Show*** edid.SerialNumber : " + (_monitor?.edid.SerialNumber ?? string.Empty) + (_monitor_complex?.edid.SerialNumber ?? string.Empty) +
                                 "\n[VcpCorePlugin] Show*** FwVersion : " + (_monitor?.FwVersion ?? string.Empty) + (_monitor_complex?.FwVersion ?? string.Empty) +
@@ -5532,35 +5537,36 @@ namespace VcpCore.Plugins
                 //------------------------------------------------------------------------------------------------
                 _logs.DebugMsg("\n//----------------ShowSAMonitorInfo------------//" +
                                 "\n[VcpCorePlugin] Show*** monitorInfo : " +
-                                "\n[VcpCorePlugin] Show*** AliasDeviceName : " + Monitor.Item1.AliasDeviceName + "<--->" + Monitor.Item2.AliasDeviceName +
-                                "\n[VcpCorePlugin] Show*** IsDellMonitor : " + Monitor.Item1.IsDellMonitor.ToString() + "<--->" + Monitor.Item2.IsDellMonitor.ToString() +
-                                "\n[VcpCorePlugin] Show*** Index : " + Monitor.Item1.Index.ToString() + "<--->" + Monitor.Item2.Index.ToString() +
-                                "\n[VcpCorePlugin] Show*** CapabilityString : " + Monitor.Item1.CapabilityString + "<--->" + Monitor.Item2.CapabilityString +
-                                "\n[VcpCorePlugin] Show*** DDCisON : " + Monitor.Item1.DDCisON.ToString() + "<--->" + Monitor.Item2.DDCisON.ToString() +
-                                "\n[VcpCorePlugin] Show*** DisplayName : " + Monitor.Item1.DisplayName + "<--->" + Monitor.Item2.DisplayName +
-                                "\n[VcpCorePlugin] Show*** edid : " + Monitor.Item1.edid.Edid + "<--->" + Monitor.Item2.edid.Edid +
-                                "\n[VcpCorePlugin] Show*** edid.ManufactureID : " + Monitor.Item1.edid.ManufactureID + "<--->" + Monitor.Item2.edid.ManufactureID +
-                                "\n[VcpCorePlugin] Show*** edid.PID : " + Monitor.Item1.edid.PID + "<--->" + Monitor.Item2.edid.PID +
-                                "\n[VcpCorePlugin] Show*** edid.VendorID : " + Monitor.Item1.edid.VendorID + "<--->" + Monitor.Item2.edid.VendorID +
-                                "\n[VcpCorePlugin] Show*** edid.Year : " + Monitor.Item1.edid.Year.ToString() + "<--->" + Monitor.Item2.edid.Year.ToString() +
-                                "\n[VcpCorePlugin] Show*** edid.Month : " + Monitor.Item1.edid.Month.ToString() + "<--->" + Monitor.Item2.edid.Month.ToString() +
-                                "\n[VcpCorePlugin] Show*** edid.Week : " + Monitor.Item1.edid.Week.ToString() + "<--->" + Monitor.Item2.edid.Week.ToString() +
-                                "\n[VcpCorePlugin] Show*** edid.ModelName : " + Monitor.Item1.edid.ModelName + "<--->" + Monitor.Item2.edid.ModelName +
-                                "\n[VcpCorePlugin] Show*** edid.EdidVersion : " + Monitor.Item1.edid.EdidVersion + "<--->" + Monitor.Item2.edid.EdidVersion +
-                                "\n[VcpCorePlugin] Show*** edid.VideoInputType : " + Monitor.Item1.edid.VideoInputType + "<--->" + Monitor.Item2.edid.VideoInputType +
-                                "\n[VcpCorePlugin] Show*** edid.Size : " + Monitor.Item1.edid.Size.ToString() + "<--->" + Monitor.Item2.edid.Size.ToString() +
-                                "\n[VcpCorePlugin] Show*** edid.ServiceTag : " + Monitor.Item1.edid.ServiceTag + "<--->" + Monitor.Item2.edid.ServiceTag +
-                                "\n[VcpCorePlugin] Show*** edid.SerialNumber : " + Monitor.Item1.edid.SerialNumber + "<--->" + Monitor.Item2.edid.SerialNumber +
-                                "\n[VcpCorePlugin] Show*** FwVersion : " + Monitor.Item1.FwVersion + "<--->" + Monitor.Item2.FwVersion +
-                                "\n[VcpCorePlugin] Show*** inputSource : " + Monitor.Item1.inputSource + "<--->" + Monitor.Item2.inputSource +
-                                "\n[VcpCorePlugin] Show*** inputCable : " + Monitor.Item1.inputCable + "<--->" + Monitor.Item2.inputCable +
-                                "\n[VcpCorePlugin] Show*** modelName : " + Monitor.Item1.modelName + "<--->" + Monitor.Item2.modelName +
-                                "\n[VcpCorePlugin] Show*** series : " + Monitor.Item1.series + "<--->" + Monitor.Item2.series +
-                                "\n[VcpCorePlugin] Show*** MarketingName : " + Monitor.Item1.MarketingName + "<--->" + Monitor.Item2.MarketingName +
-                                "\n[VcpCorePlugin] Show*** ImageFileName : " + Monitor.Item1.ImageFileName + "<--->" + Monitor.Item2.ImageFileName +
-                                "\n[VcpCorePlugin] Show*** SupplierID : " + Monitor.Item1.SupplierID + "<--->" + Monitor.Item2.SupplierID +
-                                "\n[VcpCorePlugin] Show*** D_Ctrl : " + Monitor.Item1.D_Ctrl + "<--->" + Monitor.Item2.D_Ctrl +
-                                "\n[VcpCorePlugin] Show*** scalingFactor : " + Monitor.Item1.scalingFactor.ToString() + "<--->" + Monitor.Item2.scalingFactor.ToString() +
+                                "\n[VcpCorePlugin] Show*** AliasDeviceName : " + Monitor.MonitorInfosComplex.AliasDeviceName + "<--->" + Monitor.MonitorInfos.AliasDeviceName +
+                                "\n[VcpCorePlugin] Show*** IsDellMonitor : " + Monitor.MonitorInfosComplex.IsDellMonitor.ToString() + "<--->" + Monitor.MonitorInfos.IsDellMonitor.ToString() +
+                                "\n[VcpCorePlugin] Show*** Index : " + Monitor.MonitorInfosComplex.Index.ToString() + "<--->" + Monitor.MonitorInfos.Index.ToString() +
+                                "\n[VcpCorePlugin] Show*** CapabilityString : " + Monitor.MonitorInfosComplex.CapabilityString + "<--->" + Monitor.MonitorInfos.CapabilityString +
+                                "\n[VcpCorePlugin] Show*** DDCisON : " + Monitor.MonitorInfosComplex.DDCisON.ToString() + "<--->" + Monitor.MonitorInfos.DDCisON.ToString() +
+                                "\n[VcpCorePlugin] Show*** DisplayName : " + Monitor.MonitorInfosComplex.DisplayName + "<--->" + Monitor.MonitorInfos.DisplayName +
+                                "\n[VcpCorePlugin] Show*** edid : " + Monitor.MonitorInfosComplex.edid.Edid + "<--->" + Monitor.MonitorInfos.edid.Edid +
+                                "\n[VcpCorePlugin] Show*** edid.ManufactureID : " + Monitor.MonitorInfosComplex.edid.ManufactureID + "<--->" + Monitor.MonitorInfos.edid.ManufactureID +
+                                "\n[VcpCorePlugin] Show*** edid.PID : " + Monitor.MonitorInfosComplex.edid.PID + "<--->" + Monitor.MonitorInfos.edid.PID +
+                                "\n[VcpCorePlugin] Show*** edid.VendorID : " + Monitor.MonitorInfosComplex.edid.VendorID + "<--->" + Monitor.MonitorInfos.edid.VendorID +
+                                "\n[VcpCorePlugin] Show*** edid.Year : " + Monitor.MonitorInfosComplex.edid.Year.ToString() + "<--->" + Monitor.MonitorInfos.edid.Year.ToString() +
+                                "\n[VcpCorePlugin] Show*** edid.Month : " + Monitor.MonitorInfosComplex.edid.Month.ToString() + "<--->" + Monitor.MonitorInfos.edid.Month.ToString() +
+                                "\n[VcpCorePlugin] Show*** edid.Week : " + Monitor.MonitorInfosComplex.edid.Week.ToString() + "<--->" + Monitor.MonitorInfos.edid.Week.ToString() +
+                                "\n[VcpCorePlugin] Show*** edid.ModelName : " + Monitor.MonitorInfosComplex.edid.ModelName + "<--->" + Monitor.MonitorInfos.edid.ModelName +
+                                "\n[VcpCorePlugin] Show*** edid.EdidVersion : " + Monitor.MonitorInfosComplex.edid.EdidVersion + "<--->" + Monitor.MonitorInfos.edid.EdidVersion +
+                                "\n[VcpCorePlugin] Show*** edid.VideoInputType : " + Monitor.MonitorInfosComplex.edid.VideoInputType + "<--->" + Monitor.MonitorInfos.edid.VideoInputType +
+                                "\n[VcpCorePlugin] Show*** edid.Size : " + Monitor.MonitorInfosComplex.edid.Size.ToString() + "<--->" + Monitor.MonitorInfos.edid.Size.ToString() +
+                                "\n[VcpCorePlugin] Show*** edid.Instance : " + Monitor.MonitorInfosComplex.edid.Instance + "<--->" + Monitor.MonitorInfos.edid.Instance +
+                                "\n[VcpCorePlugin] Show*** edid.ServiceTag : " + Monitor.MonitorInfosComplex.edid.ServiceTag + "<--->" + Monitor.MonitorInfos.edid.ServiceTag +
+                                "\n[VcpCorePlugin] Show*** edid.SerialNumber : " + Monitor.MonitorInfosComplex.edid.SerialNumber + "<--->" + Monitor.MonitorInfos.edid.SerialNumber +
+                                "\n[VcpCorePlugin] Show*** FwVersion : " + Monitor.MonitorInfosComplex.FwVersion + "<--->" + Monitor.MonitorInfos.FwVersion +
+                                "\n[VcpCorePlugin] Show*** inputSource : " + Monitor.MonitorInfosComplex.inputSource + "<--->" + Monitor.MonitorInfos.inputSource +
+                                "\n[VcpCorePlugin] Show*** inputCable : " + Monitor.MonitorInfosComplex.inputCable + "<--->" + Monitor.MonitorInfos.inputCable +
+                                "\n[VcpCorePlugin] Show*** modelName : " + Monitor.MonitorInfosComplex.modelName + "<--->" + Monitor.MonitorInfos.modelName +
+                                "\n[VcpCorePlugin] Show*** series : " + Monitor.MonitorInfosComplex.series + "<--->" + Monitor.MonitorInfos.series +
+                                "\n[VcpCorePlugin] Show*** MarketingName : " + Monitor.MonitorInfosComplex.MarketingName + "<--->" + Monitor.MonitorInfos.MarketingName +
+                                "\n[VcpCorePlugin] Show*** ImageFileName : " + Monitor.MonitorInfosComplex.ImageFileName + "<--->" + Monitor.MonitorInfos.ImageFileName +
+                                "\n[VcpCorePlugin] Show*** SupplierID : " + Monitor.MonitorInfosComplex.SupplierID + "<--->" + Monitor.MonitorInfos.SupplierID +
+                                "\n[VcpCorePlugin] Show*** D_Ctrl : " + Monitor.MonitorInfosComplex.D_Ctrl + "<--->" + Monitor.MonitorInfos.D_Ctrl +
+                                "\n[VcpCorePlugin] Show*** scalingFactor : " + Monitor.MonitorInfosComplex.scalingFactor.ToString() + "<--->" + Monitor.MonitorInfos.scalingFactor.ToString() +
                                 "\n//----------------Show END------------//");
                 //------------------------------------------------------------------------------------------------
             }
