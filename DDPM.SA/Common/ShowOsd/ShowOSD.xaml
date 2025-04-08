@@ -7,10 +7,14 @@
         xmlns:lang="clr-namespace:DDPM.SA.Resources.Helper;assembly=DDPM.SA.Resources"
         mc:Ignorable="d"  ShowInTaskbar="False" WindowStartupLocation="Manual" Topmost="True" WindowStyle="None" AllowsTransparency="True"
         Closing="Window_Closing"
-        Title=""   Loaded="Window_Loaded">
+        Title="" SizeToContent="WidthAndHeight"
+        Loaded="Window_Loaded">
     <Grid>
         <Border Background="#141D28" CornerRadius="6">
-            <TextBlock Margin="20,15,20,15" x:Name="tbShowText" Text="{Binding [Standard_0], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto"  />
+            <TextBlock Margin="20,15,20,15" x:Name="tbShowText" Width="auto"
+                       Text="{Binding [Standard_0], Source={x:Static lang:LangHelper.Instance}}" 
+                       Foreground="White" FontSize="40" HorizontalAlignment="Stretch" 
+                       VerticalAlignment="Center" FontFamily="Roboto"  />
         </Border>
     </Grid>
 </Window>

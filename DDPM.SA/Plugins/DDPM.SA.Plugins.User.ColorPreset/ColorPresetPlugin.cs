@@ -1228,17 +1228,10 @@ namespace ColorPreset.Plugins
             {
                 if (monitorInfo != null)
                 {
-                    //var v = (MonitorInfo)m;
-
                     System.Windows.Forms.Screen sreen = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(x => x.DeviceName == monitorInfo.DisplayName);
 
                     if (sreen != null)
                     {
-                        if (OsdWin != null)
-                        {
-                            //OsdWin.Close();
-                        }
-
                         OsdWin = new ShowOSDWin(strMsg, 40);
 
                         var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
