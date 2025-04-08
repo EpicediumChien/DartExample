@@ -569,7 +569,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ObjGetVCP result = new ObjGetVCP() { result = false, value = null };
 
             if (_VcpCorePlugin != null)
+            {
                 result = _VcpCorePlugin.GetVCPCapability(monitorInfo, FunctionName, guid, opt, priority).Result;
+            }
             else
                 _logs.DebugMsg("[DisplayMangerPlugin] _VcpCorePlugin is null");
 
@@ -616,6 +618,20 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
                 if (r && FunctionName.Equals("Input Select"))
                     _AllInfoMonitors = GetMonitors().Result;
+                //04.07 Jason add color to DisplayData 
+                if (r && FunctionName.Equals("colorpreset"))
+                {
+                    Color color = new Color();
+                    if (GetHDRStatus(monitorInfoX).Result)
+                    {
+                        color.color_EnHDR = val;
+                    }
+                    else
+                    {
+                        color.color_DisHDR = val;
+                    }
+                    _displayDataManger.SetColor(monitorInfoX, color);
+                }
             }
             else
                 _logs.DebugMsg("[DisplayMangerPlugin] _VcpCorePlugin is null");

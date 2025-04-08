@@ -454,5 +454,52 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return false;
         }
+
+        public bool GetColor(MonitorInfo monitorInfo, out Color color)
+        {
+            if (monitorInfo != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                     x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1)
+                {
+                    color = _displayData[mi].Color;
+                    return true;
+                }
+                else
+                {
+                    WriteLog("[GetColor]_displayData is not find monitor");
+                }
+            }
+            else
+            {
+                WriteLog("[GetColor]monitorInfo is null.");
+            }
+            color = new Color();
+            return false;
+        }
+
+        public bool SetColor(MonitorInfo monitorInfo, Color setColor)
+        {
+            if (monitorInfo != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                     x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1)
+                {
+                    _displayData[mi].Color = setColor;
+                    return true;
+                }
+                else
+                {
+                    WriteLog("[GetColor]_displayData is not find monitor");
+                }
+            }
+            else
+            {
+                WriteLog("[GetColor]monitorInfo is null.");
+            }
+            return false;
+        }
     }
 }
