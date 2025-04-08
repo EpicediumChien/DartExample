@@ -139,7 +139,10 @@ namespace DDPM.UI.Module.WebCameraCapture
                         btnFPS2.CornerRadius = new CornerRadius(0, 5, 5, 0);
                         break;
                 }
-                _vm.SetFPS_Selected(_vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution].IndexOf(_vm.WebcamSettings.CurrentFPS));
+                var idx = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution].IndexOf(_vm.WebcamSettings.CurrentFPS);
+                if (_vm.IsAutoFramingOn && _vm.WebcamSettings.CurrentFPS == "60" && idx > 0)
+                    idx -= 1;
+                _vm.SetFPS_Selected(idx);
             }
             catch (Exception ex)
             {
