@@ -10997,7 +10997,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             foreach (var monitor in _AllInfoMonitors)
             {
                 if (monitor.CapabilityDic.ContainsKey("E9") && monitor.CapabilityDic.ContainsKey("E7"))
+                {
                     Task.Run(() => updatePBPModeStatus(monitor, "E9")).ConfigureAwait(false);
+                }
+                else
+                {
+                    writelog($"[SettingsReady] {monitor.modelName},{monitor.edid.ServiceTag} not contain E9 and E7");
+                }
             }
             //register hotkey
             RegistHotkey(false);
@@ -14006,19 +14012,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(false);
             }
             writelog($"@ SaveHotkeyOptionOnly(model={model}, serviceTage={serviceTag},hotkeyOption={hotkeyOption}) OK.");
-            if (settings.Any(x => x.HotkeyOption.Equals(HotkeyOption.KvmAutoApply)))
-            {
-                _USBKVMAutoSwitchTimer.Stop();
-                _USBKVMAutoSwitchTimer.Start();
-                writelog($"@ReadHotkeyOption: (model={model}, serviceTage={serviceTag}),USBKVMAutoSwitch timer started");
-                Debug.WriteLine($"@ReadHotkeyOption: (model={model}, serviceTage={serviceTag}),USBKVMAutoSwitch timer started");
-            }
-            else
-            {
-                _USBKVMAutoSwitchTimer.Stop();
-                writelog($"@ReadHotkeyOption: (model={model}, serviceTage={serviceTag}),USBKVMAutoSwitch timer stopped");
-                Debug.WriteLine($"@ReadHotkeyOption: (model={model}, serviceTage={serviceTag}),USBKVMAutoSwitch timer stopped");
-            }
+            Task.Run(() => updatePBPModeStatus(mo, "E9")).ConfigureAwait(false);
             return Task.FromResult(true);
         }
 
