@@ -5794,14 +5794,25 @@ namespace VcpCore.Plugins
                 _AllInfoMonitors.Clear();
                 _AllInfoMonitors_Mix.Clear();
 
-                if (_TaskQueue is not null && !_TaskQueue.IsEmpty())
+                if (_TaskQueue is not null)
                 {
-                    if (_TaskQueueExecutor is not null && _TaskQueueExecutor.IsBusy)
-                        _TaskQueueExecutor.CancelAsync();
-
-                    _TaskQueue.Clear();
-                    _TaskQueueResult.Clear();
-                    _CancelhashSet?.Clear();
+                    if (!_TaskQueue.IsEmpty())
+                    {
+                        if (_TaskQueueExecutor is not null && _TaskQueueExecutor.IsBusy)
+                            _TaskQueueExecutor.CancelAsync();
+                        else
+                        {
+                            _TaskQueue.Clear();
+                            _TaskQueueResult.Clear();
+                            _CancelhashSet?.Clear();
+                        }
+                    }
+                    else
+                    {
+                        _TaskQueue.Clear();
+                        _TaskQueueResult.Clear();
+                        _CancelhashSet?.Clear();
+                    }
                 }
 
                 if (_CacheTimer is not null)
