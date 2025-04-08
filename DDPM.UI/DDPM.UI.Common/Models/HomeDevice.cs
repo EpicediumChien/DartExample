@@ -17,7 +17,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using VcpCore.Common;
-using Windows.Networking;
 using EDID= VcpCore.Common.EDID;
 
 //using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -179,29 +178,6 @@ namespace DDPM.UI.Common.Models
             //return (di.PhyscialDeviceID.Equals(DeviceInfo.PhyscialDeviceID) && (di.Type == DeviceInfo.Type)
             //    && (di.Name.Equals(DeviceInfo.Name)));
             return (di.ID.Equals(DeviceInfo.ID)); // 2024-07-12, Provided by Hess.
-        }
-
-        private string GetDNSHostName()
-        {
-            string hostName = string.Empty;
-
-            try
-            {
-                hostName = Dns.GetHostName();
-
-                Match match = Regex.Match(hostName, @"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$");
-                
-                if(!match.Success || hostName.Length > 63 || hostName.Length < 1)
-                {
-                    hostName = "_ERROR";
-                }
-            }
-            catch (Exception ex)
-            {
-                WriteLog($"[HomeDevice] GetDNSHostName Exception : ", ex);
-            }
-
-            return hostName;
         }
 
         /*
@@ -1204,7 +1180,7 @@ namespace DDPM.UI.Common.Models
                 //@ LaunchView:
                 //string hostName = Dns.GetHostName();
 
-                string hostName = GetDNSHostName();
+                string hostName = HostNameHandler.GetDNSHostName();
 
                 //if (hostName.Length > 15)
                 //    hostName = hostName.Substring(0, 15);
@@ -1402,7 +1378,7 @@ namespace DDPM.UI.Common.Models
             //@ LaunchView:
             //    string hostName = Dns.GetHostName();
             //@ HomeDevice:
-            string hostName = GetDNSHostName();
+            string hostName = HostNameHandler.GetDNSHostName();
             //if (hostName.Length > 15)
             //    hostName = hostName.Substring(0, 15);
 
@@ -1624,7 +1600,7 @@ namespace DDPM.UI.Common.Models
             if (DeviceInfo == null)
                 return;
 
-            string hostName = GetDNSHostName();
+            string hostName = HostNameHandler.GetDNSHostName();
 
             if (DeviceInfo.PairedHostName1 == hostName)
             //if (_vm.VisiblePairedHostName1 == hostName)

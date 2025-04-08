@@ -12,7 +12,6 @@ using DDPM.UI.Plugin.ViewModels;
 using System.Diagnostics;
 using System.Drawing;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -131,29 +130,6 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
             }
-        }
-
-        private string GetDNSHostName()
-        {
-            string hostName = string.Empty;
-
-            try
-            {
-                hostName = Dns.GetHostName();
-
-                Match match = Regex.Match(hostName, @"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$");
-
-                if (!match.Success || hostName.Length > 63 || hostName.Length < 1)
-                {
-                    hostName = "_ERROR";
-                }
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog("$\"[KeyboardPlugin] GetDNSHostName Exception : " + ex.Message);
-            }
-
-            return hostName;
         }
 
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
@@ -516,7 +492,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             if (_vm == null)
                 return;
 
-            string hostName = GetDNSHostName();
+            string hostName = HostNameHandler.GetDNSHostName();
 
             txt1.Style = ConnectionStyle2;
             txtBLHost1.Style = ConnectionStyle2;

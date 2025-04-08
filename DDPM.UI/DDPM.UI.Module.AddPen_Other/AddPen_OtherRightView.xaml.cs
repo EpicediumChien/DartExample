@@ -28,29 +28,6 @@ namespace DDPM.UI.Module.AddPen_Other
         // 10/15 Derek for RWD
         private readonly int breakPoints = 1050;
 
-        private string GetDNSHostName()
-        {
-            string hostName = string.Empty;
-
-            try
-            {
-                hostName = Dns.GetHostName();
-
-                Match match = Regex.Match(hostName, @"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$");
-
-                if (!match.Success || hostName.Length > 63 || hostName.Length < 1)
-                {
-                    hostName = string.Empty;
-                }
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog("$\"[AddPen_OtherRightView] GetDNSHostName Exception : " + ex.Message);
-            }
-
-            return hostName;
-        }
-
         public AddPen_OtherRightView(AddDeviceViewModel vm)
         {
             InitializeComponent();
@@ -58,7 +35,7 @@ namespace DDPM.UI.Module.AddPen_Other
 
             txtOther.Text = Strings.AddDeviceTypeOther;
             txtCaption.Text = UI.Resources.Helper.LangHelper.Instance["AddDevice.Pen.5"];
-            txtStep1.Text = string.Format(Step1, GetDNSHostName());
+            txtStep1.Text = string.Format(Step1, HostNameHandler.GetDNSHostName());
             //txtStep2.Text = Step2;
 
             breakPoints = DdpmCommonHelper.GetBreakPoints();
