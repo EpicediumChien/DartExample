@@ -50,7 +50,7 @@
             <Grid>
               <UXControls:UXTextBox AutomationProperties.Name="TextBoxWithWaterMark"  Name="txtSearchText" Width="270" Height="0" Margin="12,-.8,0,0" 
                                                   VerticalContentAlignment="Top" HorizontalAlignment="Left" Background="{DynamicResource SearchTextBox_BgColor}"  BorderThickness="0" Foreground="{DynamicResource SearchTextBox_FgColor}" MaxLength="32" PreviewTextInput="txtSearchText_PreviewTextInput"
-                                                  TextChanged="SearchBox_TextChanged">
+                                                  TextChanged="SearchBox_TextChanged" LostFocus="txtSearchText_LostFocus">
               </UXControls:UXTextBox>
               <Image Margin="7,0,18,0" Source="{DynamicResource Search_img}" Stretch="Uniform"
                                    HorizontalAlignment="Left" VerticalAlignment="Center" Cursor="" Width="12" Height="12" />

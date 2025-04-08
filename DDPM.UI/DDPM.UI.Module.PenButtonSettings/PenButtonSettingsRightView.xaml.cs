@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
+using Windows.Management;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.PenButtonSettings
@@ -175,11 +176,16 @@ namespace DDPM.UI.Module.PenButtonSettings
             }
         }
 
-        private List<int> FilterdActions = new();
+        private List<int> FilteredActions = new();
         private string searchText = "";
 
         private void ShowAlert()
         {
+            if (_vm.SelectedButton == PenButtonName.TopButton.ToString())
+                gdAlert.Height = 90;
+            else
+                gdAlert.Height = 146;
+
             SearchAlert.Visibility = Visibility.Visible;
             timer.Stop();
             timer.Start();
@@ -211,7 +217,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                     List<int> filterdList = new();
                     if (txtSearchText.Text.Length > 1 && txtSearchText.Text.Length > searchText.Length)
                     {
-                        sourceList = FilterdActions;
+                        sourceList = FilteredActions;
                     }
                     else
                     {
@@ -225,9 +231,9 @@ namespace DDPM.UI.Module.PenButtonSettings
                             filterdList.Add(x);
                         }
                     });
-                    FilterdActions = filterdList;
+                    FilteredActions = filterdList;
                     SearchItems.ItemsSource = null;
-                    SearchItems.ItemsSource = FilterdActions;
+                    SearchItems.ItemsSource = FilteredActions;
                 }
             }
             catch (Exception ex)
@@ -956,6 +962,11 @@ namespace DDPM.UI.Module.PenButtonSettings
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs txtSearchText_PreviewTextInput ex:" + ex.Message);
             }
+        }
+
+        private void txtSearchText_LostFocus(object sender, RoutedEventArgs e)
+        {
+            SearchAlert.Visibility = Visibility.Collapsed;
         }
     }
 }

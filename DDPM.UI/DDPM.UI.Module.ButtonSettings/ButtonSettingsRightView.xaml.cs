@@ -689,5 +689,10 @@ namespace DDPM.UI.Module.ButtonSettings
         {
             e.Handled = !_vm.CheckChar(e.Text);
         }
+
+        private void txtSearchText_LostFocus(object sender, RoutedEventArgs e)
+        {
+            SearchAlert.Visibility = Visibility.Collapsed;
+        }
     }
 }

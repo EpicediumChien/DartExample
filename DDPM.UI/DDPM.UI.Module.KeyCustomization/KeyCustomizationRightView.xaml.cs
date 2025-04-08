@@ -595,5 +595,10 @@ namespace DDPM.UI.Module.KeyCustomization
         {
             e.Handled = !_vm.CheckChar(e.Text);
         }
+
+        private void txtSearchText_LostFocus(object sender, RoutedEventArgs e)
+        {
+            SearchAlert.Visibility = Visibility.Collapsed;
+        }
     }
 }
