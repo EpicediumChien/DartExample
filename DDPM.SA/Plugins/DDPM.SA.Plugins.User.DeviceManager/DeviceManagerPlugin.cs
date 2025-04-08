@@ -9109,14 +9109,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
                                                     {
                                                         writelog("[DisplayImportSettings] GetVCPCapability VCP code : " + code.Code.ToString() + ", Value : " + objGetVCP.value.ToString());
-                                                        //set vcp code
-                                                        if (SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result)
+                                                        if (((impVCPSequence.ALSConfig & (1u << 5)) != 0) && (code.Code == 102 || code.Code == 103)) // if primary on, need to by pass 0x67 0x68
                                                         {
-                                                            writelog("[DisplayImportSettings] Set VCP code success : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());
+                                                            writelog("[SetVCPSequence] Set VCP code by pass : " + impVCPSequence.ALSConfig.ToString() + ", Value : " + code.ToString());
                                                         }
                                                         else
                                                         {
-                                                            writelog("[DisplayImportSettings] Set VCP code fail : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());
+                                                            //set vcp code
+                                                            if (SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result)
+                                                            {
+                                                                writelog("[DisplayImportSettings] Set VCP code success : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());
+                                                            }
+                                                            else
+                                                            {
+                                                                writelog("[DisplayImportSettings] Set VCP code fail : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -17074,13 +17081,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     }
                                     else
                                     {
-                                        if (SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result)
+                                        if (((impVCPSequence.ALSConfig & (1u << 5)) != 0) && (code == 102 || code == 103))// if primary on, need to by pass 0x67 0x68
                                         {
-                                            writelog("[SetVCPSequence] Set VCP code success : " + code.ToString() + ", Value : " + vcp.Value[0].ToString());
+                                            writelog("[SetVCPSequence] Set VCP code by pass : " + impVCPSequence.ALSConfig.ToString() + ", Value : " + code.ToString());
                                         }
                                         else
                                         {
-                                            writelog("[SetVCPSequence] Set VCP code fail : " + code.ToString() + ", Value : " + vcp.Value[0].ToString());
+                                            if (SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result)
+                                            {
+                                                writelog("[SetVCPSequence] Set VCP code success : " + code.ToString() + ", Value : " + vcp.Value[0].ToString());
+                                            }
+                                            else
+                                            {
+                                                writelog("[SetVCPSequence] Set VCP code fail : " + code.ToString() + ", Value : " + vcp.Value[0].ToString());
+                                            }
                                         }
                                     }
                                 }
