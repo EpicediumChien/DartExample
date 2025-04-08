@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.ButtonSettings
@@ -25,6 +26,7 @@ namespace DDPM.UI.Module.ButtonSettings
 
         int SelectedActionID = -1;
         private string ActiveActionSection = "";
+        private readonly DispatcherTimer timer;
 
         public ButtonSettingsRightView(MouseViewModel vm)
         {
@@ -46,6 +48,19 @@ namespace DDPM.UI.Module.ButtonSettings
             txtOfficeActions.Text = Strings.AdvancedActionsCaption;
             txtSearchResult.Text = Strings.SearchResultsCaption;
             txtSearchText.Watermark = LangHelper.Instance["SearchActions"];
+            txtSearchTooltip.Text = string.Format(LangHelper.Instance["InputValidationTooltip.1"], "30");
+
+            timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            timer.Tick += Timer_Tick;
+        }
+
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+            SearchAlert.Visibility = Visibility.Collapsed;
+            timer.Stop();
         }
 
         public void Initialize()
@@ -162,8 +177,21 @@ namespace DDPM.UI.Module.ButtonSettings
         private List<int> FilterdActions = new();
         private string searchText = "";
 
+        private void ShowAlert()
+        {
+            SearchAlert.Visibility = Visibility.Visible;
+            timer.Stop();
+            timer.Start();
+        }
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (txtSearchText.Text.Length > 30)
+            {
+                ShowAlert();
+                txtSearchText.Text = txtSearchText.Text.Substring(0, 30);
+                txtSearchText.CaretIndex = 30;
+                return;
+            }
             if (string.IsNullOrEmpty(txtSearchText.Text.Trim()))
             { txtSearchText.Text = ""; }
             if (string.IsNullOrEmpty(txtSearchText.Text))
@@ -660,6 +688,11 @@ namespace DDPM.UI.Module.ButtonSettings
         private void txtSearchText_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
             e.Handled = !_vm.CheckChar(e.Text);
+        }
+
+        private void txtSearchText_LostFocus(object sender, RoutedEventArgs e)
+        {
+            SearchAlert.Visibility = Visibility.Collapsed;
         }
     }
 }

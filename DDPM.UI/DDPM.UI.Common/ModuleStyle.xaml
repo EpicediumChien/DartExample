@@ -706,9 +706,9 @@
         <Setter Property="Padding" Value="16,16,16,6" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource DefaultTheme_BdBkColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DefaultTheme_BdSolidBkColor}" />
         <!--<Setter Property="Background" Value="Transparent" />-->
-        <Setter Property="Background" Value="{DynamicResource RightView_Group_FirstBdBkColor}" />
+        <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
     </Style>
 
     <Style x:Key="RightPartBorderStyle" TargetType="Border">
@@ -2640,5 +2640,5 @@
     <!-- #endregion Add Application Page -->
     <SolidColorBrush x:Key="Slider_TxtColor" Color="#A4B8CD"/>
     <SolidColorBrush x:Key="Slider_ValueColor" Color="#A4B8CD"/>
-
+    
 </ResourceDictionary>

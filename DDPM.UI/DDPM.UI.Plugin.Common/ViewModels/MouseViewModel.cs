@@ -286,11 +286,11 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             OnPropertyChanged(nameof(IsDPIValueVisible));
 
-            IsReportRateSupported = CurrentDeviceInfo.IsReportRateSupported || Model == "MS355";
+            IsReportRateSupported = CurrentDeviceInfo?.IsReportRateSupported ?? false || Model == "MS355";
             //IsReportRateSupported = true;
             if (IsReportRateSupported)
             {
-                switch (CurrentDeviceInfo.ReportRate)
+                switch (CurrentDeviceInfo?.ReportRate)
                 {
                     case 125:
                         _pollingRateSelectedIndex = 0;
@@ -339,7 +339,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
             OnPropertyChanged(nameof(IsReportRateSupported));
-            ReportRate = CurrentDeviceInfo.ReportRate;
+            ReportRate = CurrentDeviceInfo?.ReportRate ?? 133;
 
             //PrimaryButtonIndex = CurrentDeviceInfo.MousePrimaryButton == MouseButton.Left ? 0 : 1;
             PrimaryButtonIndex = CallUser32dll.IsPrimaryButtonLeft() ? 0 : 1;
@@ -533,13 +533,10 @@ namespace DDPM.UI.Plugin.ViewModels
                                     break;
 
                                 case "DpiValueChanged":
-                                    if (!di.IsDPIValueChangePending)
-                                    {
-                                        if (int.TryParse(di.DpiValue, out int v) && !IsSliderDragging)
-                                            DPIValue = v;
+                                    if (int.TryParse(di.DpiValue, out int v))
+                                        DPIValue = v;
 
-                                        CurrentDeviceInfo.DpiValue = di.DpiValue;
-                                    }
+                                    CurrentDeviceInfo.DpiValue = di.DpiValue;
                                     break;
                                 case "DpiLevelChanged":
                                     if (!di.IsDPILevelChangePending && !IsSliderDragging)
@@ -645,7 +642,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 if (CurrentDeviceInfo?.IsDPIValueSupported ?? false)
-                    return CurrentDeviceInfo.DpiMin.ToString();
+                    return DPIMin.ToString();
                 else if (CurrentDeviceInfo?.IsDPILevelSupported ?? false)
                     return CurrentDeviceInfo.DpiLevelValues[0];
                 else
@@ -657,7 +654,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 if (CurrentDeviceInfo?.IsDPIValueSupported ?? false)
-                    return CurrentDeviceInfo.DpiMax.ToString();
+                    return DPIMax.ToString();
                 else if (CurrentDeviceInfo?.IsDPILevelSupported ?? false)
                     return CurrentDeviceInfo.DpiLevelValues[CurrentDeviceInfo.DpiLevelValues.Length - 1];
                 else
@@ -669,7 +666,12 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 if (CurrentDeviceInfo?.IsDPIValueSupported ?? false)
-                    return CurrentDeviceInfo.DpiMin;
+                    if (Model == "MS900")
+                        return 800;
+                    else if (Model == "MS355")
+                        return 600;
+                    else
+                        return CurrentDeviceInfo.DpiMin;
                 else if (CurrentDeviceInfo?.IsDPILevelSupported ?? false)
                     return 1;
                 else
@@ -681,7 +683,12 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 if (CurrentDeviceInfo?.IsDPIValueSupported ?? false)
-                    return CurrentDeviceInfo.DpiMax;
+                    if (Model == "MS900")
+                        return 8000;
+                    else if (Model == "MS355")
+                        return 4020;
+                    else
+                        return CurrentDeviceInfo.DpiMax;
                 else if (CurrentDeviceInfo?.IsDPILevelSupported ?? false)
                     return CurrentDeviceInfo.DpiLevelValues.Length;
                 else
@@ -693,7 +700,12 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 if (CurrentDeviceInfo?.IsDPIValueSupported ?? false)
-                    return CurrentDeviceInfo.DpiDelta;
+                    if (Model == "MS900")
+                        return 200;
+                    else if (Model == "MS355")
+                        return 30;
+                    else
+                        return CurrentDeviceInfo.DpiDelta;
                 else
                     return 1;
             }
@@ -716,7 +728,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     if (_DPIValue != value)
                     {
                         _DPIValue = value;
-                        if (!IsSliderDragging)
+                        if (!IsSliderDragging && BatteryLevel != -1)
                             SetDPIValue();
                         OnPropertyChanged();
                     }
@@ -783,6 +795,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     if (CurrentDeviceInfo?.IsDPILevelSupported ?? false)
                         DdpmCommonHelper.DeviceManagerSA?.SetDPILevel(_DPIValue, CurrentDeviceInfo.ID);
                 }
+                OnPropertyChanged(nameof(DPIValue));
+                OnPropertyChanged(nameof(DPITextMargin));
+                OnPropertyChanged(nameof(DPIValueText));
             }
             catch (Exception ex)
             {

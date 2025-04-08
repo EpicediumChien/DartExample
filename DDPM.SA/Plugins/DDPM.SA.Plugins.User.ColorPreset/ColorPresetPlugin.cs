@@ -399,6 +399,9 @@ namespace ColorPreset.Plugins
                     {
                         MonitorBorkerWin = new MainWindow(_DeviceManagerPlugin, m, Log);
 
+                        //Derek 2025/03/31
+                        MonitorBorkerWin.Closed += MonitorBorkerWin_Closed;
+
                         MonitorBorkerWin.Show();
                         MonitorBorkerWin.Set_AllMonitors(_AllInfoMonitors); //jim 20241218 modify For PIMS-326072
                         //jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
@@ -411,6 +414,23 @@ namespace ColorPreset.Plugins
                 }
             }
             return;
+        }
+
+        //Derek 2025/03/31
+        private void ExitUIThread()
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
+        }
+
+        //Derek 2025/03/31
+        private void MonitorBorkerWin_Closed(object sender, EventArgs e)
+        {
+            MonitorBorkerWin.Closed -= MonitorBorkerWin_Closed;
+
+            ExitUIThread();
         }
 
         // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
@@ -1208,17 +1228,10 @@ namespace ColorPreset.Plugins
             {
                 if (monitorInfo != null)
                 {
-                    //var v = (MonitorInfo)m;
-
                     System.Windows.Forms.Screen sreen = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(x => x.DeviceName == monitorInfo.DisplayName);
 
                     if (sreen != null)
                     {
-                        if (OsdWin != null)
-                        {
-                            //OsdWin.Close();
-                        }
-
                         OsdWin = new ShowOSDWin(strMsg, 40);
 
                         var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);

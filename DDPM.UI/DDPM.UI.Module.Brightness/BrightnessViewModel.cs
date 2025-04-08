@@ -461,6 +461,7 @@ namespace DDPM.UI.Module.Brightness
         /// <param name="e">changed event</param>
         private void OnVCPChangedEvent(object? sender, VCPchangedEventArgs e)
         {
+            DdpmCommonHelper.WriteUILog($"OnVCPChangedEvent {e.vcpcode}, {e.value} ... in");
             if (e.vcpcode.Equals("66"))//ALS changes by OSD menu
             {
                 MonitorInfo? mo = DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo;
@@ -722,7 +723,7 @@ namespace DDPM.UI.Module.Brightness
                         DdpmCommonHelper.WriteUILog($"InitComponentData GetAllExistAlsConfig ALS Count : {alsList.Count.ToString()} ...");
                         for (int i = 0; i < alsList.Count; i++)
                         {
-                            if (alsList[i].Edid == SelectedHomeDevice.MonitorInfo.edid)
+                            if (alsList[i].Edid.Equals(SelectedHomeDevice.MonitorInfo.edid))
                             {
                                 Start_ALSConfig = alsList[i];
                                 DdpmCommonHelper.WriteUILog($"InitComponentData Start_ALSConfig, ModelName = {Start_ALSConfig?.ModelName}, ALS Value = {Start_ALSConfig?.AllValue.ToString()}");
@@ -733,7 +734,7 @@ namespace DDPM.UI.Module.Brightness
                     if (Start_ALSConfig.AllValue == 0 && isLuminance == false)//Need to Re-Get value
                     {
                         Start_ALSConfig = DdpmCommonHelper.DeviceManagerSA.GetALSFeatureValue(SelectedHomeDevice.MonitorInfo, ALSFeatureQueryType.All, 0).Result;
-                        if (!alsList.Any(als => als.Edid == Start_ALSConfig.Edid))
+                        if (!alsList.Any(als => als.Edid.Equals(Start_ALSConfig.Edid)))
                         {
                             alsList.Add(Start_ALSConfig);
                             DdpmCommonHelper.WriteUILog($"InitComponentData Re-Get Start_ALSConfig, ModelName = {Start_ALSConfig?.ModelName}, ALS Value = {Start_ALSConfig?.AllValue.ToString()}");
@@ -1038,12 +1039,14 @@ namespace DDPM.UI.Module.Brightness
                     }
                     else
                     {
+                        DdpmCommonHelper.WriteUILog($"GetALSContentAndSyncUI before Update ...");
                         isAlsSupported = Visibility.Visible;
                         Update_AutoBrightnessStatus(Start_ALSConfig.isAutoBrightness);
                         Update_AutoColorTempStatus(Start_ALSConfig.isAutoColorTemp);
                         Update_PrimaryMonitorSyncStatus(Start_ALSConfig.isPrimaryMonitorSync);
                         Update_AutoBrightnessRangeLevelStatus(Start_ALSConfig.AutoBrightnessRangeLevel);
                         Update_SupportedPrimaryMonitorSync(Start_ALSConfig.isAutoBrightness, Start_ALSConfig.isAutoColorTemp);
+                        DdpmCommonHelper.WriteUILog($"GetALSContentAndSyncUI after Update ...");
                     }
                     NotifyPropertyChanged("isAlsSupported");
                     NotifyPropertyChanged("IsScheduledShow");
@@ -1055,7 +1058,7 @@ namespace DDPM.UI.Module.Brightness
                     DdpmCommonHelper.WriteUILog($"AutoColorTemp ************** : {(Start_ALSConfig.isAutoColorTemp ? "ON" : "OFF")}");
                     if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
                     {
-                        DdpmCommonHelper.WriteUILog($"AutoBrightnessRangeLevel *** : {Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name}");
+                        DdpmCommonHelper.WriteUILog($"AutoBrightnessRangeLevel *** : {Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value.ToString()}");
                     }
                     else
                     {
@@ -3118,7 +3121,7 @@ namespace DDPM.UI.Module.Brightness
 
         public void Update_AutoBrightnessRangeLevelStatus(List<AutoBrightnessRangeLevel> value)
         {
-            DdpmCommonHelper.WriteUILog($"Update_PrimaryMonitorSyncStatus in ...");
+            DdpmCommonHelper.WriteUILog($"Update_AutoBrightnessRangeLevelStatus in ...");
             if (value == null || value.Count == 0)
             {
                 DdpmCommonHelper.WriteUILog("Update_AutoBrightnessRangeLevelStatus: value is null or empty.");
@@ -3127,7 +3130,7 @@ namespace DDPM.UI.Module.Brightness
 
             if (_autoBrightnessRangeLevel == null || _autoBrightnessRangeLevel[0].level_value != value[0].level_value)
             {
-                DdpmCommonHelper.WriteUILog($"Update_PrimaryMonitorSyncStatus {value[0].level_value} ...");
+                DdpmCommonHelper.WriteUILog($"Update_AutoBrightnessRangeLevelStatus {value[0].level_value} ...");
                 _autoBrightnessRangeLevel = value;
                 _autoBrightnessRangeLevel[0].level_value = value[0].level_value;
                 if (value[0].level_value == 0)

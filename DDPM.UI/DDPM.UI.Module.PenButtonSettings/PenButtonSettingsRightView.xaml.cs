@@ -8,6 +8,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
+using Windows.Management;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.PenButtonSettings
@@ -21,6 +23,7 @@ namespace DDPM.UI.Module.PenButtonSettings
 
         private readonly Dictionary<string, string> ButtonCaptions = new();
         private string ActiveActionSection = "";
+        private readonly DispatcherTimer timer;
 
         public PenButtonSettingsRightView(PenViewModel vm)
         {
@@ -47,11 +50,24 @@ namespace DDPM.UI.Module.PenButtonSettings
                 txtSearchResult.Text = Strings.SearchResultsCaption;
                 txtSearchText.Watermark = LangHelper.Instance["SearchActions"];
                 ParentBorder.SizeChanged += ParentBorder_SizeChanged;
+                txtSearchTooltip.Text = string.Format(LangHelper.Instance["InputValidationTooltip.1"], "30");
+
+                timer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(5)
+                };
+                timer.Tick += Timer_Tick;
             }
             catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs  PenButtonSettingsRightView() ex:" + ex.Message);
             }
+        }
+
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+            SearchAlert.Visibility = Visibility.Collapsed;
+            timer.Stop();
         }
 
         private void ParentBorder_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -160,11 +176,29 @@ namespace DDPM.UI.Module.PenButtonSettings
             }
         }
 
-        private List<int> FilterdActions = new();
+        private List<int> FilteredActions = new();
         private string searchText = "";
 
+        private void ShowAlert()
+        {
+            if (_vm.SelectedButton == PenButtonName.TopButton.ToString())
+                gdAlert.Height = 90;
+            else
+                gdAlert.Height = 146;
+
+            SearchAlert.Visibility = Visibility.Visible;
+            timer.Stop();
+            timer.Start();
+        }
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (txtSearchText.Text.Length > 30)
+            {
+                ShowAlert();
+                txtSearchText.Text = txtSearchText.Text.Substring(0, 30);
+                txtSearchText.CaretIndex = 30;
+                return;
+            }
             try
             {
                 if (txtSearchText.Text.Trim() == "")
@@ -183,7 +217,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                     List<int> filterdList = new();
                     if (txtSearchText.Text.Length > 1 && txtSearchText.Text.Length > searchText.Length)
                     {
-                        sourceList = FilterdActions;
+                        sourceList = FilteredActions;
                     }
                     else
                     {
@@ -197,9 +231,9 @@ namespace DDPM.UI.Module.PenButtonSettings
                             filterdList.Add(x);
                         }
                     });
-                    FilterdActions = filterdList;
+                    FilteredActions = filterdList;
                     SearchItems.ItemsSource = null;
-                    SearchItems.ItemsSource = FilterdActions;
+                    SearchItems.ItemsSource = FilteredActions;
                 }
             }
             catch (Exception ex)
@@ -928,6 +962,11 @@ namespace DDPM.UI.Module.PenButtonSettings
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs txtSearchText_PreviewTextInput ex:" + ex.Message);
             }
+        }
+
+        private void txtSearchText_LostFocus(object sender, RoutedEventArgs e)
+        {
+            SearchAlert.Visibility = Visibility.Collapsed;
         }
     }
 }

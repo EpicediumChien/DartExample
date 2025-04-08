@@ -1,22 +1,16 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Media.Capture.Frames;
 
 namespace DDPM.EABroker
 {
     public class SaveCustomWindowViewModel : INotifyPropertyChanged
     {
         #region Private Members
-        private readonly IDeviceManagerSA? _deviceManagerSA;
+        //private readonly IDeviceManagerSA? _deviceManagerSA;
         private ObservableCollection<SplitJson> _customList = new ObservableCollection<SplitJson>();
-        private SplitJson _selectedCustomItem;
+        private SplitJson? _selectedCustomItem = null;
         private string _headerText = "";
         private string _subText = "";
         private bool _isAdjustTextVisible = false;
@@ -24,11 +18,12 @@ namespace DDPM.EABroker
         #endregion Private Members
 
         #region INotifyPropertyChanged Members
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged = null;
 
         private void OnPropertyChanged(string strPropName)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
+            PropertyChangedEventHandler? handler = PropertyChanged;
+
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(strPropName));
         }
@@ -56,7 +51,7 @@ namespace DDPM.EABroker
             }
         }
 
-        public SplitJson SelectedCustomItem
+        public SplitJson? SelectedCustomItem
         {
             get => _selectedCustomItem;
             set
@@ -78,6 +73,7 @@ namespace DDPM.EABroker
                     return false;
                 if (String.IsNullOrWhiteSpace(SelectedCustomItem.CustomName))
                     return false;
+
                 return true;
             }
         }
@@ -142,17 +138,17 @@ namespace DDPM.EABroker
         #endregion
 
         #region Develop stage testing
-        private void Debug_AddIems()
-        {
-            for (int i=0; i<5; i++)
-            {
-                CustomList.Add(new SplitJson()
-                {
-                    CustomName = $"Custom Layout (i)"
-                });
-            }
-            SelectedCustomItem = CustomList[0];
-        }
+        //private void Debug_AddIems()
+        //{
+        //    for (int i=0; i<5; i++)
+        //    {
+        //        CustomList.Add(new SplitJson()
+        //        {
+        //            CustomName = $"Custom Layout (i)"
+        //        });
+        //    }
+        //    SelectedCustomItem = CustomList[0];
+        //}
         #endregion
     }
 
