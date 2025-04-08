@@ -13,8 +13,10 @@ namespace DDPM.SA.Common.Display
     {
         //public EDID DeviceInfo { get; set; }
         public string ModelName { get; set; } = string.Empty;
-        public string SerialNumber { get; set; } = string.Empty ;
+        public string SerialNumber { get; set; } = string.Empty;
         public string ServiceTag { get; set; } = string.Empty;
+
+        //20250408 this field move to display DDPMMonitorSettings
         public List<HotkeyOption> HotkeyOptions { get; set; } = new List<HotkeyOption>();
 
         public List<HotkeyInfo> HotkeyInfo { get; set; } = new List<HotkeyInfo>();

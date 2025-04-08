@@ -791,6 +791,9 @@ namespace DDPM.SA.Common
         public Task<bool> SaveHotkeySetting(MonitorInfo mo, HotkeyInfo info);
 
         public Task<bool> SaveHotkeyOptionOnly(HotkeySettings hotkeySettings);
+        public Task<bool> SaveHotkeyOptionOnly(MonitorInfo mo, HotkeyOption hotkeyOption);
+
+        public Task<HotkeyOption> ReadHotkeyOption(MonitorInfo mo);
 
         public Task SetLastSelectedMonitorFromUI(MonitorInfo mo);
 
