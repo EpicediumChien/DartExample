@@ -62,7 +62,15 @@ namespace DDPM.SA.Common.Popup
                 _notificationWindows.Add(popupBase);
 
                 // Remove closed notification window
-                popupBase.Closed += (s, e) => _notificationWindows.Remove(popupBase);
+                popupBase.Closed += (s, e) => { 
+                    _notificationWindows.Remove(popupBase);
+
+                    //Derek 2025/03/31
+                    if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+                    {
+                        System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+                    }
+                };
                 Dispatcher.Run();
             });
             thread1.SetApartmentState(ApartmentState.STA);

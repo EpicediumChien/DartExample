@@ -226,7 +226,7 @@
                         <TextBlock Name="txtRecentList" TextWrapping="Wrap" FontFamily="Consolas" FontSize="10" Margin="12,0,0,0"/>
                     </WrapPanel>
                     <WrapPanel Margin="0,4">
-                        <Button Name="refreshCustoListButton" Content="RefreshCustomList" Click="refreshCustoListButton_Click"/>
+                        <Button Name="refreshCustoListButton" Content="RefreshCustomList" Click="refreshCustomListButton_Click"/>
                         <TextBlock Name="txtCustomList" TextWrapping="Wrap" FontFamily="Consolas" FontSize="10" Margin="12,0,0,0"/>
                     </WrapPanel>
                     <!--<ListBox Name="lbLayouts" Grid.Row="1" MaxHeight="200"

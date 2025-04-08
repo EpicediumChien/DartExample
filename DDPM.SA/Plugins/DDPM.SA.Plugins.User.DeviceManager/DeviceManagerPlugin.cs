@@ -7532,7 +7532,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     //Check if value is changed
                     if (ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors == newValue)
+                    {
+                        ddpmSettings = null;
                         return Task.FromResult(true);
+                    }
 
                     //Apply new setting value
                     ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors = newValue;
@@ -7545,9 +7548,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
 
                         SendEasyArrangeTelemetry("span_monitors");
+                        ddpmSettings = null;
                         return Task.FromResult(true);
                     }
                 }
+
+                ddpmSettings = null;
             }
             //Read DDPMSettings
             //Fail to read, will return false
@@ -12314,6 +12320,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _PopupBase.Closed -= PopupBaseCloseEvent;
                 _PopupBase = null;
                 writelog($"_PopupBase PopupBaseCloseEvent2 done");
+            }
+
+            //Derek 2025/03/31
+            ExitUIThread();
+        }
+
+        //Derek 2025/03/31
+        private void ExitUIThread()
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
             }
         }
 

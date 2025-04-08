@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
-using static DDPM.Win32Lib.Win32;
 
 //Forms: Cursors
 
@@ -12,7 +11,7 @@ namespace nsWinEventHook
     {
         #region Hook, Unhook
 
-        //Hook Hanle, used to detect if hooked, and for Unhook()
+        //Hook Handle, used to detect if hooked, and for Unhook()
         //
         private IntPtr hHook = IntPtr.Zero;
 
@@ -55,19 +54,19 @@ namespace nsWinEventHook
 
         public delegate void OnForegroundWindowChangedDelegate(IntPtr hWndNew, IntPtr hWndOld);
 
-        public OnForegroundWindowChangedDelegate OnForegroundWindowChanged;
+        public OnForegroundWindowChangedDelegate? OnForegroundWindowChanged = null;
 
         public delegate void OnStartMovingDelegate(IntPtr hWnd);
 
-        public OnStartMovingDelegate OnStartMoving;
+        public OnStartMovingDelegate? OnStartMoving = null;
 
         public delegate void OnEndMovingDelegate(IntPtr hWnd, bool isCanceled = false);
 
-        public OnEndMovingDelegate OnEndMoving;
+        public OnEndMovingDelegate? OnEndMoving = null;
 
         public delegate void OnLocationChangedDelegate(int x, int y);
 
-        public OnLocationChangedDelegate OnLocationChanged;
+        public OnLocationChangedDelegate? OnLocationChanged = null;
 
         #endregion Class Callbacks
 
@@ -78,7 +77,7 @@ namespace nsWinEventHook
         private delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject,
                                         int idChild, uint dwEventThread, uint dwmsEventTime);
 
-        private WinEventDelegate evtDelegate = null;
+        private WinEventDelegate? evtDelegate = null;
 
         //Internal Callback Handler
         //
@@ -163,7 +162,7 @@ namespace nsWinEventHook
         public static bool IsShiftPressed()
         {
             short sShift = _GetAsyncKeyState(VK_SHIFT);
-            //Check the hightest bit: 1=Down; 0=Up
+            //Check the highest bit: 1=Down; 0=Up
             bool isShiftDown = ((sShift & 0x8000) == 0x8000);
             return isShiftDown;
         }
@@ -177,7 +176,7 @@ namespace nsWinEventHook
         //  False: failed. output the error message to msg. p will be null.
         //Remark:
         //  It may need RunAsAdmin if the hWnd owner is running as Admin.
-        public static bool GetProcessFromWindowHandle(IntPtr hWnd, out Process p, out string msg)
+        public static bool GetProcessFromWindowHandle(IntPtr hWnd, out Process? p, out string msg)
         {
             if (hWnd == IntPtr.Zero)
             {
@@ -419,24 +418,26 @@ namespace nsWinEventHook
 
         #region Win32 Constants
 
-        private const uint EVENT_MIN = 0x00000001;
-        private const uint EVENT_MAX = 0x7FFFFFFF;
+        //Derek 2025/04/02
+        //private const uint EVENT_MIN = 0x00000001;
+        //private const uint EVENT_MAX = 0x7FFFFFFF;
 
         private const uint EVENT_SYSTEM_FOREGROUND = 0x0003;
 
         private const uint EVENT_SYSTEM_MOVESIZESTART = 0x000A;
         private const uint EVENT_SYSTEM_MOVESIZEEND = 0x000B;
 
-        private const uint EVENT_SYSTEM_MINIMIZESTART = 0x0016;
-        private const uint EVENT_SYSTEM_MINIMIZEEND = 0x0017;
+        //Derek 2025/04/02
+        //private const uint EVENT_SYSTEM_MINIMIZESTART = 0x0016;
+        //private const uint EVENT_SYSTEM_MINIMIZEEND = 0x0017;
 
         private const uint EVENT_OBJECT_LOCATIONCHANGE = 0x800B;
 
         // Object IDs
         //
-        private const uint OBJID_WINDOW = 0x00000000;
+        //private const uint OBJID_WINDOW = 0x00000000; //Derek 2025/04/02
 
-        private const uint OBJID_CURSOR = 0xFFFFFFF7;
+        //private const uint OBJID_CURSOR = 0xFFFFFFF7; //Derek 2025/04/02
 
         //dwFlags
         private const uint WINEVENT_OUTOFCONTEXT = 0;

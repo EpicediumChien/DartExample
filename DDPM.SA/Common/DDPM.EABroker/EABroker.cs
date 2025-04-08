@@ -6,7 +6,6 @@ using DDPM.SA.Common.Interfaces;
 using DDPM.Win32Lib;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Interfaces;
-using System.ComponentModel;
 using VcpCore.Common;
 
 namespace DDPM.EABroker
@@ -15,10 +14,11 @@ namespace DDPM.EABroker
     {
         #region Private members
         private bool _isEaBrokerStarted = false;
-        private AwsWindow _awsWindow;
-        private EAEditWindow _editWindow;
-        private SaveCustomWindow _saveCustomWindow;
-        private InfoWindow _infoWindow;
+        //Derek 2025/04/01
+        //private AwsWindow? _awsWindow = null;
+        //private EAEditWindow? _editWindow = null;
+        //private SaveCustomWindow? _saveCustomWindow = null;
+        private InfoWindow? _infoWindow = null;
         private readonly IAgent _agent;
         private ILog? _log = null;
         private readonly IDeviceManagerSA _deviceManagerSA;
@@ -41,8 +41,9 @@ namespace DDPM.EABroker
             _easyArrangeService = easyArrangeService;
 
             _vm.InitInterfaces(agent, _log, deviceManager, displayService, easyArrangeService, settingsManager);
-            WriteLog("EABroker is constructed.");
             _settingsManager = settingsManager;
+
+            WriteLog("EABroker is constructed.");
         }
         #endregion ctor
 
@@ -51,7 +52,8 @@ namespace DDPM.EABroker
         {
             WriteLog("@EABroker.Start()");
             //Init InfoWindow, EAEditWindow, SaveCustomWindow 
-            InitAllWindows();
+            //InitAllWindows(); //Derek Change function name to InitInfoWindow
+            InitInfoWindow();
             //Init EAWorkWindows
             _vm.InitWorkWindows();
             //Init AwsWindow
@@ -59,7 +61,7 @@ namespace DDPM.EABroker
             _isEaBrokerStarted = true;
             RunningState = eEARunningStates.Waiting;
         }
-        private void InitAllWindows()
+        private void InitInfoWindow()
         {
             int added = 0;
             Thread thread = new Thread(() =>
@@ -187,6 +189,7 @@ namespace DDPM.EABroker
         public void SetWorkSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings = null)
         {
             EAWorkWindow? workWindow = _vm.FindWorkWindowByMonitor(monitorInfo);
+
             if (workWindow != null)
             {
                 workWindow.SetWorkingSplit(cellCount, splitKey, settings);
@@ -204,15 +207,20 @@ namespace DDPM.EABroker
         public void NotifySettingsManagerIsInitializedDone()
         {
             if (_vm != null)
+            {
+                WriteLog($"[EABroker] ReloadEzSettingsFromUserSettingsFile by NotifySettingsManagerIsInitializedDone"); //add for debug
                 _vm.ReloadEzSettingsFromUserSettingsFile();
+            }
         }
 
-        public void TestForRobert_EzArrange()
-        {
-            MonitorInfo moinfo = new MonitorInfo();
-            _deviceManagerSA.CheckEAIDExit( moinfo, 0);
-            _deviceManagerSA.DeleteEAID(moinfo, 0);
-        }
+        //Derek 2025/0401 due to reference = 0
+        //public void TestForRobert_EzArrange()
+        //{
+        //    MonitorInfo moinfo = new MonitorInfo();
+
+        //    _ = _deviceManagerSA.CheckEAIDExit( moinfo, 0);
+        //    _ = _deviceManagerSA.DeleteEAID(moinfo, 0);
+        //}
 
         public void Handle_DisplaySettingsChanged(bool isInit=false)
         {
@@ -241,9 +249,10 @@ namespace DDPM.EABroker
                     EAArgs eAArgs = new EAArgs();
                     eAArgs.Command = EAEMConstants.EACommand_SetIsSpanEnabled;
                     eAArgs.Result = newSpanEnabled;
-                    _deviceManagerSA.SendEANotify(eAArgs);                    
+                    _ = _deviceManagerSA.SendEANotify(eAArgs);
                 }
 
+                _vm.WriteLog("@EABroker RefreshWorkWindows call from Handle_DisplaySettingsChanged()");
                 _vm.RefreshWorkWindows(isInit);
             }
         }
@@ -252,7 +261,7 @@ namespace DDPM.EABroker
         {
             if (_vm != null)
             {
-                _vm.WriteLog("@EABroker.Handle_DisplaySettingsChanged()");
+                _vm.WriteLog("@EABroker.Handle_AllInfoMonitorChanged()");
                 //Check for Span across multiple monitors
                 //
                 //1 Save original settings
@@ -270,9 +279,10 @@ namespace DDPM.EABroker
                     EAArgs eAArgs = new EAArgs();
                     eAArgs.Command = EAEMConstants.EACommand_SetIsSpanEnabled;
                     eAArgs.Result = newSpanEnabled;
-                    _deviceManagerSA.SendEANotify(eAArgs);
+                    _ = _deviceManagerSA.SendEANotify(eAArgs);
                 }
 
+                WriteLog($"[ArrangeVM] RefreshWorkWindows call from Handle_AllInfoMonitorChanged");
                 _vm.RefreshWorkWindows(isInit);
             }
         }
@@ -280,12 +290,23 @@ namespace DDPM.EABroker
         {
             _vm.NotifySelectedMonitorChanged();
         }
+        
+        //Derek 2025/03/31
+        private void ExitUIThread()
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
+        }
 
-        public bool STA_LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eaId)
+        public bool STA_LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, 
+                                                            MonitorInfo moInfo, int eaId)
         {
             if (_deviceManagerSA == null)
             {
                 WriteLog("@STA_LaunchAndArrangeAppsWithEzArrange(), _deviceManagerSA is null.");
+
                 return false;
             }
 
@@ -317,6 +338,7 @@ namespace DDPM.EABroker
                 if (scr == null)
                 {
                     WriteLog("LaunchAndArrangeAppsWithEzArrange ERROR: the Monitor is not a present screen.");
+                    
                     return false;
                 }
                 targetScreen = scr;
@@ -340,6 +362,7 @@ namespace DDPM.EABroker
                 if (customList == null || customList.Length == 0)
                 {
                     WriteLog("LaunchAndArrangeAppsWithEzArrange ERROR: saved custom list is empty.");
+                    
                     return false;
                 }
                 //B4 Find the Custom layout by EAID
@@ -347,6 +370,7 @@ namespace DDPM.EABroker
                 if (idxCustom < 0)
                 {
                     WriteLog($"LaunchAndArrangeAppsWithEzArrange ERROR: EAID({eaId}) not found in saved custom list.");
+                    
                     return false;
                 }
 
@@ -354,6 +378,7 @@ namespace DDPM.EABroker
                 if (customList[idxCustom].IsOverlapLayout)
                 {
                     WriteLog($"LaunchAndArrangeAppsWithEzArrange ERROR: Layout (EAID={eaId}) is overlap which is not supported.");
+                    
                     return false;
                 }
 
@@ -364,11 +389,13 @@ namespace DDPM.EABroker
                 if (ispLayout == null)
                 {
                     WriteLog($"LaunchAndArrangeAppsWithEzArrange ERROR: Invalid ISplit parameters ({cellCount}{splitKey}) in custom list.");
+                    
                     return false;
                 }
                 if (customList[idxCustom].Settings == null)
                 {
                     WriteLog($"LaunchAndArrangeAppsWithEzArrange ERROR: ISplit({cellCount}{splitKey}) Settings is null in saved custom list.");
+                    
                     return false;
                 }
                 //Copy Settings
@@ -380,9 +407,11 @@ namespace DDPM.EABroker
                 if (ispLayout == null)
                 {
                     WriteLog($"LaunchAndArrangeAppsWithEzArrange ERROR: Invalid EAID ({eaId}) for preset layout.");
+                    
                     return false;
                 }
             }
+
             ispLayout.IsVertical = _isVertical;
             cellBorderCount = ispLayout.CellList.Count;
             int appCount = sortApps.Count;
@@ -491,7 +520,8 @@ namespace DDPM.EABroker
                     _easyArrangeService.SetEASelectedLayout(moInfo, eaId);
                 }
 
-
+                //Derek 2025/03/31
+                ExitUIThread();
             };
             emWin.Show();
 
