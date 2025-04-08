@@ -18709,11 +18709,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             string tmpMuteGuid = Guid.NewGuid().ToString();
-                                            _OSD_Controler.ShowMultipleOSD(tmpMuteGuid, OSDType_Device.Mute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_muted"], ((Screen.PrimaryScreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpMuteGuid : guid.ToString(), OSDType_Device.Mute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_muted"], ((Screen.PrimaryScreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             await Task.Run(async () =>
                                             {
                                                 await Task.Delay(3000);
-                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpMuteGuid, OSDType_Op.None);
+                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp(Guid.Empty.Equals(guid) ? tmpMuteGuid : guid.ToString(), OSDType_Op.None);
                                             });
                                             /*_OSD_Controler.Mute_CloseWindow(null, null);
                                             _OSD_Controler.Mute_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
@@ -18728,11 +18728,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             string tmpUnMuteGuid = Guid.NewGuid().ToString();
-                                            _OSD_Controler.ShowMultipleOSD(tmpUnMuteGuid, OSDType_Device.UnMute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_Unmuted"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpUnMuteGuid : guid.ToString(), OSDType_Device.UnMute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_Unmuted"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             await Task.Run(async () =>
                                             {
                                                 await Task.Delay(3000);
-                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpUnMuteGuid, OSDType_Op.None);
+                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp(Guid.Empty.Equals(guid) ? tmpUnMuteGuid : guid.ToString(), OSDType_Op.None);
                                             });
 
                                             /*_OSD_Controler.UnMute_CloseWindow(null, null);
