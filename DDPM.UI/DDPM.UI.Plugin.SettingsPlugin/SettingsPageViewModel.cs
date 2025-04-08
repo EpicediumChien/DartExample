@@ -232,12 +232,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     OnPropertyChanged("IsBusy_UpdatePage");
                     return;
                 }
-                if (_CTS != null)
-                {
-                    _CTS.Cancel();
-                }
-                _CTS = new CancellationTokenSource();
-                SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, true).Result, _CTS);
+                SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, true).Result);
                 RefreshUI();
             }
             catch (Exception ex)
@@ -505,24 +500,15 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 return;
             }
             Log?.Info($"CheckUpdate start");
-            if (_CTS != null)
-            {
-                _CTS.Cancel();
-            }
-            _CTS = new CancellationTokenSource();
-            SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, true).Result, _CTS);
+            SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(true).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false, true).Result);
             RefreshUI();
             Log?.Info($"CheckUpdate done");
         }
-        //private static readonly object lockObject = new object();
-        private CancellationTokenSource _CTS;
 
-        public void SetUpdateInfoUI(FWUpdateInfoPackage fwUpdateInfoPackage, SWUpdateInfoPackage swUpdateInfoPackage, CancellationTokenSource cts)
+        public void SetUpdateInfoUI(FWUpdateInfoPackage fwUpdateInfoPackage, SWUpdateInfoPackage swUpdateInfoPackage)
         {
             //lock (lockObject)
-            try
             {
-                //cts.Token.ThrowIfCancellationRequested();
                 Log?.Info($"SetUpdateInfoUI start");
                 LastCheckDate = fwUpdateInfoPackage.TheLastCheckTime.ToString();
                 FWUpdateInfoPackage = fwUpdateInfoPackage;
@@ -537,45 +523,52 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 else
                 {
                     NoNetwork = Visibility.Collapsed;
-                    //cts.Token.ThrowIfCancellationRequested();
                     List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA.GetDevices().Result.deviceInfo;
-                    //cts.Token.ThrowIfCancellationRequested();
                     int ioDongleCount = DdpmCommonHelper.DeviceManagerSA.GetIODongleCountGen3AgoCount().Result;
-                    //cts.Token.ThrowIfCancellationRequested();
-                    Log?.Info($"fwUpdateInfoPackage.FWUpdateInfo.Count : {fwUpdateInfoPackage.FWUpdateInfo.Count}");
-                    Log?.Info($"ioDongleCount : {ioDongleCount}");
+                    Log?.Info($"SetUpdateInfoUI fwUpdateInfoPackage.FWUpdateInfo.Count : {fwUpdateInfoPackage.FWUpdateInfo.Count}");
+                    Log?.Info($"SetUpdateInfoUI ioDongleCount : {ioDongleCount}");
                     foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
                     {
-                        //cts.Token.ThrowIfCancellationRequested();
                         UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos, ioDongleCount);
+                        if (Critical_UpdateList_UI.Any(item => item.UpdateInfo == uiUpdateInfo.UpdateInfo) ||
+                            Recommended_UpdateList_UI.Any(item => item.UpdateInfo == uiUpdateInfo.UpdateInfo) ||
+                            Optional_UpdateList_UI.Any(item => item.UpdateInfo == uiUpdateInfo.UpdateInfo))
+                        {
+                            Log?.Info($"SetUpdateInfoUI item is exist : {uiUpdateInfo.UpdateInfo}");
+                            continue; // 跳過此項目
+                        }
                         if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)//如果不能選擇是否更新為強制更新
                         {
-                            Log?.Info($"Critical_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
+                            Log?.Info($"SetUpdateInfoUI Critical_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
                             Critical_UpdateList_UI.Add(uiUpdateInfo);
                         }
                         else if (uiUpdateInfo.IsCheckUpdate)//如果為true為建議更新
                         {
-                            Log?.Info($"Recommended_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
+                            Log?.Info($"SetUpdateInfoUI Recommended_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
                             Recommended_UpdateList_UI.Add(uiUpdateInfo);
                         }
                         else//剩下的為選用更新
                         {
-                            Log?.Info($"Optional_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
+                            Log?.Info($"SetUpdateInfoUIOptional_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
                             Optional_UpdateList_UI.Add(uiUpdateInfo);
                         }
-                        //cts.Token.ThrowIfCancellationRequested();
                     }
-                    Log?.Info($"swUpdateInfoPackage.SWUpdateInfo.Count : {swUpdateInfoPackage.SWUpdateInfo.Count}");
+                    Log?.Info($"SetUpdateInfoUI swUpdateInfoPackage.SWUpdateInfo.Count : {swUpdateInfoPackage.SWUpdateInfo.Count}");
                     foreach (SWUpdateInfo swUpdateInfo in swUpdateInfoPackage.SWUpdateInfo)
                     {
-                        //cts.Token.ThrowIfCancellationRequested();
                         UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(swUpdateInfo);
+                        if (Critical_UpdateList_UI.Any(item => item.UpdateInfo == uiUpdateInfo.UpdateInfo) ||
+                            Recommended_UpdateList_UI.Any(item => item.UpdateInfo == uiUpdateInfo.UpdateInfo) ||
+                            Optional_UpdateList_UI.Any(item => item.UpdateInfo == uiUpdateInfo.UpdateInfo))
+                        {
+                            Log?.Info($"SetUpdateInfoUI item is exist : {uiUpdateInfo.UpdateInfo}");
+                            continue; 
+                        }
                         if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)
                         {
-                            Log?.Info($"Critical_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
+                            Log?.Info($"SetUpdateInfoUI Critical_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
                             Critical_UpdateList_UI.Add(uiUpdateInfo);
                         }
-                        //cts.Token.ThrowIfCancellationRequested();
                     }
                     if ((Critical_UpdateList_UI?.Count <= 0 &&
                         Recommended_UpdateList_UI?.Count <= 0 &&
@@ -590,7 +583,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 }
                 if (NoNetwork == Visibility.Visible || NoUpdateAlert == Visibility.Visible)
                 {
-                    //cts.Token.ThrowIfCancellationRequested();
                     System.Timers.Timer timer = new System.Timers.Timer();
                     timer.Interval = TimeSpan.FromSeconds(5).TotalMilliseconds;
                     timer.Elapsed += (sender, args) =>
@@ -602,14 +594,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     };
                     timer.Start();
                 }
-                Log?.Info($"Critical_UpdateList_UI.Count : {Critical_UpdateList_UI.Count}");
-                Log?.Info($"Recommended_UpdateList_UI.Count : {Recommended_UpdateList_UI.Count}");
-                Log?.Info($"Optional_UpdateList_UI.Count : {Optional_UpdateList_UI.Count}");
+                Log?.Info($"SetUpdateInfoUI Critical_UpdateList_UI.Count : {Critical_UpdateList_UI.Count}");
+                Log?.Info($"SetUpdateInfoUI Recommended_UpdateList_UI.Count : {Recommended_UpdateList_UI.Count}");
+                Log?.Info($"SetUpdateInfoUI Optional_UpdateList_UI.Count : {Optional_UpdateList_UI.Count}");
                 Log?.Info($"SetUpdateInfoUI done");
-            }
-            catch (OperationCanceledException)
-            {
-                Log?.Info("SetUpdateInfoUI canceled");
             }
         }
 
