@@ -53,7 +53,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
             LiftTone = 0,
             AllValue = 0,
             result = false,
-            AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
+            AutoBrightnessRangeLevel = new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 }
         };
 
         private DisplayMangerPlugin CreateInitializeDisplayMangerPlugin()

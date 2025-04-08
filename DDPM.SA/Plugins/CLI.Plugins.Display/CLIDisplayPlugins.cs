@@ -7894,7 +7894,7 @@ namespace DDPM.CLI.Plugins.Display
                             break;
 
                         case "AUTOBRIGHTNESSRANGELEVEL": //CLI: Mark0723
-                            ALS_RESPONSE.Value = param.AutoBrightnessRangeLevel[0].level_name.ToUpper();
+                            ALS_RESPONSE.Value = param.AutoBrightnessRangeLevel.level_name.ToUpper();
                             break;
 
                         case "AUTOCOLORTEMP":
@@ -9081,10 +9081,10 @@ namespace DDPM.CLI.Plugins.Display
 
                                     writelog($"AutoBrightnessRangeLevel Entry");
                                     param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoBrightnessRangeLevel, 0).Result;
-                                    if (param.AutoBrightnessRangeLevel.Count != 0)
+                                    if (param.AutoBrightnessRangeLevel != null)
                                     {
-                                        get_DeviceData.AutoBrightnessRangeLevel = param.AutoBrightnessRangeLevel[0].level_name;
-                                        writelog($"AutoBrightness Exit return value: {(param.AutoBrightnessRangeLevel[0].level_name)}");
+                                        get_DeviceData.AutoBrightnessRangeLevel = param.AutoBrightnessRangeLevel.level_name;
+                                        writelog($"AutoBrightness Exit return value: {(param.AutoBrightnessRangeLevel.level_name)}");
                                     }
                                     writelog($"AutoBrightness Exit return value: FAIL");
 
@@ -9367,10 +9367,10 @@ namespace DDPM.CLI.Plugins.Display
 
                         writelog($"AutoBrightnessRangeLevel Entry");
                         param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoBrightnessRangeLevel, 0).Result;
-                        if (param.AutoBrightnessRangeLevel.Count != 0)
+                        if (param.AutoBrightnessRangeLevel != null)
                         {
-                            get_DeviceData.AutoBrightnessRangeLevel = param.AutoBrightnessRangeLevel[0].level_name;
-                            writelog($"AutoBrightness Exit return value: {(param.AutoBrightnessRangeLevel[0].level_name)}");
+                            get_DeviceData.AutoBrightnessRangeLevel = param.AutoBrightnessRangeLevel.level_name;
+                            writelog($"AutoBrightness Exit return value: {(param.AutoBrightnessRangeLevel.level_name)}");
                         }
                         writelog($"AutoBrightness Exit return value: FAIL");
 
