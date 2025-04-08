@@ -180,10 +180,22 @@ namespace VcpCore.Plugins
             Get_SupportListFile();
             InitialColorPresets();
 
-            if (_cancellationTokenSource != null)
-                _ = Task.Run(() => InitializeMonitorsList(false, _cancellationTokenSource.Token));
-            else
-                _ = Task.Run(() => InitializeMonitorsList(false, CancellationToken.None));
+            try
+            {
+                if (_cancellationTokenSource != null)
+                    _ = Task.Run(() => InitializeMonitorsList(false, _cancellationTokenSource.Token));
+                else
+                    _ = Task.Run(() => InitializeMonitorsList(false, CancellationToken.None));
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin Constructor Exception: " + ex.Message);
+            }
+            finally
+            {
+                _cancellationTokenSource.Dispose();
+                _cancellationTokenSource = null;
+            }
         }
 
         #endregion
