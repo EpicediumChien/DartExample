@@ -1180,7 +1180,8 @@ namespace DDPM.UI.Common.Models
                 //@ LaunchView:
                 //string hostName = Dns.GetHostName();
 
-                string hostName = Dns.GetHostName();
+                string hostName = HostNameHandler.GetDNSHostName();
+
                 //if (hostName.Length > 15)
                 //    hostName = hostName.Substring(0, 15);
 
@@ -1377,7 +1378,7 @@ namespace DDPM.UI.Common.Models
             //@ LaunchView:
             //    string hostName = Dns.GetHostName();
             //@ HomeDevice:
-            string hostName = Dns.GetHostName();
+            string hostName = HostNameHandler.GetDNSHostName();
             //if (hostName.Length > 15)
             //    hostName = hostName.Substring(0, 15);
 
@@ -1612,7 +1613,7 @@ namespace DDPM.UI.Common.Models
             if (DeviceInfo == null)
                 return;
 
-            string hostName = Dns.GetHostName();
+            string hostName = HostNameHandler.GetDNSHostName();
 
             if (DeviceInfo.PairedHostName1 == hostName)
             //if (_vm.VisiblePairedHostName1 == hostName)

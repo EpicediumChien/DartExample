@@ -499,7 +499,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                 }
                 else
                 {
-                    string hostName = Dns.GetHostName();
+                    string hostName = HostNameHandler.GetDNSHostName();
                     if (_vm.VisiblePairedHostName1 == hostName)
                     {
                         txt1.Style = ConnectionStyle1;
