@@ -941,9 +941,48 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(multiColorPreset);
         }
 
-        //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
-        private string ColorprofileMulti(string info)
+        private readonly Dictionary<string, string> colorPreset_MultiLang = new Dictionary<string, string>()
         {
+            { "Standard",       LangHelper.Instance["Standard_0"]       },
+            { "Standard HDR",   LangHelper.Instance["Standard_HDR"]     },
+            { "Native",         LangHelper.Instance["Native_0"]         },
+            { "Movie",          LangHelper.Instance["Movie_0"]          },
+            { "Game",           LangHelper.Instance["Game_0"]           },
+            { "Game1",          LangHelper.Instance["Game_1"]           },
+            { "Game2",          LangHelper.Instance["Game_2"]           },
+            { "Game3",          LangHelper.Instance["Game_3"]           },
+            { "Warm",           LangHelper.Instance["Warm"]             },
+            { "Cool",           LangHelper.Instance["Cool_0"]           },
+            { "Custom Color",   LangHelper.Instance["Custom_Color"]     },
+            { "Custom 1",       LangHelper.Instance["Custom_1"]         },
+            { "Custom 2",       LangHelper.Instance["Custom_2"]         },
+            { "Custom 3",       LangHelper.Instance["Custom_3"]         },
+            { "User 1",         LangHelper.Instance["User_1"]           },
+            { "User 2",         LangHelper.Instance["User_2"]           },
+            { "User 3",         LangHelper.Instance["User_3"]           },
+            { "SPORTS Game",    LangHelper.Instance["SPORTS_Game"]      },
+            { "Movie HDR",      LangHelper.Instance["Movie_HDR"]        },
+            { "Game HDR",       LangHelper.Instance["Game_HDR"]         },
+            { "Metro",          LangHelper.Instance["Metro_0"]          },
+            { "FPS Game",       LangHelper.Instance["FPS_Game"]         },
+            { "RTS Game",       LangHelper.Instance["RTS_Game"]         },
+            { "RPG Game",       LangHelper.Instance["RPG_Game"]         },
+            { "ComfortView",    LangHelper.Instance["ComfortView_0"]    },
+            { "Paper",          LangHelper.Instance["Paper_0"]          },
+            { "Display P3",     LangHelper.Instance["Display_P3"]       }
+        };
+
+
+        //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
+        private string ColorprofileMulti(string original)
+        {
+            //Dean 2025/4/8 change to use dictionary
+            if(colorPreset_MultiLang.ContainsKey(original))
+            {
+                return colorPreset_MultiLang[original];
+            }
+            return original;
+            /*
             string ret = string.Empty;
             switch (info)
             {
@@ -1065,7 +1104,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     ret = info;
                     break;
             }
-            return ret;
+            return ret;*/
+        }
+
+        private string ColorprofileMultiToOriginal(string multi)
+        {
+            try
+            {
+                string data = colorPreset_MultiLang.FirstOrDefault(x => x.Value.Equals(multi, StringComparison.InvariantCultureIgnoreCase)).Key;
+                if (data != null)
+                {
+                    return data;
+                }
+            }
+            catch(Exception e)
+            {
+                writelog($"[ColorprofileMultiToOriginal] get key exception: {e.Message}");
+            }
+            return multi;
         }
 
         public Task<string> GetMonitorProfile(MonitorInfo m)
@@ -1206,6 +1262,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //show OSD over colorpreset plugin
                 _ColorPresetPlugin.ShowOSD_ColoPreset(m, ColorPreset_Name);
             }
+
+            //Dean 20250408, change preset name back to eng if support multi-lang
+            string input = ColorPreset_Name;
+            ColorPreset_Name = ColorprofileMultiToOriginal(input);
+            writelog($"[WriteColorPreset] input({input}), mapping to original({ColorPreset_Name})");
 
             // jim add  for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
             if (blIs_Game_DeviceName && blSmartHDR_ON)
