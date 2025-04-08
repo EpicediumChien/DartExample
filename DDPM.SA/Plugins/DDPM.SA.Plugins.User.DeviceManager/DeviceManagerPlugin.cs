@@ -1196,16 +1196,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     CallPopup(this, popupContentPackage);
                 }
             }
-            //var tmp = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
 
-            //write back to settings
-            //r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
-
-            //Task.Delay(100).Wait();
-            //}
-
-            Trace.WriteLine("reqKey (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory) = " + _GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory);
-            Trace.WriteLine("reqKey (showOSD) = " + showOSD);
+            writelog($"reqKey (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory) = {_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory}");
+            writelog($"reqKey (showOSD) = {showOSD}");
 
             // Jim add 20240925
             if (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory && showOSD)
@@ -1213,11 +1206,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //show OSD over colorpreset plugin
                 _ColorPresetPlugin.ShowOSD_ColoPreset(m, ColorPreset_Name);
             }
-
-            //if (r) // 20240717 jim remove
-            //{
-            //write VCP over display manager
-            //r = SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result;
 
             // jim add  for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
             if (blIs_Game_DeviceName && blSmartHDR_ON)
@@ -1304,9 +1292,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ... False");
             }
 
-            Trace.Write($"ColorPreset_Name = {ColorPreset_Name}");
-            //}
-            //return Task.FromResult(r);
+            writelog($"ColorPreset_Name = {ColorPreset_Name}");
 
             //Telementry Collection
             var rt = false;
@@ -2416,7 +2402,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("[DeviceMangerPlugin] received SetVCPCapability requested ...");
             writelog("[DeviceMangerPlugin] TargetMonitor DisplayName is " + monitorInfoX.DisplayName);
             writelog("[DeviceMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfoX.AliasDeviceName);
-            writelog("[DeviceMangerPlugin] unctionName is " + FunctionName);
+            writelog("[DeviceMangerPlugin] FunctionName is " + FunctionName);
             writelog("[DeviceMangerPlugin] val is " + val);
 
             bool r = false;
