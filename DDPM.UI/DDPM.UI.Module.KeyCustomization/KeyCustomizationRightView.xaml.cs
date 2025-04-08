@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 
 namespace DDPM.UI.Module.KeyCustomization
 {
@@ -20,6 +21,7 @@ namespace DDPM.UI.Module.KeyCustomization
         private readonly KeyboardViewModel _vm;
 
         private int SelectedActionID = -1;
+        private readonly DispatcherTimer timer;
 
         public KeyCustomizationRightView(KeyboardViewModel vm)
         {
@@ -34,6 +36,19 @@ namespace DDPM.UI.Module.KeyCustomization
             txtMultimediaActions.Text = Strings.MultimediaActionsCaption;
             txtSearchResult.Text = Strings.SearchResultsCaption;
             txtSearchText.Watermark = LangHelper.Instance["SearchActions"];
+            txtSearchTooltip.Text = string.Format(LangHelper.Instance["InputValidationTooltip.1"], "30");
+
+            timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            timer.Tick += Timer_Tick;
+        }
+
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+            SearchAlert.Visibility = Visibility.Collapsed;
+            timer.Stop();
         }
 
         public void Initialize()
@@ -167,8 +182,22 @@ namespace DDPM.UI.Module.KeyCustomization
         private List<int> FilterdActions = new();
         private string searchText = "";
 
+        private void ShowAlert()
+        {
+            SearchAlert.Visibility = Visibility.Visible;
+            timer.Stop();
+            timer.Start();
+        }
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (txtSearchText.Text.Length > 30)
+            {
+                ShowAlert();
+                txtSearchText.Text = txtSearchText.Text.Substring(0, 30);
+                txtSearchText.CaretIndex = 30;
+                return;
+            }
+
             if (string.IsNullOrEmpty(txtSearchText.Text.Trim()))
             { txtSearchText.Text = ""; }
             if (string.IsNullOrEmpty(txtSearchText.Text))

@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.PenButtonSettings
@@ -21,6 +22,7 @@ namespace DDPM.UI.Module.PenButtonSettings
 
         private readonly Dictionary<string, string> ButtonCaptions = new();
         private string ActiveActionSection = "";
+        private readonly DispatcherTimer timer;
 
         public PenButtonSettingsRightView(PenViewModel vm)
         {
@@ -47,11 +49,24 @@ namespace DDPM.UI.Module.PenButtonSettings
                 txtSearchResult.Text = Strings.SearchResultsCaption;
                 txtSearchText.Watermark = LangHelper.Instance["SearchActions"];
                 ParentBorder.SizeChanged += ParentBorder_SizeChanged;
+                txtSearchTooltip.Text = string.Format(LangHelper.Instance["InputValidationTooltip.1"], "30");
+
+                timer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(5)
+                };
+                timer.Tick += Timer_Tick;
             }
             catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs  PenButtonSettingsRightView() ex:" + ex.Message);
             }
+        }
+
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+            SearchAlert.Visibility = Visibility.Collapsed;
+            timer.Stop();
         }
 
         private void ParentBorder_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -163,8 +178,21 @@ namespace DDPM.UI.Module.PenButtonSettings
         private List<int> FilterdActions = new();
         private string searchText = "";
 
+        private void ShowAlert()
+        {
+            SearchAlert.Visibility = Visibility.Visible;
+            timer.Stop();
+            timer.Start();
+        }
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (txtSearchText.Text.Length > 30)
+            {
+                ShowAlert();
+                txtSearchText.Text = txtSearchText.Text.Substring(0, 30);
+                txtSearchText.CaretIndex = 30;
+                return;
+            }
             try
             {
                 if (txtSearchText.Text.Trim() == "")

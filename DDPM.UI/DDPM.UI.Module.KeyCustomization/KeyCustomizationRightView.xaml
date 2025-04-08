@@ -49,7 +49,7 @@
           <Border Style="{StaticResource SearchBoxBorderStyle}">
             <Grid>
               <UXControls:UXTextBox AutomationProperties.Name="TextBoxWithWaterMark"  Name="txtSearchText" Width="270" Height="0" Margin="12,-.8,0,0" 
-                                                  VerticalContentAlignment="Top" HorizontalAlignment="Left" Background="{DynamicResource SearchTextBox_BgColor}"  BorderThickness="0" Foreground="{DynamicResource SearchTextBox_FgColor}" MaxLength="30" PreviewTextInput="txtSearchText_PreviewTextInput"
+                                                  VerticalContentAlignment="Top" HorizontalAlignment="Left" Background="{DynamicResource SearchTextBox_BgColor}"  BorderThickness="0" Foreground="{DynamicResource SearchTextBox_FgColor}" MaxLength="32" PreviewTextInput="txtSearchText_PreviewTextInput"
                                                   TextChanged="SearchBox_TextChanged">
               </UXControls:UXTextBox>
               <Image Margin="7,0,18,0" Source="{DynamicResource Search_img}" Stretch="Uniform"
@@ -259,5 +259,17 @@
         </StackPanel>
       </StackPanel>
     </Border>
+    <Grid VerticalAlignment="Top" Height="90">
+      <Canvas>
+        <Border x:Name="SearchAlert" Style="{StaticResource Tooltip_OutterBorderStyle}" Canvas.Bottom="0" Canvas.Left="16" Visibility="Hidden">
+          <Border.Resources>
+            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+          </Border.Resources>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock x:Name="txtSearchTooltip" TextWrapping="Wrap" MaxWidth="272" />
+          </StackPanel>
+        </Border>
+      </Canvas>
+    </Grid>
   </Grid>
 </UserControl>
