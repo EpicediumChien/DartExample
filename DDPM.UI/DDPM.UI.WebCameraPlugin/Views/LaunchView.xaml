@@ -362,9 +362,11 @@
                                                                         <ContentControl Template="{StaticResource icon_Info}" Margin="8,0,0,0" Width="16" Height="16"  Visibility="{Binding TooltipVisibility}"
                                                                              HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" Tag="{Binding ID}"/>
                                                                         <Border.ToolTip>
-                                                                            <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                                                                            <!--Chewlin 20250407 for PIMS-348390 change VerticalOffset="6" to "16" HorizontalOffset="8" to"7",add MaxWidth="272" -->
+                                                                            <ToolTip Placement="Top" VerticalOffset="16" HorizontalOffset="7" MaxWidth="272">
+                                                                                <!--Chewlin 20250407 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow"-->
                                                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                                                    <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding Tooltip}"/>
+                                                                                    <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding Tooltip}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                                                 </Border>
                                                                             </ToolTip>
                                                                         </Border.ToolTip>

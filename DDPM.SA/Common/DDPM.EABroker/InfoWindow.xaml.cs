@@ -252,13 +252,15 @@ namespace DDPM.EABroker
             if (_vm.IsWithoutGap)
             {
                 
-                double extendedFrameBoundsHorz = 3;
+                double extendedFrameBoundsHorz = 4;
 
-                rcArrange.Inflate(6, 3);
+                rcArrange.Inflate(6, 5);
                 double arrWidth = rcArrange.Width;
                 double arrHeight = rcArrange.Height;
                 rcArrange.X -= extendedFrameBoundsHorz;
                 rcArrange.Width += extendedFrameBoundsHorz;
+                rcArrange.Y += 1;
+                rcArrange.Height += 1;
 
                 //To prevent the rcArrange acrouss screen boundary after Inflated
                 if (_vm.WorkScreen != null)

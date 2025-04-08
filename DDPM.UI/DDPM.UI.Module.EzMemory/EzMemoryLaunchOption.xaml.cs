@@ -626,7 +626,6 @@ namespace DDPM.UI.Module.EzMemory
                             {
                                 _log.Info("[EzMemoryLaunchOption] StartupCB_Checked ... choice Yes");
                                 _vm.IsLaunchAtStartup = true;
-                                return;
                             }                            
                         }
                     }

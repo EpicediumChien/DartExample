@@ -34,7 +34,7 @@
     <SolidColorBrush x:Key="Default_SA_QAM_Path_BkColor"
                      Color="#FFFFFF" />
     <SolidColorBrush x:Key="Default_SA_QAM_Path_IsTrigger_Color"
-                     Color="#B6B6B6" />
+                     Color="#FFFFFF" />
     <SolidColorBrush x:Key="Default_SA_QAM_BackGround"
                      Color="#141D28" />
     <SolidColorBrush x:Key="Default_SA_QAM_BackGround_1"
@@ -53,6 +53,8 @@
                      Color="#141D28" />
     <SolidColorBrush x:Key="TextBlock_ForegroundColor"
                      Color="#FFFFFF" />
+    <SolidColorBrush x:Key="Default_Info_Color"
+                     Color="#B6B6B6" />
     <Style TargetType="Border"
            x:Key="Border_Test">
         <Setter Property="BorderBrush"

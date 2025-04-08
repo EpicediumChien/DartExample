@@ -8,8 +8,12 @@ namespace DDPM.Easy.Common
     /// <summary>
     /// Interaction logic for SplitCtrl0B.xaml
     /// </summary>
-    public partial class SplitCtrl0B : UserControl, ISplitCtrl
+    public partial class SplitCtrl0B : UserControl, ISplitCtrl, IDisposable
     {
+        #region Private members
+        private bool _isDisposed = false;
+        #endregion Private members
+
         #region ctor
         public SplitCtrl0B()
         {
@@ -407,6 +411,28 @@ namespace DDPM.Easy.Common
             }
             set { }
         }
+
+        private void ClearCellBorders()
+        {
+            if (celBordersH != null)
+            {
+                foreach (CellBorder cellBd in celBordersH)
+                {
+                    cellBd.Dispose();
+                }
+                celBordersH.Clear();
+                celBordersH = null;
+            }
+            if (celBordersV != null)
+            {
+                foreach (CellBorder cellBd in celBordersV)
+                {
+                    cellBd.Dispose();
+                }
+                celBordersV.Clear();
+                celBordersV = null;
+            }
+        }
         #endregion
 
         #region Splitter List
@@ -463,29 +489,52 @@ namespace DDPM.Easy.Common
             }
         }
 
-        //Derek 2025/03/28
-        private void uc_Unloaded(object sender, RoutedEventArgs e)
+        #region Dispose and Destructor
+        public void Dispose()
         {
-            if (canvas != null)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
             {
-                // 从父容器移除 Canvas
-                //if (MainStackPanel.Children.Contains(canvas))
+                if (disposing)
+                {
+                    // 釋放託管資源
+                    if (vm != null)
+                    {
+                        vm.Dispose();
+                        vm = null;
+                    }
+                    InitCellList();
+                    cellListH = null;
+                    cellListV = null;
+
+                    InitSplitterList();
+
+                    if (DefaultSettings != null)
+                    {
+                        DefaultSettings.Clear();
+                    }
+
+                    ClearCellBorders();
+                }
+
+                // 釋放非託管資源
+                //if (unmanagedResource != IntPtr.Zero)
                 //{
-                //    MainStackPanel.Children.Remove(canvas);
+                //    // 釋放資源
+                //    unmanagedResource = IntPtr.Zero;
                 //}
 
-                // 清理子元素
-                canvas.Children.Clear();
-
-                // 解除数据绑定（如果有）
-                BindingOperations.ClearAllBindings(canvas);
-
-                // 移除事件处理程序（如果有）
-                // 这里需要根据实际添加的事件处理程序进行移除
-
-                // 释放引用
-                canvas = null;
+                _isDisposed = true;
             }
         }
+        ~SplitCtrl0B()
+        {
+            Dispose(false);
+        }
+        #endregion
     }
 }

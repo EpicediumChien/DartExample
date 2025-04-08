@@ -96,7 +96,7 @@ namespace DDPM.UI.Plugin.ViewModels
         // 20240926 jim add
         private bool showLockMask = false;
 
-        public ManualResetEvent mre = new ManualResetEvent(false);
+        public ManualResetEvent mre = new(false);
 
         public bool close_app = false;
 
@@ -158,31 +158,25 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 //if (value != _isChecked_ProximitySensor) //Add by Derek 11/12
-                //{
                 _isChecked_ProximitySensor = value;
-                DdpmCommonHelper.DeviceManagerSA?.SetIsProximitySensorEnable(CurrentDeviceInfo.ID.ToString(), _isChecked_ProximitySensor);
-                //DdpmCommonHelper.DeviceManagerSA?.SetIsProximitySensorEnable(value, CurrentDeviceInfo.ID);
+                DdpmCommonHelper.DeviceManagerSA?.SetIsProximitySensorEnable(CurrentDeviceInfo?.ID.ToString(), _isChecked_ProximitySensor);
 
                 // jim add for PIMS-328195
                 _isEnable_WalkAwayLock = _isChecked_WalkAwayLock && _isChecked_ProximitySensor;
-
                 _isEnable_Snooze = _isChecked_WalkAwayLock && _isChecked_ProximitySensor; // jim modify for PIMS - 328195
-
                 _isEnable_SnoozeLength = _isChecked_Snooze && _isChecked_ProximitySensor;
 
-
-                OnPropertyChanged("IsChecked_ProximitySensor");
-                OnPropertyChanged("ProximitySensorStatus_String");
-                OnPropertyChanged("IsEnable_WalkAwayLock");
-                OnPropertyChanged("IsEnable_Snooze");
-                OnPropertyChanged("IsEnable_SnoozeLength");
+                OnPropertyChanged(nameof(IsChecked_ProximitySensor));
+                OnPropertyChanged(nameof(ProximitySensorStatus_String));
+                OnPropertyChanged(nameof(IsEnable_WalkAwayLock));
+                OnPropertyChanged(nameof(IsEnable_Snooze));
+                OnPropertyChanged(nameof(IsEnable_SnoozeLength));
 
                 //Derek 11/12
                 //PIMS - 319099
                 //Find Presence Detection Setting is available, when SUT does not support HPD_MPS and
                 //Internal Presence Sensor. DUT is with HPD_MPS FW
                 ChangeUPDStatus();
-                //}
             }
         }
 
@@ -685,9 +679,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
 
                 if (DdpmCommonHelper.DeviceManagerSA == null)
-                    _isChecked_ProximitySensor = CurrentDeviceInfo.IsProximitySensorEnable;
+                    _isChecked_ProximitySensor = CurrentDeviceInfo?.IsProximitySensorEnable ?? false;
                 else
-                    _isChecked_ProximitySensor = DdpmCommonHelper.DeviceManagerSA.GetIsProximitySensorEnable(CurrentDeviceInfo.ID.ToString()).Result;
+                    _isChecked_ProximitySensor = DdpmCommonHelper.DeviceManagerSA.GetIsProximitySensorEnable(CurrentDeviceInfo?.ID.ToString()).Result;
                 if (WebcamSettings.IsFirstTime)
                 {
                     IsChecked_ProximitySensor = false;
@@ -722,6 +716,8 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool IsUSB3 = false;
         private void InitializeWebcam()
         {
+            //Model = "U3224KB";
+            //CurrentDeviceInfo!.ModelNumber = "U3224KB";
             try
             {
                 WebcamSettings = WebcamSettings.ImportWebcamSettings(Model, CurrentDeviceInfo, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
@@ -814,17 +810,17 @@ namespace DDPM.UI.Plugin.ViewModels
                 //        _autoFramingFrameSize = autoFramingFrameSize;
                 //}
 
-                for (int k = 0; k < CurrentDeviceInfo.FOVValues.Length; k++)
+                for (int k = 0; k < CurrentDeviceInfo?.FOVValues?.Length; k++)
                 {
                     _fOVs[k] = int.Parse(CurrentDeviceInfo.FOVValues[k]);
                 }
                 _log.Info($"GetIsAllSupportedResolutionsFound Before :{IsUSB3}");
                 if (DdpmCommonHelper.DeviceManagerSA != null)
-                    IsUSB3 = DdpmCommonHelper.DeviceManagerSA.GetIsAllSupportedResolutionsFound(CurrentDeviceInfo.ID.ToString()).Result;
+                    IsUSB3 = DdpmCommonHelper.DeviceManagerSA.GetIsAllSupportedResolutionsFound(CurrentDeviceInfo?.ID.ToString()).Result;
                 _log.Info($"GetIsAllSupportedResolutionsFound After :{IsUSB3}");
                 if (!IsUSB3)
                 {
-                    _ = DdpmCommonHelper.DeviceManagerSA?.SetIsHDROn(CurrentDeviceInfo.ID.ToString(), false);
+                    _ = DdpmCommonHelper.DeviceManagerSA?.SetIsHDROn(CurrentDeviceInfo?.ID.ToString(), false);
                     OnPropertyChanged(nameof(IsHDROn));
                     OnPropertyChanged(nameof(IsHDROnText));
                 }
@@ -851,20 +847,18 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 IsResolutionSectionEnable = true;
 
-                if (CurrentDeviceInfo.IsWindowsHelloSupported)
+                if (CurrentDeviceInfo?.IsWindowsHelloSupported ?? false)
                 {
-                    Task<bool?> task = DdpmCommonHelper.DeviceManagerSA?.GetIsPrioritizeExternalWebcam(CurrentDeviceID.ToString());
-                    var result = task.Result;
+                    Task<bool?>? task = DdpmCommonHelper.DeviceManagerSA?.GetIsPrioritizeExternalWebcam(CurrentDeviceID.ToString());
+                    var result = task?.Result;
                     if (result == null)
                     {
                         _log.Error("DTP GetIsPrioritizeExternalWebcam fail!");
                         _isPrioritizeExternalWebcam = CurrentDeviceInfo.IsPrioritizeExternalWebcam;
-                        //IsDTPReady = false;
                     }
                     else
                     {
                         _isPrioritizeExternalWebcam = result.Value;
-                        //IsDTPReady = true;
                     }
                 }
             }
@@ -893,7 +887,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     CurrentProfile.IsHDROn = false;
 
 
-                if (CurrentDeviceInfo.IsPropertyFOVSupported)
+                if (CurrentDeviceInfo?.IsPropertyFOVSupported ?? false)
                 {
                     //task = DdpmCommonHelper.DeviceManagerSA?.SetFieldOfView(CurrentDeviceInfo.ID.ToString(), CurrentProfile.FieldOfView);
                     //if (!task.Result)
@@ -1615,7 +1609,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public Visibility PriorityVisibility
         {
-            get => CurrentDeviceInfo.IsPropertyPrioritySupported ? Visibility.Visible : Visibility.Collapsed;
+            get => CurrentDeviceInfo?.IsPropertyPrioritySupported ?? false ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private int _priority = 0;
@@ -1627,7 +1621,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (value != _priority)
                 {
                     _priority = value;
-                    DdpmCommonHelper.DeviceManagerSA?.SetPriority(CurrentDeviceInfo.ID.ToString(), value);
+                    DdpmCommonHelper.DeviceManagerSA?.SetPriority(CurrentDeviceInfo?.ID.ToString(), value);
                     SetProfileProperty(nameof(Priority), value, OperationModule.CameraControl);
                     OnPropertyChanged();
                 }
@@ -1635,27 +1629,27 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public Visibility HDRVisibility
         {
-            get => CurrentDeviceInfo.IsPropertyHDRSupported ? Visibility.Visible : Visibility.Collapsed;
+            get => CurrentDeviceInfo?.IsPropertyHDRSupported ?? false ? Visibility.Visible : Visibility.Collapsed;
         }
         public bool hdr_change = false;
 
-        public void OnUpdateIsHDROn()
-        {
-            try
-            {
-                WebcamProfile tmp = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(WebcamSettings.PresetProfiles[CurrentProfileName]));
-                if (tmp != null)
-                {
-                    CurrentProfile = tmp;
-                    OnPropertyChanged(nameof(IsHDROn));
-                    OnPropertyChanged(nameof(IsHDROnText));
-                }
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"[WebCameraViewModel][OnUpdateIsHDROn] exception: {ex.Message}");
-            }
-        }
+        //public void OnUpdateIsHDROn()
+        //{
+        //    try
+        //    {
+        //        WebcamProfile? tmp = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(WebcamSettings.PresetProfiles[CurrentProfileName]));
+        //        if (tmp != null)
+        //        {
+        //            CurrentProfile = tmp;
+        //            OnPropertyChanged(nameof(IsHDROn));
+        //            OnPropertyChanged(nameof(IsHDROnText));
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        DdpmCommonHelper.WriteUILog($"[WebCameraViewModel][OnUpdateIsHDROn] exception: {ex.Message}");
+        //    }
+        //}
 
         public bool IsHDROn
         {

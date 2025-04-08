@@ -15,6 +15,7 @@ using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Brushes = System.Windows.Media.Brushes;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
+using DDPM.UI.Common.EAEM;
 
 namespace DDPM.Easy.Common.Tests
 {
@@ -269,6 +270,21 @@ namespace DDPM.Easy.Common.Tests
             var cellAppData = new CellAppData(2, "fileName", "filePath",new BitmapImage(), new CellBorder());
             // Assert
             Assert.That(cellAppData, Is.Not.Null);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (cellBorder != null)
+            {
+                cellBorder.Dispose();
+                cellBorder = null;
+            }
+            if (cellAppData != null)
+            {
+                //cellAppData.Dispose();
+                cellAppData = null;
+            }
         }
     }
 }

@@ -282,6 +282,8 @@ namespace DDPM.SA.Common
 
         Task<bool> isScreenPartition(MonitorInfo monitorInfo, Guid guid = default, Priority priority = Priority.Low);
 
+        Task<Dictionary<string, PCsInfo>> ChangePC(MonitorInfo monitorInfo, Dictionary<string, PCsInfo> pcsList, List<UInt16> subInputList, bool isNext);
+
         #endregion public for USBKVM
 
         #region EasyArrange
@@ -1481,6 +1483,8 @@ namespace DDPM.SA.Common
         Task<bool> SetResetToDefaultAsyncForSoundbar(string Guid, bool newValue);
 
         ////////////////////////////////Get////////////////////////////////
+
+        Task<string> GetWiredAudioSerialNumberAsync(string item);
 
         Task<string> GetProfileNameAsync(string item);
 

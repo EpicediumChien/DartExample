@@ -38,6 +38,7 @@ using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
+using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -5088,6 +5089,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //////////////////////////////////Get///////////////////////////////////
 
+        public async Task<string> GetWiredAudioSerialNumberAsync(string item)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetWiredAudioSerialNumberAsync(item);
+                if (result != null)
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioSerialNumberAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioSerialNumberAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioSerialNumberAsync failed for {item} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
         public async Task<string> GetProfileNameAsync(string item)
         {
             try
@@ -6358,6 +6377,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         public Task<bool> CallDDPMUI(string DDPMPath)
+
         {
             writelog($"{nameof(CallDDPMUI)} start");
             bool ret = false;
@@ -6367,34 +6387,48 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     writelog($"CloseDDPM start");
                     string processName = "DDPM";
-                    Process[] processes = Process.GetProcessesByName(processName);
-                    writelog($"CloseDDPM processes.Length {processes.Length}");
-                    if (processes.Length > 0)
+                    Process[] processes;
+                    do
                     {
-                        foreach (Process process in processes)
+                        processes = Process.GetProcessesByName(processName);
+                        writelog($"CloseDDPM GetProcessesByName_1 processes.Length {processes.Length}");
+                        if (processes.Length > 0)
                         {
-                            // Close process by sending a close message to its main window.
-                            process.CloseMainWindow();
-                            // Free resources associated with process.
-                            process.Close();
+                            foreach (Process process in processes)
+                            {
+                                try
+                                {
+                                    // Close process by sending a close message to its main window.
+                                    process.CloseMainWindow();
+                                    // Free resources associated with process.
+                                    process.Close();
+                                }
+                                finally
+                                {
+                                    process.Dispose();
+                                }
+                            }
                         }
-                    }
+                        Task.Delay(5000).Wait();
+                    } while (processes.Length > 0);
                     writelog($"CloseDDPM done");
                 }
                 catch (Exception ex)
                 {
                     writelog($"CloseDDPM Error:{ex.Message}");
                 }
-                Task.Delay(5000).Wait();
-                try
+                finally
                 {
-                    writelog($"RunDDPM start");
-                    Process.Start(DDPMPath + "\\DDPM.exe");
-                    writelog($"RunDDPM done");
-                }
-                catch (Exception ex)
-                {
-                    writelog($"RunDDPM Error:{ex.Message}");
+                    try
+                    {
+                        writelog($"RunDDPM start");
+                        Process.Start(DDPMPath + "\\DDPM.exe");
+                        writelog($"RunDDPM done");
+                    }
+                    catch (Exception ex)
+                    {
+                        writelog($"RunDDPM Error:{ex.Message}");
+                    }
                 }
             }
             writelog($"{nameof(CallDDPMUI)} done");
@@ -7024,6 +7058,108 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             return Task.FromResult(false);
+        }
+
+        private Dictionary<string, PCsInfo> HandleNextCase(MonitorInfo monitorInfo, Dictionary<string, PCsInfo> pcsList, List<UInt16> subInputList)
+        {
+            writelog("[HandleNextCase] HandleNextCase");
+            Dictionary<string, PCsInfo> New_pcsList = new Dictionary<string, PCsInfo>();
+            if (subInputList.Count == 1)
+            {
+                New_pcsList = PCInfoSwap(pcsList, "PC1", "PC2").Result;
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, null, null).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 1.");
+            }
+            else if (subInputList.Count == 2)
+            {
+                New_pcsList["PC1"] = pcsList["PC2"];
+                New_pcsList["PC2"] = pcsList["PC3"];
+                New_pcsList["PC3"] = pcsList["PC1"];
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                InputSourceObj pc3input = new InputSourceObj((UInt16)New_pcsList["PC3"].Code, New_pcsList["PC3"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, pc3input, null).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 2.");
+            }
+            else if (subInputList.Count == 3)
+            {
+                New_pcsList["PC1"] = pcsList["PC2"];
+                New_pcsList["PC2"] = pcsList["PC3"];
+                New_pcsList["PC3"] = pcsList["PC4"];
+                New_pcsList["PC4"] = pcsList["PC1"];
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                InputSourceObj pc3input = new InputSourceObj((UInt16)New_pcsList["PC3"].Code, New_pcsList["PC3"].InputType);
+                InputSourceObj pc4input = new InputSourceObj((UInt16)New_pcsList["PC4"].Code, New_pcsList["PC4"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, pc3input, pc4input).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 3.");
+            }
+
+            return New_pcsList;
+        }
+
+        private Dictionary<string, PCsInfo> HandlePreviousCase(MonitorInfo monitorInfo, Dictionary<string, PCsInfo> pcsList, List<UInt16> subInputList)
+        {
+            writelog("[HandlePreviousCase] HandlePreviousCase");
+            Dictionary<string, PCsInfo> New_pcsList = new Dictionary<string, PCsInfo>();
+            if (subInputList.Count == 1)
+            {
+                New_pcsList = PCInfoSwap(pcsList, "PC1", "PC2").Result;
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, null, null).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 1.");
+            }
+            else if (subInputList.Count == 2)
+            {
+                New_pcsList["PC1"] = pcsList["PC3"];
+                New_pcsList["PC2"] = pcsList["PC1"];
+                New_pcsList["PC3"] = pcsList["PC2"];
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                InputSourceObj pc3input = new InputSourceObj((UInt16)New_pcsList["PC3"].Code, New_pcsList["PC3"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, pc3input, null).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 2.");
+            }
+            else if (subInputList.Count == 3)
+            {
+                New_pcsList["PC1"] = pcsList["PC4"];
+                New_pcsList["PC2"] = pcsList["PC1"];
+                New_pcsList["PC3"] = pcsList["PC2"];
+                New_pcsList["PC4"] = pcsList["PC3"];
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                InputSourceObj pc3input = new InputSourceObj((UInt16)New_pcsList["PC3"].Code, New_pcsList["PC3"].InputType);
+                InputSourceObj pc4input = new InputSourceObj((UInt16)New_pcsList["PC4"].Code, New_pcsList["PC4"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, pc3input, pc4input).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 3.");
+            }
+
+            return New_pcsList;
+        }
+
+        public Task<Dictionary<string, PCsInfo>> ChangePC(MonitorInfo monitorInfo, Dictionary<string, PCsInfo> pcsList, List<UInt16> subInputList, bool isNext)
+        {
+            writelog("[ChangePC] ChangePC");
+            Dictionary<string, PCsInfo> New_pcsList = new Dictionary<string, PCsInfo>();
+            if (pcsList != null && pcsList.Count > 0 && subInputList != null && subInputList.Count > 0)
+            {
+                if (isNext)
+                {
+                    New_pcsList = HandleNextCase(monitorInfo, pcsList, subInputList);
+                }
+                else
+                {
+                    New_pcsList = HandlePreviousCase(monitorInfo, pcsList, subInputList);
+                }
+            }
+            else
+            {
+                writelog("[ChangePC] pcsList or subInputList is null or count is not > 0.");
+            }
+            return Task.FromResult(New_pcsList);
         }
 
         #endregion
@@ -8952,7 +9088,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     if (vcps.Count > 0)
                                     {
                                         //set ImportVCPSequence
-                                        impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;                                        
+                                        impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;
                                         SetVCPSequence(monitorInfo, impVCPSequence, vcps);
                                         writelog("[DisplayImportSettings] ALSConfig : " + impVCPSequence.ALSConfig.ToString());
                                         foreach (VCPCode code in vcps)
@@ -8980,13 +9116,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                     if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
                                                     {
                                                         //set vcp code
-                                                        if(SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result)
+                                                        if (SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result)
                                                         {
                                                             writelog("[DisplayImportSettings] Set VCP code success : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());
                                                         }
                                                         else
                                                         {
-                                                            writelog("[DisplayImportSettings] Set VCP code fail : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());                                                    
+                                                            writelog("[DisplayImportSettings] Set VCP code fail : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());
                                                         }
                                                     }
                                                 }
@@ -12655,29 +12791,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void InitAllDisplayData(List<MonitorInfo> AllMonitors, CancellationToken cancellationToken)
         {
             //InitMonitorSettings();
-            if (AllMonitors != null && AllMonitors.Count > 0)
+            try
             {
-                _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait(cancellationToken);
-
-                for (int i = 0; ((i < AllMonitors.Count) && (!cancellationToken.IsCancellationRequested)); i++)
+                if (AllMonitors != null && AllMonitors.Count > 0)
                 {
-                    MonitorInfo info = AllMonitors[i];
+                    _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait(cancellationToken);
 
-                    _ = _DisplayManagerPlugin.GetVCPCapability(info, 0xE9);
+                    for (int i = 0; ((i < AllMonitors.Count) && (!cancellationToken.IsCancellationRequested)); i++)
+                    {
+                        MonitorInfo info = AllMonitors[i];
 
-                    _ = _DisplayManagerPlugin.GetDisplayPropertiesInfo(info);
+                        _ = _DisplayManagerPlugin.GetVCPCapability(info, 0xE9);
 
-                    if (info.CapabilityString.Contains("F4"))
-                        _ = _DisplayManagerPlugin.GetGamingProperties_SupportedList(info);
+                        _ = _DisplayManagerPlugin.GetDisplayPropertiesInfo(info);
 
-                    _DisplayManagerPlugin.GetUSBUpstreamList(info).Wait(cancellationToken);
+                        if (info.CapabilityString.Contains("F4"))
+                            _ = _DisplayManagerPlugin.GetGamingProperties_SupportedList(info);
+
+                        _DisplayManagerPlugin.GetUSBUpstreamList(info).Wait(cancellationToken);
+
+                        if (!cancellationToken.IsCancellationRequested)
+                            _ = _DisplayManagerPlugin.GetAllUSBUpstream(info);
+                    }
 
                     if (!cancellationToken.IsCancellationRequested)
-                        _ = _DisplayManagerPlugin.GetAllUSBUpstream(info);
+                        UpdateHotkeyInfo(cancellationToken);
                 }
-
-                if (!cancellationToken.IsCancellationRequested)
-                    UpdateHotkeyInfo(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                writelog($"InitAllDisplayData exception : {ex.ToString()}");
             }
         }
 
@@ -12702,7 +12845,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             InitMonitorSettings((e.monitors).ToList(), CancellationToken.None);
 
-            Task.Run(() => InitAllDisplayData((e.monitors).ToList(), CancellationToken.None)).ConfigureAwait(false);
+            Task.Run(() => InitAllDisplayData((e.monitors).ToList(), CancellationToken.None));
 
             DisplaychangedEventArgs _displaychangedEventArgs = new DisplaychangedEventArgs();
             _displaychangedEventArgs.count = e.count;
@@ -16203,13 +16346,38 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string capability = monitorInfo.CapabilityString;
             if (capability.Contains("E0("))
             {
+                int getvalue = 0;
                 string[] ss = capability.Split("E0(");
                 ss = ss[1].Split(")");
                 ss = ss[0].Split(" ");
                 if (ss[0] == "03" || ss[0] == "0F")
                 {
                     rc = GetVCPCapability(monitorInfo, 0xE0).Result;
-                    int getvalue = (Convert.ToInt32(rc.value) & 0x0c);
+                    if (int.TryParse(rc.value.ToString(), out int crtValue))
+                    {
+                        getvalue = (crtValue & 0x0c);
+                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,OdeValue={rc.value.ToString()}, NewValue ={getvalue}");
+                    }
+                    else
+                    {
+                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
+                    }
+                }
+                else if (ss[0] == "13")
+                {
+                    rc = GetVCPCapability(monitorInfo, 0xE0).Result;
+                    if (int.TryParse(rc.value.ToString(), out int crtValue))
+                    {
+                        getvalue = (crtValue & 0x1c);
+                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,OdeValue={rc.value.ToString()}, NewValue ={getvalue}");
+                    }
+                    else
+                    {
+                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
+                    }
+                }
+                if (getvalue != 0)
+                {
                     if (cs)
                     {
                         bool ret = SetVCPCapability(monitorInfo, 0xE0, (1 | (uint)getvalue)).Result;
@@ -16220,6 +16388,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
                         writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
                     }
+                }
+                else
+                {
+                    writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] no vcp commands to be issued.");
                 }
             }
             else
@@ -16246,13 +16418,38 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string capability = monitorInfo.CapabilityString;
             if (capability.Contains("E0("))
             {
+                int getvalue = 0;
                 string[] ss = capability.Split("E0(");
                 ss = ss[1].Split(")");
                 ss = ss[0].Split(" ");
                 if (ss[0] == "03" || ss[0] == "0F")
                 {
                     rc = GetVCPCapability(monitorInfo, 0xE0).Result;
-                    int getvalue = (Convert.ToInt32(rc.value) & 0x0c);
+                    if (int.TryParse(rc.value.ToString(), out int crtValue))
+                    {
+                        getvalue = (crtValue & 0x0c);
+                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,OdeValue={rc.value.ToString()}, NewValue ={getvalue}");
+                    }
+                    else
+                    {
+                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
+                    }
+                }
+                else if (ss[0] == "13")
+                {
+                    rc = GetVCPCapability(monitorInfo, 0xE0).Result;
+                    if (int.TryParse(rc.value.ToString(), out int crtValue))
+                    {
+                        getvalue = (crtValue & 0x1c);
+                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,OdeValue={rc.value.ToString()}, NewValue ={getvalue}");
+                    }
+                    else
+                    {
+                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
+                    }
+                }
+                if (getvalue != 0)
+                {
                     if (cs)
                     {
                         bool ret = SetVCPCapability(monitorInfo, 0xE0, (2 | (uint)getvalue)).Result;
@@ -16263,6 +16460,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
                         writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
                     }
+                }
+                else
+                {
+                    writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] no vcp commands to be issued.");
                 }
             }
             else
@@ -16866,7 +17067,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
                             writelog("[SetVCPSequence] GetVCPCapability VCP code : " + vcp.Code.ToString() + ", value : " + objGetVCP.value.ToString());
                             if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)vcp.Value[0])
-                            {                               
+                            {
                                 if (code == 0x66)
                                 {
                                     if (SetVCPCapability(monitorInfo, 0x66, impVCPSequence.ALSConfig).Result)
@@ -16882,7 +17083,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     if (SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result)
                                     {
-                                        writelog("[SetVCPSequence] Set VCP code success : " + code.ToString() + ", Value : " + vcp.Value[0].ToString());                                       
+                                        writelog("[SetVCPSequence] Set VCP code success : " + code.ToString() + ", Value : " + vcp.Value[0].ToString());
                                     }
                                     else
                                     {

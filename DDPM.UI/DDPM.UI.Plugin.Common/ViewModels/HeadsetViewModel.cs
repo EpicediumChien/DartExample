@@ -1066,8 +1066,18 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         case 0:
                         case 1:
-                            DeviceInfoDTP.Sidetone = true;
-                            _isSidetoneStatus = true;
+                            if (_wasSidetoneActiveBeforeTransparency)
+                            {
+                                DeviceInfoDTP.Sidetone = true;
+                                _isSidetoneStatus = true;
+                            }
+                            else
+                            {
+                                DeviceInfoDTP.Sidetone = false;
+                                _isSidetoneStatus = false;
+                            }
+                            //DeviceInfoDTP.Sidetone = true;
+                            //_isSidetoneStatus = true;
                             break;
 
                         case 2:
@@ -2273,6 +2283,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isRestoreEnable = false;
                 DeviceInfoDTP.Sidetone = value;
                 _isSidetoneStatus = value;
+                _wasSidetoneActiveBeforeTransparency = value;
                 if (IsDTPReady)
                 {
                     _debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
@@ -2468,7 +2479,7 @@ namespace DDPM.UI.Plugin.ViewModels
         //Group 1
 
         #region Group 1
-
+        private bool _wasSidetoneActiveBeforeTransparency;
         private bool _isActiveNoiseCancellingChecked;
         private bool _isTransparencyChecked;
         private bool _isNoiseOffChecked;
@@ -2495,8 +2506,18 @@ namespace DDPM.UI.Plugin.ViewModels
                         DeviceInfoDTP.AncMode = 1;
                         _isTransparencyChecked = false;
                         _isNoiseOffChecked = false;
-                        DeviceInfoDTP.Sidetone = true;
-                        _isSidetoneStatus = true;
+                        //DeviceInfoDTP.Sidetone = true;
+                        //_isSidetoneStatus = true;
+                        if (_wasSidetoneActiveBeforeTransparency)
+                        {
+                            DeviceInfoDTP.Sidetone = true;
+                            _isSidetoneStatus = true;
+                        }
+                        else
+                        {
+                            DeviceInfoDTP.Sidetone = false;
+                            _isSidetoneStatus = false;
+                        }
                         if (IsDTPReady)
                         {
                             _debouncerHeadset.Debounce("ANC");
@@ -2516,8 +2537,6 @@ namespace DDPM.UI.Plugin.ViewModels
                                 _log.Error($"[HeadsetViewModel] DTH ANC SetAncMode .... ID is null or invalid ....");
                             }
                         }
-                        //SidetoneStatus = true;
-                        //_isSidetoneStatus = true;
                         OnPropertyChanged(nameof(IsTransparencyChecked));
                         OnPropertyChanged(nameof(IsNoiseOffChecked));
                         OnPropertyChanged(nameof(Sidetone_String));
@@ -2549,7 +2568,6 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isActiveNoiseCancellingChecked = false;
                         _isNoiseOffChecked = false;
                         DeviceInfoDTP.Sidetone = false;
-                        //SidetoneStatus = false;
                         _isSidetoneStatus = false;
                         if (IsDTPReady)
                         {
@@ -2604,9 +2622,18 @@ namespace DDPM.UI.Plugin.ViewModels
                         DeviceInfoDTP.AncMode = 0;
                         _isActiveNoiseCancellingChecked = false;
                         _isTransparencyChecked = false;
-                        DeviceInfoDTP.Sidetone = true;
-                        //SidetoneStatus = true;
-                        _isSidetoneStatus = true;
+                        //DeviceInfoDTP.Sidetone = true;
+                        //_isSidetoneStatus = true;
+                        if (_wasSidetoneActiveBeforeTransparency)
+                        {
+                            DeviceInfoDTP.Sidetone = true;
+                            _isSidetoneStatus = true;
+                        }
+                        else
+                        {
+                            DeviceInfoDTP.Sidetone = false;
+                            _isSidetoneStatus = false;
+                        }
                         if (IsDTPReady)
                         {
                             _debouncerHeadset.Debounce("NoiseOff");

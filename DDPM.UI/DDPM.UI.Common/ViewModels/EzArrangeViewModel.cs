@@ -1545,7 +1545,17 @@ namespace DDPM.UI.Common.ViewModels
         public bool IsLaunchAtStartup
         {
             get => _isLaunchAtStartup;
-            set => SetProperty(ref _isLaunchAtStartup, value);
+            set
+            {
+                if (value)
+                {
+                    _isLaunchAtStartup = value;
+                }
+                else
+                {
+                    SetProperty(ref _isLaunchAtStartup, value);
+                }
+            }
         }
 
         private bool _isManualLaunch = true;

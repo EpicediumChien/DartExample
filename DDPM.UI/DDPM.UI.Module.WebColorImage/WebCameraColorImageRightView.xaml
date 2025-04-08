@@ -116,7 +116,8 @@
                   <StackPanel Margin="18,25,16,14">
                     <Grid>
                       <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                      <UXControls:UXToggleSwitch Click="AWB_ToggleSwitch_Click" Name="AWB_ToggleSwitch" IsChecked="{Binding Path= IsAutoWhiteBalanceOn}" Content="{Binding Path=IsAutoWhiteBalanceOnText}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" FontFamily="Roboto" FontSize="16" />
+                                            <!--20250407 Chewlin for Fix Auto White Blance ToggleSwitch light mode not show On/off issue remove Foreground="White"-->
+                      <UXControls:UXToggleSwitch Click="AWB_ToggleSwitch_Click" Name="AWB_ToggleSwitch" IsChecked="{Binding Path= IsAutoWhiteBalanceOn}" Content="{Binding Path=IsAutoWhiteBalanceOnText}" HorizontalAlignment="Right" VerticalAlignment="Center"  FontFamily="Roboto" FontSize="16" />
                     </Grid>
                     <UXControls:UXSlider Name="AWBSlider" Margin="0,15,0,0" Height="14" AutoToolTipPlacement="None" Thumb.DragStarted="AWBSlider_DragStarted" Thumb.DragCompleted="AWBSlider_DragCompleted" PreviewKeyDown="Slider_PreviewKeyDown" KeyUp="AWBSlider_KeyUp"
                                          Value="{Binding AutoWhiteBalance}" IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" IsEnabled="{Binding IsAutoWhiteBalanceOn, Converter={StaticResource BooleanToInverseConverter}}"/>

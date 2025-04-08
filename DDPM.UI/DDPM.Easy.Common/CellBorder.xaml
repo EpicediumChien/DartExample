@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:DDPM.Easy.Common"
              mc:Ignorable="d" 
              d:DesignHeight="45" d:DesignWidth="80"
-             IsVisibleChanged="UserControl_IsVisibleChanged">
+             IsVisibleChanged="UserControl_IsVisibleChanged" Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
@@ -16,9 +16,7 @@
             Background="{Binding BkBrush, RelativeSource={RelativeSource AncestorType=UserControl}}">
 
         <Grid Name="outterGrid">
-            <!-- For AwsIcon0, will show MonitorId Text -->
-        <!--<Grid x:Name="childGrid"/>-->
-        <Grid x:Name="childGrid"/>
+            <Grid x:Name="childGrid"/>
             <Grid x:Name="memoryGrid" Visibility="{Binding IsEmMode, Converter={StaticResource BooleanToVisibilityConverter}}" AllowDrop ="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -26,7 +24,7 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="0">
                     <TextBlock x:Name="memoryTB" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource DefaultTheme_TxtColor}"
-                               d:Text="2"/>
+                               d:Text=""/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1">
                     <Image x:Name="memoryImage" Grid.Column="1" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4,0,0,0"/>

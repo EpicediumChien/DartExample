@@ -353,18 +353,7 @@ namespace DDPM.UI.Module.Color
 
             //System.Diagnostics.Process.Start(psi);
             DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(null, psi);
-        }
-
-        private void ICC_profile_config_Click(object sender, RoutedEventArgs e)
-        {
-            var psi = new System.Diagnostics.ProcessStartInfo();
-
-            psi.FileName = "ms-settings:display";
-            psi.UseShellExecute = true;
-
-            //System.Diagnostics.Process.Start(psi);
-            DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(null, psi);
-        }
+        }       
 
         private void expanderHasExpanded(object sender, RoutedEventArgs args)
         {
@@ -770,6 +759,7 @@ namespace DDPM.UI.Module.Color
             }
         }
 
+        //Elsa add for tooltip issue fix
         private double GetScreenScaleX()
         {
             var source = PresentationSource.FromVisual(this);
@@ -780,6 +770,7 @@ namespace DDPM.UI.Module.Color
             return 1;
         }
 
+        //Elsa add for tooltip issue fix
         private void toolTip_Opened(object sender, RoutedEventArgs e)
         {
             System.Windows.Controls.ToolTip? target = sender as System.Windows.Controls.ToolTip;
