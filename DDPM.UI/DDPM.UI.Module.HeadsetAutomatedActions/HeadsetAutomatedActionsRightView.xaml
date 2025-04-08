@@ -600,15 +600,18 @@
                                     <Binding Path="[HeadsetAutomatedActions.8]" Source="{x:Static lang:LangHelper.Instance}" />
                                 </UXControls:UXTextBlock.Text>
                             </UXControls:UXTextBlock>
-                            <Image ToolTipService.HorizontalOffset="-250" x:Name="AnswerCallsImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                            <!--Chewlin 20250408 for PIMS-348376 change VerticalOffset="6" to "12", change HorizontalOffset="8" to "2",add MaxWidth="272" Opened="toolTip_Opened" , remove ToolTipService.HorizontalOffset="-250" -->
+                            <Image x:Name="AnswerCallsImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                 <Image.ToolTip>
-                                    <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+
+                                    <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                             <Border.Resources>
                                                 <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                             </Border.Resources>
+                                            <!--Chewlin 20250408 for PIMS-348376 add MaxWidth="230" TextWrapping="WrapWithOverflow" -->
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding AnswerCallsToolTip}" />
+                                                <TextBlock Text="{Binding AnswerCallsToolTip}" MaxWidth="230" TextWrapping="WrapWithOverflow" />
                                             </StackPanel>
                                         </Border>
                                     </ToolTip>
