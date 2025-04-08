@@ -9105,10 +9105,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                         continue;
                                                     }
                                                     //get vcp code
-                                                    objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
-                                                    writelog("[DisplayImportSettings] GetVCPCapability VCP code : " + code.Code.ToString() + ", Value : " + objGetVCP.value.ToString());
+                                                    objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;                         
                                                     if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
                                                     {
+                                                        writelog("[DisplayImportSettings] GetVCPCapability VCP code : " + code.Code.ToString() + ", Value : " + objGetVCP.value.ToString());
                                                         //set vcp code
                                                         if (SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result)
                                                         {
