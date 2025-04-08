@@ -1,6 +1,7 @@
 ﻿//using System.Drawing;
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Reflection.Metadata;
 using System.Windows;
@@ -14,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace DDPM.UI.Plugin.Common
 {
@@ -37,6 +39,8 @@ namespace DDPM.UI.Plugin.Common
         readonly SolidColorBrush NormalBorderBrush = new();
         readonly LinearGradientBrush FocusFillBrush = new();
         readonly LinearGradientBrush FocusBorderBrush = new();
+
+        private readonly DispatcherTimer timer;
 
         public RadialMenuModalDialog(double width, double height, PenViewModel vm)
         {
@@ -83,11 +87,26 @@ namespace DDPM.UI.Plugin.Common
                 FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x6E, 0x69, 0xCF), 1));
 
                 DdpmCommonHelper.BitmapImageUpdated += imgComboImageUpdate;
+                AlertText1.Text = string.Format(LangHelper.Instance["InputValidationTooltip.1"], "30");
+                AlertText2.Text = string.Format(LangHelper.Instance["InputValidationTooltip.2"], $"@ - {LangHelper.Instance["InputValidationTooltip.5"]}");
+
+                timer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(5)
+                };
+                timer.Tick += Timer_Tick;
+                ;
             }
             catch ( Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs RadialMenuModalDialog ex:" + ex.Message);
             }
+        }
+
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+            bdrAlert.Visibility = Visibility.Collapsed;
+            timer.Stop();
         }
 
         private void imgComboImageUpdate(OSThemeEnum oSThemeEnum)
@@ -445,8 +464,21 @@ namespace DDPM.UI.Plugin.Common
             IsComboOpen = false;
         }
 
+        private void ShowAlert()
+        {
+            bdrAlert.Visibility = Visibility.Visible;
+            timer.Stop();
+            timer.Start();
+        }
         private void LabelTextChanged(object sender, TextChangedEventArgs e)
         {
+            if (txtLabelText.Text.Length > 30)
+            {
+                ShowAlert();
+                txtLabelText.Text = txtLabelText.Text.Substring(0, 30);
+                txtLabelText.CaretIndex = 30;
+                return;
+            }
             btnSave.IsEnabled = (txtLabelText.Text != PenActions.RadialLabels[SelectedMenuID] && txtLabelText.Text.Trim() != "");
         }
 
@@ -680,6 +712,22 @@ namespace DDPM.UI.Plugin.Common
             catch (Exception ex) 
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs Path_MouseLeave ex:" + ex.Message);
+            }
+        }
+
+        private void txtLabelText_LostFocus(object sender, RoutedEventArgs e)
+        {
+            bdrAlert.Visibility = Visibility.Hidden;
+        }
+
+        private void txtLabelText_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (_vm.CheckChar(e.Text))
+                e.Handled = false;
+            else
+            {
+                e.Handled = true;
+                ShowAlert();
             }
         }
     }

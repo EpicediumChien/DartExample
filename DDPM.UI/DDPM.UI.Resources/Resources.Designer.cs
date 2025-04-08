@@ -4795,7 +4795,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Pauses music automatically when headset is removed. Music will resume automatically when headset is put on. 的當地語系化字串。
+        ///   查詢類似 Pauses music automatically when the headset is removed. Music will automatically resume when headset is put on. 的當地語系化字串。
         /// </summary>
         internal static string HeadsetAutomatedActions_10 {
             get {
@@ -5403,6 +5403,15 @@ namespace DDPM.UI.Resources {
         internal static string InputValidationTooltip_4 {
             get {
                 return ResourceManager.GetString("InputValidationTooltip.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 spacebar 的當地語系化字串。
+        /// </summary>
+        internal static string InputValidationTooltip_5 {
+            get {
+                return ResourceManager.GetString("InputValidationTooltip.5", resourceCulture);
             }
         }
         
