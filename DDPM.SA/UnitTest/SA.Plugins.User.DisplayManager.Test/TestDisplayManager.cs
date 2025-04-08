@@ -65,7 +65,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             result = false,
             ModelName = "DISPLAY7",
             Edid = new EDID() { SerialNumber = "808597589", ServiceTag = "123456" },
-            AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
+            AutoBrightnessRangeLevel =  new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 }
         };
 
         private DisplayMangerPlugin CreateInitializeDisplayMangerPlugin()
@@ -913,7 +913,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 LiftTone = 0,
                 AllValue = 0,
                 result = false,
-                AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
+                AutoBrightnessRangeLevel = new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 }
             };
             _AllALSConfig = new List<ALSConfig>();
             _AllALSConfig.Add(aconfig);
@@ -961,7 +961,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 LiftTone = 0,
                 AllValue = 32,
                 result = false,
-                AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
+                AutoBrightnessRangeLevel = new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 }
             };
             //List<ALSConfig> allALSConfig = new List<ALSConfig>();
             //allALSConfig.Add(monitorALS);
@@ -1049,7 +1049,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 LiftTone = 0,
                 AllValue = 0,
                 result = false,
-                AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
+                AutoBrightnessRangeLevel = new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 }
             };
             //List<ALSConfig> allALSConfig = new List<ALSConfig>();
             //allALSConfig.Add(monitorALS);
@@ -1099,7 +1099,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 LiftTone = 0,
                 AllValue = 0,
                 result = false,
-                AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
+                AutoBrightnessRangeLevel = new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 }
             };
             //List<ALSConfig> allALSConfig = new List<ALSConfig>();
             //allALSConfig.Add(monitorALS);
@@ -1186,7 +1186,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 LiftTone = 0,
                 AllValue = 0,
                 result = false,
-                AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
+                AutoBrightnessRangeLevel = new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 }
             };
             //List<ALSConfig> allALSConfig = new List<ALSConfig>();
             //allALSConfig.Add(aconfig);
@@ -1708,7 +1708,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 LiftTone = 0,
                 AllValue = 0,
                 result = false,
-                AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
+                AutoBrightnessRangeLevel = new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 }
             };
             PrivateObject privateObject = new PrivateObject(displayPlugin);
             int issupportAls = 0;
@@ -1743,7 +1743,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 LiftTone = 0,
                 AllValue = 0,
                 result = false,
-                AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
+                AutoBrightnessRangeLevel = new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 }
             };
 
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 1 }; //0xEF,value设置为0，对应isMMSEnable就是false, 1对应isMMSEnable就是true
@@ -2045,8 +2045,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             if (ObjGetvcp != null && ObjGetvcp.result)
             {
                 var result = privatedispalypluginObject.Invoke("GetALSAutoBrightnessRangeLevel", monitorInfo1, monitorALS);
-                Assert.That(brightnessrangelevellist[0].level_name, Is.EqualTo(monitorALS.AutoBrightnessRangeLevel[0].level_name)); //level_name = "Low"
-                Assert.That(brightnessrangelevellist[0].level_value, Is.EqualTo(monitorALS.AutoBrightnessRangeLevel[0].level_value)); //level_value = 0
+                Assert.That(brightnessrangelevellist[0].level_name, Is.EqualTo(monitorALS.AutoBrightnessRangeLevel.level_name)); //level_name = "Low"
+                Assert.That(brightnessrangelevellist[0].level_value, Is.EqualTo(monitorALS.AutoBrightnessRangeLevel.level_value)); //level_value = 0
                 Assert.IsTrue(monitorALS.result);
             }
             else
@@ -2099,8 +2099,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 if (SetVCPCapabilityValue)
                 {
                     var result = privatedispalypluginObject.Invoke("SetALSAutoBrightnessRangeLevel", monitorInfo1, monitorALS, value);
-                    Assert.That(brightnessrangelevellist[0].level_name, Is.EqualTo(monitorALS.AutoBrightnessRangeLevel[0].level_name)); //set level_name = "Low"
-                    Assert.That(brightnessrangelevellist[0].level_value, Is.EqualTo(monitorALS.AutoBrightnessRangeLevel[0].level_value)); //set level_value = 0
+                    Assert.That(brightnessrangelevellist[0].level_name, Is.EqualTo(monitorALS.AutoBrightnessRangeLevel.level_name)); //set level_name = "Low"
+                    Assert.That(brightnessrangelevellist[0].level_value, Is.EqualTo(monitorALS.AutoBrightnessRangeLevel.level_value)); //set level_value = 0
                     Assert.IsTrue(monitorALS.result);
                 }
                 else
@@ -2141,8 +2141,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 Assert.That(allValue, Is.EqualTo(aconfig.AllValue));
                 Assert.That(IsAutoColorTemp, Is.EqualTo(aconfig.isAutoColorTemp));
                 Assert.That(IsPrimaryMonitorSync, Is.EqualTo(aconfig.isPrimaryMonitorSync));
-                Assert.That(brightnessrangelevellist[0].level_name, Is.EqualTo(aconfig.AutoBrightnessRangeLevel[0].level_name)); //set level_name = "Low"
-                Assert.That(brightnessrangelevellist[0].level_value, Is.EqualTo(aconfig.AutoBrightnessRangeLevel[0].level_value)); //set level_value = 0
+                Assert.That(brightnessrangelevellist[0].level_name, Is.EqualTo(aconfig.AutoBrightnessRangeLevel.level_name)); //set level_name = "Low"
+                Assert.That(brightnessrangelevellist[0].level_value, Is.EqualTo(aconfig.AutoBrightnessRangeLevel.level_value)); //set level_value = 0
                 Assert.IsTrue(aconfig.result);
             }
             else
@@ -2170,8 +2170,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             Assert.That(allValue, Is.EqualTo(aconfig.AllValue));
             Assert.That(IsAutoColorTemp, Is.EqualTo(aconfig.isAutoColorTemp));
             Assert.That(IsPrimaryMonitorSync, Is.EqualTo(aconfig.isPrimaryMonitorSync));
-            Assert.That(brightnessrangelevellist[0].level_name, Is.EqualTo(aconfig.AutoBrightnessRangeLevel[0].level_name)); //set level_name = "Low"
-            Assert.That(brightnessrangelevellist[0].level_value, Is.EqualTo(aconfig.AutoBrightnessRangeLevel[0].level_value)); //set level_value = 0
+            Assert.That(brightnessrangelevellist[0].level_name, Is.EqualTo(aconfig.AutoBrightnessRangeLevel.level_name)); //set level_name = "Low"
+            Assert.That(brightnessrangelevellist[0].level_value, Is.EqualTo(aconfig.AutoBrightnessRangeLevel.level_value)); //set level_value = 0
         }
 
         [Test]
@@ -2231,7 +2231,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 LiftTone = 0,
                 AllValue = 305u,
                 result = false,
-                AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Mid", level_value = 1 } }
+                AutoBrightnessRangeLevel = new AutoBrightnessRangeLevel() { level_name = "Mid", level_value = 1 }
             };
 
             uint value = monitorALS.AllValue;
@@ -2265,9 +2265,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 value &= ~((uint)1 << 5); // Clear bit5 to 0
             }
             // Rules 4-6
-            if (monitorALS.AutoBrightnessRangeLevel.Count > 0)
+            if (monitorALS.AutoBrightnessRangeLevel != null)
             {
-                var level = monitorALS.AutoBrightnessRangeLevel[0];
+                var level = monitorALS.AutoBrightnessRangeLevel;
                 if (level.level_name == "Low" && level.level_value == 0)
                 {
                     value &= ~((uint)1 << 6); // Clear bit6 to 0
