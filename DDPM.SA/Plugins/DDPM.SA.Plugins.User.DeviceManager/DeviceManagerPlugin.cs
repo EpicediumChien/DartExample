@@ -58,6 +58,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
@@ -519,75 +520,83 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             if ("E9".Equals(vcpcode, StringComparison.OrdinalIgnoreCase) || vcpcode.Equals("2"))
             {
-                if (!monitorInfo.CapabilityDic.ContainsKey("E9") && !monitorInfo.CapabilityDic.ContainsKey("E7"))
-                    return;
-                /* if (!GetOnUSBKVM(monitorInfo).Result)
-                 {
-                     Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:USB KVM OFF,skip");
-                     writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:USB KVM OFF,skip");
-                     return;
-                 }*/
-                List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-                if (settings == null || !settings.Any(x => x.HotkeyOption.Equals(HotkeyOption.KvmAutoApply)))
+                lock (USBKVM_PBPmode_lock)
                 {
-                    writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,Monitor Settings is" + settings == null ? "null" : "not null" + $", and no any KvmAutoApply");
-                    return;
-                }
-                ObjGetVCP ret = GetPxpMode(monitorInfo).Result;
-                UsbKvmPBP usbKvmPBP = new UsbKvmPBP { MonitorInfo = monitorInfo, isPBPmode = false };
-                UInt16 _curPxpMode = 0;
-                if (ret != null && ret.result)
-                {
-                    //_curPxpMode = Convert.ToUInt16(ret.value);
-                    if (!ushort.TryParse(ret.value.ToString(), out _curPxpMode))
+                    if (!monitorInfo.CapabilityDic.ContainsKey("E9") && !monitorInfo.CapabilityDic.ContainsKey("E7"))
+                        return;
+                    /* if (!GetOnUSBKVM(monitorInfo).Result)
+                     {
+                         Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:USB KVM OFF,skip");
+                         writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:USB KVM OFF,skip");
+                         return;
+                     }*/
+                    List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+                    if (settings == null)
                     {
-                        _curPxpMode = 0;
-                        writelog($"[updatePBPModeStatus]GetPxpMode,parse pxp mode value fail.");
+                        writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,Monitor Settings is null");
+                        return;
                     }
 
-                    switch (_curPxpMode)
+                    DDPMMonitorSettings monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(monitorInfo.edid.ServiceTag));
+                    if (monitorSettings != null && !monitorSettings.HotkeyOption.Equals(HotkeyOption.KvmAutoApply))
                     {
-                        case 0x00://off
-                            usbKvmPBP.isPBPmode = false;
-                            break;
-
-                        case 0x21://PIP small
-                            usbKvmPBP.isPBPmode = false;
-                            break;
-
-                        case 0x22://PIP large
-                            usbKvmPBP.isPBPmode = false;
-                            break;
-
-                        case 0x23:
-                        case 0x24:
-                        case 0x25:
-                        case 0x26:
-                        case 0x27:
-                        case 0x28:
-                        case 0x29:
-                        case 0x2A:
-                        case 0x2B:
-                        case 0x2C:
-                        case 0x2D:
-                        case 0x2E:
-                        case 0x2F:
-                        case 0x31:
-                        case 0x32:
-                        case 0x33:
-                        case 0x34:
-                        case 0x35:
-                        case 0x41:
-                        case 0x42:
-                            usbKvmPBP.isPBPmode = true;
-                            break;
-
-                        default:
-                            usbKvmPBP.isPBPmode = false;
-                            break;
+                        writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:monitor [{monitorInfo.modelName},{monitorInfo.edid.ServiceTag}] KvmAutoApply not enable.");
+                        return;
                     }
-                    lock (USBKVM_PBPmode_lock)
+                    ObjGetVCP ret = GetPxpMode(monitorInfo).Result;
+                    UsbKvmPBP usbKvmPBP = new UsbKvmPBP { MonitorInfo = monitorInfo, isPBPmode = false };
+                    UInt16 _curPxpMode = 0;
+                    if (ret != null && ret.result)
                     {
+                        //_curPxpMode = Convert.ToUInt16(ret.value);
+                        if (!ushort.TryParse(ret.value.ToString(), out _curPxpMode))
+                        {
+                            _curPxpMode = 0;
+                            writelog($"[updatePBPModeStatus]GetPxpMode,parse pxp mode value fail.");
+                        }
+
+                        switch (_curPxpMode)
+                        {
+                            case 0x00://off
+                                usbKvmPBP.isPBPmode = false;
+                                break;
+
+                            case 0x21://PIP small
+                                usbKvmPBP.isPBPmode = false;
+                                break;
+
+                            case 0x22://PIP large
+                                usbKvmPBP.isPBPmode = false;
+                                break;
+
+                            case 0x23:
+                            case 0x24:
+                            case 0x25:
+                            case 0x26:
+                            case 0x27:
+                            case 0x28:
+                            case 0x29:
+                            case 0x2A:
+                            case 0x2B:
+                            case 0x2C:
+                            case 0x2D:
+                            case 0x2E:
+                            case 0x2F:
+                            case 0x31:
+                            case 0x32:
+                            case 0x33:
+                            case 0x34:
+                            case 0x35:
+                            case 0x41:
+                            case 0x42:
+                                usbKvmPBP.isPBPmode = true;
+                                break;
+
+                            default:
+                                usbKvmPBP.isPBPmode = false;
+                                break;
+                        }
+
                         if (usbKvmPBPs.Count > 0)
                         {
                             UsbKvmPBP usbKvmPBP1 = usbKvmPBPs.SingleOrDefault(x => x.MonitorInfo.edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && x.MonitorInfo.edid.SerialNumber.Equals(monitorInfo.edid.SerialNumber));
