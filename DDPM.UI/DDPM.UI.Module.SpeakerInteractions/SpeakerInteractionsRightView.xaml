@@ -133,9 +133,9 @@
                                                         <Setter TargetName="MicrosoftTeamsBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />-->
                                                     </Trigger>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="MicrosoftTeamsBorder" Property="Background" Value="{StaticResource ToggleSwitch_PressedBackground}" />
+                                                        <!--<Setter TargetName="MicrosoftTeamsBorder" Property="Background" Value="{StaticResource ToggleSwitch_PressedBackground}" />-->
                                                         <Setter TargetName="MicrosoftTeamsBorder" Property="BorderBrush" Value="{StaticResource ToggleSwitch_PressedBorderBrush}" />
-                                                        <Setter TargetName="MicrosoftTeamsBorderTxt" Property="Foreground" Value="White" />
+                                                        <!--<Setter TargetName="MicrosoftTeamsBorderTxt" Property="Foreground" Value="White" />-->
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -161,9 +161,9 @@
                                                         <Setter TargetName="ZoomButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />-->
                                                     </Trigger>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="ZoomButtonBorder" Property="Background" Value="{StaticResource ToggleSwitch_PressedBackground}" />
+                                                        <!--<Setter TargetName="ZoomButtonBorder" Property="Background" Value="{StaticResource ToggleSwitch_PressedBackground}" />-->
                                                         <Setter TargetName="ZoomButtonBorder" Property="BorderBrush" Value="{StaticResource ToggleSwitch_PressedBorderBrush}" />
-                                                        <Setter TargetName="ZoomButtonBorderTxt" Property="Foreground" Value="White" />
+                                                        <!--<Setter TargetName="ZoomButtonBorderTxt" Property="Foreground" Value="White" />-->
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -189,9 +189,9 @@
                                                         <Setter TargetName="GoogleMeetButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />-->
                                                     </Trigger>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="GoogleMeetButtonBorder" Property="Background" Value="{StaticResource ToggleSwitch_PressedBackground}" />
+                                                        <!--<Setter TargetName="GoogleMeetButtonBorder" Property="Background" Value="{StaticResource ToggleSwitch_PressedBackground}" />-->
                                                         <Setter TargetName="GoogleMeetButtonBorder" Property="BorderBrush" Value="{StaticResource ToggleSwitch_PressedBorderBrush}" />
-                                                        <Setter TargetName="GoogleMeetButtonBorderTxt" Property="Foreground" Value="White" />
+                                                        <!--<Setter TargetName="GoogleMeetButtonBorderTxt" Property="Foreground" Value="White" />-->
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>

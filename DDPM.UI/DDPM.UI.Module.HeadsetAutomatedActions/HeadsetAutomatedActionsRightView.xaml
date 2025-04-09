@@ -125,6 +125,7 @@
                     </Image>
                 </Grid>
                 <Grid x:Name="WearDetectionGrid" Visibility="{Binding WearDetectionPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Top" Margin="0,0,0,15">
+                    <!--Elsa 20250409 change Width="488" to Width="auto" -->
                     <Border x:Name="MainContentBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="6" Width="auto" Height="auto" VerticalAlignment="Top" Margin="0,0,0,0">
                         <StackPanel x:Name="MainContentStackPanel" Orientation="Vertical" Margin="0,20,0,10">
                             <!-- Wear Detection -->
@@ -597,7 +598,8 @@
 
                 <!-- Answer Calls Page -->
                 <Grid Visibility="{Binding AutomatedActionsAnswerCallPageShow, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Border x:Name="SubContentBorder4" Grid.Row="0" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="6" Width="488" Height="72" VerticalAlignment="Top" Margin="0,0,0,20">
+                    <!--Elsa 20250409 change Width="488" to Width="auto" -->
+                    <Border x:Name="SubContentBorder4" Grid.Row="0" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="6" Width="auto" Height="72" VerticalAlignment="Top" Margin="0,0,0,20">
                         <Grid x:Name="AnswerCallsGrid" Margin="16">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />

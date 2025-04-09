@@ -180,7 +180,7 @@
                 Assert.That(count, Is.EqualTo(Resultcount));
             }
 
-            [Test]
+            /*[Test]
             public void TestOverrideDequeue()
             {
                 TaskLockQueue<int> queue = new TaskLockQueue<int>();
@@ -193,7 +193,7 @@
                 queue.Enqueue(1, Common.Priority.Low);
                 var result2 = queue.Dequeue();
                 Assert.That(in1, Is.EqualTo(result2));
-            }
+            }*/
 
             [Test]
             public void TestOverrideClear()

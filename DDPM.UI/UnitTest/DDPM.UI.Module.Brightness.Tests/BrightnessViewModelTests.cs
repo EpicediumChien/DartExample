@@ -640,7 +640,7 @@ namespace DDPM.UI.Module.Brightness.Tests
         public void TestUpdate_AutoBrightnessRangeLevelStatus()
         {
             var brightnessViewModel = new BrightnessViewModel();
-            var myAutoBrightnessLevel = new List<AutoBrightnessRangeLevel> { new AutoBrightnessRangeLevel() { level_name = "12", level_value = 34 } };
+            var myAutoBrightnessLevel =  new AutoBrightnessRangeLevel() { level_name = "12", level_value = 34  };
             brightnessViewModel.Update_AutoBrightnessRangeLevelStatus(myAutoBrightnessLevel);
             privateObject = new PrivateObject(brightnessViewModel);
             var _autoBrightnessRangeLevel = privateObject.GetFieldOrProperty("_autoBrightnessRangeLevel");
@@ -667,8 +667,8 @@ namespace DDPM.UI.Module.Brightness.Tests
 
             //Start_ALSConfig.AutoBrightnessLevel[0].level_value == 0
             brightnessViewModel.Start_ALSConfig = new ALSConfig();
-            List<AutoBrightnessRangeLevel> AutoBrightnessLevel = new List<AutoBrightnessRangeLevel>();
-            AutoBrightnessLevel.Add(new AutoBrightnessRangeLevel() { level_name = null, level_value = 0 });
+            AutoBrightnessRangeLevel AutoBrightnessLevel = new AutoBrightnessRangeLevel();
+            AutoBrightnessLevel = new AutoBrightnessRangeLevel() { level_name = null, level_value = 0 };
             brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
             brightnessViewModel.isLuminanceSupport = Visibility.Visible;
             var res = brightnessViewModel.AutoBrightnessRangeLevel_String;
@@ -676,16 +676,16 @@ namespace DDPM.UI.Module.Brightness.Tests
 
             //Start_ALSConfig.AutoBrightnessLevel[0].level_value == 1
             brightnessViewModel.Start_ALSConfig = new ALSConfig();
-            AutoBrightnessLevel = new List<AutoBrightnessRangeLevel>();
-            AutoBrightnessLevel.Add(new AutoBrightnessRangeLevel() { level_name = null, level_value = 1 });
+            AutoBrightnessLevel = new AutoBrightnessRangeLevel();
+            AutoBrightnessLevel = new AutoBrightnessRangeLevel() { level_name = null, level_value = 1 };
             brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
             res = brightnessViewModel.AutoBrightnessRangeLevel_String;
             Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 75%"));
 
             //else
             brightnessViewModel.Start_ALSConfig = new ALSConfig();
-            AutoBrightnessLevel = new List<AutoBrightnessRangeLevel>();
-            AutoBrightnessLevel.Add(new AutoBrightnessRangeLevel() { level_name = null, level_value = 2 });
+            AutoBrightnessLevel = new AutoBrightnessRangeLevel();
+            AutoBrightnessLevel = new AutoBrightnessRangeLevel() { level_name = null, level_value = 2 };
             brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
             Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 75%"));
         }
@@ -704,28 +704,28 @@ namespace DDPM.UI.Module.Brightness.Tests
             deviceManagerMock.Setup(x => x.SetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSConfig>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             deviceManagerMock.Setup(x => x.GetAllExistAlsConfig()).Returns(Task.FromResult(new List<ALSConfig>()));
             brightnessViewModel.Start_ALSConfig = new ALSConfig();
-            List<AutoBrightnessRangeLevel> AutoBrightnessLevel = new List<AutoBrightnessRangeLevel>();
+            AutoBrightnessRangeLevel AutoBrightnessLevel = new AutoBrightnessRangeLevel();
             brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
             //Start_ALSConfig.AutoBrightnessLevel.Count == 0
             Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex, Is.EqualTo(0));
 
-            AutoBrightnessLevel.Add(new AutoBrightnessRangeLevel() { level_name = null, level_value = 10 });
+            AutoBrightnessLevel = (new AutoBrightnessRangeLevel() { level_name = null, level_value = 10 });
             brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
 
             //value == 0
             brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex = 0;
-            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex, Is.EqualTo(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value));
-            Assert.That(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name, Is.EqualTo("Low"));
+            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex, Is.EqualTo(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel.level_value));
+            Assert.That(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel.level_name, Is.EqualTo("Low"));
 
             //value == 1
             brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex = 1;
-            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex, Is.EqualTo(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value));
-            Assert.That(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name, Is.EqualTo("Mid"));
+            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex, Is.EqualTo(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel.level_value));
+            Assert.That(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel.level_name, Is.EqualTo("Mid"));
 
             //else
             brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex = 2;
-            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex, Is.EqualTo(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value));
-            Assert.That(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name, Is.EqualTo("High"));
+            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex, Is.EqualTo(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel.level_value));
+            Assert.That(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel.level_name, Is.EqualTo("High"));
         }
 
         [Test]

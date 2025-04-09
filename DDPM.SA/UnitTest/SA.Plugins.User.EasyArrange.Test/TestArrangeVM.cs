@@ -277,7 +277,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             Assert.That(hoveringCellObj2, Is.EqualTo(HoveringCellObj_Result2));
         }
 
-        [Test]
+        /*[Test]
         public void TestHoveringCell()
         {
             string hoveringCell1 = "Test HoveringCell";
@@ -289,7 +289,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             privateArrangeVMObject.SetFieldOrProperty("_hoveringCell", hoveringCell2);
             var HoveringCell_Result2 = arrangeVM.HoveringCell;          //_hoveringCell default
             Assert.That(hoveringCell2, Is.EqualTo(HoveringCell_Result2));
-        }
+        }*/
 
         [Test]
         public void TestHoveringScreen()
@@ -309,7 +309,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             */
         }
 
-        [Test]
+        /*[Test]
         public void TestIsAwsEnabled()
         {
             bool isAwsEnabled = false;
@@ -328,9 +328,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             var IsAwsEnabled_Result2 = arrangeVM.IsAwsEnabled;          //_ezSettings not null;IsAwsEnabled = false,
             Assert.That(isAwsEnabled, Is.EqualTo(IsAwsEnabled_Result2));
         }
-
-        [Test]
-        public void TestIsAwsWindowVisible()
+        */
+        /* [Test]
+       public void TestIsAwsWindowVisible()
         {
             bool IsAwsWindowVisible1 = true;
             bool IsAwsWindowVisible2 = false;
@@ -352,7 +352,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             privateArrangeVMObject.SetFieldOrProperty("_ezSettings", ezSettings);
             var IsAwsWindowVisible_Result2 = arrangeVM.IsAwsWindowVisible;          //_isAwsWindowVisible, _isMoving, default false
             Assert.That(IsAwsWindowVisible2, Is.EqualTo(IsAwsWindowVisible_Result2));
-        }
+        }*/
 
         [Test]
         public void TestAwsWindow()

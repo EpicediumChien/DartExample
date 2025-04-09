@@ -102,6 +102,8 @@ namespace DDPM.SA.Common.UI
 
             #region QAM Page
             UpdateBitmapImage("QAMImage_CallDDPM", new Uri($"pack://application:,,,/DDPM.QAM;component/Imgs/ddpm-light.png", UriKind.RelativeOrAbsolute));
+            UpdateFreezable<SolidColorBrush>("Default_SA_QAM_CameraSetting_Hover", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F1F1F1"));
+            UpdateFreezable<SolidColorBrush>("Default_SA_QAM_Menu_Hover", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F1F1F1"));
             #endregion
         }
     }
