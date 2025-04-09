@@ -2185,12 +2185,65 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 // Create storage file for the capture
                 var videoFile = await captureFolder.CreateFileAsync(DateTime.Now.ToString("'DDPMVideo'yyyy-MM-dd-HH-mm-ss.'mp4'"), CreationCollisionOption.GenerateUniqueName);
+                VideoEncodingQuality VideoEncoding= VideoEncodingQuality.Auto;
+                switch (_vm.WebcamSettings.SelectedResolution)
+                {
+                    case "HD":
+                        VideoEncoding = VideoEncodingQuality.HD720p;
+                        break;
+                    case "Full HD":
+                        VideoEncoding = VideoEncodingQuality.HD1080p;
+                        break;
+                    case "2K QHD":
+                        VideoEncoding = VideoEncodingQuality.Uhd2160p;
+                        break;
+                    case "4K UHD":
+                        VideoEncoding = VideoEncodingQuality.Uhd4320p;
+                        break;
+                    default:
+                        VideoEncoding = VideoEncodingQuality.Auto;
+                        break;
+                }
+                var encodingProfile = MediaEncodingProfile.CreateMp4(VideoEncoding);
 
-                var encodingProfile = MediaEncodingProfile.CreateMp4(VideoEncodingQuality.Auto);
+                if (VideoEncoding != VideoEncodingQuality.Auto)
+                {
+                    switch (_vm.WebcamSettings.SelectedResolution)
+                    {
+                        case "HD":
+                            VideoEncoding = VideoEncodingQuality.HD720p;
+                            encodingProfile.Video.Width = 1280;
+                            encodingProfile.Video.Height = 720;
+                            break;
+                        case "Full HD":
+                            VideoEncoding = VideoEncodingQuality.HD1080p;
+                            encodingProfile.Video.Width = 1920;
+                            encodingProfile.Video.Height = 1080;
+                            break;
+                        case "2K QHD":
+                            VideoEncoding = VideoEncodingQuality.Uhd2160p;
+                            encodingProfile.Video.Width = 2560;
+                            encodingProfile.Video.Height = 1440;  
+                            break;
+                        case "4K UHD":
+                            VideoEncoding = VideoEncodingQuality.Uhd4320p;
+                            encodingProfile.Video.Width = 3840;
+                            encodingProfile.Video.Height = 2160;
+                            break;
+                        default:
+                            VideoEncoding = VideoEncodingQuality.Auto;
+                            break;
+                    }
+                    encodingProfile.Video.Bitrate = 1500000; // 降低影片位元率為 1.5 Mbps
+                    encodingProfile.Audio.Bitrate = 96000;  // 設定音訊位元率為 96 kbps
+                    DdpmCommonHelper.WriteUILog($"_vm.WebcamSettings.SelectedcurrentFPS:{_vm.WebcamSettings.SelectedcurrentFPS}");
+                    encodingProfile.Video.FrameRate.Numerator = uint.TryParse(_vm.WebcamSettings.SelectedcurrentFPS,out var Fps)?Fps:30; // 設置新的 FPS 分子，例如 60
+                    encodingProfile.Video.FrameRate.Denominator = 1; // 分母，通常設為 1
+                }
 
-                // Calculate rotation angle, taking mirroring into account if necessary
-                var rotationAngle = 360 - ConvertDeviceOrientationToDegrees(GetCameraOrientation());
-                encodingProfile.Video.Properties.Add(RotationKey, PropertyValue.CreateInt32(rotationAngle));
+                //// Calculate rotation angle, taking mirroring into account if necessary
+                //var rotationAngle = 360 - ConvertDeviceOrientationToDegrees(GetCameraOrientation());
+                //encodingProfile.Video.Properties.Add(RotationKey, PropertyValue.CreateInt32(rotationAngle));
 
                 DdpmCommonHelper.WriteUILog("Starting recording to " + videoFile.Path);
 
