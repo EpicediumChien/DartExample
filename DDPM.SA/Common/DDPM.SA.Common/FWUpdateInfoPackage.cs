@@ -11,16 +11,6 @@ namespace DDPM.SA.Common
     public class FWUpdateInfoPackage
     {
         /// <summary>
-        /// 將該韌體更新資訊包儲存進設定檔的日期，用於判斷使用者延遲更新的時間
-        /// </summary>
-        public DateTime? SaveTime { get; set; }
-
-        /// <summary>
-        /// 可延遲次數
-        /// </summary>
-        public int DelayTimesAvailable { get; set; }
-
-        /// <summary>
         /// 該更新資訊包檢查更新的時間
         /// </summary>
         public DateTime TheLastCheckTime { get; set; }
@@ -32,9 +22,13 @@ namespace DDPM.SA.Common
 
         public FWUpdateInfoPackage()
         {
-            SaveTime = null;
             TheLastCheckTime = new DateTime();
             FWUpdateInfo = new List<FWUpdateInfo>();
+        }
+        public void Clear()
+        {
+            FWUpdateInfo.Clear();
+            TheLastCheckTime = new DateTime();
         }
     }
 
@@ -44,11 +38,6 @@ namespace DDPM.SA.Common
         /// 將該韌體更新資訊包儲存進設定檔的日期
         /// </summary>
         public DateTime? SaveTime { get; set; }
-
-        /// <summary>
-        /// 可延遲次數
-        /// </summary>
-        public int DelayTimesAvailable { get; set; }
 
         /// <summary>
         /// 裝置資訊
