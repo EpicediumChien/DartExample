@@ -12869,15 +12869,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         _ = _DisplayManagerPlugin.GetVCPCapability(info, 0xE9);
 
-                    if (info.CapabilityString.Contains("F4"))
-                        _ = _DisplayManagerPlugin.GetGamingProperties_SupportedList(info);
+                        if (info.CapabilityString.Contains("F4"))
+                            _ = _DisplayManagerPlugin.GetGamingProperties_SupportedList(info);
 
-                    _DisplayManagerPlugin.GetDisplayPropertiesInfo(info).Wait(cancellationToken);
+                        _DisplayManagerPlugin.GetDisplayPropertiesInfo(info).Wait(cancellationToken);
 
-                    if(!cancellationToken.IsCancellationRequested)
-                        _ = _DisplayManagerPlugin.GetVCPCapability(info, "colorpreset");
+                        if(!cancellationToken.IsCancellationRequested)
+                            _ = _DisplayManagerPlugin.GetVCPCapability(info, "colorpreset");
 
-                    _DisplayManagerPlugin.GetUSBUpstreamList(info).Wait(cancellationToken);
+                        _DisplayManagerPlugin.GetUSBUpstreamList(info).Wait(cancellationToken);
 
                         if (!cancellationToken.IsCancellationRequested)
                             _ = _DisplayManagerPlugin.GetAllUSBUpstream(info);
