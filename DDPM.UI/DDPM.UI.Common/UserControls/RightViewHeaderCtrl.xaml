@@ -8,166 +8,173 @@
              mc:Ignorable="d"
              d:DesignHeight="60" d:DesignWidth="600"
              Visibility="{Binding CtrlVisibility}">
-    <Grid>
-        <Border Grid.Row="0" CornerRadius="4" Background="{DynamicResource RightView_Header_BkColor}"
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Grid>
+    <Border Grid.Row="0" CornerRadius="4" Background="{DynamicResource RightView_Header_BkColor}"
                 Height="30" Margin="0,0,0,12">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="{Binding Col1Width}" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="{Binding Col1Width}" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-                <!-- Header[0] -->
-                <Border Grid.Column="0" CornerRadius="4,0,0,4" MouseLeftButtonDown="header0_MouseLeftButtonDown" PreviewKeyDown="header0_PreviewKeyDown"
+        <!-- Header[0] -->
+        <Border Grid.Column="0" CornerRadius="4,0,0,4" MouseLeftButtonDown="header0_MouseLeftButtonDown" PreviewKeyDown="header0_PreviewKeyDown"
                         BorderThickness="0,0,1,0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Text1, Mode=TwoWay}" Focusable="True" KeyboardNavigation.TabIndex="71">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="0">
-                                            <Setter Property="Foreground" Value="#FFFFFF" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <Image Grid.Column="1" Visibility="{Binding Locker1}" Margin="0,0,20,0"
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{Binding Text1, Mode=TwoWay}" Focusable="True" KeyboardNavigation.TabIndex="71">
+              <TextBlock.Style>
+                <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="0">
+                      <Setter Property="Foreground" Value="#FFFFFF" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </TextBlock.Style>
+            </TextBlock>
+            <Image Grid.Column="1" Visibility="{Binding Locker1}" Margin="0,0,20,0"
                                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
                                VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
-                            <Image.ToolTip>
-                                <ToolTip>
-                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                        <Border.Resources>
-                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                        </Border.Resources>
-                                        <StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Border>
-                                </ToolTip>
-                            </Image.ToolTip>
-                        </Image>
-                    </Grid>
-                    <Border.Style>
-                        <Style TargetType="Border">
-                            <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="0">
-                                    <Setter Property="Background" Value="{StaticResource Brush_GradientButtonCyan}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                </Border>
-
-                <!-- Header[1] -->
-                <Border Grid.Column="1" CornerRadius="0,0,0,0" MouseLeftButtonDown="header1_MouseLeftButtonDown" PreviewKeyDown="header1_PreviewKeyDown"
-                        BorderThickness="0,0,1,0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <!--Chewlin 20250116 Fix pip/pbp Clipping issue ADD TextTrimming="CharacterEllipsis" Padding="10,0,10,0"-->
-                        <TextBlock Grid.Column="0" Text="{Binding Text2, Mode=TwoWay}" TextTrimming="CharacterEllipsis" Padding="10,0,10,0" Focusable="True" KeyboardNavigation.TabIndex="72">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="1">
-                                            <Setter Property="Foreground" Value="#FFFFFF" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <Image Grid.Column="1" Visibility="{Binding Locker2}" Margin="0,0,20,0"
-                               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                               VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
-                            <Image.ToolTip>
-                                <ToolTip>
-                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                        <Border.Resources>
-                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                        </Border.Resources>
-                                        <StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Border>
-                                </ToolTip>
-                            </Image.ToolTip>
-                        </Image>
-                    </Grid>
-                    <Border.Style>
-                        <Style TargetType="Border">
-                            <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="1">
-                                    <Setter Property="Background" Value="{StaticResource Brush_GradientButtonCyan}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                </Border>
-
-                <!-- Header[2] -->
-                <Border Grid.Column="2" CornerRadius="0,4,4,0" MouseLeftButtonDown="header2_MouseLeftButtonDown" PreviewKeyDown="header2_PreviewKeyDown">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Text3, Mode=TwoWay}" Focusable="True"  KeyboardNavigation.TabIndex="73">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="2">
-                                            <Setter Property="Foreground" Value="#FFFFFF" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <Image Grid.Column="1" Visibility="{Binding Locker3}" Margin="0,0,20,0"
-                               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                               VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
-                            <Image.ToolTip>
-                                <ToolTip>
-                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                        <Border.Resources>
-                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                        </Border.Resources>
-                                        <StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </Border>
-                                </ToolTip>
-                            </Image.ToolTip>
-                        </Image>
-                    </Grid>
-                    <Border.Style>
-                        <Style TargetType="Border">
-                            <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="2">
-                                    <Setter Property="Background" Value="{StaticResource Brush_GradientButtonCyan}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                </Border>
-            </Grid>
+              <Image.ToolTip>
+                <ToolTip>
+                  <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                    <Border.Resources>
+                      <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                    </Border.Resources>
+                    <StackPanel>
+                      <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+                </ToolTip>
+              </Image.ToolTip>
+            </Image>
+          </Grid>
+          <Border.Style>
+            <Style TargetType="Border">
+              <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="0">
+                  <Setter Property="Background" Value="{StaticResource Brush_GradientButtonCyan}" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Border.Style>
         </Border>
-    </Grid>
+
+        <!-- Header[1] -->
+        <Border Grid.Column="1" CornerRadius="0,0,0,0" MouseLeftButtonDown="header1_MouseLeftButtonDown" PreviewKeyDown="header1_PreviewKeyDown"
+                        BorderThickness="0,0,1,0">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <!--Chewlin 20250116 Fix pip/pbp Clipping issue ADD TextTrimming="CharacterEllipsis" Padding="10,0,10,0"-->
+            <TextBlock Grid.Column="0" Text="{Binding Text2, Mode=TwoWay}" TextTrimming="CharacterEllipsis" Padding="10,0,10,0" Focusable="True" KeyboardNavigation.TabIndex="72">
+              <TextBlock.Style>
+                <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="1">
+                      <Setter Property="Foreground" Value="#FFFFFF" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </TextBlock.Style>
+            </TextBlock>
+            <Image Grid.Column="1" Visibility="{Binding Locker2}" Margin="0,0,20,0"
+                               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                               VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
+              <Image.ToolTip>
+                <ToolTip>
+                  <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                    <Border.Resources>
+                      <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                    </Border.Resources>
+                    <StackPanel>
+                      <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+                </ToolTip>
+              </Image.ToolTip>
+            </Image>
+          </Grid>
+          <Border.Style>
+            <Style TargetType="Border">
+              <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="1">
+                  <Setter Property="Background" Value="{StaticResource Brush_GradientButtonCyan}" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Border.Style>
+        </Border>
+
+        <!-- Header[2] -->
+        <Border Grid.Column="2" CornerRadius="0,4,4,0" MouseLeftButtonDown="header2_MouseLeftButtonDown" PreviewKeyDown="header2_PreviewKeyDown">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{Binding Text3, Mode=TwoWay}" Focusable="True"  KeyboardNavigation.TabIndex="73">
+              <TextBlock.Style>
+                <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="2">
+                      <Setter Property="Foreground" Value="#FFFFFF" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </TextBlock.Style>
+            </TextBlock>
+            <Image Grid.Column="1" Visibility="{Binding Locker3}" Margin="0,0,20,0"
+                               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                               VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
+              <Image.ToolTip>
+                <ToolTip>
+                  <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                    <Border.Resources>
+                      <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                    </Border.Resources>
+                    <StackPanel>
+                      <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+                </ToolTip>
+              </Image.ToolTip>
+            </Image>
+          </Grid>
+          <Border.Style>
+            <Style TargetType="Border">
+              <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="2">
+                  <Setter Property="Background" Value="{StaticResource Brush_GradientButtonCyan}" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Border.Style>
+        </Border>
+      </Grid>
+    </Border>
+  </Grid>
 </UserControl>

@@ -79,7 +79,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private DispatcherTimer _timer = new();
         private int _countdownValue;
         private bool IsPresetOpen = false;
-        private Stopwatch stopwatch = new Stopwatch();
+        private readonly Stopwatch stopwatch = new();
         private DispatcherTimer RecordingTimer;
         private bool _running = false;
         private MediaCapture _mediaCapture;
@@ -93,6 +93,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         public Thread status_thread;
         public bool exit_status_thread = false;
         private IConsole _console;
+
+        private readonly DispatcherTimer AlertTimer;
 
         enum PresenceDetectionView { InternalUPDSupport, MicrosoftHPDSupport, MicrosoftHPDNotSupport }
 
@@ -269,7 +271,23 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView() ex:" + ex.Message);
             }
+
+            AlertText1.Text = string.Format(LangHelper.Instance["InputValidationTooltip.1"], "30");
+            AlertText2.Text = string.Format(LangHelper.Instance["InputValidationTooltip.2"], $"@ - {LangHelper.Instance["InputValidationTooltip.5"]}");
+
+            AlertTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            AlertTimer.Tick += AlertTimer_Tick;
+
             DdpmCommonHelper.WriteUILog($"Webcam UI LaunchView End timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
+        }
+
+        private void AlertTimer_Tick(object? sender, EventArgs e)
+        {
+            bdrAlert2.Visibility = Visibility.Collapsed;
+            AlertTimer.Stop();
         }
 
         private void OnWebcamCloseEvent(object sender, EventManagerArgs e)
@@ -516,13 +534,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 noPresenceFunction = true;
                 return;
             }
-            
+
             _vm.UPD_Visibility = Visibility.Collapsed; //HPD
             _vm.MPS_Setting_Visibility = Visibility.Collapsed;//內建電腦MPS
             _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;//FW Update
             CheckSupportWindowsHello(is_WindwosHelloSupport ? Visibility.Visible : Visibility.Collapsed);
             //1A
-            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK==4)
+            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK == 4)
             {
                 print_debug("TestCase 1A");
                 _vm.UPD_Visibility = Visibility.Visible;
@@ -530,21 +548,21 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             }
             //2A
-            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK==1)
+            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK == 1)
             {
                 print_debug("TestCase 2A");
                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
                 return;
             }
             //3A
-            if (is_DellPc && !is_EsiSupport && is_WindowsVer_OK==2)
+            if (is_DellPc && !is_EsiSupport && is_WindowsVer_OK == 2)
             {
                 print_debug("TestCase 3A");
                 _vm.MPS_Setting_Visibility = Visibility.Visible;
                 return;
             }
             //4A
-            if (is_DellPc && !is_EsiSupport && is_WindowsVer_OK==3)
+            if (is_DellPc && !is_EsiSupport && is_WindowsVer_OK == 3)
             {
                 print_debug("TestCase 4A");
                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
@@ -559,7 +577,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             }
             //2B
-            if (!is_DellPc && is_EsiSupport && is_WindowsVer_OK==1)
+            if (!is_DellPc && is_EsiSupport && is_WindowsVer_OK == 1)
             {
                 print_debug("TestCase 2B");
                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
@@ -574,13 +592,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
 
             //4B
-            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK==3)
+            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK == 3)
             {
                 print_debug("TestCase 4B");
                 noPresenceFunction = true;
                 return;
             }
-            
+
             print_debug("TestCase Default");
             noPresenceFunction = true;
         }
@@ -588,7 +606,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             string model = _vm.CurrentDeviceInfo?.ModelNumber ?? "";
             noPresenceFunction = false;
-            
+
             //if (is_camera_dell7==2 && !AllSupportedResolutions)
             //{
             //    print_debug("is_camera_dell7 ==2 && !AllSupportedResolutions");
@@ -614,7 +632,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
                 return;
             }
-            
+
             print_debug("TestCase Default");
             noPresenceFunction = true;
         }
@@ -712,7 +730,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (WinVersion.GetVersion(out var info))
             {
                 //win11 >=Win11 22H2 latter and OsBuild>=22621
-                if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2)&& WinVersion.GetOsBuild()>=22621)
+                if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2) && WinVersion.GetOsBuild() >= 22621)
                     return 1;
                 //win11 >= Win11 22H2 latter and OsBuild< 22621
                 if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2) && WinVersion.GetOsBuild() < 22621)
@@ -745,11 +763,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             return false;
         }
-        string[] DisplayWebcameList = new string[] { "U3223QZ" , "U3224KB" , "U3224KBA" , "P2424HEB" , "P2724DEB" , "P3424WEB" };
+        string[] DisplayWebcameList = new string[] { "U3223QZ", "U3224KB", "U3224KBA", "P2424HEB", "P2724DEB", "P3424WEB" };
         public int check_camera_dell7(string model)
         {
             //hard code 指定特定型號是否為internal
-            if (model == "WB7022") 
+            if (model == "WB7022")
             {
                 return 1;
             }
@@ -2742,6 +2760,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             try
             {
                 EditMode = "ADD";
+                txtCaption.Text = LangHelper.Instance["Camera.5"];
                 _vm.DisableVBar();
                 gdBattery.Visibility = Visibility.Collapsed;
                 gdAddProfile.Visibility = Visibility.Visible;
@@ -2761,9 +2780,22 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs AddPreset() end");
         }
 
+        private void ShowAlert()
+        {
+            bdrAlert2.Visibility = Visibility.Visible;
+            AlertTimer.Stop();
+            AlertTimer.Start();
+        }
         private void NameTextChanged(object sender, TextChangedEventArgs e)
         {
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  NameTextChanged() start");
+            if (txbName.Text.Length > 30)
+            {
+                ShowAlert();
+                txbName.Text = txbName.Text.Substring(0, 30);
+                txbName.CaretIndex = 30;
+                return;
+            }
             try
             {
                 var txt = txbName.Text.Trim();
@@ -3043,7 +3075,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void txtSearchText_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            e.Handled = !_vm.CheckChar(e.Text);
+            if (_vm.CheckChar(e.Text))
+                e.Handled = false;
+            else
+            {
+                e.Handled = true;
+                ShowAlert();
+            }
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -3090,6 +3128,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 Console.WriteLine($"Scale: {uniformScale:F3} (X: {scaleX:F3}, Y: {scaleY:F3})");
             }
+        }
+
+        private void txbName_LostFocus(object sender, RoutedEventArgs e)
+        {
+            bdrAlert2.Visibility = Visibility.Hidden;
         }
     }
 }

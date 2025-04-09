@@ -95,9 +95,8 @@ namespace DDPM.UI.Plugin.Common
                     Interval = TimeSpan.FromSeconds(5)
                 };
                 timer.Tick += Timer_Tick;
-                ;
             }
-            catch ( Exception ex)
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs RadialMenuModalDialog ex:" + ex.Message);
             }
@@ -143,7 +142,7 @@ namespace DDPM.UI.Plugin.Common
                     canvas.Children.Add(path);
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs DrawPieChart ex:" + ex.Message);
             }
@@ -292,7 +291,7 @@ namespace DDPM.UI.Plugin.Common
                 ActionList.ExportActionList(PenActions, "PEN");
                 RefreshAction();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs ActionRadioButton_Click ex:" + ex.Message);
             }
@@ -327,7 +326,7 @@ namespace DDPM.UI.Plugin.Common
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs ActionButtonLoaded ex:" + ex.Message);
             }
@@ -359,7 +358,7 @@ namespace DDPM.UI.Plugin.Common
                     spLabel.Visibility = Visibility.Visible;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs RefreshAction ex:" + ex.Message);
             }
@@ -382,7 +381,7 @@ namespace DDPM.UI.Plugin.Common
                     tb.Text = CheckLabel(PenActions.RadialLabels[SelectedMenuID], SelectedMenuID);
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs RefreshLabel ex:" + ex.Message);
             }
@@ -559,7 +558,7 @@ namespace DDPM.UI.Plugin.Common
                 RefreshAction();
                 CloseActionCombo();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs EditActionClick ex:" + ex.Message);
             }
@@ -574,7 +573,7 @@ namespace DDPM.UI.Plugin.Common
                 SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
                 RefreshAction(true);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs RestoreClick ex:" + ex.Message);
             }
@@ -590,7 +589,7 @@ namespace DDPM.UI.Plugin.Common
                 ActionList.ExportActionList(PenActions, "PEN");
                 RefreshLabel();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs SaveClick ex:" + ex.Message);
             }
@@ -614,7 +613,7 @@ namespace DDPM.UI.Plugin.Common
                 _vm.UpdateRadialMenuRightClick(PenActions.IsUseCenter);
                 ActionList.ExportActionList(PenActions, "PEN");
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs tsUseCenter_Click ex:" + ex.Message);
             }
@@ -637,7 +636,7 @@ namespace DDPM.UI.Plugin.Common
                     pa.Stroke = FocusBorderBrush;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs Path_MouseEnter ex:" + ex.Message);
             }
@@ -665,7 +664,7 @@ namespace DDPM.UI.Plugin.Common
                     pa.Stroke = NormalBorderBrush;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs Path_MouseLeave ex:" + ex.Message);
             }
@@ -709,7 +708,7 @@ namespace DDPM.UI.Plugin.Common
                 SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
                 RefreshAction();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs Path_MouseLeave ex:" + ex.Message);
             }
