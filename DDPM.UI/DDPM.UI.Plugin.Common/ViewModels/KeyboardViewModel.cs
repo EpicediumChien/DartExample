@@ -722,7 +722,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private void InitializeKey()
         {
             //Model = "KB3121W";
-            //Model = "KB500";
+            Model = "KB500";
             //Model = "KB700";
             //Model = "KB900";
             //Model = "KB7221W";

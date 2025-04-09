@@ -118,7 +118,10 @@ namespace DDPM.UI.Module.KeyCustomization
             }
             else
             {
-                var cat = Actions.KnMActions[SelectedActionID].Category;
+                ActionCategory? cat = null;
+                if (Actions.KnMActions.TryGetValue(SelectedActionID, out var act))
+                    cat = act.Category;
+
                 if (cat == ActionCategory.None)
                 {
                     if (!string.IsNullOrEmpty(ActiveActionSection))
