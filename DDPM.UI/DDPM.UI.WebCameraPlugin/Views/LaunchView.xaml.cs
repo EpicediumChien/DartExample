@@ -522,7 +522,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;//FW Update
             CheckSupportWindowsHello(is_WindwosHelloSupport ? Visibility.Visible : Visibility.Collapsed);
             //1A
-            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK==4)
+            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK==2)
             {
                 print_debug("TestCase 1A");
                 _vm.UPD_Visibility = Visibility.Visible;
@@ -537,14 +537,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             }
             //3A
-            if (is_DellPc && !is_EsiSupport && is_WindowsVer_OK==2)
+            if (is_DellPc && !is_EsiSupport && is_WindowsVer_OK==1)
             {
                 print_debug("TestCase 3A");
                 _vm.MPS_Setting_Visibility = Visibility.Visible;
                 return;
             }
             //4A
-            if (is_DellPc && !is_EsiSupport && is_WindowsVer_OK==3)
+            if (is_DellPc && !is_EsiSupport && is_WindowsVer_OK==2)
             {
                 print_debug("TestCase 4A");
                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
@@ -552,7 +552,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
 
             //1B
-            if (!is_DellPc && is_EsiSupport && is_WindowsVer_OK == 4)
+            if (!is_DellPc && is_EsiSupport && is_WindowsVer_OK == 2)
             {
                 print_debug("TestCase 1B");
                 noPresenceFunction = true;
@@ -566,7 +566,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             }
             //3B
-            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK == 2)
+            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK == 1)
             {
                 print_debug("TestCase 3B");
                 _vm.MPS_Setting_Visibility = Visibility.Visible;
@@ -574,7 +574,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
 
             //4B
-            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK==3)
+            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK==2)
             {
                 print_debug("TestCase 4B");
                 noPresenceFunction = true;
@@ -600,7 +600,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;//FW Update
             CheckSupportWindowsHello(is_WindwosHelloSupport ? Visibility.Visible : Visibility.Collapsed);
             //C#1
-            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK == 4)
+            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK == 2)
             {
                 print_debug("TestCase C#1");
                 _vm.UPD_Visibility = Visibility.Visible;
@@ -608,7 +608,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             }
             //C#3
-            if (!is_DellPc && is_EsiSupport && is_WindowsVer_OK == 4)
+            if (!is_DellPc && is_EsiSupport && is_WindowsVer_OK == 2)
             {
                 print_debug("TestCase /C#3");
                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
@@ -714,15 +714,15 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //win11 >=Win11 22H2 latter and OsBuild>=22621
                 if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2)&& WinVersion.GetOsBuild()>=22621)
                     return 1;
-                //win11 >= Win11 22H2 latter and OsBuild< 22621
-                if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2) && WinVersion.GetOsBuild() < 22621)
-                    return 2;
+                ////win11 >= Win11 22H2 latter and OsBuild< 22621
+                //if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2) && WinVersion.GetOsBuild() < 22621)
+                //    return 2;
                 //Win10 Win11<22H2
                 if (info.BuildNum < (uint)(BuildNumber.Windows_11_22H2) && info.BuildNum >= (uint)(BuildNumber.Windows_10_1507))
-                    return 3;
-                //win10/11
-                if (info.BuildNum <= (uint)(BuildNumber.Windows_11_21H2) && info.BuildNum >= (uint)(BuildNumber.Windows_10_1507))
-                    return 4;
+                    return 2;
+                ////win10/11
+                //if (info.BuildNum <= (uint)(BuildNumber.Windows_11_21H2) && info.BuildNum >= (uint)(BuildNumber.Windows_10_1507))
+                //    return 4;
 
             }
             return 0;
