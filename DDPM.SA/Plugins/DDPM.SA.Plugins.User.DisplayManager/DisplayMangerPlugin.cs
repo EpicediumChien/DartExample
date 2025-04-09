@@ -568,8 +568,27 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             ObjGetVCP result = new ObjGetVCP() { result = false, value = null };
 
+            //Jason add color
+            string strColor = string.Empty;
+            if (FunctionName.Equals("colorpreset") && _displayDataManger != null)
+            {
+                if (_displayDataManger.GetColor(monitorInfo, GetHDRStatus(monitorInfo).Result, out strColor))
+                {
+                    result.result = true;
+                    result.value = strColor;
+                    return Task.FromResult(result);
+                }
+            }
+
             if (_VcpCorePlugin != null)
+            {
                 result = _VcpCorePlugin.GetVCPCapability(monitorInfo, FunctionName, guid, opt, priority).Result;
+                //Jason add color
+                if (result.result && FunctionName.Equals("colorpreset") && _displayDataManger != null)
+                {
+                    _displayDataManger.SetColor(monitorInfo, GetHDRStatus(monitorInfo).Result, (string)result.value);
+                }
+            }
             else
                 _logs.DebugMsg("[DisplayMangerPlugin] _VcpCorePlugin is null");
 
@@ -616,6 +635,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
                 if (r && FunctionName.Equals("Input Select"))
                     _AllInfoMonitors = GetMonitors().Result;
+                //04.07 Jason add color to DisplayData 
+                if (r && FunctionName.Equals("colorpreset"))
+                {
+                    _displayDataManger.SetColor(monitorInfoX, GetHDRStatus(monitorInfoX).Result, val);
+                }
             }
             else
                 _logs.DebugMsg("[DisplayMangerPlugin] _VcpCorePlugin is null");
@@ -3034,6 +3058,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (e.vcpcode.Equals("E9"))
             {
                 SetMonitorVCPE9(e);
+            }
+            //Jason 0409 add DisplayData_Color
+            if (e.vcpcode.Equals("E2"))
+            {
+                SetMonitorColor(e);
             }
 
             _VCPchangedEventArgs.vcpcode = e.vcpcode;
@@ -5850,24 +5879,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
-        private void SetMonitorVCPE9(VCPchangedEventArgs vCPchangedEventArgs)
-        {
-            if (vCPchangedEventArgs.monitor != null)
-            {
-                if (vCPchangedEventArgs.value != "1" && vCPchangedEventArgs.value != "2")
-                {
-                    if (_displayDataManger != null)
-                    {
-                        _displayDataManger.SetMonitorE9(vCPchangedEventArgs.monitor, (uint)int.Parse(vCPchangedEventArgs.value));
-                    }
-                }
-                else
-                {
-                    _logs.DebugMsg("[DisplayMangerPlugin][SetMonitorE9] E9 is 1 or 2.");
-                }
-            }
-        }
-
         #endregion
 
         #region Display FWU Metadata
@@ -6075,6 +6086,47 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
             }
             return Task.CompletedTask;
+        }
+
+        private void SetMonitorVCPE9(VCPchangedEventArgs vCPchangedEventArgs)
+        {
+            if (vCPchangedEventArgs.monitor != null)
+            {
+                if (vCPchangedEventArgs.value != "1" && vCPchangedEventArgs.value != "2")
+                {
+                    if (_displayDataManger != null)
+                    {
+                        _displayDataManger.SetMonitorE9(vCPchangedEventArgs.monitor, (uint)int.Parse(vCPchangedEventArgs.value));
+                    }
+                }
+                else
+                {
+                    _logs.DebugMsg("[DisplayMangerPlugin][SetMonitorE9] E9 is 1 or 2.");
+                }
+            }
+            else 
+            {
+                _logs.DebugMsg("[DisplayMangerPlugin][SetMonitorE9] monitor info is null.");
+            }
+        }
+
+        private void SetMonitorColor(VCPchangedEventArgs vCPchangedEventArgs)
+        {
+            if (vCPchangedEventArgs.monitor != null)
+            {
+                if (_displayDataManger != null)
+                {
+                    Trace.WriteLine("SetMonitorColor value : " + vCPchangedEventArgs.value);
+                    //string strColor = VcpCodeList.VCPE2[int.Parse(vCPchangedEventArgs.value)];
+                    //Trace.WriteLine("SetMonitorColor code" + int.Parse(vCPchangedEventArgs.value).ToString());
+                    //Trace.WriteLine("SetMonitorColor strcode" + strColor);
+                    _displayDataManger.SetColor(vCPchangedEventArgs.monitor, GetHDRStatus(vCPchangedEventArgs.monitor).Result, vCPchangedEventArgs.value);
+                }
+            }
+            else
+            {
+                _logs.DebugMsg("[DisplayMangerPlugin][SetMonitorColor] monitor info is null.");
+            }
         }
 
         #endregion
