@@ -54,7 +54,7 @@
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Column="0" x:Name="HeaderBd"
                           MouseDown="Grid_MouseDown">
-                        <Border CornerRadius="10,0,0,0">
+                        <Border CornerRadius="10,0,0,0" Height="32">
                             <Border.Style>
                                 <Style TargetType="Border">
                                     <Style.Triggers>
@@ -99,7 +99,7 @@
                     <Grid Grid.Column="1"
                           Background="Transparent"
                           MouseDown="Close_Click">
-                        <Border CornerRadius="0,10,0,0">
+                        <Border CornerRadius="0,10,0,0" Height="32">
                             <Border.Style>
                                 <Style TargetType="Border">
                                     <Style.Triggers>
@@ -140,7 +140,7 @@
                 </Grid> -->
 
                 <Grid Grid.Row="1"
-                    MouseDown="CameraSetting_Click">
+                    MouseDown="CameraSetting_Click" Height="72">
                     <Grid.Style>
                         <Style TargetType="Grid">
                             <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_BackGround_1}" />
@@ -181,7 +181,9 @@
                 <Grid Grid.Row="2"
                       Background="Transparent"
                       MouseDown="CallDDPM_Click">
-                    <Border CornerRadius="0,0,12,12">
+                    <Border CornerRadius="0,0,10,10" 
+                            VerticalAlignment="Top"
+                            Height="30">
                         <Border.Style>
                             <Style TargetType="Border">
                                 <Setter Property="Background" Value="{DynamicResource Default_SA_QAM_BackGround}"/>
