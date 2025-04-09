@@ -1951,14 +1951,14 @@ namespace DDPM.CLI.Plugins.Display.Test
             string get_InputSource_code_Result;
 
             // Case "VGA-1"
-            input = "VGA-1";
+            input = "VGA1";
             get_InputSource_code = "0x01";
             get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
             Assert.IsNotNull(get_InputSource_code_Result);
             Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
 
             // Case "VGA-2"
-            input = "VGA-2";
+            input = "VGA2";
             get_InputSource_code = "0x02";
             get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
             Assert.IsNotNull(get_InputSource_code_Result);
@@ -2049,7 +2049,7 @@ namespace DDPM.CLI.Plugins.Display.Test
             Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
 
             // Case "DISPLAYPORT-1"
-            input = "DISPLAYPORT-1";
+            input = "DISPLAYPORT1";
             get_InputSource_code = "0x0f";
             get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
             Assert.IsNotNull(get_InputSource_code_Result);
@@ -2063,21 +2063,21 @@ namespace DDPM.CLI.Plugins.Display.Test
             Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
 
             // Case "HDMI-1"
-            input = "HDMI-1";
+            input = "HDMI1";
             get_InputSource_code = "0x11";
             get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
             Assert.IsNotNull(get_InputSource_code_Result);
             Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
 
             // Case "HDMI-2"
-            input = "HDMI-2";
+            input = "HDMI2";
             get_InputSource_code = "0x12";
             get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
             Assert.IsNotNull(get_InputSource_code_Result);
             Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
 
             // Case "DISPLAYPORT-2"
-            input = "DISPLAYPORT-2";
+            input = "DISPLAYPORT2";
             get_InputSource_code = "0x13";
             get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
             Assert.IsNotNull(get_InputSource_code_Result);
@@ -2105,7 +2105,7 @@ namespace DDPM.CLI.Plugins.Display.Test
             Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
 
             // Case "DISPLAYPORT-3"
-            input = "DISPLAYPORT-3";
+            input = "DISPLAYPORT3";
             get_InputSource_code = "0x17";
             get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
             Assert.IsNotNull(get_InputSource_code_Result);
@@ -2119,14 +2119,14 @@ namespace DDPM.CLI.Plugins.Display.Test
             Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
 
             // Case "Thunderbolt-1"
-            input = "Thunderbolt-1";
+            input = "Thunderbolt1";
             get_InputSource_code = "0x19";
             get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
             Assert.IsNotNull(get_InputSource_code_Result);
             Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
 
             // Case "Thunderbolt-2"
-            input = "Thunderbolt-2";
+            input = "Thunderbolt2";
             get_InputSource_code = "0x1a";
             get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
             Assert.IsNotNull(get_InputSource_code_Result);
@@ -2388,7 +2388,7 @@ namespace DDPM.CLI.Plugins.Display.Test
             ObjGetVCP objGetVCP = new ObjGetVCP() { result = true, value = "02" };  //unlock
             UInt16[] ushorts = new UInt16[1];
             ObjGetVCP objGetPxpMode = new ObjGetVCP() { result = true, value = "0" };  //off", 0x00, "PIP/PBP off, full screen"
-            List<PowerNapSetting> powerNapSettings = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = monitorInfo1.modelName, RunType = PowerNapType.Off, SerialNumber = monitorInfo1.edid.SerialNumber, Status = false } };
+            List<PowerNapSetting> powerNapSettings = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = monitorInfo1.modelName, RunType = PowerNapType.Off, SerialNumber = monitorInfo1.edid.SerialNumber, ServiceTag=monitorInfo1.edid.ServiceTag, Status = false } };
             DDPMSettings ddpmSettings = new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig());
             bool SetAppConfigDataDDPMSettings = true;
             bool AutoSetColorPresetForMonitorConfig = true;

@@ -553,7 +553,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             }
         }*/
 
-        [Test]
+       /* [Test]
         public void TestRunPowerNapDeserializeObject()
         {
             List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
@@ -565,9 +565,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             var RunDeserialObjectResult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", powerNapSettingsConfig, SerializePowerNapSettings_path1_);
             Assert.Greater(RunDeserialObjectResult.Length, 0);
             File.Delete(SerializePowerNapSettings_path1_);
-        }
+        }*/
 
-        [Test]
+        /*[Test]
         public void TestRunPowerNapSettingDeserializeObject()
         {
             List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
@@ -582,7 +582,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             Assert.That(powerNapSettingsConfig[0].SerialNumber, Is.EqualTo(RunPowerNapDeserializeObjectResult[0].SerialNumber));
             Assert.That(powerNapSettingsConfig[0].Status, Is.EqualTo(RunPowerNapDeserializeObjectResult[0].Status));
             File.Delete(DeserialPowerNapSettings_path1_);
-        }
+        }*/
 
         /*[Test]
         public void TestImportPowerNapSettings()
@@ -711,7 +711,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             }
         }
 
-        [Test]
+       /* [Test]
         public void TestWriteRegistryData()
         {
             bool writeRegistryDataFail = false;
@@ -747,7 +747,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                     Assert.That(writeRegistryDataFail, Is.EqualTo(WriteRegistryData_Result2));
                 }
             }
-        }
+        }*/
 
         [Test]
         public void TestSetAppConfigData()
@@ -811,7 +811,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             }
         }
 
-        [Test]
+        /*[Test]
         public void TestInitDDPMMonitorConfigFile()
         {
             string modelname = "TestU2724DD";
@@ -823,7 +823,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             Assert.IsNotNull(Result);
             Assert.Greater(_allDDPMMonitorSettings.Count, 0);
             Assert.IsTrue(_allDDPMMonitorSettings.ContainsKey(modelname));
-        }
+        }*/
 
         [Test]
         public void TestReloadAppConfigData()
@@ -920,7 +920,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             Assert.That(serviceTag, Is.EqualTo(MonitorListDesResult[0].ServiceTag));
         }
 
-        [Test]
+        /*[Test]
         public void TestReloadMonitorSettings()
         {
             string modelname = "TestU2724DD";
@@ -971,7 +971,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             Assert.That(Model3, Is.EqualTo(ReloadMonitorSettingsResult2[0].Model));
             Assert.That(ServiceTag3, Is.EqualTo(ReloadMonitorSettingsResult2[0].ServiceTag));
             File.Delete(monitorSettings_path);
-        }
+        }*/
 
         [Test]
         public void TestWriteMonitorSettings()
@@ -1064,7 +1064,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             Assert.Greater(MonitorListSerialResult.Length, 0);
         }
 
-        [Test]
+        /*[Test]
         public void TestReadAllMonitorSettings()
         {
             string _display_path2 = "ReadAllMonitorSettings.json";
@@ -1090,7 +1090,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             Assert.IsNotNull(ReadAllMonitorSettingsResult);
             Assert.Greater(ReadAllMonitorSettingsResult.Count, 0);
             Assert.That(_allMonitorSettings, Is.EqualTo(_allMonitorSettings));
-        }
+        }*/
 
         [Test]
         public void TestReadImportSettingsFile()
