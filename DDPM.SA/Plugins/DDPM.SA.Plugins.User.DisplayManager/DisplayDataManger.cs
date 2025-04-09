@@ -455,7 +455,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return false;
         }
 
-        public bool GetColor(MonitorInfo monitorInfo, out Color color)
+        public bool GetColor(MonitorInfo monitorInfo, bool isHDR, out string color)
         {
             if (monitorInfo != null)
             {
@@ -463,8 +463,24 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                                      x.ServiceTag == monitorInfo.edid.ServiceTag);
                 if (mi != -1)
                 {
-                    color = _displayData[mi].Color;
-                    return true;
+                    if (isHDR)
+                    {
+                        color = _displayData[mi].Color.color_EnHDR;
+                    }
+                    else
+                    {
+                        color = _displayData[mi].Color.color_DisHDR;
+                    }
+
+                    if (color != string.Empty)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        WriteLog("[GetColor]_displayData is not set color");
+                        return false;
+                    }
                 }
                 else
                 {
@@ -475,11 +491,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 WriteLog("[GetColor]monitorInfo is null.");
             }
-            color = new Color();
+            color = string.Empty;
             return false;
         }
 
-        public bool SetColor(MonitorInfo monitorInfo, Color setColor)
+        public bool SetColor(MonitorInfo monitorInfo, bool isHDR, string setColor)
         {
             if (monitorInfo != null)
             {
@@ -487,7 +503,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                                      x.ServiceTag == monitorInfo.edid.ServiceTag);
                 if (mi != -1)
                 {
-                    _displayData[mi].Color = setColor;
+                    if (isHDR)
+                    {
+                        _displayData[mi].Color.color_EnHDR = setColor;
+                    }
+                    else
+                    {
+                        _displayData[mi].Color.color_DisHDR = setColor;
+                    }
                     return true;
                 }
                 else
