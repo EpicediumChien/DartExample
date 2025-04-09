@@ -1,27 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DDPM.Easy.Common
 {
     /// <summary>
     /// Interaction logic for SplitCtrl0B.xaml
     /// </summary>
-    public partial class SplitCtrl0B : UserControl, ISplitCtrl
+    public partial class SplitCtrl0B : UserControl, ISplitCtrl, IDisposable
     {
+        #region Private members
+        private bool _isDisposed = false;
+        #endregion Private members
+
         #region ctor
         public SplitCtrl0B()
         {
@@ -419,6 +411,28 @@ namespace DDPM.Easy.Common
             }
             set { }
         }
+
+        private void ClearCellBorders()
+        {
+            if (celBordersH != null)
+            {
+                foreach (CellBorder cellBd in celBordersH)
+                {
+                    cellBd.Dispose();
+                }
+                celBordersH.Clear();
+                celBordersH = null;
+            }
+            if (celBordersV != null)
+            {
+                foreach (CellBorder cellBd in celBordersV)
+                {
+                    cellBd.Dispose();
+                }
+                celBordersV.Clear();
+                celBordersV = null;
+            }
+        }
         #endregion
 
         #region Splitter List
@@ -475,5 +489,52 @@ namespace DDPM.Easy.Common
             }
         }
 
+        #region Dispose and Destructor
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    // 釋放託管資源
+                    if (vm != null)
+                    {
+                        vm.Dispose();
+                        vm = null;
+                    }
+                    InitCellList();
+                    cellListH = null;
+                    cellListV = null;
+
+                    InitSplitterList();
+
+                    if (DefaultSettings != null)
+                    {
+                        DefaultSettings.Clear();
+                    }
+
+                    ClearCellBorders();
+                }
+
+                // 釋放非託管資源
+                //if (unmanagedResource != IntPtr.Zero)
+                //{
+                //    // 釋放資源
+                //    unmanagedResource = IntPtr.Zero;
+                //}
+
+                _isDisposed = true;
+            }
+        }
+        ~SplitCtrl0B()
+        {
+            Dispose(false);
+        }
+        #endregion
     }
 }

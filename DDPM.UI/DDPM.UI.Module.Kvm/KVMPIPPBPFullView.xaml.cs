@@ -396,6 +396,7 @@ namespace DDPM.UI.Module.Kvm
                 vm.isPxPFullView = false;
                 //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[vm.PxPCode];
                 //vm.OnPipPbpCapsChanged();
+                vm.UpdateArrow(true);
                 vm.CancelSetUSBKVM();
             }
             DdpmCommonHelper.ModuleOwner?.CloseFullView();

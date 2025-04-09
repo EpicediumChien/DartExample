@@ -133,28 +133,38 @@
                 <ScrollViewer>
                     <StackPanel>
                         <WrapPanel>
+                            <TextBlock Text=", AwsPos(" />
+                            <TextBlock Text="{Binding xAwsWindow}" />
+                            <TextBlock Text="," />
+                            <TextBlock Text="{Binding yAwsWindow}" />
+                            <TextBlock Text="), " />
                             <TextBlock Text="AwsWindowRect: "/>
                             <TextBlock Text="{Binding AwsWindowRectText}"/>
                             <TextBlock Text="{Binding AwsWindowHoverMsg}"/>
                         </WrapPanel>
                         <WrapPanel>
-                            <TextBlock Text="AwsIcon0:"/>
+                            <TextBlock Text="AwsIcon0: "/>
+                            <TextBlock Text="{Binding rcIcon0Text}"/>
                             <TextBlock Text="{Binding AwsIcon0Info}"/>
                         </WrapPanel>
                         <WrapPanel>
                             <TextBlock Text="AwsIcon1:"/>
+                            <TextBlock Text="{Binding rcIcon1Text}"/>
                             <TextBlock Text="{Binding AwsIcon1Info}"/>
                         </WrapPanel>
                         <WrapPanel>
                             <TextBlock Text="AwsIcon2:"/>
+                            <TextBlock Text="{Binding rcIcon2Text}"/>
                             <TextBlock Text="{Binding AwsIcon2Info}"/>
                         </WrapPanel>
                         <WrapPanel>
                             <TextBlock Text="AwsIcon3:"/>
+                            <TextBlock Text="{Binding rcIcon3Text}"/>
                             <TextBlock Text="{Binding AwsIcon3Info}"/>
                         </WrapPanel>
                         <WrapPanel>
                             <TextBlock Text="AwsIcon4:"/>
+                            <TextBlock Text="{Binding rcIcon4Text}"/>
                             <TextBlock Text="{Binding AwsIcon4Info}"/>
                         </WrapPanel>
                     </StackPanel>
@@ -165,7 +175,7 @@
                 <ScrollViewer>
                     <StackPanel>
                         <TextBlock Text="WorkScreen=" />
-                        <TextBlock Text="{Binding WorkScreenName}" />
+                        <TextBlock Text="{Binding WorkScreenInfoText}" />
                         <TextBlock Text=", ScreenScale=" />
                         <TextBlock Text="{Binding ScreenScale}" />
                         <TextBlock Text=", " />
@@ -216,7 +226,7 @@
                         <TextBlock Name="txtRecentList" TextWrapping="Wrap" FontFamily="Consolas" FontSize="10" Margin="12,0,0,0"/>
                     </WrapPanel>
                     <WrapPanel Margin="0,4">
-                        <Button Name="refreshCustoListButton" Content="RefreshCustomList" Click="refreshCustoListButton_Click"/>
+                        <Button Name="refreshCustoListButton" Content="RefreshCustomList" Click="refreshCustomListButton_Click"/>
                         <TextBlock Name="txtCustomList" TextWrapping="Wrap" FontFamily="Consolas" FontSize="10" Margin="12,0,0,0"/>
                     </WrapPanel>
                     <!--<ListBox Name="lbLayouts" Grid.Row="1" MaxHeight="200"

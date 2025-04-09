@@ -1,19 +1,9 @@
 ﻿using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using VcpCore.Common;
-using Rectangle = System.Drawing.Rectangle;
 using System.Windows;
-using System.Reflection;
-using static System.Windows.Forms.AxHost;
 using Dell.Client.Framework.Common;
-using System.Windows.Media.Media3D;
 
 namespace DDPM.EABroker
 {
@@ -38,7 +28,7 @@ namespace DDPM.EABroker
         #endregion
         public EzMemLauncher_Unused()
         {
-            
+
         }
 
         public string LastError => _lastError;
@@ -92,7 +82,8 @@ namespace DDPM.EABroker
             //Invoke a STA thread to continue for UI process
             Thread thread = new Thread(() =>
             {
-                STA_LaunchStart(mi, eaId);
+                if (STA_LaunchStart(mi, eaId))
+                    return;
 
                 System.Windows.Threading.Dispatcher.Run();
             });
@@ -105,10 +96,21 @@ namespace DDPM.EABroker
 
         }
 
-        private void STA_LaunchStart(MonitorInfo mi, int eaId)
+        //Derek 2025/03/31
+        private void ExitUIThread()
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
+        }
+
+        private bool STA_LaunchStart(MonitorInfo mi, int eaId)
         {
             if (_screen == null)
-                return;
+            {
+                return false;
+            }
 
             //Determine the screen to be arranged
             //Screen? screen = Screen.AllScreens.FirstOrDefault(x => x.DeviceName.Equals(mi.DisplayName, StringComparison.OrdinalIgnoreCase));
@@ -144,7 +146,7 @@ namespace DDPM.EABroker
             //_emLauncherWindow = new EzMemLauncherWindow();
 
             //The eaId is belong to a custom layout
-            if (eaId >= EAEMConstants.EAID_FirstCustom)
+            if (eaId >= EAEMConstants.EAID_FirstCustom && DeviceManagerSA != null)
             {
                 //Load EA CustomList from User settings
                 SplitJson[] customList = DeviceManagerSA.ReadEACustomList().Result;
@@ -154,7 +156,8 @@ namespace DDPM.EABroker
                 if (idxCustom < 0)
                 {
                     _lastError = $"EAID({eaId}) is not a valid Custom Layout";
-                    return ;
+
+                    return false;
                 }
 
                 //Create the SplitCtrl
@@ -166,13 +169,16 @@ namespace DDPM.EABroker
                     if (customList[idxCustom].Settings == null)
                     {
                         _lastError = $"No setting in the overlap Custom Layout";
-                        return ;
+                        
+                        return false;
                     }
                     if (customList[idxCustom].Settings.Count <= 4)
                     {
                         _lastError = $"No setting is empty in the overlap Custom Layout";
-                        return;
+                        
+                        return false;
                     }
+
                     SplitCtrl0B sp0B = new SplitCtrl0B();
                     _splitCtrl = sp0B;
                     _splitCtrl.Settings = new List<double>(customList[idxCustom].Settings);
@@ -185,7 +191,8 @@ namespace DDPM.EABroker
                     if (_splitCtrl == null)
                     {
                         _lastError = $"Invalid settings of custom layout ({cellCount}{splitKey})";
-                        return ;
+                        
+                        return false;
                     }
                     _splitCtrl.Settings = new List<double>(customList[idxCustom].Settings);
                     _cellBorderCount = _splitCtrl.CellList.Count;
@@ -198,7 +205,8 @@ namespace DDPM.EABroker
                 if (_splitCtrl == null)
                 {
                     _lastError = $"Invalid EAID({eaId}) of preset layout.";
-                    return;
+                    
+                    return false;
                 }
                 _cellBorderCount = _splitCtrl.CellList.Count;
             }
@@ -210,9 +218,10 @@ namespace DDPM.EABroker
             //    return ;
             //}
 
-            _emLauncherWindow.ShowForEzMemLauncher(mi, _splitCtrl);
+            bool? result = _emLauncherWindow?.ShowForEzMemLauncher(mi, _splitCtrl);
             _isReadyToArrange = true;
 
+            return (result == true);
         }
 
         //eaid should be [1~49]

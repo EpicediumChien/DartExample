@@ -85,7 +85,7 @@ namespace DDPM.UI.Plugin.PenPlugin
             _log.Info($"[Penplugin] GetPeripherals is invoked ... in");
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
-                Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA.GetDevices(); //(true);
+                Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA.GetDevices(true);
                 _deviceHelper = task.Result;
             }
 

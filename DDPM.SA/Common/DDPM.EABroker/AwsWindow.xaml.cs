@@ -1,21 +1,10 @@
 ﻿using DDPM.Easy.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
-using Dell.Client.Framework.Common;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using VcpCore.Common;
 
 namespace DDPM.EABroker
@@ -35,7 +24,9 @@ namespace DDPM.EABroker
         //AwsWindow Rect on VirtualScreen
         private Rect _rcAwsWindow = new Rect();
 
-        //5 Icons
+        //5 Icons 
+        readonly double _cxIcon = 120;
+        readonly double _cyIcon = 129;
         private Rect _rcIcon0 = new Rect();
         private Rect _rcIcon1 = new Rect();
         private Rect _rcIcon2 = new Rect();
@@ -223,13 +214,34 @@ namespace DDPM.EABroker
             //}));
         }
 
+        /// <summary>
+        /// Calculate the Rect of Icons (AwsIcon0~AwsIcon4) and then store to ArrangeVM.rcIcon0~rcIcon4
+        /// The coordinates are based on VirtualScreen
+        /// </summary>
         private void RefreshAwsIconRects()
         {
-            _rcIcon0 = _vm.GetFrameworkElementRect(_vm.AwsIcon0.UC);
-            _rcIcon1 = _vm.GetFrameworkElementRect(_vm.AwsIcon1.UC);
-            _rcIcon2 = _vm.GetFrameworkElementRect(_vm.AwsIcon2.UC);
-            _rcIcon3 = _vm.GetFrameworkElementRect(_vm.AwsIcon3.UC);
-            _rcIcon4 = _vm.GetFrameworkElementRect(_vm.AwsIcon4.UC);
+            double dx = (_cxAwsWindow - _cxIcon * 5) / 10;
+            double dy = (_cyAwsWindow - _cyIcon) / 2;
+
+            double xWindow = _vm.xAwsWindow;
+            double yWindow = _vm.yAwsWindow;
+
+            _rcIcon0 = new Rect(_vm.ScreenScale * (xWindow + dx), _vm.ScreenScale * (yWindow + dy), _vm.ScreenScale * _cxIcon, _vm.ScreenScale *_cyIcon);
+            _rcIcon1 = new Rect(_vm.ScreenScale * (xWindow + 3 * dx + _cxIcon), _vm.ScreenScale * (yWindow + dy), _vm.ScreenScale * _cxIcon, _vm.ScreenScale * _cyIcon);
+            _rcIcon2 = new Rect(_vm.ScreenScale * (xWindow + 5 * dx + 2 * _cxIcon), _vm.ScreenScale * (yWindow + dy), _vm.ScreenScale * _cxIcon, _vm.ScreenScale * _cyIcon);
+            _rcIcon3 = new Rect(_vm.ScreenScale * (xWindow + 7 * dx + 3 * _cxIcon), _vm.ScreenScale * (yWindow + dy), _vm.ScreenScale * _cxIcon, _vm.ScreenScale * _cyIcon);
+            _rcIcon4 = new Rect(_vm.ScreenScale * (xWindow + 9 * dx + 4 * _cxIcon), _vm.ScreenScale * (yWindow + dy), _vm.ScreenScale * _cxIcon, _vm.ScreenScale * _cyIcon);
+
+            //_rcIcon0 = _vm.GetFrameworkElementRect(_vm.AwsIcon0.UC);
+            //_rcIcon1 = _vm.GetFrameworkElementRect(_vm.AwsIcon1.UC);
+            //_rcIcon2 = _vm.GetFrameworkElementRect(_vm.AwsIcon2.UC);
+            //_rcIcon3 = _vm.GetFrameworkElementRect(_vm.AwsIcon3.UC);
+            //_rcIcon4 = _vm.GetFrameworkElementRect(_vm.AwsIcon4.UC);
+            _vm.rcIcont0 = _rcIcon0;
+            _vm.rcIcont1 = _rcIcon1;
+            _vm.rcIcont2 = _rcIcon2;
+            _vm.rcIcont3 = _rcIcon3;
+            _vm.rcIcont4 = _rcIcon4;
         }
 
         private void RefreshCellBordersInAwsIcons()
@@ -257,7 +269,8 @@ namespace DDPM.EABroker
                 else
                 {
                     SplitCtrl0B splitCtrl0B = (SplitCtrl0B)_vm.AwsIcon1;
-                    splitCtrl0B.ApplySettingsToCellList(new Rect(rcIcon.Left, rcIcon.Top, rcIcon.Width, rcIcon.Height));
+                    //Robert_Lin 2025-4-1 trial workaround. It seems not solve the problem.
+                    splitCtrl0B.ApplySettingsToCellList(new Rect(rcIcon.Left, rcIcon.Top, rcIcon.Width*_vm.ScreenScale, rcIcon.Height*_vm.ScreenScale));
                 }
             }
             if (_vm.AwsIcon2.IsAddedCustomLayout)
@@ -765,7 +778,7 @@ namespace DDPM.EABroker
             return null;
         }
 
-        public Screen HoveringScreen { get; set; }
+        public Screen? HoveringScreen { get; set; } = null;
         public Rect CalculateHoveringCellArrangeRect()
         {
             if (_vm.WorkScreen == null)
@@ -801,7 +814,7 @@ namespace DDPM.EABroker
 
         public void RefreshCellRects(int flag = 0)
         {
-            Dispatcher.BeginInvoke(new Action(() =>
+            _ = Dispatcher.BeginInvoke(new Action(() =>
             {
                 Dispatcher_RefreshCellRects(flag);
 
@@ -823,7 +836,7 @@ namespace DDPM.EABroker
 
             Trace.WriteLine("@ Dispatcher_RefreshCellRects()");
 
-            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon0))
+            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon0, _vm.rcIcont0))
             {
                 _areCellRectsRefreshed = false;
             }
@@ -867,7 +880,7 @@ namespace DDPM.EABroker
                 }
             }
             */
-            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon1))
+            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon1, _vm.rcIcont1))
             {
                 _areCellRectsRefreshed = false;
             }
@@ -912,7 +925,7 @@ namespace DDPM.EABroker
                 }
             }
             */
-            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon2))
+            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon2, _vm.rcIcont2))
             {
                 _areCellRectsRefreshed = false;
             }
@@ -959,7 +972,7 @@ namespace DDPM.EABroker
                 }
             }
             */
-            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon3))
+            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon3, _vm.rcIcont3))
             {
                 _areCellRectsRefreshed = false;
             }
@@ -1004,19 +1017,36 @@ namespace DDPM.EABroker
                 }
             }
             */
-            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon4))
+            if (!UI_RefreshAwsIconCellRects(_vm.AwsIcon4, _vm.rcIcont4))
             {
                 _areCellRectsRefreshed = false;
             }
 
             if (!_areCellRectsRefreshed && flag == 0)
             {
-                System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(0); }, null, 100, Timeout.Infinite);
+                _vm.WriteLog($"Create timer for RefreshCellRects(0)");
+
+                //Derek 2025/03/29
+                System.Threading.Timer? timer1 = null;
+                try
+                {
+                    timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(0); }, null, 100, Timeout.Infinite);
+                }
+                catch (Exception e)
+                {
+                    _vm.WriteLog($"[AwsWindow] Create timer for RefreshCellRects(0) exception {e.Message}");
+                }
+                finally
+                {
+                    timer1?.Dispose();
+                    timer1 = null;
+                }
+                
             }
             _vm.OnPropertyChanged_AwsIconInfos();
-        }
+        }        
 
-        private bool UI_RefreshAwsIconCellRects(ISplitCtrl awsIcon)
+        private bool UI_RefreshAwsIconCellRects(ISplitCtrl awsIcon, Rect rcIcon)
         {
             bool isCellRectsRefreshed = true;
 
@@ -1048,6 +1078,19 @@ namespace DDPM.EABroker
                         continue;
 
                     objCell.rc = _vm.GetFrameworkElementRect(objCell.CellBd);
+
+                    //var transformToWnd = awsIcon.UC.TransformToVisual(this);
+                    //var posIconToWnd = transformToWnd.Transform(new System.Windows.Point(0, 0));
+
+                    ////Transform CellBorder position to related to AwsIcon
+                    //var transformToIcon = objCell.CellBd.TransformToVisual(awsIcon.UC);
+                    //var posCellToSplit = transformToIcon.Transform(new System.Windows.Point(0, 0));
+
+                    ////Get the position of Virtual Screen
+                    //var posVscr = new System.Windows.Point(SystemParameters.VirtualScreenLeft, SystemParameters.VirtualScreenTop);
+                    ////Calculate the relate pos of Cell to Virtual Screen
+                    //var posCellToVscr = new System.Windows.Point(posCellToSplit.X + rcIcon.Left, posCellToSplit.Y + rcIcon.Top);
+
                     if (objCell.rc.IsEmpty)
                     {
                         isCellRectsRefreshed = false;
@@ -1081,7 +1124,7 @@ namespace DDPM.EABroker
             if (!isVisible)
                 return;
 
-            Dispatcher.BeginInvoke(new Action(() =>
+            _ = Dispatcher.BeginInvoke(new Action(() =>
             {
                 //Get the Screen of the cursor
                 Screen showScreen = _vm.GetScreenFromCursor();
@@ -1121,7 +1164,7 @@ namespace DDPM.EABroker
             if (!_vm.IsAwsWindowVisible)
                 return;
 
-            Dispatcher.BeginInvoke(new Action(() =>
+            _ = Dispatcher.BeginInvoke(new Action(() =>
             {
 
                 _vm.WriteLog($"@ AwsWindow.HandleWorkScreenChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
@@ -1154,7 +1197,7 @@ namespace DDPM.EABroker
         #region Icon0 - Monitors
         private void RefreshIcon0()
         {
-            Dispatcher.BeginInvoke(new Action(() =>
+            _ = Dispatcher.BeginInvoke(new Action(() =>
             {
                 //if (_vm.AwsIcon0 != null)
                 //{
@@ -1168,7 +1211,7 @@ namespace DDPM.EABroker
                 System.Drawing.Rectangle rcVirtualScreen = SystemInformation.VirtualScreen;
                 if ((rcVirtualScreen.Width <= 0) || (rcVirtualScreen.Height <= 0))
                     return;
-                
+
                 double cxView = 1.000;
                 double cyView = 1.000;
                 double ratioX = icon0Canvas.ActualWidth / (double)rcVirtualScreen.Width;
@@ -1252,7 +1295,7 @@ namespace DDPM.EABroker
 
         private void HoverCellInAwsIcon0(string hoverName)
         {
-            Dispatcher.BeginInvoke(new Action(() =>
+            _ = Dispatcher.BeginInvoke(new Action(() =>
             {
                 foreach (var item in icon0Canvas.Children)
                 {
@@ -1387,17 +1430,37 @@ namespace DDPM.EABroker
             }
         }
 
-        public void OnWindowStartMoving()
-        {
-            //RefreshIcon0();
-        }
+        //Derek 2025/03/29 remove it due to no one use it
+        //public void OnWindowStartMoving()
+        //{
+        //    //RefreshIcon0();
+        //}
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            _vm.WriteLog($"Awswindows Window_Closing start, sender = {sender.ToString()}");
+
+            try
             {
-                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+                HoveringScreen = null;
+
+                if (_vm != null)
+                {
+                    _vm.AwsWindowVisibilityChanged -= HandleAwsWindowVisibilityChanged;
+                    _vm.WorkScreenChanged -= HandleWorkScreenChanged;
+                }
+
+
+                if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+                {
+                    System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+                }
             }
+            catch (Exception ex)
+            {
+                _vm.WriteLog($"Awswindows Window_Closing catch excepton {ex.Message}");
+            }
+            
         }
     }
 }

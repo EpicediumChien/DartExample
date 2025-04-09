@@ -173,11 +173,12 @@
                                                 <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}" >
                                                     <Grid.ToolTip>
                                                         <!--20250326 Chewlin for PIMS-348209 ADD MaxWidth="272" Placement="Top" HorizontalOffset="0" VerticalOffset="12" -->
-                                                        <ToolTip MaxWidth="272" Placement="Top" HorizontalOffset="0" VerticalOffset="12">
+                                                        <!--Elsa 20250407 for PIMS-348390 change HorizontalOffset="0" to HorizontalOffset="2" -->
+                                                        <ToolTip MaxWidth="272" Placement="Top" HorizontalOffset="2" VerticalOffset="12">
                                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}" MaxWidth="360">
-                                                                <!--20250326 Chewlin for PIMS-348209 ADD HorizontalAlignment="Left"  and change TextWrapping=Wrap to "WrapWithOverflow" -->
+                                                                <!--20250326 Chewlin for PIMS-348209 change TextWrapping=Wrap to "WrapWithOverflow" -->
                                                                 <Grid>
-                                                                    <TextBlock Name="customListTooltipText" Style="{StaticResource Tooltip_TextBlockStyle}" HorizontalAlignment="Left" TextWrapping="Wrap"/>
+                                                                    <TextBlock Name="customListTooltipText" Style="{StaticResource Tooltip_TextBlockStyle}" TextWrapping="WrapWithOverflow"/>
                                                                 </Grid>
                                                             </Border>
                                                         </ToolTip>

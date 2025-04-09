@@ -1369,11 +1369,31 @@ namespace DDPM.UI.Module.Color
         {
             var psi = new System.Diagnostics.ProcessStartInfo();
 
-            psi.FileName = "ms-settings:display";
-            psi.UseShellExecute = true;
-
+            //PIMS-353683 color profile url fail problem
+            psi.UseShellExecute = true;  
+            psi.FileName = "colorcpl";
+            if (DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(null, psi))
+            {
+                DdpmCommonHelper.WriteUILog("[ICC_profile_config_Click] method3 worked");
+                return;
+            }
+            psi.FileName = "control";
+            psi.Arguments = "colorcpl";
             //System.Diagnostics.Process.Start(psi);
-            DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(null, psi);
+            if (DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(null, psi))
+            {
+                DdpmCommonHelper.WriteUILog("[ICC_profile_config_Click] method4 worked");
+                return;
+            }
+            psi = new System.Diagnostics.ProcessStartInfo();
+            psi.UseShellExecute = true;
+            psi.FileName = "ms-settings:display";
+            if (DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(null, psi))
+            {
+                DdpmCommonHelper.WriteUILog("[ICC_profile_config_Click] method2 worked");
+                return;
+            }
+            DdpmCommonHelper.WriteUILog("[ICC_profile_config_Click] all methods failed");
         }
         //Robert_Lin 2025-1-18 added to handle Advanced Settings / ICC profile hylerlink click command
         ////////////////////////////

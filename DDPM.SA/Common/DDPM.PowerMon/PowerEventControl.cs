@@ -2,23 +2,19 @@
 using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace DDPM.PowerMon
 {
     public class PowerEventControl
     {
-        private static PowerMonitor _pwr_Mon = null;
-        private static ILog _log = null;
-        public event EventHandler MonitorTurnedOn = null;
-        public event EventHandler SystemSuspend = null;
-        public event EventHandler SystemResume = null;
-        public event EventHandler CurrentSessionActived = null;
-        public event EventHandler CurrentSessionInactived = null;
+        private static PowerMonitor? _pwr_Mon = null;
+        private static ILog? _log = null;
+        public event EventHandler? MonitorTurnedOn = null;
+        public event EventHandler? SystemSuspend = null;
+        public event EventHandler? SystemResume = null;
+        public event EventHandler? CurrentSessionActived = null;
+        public event EventHandler? CurrentSessionInactived = null;
 
         public event EventHandler<KeyPressedEventArgs> HotkeyPressed = null;
 

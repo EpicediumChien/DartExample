@@ -196,14 +196,16 @@
                                                       M7.36 6.24H8.64V12.64H7.36V6.24Z" Fill="{DynamicResource SecondaryButton_TextColor_Default}">
                                                 </Path>
                                                 <Grid.ToolTip>
-                                                    <ToolTip>
+                                                    <!--Elsa 20250407 for PIMS-348390 add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened"-->
+                                                    <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened" >
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <Border.Resources>
                                                                 <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
                                                             </Border.Resources>
                                                             <StackPanel>
                                                                 <StackPanel Orientation="Horizontal">
-                                                                    <TextBlock x:Name="KvmHotkeyTooltip" Text="{Binding KvmHotkeyTooltip,Mode=TwoWay}" />
+                                                                    <!--Elsa 20250407 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow"-->
+                                                                    <TextBlock x:Name="KvmHotkeyTooltip" Text="{Binding KvmHotkeyTooltip,Mode=TwoWay}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                                 </StackPanel>
                                                             </StackPanel>
                                                         </Border>
@@ -323,7 +325,8 @@
                                                      VerticalAlignment="Center"
                                                      Margin="16" Padding="32,0"
                                                      Background="#0672CB"
-                                                     Visibility="Collapsed" Click="OpenNKVM">
+                                                     Visibility="Collapsed" Click="OpenNKVM"
+                                                     IsEnabled="{Binding isNKVMEanble}" Opacity="{Binding NKVM_Opacity}">
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <UXControls:UXTextBlock Margin="8" Text="{Binding [Kvm.31], Source={x:Static lang:LangHelper.Instance}}" Foreground="#FFFFFF" />
                                         <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Background="#00000000">
@@ -332,14 +335,16 @@
                                                         M7.36 6.24H8.64V12.64H7.36V6.24Z" Fill="White">
                                             </Path>
                                             <Grid.ToolTip>
-                                                <ToolTip>
+                                                <!--Elsa 20250407 for PIMS-348390 add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened"-->
+                                                <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                         <Border.Resources>
                                                             <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding [Kvm.32], Source={x:Static lang:LangHelper.Instance}}" />
+                                                                <!--Elsa 20250407 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow"-->
+                                                                <TextBlock Text="{Binding [Kvm.32], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>

@@ -1,26 +1,12 @@
 ﻿using DDPM.SA.Common.Display;
 using DDPM.SA.Common;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using DDPM.SA.Common.Popup;
-using System.Printing;
-using System.Security.AccessControl;
 using Rectangle = System.Drawing.Rectangle;
-using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft.Win32;
 using DDPM.SA.Resources.Helper;
 
@@ -32,13 +18,13 @@ namespace DDPM.EABroker
     public partial class SaveCustomWindow : Window
     {
         #region Private Members
-        private readonly IDeviceManagerSA _deviceManagerSA;
-        private readonly SaveCustomWindowViewModel _viewModel;
-        private readonly EAArgs _eaArgs;
+        private readonly IDeviceManagerSA? _deviceManagerSA = null;
+        private readonly SaveCustomWindowViewModel? _viewModel = null;
+        private readonly EAArgs? _eaArgs = null;
         private IntPtr _hWnd;
-        private SplitJson[] _savedCustomList; //Will be update/reloaded at ShowAndEdit()
-        private SplitJson _inputSplit; //The copy from EAArgs when entering ShowAndEdit()
-        private Screen _workScreen; //Unused, use _workingArea instead
+        private SplitJson[]? _savedCustomList = null; //Will be update/reloaded at ShowAndEdit()
+        private SplitJson? _inputSplit = null; //The copy from EAArgs when entering ShowAndEdit()
+        private Screen? _workScreen = null; //Unused, use _workingArea instead
         private Rectangle _workingArea;
         #endregion Private Members
 
@@ -186,18 +172,19 @@ namespace DDPM.EABroker
         /// </summary>
         private void UpdateUIContent()
         {
-            if (_viewModel.IsOverlapLayout)
+            if (_viewModel != null && _viewModel.IsOverlapLayout)
             {
                 _viewModel.HeaderText = _arrangeWindows;
                 _viewModel.SubText = _adjust;
                 _viewModel.IsAdjustTextVisible = true;
             }
-            else
+            else if (_viewModel != null)
             {
                 _viewModel.HeaderText = _customLayout;
                 _viewModel.SubText = _adjust;
                 _viewModel.IsAdjustTextVisible = false;
             }
+
             saveBtn.Content = _saveButton;
             cancelBtn.Content = _cancelButton;
         }
@@ -208,7 +195,7 @@ namespace DDPM.EABroker
         {
             if (_deviceManagerSA == null)
                 return;
-            if (_eaArgs == null)
+            if (_eaArgs == null || _viewModel == null)
                 return;
 
             //Build ComboBox ItemsSource and determine SelectedItem
@@ -333,202 +320,202 @@ namespace DDPM.EABroker
 
         #region ShowAndEdit
         //v1, Robert_Lin, 2024-11-19, unused, dont use and test
-        public void ShowAndEdit_v1(EAArgs arg, Screen scr)
-        {
-            _inputSplit = arg.SplitJson;
-            _workScreen = scr;
+        //public void ShowAndEdit_v1(EAArgs arg, Screen scr)
+        //{
+        //    _inputSplit = arg.SplitJson;
+        //    _workScreen = scr;
 
-            this.Dispatcher.Invoke(() =>
-            {
-                Trace.WriteLine($"  * EAArgs.CustomName=[{arg.SplitJson.CustomName}]");
+        //    this.Dispatcher.Invoke(() =>
+        //    {
+        //        Trace.WriteLine($"  * EAArgs.CustomName=[{arg.SplitJson.CustomName}]");
 
-                //Update UI
-                _viewModel.IsOverlapLayout = arg.SplitJson.IsOverlapLayout;
-                if (_viewModel.IsOverlapLayout)
-                {
-                    _viewModel.HeaderText = _arrangeWindows;
-                    _viewModel.IsAdjustTextVisible = true;
-                }
-                else
-                {
-                    _viewModel.HeaderText = _customLayout;
-                    _viewModel.SubText = _adjust;
-                    _viewModel.IsAdjustTextVisible = false;
-                }
+        //        //Update UI
+        //        _viewModel.IsOverlapLayout = arg.SplitJson.IsOverlapLayout;
+        //        if (_viewModel.IsOverlapLayout)
+        //        {
+        //            _viewModel.HeaderText = _arrangeWindows;
+        //            _viewModel.IsAdjustTextVisible = true;
+        //        }
+        //        else
+        //        {
+        //            _viewModel.HeaderText = _customLayout;
+        //            _viewModel.SubText = _adjust;
+        //            _viewModel.IsAdjustTextVisible = false;
+        //        }
 
-                //Build ComboBox ItemsSource and determine SelectedItem
-                //
+        //        //Build ComboBox ItemsSource and determine SelectedItem
+        //        //
 
-                //1 Load CustomList from UserSettings file
-                int customId = 1;
-                ObservableCollection<SplitJson> tempList = new ObservableCollection<SplitJson>();
-                _savedCustomList = _deviceManagerSA.ReadEACustomList().Result;
-                if (_savedCustomList != null && _savedCustomList.Length > 0)
-                {
-                    //A2 Add saved custom into ComboBoxItems
-                    foreach (SplitJson custom in _savedCustomList)
-                    {
-                        if (custom.CustomId == 0)
-                            custom.CustomId = customId;
-                        SplitJson cbItem = custom.Clone();
-                        tempList.Add(cbItem);
-                        customId++;
-                    }
-                }
+        //        //1 Load CustomList from UserSettings file
+        //        int customId = 1;
+        //        ObservableCollection<SplitJson> tempList = new ObservableCollection<SplitJson>();
+        //        _savedCustomList = _deviceManagerSA.ReadEACustomList().Result;
+        //        if (_savedCustomList != null && _savedCustomList.Length > 0)
+        //        {
+        //            //A2 Add saved custom into ComboBoxItems
+        //            foreach (SplitJson custom in _savedCustomList)
+        //            {
+        //                if (custom.CustomId == 0)
+        //                    custom.CustomId = customId;
+        //                SplitJson cbItem = custom.Clone();
+        //                tempList.Add(cbItem);
+        //                customId++;
+        //            }
+        //        }
 
-                //2 If the tempList.Count>=5, to determine the selectedItem
-                // caseNo                   SelectedItem
-                // 1_Add from Preset        The oldest of saved custom list
-                // 2_Add from Overlap       The oldest of saved custom list
-                // 3_Edit from PresetCustom Current item (in EAArgs, find the matched EAID)
-                //
-                //Where 'the oldest of saved custom list' will be the first item of the list
-                //that is: savedCustomList[0] = tempList[0]
-                int caseNo = 1;
-                if (arg.SplitJson.EAID >= EAEMConstants.EAID_FirstCustom)
-                    caseNo = 3;
-                if (arg.SplitJson.IsOverlapLayout)
-                    caseNo = 2;
-                if (tempList.Count >= EAEMConstants.MaxCustomItems)
-                {
-                    _viewModel.CustomList = tempList;
-                    if (caseNo == 3)
-                    {
-                        SplitJson? selItem = tempList.FirstOrDefault(x => x.EAID == arg.SplitJson.EAID);
-                        if (selItem != null)
-                            _viewModel.SelectedCustomItem = selItem;
-                    }
-                    else //Case 1 and 2
-                    {
-                        //Select null, but set a default name
-                        _viewModel.SelectedCustomItem = null;
-                        //cbNames.IsReadOnly = true;
-                        //cbNames.Text = "Please select from drop-down list";
-                    }
-                }
-                else
-                {
-                    //3 tempList.Count<5, 
-                    //3.1 Add unused default CustomNames to list
-                    //3.2 Determine the selected item
+        //        //2 If the tempList.Count>=5, to determine the selectedItem
+        //        // caseNo                   SelectedItem
+        //        // 1_Add from Preset        The oldest of saved custom list
+        //        // 2_Add from Overlap       The oldest of saved custom list
+        //        // 3_Edit from PresetCustom Current item (in EAArgs, find the matched EAID)
+        //        //
+        //        //Where 'the oldest of saved custom list' will be the first item of the list
+        //        //that is: savedCustomList[0] = tempList[0]
+        //        int caseNo = 1;
+        //        if (arg.SplitJson.EAID >= EAEMConstants.EAID_FirstCustom)
+        //            caseNo = 3;
+        //        if (arg.SplitJson.IsOverlapLayout)
+        //            caseNo = 2;
+        //        if (tempList.Count >= EAEMConstants.MaxCustomItems)
+        //        {
+        //            _viewModel.CustomList = tempList;
+        //            if (caseNo == 3)
+        //            {
+        //                SplitJson? selItem = tempList.FirstOrDefault(x => x.EAID == arg.SplitJson.EAID);
+        //                if (selItem != null)
+        //                    _viewModel.SelectedCustomItem = selItem;
+        //            }
+        //            else //Case 1 and 2
+        //            {
+        //                //Select null, but set a default name
+        //                _viewModel.SelectedCustomItem = null;
+        //                //cbNames.IsReadOnly = true;
+        //                //cbNames.Text = "Please select from drop-down list";
+        //            }
+        //        }
+        //        else
+        //        {
+        //            //3 tempList.Count<5, 
+        //            //3.1 Add unused default CustomNames to list
+        //            //3.2 Determine the selected item
 
-                    //3.1 Add default custom names: ["Custom Layout (1)" ... "Custom Layout (5)"]
-                    //    Add the the names which is not in saved custom list, until item count == 5
-                    int nameNo = 1;
-                    bool isTheFirstDefaultName = true;
-                    string selName = "Custom Layout (1))";
-                    while (tempList.Count < EAEMConstants.MaxCustomItems)
-                    {
-                        //generate the default custom name
-                        string customName = $"Custom Layout ({nameNo})";
-                        //Check if the name is existed
-                        if (tempList.FirstOrDefault(x => x.CustomName.Equals(customName)) == null)
-                        {
-                            //Not exist (not in-used) => Add into list 
-                            //EAID=0 in ComboBox means this SplitJson is not in-used layout
-                            SplitJson splitJson = new SplitJson()
-                            {
-                                CustomName = customName,
-                                CustomId = customId,
-                                EAID = 0
-                            };
-                            customId++;
-                            tempList.Add(splitJson);
-                            if (isTheFirstDefaultName)
-                            {
-                                selName = customName;
-                                //_viewModel.SelectedCustomItem = splitJson;
-                                isTheFirstDefaultName = false;
-                            }
-                        }
-                        nameNo++;
-                    }
-                    _viewModel.CustomList.Clear();
-                    _viewModel.CustomList = new ObservableCollection<SplitJson>(tempList);
-                    _viewModel.SelectedCustomItem = _viewModel.CustomList.FirstOrDefault(x => x.CustomName.Equals(selName));
+        //            //3.1 Add default custom names: ["Custom Layout (1)" ... "Custom Layout (5)"]
+        //            //    Add the the names which is not in saved custom list, until item count == 5
+        //            int nameNo = 1;
+        //            bool isTheFirstDefaultName = true;
+        //            string selName = "Custom Layout (1))";
+        //            while (tempList.Count < EAEMConstants.MaxCustomItems)
+        //            {
+        //                //generate the default custom name
+        //                string customName = $"Custom Layout ({nameNo})";
+        //                //Check if the name is existed
+        //                if (tempList.FirstOrDefault(x => x.CustomName.Equals(customName)) == null)
+        //                {
+        //                    //Not exist (not in-used) => Add into list 
+        //                    //EAID=0 in ComboBox means this SplitJson is not in-used layout
+        //                    SplitJson splitJson = new SplitJson()
+        //                    {
+        //                        CustomName = customName,
+        //                        CustomId = customId,
+        //                        EAID = 0
+        //                    };
+        //                    customId++;
+        //                    tempList.Add(splitJson);
+        //                    if (isTheFirstDefaultName)
+        //                    {
+        //                        selName = customName;
+        //                        //_viewModel.SelectedCustomItem = splitJson;
+        //                        isTheFirstDefaultName = false;
+        //                    }
+        //                }
+        //                nameNo++;
+        //            }
+        //            _viewModel.CustomList.Clear();
+        //            _viewModel.CustomList = new ObservableCollection<SplitJson>(tempList);
+        //            _viewModel.SelectedCustomItem = _viewModel.CustomList.FirstOrDefault(x => x.CustomName.Equals(selName));
 
-                    //3.2 Determine the selected item
-                    //
-                    // caseNo                   SelectedItem
-                    // 1_Add from Preset        The first item of default custom name
-                    // 2_Add from Overlap       The first item of default custom name
-                    // 3_Edit from PresetCustom Current item (in EAArgs, find the matched EAID)
+        //            //3.2 Determine the selected item
+        //            //
+        //            // caseNo                   SelectedItem
+        //            // 1_Add from Preset        The first item of default custom name
+        //            // 2_Add from Overlap       The first item of default custom name
+        //            // 3_Edit from PresetCustom Current item (in EAArgs, find the matched EAID)
 
-                    if (caseNo == 3)
-                    {
-                        SplitJson? selItem = tempList.FirstOrDefault(x => x.EAID == arg.SplitJson.EAID);
-                        if (selItem != null)
-                            _viewModel.SelectedCustomItem = selItem;
-                    }
-                    else //Case 1 and 2
-                    {
-                        //Already selected
-                    }
-
-
-                }
-                //cbNames.Items.Clear();
-                //string selectedName = arg.SplitJson.CustomName;
-                //if ((arg.CustomNames != null) && (arg.CustomNames.Count > 0))
-                //{
-                //    int addCount = 0;
-                //    foreach (string name in arg.CustomNames)
-                //    {
-                //        string addName = name;
-                //        //Check length of name
-                //        if (addName.Length > EAEMConstants.MaxCustomNameLenth)
-                //            addName = addName.Substring(0, EAEMConstants.MaxCustomNameLenth);
-                //        cbNames.Items.Add((string)addName);
-                //        addCount++;
-                //        if (addCount >= EAEMConstants.MaxCustomItems)
-                //            break;
-                //    }
-                //    cbNames.SelectedItem = selectedName;
-                //}
-                //else //CustomNames is empty
-                //{
-                //    //Add one item to ComboBox
-                //    if (String.IsNullOrWhiteSpace(selectedName))
-                //    {
-                //        selectedName = "Custom Layout (1)";
-                //    }
-                //    cbNames.Items.Add(selectedName);
-                //}
-                //cbNames.SelectedValue = selectedName;
-
-                //Calculate the position/size of EditWindow
-                //Robert_Lin, 2024-12-6, use the method in CommonFunctions
-                double dpiX = CommonFunctions.GetDpiX();
-                //double dpiX = 1.000;
-                //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-                //if (dpiXProperty != null)
-                //{
-                //    var varX = (int)dpiXProperty.GetValue(null, null);
-                //    dpiX = (double)varX / (double)96;
-                //}
+        //            if (caseNo == 3)
+        //            {
+        //                SplitJson? selItem = tempList.FirstOrDefault(x => x.EAID == arg.SplitJson.EAID);
+        //                if (selItem != null)
+        //                    _viewModel.SelectedCustomItem = selItem;
+        //            }
+        //            else //Case 1 and 2
+        //            {
+        //                //Already selected
+        //            }
 
 
-                if (_viewModel.IsOverlapLayout)
-                {
-                    Height = 284;
-                    double x = scr.WorkingArea.Left + scr.WorkingArea.Width / 2 - Width / 2;
-                    double y = scr.WorkingArea.Top + scr.WorkingArea.Height / 2 - Height / 2;
+        //        }
+        //        //cbNames.Items.Clear();
+        //        //string selectedName = arg.SplitJson.CustomName;
+        //        //if ((arg.CustomNames != null) && (arg.CustomNames.Count > 0))
+        //        //{
+        //        //    int addCount = 0;
+        //        //    foreach (string name in arg.CustomNames)
+        //        //    {
+        //        //        string addName = name;
+        //        //        //Check length of name
+        //        //        if (addName.Length > EAEMConstants.MaxCustomNameLenth)
+        //        //            addName = addName.Substring(0, EAEMConstants.MaxCustomNameLenth);
+        //        //        cbNames.Items.Add((string)addName);
+        //        //        addCount++;
+        //        //        if (addCount >= EAEMConstants.MaxCustomItems)
+        //        //            break;
+        //        //    }
+        //        //    cbNames.SelectedItem = selectedName;
+        //        //}
+        //        //else //CustomNames is empty
+        //        //{
+        //        //    //Add one item to ComboBox
+        //        //    if (String.IsNullOrWhiteSpace(selectedName))
+        //        //    {
+        //        //        selectedName = "Custom Layout (1)";
+        //        //    }
+        //        //    cbNames.Items.Add(selectedName);
+        //        //}
+        //        //cbNames.SelectedValue = selectedName;
 
-                    Left = x / (double)dpiX; ;
-                    Top = y / (double)dpiX; ;
-                }
-                else
-                {
-                    Height = 196;
-                    Left = scr.WorkingArea.Left / (double)dpiX;
-                    Top = scr.WorkingArea.Top / (double)dpiX;
+        //        //Calculate the position/size of EditWindow
+        //        //Robert_Lin, 2024-12-6, use the method in CommonFunctions
+        //        double dpiX = CommonFunctions.GetDpiX();
+        //        //double dpiX = 1.000;
+        //        //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+        //        //if (dpiXProperty != null)
+        //        //{
+        //        //    var varX = (int)dpiXProperty.GetValue(null, null);
+        //        //    dpiX = (double)varX / (double)96;
+        //        //}
 
-                }
 
-                Show();
-                Topmost = true;
-            });
-        }
+        //        if (_viewModel.IsOverlapLayout)
+        //        {
+        //            Height = 284;
+        //            double x = scr.WorkingArea.Left + scr.WorkingArea.Width / 2 - Width / 2;
+        //            double y = scr.WorkingArea.Top + scr.WorkingArea.Height / 2 - Height / 2;
+
+        //            Left = x / (double)dpiX; ;
+        //            Top = y / (double)dpiX; ;
+        //        }
+        //        else
+        //        {
+        //            Height = 196;
+        //            Left = scr.WorkingArea.Left / (double)dpiX;
+        //            Top = scr.WorkingArea.Top / (double)dpiX;
+
+        //        }
+
+        //        Show();
+        //        Topmost = true;
+        //    });
+        //}
 
         //v2 Robert_Lin, 2024-11-19 for Span monitors
         public void ShowAndEdit(EAArgs arg, Rectangle workingArea)
@@ -940,13 +927,13 @@ namespace DDPM.EABroker
         {
             SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
         }
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
-            {
-          //      System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
-            }
-        }
+        //private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        //{
+        //    if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+        //    {
+        //  //      System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+        //    }
+        //}
         #endregion
     }
 }

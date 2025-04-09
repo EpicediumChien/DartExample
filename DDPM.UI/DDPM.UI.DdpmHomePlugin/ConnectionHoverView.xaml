@@ -382,7 +382,7 @@
         <!-- #endregion IO BLE -->
 
         <!-- #region Audio BLE -->
-        <Viewbox Stretch="Uniform" MaxHeight="156">
+        <Viewbox Stretch="Uniform" MaxHeight="130">
             <!-- Audio BLE -->
             <!--
             {BLE_Icon} Windows Machine A

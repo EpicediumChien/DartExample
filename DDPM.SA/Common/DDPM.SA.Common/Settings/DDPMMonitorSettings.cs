@@ -132,6 +132,7 @@ namespace DDPM.SA.Common.Settings
         public uint ALSConfig { get; set; } = 0;
         public Gaming Gaming { get; set; } = new Gaming();
         public PowerNapSetting PowerNap { get; set; } = new PowerNapSetting();//1126 move powerNap setting to here
+        public HotkeyOption HotkeyOption { get; set; } = HotkeyOption.None; //20250408 move  USBkvm hotkey: ”auto swtich USB upstream port in PBP side-by-side mode“ setting to here
     }
 
     public class HotkeyData

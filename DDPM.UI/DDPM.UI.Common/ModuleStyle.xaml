@@ -706,9 +706,9 @@
         <Setter Property="Padding" Value="16,16,16,6" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource DefaultTheme_BdBkColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DefaultTheme_BdSolidBkColor}" />
         <!--<Setter Property="Background" Value="Transparent" />-->
-        <Setter Property="Background" Value="{DynamicResource RightView_Group_FirstBdBkColor}" />
+        <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
     </Style>
 
     <Style x:Key="RightPartBorderStyle" TargetType="Border">
@@ -1951,8 +1951,15 @@
     </Style>
     <SolidColorBrush x:Key="ToggleSwitch_NormalBackground" Color="#FF0B1E38" />
     <SolidColorBrush x:Key="ToggleSwitch_NormalBorderBrush" Color="#FF1E3F6C" />
-    <SolidColorBrush x:Key="ToggleSwitch_PressedBackground" Color="#0672CB" />
-    <SolidColorBrush x:Key="ToggleSwitch_PressedBorderBrush" Color="#55B4FD" />
+    <LinearGradientBrush x:Key="ToggleSwitch_PressedBackground" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#0672CB" Offset="0.0" />
+        <GradientStop Color="#0078D4" Offset="0.46" />
+        <GradientStop Color="#6E69CF" Offset="1.1831" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="ToggleSwitch_PressedBorderBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#55B4FD" Offset="0.0045" />
+        <GradientStop Color="#6E69CF" Offset="1.0" />
+    </LinearGradientBrush>
     <!-- #endregion -->
 
     <Style TargetType="UXControls:UXTextBlock" x:Key="ProductNameTextStyle">
@@ -2633,5 +2640,5 @@
     <!-- #endregion Add Application Page -->
     <SolidColorBrush x:Key="Slider_TxtColor" Color="#A4B8CD"/>
     <SolidColorBrush x:Key="Slider_ValueColor" Color="#A4B8CD"/>
-
+    
 </ResourceDictionary>

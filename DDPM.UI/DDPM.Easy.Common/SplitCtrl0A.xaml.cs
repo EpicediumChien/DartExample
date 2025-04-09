@@ -7,8 +7,14 @@ namespace DDPM.Easy.Common
     /// <summary>
     /// Interaction logic for SplitCtrl0A.xaml
     /// </summary>
-    public partial class SplitCtrl0A : UserControl, ISplitCtrl
+    //    public partial class SplitCtrl0A : UserControl, ISplitCtrl, IDisposable
+
+    public partial class SplitCtrl0A : UserControl, ISplitCtrl, IDisposable
     {
+        #region Private members
+        private bool _isDisposed = false;
+        #endregion Private members
+
         #region ctor
 
         public SplitCtrl0A()
@@ -88,7 +94,8 @@ namespace DDPM.Easy.Common
         }
         #endregion Cell List
 
-        #region CellBorders
+        #region CellBorders 
+        //CellBorders should be used in SplitCtrl0B only
         private List<CellBorder> celBordersH = new List<CellBorder>();
         private List<CellBorder> celBordersV = new List<CellBorder>();
 
@@ -177,6 +184,28 @@ namespace DDPM.Easy.Common
                 }
             }
         }
+
+        #region Dispose and Destructor
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                }
+                _isDisposed = true;
+            }
+        }
+        ~SplitCtrl0A()
+        {
+            Dispose(false);
+        }
+        #endregion
 
     }
 }

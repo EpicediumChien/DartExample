@@ -139,7 +139,10 @@ namespace DDPM.UI.Module.WebCameraCapture
                         btnFPS2.CornerRadius = new CornerRadius(0, 5, 5, 0);
                         break;
                 }
-                _vm.SetFPS_Selected(_vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution].IndexOf(_vm.WebcamSettings.CurrentFPS));
+                var idx = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution].IndexOf(_vm.WebcamSettings.CurrentFPS);
+                if (_vm.IsAutoFramingOn && _vm.WebcamSettings.CurrentFPS == "60" && idx > 0)
+                    idx -= 1;
+                _vm.SetFPS_Selected(idx);
             }
             catch (Exception ex)
             {
@@ -342,6 +345,8 @@ namespace DDPM.UI.Module.WebCameraCapture
             _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed;
             _vm.OnPropertyChanged(nameof(_vm.MessageBoxVisibilityUsbType));
         }
+
+        //Elsa add for tooltip issue fix
         private double GetScreenScaleX()
         {
             var source = PresentationSource.FromVisual(this);
@@ -352,6 +357,7 @@ namespace DDPM.UI.Module.WebCameraCapture
             return 1;
         }
 
+        //Elsa add for tooltip issue fix
         private void toolTip_Opened(object sender, RoutedEventArgs e)
         {
             System.Windows.Controls.ToolTip? target = sender as System.Windows.Controls.ToolTip;

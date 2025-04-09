@@ -55,6 +55,7 @@ namespace DDPM.EABroker
             {
                 if (_workScreen == null)
                     return false;
+
                 return (_workScreen.Bounds.Width < _workScreen.Bounds.Height);
             }
         }
@@ -65,6 +66,7 @@ namespace DDPM.EABroker
             {
                 return;
             }
+
             _workScreen = screen;
             //WorkScreen is changed
 
@@ -91,7 +93,7 @@ namespace DDPM.EABroker
             {
                 //If workSplit not been assigned, or changed
                 bool needToRefreshWorkSplit = (_workSplit == null) || (splitCtrl.EAID != _workSplit.EAID);
-                ISplitCtrl localSplit = _workSplit;
+                ISplitCtrl? localSplit = _workSplit;
 
                 if (needToRefreshWorkSplit)
                 {
@@ -233,7 +235,20 @@ namespace DDPM.EABroker
                 {
                     if (flag > 0)
                     {
-                        System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(1); }, null, 100, Timeout.Infinite);
+                        System.Threading.Timer? timer1 = null;
+                        try
+                        {
+                            timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(1); }, null, 100, Timeout.Infinite);
+                        }
+                        catch (Exception e)
+                        {
+                            _vm.WriteLog($"[AwsBuddyWindow] create RefreshCellRects(1) timer exception: {e.Message}");
+                        }
+                        finally
+                        {
+                            timer1?.Dispose();
+                            timer1 = null;
+                        }                        
                     }
                 }
                 else
@@ -403,7 +418,20 @@ namespace DDPM.EABroker
                 if (!_areCellRectsRefreshed)
                 {
                     //System.Threading.Timer timer1 = new System.Threading.Timer(refreshCellRects_TimerCallback, null, 100, Timeout.Infinite);
-                    System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(); }, null, 100, Timeout.Infinite);
+                    System.Threading.Timer? timer1 = null;
+                    try
+                    {
+                        timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(); }, null, 100, Timeout.Infinite);
+                    }
+                    catch (Exception e)
+                    {
+                        _vm.WriteLog($"[AwsBuddyWindow] create RefreshCellRects() timer exception: {e.Message}");
+                    }
+                    finally
+                    {
+                        timer1?.Dispose();
+                        timer1 = null;
+                    }
                 }
                 else
                 {

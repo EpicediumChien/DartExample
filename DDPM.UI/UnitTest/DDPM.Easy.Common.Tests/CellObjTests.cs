@@ -75,5 +75,25 @@ namespace DDPM.Easy.Common.Tests
             // Assert
             Assert.That(cellObja.CellBd, Is.EqualTo(cellBd));
         }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (cellObja != null)
+            {
+                cellObja.Dispose();
+                cellObja = null;
+            }
+            if (cellObjb != null)
+            {
+                cellObjb.Dispose();
+                cellObjb = null;
+            }
+            if (cellObjc != null)
+            {
+                cellObjc.Dispose();
+                cellObjc = null;
+            }
+        }
     }
 }

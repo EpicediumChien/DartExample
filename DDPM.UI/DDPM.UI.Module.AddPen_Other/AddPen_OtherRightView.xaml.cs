@@ -5,6 +5,7 @@ using DDPM.UI.Plugin.ViewModels;
 using DDPM.UI.Resources.Helper;
 using System.Net;
 using System.Reflection.Metadata;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -34,7 +35,7 @@ namespace DDPM.UI.Module.AddPen_Other
 
             txtOther.Text = Strings.AddDeviceTypeOther;
             txtCaption.Text = UI.Resources.Helper.LangHelper.Instance["AddDevice.Pen.5"];
-            txtStep1.Text = string.Format(Step1, Dns.GetHostName());
+            txtStep1.Text = string.Format(Step1, HostNameHandler.GetDNSHostName());
             //txtStep2.Text = Step2;
 
             breakPoints = DdpmCommonHelper.GetBreakPoints();

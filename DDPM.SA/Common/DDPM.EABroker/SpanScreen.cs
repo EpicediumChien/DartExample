@@ -1,11 +1,4 @@
-﻿using DDPM.SA.Common;
-using Dell.Client.Framework.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using Dell.Client.Framework.Common;
 using VcpCore.Common;
 
 namespace DDPM.EABroker
@@ -18,7 +11,7 @@ namespace DDPM.EABroker
     {
         #region Private members
         private List<EAScreen> _eaScreens = new List<EAScreen>();
-        private Rectangle _rcSpan = new Rectangle();
+        //private Rectangle _rcSpan = new Rectangle();
         private Rectangle _bounds = new Rectangle();
         private Rectangle _workingArea = new Rectangle();
         private bool _isHorzSpan = true;
@@ -205,13 +198,14 @@ namespace DDPM.EABroker
         #endregion
 
         #region Log
-        private void LogEAScreen(EAScreen eaScreen, ILog? log)
-        {
-            if (log != null)
-            {
-                log.Info($"EAScreen: {eaScreen.ScreenDeviceName}, "); 
-            }
-        }
+        //Derek 2025/04/01
+        //private void LogEAScreen(EAScreen eaScreen, ILog? log)
+        //{
+        //    if (log != null)
+        //    {
+        //        log.Info($"EAScreen: {eaScreen.ScreenDeviceName}, "); 
+        //    }
+        //}
 
         #endregion
 
@@ -234,9 +228,11 @@ namespace DDPM.EABroker
             {
                 if (eaScreen.HasAttachedMonitor)
                 {
-                    return eaScreen.AttachedMonitors[0];
+                    //return eaScreen.AttachedMonitors[0];
+                    return (eaScreen.AttachedMonitors != null) ? eaScreen.AttachedMonitors[0] : null;
                 }
             }
+
             return null;
         }
         #endregion
