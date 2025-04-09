@@ -1512,6 +1512,7 @@ namespace DDPM.CLI.Plugins.Display
                     if ((_deviceinfo == null || _deviceinfo.Count == 0) && (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0))
                         return ((int)CLI_ExitCode.null_device_manager, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                 }
+                writelog($"Connecteddevices PASS = {output}");
                 return ((int)CLI_ExitCode.success, output);
             }
             else
@@ -1519,6 +1520,7 @@ namespace DDPM.CLI.Plugins.Display
                 G_ConnectedDevices_RESPONSE.Result = "Fail";
                 G_ConnectedDevices_RESPONSE.Message = $"Un-supported command: {type}";
             }
+            writelog($"Connecteddevices unknow = {output}");
             return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
         }
 

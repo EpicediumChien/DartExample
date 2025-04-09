@@ -309,6 +309,8 @@ namespace DDPM.SA.Common
                             Value = "ON";
                         else if (prop.GetValue(di).ToString().Equals("0") || prop.GetValue(di).ToString().ToUpper().Equals("FALSE"))
                             Value = "OFF";
+                        else if (prop.GetValue(di).ToString().Equals("2") || prop.GetValue(di).ToString().ToUpper().Equals("FALSE"))
+                            Value = "TRANSPARENCY MODE";
                         else
                         {
                             Value = prop.GetValue(di).ToString() ?? "";
