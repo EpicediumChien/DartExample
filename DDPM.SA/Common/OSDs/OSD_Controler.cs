@@ -2,6 +2,7 @@
 using DDPM.SA.Common;
 using Dell.TechHub.Sdk.Common.Utilities.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -74,6 +75,24 @@ namespace DDPM.OSDs
                     OSDMainWin = new OSDMainWin();
                     OSDMainWin.Closed += CloseMultipleOSD;
                 }
+                switch (oSDType_Device)
+                {
+                    case OSDType_Device.CapsLockOn:
+                    case OSDType_Device.CapsLockOff:
+                        CloseMultipleOSDByType(OSDType_Device.CapsLockOff);
+                        CloseMultipleOSDByType(OSDType_Device.CapsLockOn);
+                        break;
+                    case OSDType_Device.NumLockOn:
+                    case OSDType_Device.NumLockOff:
+                        CloseMultipleOSDByType(OSDType_Device.NumLockOn);
+                        CloseMultipleOSDByType(OSDType_Device.NumLockOff);
+                        break;
+                    case OSDType_Device.ScrollLockOn:
+                    case OSDType_Device.ScrollLockOff:
+                        CloseMultipleOSDByType(OSDType_Device.ScrollLockOn);
+                        CloseMultipleOSDByType(OSDType_Device.ScrollLockOff);
+                        break;
+                }
                 if (!OSDMainWin.OSDWins.Any(x => x.GUID.Equals(guid, StringComparison.InvariantCultureIgnoreCase) && x.OSDType_Op.Equals(oSDType_Op)))
                 {
                     OSDMainWin.AddShowOSDWinInfo(new OSDWinInfo()
@@ -91,7 +110,26 @@ namespace DDPM.OSDs
                 OSDMainWin.ShowWindow();
             }
         }
-
+        public void CloseMultipleOSDByType(OSDType_Device oSDType_Device)
+        {
+            lock (osdLock)
+            {
+                if (OSDMainWin != null)
+                {
+                    List<OSDWinInfo> oSDWinInfos = OSDMainWin.OSDWins.Where(x => x.OSDType_Device.Equals(oSDType_Device)).ToList();
+                    foreach (var item in oSDWinInfos)
+                    {
+                        item.IsFadeOut = true;
+                        OSDMainWin.RemoveShowOSDWinInfo(item);
+                    }
+                    /*if (target != null)
+                    {
+                        target.IsFadeOut = true;
+                        OSDMainWin.RemoveShowOSDWinInfo(target);
+                    }*/
+                }
+            }
+        }
         public void UpdateOsdContentByGuid(string guid, string content)
         {
 

@@ -458,34 +458,34 @@
                             <Style TargetType="Canvas">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="CapLockONIcon">
+                                                 Value="CapsLockOn">
                                         <Setter Property="Visibility"
-                                                Value="Collapsed" />
+                                                Value="Hidden" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="CapLockOFFIcon">
+                                                 Value="CapsLockOff">
                                         <Setter Property="Visibility"
-                                                Value="Collapsed" />
+                                                Value="Hidden" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="NumLockONIcon">
+                                                 Value="ScrollLockOn">
                                         <Setter Property="Visibility"
-                                                Value="Collapsed" />
+                                                Value="Hidden" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="NumLockOFFIcon">
+                                                 Value="ScrollLockOff">
                                         <Setter Property="Visibility"
-                                                Value="Collapsed" />
+                                                Value="Hidden" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="ScrollLockONIcon">
+                                                 Value="NumLockOn">
                                         <Setter Property="Visibility"
-                                                Value="Collapsed" />
+                                                Value="Hidden" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="ScrollLockOFFIcon">
+                                                 Value="NumLockOff">
                                         <Setter Property="Visibility"
-                                                Value="Collapsed" />
+                                                Value="Hidden" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding OSDType_Device}"
                                                  Value="WalkAwayLock">
@@ -495,7 +495,7 @@
                                     <DataTrigger Binding="{Binding OSDType_Device}"
                                                  Value="StartRecording">
                                         <Setter Property="Visibility"
-                                                Value="Collapsed" />
+                                                Value="Hidden" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding OSDType_Device}"
                                                  Value="EasyMemory">
@@ -725,7 +725,7 @@
                                             <Setter Property="FontSize" Value="14" />
                                             <Setter Property="FontWeight" Value="Medium" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="NumLockOn">
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="NumLockOff">
                                             <Setter Property="FontSize" Value="14" />
                                             <Setter Property="FontWeight" Value="Medium" />
                                         </DataTrigger>
