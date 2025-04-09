@@ -688,6 +688,9 @@ namespace DDPM.SA.Plugins.CMAManager
 
                     cliResult = await _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
 
+                    // add @ 20250409 stephen for debug
+                    WriteLog($"[CMA] runCommandTaskAsync cliResult = {cliResult.serialize_Json_response}");
+
                     try
                     {
                         /*cliResp = JObject.Parse(cliResult.serialize_Json_response);
