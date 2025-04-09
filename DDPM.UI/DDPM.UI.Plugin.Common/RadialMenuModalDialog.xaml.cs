@@ -95,7 +95,6 @@ namespace DDPM.UI.Plugin.Common
                     Interval = TimeSpan.FromSeconds(5)
                 };
                 timer.Tick += Timer_Tick;
-                ;
             }
             catch ( Exception ex)
             {
