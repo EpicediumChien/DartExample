@@ -774,7 +774,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 if ((data?.isSupportALS > 0) && (data?.isAutoBrightness == true
                     || data?.isAutoColorTemp == true || data?.isPrimaryMonitorSync == true
-                    || (data?.AutoBrightnessRangeLevel.Count > 1 && data?.AutoBrightnessRangeLevel[0].level_value != 1)
+                    || (data?.AutoBrightnessRangeLevel != null && data?.AutoBrightnessRangeLevel.level_value != 1)
                     || (data?.isAutoColorTemp == true && data?.isAutoColorTemp == true) // any typo?
                     ))
                 {
@@ -1056,9 +1056,9 @@ namespace DDPM.UI.Module.Brightness
                     DdpmCommonHelper.WriteUILog($"SupportALS ***************** : {Start_ALSConfig.isSupportALS.ToString()}");
                     DdpmCommonHelper.WriteUILog($"AutoBrightness ************* : {(Start_ALSConfig.isAutoBrightness ? "ON" : "OFF")}");
                     DdpmCommonHelper.WriteUILog($"AutoColorTemp ************** : {(Start_ALSConfig.isAutoColorTemp ? "ON" : "OFF")}");
-                    if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
+                    if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel != null)
                     {
-                        DdpmCommonHelper.WriteUILog($"AutoBrightnessRangeLevel *** : {Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value.ToString()}");
+                        DdpmCommonHelper.WriteUILog($"AutoBrightnessRangeLevel *** : {Start_ALSConfig.AutoBrightnessRangeLevel.level_value.ToString()}");
                     }
                     else
                     {
@@ -2067,15 +2067,15 @@ namespace DDPM.UI.Module.Brightness
         private void SetBrightnessLevelDataToObject(int level)
         {
             DdpmCommonHelper.WriteUILog($"SetBrightnessLevelDataToObject in ...");
-            if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
+            if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel != null)
             {
-                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value = level;
+                Start_ALSConfig.AutoBrightnessRangeLevel.level_value = level;
                 if (level == 0)
-                    Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelLow; //"Low";
+                    Start_ALSConfig.AutoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelLow; //"Low";
                 else if (level == 1)
-                    Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelMid; //"Mid";
+                    Start_ALSConfig.AutoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelMid; //"Mid";
                 else
-                    Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelHigh; //"High";
+                    Start_ALSConfig.AutoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelHigh; //"High";
             }
             DdpmCommonHelper.WriteUILog($"SetBrightnessLevelDataToObject out ...");
         }
@@ -2088,8 +2088,8 @@ namespace DDPM.UI.Module.Brightness
         {
             DdpmCommonHelper.WriteUILog($"ALSSettingsChangesOnNonPrimary in ...");
             int level_keep = 0;
-            if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
-                level_keep = (int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value;
+            if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel != null)
+                level_keep = (int)Start_ALSConfig.AutoBrightnessRangeLevel.level_value;
 
             if (!Start_ALSConfig.isPrimaryMonitorSync && CheckMonitorALSStatus())// user change non-Primary
             {
@@ -2158,8 +2158,7 @@ namespace DDPM.UI.Module.Brightness
                     Start_ALSConfig.isPrimaryMonitorSync = onoff;
                 }
                 if (property.Equals("AUTOBRILEVEL") && //PIMS-314583
-                    Start_ALSConfig.AutoBrightnessRangeLevel != null &&
-                    Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
+                    Start_ALSConfig.AutoBrightnessRangeLevel != null)
                 {
                     SetBrightnessLevelDataToObject(level);
                 }
@@ -3117,28 +3116,28 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private List<AutoBrightnessRangeLevel> _autoBrightnessRangeLevel { get; set; }
+        private AutoBrightnessRangeLevel _autoBrightnessRangeLevel { get; set; }
 
-        public void Update_AutoBrightnessRangeLevelStatus(List<AutoBrightnessRangeLevel> value)
+        public void Update_AutoBrightnessRangeLevelStatus(AutoBrightnessRangeLevel value)
         {
             DdpmCommonHelper.WriteUILog($"Update_AutoBrightnessRangeLevelStatus in ...");
-            if (value == null || value.Count == 0)
+            if (value == null)
             {
                 DdpmCommonHelper.WriteUILog("Update_AutoBrightnessRangeLevelStatus: value is null or empty.");
                 return;
             }
 
-            if (_autoBrightnessRangeLevel == null || _autoBrightnessRangeLevel[0].level_value != value[0].level_value)
+            if (_autoBrightnessRangeLevel == null || _autoBrightnessRangeLevel.level_value != value.level_value)
             {
-                DdpmCommonHelper.WriteUILog($"Update_AutoBrightnessRangeLevelStatus {value[0].level_value} ...");
+                DdpmCommonHelper.WriteUILog($"Update_AutoBrightnessRangeLevelStatus {value.level_value} ...");
                 _autoBrightnessRangeLevel = value;
-                _autoBrightnessRangeLevel[0].level_value = value[0].level_value;
-                if (value[0].level_value == 0)
-                    _autoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelLow; //"Low";
-                else if (value[0].level_value == 1)
-                    _autoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelMid; //"Mid";
+                _autoBrightnessRangeLevel.level_value = value.level_value;
+                if (value.level_value == 0)
+                    _autoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelLow; //"Low";
+                else if (value.level_value == 1)
+                    _autoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelMid; //"Mid";
                 else
-                    _autoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelHigh; //"High";
+                    _autoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelHigh; //"High";
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_SelectedIndex");
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
             }
@@ -3157,7 +3156,7 @@ namespace DDPM.UI.Module.Brightness
         {
             get
             {
-                if (Start_ALSConfig.AutoBrightnessRangeLevel.Count == 0)
+                if (Start_ALSConfig.AutoBrightnessRangeLevel == null)
                     return "";
 
                 //all return same string? no need to use if-else
@@ -3181,9 +3180,9 @@ namespace DDPM.UI.Module.Brightness
         {
             get
             {
-                if (Start_ALSConfig.AutoBrightnessRangeLevel.Count == 0)
+                if (Start_ALSConfig.AutoBrightnessRangeLevel == null)
                     return 0;
-                return (int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value;
+                return (int)Start_ALSConfig.AutoBrightnessRangeLevel.level_value;
             }
             set
             {
@@ -3192,18 +3191,18 @@ namespace DDPM.UI.Module.Brightness
                 DdpmCommonHelper.WriteUILog($"AutoBrightnessRangeLevel_SelectedIndex IsBusy : true ...");
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
-                    if ((int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value != value)
+                    if ((int)Start_ALSConfig.AutoBrightnessRangeLevel.level_value != value)
                     {
                         ALSSettingsChangesOnNonPrimary(false, "AUTOBRILEVEL", value);
 
-                        if ((int)Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == value)//already apply, make string change
+                        if ((int)Start_ALSConfig.AutoBrightnessRangeLevel.level_value == value)//already apply, make string change
                         {
                             if (value == 0)
-                                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelLow; //"Low";
+                                Start_ALSConfig.AutoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelLow; //"Low";
                             else if (value == 1)
-                                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelMid; //"Mid";
+                                Start_ALSConfig.AutoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelMid; //"Mid";
                             else
-                                Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name = Strings.ALSRangeLevelHigh; //"High";
+                                Start_ALSConfig.AutoBrightnessRangeLevel.level_name = Strings.ALSRangeLevelHigh; //"High";
                         }
                     }
                     NotifyPropertyChanged("AutoBrightnessRangeLevel_SelectedIndex");

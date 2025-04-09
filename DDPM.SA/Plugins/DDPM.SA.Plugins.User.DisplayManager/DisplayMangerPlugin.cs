@@ -1694,6 +1694,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<bool> SetALSFeatureValue(MonitorInfo monitorInfos, ref ALSConfig param, ALSFeatureQueryType type, string value)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] SetALSFeatureValue ... in " + monitorInfos.edid.ModelName.ToString() + " || type = " + type.ToString());
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue AllValue = {param.AllValue.ToString()}, value = {value}");
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue AutoBrightness . = {param.isAutoBrightness.ToString()}");
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue AutoColorTemp .. = {param.isAutoColorTemp.ToString()}");
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue RangeLevel Value = {param.AutoBrightnessRangeLevel.level_value.ToString()}");
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue PrimaryMonitor . = {param.isPrimaryMonitorSync.ToString()}");
             Trace.WriteLine("[DisplayMangerPlugin] SetALSFeatureValue ... in " + monitorInfos.edid.ModelName.ToString() + " || type = " + type.ToString());
             switch (type)
             {
@@ -2079,7 +2084,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, ALSConfig AllValue     : " + distinctALSConfigList[i].AllValue.ToString());
                     _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, AutoBrightness         : " + distinctALSConfigList[i].isAutoBrightness.ToString());
                     _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, AutoColorTemp          : " + distinctALSConfigList[i].isAutoColorTemp.ToString());
-                    _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, RangeLevel Value       : " + distinctALSConfigList[i].AutoBrightnessRangeLevel[0]?.level_value.ToString());
+                    _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, RangeLevel Value       : " + distinctALSConfigList[i].AutoBrightnessRangeLevel.level_value.ToString());
                     _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, PrimaryMonitor         : " + distinctALSConfigList[i].isPrimaryMonitorSync.ToString());
                 }
 
@@ -2128,15 +2133,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync           value = {value.ToString()}");
                 _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync  AutoBrightness = {aconfig.isAutoBrightness.ToString()}");
                 _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync  AutoColorTemp  = {aconfig.isAutoColorTemp.ToString()}");
-                if (aconfig.AutoBrightnessRangeLevel != null && aconfig.AutoBrightnessRangeLevel.Count > 0)
+                if (aconfig.AutoBrightnessRangeLevel != null)
                 {
-                    _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync RangeLevelValue = {aconfig.AutoBrightnessRangeLevel[0].level_value.ToString()}");
+                    _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync RangeLevelValue = {aconfig.AutoBrightnessRangeLevel.level_value.ToString()}");
                 }
                 else
                 {
                     _logs.DebugMsg("[DisplayMangerPlugin] UpdateImportAlsValueAsync RangeLevelValue is empty or null.");
                 }
-                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync RangeLevelValue = {aconfig.AutoBrightnessRangeLevel[0].level_value.ToString()}");
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync RangeLevelValue = {aconfig.AutoBrightnessRangeLevel.level_value.ToString()}");
                 _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync  PrimaryMonitor = {aconfig.isPrimaryMonitorSync.ToString()}");
                 _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync ... out");
                 return Task.FromResult(true);
@@ -2573,7 +2578,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         brightnessrangelevel.level_name = "High";
                         break;
                 }
-                param.AutoBrightnessRangeLevel.Add(brightnessrangelevel);
+                param.AutoBrightnessRangeLevel = brightnessrangelevel;
                 param.result = result.result;
             }
             else
@@ -2618,7 +2623,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 brightnessrangelevel.level_name = "High";
                                 break;
                         }
-                        param.AutoBrightnessRangeLevel.Add(brightnessrangelevel);
+                        param.AutoBrightnessRangeLevel = brightnessrangelevel;
                         param.result = true;
                     }
                     else
@@ -2695,7 +2700,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     brightnessLevel.level_name = "High";
                     break;
             }
-            param.AutoBrightnessRangeLevel.Add(brightnessLevel);
+            param.AutoBrightnessRangeLevel = brightnessLevel;
             _logs.DebugMsg($"[DisplayMangerPlugin] ParseBitDefineToAlsObject param = vcp_value {vcp_value.ToString()}, isAutoBrightness {param.isAutoBrightness.ToString()}, isAutoColorTemp {param.isAutoColorTemp.ToString()}, isPrimaryMonitorSync {param.isPrimaryMonitorSync.ToString()}, level_name {brightnessLevel.level_name}  ");
             _logs.DebugMsg("[DisplayMangerPlugin] ParseBitDefineToAlsObject ... out ");
         }
@@ -2722,7 +2727,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// <param name="value">value</param>
         private void SetALSAll(MonitorInfo monitorInfos, ref ALSConfig param, string value)
         {
-            _logs.DebugMsg($"[DisplayMangerPlugin] ALSFeature into SetALSAll to {monitorInfos.edid.ModelName}...value = {value}");
+            _logs.DebugMsg($"[DisplayMangerPlugin] ALSFeature into SetALSAll to {monitorInfos.edid.ModelName}, param = {param.AllValue.ToString()}, value = {value}");
+            _logs.DebugMsg($"[DisplayMangerPlugin] ALSFeature into SetALSAll AutoBrightness . = {param.isAutoBrightness.ToString()}");
+            _logs.DebugMsg($"[DisplayMangerPlugin] ALSFeature into SetALSAll AutoColorTemp .. = {param.isAutoColorTemp.ToString()}");          
+            _logs.DebugMsg($"[DisplayMangerPlugin] ALSFeature into SetALSAll RangeLevel Value = {param.AutoBrightnessRangeLevel.level_value.ToString()}");
+            _logs.DebugMsg($"[DisplayMangerPlugin] ALSFeature into SetALSAll PrimaryMonitor . = {param.isPrimaryMonitorSync.ToString()}");
             Trace.WriteLine($"[DisplayMangerPlugin] ALSFeature into SetALSAll to {monitorInfos.edid.ModelName}...value = {value}");
             param.AllValue = UpdateAllValue(param);
             if (monitorInfos.CapabilityString.Contains("66"))
@@ -2776,9 +2785,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 value &= ~((uint)1 << 5); // Clear bit5 to 0
             }
             // Rules 4-6
-            if (config.AutoBrightnessRangeLevel.Count > 0)
+            if (config.AutoBrightnessRangeLevel != null)
             {
-                var level = config.AutoBrightnessRangeLevel[0];
+                var level = config.AutoBrightnessRangeLevel;
                 if (level.level_value == 0)
                 {
                     value &= ~((uint)1 << 6); // Clear bit6 to 0
