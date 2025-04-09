@@ -17478,7 +17478,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             _checkUpdateScheduleTimer.Stop();
                             _checkUpdateScheduleTimer.Elapsed -= CheckUpdateScheduleTimer_Elapsed;
                             _checkUpdateScheduleTimer.Dispose();
-
+                            _checkUpdateScheduleTimer = null;
                         }
                     }
                     if (_SWUpdatePlugin != null)
@@ -17489,6 +17489,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             _checkUpdateScheduleTimer.Stop();
                             _checkUpdateScheduleTimer.Elapsed -= CheckUpdateScheduleTimer_Elapsed;
                             _checkUpdateScheduleTimer.Dispose();
+                            _checkUpdateScheduleTimer = null;
                         }
                     }
                     if (_ColorProfileHelper != null)
