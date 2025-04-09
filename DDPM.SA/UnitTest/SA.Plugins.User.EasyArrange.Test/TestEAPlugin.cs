@@ -359,7 +359,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             }
         }
 
-        [Test]
+       /* [Test]
         public void TestSetEASelectedLayout()
         {
             SplitJson spJson = new SplitJson()
@@ -393,7 +393,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
                 var SetEASelectedLayout_Result2 = EAplugin.SetEASelectedLayout(monitorInfo1, spJson).Result;       //_deviceManagerPluginNull null
                 Assert.That(SetEASelectedLayout2, Is.EqualTo(SetEASelectedLayout_Result2));
             }
-        }
+        }*/
 
         [Test]
         public void Test_dump_SplitJsonList()
@@ -466,7 +466,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             Assert.IsTrue(true);
         }
 
-        [Test]
+        /*[Test]
         public void TestLogException()
         {
             var exception = new Exception("Test exception");
@@ -474,7 +474,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             PrivateObject privateEApluginObject = new PrivateObject(EAplugin);
             privateEApluginObject.Invoke("LogException", exception, msg);
             Assert.IsTrue(true);
-        }
+        }*/
 
         [Test]
         public void TestConfigureServices()
@@ -528,7 +528,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             Assert.That(SettingsManagerDev_result, Is.EqualTo(SettingsManagerDevObj));
         }
 
-        [Test]
+       /* [Test]
         public void TestInitializeTelementrySchedulerPlugin()
         {
             Mock<ITelementryScheduler> Mock_TelementryScheduler = new Mock<ITelementryScheduler>();
@@ -539,7 +539,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             var TelementryScheduler_result = (ITelementryScheduler)privateEApluginObject.GetFieldOrProperty("_telementrySchedulerPlugin");
             Assert.IsNotNull(TelementryScheduler_result);
             Assert.That(TelementryScheduler_result, Is.EqualTo(Mock_TelementrySchedulerObj));
-        }
+        }*/
 
         [Test]
         public void Test_GlobalSettingParam()

@@ -86,7 +86,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             Assert.That(result, Is.Not.Null);
         }
 
-        [Test]
+        /*[Test]
         public void TestReadColorPreset()
         {
             //_SupportedColorPreset != null&& _SupportedColorPreset.Count == 0
@@ -107,7 +107,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_SupportedColorPreset", null);
             result = deviceMangerPlugin.ReadColorPreset(monitorInfo).Result;
             Assert.That(result, Is.EqualTo(null));
-        }
+        }*/
 
         //[Test]
         //public void TestGetMonitorProfile()

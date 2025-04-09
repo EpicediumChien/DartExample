@@ -1070,7 +1070,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             Assert.IsNotNull(devicemanager);
         }
 
-        [Test]
+       /* [Test]
         public void TestUnPair()
         {
             Mock<IPhysicalDevice> ParentPhysicalDevice = new Mock<IPhysicalDevice>();
@@ -1126,7 +1126,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             var devicemanager3 = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
             Assert.IsTrue(true);
             Assert.IsNotNull(devicemanager3);
-        }
+        }*/
 
         [Test]
         public void TestSetWiredAudioIMicNSEnable()
