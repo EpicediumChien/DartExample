@@ -16491,23 +16491,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
                     }
                 }
-                if (getvalue != 0)
+
+                if (cs)
                 {
-                    if (cs)
-                    {
-                        bool ret = SetVCPCapability(monitorInfo, 0xE0, (1 | (uint)getvalue)).Result;
-                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON and setVcp:]" + (ret ? "success" : "fail"));
-                    }
-                    else
-                    {
-                        bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
-                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
-                    }
+                    bool ret = SetVCPCapability(monitorInfo, 0xE0, (1 | (uint)getvalue)).Result;
+                    writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON and setVcp:]" + (ret ? "success" : "fail"));
                 }
                 else
                 {
-                    writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] no vcp commands to be issued.");
+                    bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
+                    writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
                 }
+
             }
             else
             {
@@ -16563,22 +16558,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
                     }
                 }
-                if (getvalue != 0)
+                if (cs)
                 {
-                    if (cs)
-                    {
-                        bool ret = SetVCPCapability(monitorInfo, 0xE0, (2 | (uint)getvalue)).Result;
-                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON and setVcp:]" + (ret ? "success" : "fail"));
-                    }
-                    else
-                    {
-                        bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
-                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
-                    }
+                    bool ret = SetVCPCapability(monitorInfo, 0xE0, (2 | (uint)getvalue)).Result;
+                    writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON and setVcp:]" + (ret ? "success" : "fail"));
                 }
                 else
                 {
-                    writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] no vcp commands to be issued.");
+                    bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
+                    writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
                 }
             }
             else
