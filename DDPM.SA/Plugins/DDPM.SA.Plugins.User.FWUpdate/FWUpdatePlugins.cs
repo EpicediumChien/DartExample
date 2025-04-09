@@ -93,6 +93,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         }
 
         public static readonly string[] ODM = new string[] { "Chicony", "Primax", "LiteON", "Darfon", "Wacom", "Luxshare", "Wistron", "Horn", "Tymphany", "Dell" };
+        private static readonly object lockObject = new object();
         #region Private Members
 
         private const string pluginName = "FWUpdatePlugin";
@@ -683,184 +684,50 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <returns>回傳裝置資訊表(在這個方法裡將原本傳入的裝置資訊表，再寫入對應裝置的下載安裝的結果碼)</returns>
         public Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, List<DeviceInfo> currentDevice, int IODongleCountGen3AgoCount, bool isUITrigger, bool isShowNotify, string installPath)
         {
-            _IsDownloadAndInsytall = true;
-            _IsUITrigger = isUITrigger;
-            _IsShowNotify = isShowNotify;
-            originalDirectory = DDPMFileSecurity.SanitizePath(Directory.GetCurrentDirectory(), out string info);
-            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} DDPMFileSecurity.SanitizePath info : {info}");
-            Method method = new Method(_logs);
-            try
+            lock (lockObject)
             {
-                if (fwUpdateInfos.Count > 0)
+                _IsDownloadAndInsytall = true;
+                _IsUITrigger = isUITrigger;
+                _IsShowNotify = isShowNotify;
+                originalDirectory = DDPMFileSecurity.SanitizePath(Directory.GetCurrentDirectory(), out string info);
+                _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} DDPMFileSecurity.SanitizePath info : {info}");
+                Method method = new Method(_logs);
+                try
                 {
-                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                    if (fwUpdateInfos.Count > 0)
                     {
-                        DeviceName = fwUpdateInfos[0].DeviceName,
-                        Model = fwUpdateInfos[0].Model,
-                        IsDisplay = fwUpdateInfos[0].IsDisplay,
-                        UpdateTime = fwUpdateInfos[0].UpdateTime,
-                        TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                        ProcessName = "Downloading",
-                        ProcessProgress = 0,
-                    };
-                    sendMessageToEvent(updateProgressInfo);
-                }
-                _logs.DebugMsg_1(nameof(DownloadAndInstall) + " all start");
-                _logs.DebugMsg_1(nameof(DownloadAndInstall) + " fwUpdateInfos.Count : " + fwUpdateInfos.Count);
-                List<FWUpdateInfo> temp_FWUpdateInfo = fwUpdateInfos.FindAll(o => o.IsDisplay);
-                //判斷是否有非Display更新，有的話停止DPM
-                if (temp_FWUpdateInfo.Count != fwUpdateInfos.Count)
-                {
-                    StopService();
-                }
-                _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} Rearrange go");
-                fwUpdateInfos = Rearrange(fwUpdateInfos);
-                _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} Rearrange done");
-                for (int i = 0; i < fwUpdateInfos.Count; i++)
-                {
-                    if (IsDisposed)
-                    {
-                        _logs.DebugMsg_1($"DownloadAndInstall IsDisposed");
-                        break;
-                    }
-                    _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} DeviceName : {fwUpdateInfos[i].DeviceName} Model : {fwUpdateInfos[i].Model} start");
-                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
-                    {
-                        DeviceName = fwUpdateInfos[i].DeviceName,
-                        Model = fwUpdateInfos[i].Model,
-                        IsDisplay = fwUpdateInfos[i].IsDisplay,
-                        UpdateTime = fwUpdateInfos[i].UpdateTime,
-                        TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                        ProcessName = "Downloading",
-                        ProcessProgress = 0,
-                    };
-                    sendMessageToEvent(updateProgressInfo);
-                    string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-                    string saveFolderName = Guid.NewGuid().ToString();
-                    string savePath;
-                    DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
-                    if (string.IsNullOrEmpty(installPath))
-                    {
-                        if (!string.IsNullOrEmpty(path_programdata))
+                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                         {
-                            savePath = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
-                        }
-                        else
+                            DeviceName = fwUpdateInfos[0].DeviceName,
+                            Model = fwUpdateInfos[0].Model,
+                            IsDisplay = fwUpdateInfos[0].IsDisplay,
+                            UpdateTime = fwUpdateInfos[0].UpdateTime,
+                            TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                            ProcessName = "Downloading",
+                            ProcessProgress = 0,
+                        };
+                        sendMessageToEvent(updateProgressInfo);
+                    }
+                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " all start");
+                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " fwUpdateInfos.Count : " + fwUpdateInfos.Count);
+                    List<FWUpdateInfo> temp_FWUpdateInfo = fwUpdateInfos.FindAll(o => o.IsDisplay);
+                    //判斷是否有非Display更新，有的話停止DPM
+                    if (temp_FWUpdateInfo.Count != fwUpdateInfos.Count)
+                    {
+                        StopService();
+                    }
+                    _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} Rearrange go");
+                    fwUpdateInfos = Rearrange(fwUpdateInfos);
+                    _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} Rearrange done");
+                    for (int i = 0; i < fwUpdateInfos.Count; i++)
+                    {
+                        if (IsDisposed)
                         {
-                            foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
-                            {
-                                fwUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
-                            }
-                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} path_programdata get error");
-                            return Task.FromResult(fwUpdateInfos);
+                            _logs.DebugMsg_1($"DownloadAndInstall IsDisposed");
+                            break;
                         }
-                    }
-                    else
-                    {
-                        savePath = installPath;
-                    }
-                    if (!Directory.Exists(savePath))
-                    {
-                        Directory.CreateDirectory(savePath);
-                    }
-                    //0926 Bruce Add Security
-                    //if (!CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
-                    if (!DDPMFileSecurity.CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
-                    {
-                        foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
-                        {
-                            fwUpdateInfo.FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                        }
-                        _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
-                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " savePath FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
-                        method.DeleteFolder(savePath);
-                        return Task.FromResult(fwUpdateInfos);
-                    }
-                    _notificationStr = "";
-                    _notificationTitle = "";
-                    _fWUpdateInfo = fwUpdateInfos[i];
-                    _updateErrorCode = FWUErrorCode.Unknow;
-                    fwUpdateInfos[i].FWUErrorCode = _updateErrorCode;
-                    if (!fwUpdateInfos[i].IsDisplay &&
-                        CheckDeviceStatus_IsStopUpdate(fwUpdateInfos[i], currentDevice, IODongleCountGen3AgoCount, out FWUErrorCode isStopUpdateError))
-                    {
-                        fwUpdateInfos[i].FWUErrorCode = isStopUpdateError;
-                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                        method.DeleteFolder(savePath);
-                        continue;
-                    }
-                    if (CheckPCBattery_IsStopUpdate(fwUpdateInfos[i]))
-                    {
-                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.PCBatteryTooLow;
-                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                        method.DeleteFolder(savePath);
-                        continue;
-                    }
-                    string url = fwUpdateInfos[i].ServerPath;
-                    //0926 Bruce Add Security
-                    //if (!CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
-                    if (!DDPMFileSecurity.CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
-                    {
-                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                        _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
-                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} savePath FolderIsNotSafe - FolderInfo : {FolderInfo}");
-                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} savePath FolderIsNotSafe - PathSymbolicLinInfo : {PathSymbolicLinInfo}");
-                        method.DeleteFolder(savePath);
-                        continue;
-                    }
-                    if (!NetworkInterface.GetIsNetworkAvailable())
-                    {
-                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.NetworkDisconnection;
-                        _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Update_failed_due_to_network_error"]}";
-                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download File Fail : " + _notificationStr);
-                        method.DeleteFolder(savePath);
-                        continue;
-                    }
-                    string _installationFileStoragePath;
-                    try
-                    {
-                        _CancellationTokenSource = new CancellationTokenSource();
-                        _downloadTimer = new Timer();
-                        _downloadTimer.Interval = 1000;
-                        _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
-                        _downloadTimer.Start();
-                        download = new Download(_logs);
-                        string downloadInfo = "";
-                        // 將儲存路徑與從 URL 中提取的檔案名稱組合
-                        if (_IsSkipSHA)
-                        {
-                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {GlobalDefinitions.GetLogPrintServerName(url)}");
-                        }
-                        _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
-                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile go");
-                        bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA, _CancellationTokenSource);
-                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile finish");
-                        _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
-                        _downloadTimer.Stop();
-                        if (!downloadRet)
-                        {
-                            if (downloadInfo.Equals("CA check fail"))
-                            {
-                                _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} CA check fail");
-                                fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.CAFail;
-                                _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
-                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                            }
-                            else
-                            {
-                                _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} Download fail: {downloadInfo}");
-                                fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.NetworkDisconnection;
-                                _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Update_failed_due_to_network_error"]}";
-                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                            }
-                            _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download File Fail");
-                            method.DeleteFolder(savePath);
-                            continue;
-                        }
-                        updateProgressInfo = new UpdateProgressInfo()
+                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} DeviceName : {fwUpdateInfos[i].DeviceName} Model : {fwUpdateInfos[i].Model} start");
+                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                         {
                             DeviceName = fwUpdateInfos[i].DeviceName,
                             Model = fwUpdateInfos[i].Model,
@@ -868,153 +735,290 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             UpdateTime = fwUpdateInfos[i].UpdateTime,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                             ProcessName = "Downloading",
-                            ProcessProgress = 100,
+                            ProcessProgress = 0,
                         };
                         sendMessageToEvent(updateProgressInfo);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (_downloadTimer != null)
+                        string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                        string saveFolderName = Guid.NewGuid().ToString();
+                        string savePath;
+                        DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
+                        if (string.IsNullOrEmpty(installPath))
                         {
+                            if (!string.IsNullOrEmpty(path_programdata))
+                            {
+                                savePath = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
+                            }
+                            else
+                            {
+                                foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
+                                {
+                                    fwUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                                }
+                                _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} path_programdata get error");
+                                return Task.FromResult(fwUpdateInfos);
+                            }
+                        }
+                        else
+                        {
+                            savePath = installPath;
+                        }
+                        if (!Directory.Exists(savePath))
+                        {
+                            Directory.CreateDirectory(savePath);
+                        }
+                        //0926 Bruce Add Security
+                        //if (!CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
+                        if (!DDPMFileSecurity.CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
+                        {
+                            foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
+                            {
+                                fwUpdateInfo.FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
+                            }
+                            _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            _logs.DebugMsg_1(nameof(DownloadAndInstall) + " savePath FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
+                            method.DeleteFolder(savePath);
+                            return Task.FromResult(fwUpdateInfos);
+                        }
+                        _notificationStr = "";
+                        _notificationTitle = "";
+                        _fWUpdateInfo = fwUpdateInfos[i];
+                        _updateErrorCode = FWUErrorCode.Unknow;
+                        fwUpdateInfos[i].FWUErrorCode = _updateErrorCode;
+                        if (!fwUpdateInfos[i].IsDisplay &&
+                            CheckDeviceStatus_IsStopUpdate(fwUpdateInfos[i], currentDevice, IODongleCountGen3AgoCount, out FWUErrorCode isStopUpdateError))
+                        {
+                            fwUpdateInfos[i].FWUErrorCode = isStopUpdateError;
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            method.DeleteFolder(savePath);
+                            continue;
+                        }
+                        if (CheckPCBattery_IsStopUpdate(fwUpdateInfos[i]))
+                        {
+                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.PCBatteryTooLow;
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            method.DeleteFolder(savePath);
+                            continue;
+                        }
+                        string url = fwUpdateInfos[i].ServerPath;
+                        //0926 Bruce Add Security
+                        //if (!CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
+                        if (!DDPMFileSecurity.CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
+                        {
+                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
+                            _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} savePath FolderIsNotSafe - FolderInfo : {FolderInfo}");
+                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} savePath FolderIsNotSafe - PathSymbolicLinInfo : {PathSymbolicLinInfo}");
+                            method.DeleteFolder(savePath);
+                            continue;
+                        }
+                        if (!NetworkInterface.GetIsNetworkAvailable())
+                        {
+                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.NetworkDisconnection;
+                            _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Update_failed_due_to_network_error"]}";
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download File Fail : " + _notificationStr);
+                            method.DeleteFolder(savePath);
+                            continue;
+                        }
+                        string _installationFileStoragePath;
+                        try
+                        {
+                            _CancellationTokenSource = new CancellationTokenSource();
+                            _downloadTimer = new Timer();
+                            _downloadTimer.Interval = 1000;
+                            _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
+                            _downloadTimer.Start();
+                            download = new Download(_logs);
+                            string downloadInfo = "";
+                            // 將儲存路徑與從 URL 中提取的檔案名稱組合
+                            if (_IsSkipSHA)
+                            {
+                                _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {GlobalDefinitions.GetLogPrintServerName(url)}");
+                            }
+                            _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
+                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile go");
+                            bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA, _CancellationTokenSource);
+                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile finish");
                             _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
                             _downloadTimer.Stop();
-                            _downloadTimer = null;
-                        }
-                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download error : " + ex.Message);
-                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.NetworkDisconnection;
-                        _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Update_failed_due_to_network_error"]}";
-                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                        method.DeleteFolder(savePath);
-                        continue;
-                    }
-
-                    string extractPath = Path.Combine(savePath + Path.GetFileName(url).Substring(0, Path.GetFileName(url).Length - 4));
-                    if (!Directory.Exists(extractPath))
-                    {
-                        Directory.CreateDirectory(extractPath);
-                    }
-                    //0926 Bruce Add Security
-                    //if (!CheckFold(extractPath, out FolderInfo, out PathSymbolicLinInfo))
-                    if (!DDPMFileSecurity.CheckFold(extractPath, out FolderInfo, out PathSymbolicLinInfo))
-                    {
-                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                        _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} extractPath FolderIsNotSafe - FolderInfo : {FolderInfo}");
-                        _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} extractPath FolderIsNotSafe - PathSymbolicLinInfo : {PathSymbolicLinInfo}");
-                        _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
-                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                        method.DeleteFolder(savePath);
-                        continue;
-                    }
-                    try
-                    {
-                        using (FileLock fileLock = new FileLock(_installationFileStoragePath, PathCheckOption.None, lockNow: true))
-                        {
-                            string exeFilePath;
-                            if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
+                            if (!downloadRet)
                             {
-                                fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                                _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} Unzip Fail");
-                                _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
-                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                                fileLock.Unlock();
+                                if (downloadInfo.Equals("CA check fail"))
+                                {
+                                    _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} CA check fail");
+                                    fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.CAFail;
+                                    _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
+                                    NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                                }
+                                else
+                                {
+                                    _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} Download fail: {downloadInfo}");
+                                    fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.NetworkDisconnection;
+                                    _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Update_failed_due_to_network_error"]}";
+                                    NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                                }
+                                _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download File Fail");
                                 method.DeleteFolder(savePath);
                                 continue;
                             }
-                            using (FileLock fileLock_2 = new FileLock(exeFilePath, PathCheckOption.None, lockNow: true))
+                            updateProgressInfo = new UpdateProgressInfo()
                             {
-                                if (!CheckThumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out string FileCAInfo))
+                                DeviceName = fwUpdateInfos[i].DeviceName,
+                                Model = fwUpdateInfos[i].Model,
+                                IsDisplay = fwUpdateInfos[i].IsDisplay,
+                                UpdateTime = fwUpdateInfos[i].UpdateTime,
+                                TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                                ProcessName = "Downloading",
+                                ProcessProgress = 100,
+                            };
+                            sendMessageToEvent(updateProgressInfo);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (_downloadTimer != null)
+                            {
+                                _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
+                                _downloadTimer.Stop();
+                                _downloadTimer = null;
+                            }
+                            _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download error : " + ex.Message);
+                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.NetworkDisconnection;
+                            _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Update_failed_due_to_network_error"]}";
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            method.DeleteFolder(savePath);
+                            continue;
+                        }
+
+                        string extractPath = Path.Combine(savePath + Path.GetFileName(url).Substring(0, Path.GetFileName(url).Length - 4));
+                        if (!Directory.Exists(extractPath))
+                        {
+                            Directory.CreateDirectory(extractPath);
+                        }
+                        //0926 Bruce Add Security
+                        //if (!CheckFold(extractPath, out FolderInfo, out PathSymbolicLinInfo))
+                        if (!DDPMFileSecurity.CheckFold(extractPath, out FolderInfo, out PathSymbolicLinInfo))
+                        {
+                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
+                            _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} extractPath FolderIsNotSafe - FolderInfo : {FolderInfo}");
+                            _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} extractPath FolderIsNotSafe - PathSymbolicLinInfo : {PathSymbolicLinInfo}");
+                            _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            method.DeleteFolder(savePath);
+                            continue;
+                        }
+                        try
+                        {
+                            using (FileLock fileLock = new FileLock(_installationFileStoragePath, PathCheckOption.None, lockNow: true))
+                            {
+                                string exeFilePath;
+                                if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
                                 {
-                                    _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
-                                    _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} CheckThumbprint Faile");
+                                    fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
+                                    _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} Unzip Fail");
                                     _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
                                     NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                                    fileLock_2.Unlock();
                                     fileLock.Unlock();
                                     method.DeleteFolder(savePath);
                                     continue;
                                 }
-                                fwUpdateInfos[i].InstallPaths = exeFilePath;
-                                fwUpdateInfos[i].FWUErrorCode = Install(fwUpdateInfos[i]);
-                                fwUpdateInfos[i].Update_date = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-                            }
-                            //_notificationStr = $"{_notificationStr.Replace("[XXXXXX]", $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model}")}";
-                            _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {_notificationStr}";
-                            if (fwUpdateInfos[i].FWUErrorCode == FWUErrorCode.NoError)
-                            {
-                                if (_IsUITrigger)
+                                using (FileLock fileLock_2 = new FileLock(exeFilePath, PathCheckOption.None, lockNow: true))
                                 {
-                                    NotificationFWupdate(LangHelper.Instance["Success"], _notificationStr);
-                                }
-                                else//for CLI
-                                {
-                                    _notificationStr = LangHelper.Instance["Update_successful_body"].Replace("[XXXXXX]", $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model}");
-                                    NotificationFWupdate(LangHelper.Instance["Update_successful"], _notificationStr);
-                                }
-                            }
-                            else
-                            {
-                                if (_IsUITrigger)
-                                {
-                                    if (string.IsNullOrWhiteSpace(_notificationTitle))
+                                    if (!CheckThumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out string FileCAInfo))
                                     {
-                                        _notificationTitle = LangHelper.Instance["Error"];
+                                        _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                                        _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} CheckThumbprint Faile");
+                                        _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
+                                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                                        fileLock_2.Unlock();
+                                        fileLock.Unlock();
+                                        method.DeleteFolder(savePath);
+                                        continue;
                                     }
-                                    NotificationFWupdate(_notificationTitle, _notificationStr);
+                                    fwUpdateInfos[i].InstallPaths = exeFilePath;
+                                    fwUpdateInfos[i].FWUErrorCode = Install(fwUpdateInfos[i]);
+                                    fwUpdateInfos[i].Update_date = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
                                 }
-                                else//for CLI
+                                //_notificationStr = $"{_notificationStr.Replace("[XXXXXX]", $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model}")}";
+                                _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {_notificationStr}";
+                                if (fwUpdateInfos[i].FWUErrorCode == FWUErrorCode.NoError)
                                 {
-                                    _notificationStr = LangHelper.Instance["Update_failed_body"].Replace("[XXXXXX]", $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model}");
-                                    NotificationFWupdate(LangHelper.Instance["Update_failed"], _notificationStr);
+                                    if (_IsUITrigger)
+                                    {
+                                        NotificationFWupdate(LangHelper.Instance["Success"], _notificationStr);
+                                    }
+                                    else//for CLI
+                                    {
+                                        _notificationStr = LangHelper.Instance["Update_successful_body"].Replace("[XXXXXX]", $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model}");
+                                        NotificationFWupdate(LangHelper.Instance["Update_successful"], _notificationStr);
+                                    }
+                                }
+                                else
+                                {
+                                    if (_IsUITrigger)
+                                    {
+                                        if (string.IsNullOrWhiteSpace(_notificationTitle))
+                                        {
+                                            _notificationTitle = LangHelper.Instance["Error"];
+                                        }
+                                        NotificationFWupdate(_notificationTitle, _notificationStr);
+                                    }
+                                    else//for CLI
+                                    {
+                                        _notificationStr = LangHelper.Instance["Update_failed_body"].Replace("[XXXXXX]", $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model}");
+                                        NotificationFWupdate(LangHelper.Instance["Update_failed"], _notificationStr);
+                                    }
                                 }
                             }
                         }
+                        catch (Exception ex)
+                        {
+                            _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} FileLock Error: {ex.Message}");
+                            _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                        }
+                        method.DeleteFolder(savePath);
+                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} DeviceName : {fwUpdateInfos[i].DeviceName} Model : {fwUpdateInfos[i].Model} done");
                     }
-                    catch (Exception ex)
+                    _logs.DebugMsg_1($"{nameof(DownloadAndInstall)}, All done");
+                    //判斷是否有非Display更新，有的話停止DPM
+                    if (temp_FWUpdateInfo.Count != fwUpdateInfos.Count)
                     {
-                        _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} FileLock Error: {ex.Message}");
-                        _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
-                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                        StartService();
                     }
-                    method.DeleteFolder(savePath);
-                    _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} DeviceName : {fwUpdateInfos[i].DeviceName} Model : {fwUpdateInfos[i].Model} done");
+                    // 設定當前工作目錄
+                    Directory.SetCurrentDirectory(originalDirectory);
+                    method.Dispose();
+                    _IsDownloadAndInsytall = false;
+
+                    // add @ 20250220 stephen : send fwupdate result event to cma
+                    DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, fwUpdateInfos, System.Threading.CancellationToken.None);
+
+                    return Task.FromResult(fwUpdateInfos);
                 }
-                _logs.DebugMsg_1($"{nameof(DownloadAndInstall)}, All done");
-                //判斷是否有非Display更新，有的話停止DPM
-                if (temp_FWUpdateInfo.Count != fwUpdateInfos.Count)
+                catch (Exception ex)
                 {
+                    // 設定當前工作目錄
+                    Directory.SetCurrentDirectory(originalDirectory);
+                    method.Dispose();
+                    if (_downloadTimer != null)
+                    {
+                        _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
+                        _downloadTimer.Stop();
+                        _downloadTimer = null;
+                    }
+                    _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                    NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                    _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} {_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Error : {ex.Message}"); // 輸出錯誤訊息
                     StartService();
+                    _IsDownloadAndInsytall = false;
+                    return Task.FromResult(fwUpdateInfos);
                 }
-                // 設定當前工作目錄
-                Directory.SetCurrentDirectory(originalDirectory);
-                method.Dispose();
-                _IsDownloadAndInsytall = false;
-
-                // add @ 20250220 stephen : send fwupdate result event to cma
-                DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, fwUpdateInfos, System.Threading.CancellationToken.None);
-
-                return Task.FromResult(fwUpdateInfos);
-            }
-            catch (Exception ex)
-            {
-                // 設定當前工作目錄
-                Directory.SetCurrentDirectory(originalDirectory);
-                method.Dispose();
-                if (_downloadTimer != null)
+                finally
                 {
-                    _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
-                    _downloadTimer.Stop();
-                    _downloadTimer = null;
+                    method.Dispose();
                 }
-                _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
-                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} {_fWUpdateInfo.DeviceName} {_fWUpdateInfo.Model} Error : {ex.Message}"); // 輸出錯誤訊息
-                StartService();
-                _IsDownloadAndInsytall = false;
-                return Task.FromResult(fwUpdateInfos);
-            }
-            finally
-            {
-                method.Dispose();
             }
         }
 

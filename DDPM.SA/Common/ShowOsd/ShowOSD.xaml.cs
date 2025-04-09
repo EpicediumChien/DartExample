@@ -15,19 +15,16 @@ namespace DDPM.ShowOSD
         private TimeSpan time;
         private string showString = string.Empty;
         private double ShowTextFontSize = 80;
-        double tempW = 224.0/ 6.0;
-        double tempH = 80;
+        //double tempW = 224.0/ 6.0;
+        //double tempH = 80;
 
         public ShowOSDWin(string str, double dbFontSize = 80)
         {
             InitializeComponent();
             DataContext = this;
             showString = str;
-
             ShowTextFontSize = dbFontSize;
             SetOstTextFontSize(ShowTextFontSize);
-
-            //devEdidDEMO = devEdid;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -43,14 +40,11 @@ namespace DDPM.ShowOSD
             }
 
             this.tbShowText.Text = showString;
-
-            this.Width = showString.Length * tempW;
-            this.Height = tempH;
+            //this.Width = showString.Length * tempW;
+            //this.Height = tempH;
             this.Topmost = false;
             this.Topmost = true;         
 
-            
-            //time = TimeSpan.FromMilliseconds(1800);
             time = TimeSpan.FromMilliseconds(1200);
             animationTimer = new DispatcherTimer();
             animationTimer.Interval = TimeSpan.FromMilliseconds(100);//.FromSeconds(1);
@@ -79,7 +73,6 @@ namespace DDPM.ShowOSD
                 time = time.Add(TimeSpan.FromMilliseconds(-100));
 
                 if (time.TotalMilliseconds < 800)
-                //if (time.TotalMilliseconds < 500)
                 {
                     this.Dispatcher.Invoke(() =>
                     {

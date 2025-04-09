@@ -11,21 +11,10 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Microsoft.Extensions.DependencyInjection;
-using nsWinEventHook;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Controls.Ribbon;
-using System.Windows.Forms;
-using System.Windows.Media.Animation;
 using VcpCore.Common;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using IDs = DDPM.SA.Common.IDs;
 using DDPM.SA.Common.Telemetry;
-using static VcpCore.Common.User32;
-using System.Text;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
@@ -52,7 +41,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         //DCF/Agent related
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
-        private IAgent _agent;
+        private IAgent? _agent = null;
         private ILog? _log;
         private bool _isConfigured = false;
 
@@ -73,13 +62,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         //DDPM Subagent Plugins - TelemetryScheduler
         private ITelementryScheduler _telementrySchedulerPlugin;
-        private readonly object _PluginConditionLock_TelementryScheduler = new object();
+        //private readonly object _PluginConditionLock_TelementryScheduler = new object();  //Derek 2025/04/01
         private bool _telementrySchedulerPluginUsable = false;
         private GlobalSettingParam? _globalSettingParam = null;
 
         //DDPM Subagent Plugins - Hotkey
         private IHotkey _HotkeyPlugin;
-        private PluginCondition _hotkeyPluginCondition;
+        //private PluginCondition _hotkeyPluginCondition; //Derek 2025/04/01
         private readonly object _PluginConditionLock_Hotkey = new object();
 
         //Lock objects
@@ -118,7 +107,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #endregion Constructor
  
-         #region IDisposableObservable Support
+        #region IDisposableObservable Support
 
         /// <summary>
         /// To detect redundant calls
@@ -137,6 +126,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 {
                     EABroker_Stop();
                     _agent = null;
+
+                    _HotkeyPlugin.Unhook();
+                    _HotkeyPlugin.KeyUp -= Keyboard_KeyUpProc;
+                    _HotkeyPlugin.KeyDown -= Keyboard_KeyDownProc;
                 }
                 IsDisposed = true;
             }
@@ -169,7 +162,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #region PluginManager related
 
-        private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
+        private void PluginManagerOnPluginsStarted(object? sender, PluginsStartedEventArgs e)
         {
             if (e == null)
                 return;
@@ -186,7 +179,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private void InitializeDeviceManagerPlugin()
         {
             //If DeviceManager plugin is got already then return, prevent to call twice
-            if (_deviceManagerPlugin != null)
+            if (_deviceManagerPlugin != null || _agent == null)
                 return;
 
             _deviceManagerPlugin = _agent.PluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
@@ -199,7 +192,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             WriteLog($"Initializing DeviceManager plugin.");
         }
 
-        private void OnDeviceManagerPluginConditionChangeHandler(object sender, EventArgs e)
+        private void OnDeviceManagerPluginConditionChangeHandler(object? sender, EventArgs e)
         {
             GetCurrentDeviceManagerPluginCondition();
         }
@@ -208,6 +201,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             _ = Task.Run(async () =>
             {
+                if (_deviceManagerPlugin == null)
+                    return;
+
                 var pluginCondition = await (_deviceManagerPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
 
                 lock (_PluginConditionLock)
@@ -228,6 +224,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         {
                             ConfigureServices();
                             //Only after DisplayManager is ready to use, will start the EasyArrange service
+                            WriteLog($"EABroker_Start from GetCurrentDeviceManagerPluginCondition");
                             EABroker_Start();
                         }
                     }
@@ -280,6 +277,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         {
                             ConfigureServices();
                             //Only after DisplayManager is ready to use, will start the EasyArrange service
+                            WriteLog($"EABroker_Start from GetCurrentDisplayManagerPluginCondition");
                             EABroker_Start();
                         }
                     }
@@ -287,7 +285,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             });
         }
 
-        private void OnDisplayManagerPluginConditionChangeHandler(object sender, EventArgs e)
+        private void OnDisplayManagerPluginConditionChangeHandler(object? sender, EventArgs e)
         {
             GetCurrentDisplayManagerPluginCondition();
         }
@@ -310,7 +308,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _log?.Info($"Initializing SettingsManager plugin.");
         }
 
-        private void OnSettingsManagerPluginConditionChangeHandler(object sender, EventArgs e)
+        private void OnSettingsManagerPluginConditionChangeHandler(object? sender, EventArgs e)
         {
             GetCurrentSettingsManagerPluginCondition();
         }
@@ -342,6 +340,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         {
                             ConfigureServices();
                             //Only after all required Plugins are ready to use, will start the EasyArrange service
+                            WriteLog($"EABroker_Start from GetCurrentSettingsManagerPluginCondition");
                             EABroker_Start();
                         }
                     }
@@ -369,71 +368,72 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         //TelemetryScheduler Plugin
-        //
-        private void InitializeTelementrySchedulerPlugin()
-        {
-            if (_telementrySchedulerPlugin != null)
-                return;
+        //Derek 2025/03/30 due to 0 reference
+        //private void InitializeTelementrySchedulerPlugin()
+        //{
+        //    if (_telementrySchedulerPlugin != null)
+        //        return;
 
-            _telementrySchedulerPlugin = _agent.PluginManager.FindPluginByType<ITelementryScheduler>(PluginResolution.Dynamic);
+        //    _telementrySchedulerPlugin = _agent.PluginManager.FindPluginByType<ITelementryScheduler>(PluginResolution.Dynamic);
 
-            if (_telementrySchedulerPlugin is IFrameworkPluginConditionNotification pluginCondition)
-            {
-                pluginCondition.PluginConditionChangeHandler += OnTelementrySchedulerConditionChangeHandler;
-                GetCurrentTelementrySchedulerCondition();
-            }
-        }
-        private void OnTelementrySchedulerConditionChangeHandler(object sender, EventArgs e)
-        {
-            GetCurrentTelementrySchedulerCondition();
-        }
-        private void GetCurrentTelementrySchedulerCondition()
-        {
-            _ = Task.Run(async () =>
-            {
-                var pluginCondition = await (_telementrySchedulerPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
-                lock (_PluginConditionLock_TelementryScheduler)
-                {
-                    if (pluginCondition is PluginErrorCondition)
-                    {
-                        WriteLog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in an error condition");
-                        _telementrySchedulerPluginUsable = false;
-                    }
-                    else if (pluginCondition is PluginRunningCondition)
-                    {
-                        WriteLog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in a running condition");
+        //    if (_telementrySchedulerPlugin is IFrameworkPluginConditionNotification pluginCondition)
+        //    {
+        //        pluginCondition.PluginConditionChangeHandler += OnTelementrySchedulerConditionChangeHandler;
+        //        GetCurrentTelementrySchedulerCondition();
+        //    }
+        //}
+        //private void OnTelementrySchedulerConditionChangeHandler(object? sender, EventArgs e)
+        //{
+        //    GetCurrentTelementrySchedulerCondition();
+        //}
+        //private void GetCurrentTelementrySchedulerCondition()
+        //{
+        //    _ = Task.Run(async () =>
+        //    {
+        //        var pluginCondition = await (_telementrySchedulerPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+        //        lock (_PluginConditionLock_TelementryScheduler)
+        //        {
+        //            if (pluginCondition is PluginErrorCondition)
+        //            {
+        //                WriteLog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in an error condition");
+        //                _telementrySchedulerPluginUsable = false;
+        //            }
+        //            else if (pluginCondition is PluginRunningCondition)
+        //            {
+        //                WriteLog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in a running condition");
 
-                        if (_GlobalSettingParam != null)
-                        {
-                            WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
-                            _telementrySchedulerPlugin.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
-                            _telementrySchedulerPluginUsable = true;
-                        }
-                        else
-                        {
-                            WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
-                            _telementrySchedulerPluginUsable = false;
-                        }
-                    }
-                    else if (pluginCondition is PluginStartedCondition)
-                    {
-                        WriteLog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in a started condition");
+        //                if (_GlobalSettingParam != null)
+        //                {
+        //                    WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
+        //                    _telementrySchedulerPlugin.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
+        //                    _telementrySchedulerPluginUsable = true;
+        //                }
+        //                else
+        //                {
+        //                    WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
+        //                    _telementrySchedulerPluginUsable = false;
+        //                }
+        //            }
+        //            else if (pluginCondition is PluginStartedCondition)
+        //            {
+        //                WriteLog($"{nameof(GetCurrentTelementrySchedulerCondition)} - Telementry Scheduler is in a started condition");
 
-                        if (_GlobalSettingParam != null)
-                        {
-                            WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
-                            _telementrySchedulerPlugin.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
-                            _telementrySchedulerPluginUsable = true;
-                        }
-                        else
-                        {
-                            WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
-                            _telementrySchedulerPluginUsable = false;
-                        }
-                    }
-                }
-            });
-        }
+        //                if (_GlobalSettingParam != null)
+        //                {
+        //                    WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " Call GetGlobalsetting_IsTelemetryConsentOn:");
+        //                    _telementrySchedulerPlugin.GetGlobalsetting_IsTelemetryConsentOn(_GlobalSettingParam.isTelemetryConsentOn);
+        //                    _telementrySchedulerPluginUsable = true;
+        //                }
+        //                else
+        //                {
+        //                    WriteLog(nameof(GetCurrentTelementrySchedulerCondition) + " _GlobalSettingParam is null");
+        //                    _telementrySchedulerPluginUsable = false;
+        //                }
+        //            }
+        //        }
+        //    });
+        //}
+        //End Derek 2025/03/30
 
         // Hotkey Plugin
         //
@@ -449,7 +449,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 GetCurrentHotkeyPluginCondition();
             }
         }
-        private void OnHotkeyPluginConditionChangeHandler(object sender, EventArgs e)
+        private void OnHotkeyPluginConditionChangeHandler(object? sender, EventArgs e)
         {
             GetCurrentHotkeyPluginCondition();
         }
@@ -714,6 +714,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 if (!STA_EditCommand(monitorInfo, args))
                     return;
+
                 WriteLog("@ EditCommand(), Entering Dispatcher.Run().");
                 System.Windows.Threading.Dispatcher.Run();
                 WriteLog("@ EditCommand(), exit from Dispatcher.Run().");
@@ -726,7 +727,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return Task.FromResult(true);
         }
 
-        private OverlapWindow _overlapWindow;
+        //Derek 2028/03/31
+        private void ExitUIThread()
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+            }
+        }
+
+        private OverlapWindow? _overlapWindow = null;
         /// <summary>
         /// EditCommand() function which is running under STA thread.
         /// In this method, it must return a EditStarted event to UI, to tell UI
@@ -745,6 +755,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (_eaBroker == null)
             {
                 WriteLog("@ STA_EditCommand(), exit due to _eaBroker is null.");
+
                 return false;
             }
             //if (_editWindow == null)
@@ -777,6 +788,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 {
                     EditStarted(this, $"Cannot find a Screen from monitorInfo. MonitorInfo.DisplayName=[{monitorInfo.DisplayName}]");
                 }
+
                 return false;
             }
             bool isVertical = (scr.Bounds.Width < scr.Bounds.Height);
@@ -836,6 +848,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                             _eaBroker.VM.IsWorkUIEnabled = true;
                             _eaBroker.RunningState = eEARunningStates.Waiting;
                         }
+
+                        ExitUIThread();
                         return false;
                     }
 
@@ -848,7 +862,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                     WriteLog($"SaveCustomWindow.SaveClicked, CutomName=[{customName}]");
 
-                    _overlapWindow = new OverlapWindow(_log);
+                    _overlapWindow = new OverlapWindow(_log!);
+                    _overlapWindow.Closing += _overlapWindow_Closing; //Derek 2025/03/31
                     //Handler of CaptureDone
                     //After CaptureOverlapLayout() finished it job and returned.
                     //The output (OverlapWindow.SplitCtrl) has ready to get.
@@ -912,7 +927,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         Trace.WriteLine($"WorkingArea: {workingArea.Width}x{workingArea.Height}");
                         _overlapWindow.Show();
                         addCount = _overlapWindow.CaptureOverlapLayoutByWorkingArea(workingArea);
-
                     }
                     else
                     {
@@ -967,6 +981,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 //Non-Overlap edit steps
                 //1 Show the layout for editing
                 _editWindow = new EABroker.EAEditWindow(_log);
+                _editWindow.Closed += _editWindow_Closed;
                 //Robert_Lin 2025-3-19 remove the duplicate code
                 //_saveCustomWindow = new EABroker.SaveCustomWindow(_deviceManagerPlugin);
                 if (!_editWindow.ShowAndEdit(args, workingArea))
@@ -975,6 +990,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     {
                         EditStarted(this, "Error");
                     }
+
                     return false;
                 }
 
@@ -1003,6 +1019,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         _eaBroker.VM.IsWorkUIEnabled = true;
                         _eaBroker.RunningState = eEARunningStates.Waiting;
                     }
+
+                    ExitUIThread();
                 };
                 _saveCustomWindow.SaveButtonClick += delegate
                 {
@@ -1046,6 +1064,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         _saveCustomWindow.Close();
                         _saveCustomWindow = null;
                     }
+
+                    ExitUIThread();
                 };
 
                 //_saveCustomWindow.ShowAndEdit(args, workingArea);
@@ -1065,6 +1085,25 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return true;
         }
 
+        private void _editWindow_Closed(object? sender, EventArgs e)
+        {
+            if (_editWindow != null)
+                _editWindow.Closed -= _editWindow_Closed;
+
+            ExitUIThread();
+        }
+
+        private void _overlapWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (_overlapWindow != null)
+            {
+                _overlapWindow.Closing -= _overlapWindow_Closing;
+                _overlapWindow = null;
+            }
+
+            ExitUIThread();
+        }
+
         /// <summary>
         /// Called by DeviceManagerSA when UI call WriteEzSettings_XXXXXX() method to update EzSettings.
         /// In EAPluging, will reload EzSettings from DDPMSettings file, and update to ArrangeViewModel.
@@ -1076,6 +1115,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 if (_deviceManagerPlugin != null)
                 {
+                    WriteLog($"[EAPlugin] ReloadEzSettingsFromUserSettingsFile by ReloadEzSettings"); //add for debug
                     _eaBroker.VM.ReloadEzSettingsFromUserSettingsFile();
                     return Task.FromResult(true);
                 }
@@ -1183,8 +1223,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //Launch the major function in UI Thread
             Thread thread = new Thread(() =>
             {
-                STA_SetEASelectedLayout(monitorInfo, eaId);
-                System.Windows.Threading.Dispatcher.Run();
+                if (!STA_SetEASelectedLayout(monitorInfo, eaId))
+                    return;
+
+                WriteLog("STA_SetEASelectedLayout thread start");
+                //System.Windows.Threading.Dispatcher.Run();
+                WriteLog("STA_SetEASelectedLayout thread end");
             });
 
             thread.SetApartmentState(ApartmentState.STA);
@@ -1197,16 +1241,18 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private bool STA_SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
         {
             //Robert_Lin, 2024-12-20, LogInfo will be removed, used WriteLog() instead.
-            //Add LogInfo in this file will be chaned to WriteLog()
+            //Add LogInfo in this file will be changed to WriteLog()
 
             if (_eaBroker == null)
             {
                 WriteLog($"STA_SetEASelectedLayout({eaId}) return false: _eaBroker is null.");
+
                 return false;
             }
             if (_eaBroker.VM == null)
             {
                 WriteLog($"SetEASelectedLayout({eaId}) return false: EABroker.VM is null.");
+
                 return false;
             }
 
@@ -1218,10 +1264,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 _eaBroker.VM.EAPluginLastError = "ReadEAMonitorSettings() return null.";
                 WriteLog($"STA_SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
+
                 return false;
             }
 
-            //Update Selected Layout to eaSettngs.SelectedLayout
+            //Update Selected Layout to eaSettings.SelectedLayout
             //
             //If the eaId is a preset layout
             if (ISplitCtrl.IsExistedPresetEAID(eaId))
@@ -1260,6 +1307,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     //Should naver to here, ReadEACustomList() never return null.
                     _eaBroker.VM.EAPluginLastError = "ReadEACustomList() return null.";
                     WriteLog($"STA_SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
+
                     return false;
                 }
             }
@@ -1336,6 +1384,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (!isOKSaveSettings)
             {
                 WriteLog(" SetEASelectedLayout() return false: Fail to write to MonitorSettings file.");
+
                 return false;
             }
 
@@ -1357,6 +1406,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 eaArgs.Message = $"{model}|{serviceTag}";
                 EASettingsChanged(this, eaArgs);
             }
+
             return true;
         }
 
@@ -1689,8 +1739,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //Run in a STA Thread
             Thread thread = new Thread(() =>
             {
-                _eaBroker.STA_LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid);
+                if (!_eaBroker.STA_LaunchAndArrangeAppsWithEzArrange(sortApps, moInfo, eAid))
+                    return;
+
+                WriteLog("STA_LaunchAndArrangeAppsWithEzArrange thread start");
                 System.Windows.Threading.Dispatcher.Run();
+                WriteLog("STA_LaunchAndArrangeAppsWithEzArrange thread end");
             });
 
             thread.SetApartmentState(ApartmentState.STA);
@@ -1706,7 +1760,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #region EA Broker
 
         /// <summary>
-        /// Startup the EABroker. Set _isEaBrokerStarted to true, and let EABroker enter Waitig state.
+        /// Startup the EABroker. Set _isEaBrokerStarted to true, and let EABroker enter Waiting state.
         /// </summary>
         public void EABroker_Start()
         {
@@ -1753,8 +1807,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             //Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
             _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
-            EventManagerArgs evtArgs = new EventManagerArgs() { Tag = "init" };
-            _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, evtArgs);
+
+            //Derek0403 why raise DisplaySettingsChanged event here?
+            //Remove???????
+            //EventManagerArgs evtArgs = new EventManagerArgs() { Tag = "init" };
+            //_agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, evtArgs);
 
             //Robert_Lin, 2024-12-10
             _agent.RegisterForEvent(AgentEventNames.AllInfoMonitorsChanged, AllInfoMonitorChangedHandler);
@@ -1780,8 +1837,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //thread.SetApartmentState(ApartmentState.STA);
             //thread.Start();
 
-            //if (_displayManagerPlugin != null)
-            //    _displayManagerPlugin.Displaychanged -= _displayManagerPlugin_Displaychanged;
+            if (_displayManagerPlugin != null)
+                _displayManagerPlugin.Displaychanged -= _displayManagerPlugin_Displaychanged;
+
             _agent.UnregisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
             if (_eaBroker != null)
             {
@@ -1821,17 +1879,18 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private void DisplaySettingsChangedHandler(object sender, EventManagerArgs e)
         {
-            _log?.Info($"@ OnDisplaychanged");
+            _log?.Info($"@[EAPlugin] DisplaySettingsChangedHandler");
 
             if (_eaBroker != null)
             {
                 bool isInit = false;
 
-                if (e.Tag != null &&
-                    e.Tag is string &&
-                    e.Tag == "init")
+                //if (e.Tag != null &&
+                //    e.Tag is string &&
+                //    e.Tag == "init")
+                if (e.Tag is not null and string and "init")
                 {
-                    isInit = true;                    
+                    isInit = true;
                 }
 
                 //If we are in Edit state, then cancel the editing
@@ -1841,6 +1900,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     
                 }
 
+                _log?.Info($"@[EAPlugin] isInit={isInit} before call _eaBroker.Handle_DisplaySettingsChanged");
                 _eaBroker.Handle_DisplaySettingsChanged(isInit);
                 //Move blew statement into Handle_DisplaySettingsChanged()
                 //_eaBroker.VM.RefreshWorkWindows();
@@ -1848,7 +1908,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             else
             {
-                WriteLog("@ OnDisplaychanged(), _eaBroker is null.");
+                WriteLog("@ DisplaySettingsChangedHandler(), _eaBroker is null.");
             }
         }
 
@@ -1871,78 +1931,80 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #endregion Display Changed event
 
 
- 
+
         #region EditWindow and SaveCustomWindow
- 
-        private void saveCustomWidow_CancelButtonClick(object? sender, string e)
-        {
-            if ((EditReturn != null) && (_eaArgs != null))
-            {
-                EAArgs retArgs = new EAArgs(_eaArgs);
-                retArgs.Result = false;
-                retArgs.Command = "EditReturn";
-                retArgs.Message = "User cancel the editing.";
-                EditReturn(this, retArgs);
-            }
-            if (_editWindow != null)
-            {
-                _editWindow.Dispatcher_Hide();
-                _editWindow = null;
-            }
-            if (_eaBroker != null)
-                _eaBroker.VM.IsWorkUIEnabled = true;
-        }
 
-        private void saveCustomWidow_SaveButtonClick(object? sender, string e)
-        {
-            if ((EditReturn != null) && (_eaArgs != null))
-            {
-                if (_eaArgs.SplitJson.IsOverlapLayout)
-                {
-                    EditForOverlapLayout();
-                    return;
-                }
+        //Derek 2025/03/31 due to 0 references
+        //private void saveCustomWidow_CancelButtonClick(object? sender, string e)
+        //{
+        //    if ((EditReturn != null) && (_eaArgs != null))
+        //    {
+        //        EAArgs retArgs = new EAArgs(_eaArgs);
+        //        retArgs.Result = false;
+        //        retArgs.Command = "EditReturn";
+        //        retArgs.Message = "User cancel the editing.";
+        //        EditReturn(this, retArgs);
+        //    }
+        //    if (_editWindow != null)
+        //    {
+        //        _editWindow.Dispatcher_Hide();
+        //        _editWindow = null;
+        //    }
+        //    if (_eaBroker != null)
+        //        _eaBroker.VM.IsWorkUIEnabled = true;
+        //}
 
-                EAArgs retArgs = new EAArgs(_eaArgs);
-                retArgs.Command = "EditReturn";
-                retArgs.Result = true;
-                retArgs.SplitJson.Settings = _editWindow.GetSettings();
+        //Derek 2025/03/31 due to 0 references
+        //private void saveCustomWidow_SaveButtonClick(object? sender, string e)
+        //{
+        //    if ((EditReturn != null) && (_eaArgs != null))
+        //    {
+        //        if (_eaArgs.SplitJson.IsOverlapLayout)
+        //        {
+        //            EditForOverlapLayout();
+        //            return;
+        //        }
 
-                if (_saveCustomWindow != null &&
-                    _saveCustomWindow.SelectedCustomItem != null)
-                { 
-                    //CustomName will copy from SaveCustomWindow
-                    retArgs.SplitJson.CustomName = _saveCustomWindow.SelectedCustomItem.CustomName;
+        //        EAArgs retArgs = new EAArgs(_eaArgs);
+        //        retArgs.Command = "EditReturn";
+        //        retArgs.Result = true;
+        //        retArgs.SplitJson.Settings = _editWindow.GetSettings();
 
-                    //If user has selected an existed custom layout
-                    if (_saveCustomWindow.SelectedCustomItem.EAID >= EAEMConstants.EAID_FirstCustom)
-                    {
-                        retArgs.SplitJson.EAID = _saveCustomWindow.SelectedCustomItem.EAID;
+        //        if (_saveCustomWindow != null &&
+        //            _saveCustomWindow.SelectedCustomItem != null)
+        //        { 
+        //            //CustomName will copy from SaveCustomWindow
+        //            retArgs.SplitJson.CustomName = _saveCustomWindow.SelectedCustomItem.CustomName;
 
-                    }
-                    else
-                    {
-                        //The SplitClass will update from SaveCustomWindow
+        //            //If user has selected an existed custom layout
+        //            if (_saveCustomWindow.SelectedCustomItem.EAID >= EAEMConstants.EAID_FirstCustom)
+        //            {
+        //                retArgs.SplitJson.EAID = _saveCustomWindow.SelectedCustomItem.EAID;
 
-                        //retArgs.SplitJson = _saveCustomWindow.SelectedCustomItem.Clone();
-                    }                    
-                }
+        //            }
+        //            else
+        //            {
+        //                //The SplitClass will update from SaveCustomWindow
 
-                //Can be removed
-                //retArgs.CustomName = e;
-                //retArgs.Settings = _editWindow.GetSettings();
+        //                //retArgs.SplitJson = _saveCustomWindow.SelectedCustomItem.Clone();
+        //            }                    
+        //        }
 
-                EditReturn(this, retArgs);
-            }
-            if (_editWindow != null)
-            {
-                _editWindow.Dispatcher_Hide();
-                _editWindow = null;
-            }
+        //        //Can be removed
+        //        //retArgs.CustomName = e;
+        //        //retArgs.Settings = _editWindow.GetSettings();
 
-            if (_eaBroker != null)
-                _eaBroker.VM.IsWorkUIEnabled = true;
-        }
+        //        EditReturn(this, retArgs);
+        //    }
+        //    if (_editWindow != null)
+        //    {
+        //        _editWindow.Dispatcher_Hide();
+        //        _editWindow = null;
+        //    }
+
+        //    if (_eaBroker != null)
+        //        _eaBroker.VM.IsWorkUIEnabled = true;
+        //}
 
         private void EditForOverlapLayout()
         {
@@ -2101,7 +2163,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private bool _isLShiftDown = false;
         private bool _isRShiftDown = false;
-        private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
+        private void Keyboard_KeyUpProc(object? sender, KeyEventArgs e)
         {
             string strKey = e.KeyCode.ToString().ToUpper();
            // Debug.WriteLine($"Keyboard_KeyUpProc ---{strKey}");
@@ -2122,7 +2184,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
         }
 
-        private void Keyboard_KeyDownProc(object sender, KeyEventArgs e)
+        private void Keyboard_KeyDownProc(object? sender, KeyEventArgs e)
         {
             string strKey = e.KeyCode.ToString().ToUpper();
            //// Debug.WriteLine($"Keyboard_KeyUpProc ---{strKey}");

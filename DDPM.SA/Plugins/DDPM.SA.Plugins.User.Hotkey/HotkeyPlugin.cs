@@ -107,6 +107,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
                 if (callbackDelegate != null)
                 {
                     Debug.WriteLine("Can't hook more than once");
+
                     return true;
                 }
 

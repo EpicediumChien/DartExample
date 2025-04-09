@@ -1,23 +1,9 @@
 ﻿using DDPM.Easy.Common;
 using DDPM.SA.Common.Display;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using VcpCore.Common;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Rectangle = System.Drawing.Rectangle;
 using Window = System.Windows.Window;
 
@@ -30,12 +16,12 @@ namespace DDPM.EABroker
     {
         #region Private members
         private readonly ArrangeVM _vm;
-        private Screen _workScreen;
-        private EAScreen _workEaScreen;
+        private Screen? _workScreen = null;
+        private EAScreen? _workEaScreen = null;
         private List<MonitorInfo> _attachedMonitors = new List<MonitorInfo>();
         private bool _isVertical = false;
         private ISplitCtrl? _workingSplit = null;
-        private bool _isSplitCtrl0A = false;
+        //private bool _isSplitCtrl0A = false;
         private readonly bool _isAwsBuddy;
         private bool _isWorkForSpanScreen = false;
         #endregion
@@ -160,6 +146,35 @@ namespace DDPM.EABroker
         #endregion
 
         #region [Input] Working SplitCtrl
+        private void ReleaseSplitCtrls()
+        {
+            if (splitCtrl.Content != null)
+            {
+                // 释放资源
+                if (splitCtrl.Content is FrameworkElement contentElement)
+                {
+                    // 这里可以添加更多资源释放逻辑，例如取消事件订阅等
+                }
+
+                // 清空 ContentControl 的内容
+                splitCtrl.Content = null;
+            }
+
+            if (fadeOutCtrl.Content != null)
+            {
+                // 释放资源
+                if (fadeOutCtrl.Content is FrameworkElement contentElement)
+                {
+                    // 这里可以添加更多资源释放逻辑，例如取消事件订阅等
+                }
+                // 清空 ContentControl 的内容
+                fadeOutCtrl.Content = null;
+            }
+
+            //GC.Collect();
+            //GC.WaitForPendingFinalizers();
+        }
+
         public bool SetWorkingSplit(SplitJson splitJson, bool showFadeOut=false)
         {
             this.Dispatcher.Invoke(() =>
@@ -167,6 +182,9 @@ namespace DDPM.EABroker
                 Rect rcScreen = new Rect();
                 int cellCount = splitJson.CellCount;
                 char splitKey = splitJson.SplitKey;
+
+                //Derek 2025/03/28 release previous resource
+                ReleaseSplitCtrls();
 
                 if ((cellCount == 0) && (splitKey == 'A'))
                 {
@@ -352,8 +370,8 @@ namespace DDPM.EABroker
 
                     if ((cellCount == 0) && (splitKey == 'B'))
                     {
-                        SplitCtrl0B sp0b = fadeSplit as SplitCtrl0B;
-                        sp0b.ApplySettingsToCellList(rcScreen);
+                        SplitCtrl0B? sp0b = fadeSplit as SplitCtrl0B;
+                        sp0b?.ApplySettingsToCellList(rcScreen);
                     }
                     fadeSplit.IsEditable = false;
                     fadeSplit.IsVertical = _isVertical;
@@ -424,6 +442,7 @@ namespace DDPM.EABroker
                 fadeOutGrid.Visibility = Visibility.Collapsed;
                 //Visibility = Visibility.Hidden;
                 //gridSplitCtrl.Opacity = 1;
+                sb = null; //Derek 2025/04/01
             };
 
             IsFading = true;
@@ -433,18 +452,21 @@ namespace DDPM.EABroker
             // });
         }
 
-        public void StopFadeOutAnimation()
-        {
-            this.Dispatcher.Invoke(() =>
-            {
-                Storyboard? sb = Resources["FadeOut"] as Storyboard;
-                if (sb == null)
-                    return;
-                sb.Stop();
-                IsFading = false;
-                //gridSplitCtrl.Opacity = 1;
-            });
-        }
+        //Derek 2025/04/01
+        //public void StopFadeOutAnimation()
+        //{
+        //    this.Dispatcher.Invoke(() =>
+        //    {
+        //        Storyboard? sb = Resources["FadeOut"] as Storyboard;
+
+        //        if (sb == null)
+        //            return;
+
+        //        sb.Stop();
+        //        IsFading = false;
+        //        //gridSplitCtrl.Opacity = 1;
+        //    });
+        //}
 
         #endregion FadeOut FadeOut Animation
 
@@ -602,7 +624,20 @@ namespace DDPM.EABroker
                 if (!_areCellRectsRefreshed)
                 {
                     //System.Threading.Timer timer1 = new System.Threading.Timer(refreshCellRects_TimerCallback, null, 100, Timeout.Infinite);
-                    System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(); }, null, 100, Timeout.Infinite);
+                    System.Threading.Timer? timer1 = null;
+                    try
+                    {
+                        timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(); }, null, 100, Timeout.Infinite);
+                    }
+                    catch (Exception e)
+                    {
+                        _vm.WriteLog($"[EAWindow] create timer for RefreshCellRects() exception: {e.Message}");
+                    }
+                    finally
+                    {
+                        timer1?.Dispose();
+                        timer1 = null;
+                    }
                 }
                 else
                 {
@@ -658,8 +693,10 @@ namespace DDPM.EABroker
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            //System.Windows.MessageBox.Show("Window_Closing");
             if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
             {
+                //System.Windows.MessageBox.Show("Window_Closing1");
                 System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
             }
         }

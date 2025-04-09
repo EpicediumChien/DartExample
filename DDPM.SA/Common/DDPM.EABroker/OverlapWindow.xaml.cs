@@ -1,25 +1,11 @@
 ﻿using DDPM.Easy.Common;
 using DDPM.SA.Common;
-using DDPM.SA.Common.Display;
 using DDPM.Win32Lib;
 using Dell.Client.Framework.Common;
 using nsWinEventHook;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Rectangle = System.Drawing.Rectangle;
 
 namespace DDPM.EABroker
@@ -33,16 +19,16 @@ namespace DDPM.EABroker
         private double _screenScale = 1.000;
         private readonly ILog? _log;
         private int _autoCloseTimerMsec = 3000;
-        private ISplitCtrl _splitCtrl;
+        private ISplitCtrl? _splitCtrl = null;
         #endregion
 
         #region Events
-        public EventHandler CaptureDone;
+        public EventHandler? CaptureDone = null;
 
         #endregion
 
         #region Output
-        public ISplitCtrl SplitCtrl => _splitCtrl;
+        public ISplitCtrl? SplitCtrl => _splitCtrl;
         #endregion
 
         #region ctor
@@ -106,9 +92,18 @@ namespace DDPM.EABroker
             Width = scr.Bounds.Width / _screenScale;
             Height = scr.Bounds.Height / _screenScale;
 
-            int addCount = CaptureCustomLayout_v1(scr);
+            int addCount = 0;
+            try
+            {
+                addCount = CaptureCustomLayout_v1(scr);
 
-            Task.Delay(_autoCloseTimerMsec).ContinueWith(t => this.Dispatcher.Invoke(OnCaptureDone));
+                _ = Task.Delay(_autoCloseTimerMsec).ContinueWith(t => this.Dispatcher.Invoke(OnCaptureDone));
+            }
+            catch (Exception e)
+            {
+                WriteLog($"[OverlapWindow] catch exception[{e.Message}] when run CaptureOverlapLayout");
+            }
+            
             return addCount;
         }
 
@@ -119,9 +114,18 @@ namespace DDPM.EABroker
             Width = workingArea.Width / _screenScale;
             Height = workingArea.Height / _screenScale;
 
-            int addCount = CaptureCustomLayout_v2(workingArea);
+            int addCount = 0;
+            try
+            {
+                addCount = CaptureCustomLayout_v2(workingArea);
 
-            Task.Delay(_autoCloseTimerMsec).ContinueWith(t => this.Dispatcher.Invoke(OnCaptureDone));
+                Task.Delay(_autoCloseTimerMsec).ContinueWith(t => this.Dispatcher.Invoke(OnCaptureDone));
+            }
+            catch (Exception e)
+            {
+                WriteLog($"[OverlapWindow] catch exception[{e.Message}] when run CaptureOverlapLayoutByWorkingArea");
+            }
+            
             return addCount;
 
         }
@@ -267,7 +271,7 @@ namespace DDPM.EABroker
                 catch (Exception e1)
                 {
                     msg = e1.Message;
-                    WriteLog($"    [{idx}] Abandon: Get PathName from Procss causes exception, {msg}");
+                    WriteLog($"    [{idx}] Abandon: Get PathName from Process causes exception, {msg}");
                 }
 
                 //Filter out DDPM processes
@@ -650,12 +654,12 @@ namespace DDPM.EABroker
         }
         #endregion
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
-            {
-         //       System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
-            }
-        }
+        //private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        //{
+        //    if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+        //    {
+        // //       System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
+        //    }
+        //}
     }
 }

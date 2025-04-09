@@ -527,7 +527,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 if (_vm == null)
                     return;
 
-                string hostName = Dns.GetHostName();
+                string hostName =   HostNameHandler.GetDNSHostName();
 
                 txt1.Style = ConnectionStyle2;
                 txtBLHost1.Style = ConnectionStyle2;

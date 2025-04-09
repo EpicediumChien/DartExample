@@ -3,17 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DDPM.Easy.Common
 {
@@ -55,6 +48,32 @@ namespace DDPM.Easy.Common
         {
             this.Drop -= OnDrop;
             this.Unloaded -= OnUnloaded;
+
+            //Derek 2025/03/28
+            ReleaseResource();
+        }
+
+        private void ReleaseResource()
+        {
+            SetValue(BorderBrushProperty, null);
+            SetValue(BkBrushProperty, null);
+
+            if (_cellAppInfo != null)
+            {
+                foreach (var item in _cellAppInfo)
+                {
+                    item.Value.Image = null;
+                    item.Value.Cell = null;
+                    CellAppData? ca = item.Value as CellAppData;
+                    ca = null;
+                }
+
+                _cellAppInfo?.Clear();
+                _cellAppInfo = null;
+            }
+
+            //GC.Collect();
+            //GC.WaitForPendingFinalizers();
         }
 
         private string _cellName = "";
@@ -132,7 +151,6 @@ namespace DDPM.Easy.Common
 
 
 
-
         public Brush BkBrush
         {
             get { return (Brush)GetValue(BkBrushProperty); }
@@ -205,7 +223,7 @@ namespace DDPM.Easy.Common
                     string fileName = System.IO.Path.GetFileName(filePath);
 
                     // MemoryImage
-                    System.Drawing.Icon icon = System.Drawing.Icon.ExtractAssociatedIcon(filePath);
+                    System.Drawing.Icon? icon = System.Drawing.Icon.ExtractAssociatedIcon(filePath);
                     if (icon != null)
                     {
                         using (var iconStream = new System.IO.MemoryStream())
@@ -229,8 +247,9 @@ namespace DDPM.Easy.Common
                     appInfo.FilePath = filePath;
                     appInfo.Image = bitmapImage;
                     appInfo.Cell = cellBorder;
-                    _cellAppInfo.Add(cellNumber, appInfo);
-                    DropOccurred?.Invoke(this, _cellAppInfo);
+                    _cellAppInfo?.Add(cellNumber, appInfo);
+                    if (_cellAppInfo != null)
+                        DropOccurred?.Invoke(this, _cellAppInfo);
                 }
             }
         }
@@ -256,7 +275,7 @@ namespace DDPM.Easy.Common
             set => memoryTB.Text = value;
         }
 
-        Dictionary<int, CellAppData> _cellAppInfo = new Dictionary<int, CellAppData>();
+        Dictionary<int, CellAppData>? _cellAppInfo = new Dictionary<int, CellAppData>();
 
         public int CellNumber
         {
@@ -275,9 +294,9 @@ namespace DDPM.Easy.Common
 
             public string FilePath { get; set; }
 
-            public BitmapImage Image { get; set; }
+            public BitmapImage? Image { get; set; }
 
-            public CellBorder Cell { get; set; }
+            public CellBorder? Cell { get; set; }
 
             public CellAppData(int number, string fileName, string filePath, BitmapImage image, CellBorder cell)
             {

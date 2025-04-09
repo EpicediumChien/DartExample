@@ -738,7 +738,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
             if (e.vcpcode != null)
                 vcpCode = e.vcpcode;
-            _log.Info($"DdpmHomePlugin._deviceManager_VCPchanged() executed, Monitor=[{monitorName}], VcpCode=[{e.vcpcode}]");
+            _log.Info($"DdpmHomePlugin._deviceManager_VCPchanged() executed, Monitor=[{monitorName}], VcpCode=[{e.vcpcode}], Value=[{e.value}]");
             //throw new NotImplementedException();
         }
 
