@@ -417,163 +417,227 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<string> CheckisShowSynchronize(IDisplayService _displayManagerPlugin, List<MonitorInfo> moLists, MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList)//PIMS-285802 PIMS-285804
         {
             WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize in ... ");
-            if (moLists == null || _displayManagerPlugin == null)
-                return Task.FromResult("null");
-
-            ALSConfig Current_ALSConfig = new ALSConfig();
-            Current_ALSConfig = _displayManagerPlugin.GetALSFeatureValue(currentMoInfo, ALSFeatureQueryType.All, 0).Result;
-
-            //Re-Check isShowSynchronize
-            if (moLists.Count > 1)//Only check if there is more than one monitor.
+            try
             {
-                WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize Monitor Count = {moLists.Count} ... ");
-                if (alsSynchronizeList.Count == 0)
+                if (moLists == null || _displayManagerPlugin == null)
+                    return Task.FromResult("null");
+
+                ALSConfig Current_ALSConfig = new ALSConfig();
+                Current_ALSConfig = _displayManagerPlugin.GetALSFeatureValue(currentMoInfo, ALSFeatureQueryType.All, 0).Result;
+
+                //Re-Check isShowSynchronize
+                if (moLists.Count > 1)//Only check if there is more than one monitor.
                 {
-                    alsSynchronizeList = _displayManagerPlugin.GetAllExistAlsConfig().Result;
-                }
-                //It is mean over 2 monitors.
-                else if (alsSynchronizeList.Count == 2)//Test case for 2 monitors
-                {
-                    WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize ALS Monitor Count = 2 ... ");
-                    //25 Test Scenario : 2 same monitors with ALS Function
-                    if (alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName &&
-                        alsSynchronizeList[0].isSupportALS == 2 &&
-                        alsSynchronizeList[1].isSupportALS == 2)
+                    WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize Monitor Count = {moLists.Count.ToString()} ... ");
+                    if (alsSynchronizeList.Count == 0)
                     {
-                        if (CheckALSOnOff(alsSynchronizeList) == false)
+                        alsSynchronizeList = _displayManagerPlugin.GetAllExistAlsConfig().Result;
+                    }
+                    //It is mean over 2 monitors.
+                    else if (alsSynchronizeList.Count == 2)//Test case for 2 monitors
+                    {
+                        WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize ALS Monitor Count = 2 ... ");
+                        //25 Test Scenario : 2 same monitors with ALS Function
+                        if (alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName &&
+                            alsSynchronizeList[0].isSupportALS == 2 &&
+                            alsSynchronizeList[1].isSupportALS == 2)
                         {
-                            //SynchronizeBtnExpectedResult("C");
-                            return Task.FromResult("C");
+                            if (CheckALSOnOff(alsSynchronizeList) == false)
+                            {
+                                //SynchronizeBtnExpectedResult("C");
+                                return Task.FromResult("C");
+                            }
+                            else
+                            {
+                                //SynchronizeBtnExpectedResult("D");
+                                return Task.FromResult("D");
+                            }
                         }
-                        else
+                        //26 Test Scenario : 2 different monitors with ALS Function
+                        if (alsSynchronizeList[0].ModelName != alsSynchronizeList[1].ModelName &&
+                            alsSynchronizeList[0].isSupportALS == 2 &&
+                            alsSynchronizeList[1].isSupportALS == 2)
                         {
-                            //SynchronizeBtnExpectedResult("D");
-                            return Task.FromResult("D");
+                            if (CheckALSOnOff(alsSynchronizeList) == false)
+                            {
+                                //SynchronizeBtnExpectedResult("C");
+                                return Task.FromResult("C");
+                            }
+                            else
+                            {
+                                //SynchronizeBtnExpectedResult("D");
+                                return Task.FromResult("D");
+                            }
                         }
-                    }
-                    //26 Test Scenario : 2 different monitors with ALS Function
-                    if (alsSynchronizeList[0].ModelName != alsSynchronizeList[1].ModelName &&
-                        alsSynchronizeList[0].isSupportALS == 2 &&
-                        alsSynchronizeList[1].isSupportALS == 2)
-                    {
-                        if (CheckALSOnOff(alsSynchronizeList) == false)
+                        //13 Test Scenario : 2 same UP series monitors
+                        if (alsSynchronizeList[0].ModelName.Contains("UP") && alsSynchronizeList[1].ModelName.Contains("UP") &&
+                            alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName)
                         {
-                            //SynchronizeBtnExpectedResult("C");
-                            return Task.FromResult("C");
-                        }
-                        else
-                        {
-                            //SynchronizeBtnExpectedResult("D");
-                            return Task.FromResult("D");
-                        }
-                    }
-                    //13 Test Scenario : 2 same UP series monitors
-                    if (alsSynchronizeList[0].ModelName.Contains("UP") && alsSynchronizeList[1].ModelName.Contains("UP") &&
-                        alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName)
-                    {
-                        //SynchronizeBtnExpectedResult("A");
-                        return Task.FromResult("A");
-                    }
-                    //14 Test Scenario : 2 same non UP series monitors without ALS function
-                    if (!alsSynchronizeList[0].ModelName.Contains("UP") && !alsSynchronizeList[1].ModelName.Contains("UP") &&
-                        alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName &&
-                        alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 0)
-                    {
-                        //Expected Result B:
-                        //SynchronizeBtnExpectedResult("B");
-                        return Task.FromResult("B");
-                    }
-                    //15 Test Scenario : 2 different UP series monitors
-                    if (alsSynchronizeList[0].ModelName.Contains("UP") && alsSynchronizeList[1].ModelName.Contains("UP") &&
-                        alsSynchronizeList[0].ModelName != alsSynchronizeList[1].ModelName)
-                    {
-                        //Expected Result E.
-                        //SynchronizeBtnExpectedResult("E");
-                        return Task.FromResult("E");
-                    }
-                    //16 Test Scenario : 2 different Non UP series monitors without ALS function
-                    if (!alsSynchronizeList[0].ModelName.Contains("UP") && !alsSynchronizeList[1].ModelName.Contains("UP") &&
-                        alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 0)
-                    {
-                        //Expected Result B.
-                        //SynchronizeBtnExpectedResult("B");
-                        return Task.FromResult("B");
-                    }
-                    //17 Test Scenario : UP monitor and Non UP series monitor without ALS function
-                    if ((alsSynchronizeList[0].ModelName.Contains("UP") || alsSynchronizeList[1].ModelName.Contains("UP")) &&
-                        (!alsSynchronizeList[0].ModelName.Contains("UP") || !alsSynchronizeList[1].ModelName.Contains("UP")) &&
-                        alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 0)
-                    {
-                        //"Synchronize between monitors" is NOT displayed.
-                        //SynchronizeBtnExpectedResult("E");
-                        return Task.FromResult("E");
-                    }
-                    //18 Test Scenario : UP monitor and ALS function monitor
-                    if (alsSynchronizeList[0].ModelName.Contains("UP") || alsSynchronizeList[1].ModelName.Contains("UP") &&
-                        ((alsSynchronizeList[0].isSupportALS == 2) ^ (alsSynchronizeList[1].isSupportALS == 2)))
-                    {
-                        //"Synchronize between monitors" is NOT displayed.
-                        //SynchronizeBtnExpectedResult("E");
-                        return Task.FromResult("E");
-                    }
-                    //else
-                    //{
-                    //19 Test Scenario : G series monitor and S series monitor
-                    //20 Test Scenario : AW series Freesync monitor and U series monitor
-                    //21 Test Scenario : C series, SE series, E series and P series monitors
-                    //Expected Result B:
-                    //SynchronizeBtnExpectedResult("B");
-                    return Task.FromResult("B");
-                    //}
-                }
-                else if (alsSynchronizeList.Count == 3)//Test case for 3 monitors
-                {
-                    WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize ALS Monitor Count = 3 ... ");
-                    //0x12 = non Luminance
-                    //22 Test Scenario : 2 monitors with Brightness/Contrast and 1 monitor with Luminance
-                    if (CheckLuminanceMonitorCount(moLists) == 2)
-                    {
-                        bool obj = currentMoInfo.CapabilityDic.ContainsKey("12");
-                        if (obj)
-                        {
-                            //Result same as Expected Result B and not apply to DUT3.
-                            //SynchronizeBtnExpectedResult("B");
-                            return Task.FromResult("B");
-                        }
-                        else
-                        {
-                            //"Synchronize between monitors" is NOT displayed.
-                            //SynchronizeBtnExpectedResult("E");
-                            return Task.FromResult("E");
-                        }
-                    }
-                    //23 Test Scenario : 1 monitor with Brightness/Contrast and 2 monitors with Luminance
-                    if (CheckLuminanceMonitorCount(moLists) == 1)
-                    {
-                        bool obj = currentMoInfo.CapabilityDic.ContainsKey("12");
-                        if (obj)
-                        {
-                            //Result same as Expected Result B and not apply to DUT3.
                             //SynchronizeBtnExpectedResult("A");
                             return Task.FromResult("A");
                         }
-                        else
+                        //14 Test Scenario : 2 same non UP series monitors without ALS function
+                        if (!alsSynchronizeList[0].ModelName.Contains("UP") && !alsSynchronizeList[1].ModelName.Contains("UP") &&
+                            alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName &&
+                            alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 0)
+                        {
+                            //Expected Result B:
+                            //SynchronizeBtnExpectedResult("B");
+                            return Task.FromResult("B");
+                        }
+                        //15 Test Scenario : 2 different UP series monitors
+                        if (alsSynchronizeList[0].ModelName.Contains("UP") && alsSynchronizeList[1].ModelName.Contains("UP") &&
+                            alsSynchronizeList[0].ModelName != alsSynchronizeList[1].ModelName)
+                        {
+                            //Expected Result E.
+                            //SynchronizeBtnExpectedResult("E");
+                            return Task.FromResult("E");
+                        }
+                        //16 Test Scenario : 2 different Non UP series monitors without ALS function
+                        if (!alsSynchronizeList[0].ModelName.Contains("UP") && !alsSynchronizeList[1].ModelName.Contains("UP") &&
+                            alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 0)
+                        {
+                            //Expected Result B.
+                            //SynchronizeBtnExpectedResult("B");
+                            return Task.FromResult("B");
+                        }
+                        //17 Test Scenario : UP monitor and Non UP series monitor without ALS function
+                        if ((alsSynchronizeList[0].ModelName.Contains("UP") || alsSynchronizeList[1].ModelName.Contains("UP")) &&
+                            (!alsSynchronizeList[0].ModelName.Contains("UP") || !alsSynchronizeList[1].ModelName.Contains("UP")) &&
+                            alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 0)
                         {
                             //"Synchronize between monitors" is NOT displayed.
                             //SynchronizeBtnExpectedResult("E");
                             return Task.FromResult("E");
                         }
-                    }
-                    //27 Test Scenario : 1 ALS monitor(ALS = ON) and 2 non ALS monitors
-                    //28 Test Scenario : 1 ALS monitor(ALS = OFF) and 2 non ALS monitors
-                    if (CheckALSMonitorCount(alsSynchronizeList) == 1)
-                    {
-                        if (Current_ALSConfig.isSupportALS == 2)
+                        //18 Test Scenario : UP monitor and ALS function monitor
+                        if (alsSynchronizeList[0].ModelName.Contains("UP") || alsSynchronizeList[1].ModelName.Contains("UP") &&
+                            ((alsSynchronizeList[0].isSupportALS == 2) ^ (alsSynchronizeList[1].isSupportALS == 2)))
                         {
-                            if (Current_ALSConfig.isAutoBrightness == true || Current_ALSConfig.isAutoColorTemp == true)
+                            //"Synchronize between monitors" is NOT displayed.
+                            //SynchronizeBtnExpectedResult("E");
+                            return Task.FromResult("E");
+                        }
+                        //else
+                        //{
+                        //19 Test Scenario : G series monitor and S series monitor
+                        //20 Test Scenario : AW series Freesync monitor and U series monitor
+                        //21 Test Scenario : C series, SE series, E series and P series monitors
+                        //Expected Result B:
+                        //SynchronizeBtnExpectedResult("B");
+                        return Task.FromResult("B");
+                        //}
+                    }
+                    else if (alsSynchronizeList.Count == 3)//Test case for 3 monitors
+                    {
+                        WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize ALS Monitor Count = 3 ... ");
+                        //0x12 = non Luminance
+                        //22 Test Scenario : 2 monitors with Brightness/Contrast and 1 monitor with Luminance
+                        if (CheckLuminanceMonitorCount(moLists) == 2)
+                        {
+                            bool obj = currentMoInfo.CapabilityDic.ContainsKey("12");
+                            if (obj)
                             {
-                                //a) DUT3 is monitor with ALS function.
-                                //"Synchronize between monitors" is displayed on DUT3 but greyed out.
+                                //Result same as Expected Result B and not apply to DUT3.
+                                //SynchronizeBtnExpectedResult("B");
+                                return Task.FromResult("B");
+                            }
+                            else
+                            {
+                                //"Synchronize between monitors" is NOT displayed.
+                                //SynchronizeBtnExpectedResult("E");
+                                return Task.FromResult("E");
+                            }
+                        }
+                        //23 Test Scenario : 1 monitor with Brightness/Contrast and 2 monitors with Luminance
+                        if (CheckLuminanceMonitorCount(moLists) == 1)
+                        {
+                            bool obj = currentMoInfo.CapabilityDic.ContainsKey("12");
+                            if (obj)
+                            {
+                                //Result same as Expected Result B and not apply to DUT3.
+                                //SynchronizeBtnExpectedResult("A");
+                                return Task.FromResult("A");
+                            }
+                            else
+                            {
+                                //"Synchronize between monitors" is NOT displayed.
+                                //SynchronizeBtnExpectedResult("E");
+                                return Task.FromResult("E");
+                            }
+                        }
+                        //27 Test Scenario : 1 ALS monitor(ALS = ON) and 2 non ALS monitors
+                        //28 Test Scenario : 1 ALS monitor(ALS = OFF) and 2 non ALS monitors
+                        if (CheckALSMonitorCount(alsSynchronizeList) == 1)
+                        {
+                            if (Current_ALSConfig.isSupportALS == 2)
+                            {
+                                if (Current_ALSConfig.isAutoBrightness == true || Current_ALSConfig.isAutoColorTemp == true)
+                                {
+                                    //a) DUT3 is monitor with ALS function.
+                                    //"Synchronize between monitors" is displayed on DUT3 but greyed out.
+                                    //SynchronizeBtnExpectedResult("D");
+                                    return Task.FromResult("D");
+                                }
+                                else
+                                {
+                                    //SynchronizeBtnExpectedResult("B");
+                                    return Task.FromResult("B");
+                                }
+                            }
+                            else
+                            {
+                                //b) DUT1 and DUT2 are monitors without ALS function.
+                                //SynchronizeBtnExpectedResult("B");
+                                return Task.FromResult("B");
+                            }
+                        }
+                        //29 Test Scenario : 2 ALS monitors(ALS = ON) and 1 non ALS monitor
+                        //30 Test Scenario : 2 ALS monitors(ALS = OFF) and 1 non ALS monitor
+                        if (CheckALSMonitorCount(alsSynchronizeList) == 2)
+                        {
+                            if (CheckALSOnOff(alsSynchronizeList))
+                            {
+                                //a) DUT1 and DUT2 are monitors with ALS function.
+                                //"Synchronize between monitors" is displayed on DUT1 and DUT2 but greyed out.
+                                //SynchronizeBtnExpectedResult("D");
+                                return Task.FromResult("D");
+                            }
+                            else
+                            {
+                                //"Synchronize between monitors" is displayed.no greyed out.
+                                //SynchronizeBtnExpectedResult("B");
+                                return Task.FromResult("B");
+                            }
+                        }
+                    }
+                    else//Test case for 4 monitors
+                    {
+                        WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize ALS Monitor Count = 4 ... ");
+                        //24 Test Scenario : 2 monitors with Brightness/Contrast and 2 monitors with Luminance
+                        if (CheckLuminanceMonitorCount(moLists) == 2)
+                        {
+                            bool obj = currentMoInfo.CapabilityDic.ContainsKey("12");
+                            if (obj)
+                            {
+                                //Result same as Expected Result B and not apply to DUT3.
+                                //SynchronizeBtnExpectedResult("B");
+                                return Task.FromResult("B");
+                            }
+                            else
+                            {
+                                //"Synchronize between monitors" is NOT displayed.
+                                //SynchronizeBtnExpectedResult("A");
+                                return Task.FromResult("A");
+                            }
+                        }
+                        //31 Test Scenario : 2 ALS monitors(ALS = ON) and 2 non ALS monitor
+                        if (CheckALSMonitorCount(alsSynchronizeList) == 2)
+                        {
+                            //d) Turn on ALS Function on DUT1 and DUT2. Go to Software > Brightness / Contrast > Auto > Turn On Auto Brightness / Auto Color Temperature.
+                            if (CheckALSOnOff(alsSynchronizeList))
+                            {
+                                //"Synchronize between monitors" is displayed but greyed out on both DUT1 and DUT2.
                                 //SynchronizeBtnExpectedResult("D");
                                 return Task.FromResult("D");
                             }
@@ -583,106 +647,50 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 return Task.FromResult("B");
                             }
                         }
-                        else
+                        //32 Test Scenario : 4 same non-UP models without ALS function
+                        //33 Test Scenario : 4 same UP models
+                        if (CheckALSMonitorCount(alsSynchronizeList) == 0)
                         {
-                            //b) DUT1 and DUT2 are monitors without ALS function.
-                            //SynchronizeBtnExpectedResult("B");
-                            return Task.FromResult("B");
-                        }
-                    }
-                    //29 Test Scenario : 2 ALS monitors(ALS = ON) and 1 non ALS monitor
-                    //30 Test Scenario : 2 ALS monitors(ALS = OFF) and 1 non ALS monitor
-                    if (CheckALSMonitorCount(alsSynchronizeList) == 2)
-                    {
-                        if (CheckALSOnOff(alsSynchronizeList))
-                        {
-                            //a) DUT1 and DUT2 are monitors with ALS function.
-                            //"Synchronize between monitors" is displayed on DUT1 and DUT2 but greyed out.
-                            //SynchronizeBtnExpectedResult("D");
-                            return Task.FromResult("D");
-                        }
-                        else
-                        {
-                            //"Synchronize between monitors" is displayed.no greyed out.
+                            //"Synchronize between monitors" is displayed and not greyed out with default is OFF.
+                            //"Synchronize between monitors" is displayed and not greyed out with default is OFF.
                             //SynchronizeBtnExpectedResult("B");
                             return Task.FromResult("B");
                         }
                     }
                 }
-                else//Test case for 4 monitors
+                else//It is mean only 1 monitors.
                 {
-                    WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize ALS Monitor Count = 4 ... ");
-                    //24 Test Scenario : 2 monitors with Brightness/Contrast and 2 monitors with Luminance
-                    if (CheckLuminanceMonitorCount(moLists) == 2)
+                    WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize Monitor Count = 1 ... ");
+                    //3 Test Scenario : Non UP series Monitor does not support ALS
+                    if (!alsSynchronizeList[0].ModelName.Contains("UP") && alsSynchronizeList[0].isSupportALS == 0)
                     {
-                        bool obj = currentMoInfo.CapabilityDic.ContainsKey("12");
-                        if (obj)
-                        {
-                            //Result same as Expected Result B and not apply to DUT3.
-                            //SynchronizeBtnExpectedResult("B");
-                            return Task.FromResult("B");
-                        }
-                        else
-                        {
-                            //"Synchronize between monitors" is NOT displayed.
-                            //SynchronizeBtnExpectedResult("A");
-                            return Task.FromResult("A");
-                        }
+                        //Make sure "Synchronize between monitors" is NOT displayed on both Manual and Schedule.
+                        //SynchronizeBtnExpectedResult("E");
+                        return Task.FromResult("E");
                     }
-                    //31 Test Scenario : 2 ALS monitors(ALS = ON) and 2 non ALS monitor
-                    if (CheckALSMonitorCount(alsSynchronizeList) == 2)
+                    //4 Test Scenario : Monitor support ALS
+                    if (alsSynchronizeList[0].isSupportALS == 2)
                     {
-                        //d) Turn on ALS Function on DUT1 and DUT2. Go to Software > Brightness / Contrast > Auto > Turn On Auto Brightness / Auto Color Temperature.
-                        if (CheckALSOnOff(alsSynchronizeList))
-                        {
-                            //"Synchronize between monitors" is displayed but greyed out on both DUT1 and DUT2.
-                            //SynchronizeBtnExpectedResult("D");
-                            return Task.FromResult("D");
-                        }
-                        else
-                        {
-                            //SynchronizeBtnExpectedResult("B");
-                            return Task.FromResult("B");
-                        }
+                        //Make sure "Synchronize between monitors" is NOT displayed.
+                        //SynchronizeBtnExpectedResult("E");
+                        return Task.FromResult("E");
                     }
-                    //32 Test Scenario : 4 same non-UP models without ALS function
-                    //33 Test Scenario : 4 same UP models
-                    if (CheckALSMonitorCount(alsSynchronizeList) == 0)
+                    //5 Test Scenario : UP series Monitor
+                    if (alsSynchronizeList[0].ModelName.Contains("UP"))
                     {
-                        //"Synchronize between monitors" is displayed and not greyed out with default is OFF.
-                        //"Synchronize between monitors" is displayed and not greyed out with default is OFF.
-                        //SynchronizeBtnExpectedResult("B");
-                        return Task.FromResult("B");
+                        //Make sure "Synchronize between monitors" is NOT displayed on both Manual and Schedule.
+                        //SynchronizeBtnExpectedResult("E");
+                        return Task.FromResult("E");
                     }
                 }
+                //SynchronizeBtnExpectedResult("default");
+                return Task.FromResult("default");
             }
-            else//It is mean only 1 monitors.
+            catch (Exception ex)
             {
-                WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize Monitor Count = 1 ... ");
-                //3 Test Scenario : Non UP series Monitor does not support ALS
-                if (!alsSynchronizeList[0].ModelName.Contains("UP") && alsSynchronizeList[0].isSupportALS == 0)
-                {
-                    //Make sure "Synchronize between monitors" is NOT displayed on both Manual and Schedule.
-                    //SynchronizeBtnExpectedResult("E");
-                    return Task.FromResult("E");
-                }
-                //4 Test Scenario : Monitor support ALS
-                if (alsSynchronizeList[0].isSupportALS == 2)
-                {
-                    //Make sure "Synchronize between monitors" is NOT displayed.
-                    //SynchronizeBtnExpectedResult("E");
-                    return Task.FromResult("E");
-                }
-                //5 Test Scenario : UP series Monitor
-                if (alsSynchronizeList[0].ModelName.Contains("UP"))
-                {
-                    //Make sure "Synchronize between monitors" is NOT displayed on both Manual and Schedule.
-                    //SynchronizeBtnExpectedResult("E");
-                    return Task.FromResult("E");
-                }
+                WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize Exception : {ex.Message} ... ");
+                return Task.FromResult("default");
             }
-            //SynchronizeBtnExpectedResult("default");
-            return Task.FromResult("default");
         }
 
         /// <summary>
@@ -722,7 +730,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 for (int i = 0; i < moLists.Count; i++)
                 {
-                    if (moLists[i].CapabilityDic.ContainsKey("12"))
+                    if (!moLists[i].CapabilityDic.ContainsKey("12"))
                     {
                         _isLuminanceCount++;
                     }

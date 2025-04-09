@@ -500,126 +500,137 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private async void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
             _log.Info("DdpmHomePlugin._deviceManager_DeviceChanged() executed");
-
-            if ((e != null) && !string.IsNullOrEmpty(e.changedProperty))
+            try
             {
-                //Robert_Lin, 2024-7-22 log info
-                _log.Info($"@ ChangedProperty=[{e.changedProperty}], ChangedType=[{e.type}] DeviceID=[{e.deviceID}]");
-
-                //2024-8-6 Robert, fix bug. compare string should be lowercase due to ToLower()
-                //2024-07-02, Elie, we only handle remove and add event on the DdpmHomePlugin.
-                var lowerChangedProperty = e.changedProperty.ToLower();
-                bool isAddOrRemove = lowerChangedProperty.Contains("remove") || lowerChangedProperty.Contains("add");
-
-                if (isAddOrRemove ||
-                    lowerChangedProperty.Contains("batterystatuschanged") ||
-                    lowerChangedProperty.Contains("batterylevelchanged") ||
-                    string.Equals(e.changedProperty, "DisplayChanged", StringComparison.OrdinalIgnoreCase))
+                if ((e != null) && !string.IsNullOrEmpty(e.changedProperty))
                 {
-                    if (isAddOrRemove)
-                    {
-                        _deviceChangedDebounceCts?.Cancel();
-                        _deviceChangedDebounceCts = new CancellationTokenSource();
-                        var token = _deviceChangedDebounceCts.Token;
+                    //Robert_Lin, 2024-7-22 log info
+                    _log.Info($"@ ChangedProperty=[{e.changedProperty}], ChangedType=[{e.type}] DeviceID=[{e.deviceID}]");
 
-                        try
+                    //2024-8-6 Robert, fix bug. compare string should be lowercase due to ToLower()
+                    //2024-07-02, Elie, we only handle remove and add event on the DdpmHomePlugin.
+                    var lowerChangedProperty = e.changedProperty.ToLower();
+                    bool isAddOrRemove = lowerChangedProperty.Contains("remove") || lowerChangedProperty.Contains("add");
+
+                    if (isAddOrRemove ||
+                        lowerChangedProperty.Contains("batterystatuschanged") ||
+                        lowerChangedProperty.Contains("batterylevelchanged") ||
+                        string.Equals(e.changedProperty, "DisplayChanged", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (isAddOrRemove)
                         {
-                            await Task.Delay(500, token);
-                            _log.Info("DdpmHomePlugin._deviceManager_DeviceChanged() after Task.Delay");
-                        }
-                        catch (TaskCanceledException)
-                        {
-                            _log.Info($"DdpmHomePlugin._deviceManager_DeviceChanged() TaskCanceledException executed : {lowerChangedProperty}");
-                            return;
-                        }
-                    }
+                            _deviceChangedDebounceCts?.Cancel();
+                            _deviceChangedDebounceCts = new CancellationTokenSource();
+                            var token = _deviceChangedDebounceCts.Token;
 
-                    if (_deviceManager == null)
-                    {
-                        _log.Info($"[DdpmHomePlugin] {nameof(_deviceManager_DeviceChanged)} _deviceManager is null, return");
-                        return;
-                    }
-                    _monitorInfos = _deviceManager.GetMonitors().Result;          // change to restore monitor caches
-                    _log.Info($"[DdpmHomePlugin] {nameof(_deviceManager_DeviceChanged)} after GetMonitors");
-
-                    _deviceInfos = _deviceManager.GetDevices().Result.deviceInfo; // change to restore device caches
-                    _log.Info($"[DdpmHomePlugin] {nameof(_deviceManager_DeviceChanged)} after GetDevices");
-
-                    // If event Contains Add, then into Walkthrough
-                    _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} {e.changedProperty.ToString()} Start");
-                    await CollectAndCompareDevicesAsync();
-                    //// Check Queue¡Afirst use device need to show WalkThroughPage
-                    if (WalkThroughQueue.Count > 0 && ShowPluginById == false)
-                    {
-                        _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} WalkThroughQueue has items, ShowPluginById.");
-                        _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
-                        ShowPluginById = true;
-                    }
-
-                    //Force return to HomePage
-                    // 2024-06-19 From Dean, using DeviceChangedType.NotifyOnly to check if it's a monitor settings change.
-
-                    //2024-6-20 move refresh device form HomeView to here
-                    //_ = Task.Run(GetDdpmDevicesAsync(_deviceManager));
-                    if (_deviceManager != null)
-                    {
-                        _log.Info($"[DdpmHomePlugin] _deviceManager_DeviceChanged call GetDdpmDevicesAsync ... ");
-                        _ = GetDdpmDevicesAsync(_deviceManager, e, e.changedProperty.ToLower());
-                        _log.Info($"[DdpmHomePlugin] _deviceManager_DeviceChanged return GetDdpmDevicesAsync ... ");
-                    }
-
-                    if (e.type == DeviceChangedType.NotifyOnly && WalkThroughQueue.Count == 0)
-                    {
-                        _log.Info($"CALL ShowDdpmHome(), when e.type == DeviceChangedType.NotifyOnly.");
-                        ShowDdpmHome();
-                    }
-                    else
-                    {
-                        if (_isActived) // 2024-07-04 Elie, for Peripheral and when at HomepagePlugin already.
-                        {
-                            _log.Info($"CALL ShowDdpmHome(), when _isActived.");
-                            ShowDdpmHome();
-                        }
-                    }
-
-                    MonitorInfo newPlugIn = null;
-                    // If is a plugin event
-                    if (_monitorInfos.Count >= _monitorCache.Count)
-                    {
-                        foreach (MonitorInfo monitor in _monitorInfos)
-                        {
-                            if (!_monitorCache.Contains(monitor))
+                            try
                             {
-                                newPlugIn = monitor;
-                                break;
+                                await Task.Delay(500, token);
+                                _log.Info("DdpmHomePlugin._deviceManager_DeviceChanged() after Task.Delay");
+                            }
+                            catch (TaskCanceledException)
+                            {
+                                _log.Info($"DdpmHomePlugin._deviceManager_DeviceChanged() TaskCanceledException executed : {lowerChangedProperty}");
+                                return;
                             }
                         }
+
+                        if (_deviceManager == null)
+                        {
+                            _log.Info($"[DdpmHomePlugin] {nameof(_deviceManager_DeviceChanged)} _deviceManager is null, return");
+                            return;
+                        }
+                        _monitorInfos = _deviceManager.GetMonitors().Result;          // change to restore monitor caches
+                        _log.Info($"[DdpmHomePlugin] {nameof(_deviceManager_DeviceChanged)} after GetMonitors");
+
+                        _deviceInfos = _deviceManager.GetDevices().Result.deviceInfo; // change to restore device caches
+                        _log.Info($"[DdpmHomePlugin] {nameof(_deviceManager_DeviceChanged)} after GetDevices");
+
+                        // If event Contains Add, then into Walkthrough
+                        _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} {e.changedProperty.ToString()} Start");
+                        await CollectAndCompareDevicesAsync();
+                        //// Check Queue¡Afirst use device need to show WalkThroughPage
+                        if (WalkThroughQueue.Count > 0 && ShowPluginById == false)
+                        {
+                            _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} WalkThroughQueue has items, ShowPluginById.");
+                            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
+                            ShowPluginById = true;
+                        }
+
+                        //Force return to HomePage
+                        // 2024-06-19 From Dean, using DeviceChangedType.NotifyOnly to check if it's a monitor settings change.
+
+                        //2024-6-20 move refresh device form HomeView to here
+                        //_ = Task.Run(GetDdpmDevicesAsync(_deviceManager));
+                        if (_deviceManager != null)
+                        {
+                            _log.Info($"[DdpmHomePlugin] _deviceManager_DeviceChanged call GetDdpmDevicesAsync ... ");
+                            _ = GetDdpmDevicesAsync(_deviceManager, e, e.changedProperty.ToLower());
+                            _log.Info($"[DdpmHomePlugin] _deviceManager_DeviceChanged return GetDdpmDevicesAsync ... ");
+                        }
+
+                        if (e.type == DeviceChangedType.NotifyOnly && WalkThroughQueue.Count == 0)
+                        {
+                            _log.Info($"CALL ShowDdpmHome(), when e.type == DeviceChangedType.NotifyOnly.");
+                            ShowDdpmHome();
+                        }
+                        else
+                        {
+                            if (_isActived) // 2024-07-04 Elie, for Peripheral and when at HomepagePlugin already.
+                            {
+                                _log.Info($"CALL ShowDdpmHome(), when _isActived.");
+                                ShowDdpmHome();
+                            }
+                        }
+
+                        MonitorInfo newPlugIn = null;
+                        // If is a plugin event
+                        if (_monitorInfos.Count >= _monitorCache.Count)
+                        {
+                            foreach (MonitorInfo monitor in _monitorInfos)
+                            {
+                                if (!_monitorCache.Contains(monitor))
+                                {
+                                    newPlugIn = monitor;
+                                    break;
+                                }
+                            }
+                        }
+                        // Always save cache for monitor when event launched
+                        _monitorCache = _monitorInfos;
+                        if (newPlugIn != null)
+                            CheckIfNeedImportSetting_Display(new List<MonitorInfo>() { newPlugIn });
                     }
-                    // Always save cache for monitor when event launched
-                    _monitorCache = _monitorInfos;
-                    if (newPlugIn != null)
-                        CheckIfNeedImportSetting_Display(new List<MonitorInfo>() { newPlugIn });
-                }
-                else
-                {
-                    _log.Info($"DdpmHomePlugin._deviceManager_notifyDeviceDisConnecte() skip : [{e.changedProperty.ToString()}]");
-                }
-            }
-            else
-            {
-                if ((e == null))
-                {
-                    _log.Info($"DdpmHomePlugin._deviceManager_notifyDeviceDisConnecte() skip : e == null");
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(e.changedProperty))
-                        _log.Info($"DdpmHomePlugin._deviceManager_notifyDeviceDisConnecte() skip : e.changedProperty == null");
                     else
-                        _log.Info($"DdpmHomePlugin._deviceManager_notifyDeviceDisConnecte() skip : e.changedProperty : {e.changedProperty}");
+                    {
+                        _log.Info($"DdpmHomePlugin._deviceManager_notifyDeviceDisConnecte() skip : [{e.changedProperty.ToString()}]");
+                    }
                 }
+                else
+                {
+                    if ((e == null))
+                    {
+                        _log.Info($"DdpmHomePlugin._deviceManager_notifyDeviceDisConnecte() skip : e == null");
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(e.changedProperty))
+                            _log.Info($"DdpmHomePlugin._deviceManager_notifyDeviceDisConnecte() skip : e.changedProperty == null");
+                        else
+                            _log.Info($"DdpmHomePlugin._deviceManager_notifyDeviceDisConnecte() skip : e.changedProperty : {e.changedProperty}");
+                    }
+                }
+                _log.Info("DdpmHomePlugin._deviceManager_DeviceChanged() out ... ");
             }
-            _log.Info("DdpmHomePlugin._deviceManager_DeviceChanged() out ... ");
+            catch (Exception ex)
+            {
+                _log.Info($"DdpmHomePlugin._deviceManager_DeviceChanged() Exception {ex.Message} ... ");
+                if (_viewModel != null && _viewModel.IsPleaseWaitVisible)
+                {
+                    _viewModel.IsPleaseWaitVisible = false;
+                }
+                ShowDdpmHome();
+            }
         }
 
         private void CheckIfNeedImportSetting_Display(List<MonitorInfo> monitorInfos)
