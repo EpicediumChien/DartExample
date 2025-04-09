@@ -838,12 +838,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         //Robert_Lin 2025-1-20 to prevent monitors is null
                         if ((monitors != null) && (monitors.Count > 0))
                         {
-                            _log.Info($"PleaseWait-Monitor count={monitors.Count}");
+                            _log.Info($"PleaseWait-Monitor count = {monitors.Count}");
                             PrepareMonitorInfos(monitors);
                         }
                         else
                         {
-                            _log.Info($"PleaseWait-Monitor count=0");
+                            _log.Info($"PleaseWait-Monitor count = 0 ... ");
                         }
 
                         DeviceHelper deviceHelper = DeviceManagerPlugin.GetDevices().Result;
@@ -859,12 +859,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
                         {
                             _deviceInfos = deviceHelper.deviceInfo;
-                            _log.Info($"PleaseWait-Peripheral count={_deviceInfos.Count}");
+                            _log.Info($"PleaseWait-Peripheral count = {_deviceInfos.Count} ... ");
                             PrepareDeviceInfos(_deviceInfos);
                         }
                         else
                         {
-                            _log.Info("PleaseWait-Peripheral count=(null)");
+                            _log.Info("PleaseWait-Peripheral count = (null) ");
                         }
                     }
                 }

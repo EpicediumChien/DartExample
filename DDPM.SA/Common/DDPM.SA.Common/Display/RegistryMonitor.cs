@@ -9,6 +9,8 @@ using System.Windows.Threading;
 using static System.Windows.Forms.Design.AxImporter;
 //using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Reflection;
+using Dell.Client.Framework.Common;
+using System.Diagnostics;
 namespace DDPM.SA.Common
 {
     /// Monitor NightLight on/off if changed
@@ -1043,8 +1045,16 @@ namespace DDPM.SA.Common
 
         public RegistryMonitor_Copilot(RegistryKey registryKey, string subKey)
         {
-            _regKey = registryKey.OpenSubKey(subKey, writable: false) ?? registryKey.CreateSubKey(subKey);
-            _registryKey = subKey;
+            try
+            {
+                _regKey = registryKey.OpenSubKey(subKey, writable: false) ?? registryKey.CreateSubKey(subKey);
+                _registryKey = subKey;
+            }
+            catch(Exception ex) 
+            {
+                EventLogHelper.WriteEventLog($"[RegistryMonitor_Copilot] RegistryMonitor_Copilot Exception: {ex.Message}", EventLogEntryType.Warning);
+                return;
+            }
         }
 
         public void Dispose()
