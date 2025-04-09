@@ -1037,7 +1037,7 @@ namespace DDPM.SA.Common
                 Command = commandLineInput.Command,
                 TargetFeature = commandLineInput.TargetFeature,
                 Result = "PASS",
-                Value = commandLineInput.Options.Count > 0 ? commandLineInput.Options[0].Option_Value : "N/A",
+                Value = commandLineInput.Options.Count > 0 ? string.IsNullOrWhiteSpace(commandLineInput.Options[0].Option_Value) ? "N/A" : commandLineInput.Options[0].Option_Value : "N/A",
                 Message = "Set defer operation completed"
             };
             Console.WriteLine(result.ToJson());
