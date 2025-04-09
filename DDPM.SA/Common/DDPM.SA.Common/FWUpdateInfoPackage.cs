@@ -121,7 +121,7 @@ namespace DDPM.SA.Common
         {
             if (fwUpdateInfo.IsDisplay)
             {
-                return fwUpdateInfo.ServiceTag == ServiceTag;
+                return fwUpdateInfo.Model == Model && fwUpdateInfo.ServiceTag == ServiceTag;
             }
             else
             {
