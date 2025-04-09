@@ -355,7 +355,7 @@
                                         </Grid>
 
                                         <!-- Mute Microphone -->
-                                        <Grid x:Name="MuteMicrophoneGrid" Height="40">
+                                        <Grid x:Name="MuteMicrophoneGrid" Height="40" Margin="0,0,0,8">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="Auto" />
@@ -410,18 +410,15 @@
                                             </UXControls:UXToggleSwitch>
                                         </Grid>
 
-                                        <Line x:Name="SeparatorLine" X1="0" Y1="0" X2="456" Y2="0" Stroke="#1E3F6C" StrokeThickness="1" HorizontalAlignment="Center" Margin="18,16,0,16"
-                                              Visibility="{Binding AutomatedActionsQuickPausePageShow, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-
                                         <!-- Quick Pause -->
-                                        <Grid x:Name="QuickPauseGrid" Visibility="{Binding AutomatedActionsQuickPausePageShow, Converter={StaticResource BooleanToVisibilityConverter}}" Height="50">
+                                        <Grid x:Name="QuickPauseGrid" Visibility="{Binding AutomatedActionsQuickPausePageShow, Converter={StaticResource BooleanToVisibilityConverter}}" Height="40" Margin="0,0,0,8">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
                                             <!--<UXControls:UXTextBlock x:Name="QuickPauseText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" Text="{Binding [HeadsetAutomatedActions.7], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />-->
-                                            <UXControls:UXTextBlock x:Name="QuickPauseText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Margin="20,0,0,0">
+                                            <UXControls:UXTextBlock x:Name="QuickPauseText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Height="24" Margin="16,0,0,0">
                                                 <UXControls:UXTextBlock.Opacity>
                                                     <MultiBinding Converter="{StaticResource BooleanToOpacityConverter}">
                                                         <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
@@ -454,7 +451,7 @@
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
-                                            <UXControls:UXToggleSwitch x:Name="QuickPauseToggleSwitch" FontSize="16"  Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=QuickPause_String, FallbackValue='OFF'}" IsChecked="{Binding Path=QuickPauseStatus}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,20,0" IsTabStop="{Binding isWearTabStopped}">
+                                            <UXControls:UXToggleSwitch x:Name="QuickPauseToggleSwitch" FontSize="16"  Foreground="{DynamicResource TextBlock_ForegroundColor}" Content="{Binding Path=QuickPause_String, FallbackValue='OFF'}" IsChecked="{Binding Path=QuickPauseStatus}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" IsTabStop="{Binding isWearTabStopped}">
                                                 <UXControls:UXToggleSwitch.Opacity>
                                                     <MultiBinding Converter="{StaticResource BooleanToOpacityConverter}">
                                                         <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
@@ -470,9 +467,13 @@
                                         </Grid>
 
                                         <!-- SensitivityText -->
-                                        <Grid x:Name="SensitivityTextGrid" Visibility="{Binding AutomatedActionsSensitivityPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,0,0">
+                                        <Grid x:Name="SensitivityTextGrid" Visibility="{Binding AutomatedActionsSensitivityPageShow, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
                                             <!--<UXControls:UXTextBlock x:Name="SensitivityTextBlock" Text="{Binding [HeadsetAutomatedActions.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" FontSize="14" Margin="20,0,0,0" />-->
-                                            <UXControls:UXTextBlock x:Name="SensitivityTextBlock" FontSize="14" Margin="20,0,0,0">
+                                            <UXControls:UXTextBlock x:Name="SensitivityTextBlock" Grid.Row="0" FontSize="16" Height="24" Margin="32,8,0,16">
                                                 <UXControls:UXTextBlock.Opacity>
                                                     <MultiBinding Converter="{StaticResource BooleanToOpacityConverter}">
                                                         <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
@@ -490,9 +491,13 @@
                                                     <Binding Path="[HeadsetAutomatedActions.14]" Source="{x:Static lang:LangHelper.Instance}" />
                                                 </UXControls:UXTextBlock.Text>
                                             </UXControls:UXTextBlock>
-                                            <StackPanel x:Name="SensitivityStackPanel" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
-                                                <UXControls:UXToggleSwitch x:Name="NormalButton" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}"
-                                                                           Background="{DynamicResource ToggleSwitch_NormalBackground}" Width="208" Height="52" Margin="0,20,0,20"
+                                            <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <UXControls:UXToggleSwitch x:Name="NormalButton" Grid.Column="0" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}"
+                                                                           Background="{DynamicResource ToggleSwitch_NormalBackground}" Width="205" Height="52" Margin="32,0,8,0"
                                                                            IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" IsChecked="{Binding IsNormalChecked, Mode=TwoWay}" IsTabStop="{Binding isWearTabStopped}">
                                                     <UXControls:UXToggleSwitch.Opacity>
                                                         <MultiBinding Converter="{StaticResource BooleanToOpacityConverter}">
@@ -534,9 +539,9 @@
                                                         </ControlTemplate>
                                                     </UXControls:UXToggleSwitch.Template>
                                                 </UXControls:UXToggleSwitch>
-                                                <UXControls:UXToggleSwitch x:Name="SensitiveButton" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}"
+                                                <UXControls:UXToggleSwitch x:Name="SensitiveButton" Grid.Column="1" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}"
                                                                            Background="{DynamicResource ToggleSwitch_NormalBackground}" 
-                                                                           Width="208" Height="52" Margin="8,0,0,0" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" IsChecked="{Binding IsSensitiveChecked, Mode=TwoWay}" IsTabStop="{Binding isWearTabStopped}">
+                                                                           Width="205" Height="52" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" IsChecked="{Binding IsSensitiveChecked, Mode=TwoWay}" IsTabStop="{Binding isWearTabStopped}">
                                                     <UXControls:UXToggleSwitch.Opacity>
                                                         <MultiBinding Converter="{StaticResource BooleanToOpacityConverter}">
                                                             <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
@@ -577,7 +582,7 @@
                                                         </ControlTemplate>
                                                     </UXControls:UXToggleSwitch.Template>
                                                 </UXControls:UXToggleSwitch>
-                                            </StackPanel>
+                                            </Grid>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
