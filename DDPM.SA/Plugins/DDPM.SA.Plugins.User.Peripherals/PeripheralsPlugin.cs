@@ -4068,18 +4068,25 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         public Task<bool> StartCopilotRegistryMonitor()
         {
             writelog("PeripheralPlugin StartCopilotRegistryMonitor requested ...");
-
-            if (registryMonitor_Copilot == null)
+            try
             {
-                writelog("Monitor ICC change initiate...");
-                registryMonitor_Copilot = new RegistryMonitor_Copilot(Registry.CurrentUser, @"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot");
-                registryMonitor_Copilot.RegChanged += new EventHandler(OnRegChanged_Copilot);
-                registryMonitor_Copilot.Start();
-                writelog("Monitor ICC change started");
-                return System.Threading.Tasks.Task.FromResult(true);
-            }
+                if (registryMonitor_Copilot == null)
+                {
+                    writelog("Monitor ICC change initiate...");
+                    registryMonitor_Copilot = new RegistryMonitor_Copilot(Registry.CurrentUser, @"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot");
+                    registryMonitor_Copilot.RegChanged += new EventHandler(OnRegChanged_Copilot);
+                    registryMonitor_Copilot.Start();
+                    writelog("Monitor ICC change started");
+                    return System.Threading.Tasks.Task.FromResult(true);
+                }
 
-            return System.Threading.Tasks.Task.FromResult(false);
+                return System.Threading.Tasks.Task.FromResult(false);
+            }
+            catch (Exception ex)
+            {
+                writelog($"PeripheralPlugin StartCopilotRegistryMonitor Exception : {ex.Message} ...");
+                return System.Threading.Tasks.Task.FromResult(false);
+            }
         }
         private void OnRegChanged_Copilot(object sender, EventArgs e)
         {
