@@ -2642,11 +2642,12 @@
     <SolidColorBrush x:Key="Slider_ValueColor" Color="#A4B8CD"/>
     
     <!-- Global font key to support roboto -->
+    <!-- For Roboto Bold, please use FontWeight as Bold with "RobotoFont" -->
     <FontFamily x:Key="RobotoFont">
         pack://application:,,,/DDPM.UI.Resources;component/Resources/Fonts/#Roboto
     </FontFamily>
-    <FontFamily x:Key="RobotoFontBold">
-        pack://application:,,,/DDPM.UI.Resources;component/Resources/Fonts/#Roboto Bold
+    <FontFamily x:Key="RobotoFontMedium">
+        pack://application:,,,/DDPM.UI.Resources;component/Resources/Fonts/#Roboto Medium
     </FontFamily>
 
 </ResourceDictionary>
