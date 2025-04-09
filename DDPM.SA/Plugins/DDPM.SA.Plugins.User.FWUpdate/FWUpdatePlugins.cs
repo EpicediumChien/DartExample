@@ -234,14 +234,16 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     if (_downloadTimer != null)
                     {
-                        _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
                         _downloadTimer.Stop();
+                        _downloadTimer.Elapsed -= DownloadTimer_Elapsed;
+                        _downloadTimer.Dispose();
                         _downloadTimer = null;
                     }
                     if (_checkUODTimer != null)
                     {
                         _checkUODTimer.Stop();
-                        _checkUODTimer.Elapsed -= new ElapsedEventHandler(CheckDockUODScheduleTimer_Elapsed);
+                        _checkUODTimer.Elapsed -= CheckDockUODScheduleTimer_Elapsed;
+                        _checkUODTimer.Dispose();
                         _checkUODTimer = null;
                     }
                     resetState();
@@ -372,7 +374,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         if (_checkUODTimer != null)
                         {
                             _checkUODTimer.Stop();
-                            _checkUODTimer.Elapsed -= new ElapsedEventHandler(CheckDockUODScheduleTimer_Elapsed);
+                            _checkUODTimer.Elapsed -= CheckDockUODScheduleTimer_Elapsed;
+                            _checkUODTimer.Dispose();
                             _checkUODTimer = null;
                         }
                     }
@@ -392,7 +395,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         _checkUODTimer = new Timer();
                         _checkUODTimer.Interval = TimeSpan.FromMinutes(0.5).TotalMilliseconds;
-                        _checkUODTimer.Elapsed += new ElapsedEventHandler(CheckDockUODScheduleTimer_Elapsed);
+                        _checkUODTimer.Elapsed += CheckDockUODScheduleTimer_Elapsed;
                         _checkUODTimer.Start();
                     }
                     if (UODFWUInfo.SaveTime == null)
@@ -443,7 +446,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         private void CheckUpdate(UpdateHelper updateHelper, List<DeviceInfo> deviceInfos, DisplayUpdateHelper displayUpdateHelper)
         {
             _logs.DebugMsg_1(nameof(CheckUpdate) + " start");
-            _fWUpdateInfoPackage = new FWUpdateInfoPackage();
+            _fWUpdateInfoPackage.Clear();
             try
             {
                 _fWUpdateInfoPackage.TheLastCheckTime = DateTime.Now;
@@ -828,7 +831,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _CancellationTokenSource = new CancellationTokenSource();
                             _downloadTimer = new Timer();
                             _downloadTimer.Interval = 1000;
-                            _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
+                            _downloadTimer.Elapsed += DownloadTimer_Elapsed;
                             _downloadTimer.Start();
                             download = new Download(_logs);
                             string downloadInfo = "";
@@ -841,8 +844,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile go");
                             bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA, _CancellationTokenSource);
                             _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile finish");
-                            _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
                             _downloadTimer.Stop();
+                            _downloadTimer.Elapsed -= DownloadTimer_Elapsed;
+                            _downloadTimer.Dispose();
+                            _downloadTimer = null;
                             if (!downloadRet)
                             {
                                 if (downloadInfo.Equals("CA check fail"))
@@ -879,8 +884,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             if (_downloadTimer != null)
                             {
-                                _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
                                 _downloadTimer.Stop();
+                                _downloadTimer.Elapsed -= DownloadTimer_Elapsed;
+                                _downloadTimer.Dispose();
                                 _downloadTimer = null;
                             }
                             _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download error : " + ex.Message);
@@ -1004,8 +1010,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     method.Dispose();
                     if (_downloadTimer != null)
                     {
-                        _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
                         _downloadTimer.Stop();
+                        _downloadTimer.Elapsed -= DownloadTimer_Elapsed;
+                        _downloadTimer.Dispose();
                         _downloadTimer = null;
                     }
                     _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
@@ -1520,13 +1527,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _timeOutCount = _fwTimeOutCount;
                         _timerTimeOut = new Timer();
                         _timerTimeOut.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
-                        _timerTimeOut.Elapsed += new ElapsedEventHandler(_timerTimeOut_Tick);
+                        _timerTimeOut.Elapsed += _timerTimeOut_Tick;
                         _namedPipeServer = new NamedPipeStreamServer(_namedPipeName, fwUpdateInfo.Thumbprint, _IsSkipSHA, _logs); // 創建命名管道伺服器
                         _namedPipeServer.MessageReceived += _namedPipeServer_MessageReceived;
                         _namedPipeServer.ClientConnectedEvent += _namedPipeServer_ClientConnectedEvent;
                         _namedPipeServer.ClientDisconnectedEvent += _namedPipeServer_ClientDisconnectedEvent;
                         _logs.DebugMsg_1(fwUpdateInfo.DeviceName + nameof(_namedPipeServer) + " ready");
-                        
+
                     }
                     arguments = BuildArgs(fwUpdateInfo, _namedPipeName, logPath);
                     _logs.DebugMsg_1($"arguments : ***");
@@ -1848,7 +1855,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             return "";
         }
 
-        private void _timerTimeOut_Tick(object sender, EventArgs e)
+        private void _timerTimeOut_Tick(object? sender, EventArgs e)
         {
             if (_timeOutCount < _fwTimeOutCount)
             {
@@ -2311,9 +2318,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             if (_timerTimeOut != null)
             {
                 _logs.DebugMsg_1($"{nameof(resetState)} _timerTimeOut is no null");
-                _timerTimeOut.Elapsed -= new ElapsedEventHandler(_timerTimeOut_Tick);
-                _timerTimeOut.Enabled = false;
                 _timerTimeOut.Stop();
+                _timerTimeOut.Enabled = false;
+                _timerTimeOut.Elapsed -= _timerTimeOut_Tick;
+                _timerTimeOut.Dispose();
                 _logs.DebugMsg_1($"{nameof(resetState)} _timerTimeOut.Stop()");
                 _timerTimeOut = null;
             }

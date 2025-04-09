@@ -13806,7 +13806,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     Interval = TimeSpan.FromSeconds(10).TotalMilliseconds
                 };
-                _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+                _checkUpdateScheduleTimer.Elapsed += CheckUpdateScheduleTimer_Elapsed;
                 _checkUpdateScheduleTimer.Start();
             }
         }
@@ -13899,7 +13899,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             _checkUpdateScheduleTimer = new System.Timers.Timer();
                             _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
-                            _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+                            _checkUpdateScheduleTimer.Elapsed += CheckUpdateScheduleTimer_Elapsed;
                             _checkUpdateScheduleTimer.Start();
                         }
                     }
@@ -13911,7 +13911,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             _checkUpdateScheduleTimer = new System.Timers.Timer();
                             _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
-                            _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+                            _checkUpdateScheduleTimer.Elapsed += CheckUpdateScheduleTimer_Elapsed;
                             _checkUpdateScheduleTimer.Start();
                         }
                     }
@@ -17445,7 +17445,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //Bruce 08 - 09 Add a new event to determine whether it is a display signal event or a setting event.
                     Microsoft.Win32.SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
                     ToastNotificationManagerCompat.OnActivated -= CheckInput;//Bruce 0924 add Popup Event
-                    //displayChange.DisplayChange_Event -= SystemEvents_DisplaySettingsChanged;
+                                                                             //displayChange.DisplayChange_Event -= SystemEvents_DisplaySettingsChanged;
                     if (_FWUpdatePlugin != null)
                     {
                         if (_UpdateProgress != null)
@@ -17462,8 +17462,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _FWUpdatePlugin.CallOSD -= CallOSD;
                         if (_checkUpdateScheduleTimer != null)
                         {
-                            _checkUpdateScheduleTimer.Elapsed -= new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
                             _checkUpdateScheduleTimer.Stop();
+                            _checkUpdateScheduleTimer.Elapsed -= CheckUpdateScheduleTimer_Elapsed;
+                            _checkUpdateScheduleTimer.Dispose();
+                            _checkUpdateScheduleTimer = null;
                         }
                     }
                     if (_SWUpdatePlugin != null)
@@ -17471,8 +17473,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _SWUpdatePlugin.CallPopup -= CallPopup;
                         if (_checkUpdateScheduleTimer != null)
                         {
-                            _checkUpdateScheduleTimer.Elapsed -= new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
                             _checkUpdateScheduleTimer.Stop();
+                            _checkUpdateScheduleTimer.Elapsed -= CheckUpdateScheduleTimer_Elapsed;
+                            _checkUpdateScheduleTimer.Dispose();
+                            _checkUpdateScheduleTimer = null;
                         }
                     }
                     if (_ColorProfileHelper != null)
