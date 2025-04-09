@@ -413,31 +413,33 @@ namespace DDPM.UI.Common.UserControls
 
         public SplitItem AddSplitCtrlTo2ndPosition(ISplitCtrl isp)
         {
-            SplitItem spItem = new SplitItem();
-            spItem.InnerContent = isp.UC;
-            spItem.SplitOwner = vm.SplitOwner;
-            spItem.ClickCommand = new RelayCommand<SplitItem>(HandleSplitItemClickCommand);
-            spItem.EditClickCommand = new RelayCommand<SplitItem>(HandleSplitItemEditClickCommand);
-            spItem.DeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
-
-            if (vm.SplitOwner == eSplitOwner.EaCustom)
+            using (SplitItem spItem = new SplitItem())
             {
-                spItem.IsDeleteEnabled = true;
-                spItem.IsEditEnabled = true;
-            }
-            else if (vm.SplitOwner == eSplitOwner.EaWin)
-            {
-                spItem.IsEditEnabled = true;
-            }
+                spItem.InnerContent = isp.UC;
+                spItem.SplitOwner = vm.SplitOwner;
+                spItem.ClickCommand = new RelayCommand<SplitItem>(HandleSplitItemClickCommand);
+                spItem.EditClickCommand = new RelayCommand<SplitItem>(HandleSplitItemEditClickCommand);
+                spItem.DeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
 
-            if (spItem.ISplitCtrl != null)
-                spItem.ISplitCtrl.IsVertical = IsVertical;
+                if (vm.SplitOwner == eSplitOwner.EaCustom)
+                {
+                    spItem.IsDeleteEnabled = true;
+                    spItem.IsEditEnabled = true;
+                }
+                else if (vm.SplitOwner == eSplitOwner.EaWin)
+                {
+                    spItem.IsEditEnabled = true;
+                }
 
-            DataContext = null;
-            vm.SplitList.Insert(1, spItem);
-            DataContext = vm;
-            vm.RefreshDisplayItems();
-            return spItem;
+                if (spItem.ISplitCtrl != null)
+                    spItem.ISplitCtrl.IsVertical = IsVertical;
+
+                DataContext = null;
+                vm.SplitList.Insert(1, spItem);
+                DataContext = vm;
+                vm.RefreshDisplayItems();
+                return spItem;
+            }            
         } 
 
         #endregion Recent List 

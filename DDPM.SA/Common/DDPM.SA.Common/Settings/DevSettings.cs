@@ -112,6 +112,9 @@ namespace DDPM.SA.Common.Settings
         public static bool IsEAInfoWindowVisible()
         {
             return 1 == DevSettings.ReadInt("DDPM.SA.EAPlugin.InfoWindow.IsVisible");
+
+            //Derek for Debug to show info window, release should use above code
+            //return 0 == DevSettings.ReadInt("DDPM.SA.EAPlugin.InfoWindow.IsVisible");
         }
 
         /// <summary>
@@ -140,6 +143,9 @@ namespace DDPM.SA.Common.Settings
 
         public static bool IsEABorkerRevoked()
         {
+            /* Derek test data 2025/04/01
+             * EA enable/disable 330M/190M
+             */
             return 1 == ReadInt("IsEABrokerRevoked");
         }
 

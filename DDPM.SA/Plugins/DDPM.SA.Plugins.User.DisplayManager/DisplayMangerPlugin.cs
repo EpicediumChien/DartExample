@@ -2068,7 +2068,22 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                                                                    && !string.IsNullOrWhiteSpace(config.Edid.SerialNumber)
                                                                                    && !string.IsNullOrWhiteSpace(config.Edid.ServiceTag)).GroupBy(p => new { p.Edid }).Select(g => g.First()).ToList();
 
-                _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig ... out " + distinctALSConfigList.Count.ToString());
+                for (int i = 0; i < distinctALSConfigList.Count; i++)
+                {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, ALSConfig index        : " + i.ToString());
+                    _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, ALSConfig ModelName    : " + distinctALSConfigList[i].ModelName.ToString());
+                    _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, ALSConfig SerialNumber : " + distinctALSConfigList[i].serialNumber.ToString());
+                    _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, ALSConfig ServiceTag   : " + distinctALSConfigList[i].Edid.ServiceTag.ToString());
+                    _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, ALSConfig EDID         : " + distinctALSConfigList[i].Edid.ToString());
+                    _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, ALSConfig SupportALS   : " + distinctALSConfigList[i].isSupportALS.ToString());
+                    _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, ALSConfig AllValue     : " + distinctALSConfigList[i].AllValue.ToString());
+                    _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, AutoBrightness         : " + distinctALSConfigList[i].isAutoBrightness.ToString());
+                    _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, AutoColorTemp          : " + distinctALSConfigList[i].isAutoColorTemp.ToString());
+                    _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, RangeLevel Value       : " + distinctALSConfigList[i].AutoBrightnessRangeLevel[0]?.level_value.ToString());
+                    _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig, PrimaryMonitor         : " + distinctALSConfigList[i].isPrimaryMonitorSync.ToString());
+                }
+
+                _logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig ... out ");
                 AllALSConfig = distinctALSConfigList;
                 return Task.FromResult(distinctALSConfigList);
             }
@@ -2077,6 +2092,59 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 //_logs.DebugMsg($"[DisplayMangerPlugin] GetAllExistAlsConfig Exception {ex.Message}");
                 WriteLog($"GetAllExistAlsConfig Exception {ex.Message}", log_type.error);
                 return Task.FromResult(new List<ALSConfig>());
+            }
+        }
+
+
+        /// <summary>
+        /// Update Import ALS Value
+        /// </summary>
+        /// <returns>bool type</returns>
+        public Task<bool> UpdateImportAlsValueAsync(MonitorInfo monitorInfos, uint value)
+        {
+            try
+            {
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync ... in");
+                List<ALSConfig> als_connecte = new List<ALSConfig>();
+                ALSConfig aconfig = AllALSConfig.Find(x => x.ModelName.Equals(monitorInfos.modelName));
+                if (aconfig != null)
+                {
+                    ParseBitDefineToAlsObject(value, ref aconfig);
+                    ParseMonitorInfo(monitorInfos, ref aconfig);
+                }
+                else
+                {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync can not find aconfig  monitor");
+                    aconfig = new ALSConfig();
+                    GetALSupport(monitorInfos, ref aconfig);
+                    if (aconfig.result == true && aconfig.isSupportALS != 0)//Read the ALS value only if ALS is supported
+                    {
+                        GetALSAll(monitorInfos, ref aconfig);
+                    }
+                    ParseMonitorInfo(monitorInfos, ref aconfig);
+                    AllALSConfig.Add(aconfig);               
+                }
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync       modelName = {monitorInfos.modelName}");
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync           value = {value.ToString()}");
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync  AutoBrightness = {aconfig.isAutoBrightness.ToString()}");
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync  AutoColorTemp  = {aconfig.isAutoColorTemp.ToString()}");
+                if (aconfig.AutoBrightnessRangeLevel != null && aconfig.AutoBrightnessRangeLevel.Count > 0)
+                {
+                    _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync RangeLevelValue = {aconfig.AutoBrightnessRangeLevel[0].level_value.ToString()}");
+                }
+                else
+                {
+                    _logs.DebugMsg("[DisplayMangerPlugin] UpdateImportAlsValueAsync RangeLevelValue is empty or null.");
+                }
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync RangeLevelValue = {aconfig.AutoBrightnessRangeLevel[0].level_value.ToString()}");
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync  PrimaryMonitor = {aconfig.isPrimaryMonitorSync.ToString()}");
+                _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync ... out");
+                return Task.FromResult(true);
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"UpdateImportAlsValueAsync Exception {ex.Message}", log_type.error);
+                return Task.FromResult(false);
             }
         }
 
@@ -2654,7 +2722,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// <param name="value">value</param>
         private void SetALSAll(MonitorInfo monitorInfos, ref ALSConfig param, string value)
         {
-            _logs.DebugMsg($"[DisplayMangerPlugin] ALSFeature into SetALSAll to {monitorInfos.edid.ModelName}...");
+            _logs.DebugMsg($"[DisplayMangerPlugin] ALSFeature into SetALSAll to {monitorInfos.edid.ModelName}...value = {value}");
             Trace.WriteLine($"[DisplayMangerPlugin] ALSFeature into SetALSAll to {monitorInfos.edid.ModelName}...value = {value}");
             param.AllValue = UpdateAllValue(param);
             if (monitorInfos.CapabilityString.Contains("66"))

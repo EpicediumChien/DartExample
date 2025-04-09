@@ -1,4 +1,5 @@
-﻿using NGA.UnitTest.PrivateObject;
+﻿using DDPM.UI.Common.EAEM;
+using NGA.UnitTest.PrivateObject;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -204,7 +205,22 @@ namespace DDPM.Easy.Common.Tests
             // Assert
             Assert.That(splitCtrlVM.HoveringCell, Is.EqualTo("a"));
         }
-        
 
+
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (splitCtrlVM != null)
+            {
+                splitCtrlVM.Dispose();
+                splitCtrlVM = null;
+            }
+            if (vm != null)
+            {
+                vm.Dispose();
+                vm = null;
+            }
+        }
     }
 }

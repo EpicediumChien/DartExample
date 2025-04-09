@@ -3144,6 +3144,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
                 string[] ss_1 = null;
                 List<DeviceType> deviceTypes = new List<DeviceType>();
+                int _isheadsetready = 0;
                 if (commandLineInput.Options.Count > 0)
                 {
                     deviceTypes = SetDevice(commandLineInput).deviceTypes;
@@ -3225,6 +3226,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                             //Trace.WriteLine($@"LogicalDeviceType = {device.LogicalDeviceType.ToString().ToUpper()}");
                             if (device != null && device.LogicalDeviceType.ToString().ToUpper().Contains("HEADSET"))
                             {
+                                while (_isheadsetready < 10)
+                                {
+                                    Thread.Sleep(1000);
+                                    if (_devMgr.GetIsReadyAsync(device.ID.ToString()).Result)
+                                        break;
+                                    _isheadsetready++;
+                                }
+                                                               
                                 serialNumbers.Add(_devMgr.GetHeadsetSerialNumberAsync(device.ID.ToString()).Result ?? "N/A");
                             }
                             else if (device != null && device.LogicalDeviceType.ToString().ToUpper().Contains("WEBCAM"))

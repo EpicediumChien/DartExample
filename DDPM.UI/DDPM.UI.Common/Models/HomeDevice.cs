@@ -1180,7 +1180,8 @@ namespace DDPM.UI.Common.Models
                 //@ LaunchView:
                 //string hostName = Dns.GetHostName();
 
-                string hostName = Dns.GetHostName();
+                string hostName = HostNameHandler.GetDNSHostName();
+
                 //if (hostName.Length > 15)
                 //    hostName = hostName.Substring(0, 15);
 
@@ -1377,7 +1378,7 @@ namespace DDPM.UI.Common.Models
             //@ LaunchView:
             //    string hostName = Dns.GetHostName();
             //@ HomeDevice:
-            string hostName = Dns.GetHostName();
+            string hostName = HostNameHandler.GetDNSHostName();
             //if (hostName.Length > 15)
             //    hostName = hostName.Substring(0, 15);
 
@@ -1545,47 +1546,60 @@ namespace DDPM.UI.Common.Models
                 if (DeviceInfo == null)
                     return;
 
-                //@ LaunchView:
-                //string hostName = Dns.GetHostName();
-
-                //@ HomeDevice:
-                //string hostName = Dns.GetHostName();
-                string PairedHostName1 = string.Empty;
-                string PairedHostName2 = string.Empty;
-                if (string.IsNullOrEmpty(DeviceInfo.PairedHostName2))
-                    PairedHostName1 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(DeviceInfo.ID.ToString()).Result; //DTP
-                else
-                    PairedHostName1 = DeviceInfo.PairedHostName2; //DTH
-                if (string.IsNullOrEmpty(DeviceInfo.PairedHostName3))
-                    PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(DeviceInfo.ID.ToString()).Result; //DTP
-                else
-                    PairedHostName2 = DeviceInfo.PairedHostName3;  //DTH
-                BleHost1Text = string.IsNullOrEmpty(PairedHostName1) ? Strings.ReadyToBePaired : PairedHostName1;
-                BleHost2Text = string.IsNullOrEmpty(PairedHostName2) ? Strings.ReadyToBePaired : PairedHostName2;
-                //@ LaunchView:
-                //if (_vm.VisiblePairedHostName1 == hostName)
-                if (!string.IsNullOrEmpty(PairedHostName1))
+                string pairedHostName1, pairedHostName2;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    BleHost1Style = BleHostStyle_White;// "1";
+                    // DTP
+                    pairedHostName1 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(DeviceInfo.ID.ToString()).Result;
+                    if (string.IsNullOrEmpty(pairedHostName1))
+                    {
+                        pairedHostName1 = DeviceInfo.PairedHostName2;
+                        DdpmCommonHelper.WriteUILog($"[HomeDevice] SetBLConnectionStatus_Audio Bluetooth DeviceManagerSA not null, GetHeadsetPairedHostName2Async IsNullOrEmpty,  DTH : {DeviceInfo.PairedHostName2} ... ");
+                    }
+                    else
+                    {
+                        DdpmCommonHelper.WriteUILog($"[HomeDevice] SetBLConnectionStatus_Audio Bluetooth DeviceManagerSA not null, GetHeadsetPairedHostName2Async DTP pairedHostName1 = {pairedHostName1} ... ");
+                    }
+                    pairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(DeviceInfo.ID.ToString()).Result;
+                    if (string.IsNullOrEmpty(pairedHostName2))
+                    {
+                        pairedHostName2 = DeviceInfo.PairedHostName3;
+                        DdpmCommonHelper.WriteUILog($"[HomeDevice] SetBLConnectionStatus_Audio Bluetooth DeviceManagerSA not null, GetHeadsetPairedHostName3Async IsNullOrEmpty,  DTH : {DeviceInfo.PairedHostName3} ... ");
+                    }
+                    else
+                    {
+                        DdpmCommonHelper.WriteUILog($"[HomeDevice] SetBLConnectionStatus_Audio Bluetooth DeviceManagerSA not null, GetHeadsetPairedHostName2Async DTP pairedHostName2 = {pairedHostName2} ... ");
+                    }
                 }
                 else
                 {
-                    BleHost1Style = BleHostStyle_Gray;
-                }
-                if (!string.IsNullOrEmpty(PairedHostName2))
-                {
-                    BleHost2Style = BleHostStyle_White; // "2";
-                }
-                else
-                {
-                    BleHost2Style = BleHostStyle_Gray;
+                    // DTH
+                    pairedHostName1 = DeviceInfo.PairedHostName2;
+                    pairedHostName2 = DeviceInfo.PairedHostName3;
+                    DdpmCommonHelper.WriteUILog($"[HomeDevice] SetBLConnectionStatus_Audio Bluetooth DeviceManagerSA null, 1 = {DeviceInfo.PairedHostName2} : 2 = {DeviceInfo.PairedHostName3} ... ");
                 }
 
-                //@ HomeDevice:
+                if (string.IsNullOrEmpty(pairedHostName1))
+                {
+                    BleHost1Style = BleHostStyle_Collapsed;
+                }
+                else
+                {
+                    BleHost1Style = BleHostStyle_White;
+                    BleHost1Text = string.IsNullOrEmpty(pairedHostName1) ? Strings.ReadyToBePaired : pairedHostName1;
+                }
+
+                if (string.IsNullOrEmpty(pairedHostName2))
+                {
+                    BleHost2Style = BleHostStyle_Collapsed;
+                }
+                else
+                {
+                    BleHost2Style = BleHostStyle_White;
+                    BleHost2Text = string.IsNullOrEmpty(pairedHostName2) ? Strings.ReadyToBePaired : pairedHostName2;
+                }
+
                 AudioBleText = string.Format(Strings.Paired_Info, DeviceInfo.TotalNumberOfPairedHostName);
-                //"This device can be paired with {0} hosts simultaneously";
-                //int totalPairedHostCount = DeviceInfo.TotalNumberOfPairedHostName;
-                //AudioBleText = String.Format(AudioBleConnectionTotalPairCountText, totalPairedHostCount);
                 //BLConnection.Visibility = Visibility.Visible;
             }
             catch (Exception ex)
@@ -1599,7 +1613,7 @@ namespace DDPM.UI.Common.Models
             if (DeviceInfo == null)
                 return;
 
-            string hostName = Dns.GetHostName();
+            string hostName = HostNameHandler.GetDNSHostName();
 
             if (DeviceInfo.PairedHostName1 == hostName)
             //if (_vm.VisiblePairedHostName1 == hostName)

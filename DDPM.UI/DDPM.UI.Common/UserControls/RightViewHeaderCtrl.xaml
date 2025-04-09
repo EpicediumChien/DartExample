@@ -19,7 +19,8 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Header[0] -->
-                <Border Grid.Column="0" CornerRadius="4,0,0,4" MouseLeftButtonDown="header0_MouseLeftButtonDown" PreviewKeyDown="header0_PreviewKeyDown">
+                <Border Grid.Column="0" CornerRadius="4,0,0,4" MouseLeftButtonDown="header0_MouseLeftButtonDown" PreviewKeyDown="header0_PreviewKeyDown"
+                        BorderThickness="0,0,1,0">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -57,7 +58,7 @@
                     </Grid>
                     <Border.Style>
                         <Style TargetType="Border">
-                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="0">
                                     <Setter Property="Background" Value="{StaticResource Brush_GradientButtonCyan}" />
@@ -68,7 +69,8 @@
                 </Border>
 
                 <!-- Header[1] -->
-                <Border Grid.Column="1" CornerRadius="0,0,0,0" MouseLeftButtonDown="header1_MouseLeftButtonDown" PreviewKeyDown="header1_PreviewKeyDown">
+                <Border Grid.Column="1" CornerRadius="0,0,0,0" MouseLeftButtonDown="header1_MouseLeftButtonDown" PreviewKeyDown="header1_PreviewKeyDown"
+                        BorderThickness="0,0,1,0">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -107,7 +109,7 @@
                     </Grid>
                     <Border.Style>
                         <Style TargetType="Border">
-                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="1">
                                     <Setter Property="Background" Value="{StaticResource Brush_GradientButtonCyan}" />
@@ -156,7 +158,7 @@
                     </Grid>
                     <Border.Style>
                         <Style TargetType="Border">
-                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding InternalSelectedIndex}" Value="2">
                                     <Setter Property="Background" Value="{StaticResource Brush_GradientButtonCyan}" />

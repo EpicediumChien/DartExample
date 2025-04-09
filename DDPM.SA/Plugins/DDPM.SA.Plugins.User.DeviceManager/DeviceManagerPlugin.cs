@@ -339,6 +339,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     KvmAutoSwitchCounter = 0;
                 }
+                Debug.WriteLine($"KvmAutoSwitchCounter ={KvmAutoSwitchCounter}");
                 if (KvmAutoSwitchCounter >= 3)
                 {
                     if (!debugPreMsg.Equals(debugMsg))
@@ -377,75 +378,86 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (GetOnUSBKVM(monitorInfo).Result)
                 {
                     //check
-                    if (_hotkeySettings != null && _hotkeySettings.Count == 0)
+                    List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+
+                    /*if (_hotkeySettings != null && _hotkeySettings.Count == 0)
                     {
                         _hotkeySettings = _SettingsPlugin.ReadHotkeySettings().Result;
-                    }
-                    if (_hotkeySettings != null && _hotkeySettings.Count > 0)
+                    }*/
+                    if (settings != null)
                     {
-                        HotkeySettings localHotkeySettings = _hotkeySettings.FirstOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
-                        if (localHotkeySettings != null)
+                        DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(monitorInfo.edid.ServiceTag));
+                        if (monitorSettings == null)
                         {
-                            if (localHotkeySettings.HotkeyOptions.Count > 0 && localHotkeySettings.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
+                            writelog($"@isUsbKvmCursorEdge: Reloaded settings not contains (model={monitorInfo.modelName}, serviceTage={monitorInfo.edid.ServiceTag}).");
+                            return ret;
+                        }
+
+                        //HotkeySettings localHotkeySettings = _hotkeySettings.FirstOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
+                        if (monitorSettings.HotkeyOption.Equals(HotkeyOption.KvmAutoApply))
+                        {
+                            //check cursor position at the edge
+                            //Robert_Lin, 2025-1-3 fix compiler error: 'Rectangle' is an ambiguous reference between 'System.Drawing.Rectangle' and 'System.Windows.Shapes.Rectangle'
+                            //1.get PBP mode sub input source
+                            System.Drawing.Rectangle bounds = currentScreen.Bounds;
+                            Dictionary<string, InputInfo> inputSourcelist = GetInputSourcelist(monitorInfo).Result;
+                            List<ushort> subInputListRet = GetSubInputList(monitorInfo).Result;
+                            //var currentResolution = _DisplayManagerPlugin.GetMonitorCurrentResolution(monitorInfo).Result;
+                            //GetUSBKVMPCsList(monitorInfo);
+                            bool isEdge = false;
+                            string debugMsg = $"monitor:{monitorInfo.modelName}{monitorInfo.edid.SerialNumber}:currentScreen.WorkingAreaWidth={currentScreen.WorkingArea.Width}:inputCable={monitorInfo.inputCable};inputSource={monitorInfo.inputSource};{currentScreen.DeviceName};Primary:{currentScreen.Primary};WorkingArea.X:{currentScreen.WorkingArea.X};,X={cursorPosition.X},Y={cursorPosition.Y}";
+                            if (monitorInfo.inputCable.Equals(monitorInfo.inputSource))
                             {
-                                //check cursor position at the edge
-                                //Robert_Lin, 2025-1-3 fix compiler error: 'Rectangle' is an ambiguous reference between 'System.Drawing.Rectangle' and 'System.Windows.Shapes.Rectangle'
-                                //1.get PBP mode sub input source
-                                System.Drawing.Rectangle bounds = currentScreen.Bounds;
-                                Dictionary<string, InputInfo> inputSourcelist = GetInputSourcelist(monitorInfo).Result;
-                                List<ushort> subInputListRet = GetSubInputList(monitorInfo).Result;
-                                //var currentResolution = _DisplayManagerPlugin.GetMonitorCurrentResolution(monitorInfo).Result;
-                                //GetUSBKVMPCsList(monitorInfo);
-                                bool isEdge = false;
-                                string debugMsg = $"monitor:{monitorInfo.modelName}{monitorInfo.edid.SerialNumber}:currentScreen.WorkingAreaWidth={currentScreen.WorkingArea.Width}:inputCable={monitorInfo.inputCable};inputSource={monitorInfo.inputSource};{currentScreen.DeviceName};Primary:{currentScreen.Primary};WorkingArea.X:{currentScreen.WorkingArea.X};,X={cursorPosition.X},Y={cursorPosition.Y}";
-                                if (monitorInfo.inputCable.Equals(monitorInfo.inputSource))
+                                // PBP as main inputSource ,screen is left
+                                writelog($"[USBKVM_Auto_Switch]as PBP main input:{debugMsg}");
+                                if (cursorPositionXSide("left", currentScreen, cursorPosition.X))
                                 {
-                                    // PBP as main inputSource ,screen is left
-                                    writelog($"[USBKVM_Auto_Switch]as PBP main input:{debugMsg}");
-                                    if (cursorPositionXSide("left", currentScreen, cursorPosition.X))
-                                    {
-                                        Debug.WriteLine($"left edge: approach");
-                                        writelog($"[USBKVM_Auto_Switch] [left edge: approach]\r\n {debugMsg}");
-                                        isEdge = true;
-                                    }
-                                }
-                                else
-                                {
-                                    // PBP as sub imputSource,screen is right
-                                    writelog($"[USBKVM_Auto_Switch]as PBP subinput:{debugMsg}");
-                                    if (cursorPositionXSide("right", currentScreen, cursorPosition.X))
-                                    {
-                                        Debug.WriteLine($"right edge: approach");
-                                        writelog($"[USBKVM_Auto_Switch] [right edge: approach] \r\n {debugMsg}");
-                                        isEdge = true;
-                                    }
-                                }
-                                if (isEdge)
-                                {
-                                    lock (USBKVM_PBPmode_lock)
-                                    {
-                                        UsbKvmPBP usbKvmPBP1 = usbKvmPBPs.SingleOrDefault(x => x.MonitorInfo.edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && x.MonitorInfo.edid.SerialNumber.Equals(monitorInfo.edid.SerialNumber));
-                                        if (usbKvmPBP1 != null && usbKvmPBP1.isPBPmode)
-                                        {
-                                            ret = true;
-                                        }
-                                        else
-                                        {
-                                            foreach (var item in usbKvmPBPs)
-                                            {
-                                                Debug.WriteLine($"{item.MonitorInfo.modelName}_{item.MonitorInfo.edid.ServiceTag},PBP mode={item.isPBPmode}");
-                                                writelog($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:{item.MonitorInfo.modelName}_{item.MonitorInfo.edid.ServiceTag},PBP mode={item.isPBPmode}");
-                                            }
-                                        }
-                                    }
+                                    Debug.WriteLine($"left edge: approach");
+                                    writelog($"[USBKVM_Auto_Switch] [left edge: approach]\r\n {debugMsg}");
+                                    isEdge = true;
                                 }
                             }
                             else
                             {
-                                writelog($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:KvmAutoApply OFF");
-                                Debug.WriteLine($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:KvmAutoApply OFF");
+                                // PBP as sub imputSource,screen is right
+                                writelog($"[USBKVM_Auto_Switch]as PBP subinput:{debugMsg}");
+                                if (cursorPositionXSide("right", currentScreen, cursorPosition.X))
+                                {
+                                    Debug.WriteLine($"right edge: approach");
+                                    writelog($"[USBKVM_Auto_Switch] [right edge: approach] \r\n {debugMsg}");
+                                    isEdge = true;
+                                }
+                            }
+                            if (isEdge)
+                            {
+                                lock (USBKVM_PBPmode_lock)
+                                {
+                                    UsbKvmPBP usbKvmPBP1 = usbKvmPBPs.SingleOrDefault(x => x.MonitorInfo.edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && x.MonitorInfo.edid.SerialNumber.Equals(monitorInfo.edid.SerialNumber));
+                                    if (usbKvmPBP1 != null && usbKvmPBP1.isPBPmode)
+                                    {
+                                        ret = true;
+                                    }
+                                    else
+                                    {
+                                        foreach (var item in usbKvmPBPs)
+                                        {
+                                            Debug.WriteLine($"{item.MonitorInfo.modelName}_{item.MonitorInfo.edid.ServiceTag},PBP mode={item.isPBPmode}");
+                                            writelog($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:{item.MonitorInfo.modelName}_{item.MonitorInfo.edid.ServiceTag},PBP mode={item.isPBPmode}");
+                                        }
+                                    }
+                                }
                             }
                         }
+                        else
+                        {
+                            writelog($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:KvmAutoApply OFF");
+                            Debug.WriteLine($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:KvmAutoApply OFF");
+                        }
+
+                    }
+                    else
+                    {
+                        writelog($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:monitor settings is null");
                     }
                 }
                 else
@@ -506,69 +518,83 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             if ("E9".Equals(vcpcode, StringComparison.OrdinalIgnoreCase) || vcpcode.Equals("2"))
             {
-                if (!monitorInfo.CapabilityDic.ContainsKey("E9") && !monitorInfo.CapabilityDic.ContainsKey("E7"))
-                    return;
-                /* if (!GetOnUSBKVM(monitorInfo).Result)
-                 {
-                     Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:USB KVM OFF,skip");
-                     writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:USB KVM OFF,skip");
-                     return;
-                 }*/
-                ObjGetVCP ret = GetPxpMode(monitorInfo).Result;
-                UsbKvmPBP usbKvmPBP = new UsbKvmPBP { MonitorInfo = monitorInfo, isPBPmode = false };
-                UInt16 _curPxpMode = 0;
-                if (ret != null && ret.result)
+                lock (USBKVM_PBPmode_lock)
                 {
-                    //_curPxpMode = Convert.ToUInt16(ret.value);
-                    if (!ushort.TryParse(ret.value.ToString(), out _curPxpMode))
+                    if (!monitorInfo.CapabilityDic.ContainsKey("E9") && !monitorInfo.CapabilityDic.ContainsKey("E7"))
+                        return;
+                    /* if (!GetOnUSBKVM(monitorInfo).Result)
+                     {
+                         Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:USB KVM OFF,skip");
+                         writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:USB KVM OFF,skip");
+                         return;
+                     }*/
+                    List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+                    if (settings == null)
                     {
-                        _curPxpMode = 0;
-                        writelog($"[updatePBPModeStatus]GetPxpMode,parse pxp mode value fail.");
+                        writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,Monitor Settings is null");
+                        return;
                     }
 
-                    switch (_curPxpMode)
+                    DDPMMonitorSettings monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(monitorInfo.edid.ServiceTag));
+                    if (monitorSettings != null && !monitorSettings.HotkeyOption.Equals(HotkeyOption.KvmAutoApply))
                     {
-                        case 0x00://off
-                            usbKvmPBP.isPBPmode = false;
-                            break;
-
-                        case 0x21://PIP small
-                            usbKvmPBP.isPBPmode = false;
-                            break;
-
-                        case 0x22://PIP large
-                            usbKvmPBP.isPBPmode = false;
-                            break;
-
-                        case 0x23:
-                        case 0x24:
-                        case 0x25:
-                        case 0x26:
-                        case 0x27:
-                        case 0x28:
-                        case 0x29:
-                        case 0x2A:
-                        case 0x2B:
-                        case 0x2C:
-                        case 0x2D:
-                        case 0x2E:
-                        case 0x2F:
-                        case 0x31:
-                        case 0x32:
-                        case 0x33:
-                        case 0x34:
-                        case 0x35:
-                        case 0x41:
-                        case 0x42:
-                            usbKvmPBP.isPBPmode = true;
-                            break;
-
-                        default:
-                            usbKvmPBP.isPBPmode = false;
-                            break;
+                        writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:monitor [{monitorInfo.modelName},{monitorInfo.edid.ServiceTag}] KvmAutoApply not enable.");
+                        return;
                     }
-                    lock (USBKVM_PBPmode_lock)
+                    ObjGetVCP ret = GetPxpMode(monitorInfo).Result;
+                    UsbKvmPBP usbKvmPBP = new UsbKvmPBP { MonitorInfo = monitorInfo, isPBPmode = false };
+                    UInt16 _curPxpMode = 0;
+                    if (ret != null && ret.result)
                     {
+                        //_curPxpMode = Convert.ToUInt16(ret.value);
+                        if (!ushort.TryParse(ret.value.ToString(), out _curPxpMode))
+                        {
+                            _curPxpMode = 0;
+                            writelog($"[updatePBPModeStatus]GetPxpMode,parse pxp mode value fail.");
+                        }
+
+                        switch (_curPxpMode)
+                        {
+                            case 0x00://off
+                                usbKvmPBP.isPBPmode = false;
+                                break;
+
+                            case 0x21://PIP small
+                                usbKvmPBP.isPBPmode = false;
+                                break;
+
+                            case 0x22://PIP large
+                                usbKvmPBP.isPBPmode = false;
+                                break;
+
+                            case 0x23:
+                            case 0x24:
+                            case 0x25:
+                            case 0x26:
+                            case 0x27:
+                            case 0x28:
+                            case 0x29:
+                            case 0x2A:
+                            case 0x2B:
+                            case 0x2C:
+                            case 0x2D:
+                            case 0x2E:
+                            case 0x2F:
+                            case 0x31:
+                            case 0x32:
+                            case 0x33:
+                            case 0x34:
+                            case 0x35:
+                            case 0x41:
+                            case 0x42:
+                                usbKvmPBP.isPBPmode = true;
+                                break;
+
+                            default:
+                                usbKvmPBP.isPBPmode = false;
+                                break;
+                        }
+
                         if (usbKvmPBPs.Count > 0)
                         {
                             UsbKvmPBP usbKvmPBP1 = usbKvmPBPs.SingleOrDefault(x => x.MonitorInfo.edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && x.MonitorInfo.edid.SerialNumber.Equals(monitorInfo.edid.SerialNumber));
@@ -585,42 +611,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             usbKvmPBPs.Add(usbKvmPBP);
                         }
-                        if (_hotkeySettings != null)
+
+                        //HotkeySettings localHotkeySettings = _hotkeySettings.SingleOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
+                        //if (localHotkeySettings.HotkeyOptions.Any(x => x == HotkeyOption.KvmAutoApply))
+
+                        //update timer
+                        if (usbKvmPBPs.Any(x => x.isPBPmode))
                         {
-                            HotkeySettings localHotkeySettings = _hotkeySettings.SingleOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
-                            if (localHotkeySettings != null)
-                            {
-                                if (localHotkeySettings.HotkeyOptions.Any(x => x == HotkeyOption.KvmAutoApply))
-                                {
-                                    //update timer
-                                    if (usbKvmPBPs.Any(x => x.isPBPmode))
-                                    {
-                                        _USBKVMAutoSwitchTimer.Stop();
-                                        _USBKVMAutoSwitchTimer.Start();
-                                        Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled},and start(), PBPmode ON");
-                                        writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled},and start(), PBPmode ON");
-                                    }
-                                    else
-                                    {
-                                        _USBKVMAutoSwitchTimer.Stop();
-                                        Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, and stop(), PBPmode OFF");
-                                        writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, and stop(), PBPmode OFF");
-                                    }
-                                }
-                                else
-                                {
-                                    Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus,the kvm auto switch option is OFF");
-                                    writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,the kvm auto switch option is OFF");
-                                }
-                            }
-                            else
-                            {
-                                writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,localHotkeySettings is null.");
-                            }
+                            _USBKVMAutoSwitchTimer.Stop();
+                            _USBKVMAutoSwitchTimer.Start();
+                            Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled},and start(), PBPmode ON");
+                            writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled},and start(), PBPmode ON");
                         }
                         else
                         {
-                            writelog($"[USBKVM_Auto_Switch] _hotkeySettings is null.");
+                            _USBKVMAutoSwitchTimer.Stop();
+                            Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, and stop(), PBPmode OFF");
+                            writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, and stop(), PBPmode OFF");
                         }
                     }
                 }
@@ -940,9 +947,48 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(multiColorPreset);
         }
 
-        //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
-        private string ColorprofileMulti(string info)
+        private readonly Dictionary<string, string> colorPreset_MultiLang = new Dictionary<string, string>()
         {
+            { "Standard",       LangHelper.Instance["Standard_0"]       },
+            { "Standard HDR",   LangHelper.Instance["Standard_HDR"]     },
+            { "Native",         LangHelper.Instance["Native_0"]         },
+            { "Movie",          LangHelper.Instance["Movie_0"]          },
+            { "Game",           LangHelper.Instance["Game_0"]           },
+            { "Game1",          LangHelper.Instance["Game_1"]           },
+            { "Game2",          LangHelper.Instance["Game_2"]           },
+            { "Game3",          LangHelper.Instance["Game_3"]           },
+            { "Warm",           LangHelper.Instance["Warm"]             },
+            { "Cool",           LangHelper.Instance["Cool_0"]           },
+            { "Custom Color",   LangHelper.Instance["Custom_Color"]     },
+            { "Custom 1",       LangHelper.Instance["Custom_1"]         },
+            { "Custom 2",       LangHelper.Instance["Custom_2"]         },
+            { "Custom 3",       LangHelper.Instance["Custom_3"]         },
+            { "User 1",         LangHelper.Instance["User_1"]           },
+            { "User 2",         LangHelper.Instance["User_2"]           },
+            { "User 3",         LangHelper.Instance["User_3"]           },
+            { "SPORTS Game",    LangHelper.Instance["SPORTS_Game"]      },
+            { "Movie HDR",      LangHelper.Instance["Movie_HDR"]        },
+            { "Game HDR",       LangHelper.Instance["Game_HDR"]         },
+            { "Metro",          LangHelper.Instance["Metro_0"]          },
+            { "FPS Game",       LangHelper.Instance["FPS_Game"]         },
+            { "RTS Game",       LangHelper.Instance["RTS_Game"]         },
+            { "RPG Game",       LangHelper.Instance["RPG_Game"]         },
+            { "ComfortView",    LangHelper.Instance["ComfortView_0"]    },
+            { "Paper",          LangHelper.Instance["Paper_0"]          },
+            { "Display P3",     LangHelper.Instance["Display_P3"]       }
+        };
+
+
+        //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
+        private string ColorprofileMulti(string original)
+        {
+            //Dean 2025/4/8 change to use dictionary
+            if(colorPreset_MultiLang.ContainsKey(original))
+            {
+                return colorPreset_MultiLang[original];
+            }
+            return original;
+            /*
             string ret = string.Empty;
             switch (info)
             {
@@ -1064,7 +1110,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     ret = info;
                     break;
             }
-            return ret;
+            return ret;*/
+        }
+
+        private string ColorprofileMultiToOriginal(string multi)
+        {
+            try
+            {
+                string data = colorPreset_MultiLang.FirstOrDefault(x => x.Value.Equals(multi, StringComparison.InvariantCultureIgnoreCase)).Key;
+                if (data != null)
+                {
+                    return data;
+                }
+            }
+            catch(Exception e)
+            {
+                writelog($"[ColorprofileMultiToOriginal] get key exception: {e.Message}");
+            }
+            return multi;
         }
 
         public Task<string> GetMonitorProfile(MonitorInfo m)
@@ -1195,16 +1258,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     CallPopup(this, popupContentPackage);
                 }
             }
-            //var tmp = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
 
-            //write back to settings
-            //r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
-
-            //Task.Delay(100).Wait();
-            //}
-
-            Trace.WriteLine("reqKey (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory) = " + _GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory);
-            Trace.WriteLine("reqKey (showOSD) = " + showOSD);
+            writelog($"reqKey (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory) = {_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory}");
+            writelog($"reqKey (showOSD) = {showOSD}");
 
             // Jim add 20240925
             if (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory && showOSD)
@@ -1213,10 +1269,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _ColorPresetPlugin.ShowOSD_ColoPreset(m, ColorPreset_Name);
             }
 
-            //if (r) // 20240717 jim remove
-            //{
-            //write VCP over display manager
-            //r = SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result;
+            //Dean 20250408, change preset name back to eng if support multi-lang
+            string input = ColorPreset_Name;
+            ColorPreset_Name = ColorprofileMultiToOriginal(input);
+            writelog($"[WriteColorPreset] input({input}), mapping to original({ColorPreset_Name})");
 
             // jim add  for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
             if (blIs_Game_DeviceName && blSmartHDR_ON)
@@ -1303,9 +1359,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("[DeviceMangerPlugin] SyncPrimaryMonitorAndColorPresetStatus ... False");
             }
 
-            Trace.Write($"ColorPreset_Name = {ColorPreset_Name}");
-            //}
-            //return Task.FromResult(r);
+            writelog($"ColorPreset_Name = {ColorPreset_Name}");
 
             //Telementry Collection
             var rt = false;
@@ -2415,7 +2469,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("[DeviceMangerPlugin] received SetVCPCapability requested ...");
             writelog("[DeviceMangerPlugin] TargetMonitor DisplayName is " + monitorInfoX.DisplayName);
             writelog("[DeviceMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfoX.AliasDeviceName);
-            writelog("[DeviceMangerPlugin] unctionName is " + FunctionName);
+            writelog("[DeviceMangerPlugin] FunctionName is " + FunctionName);
             writelog("[DeviceMangerPlugin] val is " + val);
 
             bool r = false;
@@ -5088,6 +5142,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //////////////////////////////////Get///////////////////////////////////
 
+        public async Task<string> GetWiredAudioSerialNumberAsync(string item)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetWiredAudioSerialNumberAsync(item);
+                if (result != null)
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioSerialNumberAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioSerialNumberAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioSerialNumberAsync failed for {item} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
         public async Task<string> GetProfileNameAsync(string item)
         {
             try
@@ -6358,6 +6430,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         public Task<bool> CallDDPMUI(string DDPMPath)
+
         {
             writelog($"{nameof(CallDDPMUI)} start");
             bool ret = false;
@@ -6367,34 +6440,48 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     writelog($"CloseDDPM start");
                     string processName = "DDPM";
-                    Process[] processes = Process.GetProcessesByName(processName);
-                    writelog($"CloseDDPM processes.Length {processes.Length}");
-                    if (processes.Length > 0)
+                    Process[] processes;
+                    do
                     {
-                        foreach (Process process in processes)
+                        processes = Process.GetProcessesByName(processName);
+                        writelog($"CloseDDPM GetProcessesByName_1 processes.Length {processes.Length}");
+                        if (processes.Length > 0)
                         {
-                            // Close process by sending a close message to its main window.
-                            process.CloseMainWindow();
-                            // Free resources associated with process.
-                            process.Close();
+                            foreach (Process process in processes)
+                            {
+                                try
+                                {
+                                    // Close process by sending a close message to its main window.
+                                    process.CloseMainWindow();
+                                    // Free resources associated with process.
+                                    process.Close();
+                                }
+                                finally
+                                {
+                                    process.Dispose();
+                                }
+                            }
                         }
-                    }
+                        Task.Delay(5000).Wait();
+                    } while (processes.Length > 0);
                     writelog($"CloseDDPM done");
                 }
                 catch (Exception ex)
                 {
                     writelog($"CloseDDPM Error:{ex.Message}");
                 }
-                Task.Delay(5000).Wait();
-                try
+                finally
                 {
-                    writelog($"RunDDPM start");
-                    Process.Start(DDPMPath + "\\DDPM.exe");
-                    writelog($"RunDDPM done");
-                }
-                catch (Exception ex)
-                {
-                    writelog($"RunDDPM Error:{ex.Message}");
+                    try
+                    {
+                        writelog($"RunDDPM start");
+                        Process.Start(DDPMPath + "\\DDPM.exe");
+                        writelog($"RunDDPM done");
+                    }
+                    catch (Exception ex)
+                    {
+                        writelog($"RunDDPM Error:{ex.Message}");
+                    }
                 }
             }
             writelog($"{nameof(CallDDPMUI)} done");
@@ -7026,6 +7113,108 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        private Dictionary<string, PCsInfo> HandleNextCase(MonitorInfo monitorInfo, Dictionary<string, PCsInfo> pcsList, List<UInt16> subInputList)
+        {
+            writelog("[HandleNextCase] HandleNextCase");
+            Dictionary<string, PCsInfo> New_pcsList = new Dictionary<string, PCsInfo>();
+            if (subInputList.Count == 1)
+            {
+                New_pcsList = PCInfoSwap(pcsList, "PC1", "PC2").Result;
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, null, null).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 1.");
+            }
+            else if (subInputList.Count == 2)
+            {
+                New_pcsList["PC1"] = pcsList["PC2"];
+                New_pcsList["PC2"] = pcsList["PC3"];
+                New_pcsList["PC3"] = pcsList["PC1"];
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                InputSourceObj pc3input = new InputSourceObj((UInt16)New_pcsList["PC3"].Code, New_pcsList["PC3"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, pc3input, null).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 2.");
+            }
+            else if (subInputList.Count == 3)
+            {
+                New_pcsList["PC1"] = pcsList["PC2"];
+                New_pcsList["PC2"] = pcsList["PC3"];
+                New_pcsList["PC3"] = pcsList["PC4"];
+                New_pcsList["PC4"] = pcsList["PC1"];
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                InputSourceObj pc3input = new InputSourceObj((UInt16)New_pcsList["PC3"].Code, New_pcsList["PC3"].InputType);
+                InputSourceObj pc4input = new InputSourceObj((UInt16)New_pcsList["PC4"].Code, New_pcsList["PC4"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, pc3input, pc4input).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 3.");
+            }
+
+            return New_pcsList;
+        }
+
+        private Dictionary<string, PCsInfo> HandlePreviousCase(MonitorInfo monitorInfo, Dictionary<string, PCsInfo> pcsList, List<UInt16> subInputList)
+        {
+            writelog("[HandlePreviousCase] HandlePreviousCase");
+            Dictionary<string, PCsInfo> New_pcsList = new Dictionary<string, PCsInfo>();
+            if (subInputList.Count == 1)
+            {
+                New_pcsList = PCInfoSwap(pcsList, "PC1", "PC2").Result;
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, null, null).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 1.");
+            }
+            else if (subInputList.Count == 2)
+            {
+                New_pcsList["PC1"] = pcsList["PC3"];
+                New_pcsList["PC2"] = pcsList["PC1"];
+                New_pcsList["PC3"] = pcsList["PC2"];
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                InputSourceObj pc3input = new InputSourceObj((UInt16)New_pcsList["PC3"].Code, New_pcsList["PC3"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, pc3input, null).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 2.");
+            }
+            else if (subInputList.Count == 3)
+            {
+                New_pcsList["PC1"] = pcsList["PC4"];
+                New_pcsList["PC2"] = pcsList["PC1"];
+                New_pcsList["PC3"] = pcsList["PC2"];
+                New_pcsList["PC4"] = pcsList["PC3"];
+                InputSourceObj pc2input = new InputSourceObj((UInt16)New_pcsList["PC2"].Code, New_pcsList["PC2"].InputType);
+                InputSourceObj pc3input = new InputSourceObj((UInt16)New_pcsList["PC3"].Code, New_pcsList["PC3"].InputType);
+                InputSourceObj pc4input = new InputSourceObj((UInt16)New_pcsList["PC4"].Code, New_pcsList["PC4"].InputType);
+                bool res = SetSubInputs(monitorInfo, pc2input, pc3input, pc4input).Result;
+                string result = res ? "Success" : "Failed";
+                writelog($"[ChangePC] SubInputs PC Done with {result} - 3.");
+            }
+
+            return New_pcsList;
+        }
+
+        public Task<Dictionary<string, PCsInfo>> ChangePC(MonitorInfo monitorInfo, Dictionary<string, PCsInfo> pcsList, List<UInt16> subInputList, bool isNext)
+        {
+            writelog("[ChangePC] ChangePC");
+            Dictionary<string, PCsInfo> New_pcsList = new Dictionary<string, PCsInfo>();
+            if (pcsList != null && pcsList.Count > 0 && subInputList != null && subInputList.Count > 0)
+            {
+                if (isNext)
+                {
+                    New_pcsList = HandleNextCase(monitorInfo, pcsList, subInputList);
+                }
+                else
+                {
+                    New_pcsList = HandlePreviousCase(monitorInfo, pcsList, subInputList);
+                }
+            }
+            else
+            {
+                writelog("[ChangePC] pcsList or subInputList is null or count is not > 0.");
+            }
+            return Task.FromResult(New_pcsList);
+        }
+
         #endregion
 
         #region ALS feature functions
@@ -7397,7 +7586,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     //Check if value is changed
                     if (ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors == newValue)
+                    {
+                        ddpmSettings = null;
                         return Task.FromResult(true);
+                    }
 
                     //Apply new setting value
                     ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors = newValue;
@@ -7410,9 +7602,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
 
                         SendEasyArrangeTelemetry("span_monitors");
+                        ddpmSettings = null;
                         return Task.FromResult(true);
                     }
                 }
+
+                ddpmSettings = null;
             }
             //Read DDPMSettings
             //Fail to read, will return false
@@ -8946,7 +9141,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     if (vcps.Count > 0)
                                     {
                                         //set ImportVCPSequence
-                                        impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;                                        
+                                        impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;
                                         SetVCPSequence(monitorInfo, impVCPSequence, vcps);
                                         writelog("[DisplayImportSettings] ALSConfig : " + impVCPSequence.ALSConfig.ToString());
                                         foreach (VCPCode code in vcps)
@@ -8969,18 +9164,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                         continue;
                                                     }
                                                     //get vcp code
-                                                    objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
-                                                    writelog("[DisplayImportSettings] GetVCPCapability VCP code : " + code.Code.ToString() + ", Value : " + objGetVCP.value.ToString());
+                                                    objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;                         
                                                     if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
                                                     {
-                                                        //set vcp code
-                                                        if(SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result)
+                                                        writelog("[DisplayImportSettings] GetVCPCapability VCP code : " + code.Code.ToString() + ", Value : " + objGetVCP.value.ToString());
+                                                        if (((impVCPSequence.ALSConfig & (1u << 5)) != 0) && (code.Code == 102 || code.Code == 103)) // if primary on, need to by pass 0x67 0x68
                                                         {
-                                                            writelog("[DisplayImportSettings] Set VCP code success : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());
+                                                            writelog("[SetVCPSequence] Set VCP code by pass : " + impVCPSequence.ALSConfig.ToString() + ", Value : " + code.ToString());
                                                         }
                                                         else
                                                         {
-                                                            writelog("[DisplayImportSettings] Set VCP code fail : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());                                                    
+                                                            //set vcp code
+                                                            if (SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result)
+                                                            {
+                                                                writelog("[DisplayImportSettings] Set VCP code success : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());
+                                                            }
+                                                            else
+                                                            {
+                                                                writelog("[DisplayImportSettings] Set VCP code fail : " + code.Code.ToString() + ", Value : " + code.Value[0].ToString());
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -9982,6 +10184,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetWebcamSerialNumber(Guid));
         }
+
         public async Task<int> GetBgBlur(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetBgBlur(Guid));
@@ -9991,6 +10194,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsBgBlurEnable(Guid));
         }
+
         public async Task<bool> GetIsPropertyBgBlurSupported(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetIsPropertyBgBlurSupported(Guid));
@@ -10853,7 +11057,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             foreach (var monitor in _AllInfoMonitors)
             {
                 if (monitor.CapabilityDic.ContainsKey("E9") && monitor.CapabilityDic.ContainsKey("E7"))
+                {
                     Task.Run(() => updatePBPModeStatus(monitor, "E9")).ConfigureAwait(false);
+                }
+                else
+                {
+                    writelog($"[SettingsReady] {monitor.modelName},{monitor.edid.ServiceTag} not contain E9 and E7");
+                }
             }
             //register hotkey
             RegistHotkey(false);
@@ -11860,18 +12070,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         if (_ReGetcancellationTokenSource != null)
                         {
-                            writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _ReGetcancellationTokenSource trigger cancel ...");
+                            writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _ReGetcancellationTokenSource trigger cancel in XXX ...");
+                            await _ReGetcancellationTokenSource.CancelAsync();
 
-                            if (_ReGetcancellationTokenSource is not null)
-                            {
-                                _ReGetcancellationTokenSource.Dispose();
-                                _ReGetcancellationTokenSource = null;
-                            }
+                            _ReGetcancellationTokenSource.Dispose();
+                            _ReGetcancellationTokenSource = null;
                         }
                     }
                     catch (TaskCanceledException)
                     {
-                        writelog("[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
+                        writelog("[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened in XXX ...");
 
                         if (_ReGetcancellationTokenSource is not null)
                         {
@@ -11881,7 +12089,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     catch (OperationCanceledException)
                     {
-                        writelog("[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
+                        writelog("[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened in XXX ...");
 
                         if (_ReGetcancellationTokenSource is not null)
                         {
@@ -11891,7 +12099,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     catch (Exception ex)
                     {
-                        writelog($"[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() ...there is an exception-- ({ex.Message})");
+                        writelog($"[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() in XXX ...there is an exception-- ({ex.Message})");
 
                         if (_ReGetcancellationTokenSource is not null)
                         {
@@ -11907,8 +12115,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             var token = _ReGetcancellationTokenSource.Token;
 
                             writelog("[DeviceMangerPlugin] SystemEventsDisplaySettingsChangedAsync() into Re-GetDevices ...");
-                            //Call VCP to catch updated monitor info
-                            var NewMonitors = (_DisplayManagerPlugin.Re_GetMonitors(token).Result).ToList();
+
+                            var NewMonitors = (await _DisplayManagerPlugin.Re_GetMonitors(token)).ToList();
                             _AllInfoMonitors = new(NewMonitors);
 
                             writelog($"[DeviceMangerPlugin] SystemEventsDisplaySettingsChangedAsync() get monitor count {NewMonitors.Count} ...");
@@ -11922,7 +12130,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     if (T1.IsCompleted)
                                     {
                                         writelog($"[DeviceMangerPlugin] InitMonitorSettings Is Completed ...");
-                                        break;
+                                        return;
                                     }
                                 }
                                 writelog($"[DeviceMangerPlugin] T3 Is Completed ...");
@@ -12172,6 +12380,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _PopupBase.Closed -= PopupBaseCloseEvent;
                 _PopupBase = null;
                 writelog($"_PopupBase PopupBaseCloseEvent2 done");
+            }
+
+            //Derek 2025/03/31
+            ExitUIThread();
+        }
+
+        //Derek 2025/03/31
+        private void ExitUIThread()
+        {
+            if (System.Windows.Threading.Dispatcher.CurrentDispatcher != null)
+            {
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.InvokeShutdown();
             }
         }
 
@@ -12637,29 +12857,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void InitAllDisplayData(List<MonitorInfo> AllMonitors, CancellationToken cancellationToken)
         {
             //InitMonitorSettings();
-            if (AllMonitors != null && AllMonitors.Count > 0)
+            try
             {
-                _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait(cancellationToken);
-
-                for (int i = 0; ((i < AllMonitors.Count) && (!cancellationToken.IsCancellationRequested)); i++)
+                if (AllMonitors != null && AllMonitors.Count > 0)
                 {
-                    MonitorInfo info = AllMonitors[i];
+                    _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait(cancellationToken);
 
-                    _ = _DisplayManagerPlugin.GetVCPCapability(info, 0xE9);
+                    for (int i = 0; ((i < AllMonitors.Count) && (!cancellationToken.IsCancellationRequested)); i++)
+                    {
+                        MonitorInfo info = AllMonitors[i];
 
-                    _ = _DisplayManagerPlugin.GetDisplayPropertiesInfo(info);
+                        _ = _DisplayManagerPlugin.GetVCPCapability(info, 0xE9);
 
-                    if (info.CapabilityString.Contains("F4"))
-                        _ = _DisplayManagerPlugin.GetGamingProperties_SupportedList(info);
+                        _ = _DisplayManagerPlugin.GetDisplayPropertiesInfo(info);
 
-                    _DisplayManagerPlugin.GetUSBUpstreamList(info).Wait(cancellationToken);
+                        if (info.CapabilityString.Contains("F4"))
+                            _ = _DisplayManagerPlugin.GetGamingProperties_SupportedList(info);
+
+                        _DisplayManagerPlugin.GetUSBUpstreamList(info).Wait(cancellationToken);
+
+                        if (!cancellationToken.IsCancellationRequested)
+                            _ = _DisplayManagerPlugin.GetAllUSBUpstream(info);
+                    }
 
                     if (!cancellationToken.IsCancellationRequested)
-                        _ = _DisplayManagerPlugin.GetAllUSBUpstream(info);
+                        UpdateHotkeyInfo(cancellationToken);
                 }
-
-                if (!cancellationToken.IsCancellationRequested)
-                    UpdateHotkeyInfo(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                writelog($"InitAllDisplayData exception : {ex.ToString()}");
             }
         }
 
@@ -12684,7 +12911,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             InitMonitorSettings((e.monitors).ToList(), CancellationToken.None);
 
-            Task.Run(() => InitAllDisplayData((e.monitors).ToList(), CancellationToken.None)).ConfigureAwait(false);
+            Task.Run(() => InitAllDisplayData((e.monitors).ToList(), CancellationToken.None));
 
             DisplaychangedEventArgs _displaychangedEventArgs = new DisplaychangedEventArgs();
             _displaychangedEventArgs.count = e.count;
@@ -13829,6 +14056,56 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        public Task<bool> SaveHotkeyOptionOnly(MonitorInfo mo, HotkeyOption hotkeyOption)
+        {
+            string model = mo.modelName;
+            string serviceTag = mo.edid.ServiceTag;
+            writelog($"@SaveHotkeyOptionOnly: monitor(model={model},serviceTag={serviceTag}),hotkeyOption={hotkeyOption}.");
+
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+            if (settings == null)
+            {
+                writelog($"@SaveHotkeyOptionOnly: ReloadMonitorSettings(model={model},serviceTag={serviceTag}) return null.");
+                return Task.FromResult(false);
+            }
+            Debug.WriteLine($"@SaveHotkeyOptionOnly: monitor(model={model},serviceTag={serviceTag}),hotkeyOption={hotkeyOption}.");
+            DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(mo.edid.ServiceTag));
+            if (monitorSettings == null)
+            {
+                writelog($"@SaveHotkeyOptionOnly: Reloaded settings not contains (model={model}, serviceTage={serviceTag}).");
+                return Task.FromResult(false);
+            }
+            monitorSettings.HotkeyOption = hotkeyOption;
+            if (!_SettingsPlugin.WriteMonitorSettings(mo.modelName, settings).Result)
+            {
+                writelog($"@ SaveHotkeyOptionOnly(model={model}, serviceTage={serviceTag},hotkeyOption={hotkeyOption}) failed.");
+                return Task.FromResult(false);
+            }
+            writelog($"@ SaveHotkeyOptionOnly(model={model}, serviceTage={serviceTag},hotkeyOption={hotkeyOption}) OK.");
+            Task.Run(() => updatePBPModeStatus(mo, "E9")).ConfigureAwait(false);
+            return Task.FromResult(true);
+        }
+
+        public Task<HotkeyOption> ReadHotkeyOption(MonitorInfo mo)
+        {
+            HotkeyOption hotkeyOption = HotkeyOption.None;
+            string serviceTag = mo.edid.ServiceTag;
+            string model = mo.modelName;
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+            if (settings == null)
+            {
+                writelog($"@ReadHotkeyOption: ReloadMonitorSettings(model={model},serviceTag={serviceTag}) return null.");
+                return Task.FromResult(hotkeyOption);
+            }
+            DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(mo.edid.ServiceTag));
+            if (monitorSettings == null)
+            {
+                writelog($"@ReadHotkeyOption: Reloaded settings not contains (model={model}, serviceTage={serviceTag}).");
+                return Task.FromResult(hotkeyOption);
+            }
+            hotkeyOption = monitorSettings.HotkeyOption;
+            return Task.FromResult(hotkeyOption);
+        }
         public Task<bool> SaveHotkeyOptionOnly(HotkeySettings hotkeySettings)
         {
             List<HotkeySettings> settings = ReadHotkeySettings().Result;
@@ -16185,13 +16462,38 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string capability = monitorInfo.CapabilityString;
             if (capability.Contains("E0("))
             {
+                int getvalue = 0;
                 string[] ss = capability.Split("E0(");
                 ss = ss[1].Split(")");
                 ss = ss[0].Split(" ");
                 if (ss[0] == "03" || ss[0] == "0F")
                 {
                     rc = GetVCPCapability(monitorInfo, 0xE0).Result;
-                    int getvalue = (Convert.ToInt32(rc.value) & 0x0c);
+                    if (int.TryParse(rc.value.ToString(), out int crtValue))
+                    {
+                        getvalue = (crtValue & 0x0c);
+                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,OdeValue={rc.value.ToString()}, NewValue ={getvalue}");
+                    }
+                    else
+                    {
+                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
+                    }
+                }
+                else if (ss[0] == "13")
+                {
+                    rc = GetVCPCapability(monitorInfo, 0xE0).Result;
+                    if (int.TryParse(rc.value.ToString(), out int crtValue))
+                    {
+                        getvalue = (crtValue & 0x1c);
+                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,OdeValue={rc.value.ToString()}, NewValue ={getvalue}");
+                    }
+                    else
+                    {
+                        writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
+                    }
+                }
+                if (getvalue != 0)
+                {
                     if (cs)
                     {
                         bool ret = SetVCPCapability(monitorInfo, 0xE0, (1 | (uint)getvalue)).Result;
@@ -16202,6 +16504,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
                         writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
                     }
+                }
+                else
+                {
+                    writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] no vcp commands to be issued.");
                 }
             }
             else
@@ -16228,13 +16534,38 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string capability = monitorInfo.CapabilityString;
             if (capability.Contains("E0("))
             {
+                int getvalue = 0;
                 string[] ss = capability.Split("E0(");
                 ss = ss[1].Split(")");
                 ss = ss[0].Split(" ");
                 if (ss[0] == "03" || ss[0] == "0F")
                 {
                     rc = GetVCPCapability(monitorInfo, 0xE0).Result;
-                    int getvalue = (Convert.ToInt32(rc.value) & 0x0c);
+                    if (int.TryParse(rc.value.ToString(), out int crtValue))
+                    {
+                        getvalue = (crtValue & 0x0c);
+                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,OdeValue={rc.value.ToString()}, NewValue ={getvalue}");
+                    }
+                    else
+                    {
+                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
+                    }
+                }
+                else if (ss[0] == "13")
+                {
+                    rc = GetVCPCapability(monitorInfo, 0xE0).Result;
+                    if (int.TryParse(rc.value.ToString(), out int crtValue))
+                    {
+                        getvalue = (crtValue & 0x1c);
+                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,OdeValue={rc.value.ToString()}, NewValue ={getvalue}");
+                    }
+                    else
+                    {
+                        writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ,parse currentValue ={rc.value.ToString()} fail.");
+                    }
+                }
+                if (getvalue != 0)
+                {
                     if (cs)
                     {
                         bool ret = SetVCPCapability(monitorInfo, 0xE0, (2 | (uint)getvalue)).Result;
@@ -16245,6 +16576,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
                         writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
                     }
+                }
+                else
+                {
+                    writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] no vcp commands to be issued.");
                 }
             }
             else
@@ -16829,64 +17164,88 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void SetVCPSequence(MonitorInfo monitorInfo, ImpVCPSequence impVCPSequence, List<VCPCode> vcps)
         {
-            if (impVCPSequence != null)
+            writelog("[SetVCPSequence] SetVCPSequence ... in ");
+            try
             {
-                if (vcps.Count != 0)
+                if (impVCPSequence != null)
                 {
-                    foreach (var item in vcps)
+                    if (vcps.Count != 0)
                     {
-                        Trace.WriteLine($"Code: {item.Code}, Value:{item.Value}");
-                    }
-
-                    ImportVCP importVCP = new ImportVCP();
-                    foreach (int code in importVCP.ImportVCPSequence)
-                    {
-                        if (vcps.Exists(x => x.Code == code))
+                        foreach (var item in vcps)
                         {
-                            VCPCode vcp = vcps.Find(x => x.Code == code);
-                            ObjGetVCP objGetVCP = new ObjGetVCP();
-                            objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
-                            writelog("[SetVCPSequence] GetVCPCapability VCP code : " + vcp.Code.ToString() + ", value : " + objGetVCP.value.ToString());
-                            if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)vcp.Value[0])
-                            {                               
-                                if (code == 0x66)
+                            writelog($"[SetVCPSequence] Code: {item.Code}, Value:{item.Value}");
+                            Trace.WriteLine($"Code: {item.Code}, Value:{item.Value}");
+                        }
+
+                        ImportVCP importVCP = new ImportVCP();
+                        foreach (int code in importVCP.ImportVCPSequence)
+                        {
+                            if (vcps.Exists(x => x.Code == code))
+                            {
+                                VCPCode vcp = vcps.Find(x => x.Code == code);
+                                ObjGetVCP objGetVCP = new ObjGetVCP();
+                                objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
+                                if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)vcp.Value[0])
                                 {
-                                    if (SetVCPCapability(monitorInfo, 0x66, impVCPSequence.ALSConfig).Result)
+                                    writelog("[SetVCPSequence] GetVCPCapability VCP code success : " + vcp.Code.ToString() + ", value : " + objGetVCP.value.ToString());
+                                    if (code == 0x66)
                                     {
-                                        writelog("[SetVCPSequence] Set ALS(0x66) success : Value = " + impVCPSequence.ALSConfig.ToString());
+                                        writelog($"[SetVCPSequence] Print GetAllExistAlsConfig Set 0x66, value {impVCPSequence.ALSConfig.ToString()} ... ");
+                                        List<ALSConfig> existAlsConfig3 = _DisplayManagerPlugin.GetAllExistAlsConfig().Result;
+                                        if (SetVCPCapability(monitorInfo, 0x66, impVCPSequence.ALSConfig).Result)
+                                        {
+                                            writelog("[SetVCPSequence] Print GetAllExistAlsConfig after Set 0x66, value" + impVCPSequence.ALSConfig.ToString());
+                                            List<ALSConfig> existAlsConfig = _DisplayManagerPlugin.GetAllExistAlsConfig().Result;
+                                            if (_DisplayManagerPlugin.UpdateImportAlsValueAsync(monitorInfo, impVCPSequence.ALSConfig).Result)
+                                                writelog("[SetVCPSequence] UpdateImportAlsValueAsync success ...");
+                                            else
+                                                writelog("[SetVCPSequence] UpdateImportAlsValueAsync fail ...");
+                                        }
+                                        else
+                                        {
+                                            writelog("[SetVCPSequence] Set ALS(0x66) fail : Value = " + impVCPSequence.ALSConfig.ToString());
+                                        }
                                     }
                                     else
                                     {
-                                        writelog("[SetVCPSequence] Set ALS(0x66) fail : Value = " + impVCPSequence.ALSConfig.ToString());
-                                    }
-                                }
-                                else
-                                {
-                                    if (SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result)
-                                    {
-                                        writelog("[SetVCPSequence] Set VCP code success : " + code.ToString() + ", Value : " + vcp.Value[0].ToString());                                       
-                                    }
-                                    else
-                                    {
-                                        writelog("[SetVCPSequence] Set VCP code fail : " + code.ToString() + ", Value : " + vcp.Value[0].ToString());
+                                        if (((impVCPSequence.ALSConfig & (1u << 5)) != 0) && (code == 102 || code == 103))// if primary on, need to by pass 0x67 0x68
+                                        {
+                                            writelog("[SetVCPSequence] Set VCP code by pass : " + impVCPSequence.ALSConfig.ToString() + ", Value : " + code.ToString());
+                                        }
+                                        else
+                                        {
+                                            if (SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result)
+                                            {
+                                                writelog("[SetVCPSequence] Set VCP code success : " + code.ToString() + ", Value : " + vcp.Value[0].ToString());
+                                            }
+                                            else
+                                            {
+                                                writelog("[SetVCPSequence] Set VCP code fail : " + code.ToString() + ", Value : " + vcp.Value[0].ToString());
+                                            }
+                                        }
                                     }
                                 }
                             }
+                            else
+                            {
+                                writelog($"[SetVCPSequence] Code:{code} cannot find in vcps");
+                            }
                         }
-                        else
-                        {
-                            writelog($"[SetVCPSequence] Code:{code} cannot find in vcps");
-                        }
+                    }
+                    else
+                    {
+                        writelog("[SetVCPSequence] vcps count = 0");
                     }
                 }
                 else
                 {
-                    writelog("[SetVCPSequence] vcps count = 0");
+                    writelog("[SetVCPSequence] ImpExpSettings is null");
                 }
+                writelog("[SetVCPSequence] SetVCPSequence ... out ");
             }
-            else
+            catch (Exception ex)
             {
-                writelog("[SetVCPSequence] ImpExpSettings is null");
+                writelog($"[SetVCPSequence] there is an exception-- ({ex.Message})");
             }
         }
 
@@ -18447,11 +18806,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             string tmpMuteGuid = Guid.NewGuid().ToString();
-                                            _OSD_Controler.ShowMultipleOSD(tmpMuteGuid, OSDType_Device.Mute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_muted"], ((Screen.PrimaryScreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpMuteGuid : guid.ToString(), OSDType_Device.Mute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_muted"], ((Screen.PrimaryScreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             await Task.Run(async () =>
                                             {
                                                 await Task.Delay(3000);
-                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpMuteGuid, OSDType_Op.None);
+                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp(Guid.Empty.Equals(guid) ? tmpMuteGuid : guid.ToString(), OSDType_Op.None);
                                             });
                                             /*_OSD_Controler.Mute_CloseWindow(null, null);
                                             _OSD_Controler.Mute_ShowWindow(Content, (sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX));*/
@@ -18466,11 +18825,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         try
                                         {
                                             string tmpUnMuteGuid = Guid.NewGuid().ToString();
-                                            _OSD_Controler.ShowMultipleOSD(tmpUnMuteGuid, OSDType_Device.UnMute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_Unmuted"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
+                                            _OSD_Controler.ShowMultipleOSD(Guid.Empty.Equals(guid) ? tmpUnMuteGuid : guid.ToString(), OSDType_Device.UnMute, oSDType_Op, string.Empty, Content + " " + LangHelper.Instance["is_Unmuted"], ((sreen.WorkingArea.Top / (double)dpiX), (sreen.WorkingArea.Left / (double)dpiX), (sreen.WorkingArea.Width / (double)dpiX), (sreen.WorkingArea.Height / (double)dpiX)));
                                             await Task.Run(async () =>
                                             {
                                                 await Task.Delay(3000);
-                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp(tmpUnMuteGuid, OSDType_Op.None);
+                                                _OSD_Controler.CloseMultipleOSDByGuidAndOp(Guid.Empty.Equals(guid) ? tmpUnMuteGuid : guid.ToString(), OSDType_Op.None);
                                             });
 
                                             /*_OSD_Controler.UnMute_CloseWindow(null, null);
@@ -18569,7 +18928,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-
                                         if (_OSD_Controler.ExistMultipleOSD())
                                         {
                                             //default guid {7471D427-F152-4E19-918E-F84FF12FBBEE}
@@ -18616,7 +18974,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-
                                         if (_OSD_Controler.ExistMultipleOSD())
                                         {
                                             //default guid {0CC389B4-7B0D-4BCB-9AD2-7FF09526ED09}
@@ -18824,7 +19181,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     try
                                     {
-
                                         if (_OSD_Controler.ExistMultipleOSD())
                                         {
                                             //default guid {2DB1454E-A3D4-4380-A1A3-2483FE38E3D8}

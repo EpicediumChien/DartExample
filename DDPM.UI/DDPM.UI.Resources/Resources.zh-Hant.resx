@@ -3508,7 +3508,7 @@
     <value />
   </data>
   <data name="InputValidationTooltip.1" xml:space="preserve">
-    <value />
+    <value>Use a maximum of {0} characters</value>
   </data>
   <data name="InputValidationTooltip.2" xml:space="preserve">
     <value />

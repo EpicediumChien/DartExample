@@ -53,10 +53,14 @@ namespace DDPM.UI.Module.Kvm
 
         private void CloseUSBKVM(object sender, RoutedEventArgs e)
         {
-            vm.CancelSetUSBKVM();
-            DdpmCommonHelper.ModuleOwner?.CloseFullView();
-            vm.FromProgressValue = 0;
-            vm.ToProgressValue = 1;
+            if (vm != null)
+            {
+                vm.UpdateArrow(true);
+                vm.CancelSetUSBKVM();
+                DdpmCommonHelper.ModuleOwner?.CloseFullView();
+                vm.FromProgressValue = 0;
+                vm.ToProgressValue = 1;
+            }
         }
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)

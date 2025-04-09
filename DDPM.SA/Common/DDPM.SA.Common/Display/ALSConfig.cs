@@ -51,7 +51,8 @@ namespace DDPM.SA.Common
         public int ContrastValue { get; set; } = 0;
         public string ColorPresetString { get; set; } = string.Empty;
         public bool isSupportLum { get; set; } = false;
-        public List<AutoBrightnessRangeLevel> AutoBrightnessRangeLevel { get; set; } = new List<AutoBrightnessRangeLevel>();
+        public List<AutoBrightnessRangeLevel> AutoBrightnessRangeLevel { get; set; } = new List<AutoBrightnessRangeLevel>
+        { new AutoBrightnessRangeLevel { level_value = 0, level_name = "Low" }};
 
         public uint AllValue { get; set; } = 0;
 

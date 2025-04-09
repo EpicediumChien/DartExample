@@ -396,10 +396,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         bool is_EsiSupport = false;// DdpmCommonHelper.DeviceManagerSA?.GetIsESISupported(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
 
         //檢查是否為dell7 camera做程式分支處理
-        bool is_camera_dell7 = false;// check_camera_dell7();
+        int is_camera_dell7 = 0;// check_camera_dell7();
 
         //檢查windows是否符合windows hello標準 win10需要大於20H2 win11需要大於22H2
-        bool is_WindowsVer_OK = false;// check_windowsVer_OK();
+        int is_WindowsVer_OK = 0;// check_windowsVer_OK();
 
         //檢查是否為dell電腦
         bool is_DellPc = false;// check_DellPc();
@@ -487,7 +487,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             print_debug("AllSupportedResolutions:" + AllSupportedResolutions);
             print_debug("NotNeedtoUpdate:" + CheckWebCamFwUPD);
             print_debug("check_PresenceFunction() s0 model-" + model);
-            CheckTestCase();
+            if (is_camera_dell7 == 1)
+            {
+                CheckTestCase();
+            }
+            else if (is_camera_dell7 == 2)
+            {
+                CheckDisplayWebcamTestCase();
+            }
             //CheckTestCase2();
 
             /*noPresenceFunction = false;
@@ -503,24 +510,19 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             string model = _vm.CurrentDeviceInfo?.ModelNumber ?? "";
             noPresenceFunction = false;
-            if ((is_camera_dell7 && model.ToUpper() != "U3223QZ") && !AllSupportedResolutions)
+            if (!AllSupportedResolutions)
             {
-                print_debug("is_camera_dell7 && !AllSupportedResolutions");
+                print_debug("is_camera_dell7==1 && !AllSupportedResolutions");
                 noPresenceFunction = true;
                 return;
             }
-            if (!is_camera_dell7 || !AllSupportedResolutions)
-            {
-                print_debug("!is_camera_dell7 && !AllSupportedResolutions");
-                noPresenceFunction = true;
-                return;
-            }
+            
             _vm.UPD_Visibility = Visibility.Collapsed; //HPD
             _vm.MPS_Setting_Visibility = Visibility.Collapsed;//內建電腦MPS
             _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;//FW Update
             CheckSupportWindowsHello(is_WindwosHelloSupport ? Visibility.Visible : Visibility.Collapsed);
             //1A
-            if (is_DellPc && is_EsiSupport && !is_WindowsVer_OK)
+            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK==4)
             {
                 print_debug("TestCase 1A");
                 _vm.UPD_Visibility = Visibility.Visible;
@@ -528,97 +530,91 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             }
             //2A
-            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK)
+            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK==1)
             {
                 print_debug("TestCase 2A");
                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
                 return;
             }
             //3A
-            if (is_DellPc && !is_EsiSupport && !is_WindowsVer_OK)
+            if (is_DellPc && !is_EsiSupport && is_WindowsVer_OK==2)
             {
                 print_debug("TestCase 3A");
-                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                _vm.MPS_Setting_Visibility = Visibility.Visible;
                 return;
             }
             //4A
-            if (is_DellPc && !is_EsiSupport && !is_WindowsVer_OK)
+            if (is_DellPc && !is_EsiSupport && is_WindowsVer_OK==3)
             {
                 print_debug("TestCase 4A");
                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
                 return;
             }
-            //5A
-            if (is_DellPc && !is_EsiSupport && is_WindowsVer_OK)
-            {
-                print_debug("TestCase 5A");
-                _vm.MPS_Setting_Visibility = Visibility.Visible;
-                return;
-            }
-            //6A
-            if (is_DellPc && is_EsiSupport && !is_WindowsVer_OK)
-            {
-                print_debug("TestCase 6A");
-                _vm.UPD_Visibility = Visibility.Visible;
-                CheckSupportWindowsHello(Visibility.Visible); //隱藏人物偵測區windows hello設定連結
-                return;
-            }
-
-
-            //6B
-            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK)
-            {
-                print_debug("TestCase 6B");
-                _vm.MPS_Setting_Visibility = Visibility.Visible;
-                return;
-            }
-
-            //6C
-            if (!is_DellPc && is_EsiSupport && !is_WindowsVer_OK)
-            {
-                print_debug("TestCase 6C");
-                noPresenceFunction = true;
-                return;
-            }
-            //==========DDPMW-1770=====
-            //5B
-            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK)
-            {
-                print_debug("TestCase 5B");
-                _vm.MPS_Setting_Visibility = Visibility.Visible;
-                return;
-            }
-
-
-            //2B
-            if (!is_DellPc && is_EsiSupport && is_WindowsVer_OK)
-            {
-                print_debug("TestCase 2B");
-                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
-                return;
-            }
 
             //1B
-            if (!is_DellPc && is_EsiSupport && !is_WindowsVer_OK)
+            if (!is_DellPc && is_EsiSupport && is_WindowsVer_OK == 4)
             {
                 print_debug("TestCase 1B");
                 noPresenceFunction = true;
                 return;
             }
+            //2B
+            if (!is_DellPc && is_EsiSupport && is_WindowsVer_OK==1)
+            {
+                print_debug("TestCase 2B");
+                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                return;
+            }
+            //3B
+            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK == 2)
+            {
+                print_debug("TestCase 3B");
+                _vm.MPS_Setting_Visibility = Visibility.Visible;
+                return;
+            }
+
             //4B
-            if (!is_DellPc && !is_EsiSupport && !is_WindowsVer_OK)
+            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK==3)
             {
                 print_debug("TestCase 4B");
                 noPresenceFunction = true;
                 return;
             }
-            //3B
-            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK)
+            
+            print_debug("TestCase Default");
+            noPresenceFunction = true;
+        }
+        private void CheckDisplayWebcamTestCase()
+        {
+            string model = _vm.CurrentDeviceInfo?.ModelNumber ?? "";
+            noPresenceFunction = false;
+            
+            //if (is_camera_dell7==2 && !AllSupportedResolutions)
+            //{
+            //    print_debug("is_camera_dell7 ==2 && !AllSupportedResolutions");
+            //    noPresenceFunction = true;
+            //    return;
+            //}
+            _vm.UPD_Visibility = Visibility.Collapsed; //HPD
+            _vm.MPS_Setting_Visibility = Visibility.Collapsed;//內建電腦MPS
+            _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;//FW Update
+            CheckSupportWindowsHello(is_WindwosHelloSupport ? Visibility.Visible : Visibility.Collapsed);
+            //C#1
+            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK == 4)
             {
-                print_debug("TestCase 3B");
+                print_debug("TestCase C#1");
+                _vm.UPD_Visibility = Visibility.Visible;
+                CheckSupportWindowsHello(Visibility.Visible); //隱藏人物偵測區windows hello設定連結
+                return;
+            }
+            //C#3
+            if (!is_DellPc && is_EsiSupport && is_WindowsVer_OK == 4)
+            {
+                print_debug("TestCase /C#3");
                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
                 return;
             }
+            
             print_debug("TestCase Default");
             noPresenceFunction = true;
         }
@@ -709,22 +705,27 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         }
 
-        public bool check_IsMPS_OK()
+        public int check_IsMPS_OK()
         {
             //作業系統必須是Windows10 20H2 以上
             //或是Windows11 22H2以上
             if (WinVersion.GetVersion(out var info))
             {
-                //win11以上
-                if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2))
-                    return true;
-
-                //win10以上
-                if (info.BuildNum < (uint)(BuildNumber.Windows_11_21H2) && info.BuildNum >= (uint)(BuildNumber.Windows_10_20H2))
-                    return false;
+                //win11 >=Win11 22H2 latter and OsBuild>=22621
+                if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2)&& WinVersion.GetOsBuild()>=22621)
+                    return 1;
+                //win11 >= Win11 22H2 latter and OsBuild< 22621
+                if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2) && WinVersion.GetOsBuild() < 22621)
+                    return 2;
+                //Win10 Win11<22H2
+                if (info.BuildNum < (uint)(BuildNumber.Windows_11_22H2) && info.BuildNum >= (uint)(BuildNumber.Windows_10_1507))
+                    return 3;
+                //win10/11
+                if (info.BuildNum <= (uint)(BuildNumber.Windows_11_21H2) && info.BuildNum >= (uint)(BuildNumber.Windows_10_1507))
+                    return 4;
 
             }
-            return false;
+            return 0;
         }
 
         public bool check_windowsVer_OK()
@@ -738,35 +739,43 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     return true;
 
                 //win10以上
-                if (info.BuildNum < (uint)(BuildNumber.Windows_11_21H2) && info.BuildNum >= (uint)(BuildNumber.Windows_10_20H2))
+                if (info.BuildNum <= (uint)(BuildNumber.Windows_11_21H2) && info.BuildNum >= (uint)(BuildNumber.Windows_10_20H2))
                     return true;
 
             }
             return false;
         }
-
-        public bool check_camera_dell7(string model)
+        string[] DisplayWebcameList = new string[] { "U3223QZ" , "U3224KB" , "U3224KBA" , "P2424HEB" , "P2724DEB" , "P3424WEB" };
+        public int check_camera_dell7(string model)
         {
             //hard code 指定特定型號是否為internal
-
-            switch (model)
+            if (model == "WB7022") 
             {
-                ////螢幕嵌入camera都為internal
-                case "U3223QZ":
-                case "U3224KB":
-                case "U3224KBA":
-                case "P2424HEB":
-                case "P2724DEB":
-                case "P3424WEB":
-                    return true;
-
-                //usb 外接
-                case "WB7022":
-                    return true;
-
-                default:
-                    return false;
+                return 1;
             }
+            if (DisplayWebcameList.ToArray().Any(x => x == model))
+            {
+                return 2;
+            }
+            return 0;
+            //switch (model)
+            //{
+            //    ////螢幕嵌入camera都為internal
+            //    case "U3223QZ":
+            //    case "U3224KB":
+            //    case "U3224KBA":
+            //    case "P2424HEB":
+            //    case "P2724DEB":
+            //    case "P3424WEB":
+            //        return true;
+
+            //    //usb 外接
+            //    case "WB7022":
+            //        return true;
+
+            //    default:
+            //        return false;
+            //}
         }
 
         public void CheckUSBtype()
@@ -2502,7 +2511,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         Duration = new Duration(TimeSpan.FromSeconds(0.3)),
                     };
                     AnimatedPanel.Visibility = Visibility.Collapsed;
-                    _vm?.OnUpdateIsHDROn();
+                    //_vm?.OnUpdateIsHDROn();
                 }
                 else
                 {

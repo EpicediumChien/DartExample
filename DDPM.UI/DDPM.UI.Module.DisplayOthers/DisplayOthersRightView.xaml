@@ -60,14 +60,16 @@
                                          HorizontalAlignment="Left" Width="16">
                                             </Path>
                                             <Grid.ToolTip>
-                                                <ToolTip Placement="Center" VerticalOffset="45">
+                                                <!--Elsa 20250407 for PIMS-348390 change Placement="Center" to Placement="Top" VerticalOffset="45" to VerticalOffset="12",add HorizontalOffset="2" MaxWidth="272 -->
+                                                <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                         <Border.Resources>
                                                             <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding [DisplayOthers.3], Source={x:Static lang:LangHelper.Instance}}" />
+                                                                <!--Elsa 20250407 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow" -->
+                                                                <TextBlock Text="{Binding [DisplayOthers.3], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow" />
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
@@ -197,14 +199,16 @@
                                               HorizontalAlignment="Left" Width="16">
                                         </Path>
                                         <Grid.ToolTip>
-                                            <ToolTip Placement="Center" VerticalOffset="45">
+                                            <!--Elsa 20250407 for PIMS-348390 change Placement="Center" to Placement="Top" VerticalOffset="45" to VerticalOffset="12",add HorizontalOffset="2" MaxWidth="272 -->
+                                            <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" >
                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                     <Border.Resources>
                                                         <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                     </Border.Resources>
                                                     <StackPanel>
                                                         <StackPanel Orientation="Horizontal">
-                                                            <TextBlock MaxWidth="350" TextWrapping="WrapWithOverflow" Text="{Binding Tooltip_Settings}" />
+                                                            <!--Elsa 20250407 for PIMS-348390 change MaxWidth="350" to MaxWidth="230" -->
+                                                            <TextBlock MaxWidth="230" TextWrapping="WrapWithOverflow" Text="{Binding Tooltip_Settings}" />
                                                         </StackPanel>
                                                     </StackPanel>
                                                 </Border>

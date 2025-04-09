@@ -20,8 +20,12 @@ namespace DDPM.Easy.Common
     /// <summary>
     /// Interaction logic for SplitCtrl5E.xaml
     /// </summary>
-    public partial class SplitCtrl5E : UserControl, ISplitCtrl
+    public partial class SplitCtrl5E : UserControl, ISplitCtrl, IDisposable
     {
+        #region Private members
+        private bool _isDisposed = false;
+        #endregion Private members
+
         #region ctor
         public SplitCtrl5E()
         {
@@ -100,6 +104,27 @@ namespace DDPM.Easy.Common
             cellListV.Add(new CellObj("5E4", cell_5E4) { rcRatio = new Rect(1/3, 1 / 2, 1 / 3, 1 / 2) });
             cellListV.Add(new CellObj("5E5", cell_5E5) { rcRatio = new Rect(0, 1 / 2, 1 / 3, 1 / 2) });
         }
+        protected void ClearCellList()
+        {
+            if (cellListH != null)
+            {
+                foreach (CellObj cell in cellListH)
+                {
+                    cell.Dispose();
+                }
+                cellListH.Clear();
+                cellListH = null;
+            }
+            if (cellListV != null)
+            {
+                foreach (CellObj cell in cellListV)
+                {
+                    cell.Dispose();
+                }
+                cellListV.Clear();
+                cellListV = null;
+            }
+        }
 
         /// <summary>
         /// Convert ISplitCtrl.Settings to CellList[i].rcRect
@@ -173,6 +198,7 @@ namespace DDPM.Easy.Common
         #endregion Cell List
 
         #region CellBorders
+        //CellBorders should be used in SplitCtrl0B only
         private List<CellBorder> celBordersH = new List<CellBorder>();
         private List<CellBorder> celBordersV = new List<CellBorder>();
 
@@ -186,6 +212,27 @@ namespace DDPM.Easy.Common
                     return celBordersH;
             }
             set { }
+        }
+        private void ClearCellBorders()
+        {
+            if (celBordersH != null)
+            {
+                foreach (CellBorder cellBd in celBordersH)
+                {
+                    cellBd.Dispose();
+                }
+                celBordersH.Clear();
+                celBordersH = null;
+            }
+            if (celBordersV != null)
+            {
+                foreach (CellBorder cellBd in celBordersV)
+                {
+                    cellBd.Dispose();
+                }
+                celBordersV.Clear();
+                celBordersV = null;
+            }
         }
         #endregion
 
@@ -207,6 +254,19 @@ namespace DDPM.Easy.Common
             HSplitterList.Add(H1);
         }
 
+        private void ClearSplitterList()
+        {
+            if (VSplitterList != null)
+            {
+                VSplitterList.Clear();
+                VSplitterList = null;
+            }
+            if (HSplitterList != null)
+            {
+                HSplitterList.Clear();
+                HSplitterList = null;
+            }
+        }
         #endregion Splitter List
 
         #region Settings
@@ -258,5 +318,50 @@ namespace DDPM.Easy.Common
             }
         }
         #endregion FriendlyName      
+
+        #region Dispose and Destructor
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    // 釋放託管資源
+                    if (vm != null)
+                    {
+                        vm.Dispose();
+                        vm = null;
+                    }
+                    ClearCellList();
+                    ClearCellBorders();
+                    ClearSplitterList();
+
+                    if (DefaultSettings != null)
+                    {
+                        DefaultSettings.Clear();
+                    }
+                }
+
+                // 釋放非託管資源
+                //if (unmanagedResource != IntPtr.Zero)
+                //{
+                //    // 釋放資源
+                //    unmanagedResource = IntPtr.Zero;
+                //}
+
+                _isDisposed = true;
+            }
+        }
+        ~SplitCtrl5E()
+        {
+            Dispose(false);
+        }
+        #endregion
+
     }
 }

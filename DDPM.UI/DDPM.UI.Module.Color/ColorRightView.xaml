@@ -617,13 +617,15 @@
                                                         </Image.ToolTip>
                                                     </Image>
                                                      -->
-                                                <Border Grid.Column="1" Margin="10,0,0,0"
-                                                            ToolTipService.Placement="Center" ToolTipService.VerticalOffset="40" Background="{StaticResource FakeTransparent}">
+                                                <!--Elsa 20250407 for PIMS-348390 remove ToolTipService.Placement="Center" ToolTipService.VerticalOffset="40"-->
+                                                <Border Grid.Column="1" Margin="10,0,0,0" Background="{StaticResource FakeTransparent}">
                                                     <ContentControl Template="{StaticResource icon_Info}" Width="16" Height="16"/>
                                                     <Border.ToolTip>
-                                                        <ToolTip Placement="Top" VerticalOffset="45" HorizontalOffset="50">
+                                                        <!--Elsa 20250407 for PIMS-348390 change VerticalOffset="45" to VerticalOffset="12" HorizontalOffset="50" to HorizontalOffset="2" add MaxWidth="272"-->
+                                                        <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272">
                                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                                <TextBlock Text="{Binding [Color.12], Source={x:Static lang:LangHelper.Instance}}"
+                                                                <!--Elsa 20250407 for PIMS-348390 add MaxWidth="230" TextWrapping="WrapWithOverflow"-->
+                                                                <TextBlock Text="{Binding [Color.12], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="230" TextWrapping="WrapWithOverflow"
                                                                                Style="{StaticResource Tooltip_TextBlockStyle}" />
                                                             </Border>
                                                         </ToolTip>

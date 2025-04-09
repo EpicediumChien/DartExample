@@ -153,17 +153,20 @@ namespace DDPM.UI.Module.Kvm
                     vm.SetPXP = Visibility.Visible;
                     vm.EditInput = Visibility.Collapsed;
                     vm.EditPXP = Visibility.Collapsed;
+                    vm.UpdateArrow(false);
                     //Test Edit Input page
                     //vm.SetInput = Visibility.Collapsed;
                     //vm.SetPXP = Visibility.Collapsed;
                     //vm.EditInput = Visibility.Visible;
                     //vm.EditPXP = Visibility.Visible;
+                    vm.ArrowinFullscreen = Visibility.Collapsed;
                     InputSourceFullView _inputSourceFullView = new InputSourceFullView();
                     _inputSourceFullView.DataContext = vm;
                     DdpmCommonHelper.ModuleOwner?.OpenFullView(_inputSourceFullView);
                 }
                 else
                 {
+                    vm.UpdateArrow(false);
                     vm.Invoke_USBKVM(true);
                 }
             }
@@ -313,6 +316,38 @@ namespace DDPM.UI.Module.Kvm
                 KVMHotkeyFullView kVMHotkeyFullView = new KVMHotkeyFullView();
                 kVMHotkeyFullView.DataContext = vm;
                 DdpmCommonHelper.ModuleOwner?.OpenFullView(kVMHotkeyFullView);
+            }
+        }
+
+        //20250407 Elsa add for tooltip issue fix
+        private double GetScreenScaleX()
+        {
+            var source = PresentationSource.FromVisual(this);
+            if (source?.CompositionTarget != null)
+            {
+                return source.CompositionTarget.TransformToDevice.M11;
+            }
+            return 1;
+        }
+
+        //20250407 Elsa add for tooltip issue fix
+        private void toolTip_Opened(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Controls.ToolTip? target = sender as System.Windows.Controls.ToolTip;
+            if (target == null)
+                return;
+            double screenScaleX = GetScreenScaleX();
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
+            double winRightX = (mainWindow.Left + mainWindow!.ActualWidth) * screenScaleX;
+            double mousepositionX = System.Windows.Forms.Cursor.Position.X;
+            double mouseaddtooltip = mousepositionX + target.ActualWidth * screenScaleX;
+            if (winRightX > mouseaddtooltip)
+            {
+                target.HorizontalOffset = 2;
+            }
+            else
+            {
+                target.HorizontalOffset = -1 * target.ActualWidth + 14;
             }
         }
     }

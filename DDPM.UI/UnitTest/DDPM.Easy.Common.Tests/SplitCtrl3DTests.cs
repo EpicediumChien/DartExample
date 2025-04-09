@@ -177,5 +177,20 @@ namespace DDPM.Easy.Common.Tests
             // Assert
             Assert.That(splitCtrl3D.FriendlyName, Is.EqualTo("FriendlyName"));
         }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (splitCtrl3D != null)
+            {
+                splitCtrl3D.Dispose();
+                splitCtrl3D = null;
+            }
+            if (vm != null)
+            {
+                vm.Dispose();
+                vm = null;
+            }
+        }
     }
 }

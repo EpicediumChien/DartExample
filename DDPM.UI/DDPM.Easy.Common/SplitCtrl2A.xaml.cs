@@ -7,8 +7,12 @@ namespace DDPM.Easy.Common
     /// <summary>
     /// Interaction logic for SplitCtrl2A.xaml
     /// </summary>
-    public partial class SplitCtrl2A : UserControl, ISplitCtrl
+    public partial class SplitCtrl2A : UserControl, ISplitCtrl, IDisposable
     {
+        #region Private members
+        private bool _isDisposed = false;
+        #endregion Private members
+
         #region ctor
 
         public SplitCtrl2A()
@@ -143,6 +147,7 @@ namespace DDPM.Easy.Common
         #endregion Cell List
 
         #region CellBorders
+        //CellBorders should be used in SplitCtrl0B only
         private List<CellBorder> celBordersH = new List<CellBorder>();
         private List<CellBorder> celBordersV = new List<CellBorder>();
 
@@ -223,5 +228,53 @@ namespace DDPM.Easy.Common
             }
         }
         #endregion FriendlyName
+
+        #region Dispose and Destructor
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    // 釋放託管資源
+                    if (vm != null)
+                    {
+                        vm.Dispose();
+                        vm = null;
+                    }
+                    InitCellList();
+                    cellListH = null;
+                    cellListV = null;
+
+                    InitSplitterList();
+
+                    if (DefaultSettings != null)
+                    {
+                        DefaultSettings.Clear();
+                    }
+
+                }
+
+                // 釋放非託管資源
+                //if (unmanagedResource != IntPtr.Zero)
+                //{
+                //    // 釋放資源
+                //    unmanagedResource = IntPtr.Zero;
+                //}
+
+                _isDisposed = true;
+            }
+        }
+        ~SplitCtrl2A()
+        {
+            Dispose(false);
+        }
+        #endregion
+
     }
 }

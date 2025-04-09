@@ -335,8 +335,9 @@
         </Border>
         <Border CornerRadius="6" Margin="0,10,0,0">
           <StackPanel Orientation="Vertical" Margin="18,12,0,02">
-            <UXControls:UXCheckBox Name="ckboxCountdown" Margin="0" Content="{Binding [WebCameraCapture.0], Source={x:Static lang:LangHelper.Instance}}" IsChecked="{Binding WebcamCountdown}" FontFamily="Roboto" Foreground="{DynamicResource DefaultTheme_TxtColor}" />
-            <UXControls:UXCheckBox Name="ckboxFramingGrid" Margin="0,15,0,12" Content="{Binding [WebCameraCapture.1], Source={x:Static lang:LangHelper.Instance}}" IsChecked="{Binding WebcamGrid}" FontFamily="Roboto" Foreground="{DynamicResource DefaultTheme_TxtColor}" />
+                        <!--Chewlin 20250407 for PIMS-348246 ADD FontWeight="Medium" -->
+            <UXControls:UXCheckBox Name="ckboxCountdown" Margin="0" Content="{Binding [WebCameraCapture.0], Source={x:Static lang:LangHelper.Instance}}" IsChecked="{Binding WebcamCountdown}" FontFamily="Roboto" FontWeight="Medium" Foreground="{DynamicResource DefaultTheme_TxtColor}" />
+                        <UXControls:UXCheckBox Name="ckboxFramingGrid" Margin="0,15,0,12" Content="{Binding [WebCameraCapture.1], Source={x:Static lang:LangHelper.Instance}}" IsChecked="{Binding WebcamGrid}" FontFamily="Roboto" FontWeight="Medium" Foreground="{DynamicResource DefaultTheme_TxtColor}" />
           </StackPanel>
         </Border>
         <Border CornerRadius="6" Margin="0,10,0,4000">

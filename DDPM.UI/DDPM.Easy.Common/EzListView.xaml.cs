@@ -6,6 +6,7 @@ using System.Windows.Controls;
 namespace DDPM.Easy.Common
 {
     /// <summary>
+    /// Unused class
     /// Interaction logic for EzListView.xaml
     /// </summary>
     public partial class EzListView : UserControl

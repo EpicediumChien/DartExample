@@ -1,28 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DDPM.Easy.Common
 {
     /// <summary>
     /// Interaction logic for CellBorder.xaml
     /// </summary>
-    public partial class CellBorder : UserControl
+    public partial class CellBorder : UserControl, IDisposable
     {
         private static double _screenScale = -1;
-        
+        private bool _isDisposed = false;
+
 
         public CellBorder()
         {
@@ -53,6 +48,32 @@ namespace DDPM.Easy.Common
         {
             this.Drop -= OnDrop;
             this.Unloaded -= OnUnloaded;
+
+            //Derek 2025/03/28
+            ReleaseResource();
+        }
+
+        private void ReleaseResource()
+        {
+            SetValue(BorderBrushProperty, null);
+            SetValue(BkBrushProperty, null);
+
+            if (_cellAppInfo != null)
+            {
+                foreach (var item in _cellAppInfo)
+                {
+                    item.Value.Image = null;
+                    item.Value.Cell = null;
+                    CellAppData? ca = item.Value as CellAppData;
+                    ca = null;
+                }
+
+                _cellAppInfo?.Clear();
+                _cellAppInfo = null;
+            }
+
+            //GC.Collect();
+            //GC.WaitForPendingFinalizers();
         }
 
         private string _cellName = "";
@@ -101,7 +122,10 @@ namespace DDPM.Easy.Common
 
 
 
-
+        /// <summary>
+        /// Unused proprety, do not use and UnitTest
+        /// Use Radius instead
+        /// </summary>
         public CornerRadius CornerRadius
         {
             get { return (CornerRadius)GetValue(CornerRadiusProperty); }
@@ -124,7 +148,6 @@ namespace DDPM.Easy.Common
         // Using a DependencyProperty as the backing store for Radius.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RadiusProperty =
             DependencyProperty.Register("Radius", typeof(CornerRadius), typeof(CellBorder), new PropertyMetadata(new CornerRadius(0)));
-
 
 
 
@@ -200,7 +223,7 @@ namespace DDPM.Easy.Common
                     string fileName = System.IO.Path.GetFileName(filePath);
 
                     // MemoryImage
-                    System.Drawing.Icon icon = System.Drawing.Icon.ExtractAssociatedIcon(filePath);
+                    System.Drawing.Icon? icon = System.Drawing.Icon.ExtractAssociatedIcon(filePath);
                     if (icon != null)
                     {
                         using (var iconStream = new System.IO.MemoryStream())
@@ -215,15 +238,18 @@ namespace DDPM.Easy.Common
                         }
                     }
 
-                    _cellAppInfo.Clear();
+                    //Robert_Lin 2025-3-30 unse new added method to release resources
+                    //_cellAppInfo.Clear();
+                    ClearCellAppInfos();
                     CellAppData appInfo = new CellAppData();
                     appInfo.Number = cellNumber;
                     appInfo.FileName = fileName;
                     appInfo.FilePath = filePath;
                     appInfo.Image = bitmapImage;
                     appInfo.Cell = cellBorder;
-                    _cellAppInfo.Add(cellNumber, appInfo);
-                    DropOccurred?.Invoke(this, _cellAppInfo);
+                    _cellAppInfo?.Add(cellNumber, appInfo);
+                    if (_cellAppInfo != null)
+                        DropOccurred?.Invoke(this, _cellAppInfo);
                 }
             }
         }
@@ -249,7 +275,7 @@ namespace DDPM.Easy.Common
             set => memoryTB.Text = value;
         }
 
-        Dictionary<int, CellAppData> _cellAppInfo = new Dictionary<int, CellAppData>();
+        Dictionary<int, CellAppData>? _cellAppInfo = new Dictionary<int, CellAppData>();
 
         public int CellNumber
         {
@@ -268,9 +294,9 @@ namespace DDPM.Easy.Common
 
             public string FilePath { get; set; }
 
-            public BitmapImage Image { get; set; }
+            public BitmapImage? Image { get; set; }
 
-            public CellBorder Cell { get; set; }
+            public CellBorder? Cell { get; set; }
 
             public CellAppData(int number, string fileName, string filePath, BitmapImage image, CellBorder cell)
             {
@@ -283,8 +309,22 @@ namespace DDPM.Easy.Common
 
             public CellAppData() { }
         }
+
+        //Robert_Lin 2025-3-30 added to release resources
+        private void ClearCellAppInfos()
+        {
+            if (_cellAppInfo == null)
+                return;
+
+            foreach (var item in _cellAppInfo)
+            {
+                item.Value.Image = null;
+                item.Value.Cell = null;
+            }
+            _cellAppInfo.Clear();
+        }
         #endregion
-        
+
         private void UserControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is bool)
@@ -304,5 +344,70 @@ namespace DDPM.Easy.Common
             double h = ActualHeight * _screenScale;
             rect = new Rect(ptTopLeft.X, ptTopLeft.Y, w, h);
         }
+
+        #region Dispose and Destructor
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    // 釋放託管資源
+                    ClearCellAppInfos();
+
+                }
+
+                // 釋放非託管資源
+                //if (unmanagedResource != IntPtr.Zero)
+                //{
+                //    // 釋放資源
+                //    unmanagedResource = IntPtr.Zero;
+                //}
+
+                _isDisposed = true;
+            }
+        }
+        ~CellBorder()
+        {
+            Dispose(false);
+        }
+        #endregion
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            //Reference to [https://stackoverflow.com/questions/27729881/which-event-fires-after-all-items-are-loaded-and-shown-in-a-listview]
+            //To get into RenderingDone() when UI is render done.
+        //    Dispatcher.BeginInvoke(new Action(RenderingDone), System.Windows.Threading.DispatcherPriority.ContextIdle, null);
+        }
+        private void RenderingDone()
+        {
+            System.Windows.Point ptTopLeft = PointToScreen(new System.Windows.Point(0, 0));
+            double w=0, h = 0;
+            Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            if (ActualWidth != 0)
+            {
+                w = ActualWidth * _screenScale;
+            }
+            else
+            {
+                w = DesiredSize.Width * _screenScale;
+            }
+
+            if (ActualHeight != 0)
+            {
+                h = ActualHeight * _screenScale;
+            }
+            else
+            {
+                h = DesiredSize.Height * _screenScale;
+            }
+     //       rect = new Rect(ptTopLeft.X, ptTopLeft.Y, w, h);
+        }
+
     }
 }

@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using nsWinEventHook;
 using DDPM.Easy.Common;
 using DDPM.Win32Lib;
@@ -46,9 +35,9 @@ namespace DDPM.EABroker
             //bool IsInfoWindowVsible = Win32Lib.Win32.IniReadInt(
             //        "DDPMDebug", "DDPM.SA.EAPlugin.InfoWindow.IsVisible", 0, @"C:\temp\DDPMDebug.txt") == 1;
             //NEW:
-            bool IsInfoWindowVsible = DDPM.SA.Common.Settings.DevSettings.IsEAInfoWindowVisible();
+            bool IsInfoWindowVisible = DDPM.SA.Common.Settings.DevSettings.IsEAInfoWindowVisible();
 
-            if (IsInfoWindowVsible)
+            if (IsInfoWindowVisible)
             {
                 Left = 100;
                 Top = 50;
@@ -95,6 +84,8 @@ namespace DDPM.EABroker
             _winEventHook.OnEndMoving -= OnWindowEndMovingProc;
             _winEventHook.OnLocationChanged -= OnLocationChangedProc;
             _winEventHook.OnForegroundWindowChanged -= OnForegroundWindowChangedProc;
+
+            _winEventHook.Unhook(); //Derek 2025/03/28
         }
         #endregion Window Event Hook
 
@@ -106,8 +97,9 @@ namespace DDPM.EABroker
             _vm.hWndForeground = hWndNew;
         }
 
-        private bool _isDebuggingOnWindowStartMoving = true;
-        private int _isRefresCellsCountAfterStartMoving = 0;
+        //Derek 2025/04/01
+        //private bool _isDebuggingOnWindowStartMoving = true;
+        //private int _isRefresCellsCountAfterStartMoving = 0;
 
         private void OnWindowStartMovingProc(IntPtr hWnd)
         {
@@ -249,7 +241,7 @@ namespace DDPM.EABroker
             if (_vm.HoveringWindow.Equals("scr") || _vm.HoveringWindow.Equals("aws"))
             {
                 rcArrange = _vm.GetHoveringRectFromAwsBuddyWindow();
-                if (rcArrange.IsEmpty)
+                if (rcArrange.IsEmpty && _vm.AwsWindow != null)
                     rcArrange = _vm.AwsWindow.CalculateHoveringCellArrangeRect();
                 if (rcArrange.IsEmpty)
                     return;
@@ -260,13 +252,15 @@ namespace DDPM.EABroker
             if (_vm.IsWithoutGap)
             {
                 
-                double extendedFrameBoundsHorz = 3;
+                double extendedFrameBoundsHorz = 4;
 
-                rcArrange.Inflate(6, 3);
+                rcArrange.Inflate(6, 5);
                 double arrWidth = rcArrange.Width;
                 double arrHeight = rcArrange.Height;
                 rcArrange.X -= extendedFrameBoundsHorz;
                 rcArrange.Width += extendedFrameBoundsHorz;
+                rcArrange.Y += 1;
+                rcArrange.Height += 1;
 
                 //To prevent the rcArrange acrouss screen boundary after Inflated
                 if (_vm.WorkScreen != null)
@@ -299,6 +293,7 @@ namespace DDPM.EABroker
             if (!rcArrange.IsEmpty)
             {
                 WinEventHook.SetWindowPosition(hWnd, rcArrange);
+
                 if (_vm != null)
                 {
                     _vm.SendTelemetry_EasyArrangeLayout();
@@ -328,10 +323,10 @@ namespace DDPM.EABroker
             if (!_vm.IsMoving)
                 return;
 
-            Dispatcher.BeginInvoke(new Action(() =>
+            _ = Dispatcher.BeginInvoke(new Action(() =>
             {
 
-                CellObj orgCell = _vm.HoveringCellObj;
+                CellObj? orgCell = _vm.HoveringCellObj;
                 CellObj? newCell = _vm.DetermineHoveringCellObj(x, y);
 
                 if (orgCell != _vm.HoveringCellObj)
@@ -355,14 +350,18 @@ namespace DDPM.EABroker
         private void refreshMonitorsButton_Click(object sender, RoutedEventArgs e)
         {
             List<MonitorInfo>? monitors = _vm.GetMonitors();
+
             if (monitors == null) return;
+
             cbMonitors.ItemsSource = monitors;
         }
 
         private void SetSelectedLayoutButton_Click(object sender, RoutedEventArgs e)
         {
             if (cbMonitors.SelectedItem == null) return;
-            MonitorInfo monitorInfo = cbMonitors.SelectedItem as MonitorInfo;
+            MonitorInfo? monitorInfo = cbMonitors.SelectedItem as MonitorInfo;
+
+            if (monitorInfo == null) return;
 
             string eaIdText = tbEAId.Text;
             if (String.IsNullOrEmpty(eaIdText)) return;
@@ -376,12 +375,15 @@ namespace DDPM.EABroker
         private void refreshRecentListButton_Click(object sender, RoutedEventArgs e)
         {
             if (cbMonitors.SelectedItem == null) return;
-            MonitorInfo monitorInfo = cbMonitors.SelectedItem as MonitorInfo;
-            EAMonitorSettings eaSettings = _vm.ReadEAMonitorSettings(monitorInfo);
+
+            MonitorInfo? monitorInfo = cbMonitors.SelectedItem as MonitorInfo;
+            if (monitorInfo == null) return;
+
+            EAMonitorSettings? eaSettings = _vm.ReadEAMonitorSettings(monitorInfo);
             if (eaSettings == null) return;
 
             SplitJson spjSelected = eaSettings.SelectedSplit;
-            StringBuilder sb = new StringBuilder();
+            StringBuilder? sb = new StringBuilder();
 
             string mark = "*";
             foreach (SplitJson spjRecent in eaSettings.RecentList)
@@ -396,12 +398,14 @@ namespace DDPM.EABroker
             string strOut = sb.ToString();
             strOut = strOut.Trim();
             txtRecentList.Text = strOut;
+            sb.Clear();
+            sb = null;
         }
 
-        private void refreshCustoListButton_Click(object sender, RoutedEventArgs e)
+        private void refreshCustomListButton_Click(object sender, RoutedEventArgs e)
         {
             SplitJson[] customList = _vm.ReadCustomList();
-            StringBuilder sb = new StringBuilder();
+            StringBuilder? sb = new StringBuilder();
 
             foreach (SplitJson spjCustom in customList)
             {
@@ -411,21 +415,24 @@ namespace DDPM.EABroker
             string strOut = sb.ToString();
             strOut = strOut.Trim();
             txtCustomList.Text = strOut;
+            sb.Clear();
+            sb = null;
         }
 
-        private void reloadCustomLayoutsButton_Click(object sender, RoutedEventArgs e)
-        {
+        //Derek 2025/04/01 due to reference = 0
+        //private void reloadCustomLayoutsButton_Click(object sender, RoutedEventArgs e)
+        //{
 
-        }
-        private void sekectLayoutButton_Click(object sender, RoutedEventArgs e)
-        {
-            //object selItem = lbLayouts.SelectedItem;
-            //if (selItem != null)
-            //{
-            //    System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
-            //    Screen scr = Screen.FromHandle(wndHelper.Handle);
-            //}
-        }
+        //}
+        //private void sekectLayoutButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    //object selItem = lbLayouts.SelectedItem;
+        //    //if (selItem != null)
+        //    //{
+        //    //    System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
+        //    //    Screen scr = Screen.FromHandle(wndHelper.Handle);
+        //    //}
+        //}
         #endregion
 
         private void IsSpanMultipleMonitorsCheckbox_Click(object sender, RoutedEventArgs e)

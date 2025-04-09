@@ -12,21 +12,14 @@ using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
-using Microsoft.VisualBasic.Logging;
-using System.CodeDom;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.IO;
-using System.Runtime.ConstrainedExecution;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using VcpCore.Common;
 using static DDPM.Easy.Common.CellBorder;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 
 namespace DDPM.UI.Common.ViewModels
 {
@@ -1552,7 +1545,17 @@ namespace DDPM.UI.Common.ViewModels
         public bool IsLaunchAtStartup
         {
             get => _isLaunchAtStartup;
-            set => SetProperty(ref _isLaunchAtStartup, value);
+            set
+            {
+                if (value)
+                {
+                    _isLaunchAtStartup = value;
+                }
+                else
+                {
+                    SetProperty(ref _isLaunchAtStartup, value);
+                }
+            }
         }
 
         private bool _isManualLaunch = true;
