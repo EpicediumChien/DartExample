@@ -110,7 +110,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
 
                 //[Dean 1001]for hotkey to set current selected display device to SA
                 if (_ivm != null &&
-                    _ivm.SelectedHomeDevice != null && 
+                    _ivm.SelectedHomeDevice != null &&
                     _ivm.SelectedHomeDevice.MonitorInfo != null)
                     _deviceManagerSA.SetLastSelectedMonitorFromUI(_ivm.SelectedHomeDevice.MonitorInfo);
             }
@@ -544,7 +544,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 groups.Add(moduleGroup);
             }
 
-            moduleGroup.Dispose();
+            //moduleGroup.Dispose();
 
             return groups;
         }
@@ -962,7 +962,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                     //If the homeDev is current SelectedHomeDevice (is displaying)
                     //then notify ModuleOwner to update UI
                     HomeDevice? selDev = GetSelectedHomeDevice();
-                    if (selDev != null && 
+                    if (selDev != null &&
                         HomeDevice.IsSameMonitor(selDev.MonitorInfo, mi, "DDCisON"))
                     {
                         Dispatcher.Invoke(new Action(() =>
@@ -1041,7 +1041,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                         _deviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
 
                     }
-  
+
                 }
 
                 // 釋放非託管資源
