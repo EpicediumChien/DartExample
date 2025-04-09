@@ -105,7 +105,8 @@
                     </Grid>
 
                     <!-- Busy Light -->
-                    <Border x:Name="BusyLightOuterBorder" CornerRadius="6" Width="488" Height="auto" VerticalAlignment="Top" Margin="0,0,0,0">
+                    <!--Elsa 20250409 change Width="448" to Width="auto"  -->
+                    <Border x:Name="BusyLightOuterBorder" CornerRadius="6" Width="auto" Height="auto" VerticalAlignment="Top" Margin="0,0,0,0">
                         <StackPanel x:Name="BusyLightStackPanel" Orientation="Vertical" Margin="0,20,0,10">
                             <Grid x:Name="BusyLightGrid">
                                 <Grid.ColumnDefinitions>
@@ -216,7 +217,8 @@
 
                     <!-- Download Dell Audio Section -->
                     <Grid Visibility="{Binding DeviceSettingsDownloadDellAudioPageShow, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Border x:Name="DownDellAudioBoard" CornerRadius="6" Width="488" Height="auto" VerticalAlignment="Top" Margin="0,20,0,20">
+                        <!--Elsa 20250409 change Width="488" to Width="auto" -->
+                        <Border x:Name="DownDellAudioBoard" CornerRadius="6" Width="auto" Height="auto" VerticalAlignment="Top" Margin="0,20,0,20">
                             <StackPanel x:Name="AdditionalSectionStackPanel" Orientation="Vertical" Margin="16">
                                 <Grid>
                                     <Grid.RowDefinitions>

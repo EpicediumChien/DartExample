@@ -156,8 +156,21 @@
     </UserControl.Resources>
     <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <Grid x:Name="MainGrid">
-            <!--Elsa 20250331 for PIMS-348388 change Width="520" to Width="auto" Margin="0,10,10,0" to Margin="0,10,0,16" -->
-            <Border x:Name="MainBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="13" Width="auto" Height="auto"  Margin="0,10,0,16">
+            <!--Elsa 20250331 for PIMS-348388 change Width="520" to Width="auto" Margin="0,10,10,0" to Margin="0,10,0,16", 20250409 remove Style="{DynamicResource RightGroupBorderStyleForAudio}" Margin="0,10,0,16", add Border.Style -->
+            <Border x:Name="MainBorder" CornerRadius="13" Width="auto" Height="auto"  >
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=UXControls:UXScrollViewer},Path=ComputedVerticalScrollBarVisibility}" Value="Visible">
+                                <Setter Property="Margin" Value="0,10,0,16"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=UXControls:UXScrollViewer},Path=ComputedVerticalScrollBarVisibility}" Value="Collapsed">
+                                <Setter Property="Margin" Value="0,10,16,16"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
                 <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16, 24, 16, 16">
                     <Grid x:Name="TitleGrid" VerticalAlignment="Top" Margin="0,0,0,0">
                         <!-- Derek 0107 for PIMS-335202 change Width="200" to Width="550"  -->
@@ -174,7 +187,8 @@
 
                     <!-- Control the noise I hear -->
                     <Grid x:Name="NoiseControlGrid" VerticalAlignment="Top" Margin="0,0,0,20">
-                        <Border Visibility="{Binding ControlTheNoiseIHearPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="NoiseControlBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="6" Width="488" Height="Auto" VerticalAlignment="Top">
+                        <!--Elsa 20250409 change Width="488" to Width="auto" -->
+                        <Border Visibility="{Binding ControlTheNoiseIHearPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="NoiseControlBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="6" Width="auto" Height="Auto" VerticalAlignment="Top">
                             <StackPanel x:Name="NoiseControlStackPanel" Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="8">
                                     <UXControls:UXTextBlock x:Name="NoiseControlTextBlock" Text="{Binding [HeadsetAudioSettings.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" Margin="8,20,8,20" />
@@ -401,8 +415,9 @@
                     </Grid>
 
                     <!-- Configure my audio modes -->
-                    <Grid Visibility="{Binding ConfigureMyAudioModesPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="AudioModesGrid" VerticalAlignment="Top" Margin="0,0,0,15">
-                        <Border x:Name="AudioModesBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="6" Width="488" Height="Auto" VerticalAlignment="Top">
+                    <!--Elsa 20250409 change Margin="0,0,0,15" to Margin="0,-20,0,15",change Width="488" to Width="auto" -->
+                    <Grid Visibility="{Binding ConfigureMyAudioModesPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="AudioModesGrid" VerticalAlignment="Top" Margin="0,-20,0,15">
+                        <Border x:Name="AudioModesBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="6" Width="auto" Height="Auto" VerticalAlignment="Top">
                             <StackPanel x:Name="AudioModesStackPanel" Orientation="Vertical">
                                 <UXControls:UXTextBlock x:Name="AudioModesTextBlock" Text="{Binding [HeadsetAudioSettings.5], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" Margin="20" />
                                 <StackPanel x:Name="AudioModesButtonsStackPanel" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,16">
