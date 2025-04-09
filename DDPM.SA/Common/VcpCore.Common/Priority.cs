@@ -5,8 +5,10 @@ namespace VcpCore.Common
     [Serializable]
     public enum Priority
     {
-        Low = 3,
-        Middle = 2,
-        High = 1,
+        SuperLow = 5,
+        Low = 4,
+        Middle = 3,
+        High = 2,
+        SuperHigh = 1,
     }
 }
