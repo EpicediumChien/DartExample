@@ -48,9 +48,13 @@
     <SolidColorBrush x:Key="Border_Hover_Color"
                      Color="#293B4D" />
     <SolidColorBrush x:Key="Default_SA_QAM_CameraSetting_BackGround"
-                     Color="#0A0E14" />
+                     Color="#1D2C3B" />
+    <SolidColorBrush x:Key="Default_SA_QAM_CameraSetting_Hover"
+                     Color="#293B4D" />
     <SolidColorBrush x:Key="Default_SA_QAM_Menu_BackGround"
                      Color="#141D28" />
+    <SolidColorBrush x:Key="Default_SA_QAM_Menu_Hover"
+                     Color="#293B4D" />
     <SolidColorBrush x:Key="TextBlock_ForegroundColor"
                      Color="#FFFFFF" />
     <SolidColorBrush x:Key="Default_Info_Color"
