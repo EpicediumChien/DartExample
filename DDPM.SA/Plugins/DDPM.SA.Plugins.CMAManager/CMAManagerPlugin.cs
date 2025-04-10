@@ -1807,7 +1807,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
             }
 
-            Task.Delay(30000).Wait();
+            Task.Delay(3000).Wait(); // For test 30000 change to 3000
             isDoFwJobChecking = false;
         }
     }
