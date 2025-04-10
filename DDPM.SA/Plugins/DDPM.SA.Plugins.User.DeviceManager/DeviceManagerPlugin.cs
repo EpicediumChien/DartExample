@@ -1208,6 +1208,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult("");
         }
 
+        public Task<string> ReadCurrentColorPresettoVCP(MonitorInfo m, Guid guid = default, Priority priority = Priority.Low)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                var result = _DisplayManagerPlugin.GetVCPCapability_NoGetCache(m, "colorpreset", guid, priority: priority).Result;
+                if (result.result)
+                {
+                    //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
+                    var res = ColorprofileMulti(result.value.ToString());
+                    return Task.FromResult(res);
+                }
+                //return Task.FromResult(result.value.ToString());
+            }
+            return Task.FromResult("");
+        }
+
         public Task<bool> Notify_refresh_app_list()
         {
             bool blRet = true;
