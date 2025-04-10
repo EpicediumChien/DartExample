@@ -105,7 +105,11 @@ namespace DDPM.UI.Plugin.Common
 
         private void RadialMenuModalDialog_Unloaded(object sender, RoutedEventArgs e)
         {
-            timer.Tick -= Timer_Tick;
+            if (timer != null)
+            {
+                timer.Stop();
+                timer.Tick -= Timer_Tick;
+            }
         }
 
         private void Timer_Tick(object? sender, EventArgs e)

@@ -48,7 +48,11 @@ namespace DDPM.UI.Module.KeyCustomization
 
         private void KeyCustomizationRightView_Unloaded(object sender, RoutedEventArgs e)
         {
-            timer.Tick -= Timer_Tick;
+            if (timer != null)
+            {
+                timer.Stop();
+                timer.Tick -= Timer_Tick;
+            }
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
