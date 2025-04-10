@@ -60,7 +60,7 @@
                                             Margin="0,0,0,0">
                                     <!-- Derek 2025/01/11 for PIMS-334386 -->
                                     <!-- OLD: Margin="0,20,5,20" -->
-                                    <Button Style="{DynamicResource Button_WhiteFrame}"
+                                    <Button Style="{StaticResource SecondaryButtonStyle}"
                                             MinWidth="176"
                                             Height="40"
                                             Click="ThirdPartyLicenses_Click"
@@ -106,7 +106,7 @@
                                             Margin="0,0,0,0">
                                     <!-- Derek 20250111 for PIMS-334386 -->
                                     <!-- OLD: Margin="0,20,5,20" -->
-                                    <Button Style="{DynamicResource Button_WhiteFrame}"
+                                    <Button Style="{StaticResource SecondaryButtonStyle}"
                                             MinWidth="176"
                                             Height="40"
                                             Click="LearnMore_Click"
