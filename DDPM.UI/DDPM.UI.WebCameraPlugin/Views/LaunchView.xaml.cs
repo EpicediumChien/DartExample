@@ -487,7 +487,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             is_WindowsVer_OK = check_IsMPS_OK();
 
             //檢查是否為dell電腦
-            is_DellPc = check_DellPc();
+            is_DellPc = check_DellPc(model);
             //by pass DTP to Get UPD Support by FW
             print_debug("is_EsiSupport:" + is_EsiSupport);
             is_SUT_internal_presence_sensor = check_SUT_internal_presence_sensor();
