@@ -83,7 +83,8 @@
                             <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=1}" />
                         </MultiBinding>
                     </DockPanel.Height>
-                    <UXControls:UXScrollViewer>
+                    <!--20250410 Chewlin Fix Gradient showing when content is too long issue ADD UseFadingScrolling="False" -->
+                    <UXControls:UXScrollViewer UseFadingScrolling="False">
                         <StackPanel>
                             <Border Name="bdrAlert1" Background="#364861" CornerRadius="4" Margin="0,0,0,15" BorderThickness="7,0,0,0" BorderBrush="#0E92F2" Visibility="{Binding MessageBoxVisibility}"
 >
@@ -261,7 +262,8 @@
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Border.Style>
-                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                                                <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                                                     <UXControls:UXTextBlock.Style>
                                                         <Style TargetType="UXControls:UXTextBlock">
                                                             <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -292,7 +294,8 @@
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Border.Style>
-                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.8], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                                                <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.8], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                                                     <UXControls:UXTextBlock.Style>
                                                         <Style TargetType="UXControls:UXTextBlock">
                                                             <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -342,7 +345,8 @@
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Border.Style>
-                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.10], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                                                <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.10], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                                                     <UXControls:UXTextBlock.Style>
                                                         <Style TargetType="UXControls:UXTextBlock">
                                                             <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -373,7 +377,8 @@
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Border.Style>
-                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.11], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
+                                                <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.11], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                                                     <UXControls:UXTextBlock.Style>
                                                         <Style TargetType="UXControls:UXTextBlock">
                                                             <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -428,7 +433,8 @@
                                                     </Style>
                                                 </Border.Style>
                                                 <Grid>
-                                                    <UXControls:UXTextBlock Name="txtFOV0" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                                                    <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                                                    <UXControls:UXTextBlock Name="txtFOV0" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                                                         <UXControls:UXTextBlock.Style>
                                                             <Style TargetType="UXControls:UXTextBlock">
                                                                 <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -461,7 +467,8 @@
                                                     </Style>
                                                 </Border.Style>
                                                 <Grid>
-                                                    <UXControls:UXTextBlock Name="txtFOV1" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
+                                                    <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                                                    <UXControls:UXTextBlock Name="txtFOV1" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                                                         <UXControls:UXTextBlock.Style>
                                                             <Style TargetType="UXControls:UXTextBlock">
                                                                 <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -494,7 +501,8 @@
                                                     </Style>
                                                 </Border.Style>
                                                 <Grid>
-                                                    <UXControls:UXTextBlock Name="txtFOV2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                                                    <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                                                    <UXControls:UXTextBlock Name="txtFOV2" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                                                         <UXControls:UXTextBlock.Style>
                                                             <Style TargetType="UXControls:UXTextBlock">
                                                                 <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -599,7 +607,8 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
-                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.20], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                                            <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.20], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                                                 <UXControls:UXTextBlock.Style>
                                                     <Style TargetType="UXControls:UXTextBlock">
                                                         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -630,7 +639,8 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
-                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.21], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"  FontFamily="Roboto">
+                                            <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                                            <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.21], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                                                 <UXControls:UXTextBlock.Style>
                                                     <Style TargetType="UXControls:UXTextBlock">
                                                         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
