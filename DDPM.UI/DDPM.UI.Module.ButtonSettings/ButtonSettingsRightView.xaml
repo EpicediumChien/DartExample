@@ -34,17 +34,18 @@
                            HorizontalAlignment="Left" VerticalAlignment="Center" Cursor="Hand" Width="16" Height="16" MouseLeftButtonDown="GoBackClicked">
           </Image>
           <!-- ELSA 20050106 For PIMS [PIMS-334908] add Width="260" TextTrimming="CharacterEllipsis" -->
-          <UXControls:UXTextBlock Name="txtCaption" FontSize="20" Style="{StaticResource txtCaptionStyle}" FontFamily="Roboto" Width="260" TextTrimming="CharacterEllipsis"
+                    <UXControls:UXTextBlock Name="txtCaption" FontSize="20" Style="{StaticResource txtCaptionStyle}" FontFamily="{StaticResource RobotoFont}" FontWeight="Medium" Width="260" TextTrimming="CharacterEllipsis"
                                             VerticalAlignment="Center" HorizontalAlignment="Left" Focusable="True" />
         </StackPanel>
         <Line X1="0" Y1="17" X2="288" Y2="17" Stroke="{DynamicResource MenuSeperatorColor}" StrokeThickness="1" />
         <StackPanel Orientation="Vertical" x:Name="Section1" Margin="0,0,0,2000" Visibility="Collapsed">
-          <UXControls:UXTextBlock Name="txtMessage" FontSize="16" Foreground="{DynamicResource txtMessage_TxtColor}"  FontFamily="Roboto" FontWeight="Medium" TextWrapping="Wrap"
+                    <UXControls:UXTextBlock Name="txtMessage" FontSize="16" Foreground="{DynamicResource txtMessage_TxtColor}"  FontFamily="{StaticResource RobotoFont}" FontWeight="Normal" TextWrapping="Wrap"
                                             Margin="0,18,0,0" Width="288" LineHeight="24" VerticalAlignment="Top" HorizontalAlignment="Left" />
 
           <!--Chewlin 20250114 fix Mouse RestoreToDefault clipping issue change Width="245" Heigh="40" to MinWidth="245" MinHeight="45" ADD Width="auto" Height="auto" TextWrapping="WrapWithOverflow" Padding="10,0,10,0" -->
           <Border x:Name="btnRestore" Style="{StaticResource Button1BorderStyle}" Cursor="Hand" MinWidth="245" Width="auto" MinHeight="45" Height="auto" IsEnabled="{Binding IsRestoreEnable}" MouseLeftButtonDown="btnRestoreClicked" Margin="0,431,0,0">
-            <UXControls:UXTextBlock Name="txtRestore" Style="{StaticResource Button1TextStyle}" IsEnabled="{Binding IsRestoreEnable}" Text="{Binding RestoreToDefaultText}" TextWrapping="WrapWithOverflow" Padding="10,0,10,0"/>
+                        <UXControls:UXTextBlock Name="txtRestore" Style="{StaticResource Button1TextStyle}" IsEnabled="{Binding IsRestoreEnable}" Text="{Binding RestoreToDefaultText}" 
+                                                FontFamily="{StaticResource RobotoFont}" FontSize="14" FontWeight="Medium" TextWrapping="WrapWithOverflow" Padding="10,0,10,0"/>
           </Border>
         </StackPanel>
         <StackPanel Orientation="Vertical" x:Name="Section2" Margin="0,16,0,0">
