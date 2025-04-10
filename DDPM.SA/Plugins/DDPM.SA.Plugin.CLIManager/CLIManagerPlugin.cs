@@ -176,6 +176,7 @@ namespace DDPM.SA.Plugin.CLIManager
 
         public Task<CLIEventResult> PerformCommandLineRelay(CommandLineInput commandLineInput)
         {
+            WriteLog($"Command Line from CLI {commandLineInput.fromcli}");
             if (commandLineInput == null)
             {
                 WriteLog("Empty command input from CLI subagent");

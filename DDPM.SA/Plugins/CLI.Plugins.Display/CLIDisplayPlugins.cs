@@ -1110,8 +1110,10 @@ namespace DDPM.CLI.Plugins.Display
             //}
 
             //if (_AllInfoMonitors == null)
+            writelog($"Connecteddevices IN = {commandLineInput}");
+            writelog($"Connecteddevices from CLI = {commandLineInput.fromcli}");
             _AllInfoMonitors = await devMgr.GetMonitors();
-
+            writelog($"Connecteddevices _AllInfoMonitors count  = {_AllInfoMonitors.Count}");
             string output = string.Empty;
             string output_2 = string.Empty;
             _deviceHelper = new DeviceHelper
@@ -1134,9 +1136,12 @@ namespace DDPM.CLI.Plugins.Display
                         case "DISPLAY":
                             if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
                             {
+                                writelog($"Connecteddevices DISPLAY IN");
                                 bool IsFailhappened = false;
                                 foreach (MonitorInfo monitor in _AllInfoMonitors)
                                 {
+                                    writelog($"Connecteddevices DISPLAY Index = {change_0base_to_1base((monitor.Index).ToString())}");
+                                    writelog($"Connecteddevices DISPLAY FWversion = {monitor.FwVersion}");
                                     G_ConnectedDevices_RESPONSE = new ConnectedDevices();
                                     G_ConnectedDevices_RESPONSE.Model = monitor.edid.ModelName;
                                     G_ConnectedDevices_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
@@ -1156,11 +1161,13 @@ namespace DDPM.CLI.Plugins.Display
                                     }
                                     else
                                     {
+                                        writelog($"Connecteddevices DISPLAY complete index = {change_0base_to_1base((monitor.Index).ToString())}");
                                         G_ConnectedDevices_RESPONSE.PID = monitor.edid.PID.ToString();
                                         G_ConnectedDevices_RESPONSE.Result = "Pass";
                                         index_per = int.Parse(change_0base_to_1base((monitor.Index).ToString()));
                                         System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                                         output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
+                                        writelog($"Connecteddevices DISPLAY RESPONSE = {output}");
                                     }
                                 }
 
