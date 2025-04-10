@@ -12874,7 +12874,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         _DisplayManagerPlugin.GetDisplayPropertiesInfo(info).Wait(cancellationToken);
 
-                        if(!cancellationToken.IsCancellationRequested)
+                        if (!cancellationToken.IsCancellationRequested)
                             _ = _DisplayManagerPlugin.GetVCPCapability(info, "colorpreset");
 
                         _DisplayManagerPlugin.GetUSBUpstreamList(info).Wait(cancellationToken);
@@ -16498,12 +16498,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (cs)
                 {
                     bool ret = SetVCPCapability(monitorInfo, 0xE0, (1 | (uint)getvalue)).Result;
-                    writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON and setVcp:]" + (ret ? "success" : "fail"));
+                    writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON,[0xE0,r={getvalue},w={1 | (uint)getvalue}] and setVcp: " + (ret ? "success" : "fail"));
                 }
                 else
                 {
                     bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
-                    writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
+                    writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF,[0xE0,r={getvalue},w={(uint)getvalue}] and setVcp: " + (ret ? "success" : "fail"));
                 }
 
             }
@@ -16512,12 +16512,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (cs)
                 {
                     bool ret = SetVCPCapability(monitorInfo, 0xE0, 1).Result;
-                    writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON and setVcp:]" + (ret ? "success" : "fail"));
+                    writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON,[0xE0,w=1] and setVcp: " + (ret ? "success" : "fail"));
                 }
                 else
                 {
                     bool ret = SetVCPCapability(monitorInfo, 0xE0, 0).Result;
-                    writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
+                    writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF,[0xE0,w=0] and setVcp: " + (ret ? "success" : "fail"));
                 }
             }
         }
@@ -16564,12 +16564,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (cs)
                 {
                     bool ret = SetVCPCapability(monitorInfo, 0xE0, (2 | (uint)getvalue)).Result;
-                    writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON and setVcp:]" + (ret ? "success" : "fail"));
+                    writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON，[0xE0,r={getvalue},w={2 | (uint)getvalue}] and setVcp: " + (ret ? "success" : "fail"));
                 }
                 else
                 {
                     bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
-                    writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
+                    writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF,[0xE0,r={getvalue},w={(uint)getvalue}] and setVcp: " + (ret ? "success" : "fail"));
                 }
             }
             else
@@ -16577,12 +16577,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (cs)
                 {
                     bool ret = SetVCPCapability(monitorInfo, 0xE1, 1).Result;
-                    writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON and setVcp:]" + (ret ? "success" : "fail"));
+                    writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON,[0xE1,w=1] and setVcp: " + (ret ? "success" : "fail"));
                 }
                 else
                 {
                     bool ret = SetVCPCapability(monitorInfo, 0xE1, 0).Result;
-                    writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
+                    writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF,[0xE1,w=0] and setVcp: " + (ret ? "success" : "fail"));
                 }
             }
         }
