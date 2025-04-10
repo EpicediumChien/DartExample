@@ -19,7 +19,10 @@
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
       </ResourceDictionary.MergedDictionaries>
-    </ResourceDictionary>
+            <Style TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
+            </Style>
+        </ResourceDictionary>
   </UserControl.Resources>
   <UserControl.Style>
     <Style TargetType="UserControl">

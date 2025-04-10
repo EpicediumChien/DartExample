@@ -540,7 +540,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;//FW Update
             CheckSupportWindowsHello(is_WindwosHelloSupport ? Visibility.Visible : Visibility.Collapsed);
             //1A
-            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK == 4)
+            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK==2)
             {
                 print_debug("TestCase 1A");
                 _vm.UPD_Visibility = Visibility.Visible;
@@ -555,14 +555,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             }
             //3A
-            if (is_DellPc && !is_EsiSupport && is_WindowsVer_OK == 2)
+            if (is_DellPc && !is_EsiSupport && is_WindowsVer_OK==1)
             {
                 print_debug("TestCase 3A");
                 _vm.MPS_Setting_Visibility = Visibility.Visible;
                 return;
             }
             //4A
-            if (is_DellPc && !is_EsiSupport && is_WindowsVer_OK == 3)
+            if (is_DellPc && !is_EsiSupport && is_WindowsVer_OK==2)
             {
                 print_debug("TestCase 4A");
                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
@@ -570,7 +570,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
 
             //1B
-            if (!is_DellPc && is_EsiSupport && is_WindowsVer_OK == 4)
+            if (!is_DellPc && is_EsiSupport && is_WindowsVer_OK == 2)
             {
                 print_debug("TestCase 1B");
                 noPresenceFunction = true;
@@ -584,7 +584,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             }
             //3B
-            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK == 2)
+            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK == 1)
             {
                 print_debug("TestCase 3B");
                 _vm.MPS_Setting_Visibility = Visibility.Visible;
@@ -592,7 +592,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
 
             //4B
-            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK == 3)
+            if (!is_DellPc && !is_EsiSupport && is_WindowsVer_OK==2)
             {
                 print_debug("TestCase 4B");
                 noPresenceFunction = true;
@@ -618,7 +618,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;//FW Update
             CheckSupportWindowsHello(is_WindwosHelloSupport ? Visibility.Visible : Visibility.Collapsed);
             //C#1
-            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK == 4)
+            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK == 2)
             {
                 print_debug("TestCase C#1");
                 _vm.UPD_Visibility = Visibility.Visible;
@@ -626,7 +626,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             }
             //C#3
-            if (!is_DellPc && is_EsiSupport && is_WindowsVer_OK == 4)
+            if (!is_DellPc && is_EsiSupport && is_WindowsVer_OK == 2)
             {
                 print_debug("TestCase /C#3");
                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
@@ -732,15 +732,15 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //win11 >=Win11 22H2 latter and OsBuild>=22621
                 if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2) && WinVersion.GetOsBuild() >= 22621)
                     return 1;
-                //win11 >= Win11 22H2 latter and OsBuild< 22621
-                if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2) && WinVersion.GetOsBuild() < 22621)
-                    return 2;
+                ////win11 >= Win11 22H2 latter and OsBuild< 22621
+                //if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2) && WinVersion.GetOsBuild() < 22621)
+                //    return 2;
                 //Win10 Win11<22H2
                 if (info.BuildNum < (uint)(BuildNumber.Windows_11_22H2) && info.BuildNum >= (uint)(BuildNumber.Windows_10_1507))
-                    return 3;
-                //win10/11
-                if (info.BuildNum <= (uint)(BuildNumber.Windows_11_21H2) && info.BuildNum >= (uint)(BuildNumber.Windows_10_1507))
-                    return 4;
+                    return 2;
+                ////win10/11
+                //if (info.BuildNum <= (uint)(BuildNumber.Windows_11_21H2) && info.BuildNum >= (uint)(BuildNumber.Windows_10_1507))
+                //    return 4;
 
             }
             return 0;
@@ -2204,12 +2204,65 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 // Create storage file for the capture
                 var videoFile = await captureFolder.CreateFileAsync(DateTime.Now.ToString("'DDPMVideo'yyyy-MM-dd-HH-mm-ss.'mp4'"), CreationCollisionOption.GenerateUniqueName);
+                VideoEncodingQuality VideoEncoding= VideoEncodingQuality.Auto;
+                switch (_vm.WebcamSettings.SelectedResolution)
+                {
+                    case "HD":
+                        VideoEncoding = VideoEncodingQuality.HD720p;
+                        break;
+                    case "Full HD":
+                        VideoEncoding = VideoEncodingQuality.HD1080p;
+                        break;
+                    case "2K QHD":
+                        VideoEncoding = VideoEncodingQuality.Uhd2160p;
+                        break;
+                    case "4K UHD":
+                        VideoEncoding = VideoEncodingQuality.Uhd4320p;
+                        break;
+                    default:
+                        VideoEncoding = VideoEncodingQuality.Auto;
+                        break;
+                }
+                var encodingProfile = MediaEncodingProfile.CreateMp4(VideoEncoding);
 
-                var encodingProfile = MediaEncodingProfile.CreateMp4(VideoEncodingQuality.Auto);
+                if (VideoEncoding != VideoEncodingQuality.Auto)
+                {
+                    switch (_vm.WebcamSettings.SelectedResolution)
+                    {
+                        case "HD":
+                            VideoEncoding = VideoEncodingQuality.HD720p;
+                            encodingProfile.Video.Width = 1280;
+                            encodingProfile.Video.Height = 720;
+                            break;
+                        case "Full HD":
+                            VideoEncoding = VideoEncodingQuality.HD1080p;
+                            encodingProfile.Video.Width = 1920;
+                            encodingProfile.Video.Height = 1080;
+                            break;
+                        case "2K QHD":
+                            VideoEncoding = VideoEncodingQuality.Uhd2160p;
+                            encodingProfile.Video.Width = 2560;
+                            encodingProfile.Video.Height = 1440;  
+                            break;
+                        case "4K UHD":
+                            VideoEncoding = VideoEncodingQuality.Uhd4320p;
+                            encodingProfile.Video.Width = 3840;
+                            encodingProfile.Video.Height = 2160;
+                            break;
+                        default:
+                            VideoEncoding = VideoEncodingQuality.Auto;
+                            break;
+                    }
+                    encodingProfile.Video.Bitrate = 1500000; // 降低影片位元率為 1.5 Mbps
+                    encodingProfile.Audio.Bitrate = 96000;  // 設定音訊位元率為 96 kbps
+                    DdpmCommonHelper.WriteUILog($"_vm.WebcamSettings.SelectedcurrentFPS:{_vm.WebcamSettings.SelectedcurrentFPS}");
+                    encodingProfile.Video.FrameRate.Numerator = uint.TryParse(_vm.WebcamSettings.SelectedcurrentFPS,out var Fps)?Fps:30; // 設置新的 FPS 分子，例如 60
+                    encodingProfile.Video.FrameRate.Denominator = 1; // 分母，通常設為 1
+                }
 
-                // Calculate rotation angle, taking mirroring into account if necessary
-                var rotationAngle = 360 - ConvertDeviceOrientationToDegrees(GetCameraOrientation());
-                encodingProfile.Video.Properties.Add(RotationKey, PropertyValue.CreateInt32(rotationAngle));
+                //// Calculate rotation angle, taking mirroring into account if necessary
+                //var rotationAngle = 360 - ConvertDeviceOrientationToDegrees(GetCameraOrientation());
+                //encodingProfile.Video.Properties.Add(RotationKey, PropertyValue.CreateInt32(rotationAngle));
 
                 DdpmCommonHelper.WriteUILog("Starting recording to " + videoFile.Path);
 

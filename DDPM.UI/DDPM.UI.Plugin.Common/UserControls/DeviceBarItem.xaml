@@ -27,6 +27,9 @@
     </UserControl.Style>
     <UserControl.Resources>
         <common:IdxToVisibilityConverter x:Key="IdxToVis"/>
+        <FontFamily x:Key="RobotoFont">
+            pack://application:,,,/DDPM.UI.Resources;component/Resources/Fonts/#Roboto
+        </FontFamily>
     </UserControl.Resources>
 
   <Grid Height="64"  VerticalAlignment="Top" Margin="0,0,0,8" HorizontalAlignment="Right" Visibility="{Binding Visibility}">
@@ -104,9 +107,9 @@
                           Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
                 </Canvas>
                 <!-- Elsa 20250108 For PIMS [PIMS-333543][PIMS-334920] add Width="145" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" -->
-                <UXControls:UXTextBlock x:Name="IconName" Grid.Column="1" Text="{Binding Text}" FontSize="14" FontFamily="Roboto" 
-                                        Width="145"  TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis"
-                                        LineHeight="20" FontWeight="Bold" Padding="0,4,0,0" 
+                <UXControls:UXTextBlock x:Name="IconName" Grid.Column="1" Text="{Binding Text}" FontSize="14" FontFamily="{StaticResource RobotoFont}"
+                                        Width="145"  TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" FontWeight="Bold"
+                                        LineHeight="20" Padding="0,4,0,0" 
                                         VerticalAlignment="Center" HorizontalAlignment="Left"
                                         Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}" />
             </Grid>
