@@ -70,6 +70,13 @@ namespace DDPM.UI.Common.ViewModels
             //Robert_Lin, 2025-1-9 Comment out unused call
             //Invoke_InitData();
 
+            //Robert_Lin, 2025-4-10, refresh IsVertical
+            if ((homeDev != null) && (homeDev.MonitorInfo != null))
+            {
+                Screen scr = Screen.AllScreens.FirstOrDefault(x => x.DeviceName.Equals(homeDev.MonitorInfo.DisplayName));
+                IsVertical = (scr != null) ? (scr.Bounds.Width < scr.Bounds.Height) : false;
+            }
+
             Init_EzMemory();
         }
 

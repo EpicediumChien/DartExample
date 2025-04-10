@@ -151,7 +151,7 @@
                         <UXControls:UXTextBlock x:Name="SelectText" Grid.Row="2" Margin="0, 24, 0, 0" Text="{Binding [EazyMemory.19], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="16" />
                     </StackPanel>
 
-                    <UXControls:UXScrollViewer Grid.Row="3" Margin="0,16,0,0" Height="400">
+                    <UXControls:UXScrollViewer Grid.Row="3" Margin="0,16,0,0" Height="400" UseFadingScrolling="False">
                         <Grid>
                             <StackPanel>
                                 <Border Style="{DynamicResource RightPartBorderStyle}">

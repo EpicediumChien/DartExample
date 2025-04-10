@@ -198,9 +198,12 @@ namespace DDPM.UI.Module.EzArrange
             Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
-            DisplayOrientation orient = GetDisplayOrientation(_homeDevice.MonitorInfo.DisplayName);
-            _vm.IsVertical = (orient == DisplayOrientation.Angle90) || (orient == DisplayOrientation.Angle270);
-            _vm.LogInfo($"@InitListViewItems, GetDisplayOrientation() return {orient}, IsVertical={_vm.IsVertical}");
+            //Robert_Lin 2025-4-10, for some monitors which are not support DisplayOrientation (for example, a window of a PBP mode)
+            //We will get Angle0. So the IsVertical flag will be determined by Screen.Bound as above, comment out below code.
+            //
+            //DisplayOrientation orient = GetDisplayOrientation(_homeDevice.MonitorInfo.DisplayName);
+            //_vm.IsVertical = (orient == DisplayOrientation.Angle90) || (orient == DisplayOrientation.Angle270);
+            //_vm.LogInfo($"@InitListViewItems, GetDisplayOrientation() return {orient}, IsVertical={_vm.IsVertical}");
 
             //Update IsVertical to listViews
             splitListView_Recent.IsVertical = _vm.IsVertical;

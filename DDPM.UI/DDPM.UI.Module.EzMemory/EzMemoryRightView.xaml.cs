@@ -69,8 +69,6 @@ namespace DDPM.UI.Module.EzMemory
 
             DataContext = _vm;
 
-            Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
-            _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
             InitListViewItems();
 
@@ -669,6 +667,10 @@ namespace DDPM.UI.Module.EzMemory
         {
             try
             {
+                Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
+                _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
+
+
                 _log.Info($"@[EzMemoryRightView] InitListViewItems ... in");
                 _vm.splitListRightView = splitListView_RecentForEzM;
                 splitListView_RecentForEzM.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
