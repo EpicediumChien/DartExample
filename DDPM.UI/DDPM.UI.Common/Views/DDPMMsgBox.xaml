@@ -24,9 +24,10 @@
             BorderThickness="1"
             CornerRadius="10">
             <Grid>
+                <!--Elsa 20250410 change Height="*" to Height="auto" for hotkey warning cliping-->
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
@@ -42,18 +43,21 @@
                     MouseLeftButtonDown="close_Click"
                     Source="{DynamicResource Close_img}"
                     Stretch="Uniform" />
+                <!--Elsa 20250410 add TextWrapping="WrapWithOverflow" for hotkey warning title cliping-->
                 <controls:UXTextBlock
                     Name="HeaderText"
                     Margin="{Binding HeaderMargin}"
                     FontFamily="Roboto"
                     FontSize="20"
-                    
+                    TextWrapping="WrapWithOverflow"
                     Text="{Binding strTitle}" />
+                <!--Elsa 20250410 change MaxHeight="54" to MaxHeight="100",add MinHeight="70" for hotkey warning cliping-->
                 <controls:UXTextBlock
                     Name="SubHeaderText"
                     Grid.Row="1"
                     MaxWidth="372"
-                    MaxHeight="54"
+                    MinHeight="70"
+                    MaxHeight="100"
                     Margin="{Binding SubHeaderMargin}"
                     FontFamily="Roboto"
                     FontSize="15"

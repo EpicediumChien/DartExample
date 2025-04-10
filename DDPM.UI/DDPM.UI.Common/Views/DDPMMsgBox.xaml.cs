@@ -59,8 +59,8 @@ namespace DDPM.UI.Common.Views
                     NotifyPropertyChanged("isButtonsShown");
                 }
             }
-
-            private Thickness _headerMargin = new Thickness(24, 10, 45, 24);
+            //Elsa 20250410 change Thickness(24, 10, 45, 24) to Thickness(24, 10, 45, 14) for hotkey warning title cliping issue
+            private Thickness _headerMargin = new Thickness(24, 10, 45, 14);
 
             public Thickness HeaderMargin
             {
