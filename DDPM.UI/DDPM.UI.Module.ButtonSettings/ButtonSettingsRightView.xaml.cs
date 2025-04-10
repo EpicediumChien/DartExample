@@ -55,6 +55,12 @@ namespace DDPM.UI.Module.ButtonSettings
                 Interval = TimeSpan.FromSeconds(5)
             };
             timer.Tick += Timer_Tick;
+            Unloaded += ButtonSettingsRightView_Unloaded;
+        }
+
+        private void ButtonSettingsRightView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            timer.Tick -= Timer_Tick;
         }
 
         private void Timer_Tick(object? sender, EventArgs e)

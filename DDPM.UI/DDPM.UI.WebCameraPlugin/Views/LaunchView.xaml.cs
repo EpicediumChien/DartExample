@@ -1600,6 +1600,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             Console.WriteLine("LaunchView_Unloaded start");
 
             FreeWebcamResource();
+            AlertTimer.Tick -= AlertTimer_Tick;
 
             Console.WriteLine("LaunchView_Unloaded end");
         }

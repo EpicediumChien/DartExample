@@ -95,11 +95,17 @@ namespace DDPM.UI.Plugin.Common
                     Interval = TimeSpan.FromSeconds(5)
                 };
                 timer.Tick += Timer_Tick;
+                Unloaded += RadialMenuModalDialog_Unloaded;
             }
             catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs RadialMenuModalDialog ex:" + ex.Message);
             }
+        }
+
+        private void RadialMenuModalDialog_Unloaded(object sender, RoutedEventArgs e)
+        {
+            timer.Tick -= Timer_Tick;
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
