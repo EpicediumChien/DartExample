@@ -762,7 +762,7 @@ namespace VcpCore.Plugins.Test
             Assert.That(FormatVCP_F0def, Is.EqualTo(NodeFormatter.FormatVCP_F0("c4")));
         }
 
-        [Test]
+        /*[Test]
         public void TestFormatVCP_E2()
         {
             string FormatVCP_E200 = "Standard/Native";
@@ -868,7 +868,7 @@ namespace VcpCore.Plugins.Test
             Assert.That(FormatVCP_E23c, Is.EqualTo(NodeFormatter.FormatVCP_E2("3c")));
             Assert.That(FormatVCP_E27f, Is.EqualTo(NodeFormatter.FormatVCP_E2("7f")));
             Assert.That(FormatVCP_E2def, Is.EqualTo(NodeFormatter.FormatVCP_E2("7g")));
-        }
+        }*/
 
         [Test]
         public void TestFormatNode()

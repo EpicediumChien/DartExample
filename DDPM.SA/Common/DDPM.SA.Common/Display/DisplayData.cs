@@ -17,6 +17,7 @@ namespace DDPM.SA.Common.Display
         public uint VCP_E9 = 1;
         public DisplayPropertiesInfo DisplayPropertiesInfo = new DisplayPropertiesInfo();
         public GamingDisplayPropertiesInfo GamingDisplayPropertiesInfo = new GamingDisplayPropertiesInfo();
+        public Color Color = new Color();
     }
     public class InputSource_USB
     {
@@ -32,5 +33,10 @@ namespace DDPM.SA.Common.Display
     {
         public string InputSource = string.Empty;
         public uint Code = 0;
+    }
+    public class Color
+    {
+        public string color_DisHDR = string.Empty;
+        public string color_EnHDR = string.Empty;
     }
 }

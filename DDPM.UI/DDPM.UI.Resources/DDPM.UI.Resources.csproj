@@ -10,6 +10,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="Resources\Fonts\Roboto-Bold.ttf" />
+		<None Remove="Resources\Fonts\Roboto-Medium.ttf" />
+		<None Remove="Resources\Fonts\Roboto-Regular.ttf" />
+		<None Remove="Resources\Fonts\Roboto-Thin.ttf" />
 		<None Remove="Resources\Images\Alert.png" />
 		<None Remove="Resources\Images\arrow-left.png" />
 		<None Remove="Resources\Images\arrow-left-light.png" />
@@ -402,6 +406,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Resource Include="Resources\Fonts\Roboto-Bold.ttf" />
+		<Resource Include="Resources\Fonts\Roboto-Medium.ttf" />
+		<Resource Include="Resources\Fonts\Roboto-Regular.ttf" />
+		<Resource Include="Resources\Fonts\Roboto-Thin.ttf" />
 		<Resource Include="Resources\Images\Alert.png" />
 		<Resource Include="Resources\Images\arrow-left.png" />
 		<Resource Include="Resources\Images\arrow-left-light.png" />

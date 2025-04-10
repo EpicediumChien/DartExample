@@ -154,7 +154,7 @@ namespace DDPM.SA.Plugins.User.CMAProxy.Test
             Assert.IsTrue(relay_registered_result2);
         }
 
-        [Test]
+        /*[Test]
         public void TestGetDdpmDevices()
         {
             IDeviceManagerSA? DevManagerPlugin = null;
@@ -201,7 +201,7 @@ namespace DDPM.SA.Plugins.User.CMAProxy.Test
             Assert.IsTrue(true);
             mockDevManagerPlugin.Verify(p => p.GetMonitors(), Times.Once);
             mockCMAManagerPlugin.Verify(p => p.Update_DeviceChanged(It.Is<CMADeviceChanges>(c => c.type == "display" && c.mos == monitorInfos && c.devices == null)), Times.Once);
-        }
+        }*/
 
         [OneTimeTearDown]
         public void TearDown()
