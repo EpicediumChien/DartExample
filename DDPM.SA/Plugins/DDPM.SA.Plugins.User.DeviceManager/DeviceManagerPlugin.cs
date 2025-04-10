@@ -978,7 +978,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             { "Display P3",     LangHelper.Instance["Display_P3"]       }
         };
 
-
         //20250219 Elsa add for PIMS-334913 to fix Display->Color->Color profile dropdown list missing multilanguage issue
         private string ColorprofileMulti(string original)
         {
@@ -12123,18 +12122,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             var T1 = Task.Run(() => InitMonitorSettings(NewMonitors.ToList(), token), token);
                             var T2 = Task.Run(() => InitAllDisplayData(NewMonitors.ToList(), token), token);
-                            var T3 = Task.Run(() =>
-                            {
-                                while (!token.IsCancellationRequested)
-                                {
-                                    if (T1.IsCompleted)
-                                    {
-                                        writelog($"[DeviceMangerPlugin] InitMonitorSettings Is Completed ...");
-                                        return;
-                                    }
-                                }
-                                writelog($"[DeviceMangerPlugin] T3 Is Completed ...");
-                            }, token);
 
                             // add @ 20250303 stephen
                             // modified @ 20250305 stephen : set count = -1 as a flag to avoid trigger ui reflash
@@ -12173,7 +12160,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             writelog($"[DeviceManager] SystemEventsDisplaySettingsChangedAsync() Got event, monitor count {NewMonitors.Count}");
 
-                            if (await Task.WhenAny(T1, T3) != T3)
+                            await Task.Run(() => { while ((T1.IsCompleted) || (token.IsCancellationRequested)) break; }, token);
+
+                            if (!token.IsCancellationRequested)
                             {
                                 if (NewMonitors.Count > 0)
                                     OnDeviceChanged(NewMonitors[0], null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");//DeviceChangedType.Display_PlugIn);
@@ -12193,9 +12182,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 //
 
                                 if ((_agent != null) && (!token.IsCancellationRequested))
+                                {
                                     _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
-
-                                writelog("[DeviceMangerPlugin] SystemEventsDisplaySettingsChangedAsync() _agent.RaiseEvent finish ...");
+                                    writelog("[DeviceMangerPlugin] SystemEventsDisplaySettingsChangedAsync() _agent.RaiseEvent finish ...");
+                                }
 
                                 if ((NewMonitors.Count > 0) && (!token.IsCancellationRequested))
                                 {
@@ -12606,7 +12596,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _EventArgs.changedProperty = changedProperty;
             EventHandler<DeviceChangedEventArgs> handler = DeviceChanged;
             if (handler != null)
-                Task.Run(() => handler.Invoke(this, _EventArgs), token).ConfigureAwait(false);
+                _ = Task.Run(() => handler.Invoke(this, _EventArgs), token);
 
             if (changedProperty.ToLower().Contains("add"))
             {
