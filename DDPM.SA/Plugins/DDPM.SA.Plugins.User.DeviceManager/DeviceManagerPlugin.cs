@@ -7311,6 +7311,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
                 }
+                else
+                {
+                    //Jason add save NKVM off to UserSettings
+                    DDPMSettings data = ReloadAppConfigData().Result;
+                    data.LockSettings.Enable_Display_NetworkKVM = false;
+                    bool be = SetAppConfigData(data).Result;
+                }
             }
 
             return Task.CompletedTask;
