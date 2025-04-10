@@ -1537,9 +1537,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             DDPMImpExpSettings? ImpSettings = null;// new DDPMImpExpSettings();
 
-            if (!string.IsNullOrEmpty(path))
+            if (!string.IsNullOrEmpty(path.Trim()))
             {
-                if (File.Exists(path))
+                if (File.Exists(path.Trim()))
                 {
                     //Elsa Add Security
                     string FileInfo;
