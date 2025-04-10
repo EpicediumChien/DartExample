@@ -123,13 +123,14 @@ namespace DDPM.SA.Common.UI
             switch (model)
             {
                 case "WK636":
-                case "KM713":
+                case "KM714":
                     return $"Dell {model} Wireless Keyboard";
                 case "WK717":
                     return $"Dell Premier Wireless Keyboard WK717";
-                case "WM116":
                 case "WM514":
+                    return $"Dell {model} Wireless Laser Mouse";
                 case "UV514":
+                case "WM116":
                 case "WM126":
                 case "WM326":
                 case "WM527":
@@ -186,7 +187,7 @@ namespace DDPM.SA.Common.UI
                         return "Dell Digital Hi-End 32 6K Monitor";
                     return name;
                 default:
-                    if (model == "U3224KB")                   
+                    if (model == "U3224KB")
                         return "Dell UltraSharp 32 6K Monitor";
                     return name;
             }

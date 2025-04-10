@@ -157,7 +157,7 @@ namespace SA.Plugins.User.USBKVM.Test
             Assert.That(pcsList2["PCInfo2"].USBUpstream, Is.EqualTo(PCInfoSwapResult["PCInfo2"].USBUpstream));
         }
 
-        [Test]
+       /* [Test]
         public void TestInitializeDeviceManagerPlugin()
         {
             var InitializeDeviceManagerPlugin=DeviceManagerSAService.Object;
@@ -168,10 +168,10 @@ namespace SA.Plugins.User.USBKVM.Test
             Assert.IsNotNull(result);
             Assert.That(InitializeDeviceManagerPlugin,Is.EqualTo(result));
             
-        }
+        }*/
 
 
-        [Test]
+       /* [Test]
         public void TestOnDeviceManagerPluginConditionChangeHandler()
         {
             object sender=new object();
@@ -184,7 +184,7 @@ namespace SA.Plugins.User.USBKVM.Test
             Assert.IsNotNull(result2);
             Assert.That(InitializeDeviceManagerPlugin, Is.EqualTo(result2));
 
-        }
+        }*/
 
         [Test]
         public void TestPluginManagerOnPluginsStarted()

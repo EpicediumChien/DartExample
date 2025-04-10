@@ -237,9 +237,13 @@ namespace DDPM.UI.Plugin.ViewModels
 
             CheckCopilot();
             Model = DDPM.SA.Common.UI.SAUICommonHelper.MappingModel(CurrentDeviceInfo.ModelNumber);
-            //Name = CurrentDeviceInfo.Name;
+            //Model = "WK717";
             if (EOLKBList.Contains(Model) || EOLMouseList.Contains(Model))
-                Name = DDPM.SA.Common.UI.SAUICommonHelper.MappingEOLName(Model);// DdpmCommonHelper.MappingEOLName(Model);
+            {
+                _name = DDPM.SA.Common.UI.SAUICommonHelper.MappingEOLName(Model);
+                _name = _name.Replace(Model, "").Trim();
+                _name = _name.Replace("  ", " ");
+            }
             else
                 Name = DDPM.SA.Common.UI.SAUICommonHelper.MappingName(Model, CurrentDeviceInfo.Name.Trim());
 

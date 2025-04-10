@@ -43,6 +43,16 @@ namespace DDPM.UI.Module.KeyCustomization
                 Interval = TimeSpan.FromSeconds(5)
             };
             timer.Tick += Timer_Tick;
+            Unloaded += KeyCustomizationRightView_Unloaded;
+        }
+
+        private void KeyCustomizationRightView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (timer != null)
+            {
+                timer.Stop();
+                timer.Tick -= Timer_Tick;
+            }
         }
 
         private void Timer_Tick(object? sender, EventArgs e)

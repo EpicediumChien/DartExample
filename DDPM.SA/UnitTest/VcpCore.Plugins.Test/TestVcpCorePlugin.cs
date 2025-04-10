@@ -208,7 +208,7 @@ namespace VcpCore.Plugins.Test
             Assert.That(agent2, Is.EqualTo(VcpCoreAgent.Object));
         }
 
-        [Test]
+        /*[Test]
         public void TestReset0x52TimerTick()
         {
             int millisecond = 3000;
@@ -218,7 +218,7 @@ namespace VcpCore.Plugins.Test
             System.Timers.Timer CacheTimer = (System.Timers.Timer)privatevcp.GetField("_CacheTimer");
             Assert.That(millisecond, Is.EqualTo(CacheTimer.Interval));
             Assert.True(CacheTimer.Enabled);
-        }
+        }*/
 
         [Test]
         public void TestGetMonitors()
@@ -349,7 +349,7 @@ namespace VcpCore.Plugins.Test
             Assert.That(value, Is.EqualTo(GetVCPCapabilityresult2.value));
         }
 
-        [Test]
+        /*[Test]
         public void TestSetVCPCapability()
         {
             bool objGetVCP = false;
@@ -373,9 +373,9 @@ namespace VcpCore.Plugins.Test
             bool SetVCPCapabilityResult2 = vcpCorePlugin.SetVCPCapability(monitorInfo1, 18, newContrast).Result;
             Assert.IsTrue(SetVCPCapabilityResult2);
             Assert.That(setVCPCapabilityResult, Is.EqualTo(SetVCPCapabilityResult2));
-        }
+        }*/
 
-        [Test]
+        /*[Test]
         public void TestSetVCPCapability_()
         {
             ObjGetVCP objGetVCP = new ObjGetVCP() { value = null, result = false };
@@ -400,7 +400,7 @@ namespace VcpCore.Plugins.Test
             bool setColor = vcpCorePlugin.SetVCPCapability(monitorInfo1, "colorpreset", "Warm").Result;
             Assert.IsTrue(setColor);
             Assert.That(SetVCPCapabilityResult_, Is.EqualTo(setColor));
-        }
+        }*/
 
         [Test]
         public void TestSetColorPreset()

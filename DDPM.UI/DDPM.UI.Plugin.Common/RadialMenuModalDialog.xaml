@@ -10,9 +10,9 @@
         WindowStartupLocation="Manual" WindowStyle="None" Background="{DynamicResource ActionParameterModalDialog_BgColor}">
   <Window.Resources>
     <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
+      <!--<ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml"/>
-      </ResourceDictionary.MergedDictionaries>
+      </ResourceDictionary.MergedDictionaries>-->
       <Style x:Key="CaptionTextStyle" TargetType="UXControls:UXTextBlock">
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />

@@ -89,7 +89,6 @@ namespace VcpCore.Plugins
         private static HashSet<Guid> _CancelhashSet;
         private static ManualResetEvent _pauseEvent = new ManualResetEvent(true);
         private static SemaphoreSlim _LockerSemaphoreSlim = new SemaphoreSlim(1, 1);
-        private static AutoResetEvent _BworkerCancelAsyncEvent = new AutoResetEvent(false);
         private int _CoWorkSignal = 0;
         private int _InitialThreadCounter = 0;
         private int _AddSignalfor0X52 = 0;
@@ -159,7 +158,6 @@ namespace VcpCore.Plugins
             _StatusTimer ??= new Timer(10500);
             _pauseEvent ??= new ManualResetEvent(true);
             _LockerSemaphoreSlim ??= new SemaphoreSlim(1, 1);
-            _BworkerCancelAsyncEvent ??= new AutoResetEvent(false);
             _InitialThreadCounter = 0;
             _CoWorkSignal = 0;
             _AddSignalfor0X52 = 0;
@@ -256,15 +254,12 @@ namespace VcpCore.Plugins
                     if (_TaskQueueExecutor.IsBusy)
                     {
                         _TaskQueueExecutor.CancelAsync();
-                        _BworkerCancelAsyncEvent.WaitOne(Timeout.Infinite);
                         _logs.DebugMsg("[VcpCorePlugin] _TaskQueueExecutor Cancel succes III");
                     }
-                    else
-                    {
-                        _TaskQueue.Clear();
-                        _TaskQueueResult.Clear();
-                        _CancelhashSet.Clear();
-                    }
+
+                    _TaskQueue.Clear();
+                    _TaskQueueResult.Clear();
+                    _CancelhashSet.Clear();
                 } while (!_TaskQueue.IsEmpty());
 
                 _AddSignalfor0X52 = 0;
@@ -903,7 +898,7 @@ namespace VcpCore.Plugins
                     _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
                     ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x52, new Type_Watcher0x52(_guid, default));
-                    _TaskQueue.Enqueue(parameterType, Priority.Low);
+                    _TaskQueue.Enqueue(parameterType, Priority.SuperLow);
 
                     Launch_TaskQueueExecutor();
                 }
@@ -930,7 +925,7 @@ namespace VcpCore.Plugins
                     _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
                     ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x02forStatusCheck, new Type_Watcher0x02forStatusCheck(_guid, default));
-                    _TaskQueue.Enqueue(parameterType, Priority.Low);
+                    _TaskQueue.Enqueue(parameterType, Priority.SuperLow);
 
                     Launch_TaskQueueExecutor();
                 }
@@ -1106,7 +1101,6 @@ namespace VcpCore.Plugins
                         _CancelhashSet.Clear();
                         _logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork _TaskQueue.IsEmpty(): " + _TaskQueue.IsEmpty().ToString());
                         e.Cancel = true;
-                        _BworkerCancelAsyncEvent.Set();
                         return;
                     }
                     else
@@ -1279,8 +1273,6 @@ namespace VcpCore.Plugins
                 _TaskQueue.Clear();
                 _TaskQueueResult.Clear();
                 _CancelhashSet.Clear();
-                e.Cancel = true;
-                _BworkerCancelAsyncEvent.Set();
             }
         }
 
@@ -2082,6 +2074,10 @@ namespace VcpCore.Plugins
                             else
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck UpdateMyself has Fail");
 
+                            monitor.MonitorInfosComplex.DDCisON = ori_DDCCIStatus;
+                            monitor.MonitorInfos.DDCisON = ori_DDCCIStatus;
+                            Initialize2TypesMonitorInfo(false, CancellationToken.None);
+
                             if (rt.IsUpdate)
                             {
                                 OnMonitorinfoUpdatechanged(new MonitorinfoUpdateEventArgs()
@@ -2463,15 +2459,12 @@ namespace VcpCore.Plugins
                         if (_TaskQueueExecutor.IsBusy)
                         {
                             _TaskQueueExecutor.CancelAsync();
-                            _BworkerCancelAsyncEvent.WaitOne(Timeout.Infinite);
                             _logs.DebugMsg("[VcpCorePlugin] _TaskQueueExecutor Cancel succes I");
                         }
-                        else
-                        {
-                            _TaskQueue.Clear();
-                            _TaskQueueResult.Clear();
-                            _CancelhashSet.Clear();
-                        }
+
+                        _TaskQueue.Clear();
+                        _TaskQueueResult.Clear();
+                        _CancelhashSet.Clear();
                     } while (!_TaskQueue.IsEmpty());
 
                     _AddSignalfor0X52 = 0;
@@ -2684,15 +2677,12 @@ namespace VcpCore.Plugins
                             if (_TaskQueueExecutor.IsBusy)
                             {
                                 _TaskQueueExecutor.CancelAsync();
-                                _BworkerCancelAsyncEvent.WaitOne(Timeout.Infinite);
                                 _logs.DebugMsg("[VcpCorePlugin] _TaskQueueExecutor Cancel succes II");
                             }
-                            else
-                            {
-                                _TaskQueue.Clear();
-                                _TaskQueueResult.Clear();
-                                _CancelhashSet.Clear();
-                            }
+
+                            _TaskQueue.Clear();
+                            _TaskQueueResult.Clear();
+                            _CancelhashSet.Clear();
                         } while (!_TaskQueue.IsEmpty());
 
                         _AddSignalfor0X52 = 0;
@@ -5805,19 +5795,11 @@ namespace VcpCore.Plugins
                     {
                         if (_TaskQueueExecutor is not null && _TaskQueueExecutor.IsBusy)
                             _TaskQueueExecutor.CancelAsync();
-                        else
-                        {
-                            _TaskQueue.Clear();
-                            _TaskQueueResult.Clear();
-                            _CancelhashSet?.Clear();
-                        }
                     }
-                    else
-                    {
-                        _TaskQueue.Clear();
-                        _TaskQueueResult.Clear();
-                        _CancelhashSet?.Clear();
-                    }
+
+                    _TaskQueue.Clear();
+                    _TaskQueueResult.Clear();
+                    _CancelhashSet?.Clear();
                 }
 
                 if (_CacheTimer is not null)
@@ -5848,12 +5830,6 @@ namespace VcpCore.Plugins
                 {
                     _LockerSemaphoreSlim.Dispose();
                     _LockerSemaphoreSlim = null;
-                }
-
-                if (_BworkerCancelAsyncEvent is not null)
-                {
-                    _BworkerCancelAsyncEvent.Dispose();
-                    _BworkerCancelAsyncEvent = null;
                 }
 
                 if (_TaskQueueExecutor is not null)

@@ -433,4 +433,13 @@
     <GradientStop Color="#674AB8" Offset="0.4" />
     <GradientStop Color="#0063B8" Offset="0.5" />
   </LinearGradientBrush>
+
+    <!-- Global font key to support roboto -->
+    <!-- For Roboto Bold, please use FontWeight as Bold with "RobotoFont" -->
+    <FontFamily x:Key="RobotoFont">
+        pack://application:,,,/DDPM.UI.Resources;component/Resources/Fonts/#Roboto
+    </FontFamily>
+    <FontFamily x:Key="RobotoFontMedium">
+        pack://application:,,,/DDPM.UI.Resources;component/Resources/Fonts/#Roboto Medium
+    </FontFamily>
 </ResourceDictionary>

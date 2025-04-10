@@ -202,7 +202,7 @@
                             6. Fix the FontSize of ModelName after checked Figma.
                             7. Fix ModelName forground color.
                             -->
-                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="60,28,0,0">
+                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="60,15,0,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition MaxHeight="90" />
                                 <RowDefinition Height="6" />
