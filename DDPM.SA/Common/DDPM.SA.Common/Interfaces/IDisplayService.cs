@@ -44,6 +44,8 @@ namespace DDPM.SA.Common
 
         Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val, Guid guid = default, Priority priority = Priority.Low);
 
+        Task<ObjGetVCP> GetVCPCapability_NoGetCache(MonitorInfo monitorInfo, string FunctionName, Guid guid = default, int opt = 0, Priority priority = Priority.Low);
+
         event EventHandler<VCPchangedEventArgs> VCPchanged;
 
         event EventHandler<DDCCIchangedEventArgs> DDCCIStatuschanged;
