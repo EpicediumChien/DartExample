@@ -544,8 +544,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 groups.Add(moduleGroup);
             }
 
-            //moduleGroup.Dispose();
-
             return groups;
         }
 
