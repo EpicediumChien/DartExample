@@ -105,36 +105,41 @@ echo.>>%OutFile%
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins]>>%OutFile%
 echo.>>%OutFile%
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{037F8DB1-6BA6-40B4-B87E-B93032163CF4}]>>%OutFile%
-echo "DllPath"="%BaseDir%\\DTP_dll.202\\Dell.TechHub.Plugins.DongleCommodity.dll">>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll.210\\Dell.TechHub.Plugins.DongleCommodity.dll">>%OutFile%
 echo.>>%OutFile%
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{0c0dbe70-e66c-4200-98ad-244b2e451033}]>>%OutFile%
-echo "DllPath"="%BaseDir%\\DTP_dll.202\\Dell.TechHub.Plugins.DockCommodity.dll">>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll.210\\Dell.TechHub.Plugins.DockCommodity.dll">>%OutFile%
 echo.>>%OutFile%
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{5452CA9A-BE6C-4F1B-A04D-EE6730754E5F}]>>%OutFile%
-echo "DllPath"="%BaseDir%\\DTP_dll.202\\Dell.TechHub.Plugins.WebcamCommodity.dll">>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll.210\\Dell.TechHub.Plugins.WebcamCommodity.dll">>%OutFile%
 echo.>>%OutFile%
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{86037d2f-ed7c-45fe-a5c8-b49859a6b841}]>>%OutFile%
-echo "DllPath"="%BaseDir%\\DTP_dll.202\\Dell.TechHub.Plugins.HeadsetCommodity.dll">>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll.210\\Dell.TechHub.Plugins.HeadsetCommodity.dll">>%OutFile%
 echo.>>%OutFile%
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{8B8810F3-B076-4AED-8106-1802941B330C}]>>%OutFile%
-echo "DllPath"="%BaseDir%\\DTP_dll.202\\Dell.TechHub.Plugins.GlobalPeripheralCommodity.dll">>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll.210\\Dell.TechHub.Plugins.GlobalPeripheralCommodity.dll">>%OutFile%
 echo.>>%OutFile%
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{A647FA97-3A21-485F-ADAE-4FF579CECB81}]>>%OutFile%
-echo "DllPath"="%BaseDir%\\DTP_dll.202\\Dell.TechHub.Plugins.AirAudioCommodity.dll">>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll.210\\Dell.TechHub.Plugins.AirAudioCommodity.dll">>%OutFile%
 echo.>>%OutFile%
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{a93dd192-c426-4a6d-b10b-b38b3453085f}]>>%OutFile%
-echo "DllPath"="%BaseDir%\\DTP_dll.202\\Dell.TechHub.Plugins.MouseCommodity.dll">>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll.210\\Dell.TechHub.Plugins.MouseCommodity.dll">>%OutFile%
 echo.>>%OutFile%
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{ab63559e-2139-49c1-aba7-73c5ddd29e4c}]>>%OutFile%
-echo "DllPath"="%BaseDir%\\DTP_dll.202\\Dell.TechHub.Plugins.KeyboardCommodity.dll">>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll.210\\Dell.TechHub.Plugins.KeyboardCommodity.dll">>%OutFile%
 echo.>>%OutFile%
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{B939D4A6-86BC-4FC0-9923-4A0507398E2B}]>>%OutFile%
-echo "DllPath"="%BaseDir%\\DTP_dll.202\\Dell.TechHub.Plugins.PenCommodity.dll">>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll.210\\Dell.TechHub.Plugins.PenCommodity.dll">>%OutFile%
 echo.>>%OutFile%
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{dafb7da9-3603-432a-8554-aefd3b3fdeba}]>>%OutFile%
-echo "DllPath"="%BaseDir%\\DTP_dll.202\\Dell.TechHub.Plugins.SpeakerCommodity.dll">>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll.210\\Dell.TechHub.Plugins.SpeakerCommodity.dll">>%OutFile%
 echo.>>%OutFile%
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{E40CF224-7E8A-455B-8F61-E9FD214C82B5}]>>%OutFile%
-echo "DllPath"="%BaseDir%\\DTP_dll.202\\DDPM.Peripherals.interface.dll">>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll.210\\DDPM.Peripherals.interface.dll">>%OutFile%
 echo.>>%OutFile%
+:: New one for DA225
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{E40CF224-7E8A-455B-8F61-E9FD214C82B5}]>>%OutFile%
+echo "DllPath"="%BaseDir%\\DTP_dll.210\\Dell.TechHub.Plugins.RtkHubCommodity.dll">>%OutFile%
+echo.>>%OutFile%
+
 
