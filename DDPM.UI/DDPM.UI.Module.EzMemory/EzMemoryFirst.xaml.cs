@@ -455,8 +455,8 @@ namespace DDPM.UI.Module.EzMemory
             Screen? currentScreen = GetAttachedScreen(_selecthomeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
-            DisplayOrientation orient = GetDisplayOrientation(_selecthomeDevice.MonitorInfo.DisplayName);
-            _vm.IsVertical = (orient == DisplayOrientation.Angle90) || (orient == DisplayOrientation.Angle270);
+            //DisplayOrientation orient = GetDisplayOrientation(_selecthomeDevice.MonitorInfo.DisplayName);
+            //_vm.IsVertical = (orient == DisplayOrientation.Angle90) || (orient == DisplayOrientation.Angle270);
 
             //Update IsVertical to listViews
             splitListView_Recent.IsVertical = _vm.IsVertical;

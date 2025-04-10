@@ -7733,6 +7733,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(false);
             }
 
+            //Robert_Lin 2025-4-8, change to EA1
+            //OLD:
+            //monitorSettings.EA = eaSettings;
+            //NEW:
             //Find the previous saved device settings
             DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(monitorInfo.edid.ServiceTag));
             //If not found => return error, GetAllMonitor() will init and create an initial settings instance for us
@@ -7742,7 +7746,47 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(false);
             }
 
-            monitorSettings.EA = eaSettings;
+            //Temp workaround until all MonitorSettings has upgrated to v1.0
+            monitorSettings.Version = 1.0;
+
+            //If the EA1 is empty, then create a new array and add eaSetting to it
+            if ((monitorSettings.EA1 == null) || (monitorSettings.EA1.Length == 0))
+            {
+                Trace.WriteLine($"Monitor.Instance={monitorInfo.edid.Instance}, monitorSettings.Instance={monitorSettings.EA.Instance}");
+
+                monitorSettings.EA1 = new EAMonitorSettings[1];
+                monitorSettings.EA1[0] = eaSettings;
+                return Task.FromResult(false);
+            }
+            else
+            {
+                //Find the existing Instance
+                string instance = monitorInfo.edid.Instance;
+                EAMonitorSettings? existInstance = monitorSettings.EA1.FirstOrDefault(x => x.Instance == instance);
+
+                //If not existing EA1, then add a new one
+                if (existInstance == null)
+                {
+                    Trace.WriteLine($"Monitor.Instance={monitorInfo.edid.Instance}, monitorSettings.Instance={monitorSettings.EA.Instance}");
+
+                    //Add a new instance
+                    List<EAMonitorSettings> eaList = new List<EAMonitorSettings>(monitorSettings.EA1);
+                    eaList.Add(eaSettings);
+                    monitorSettings.EA1 = eaList.ToArray();
+                }
+                else //Existing instance found, then update data from eaSettings
+                {
+                    Trace.WriteLine($"Monitor.Instance={monitorInfo.edid.Instance}, existInstance.Instance={existInstance.Instance}");
+
+                    //Update the existing instance
+                    int index = Array.IndexOf(monitorSettings.EA1, existInstance);
+                    if (index >= 0)
+                        monitorSettings.EA1[index] = eaSettings;
+                    else
+                        writelog($"@ WriteEAMonitorSettings: EA1[{instance}] not found.");
+                }
+            }
+
 
             if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
             {
@@ -7753,12 +7797,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        //Robert_Lin, 2025-4-8 Change for DDPMMonitorSettings v1.0
         //Robert_Lin, 2024-10-12 Note that CustomList has been moved to UserSettings
         //New added method: ReadEACustomList()
         public Task<EAMonitorSettings> ReadEAMonitorSettings(MonitorInfo monitorInfo)
         {
+            //Keep the device ID for usage
+            string model = monitorInfo.modelName;
+            string serviceTag = monitorInfo.edid.ServiceTag;
+            string instance = monitorInfo.edid.Instance;
+
             //Create a default output
             EAMonitorSettings defaultOutput = new EAMonitorSettings();
+            //Need to add Instance
+            defaultOutput.Instance = instance;
+
             //Robert_Lin, 2024-10-10 to fix defaule list will return double items when deserialize json
             defaultOutput.RecentList = SplitJson.DefaultRecentList.ToArray();
             //_dump_SplitJsonList(monitorInfo, defaultOutput.RecentList.ToList<SplitJson>());
@@ -7769,9 +7822,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(defaultOutput);
             }
 
-            //Keep the device ID for usage
-            string model = monitorInfo.modelName;
-            string serviceTag = monitorInfo.edid.ServiceTag;
 
             //Read all settings for this model
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
@@ -7790,6 +7840,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(defaultOutput);
             }
 
+            //Get the Version of reading DDPMMonitorSettings
+            double readSettingsVersion = monitorSetting.Version;
+
             //Robert_Lin, 2024-10-13, If the settings are migrated from DDM, some of SplitJson,
             //1 CustomLayouts:
             //2 PresetLayouts: containts EAID only
@@ -7800,40 +7853,68 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if ((customArray != null) && (customArray.Length > 0))
                 customList = new List<SplitJson>(customArray);
 
-            //Convert SelectedSplit
-            if (monitorSetting.EA.SelectedSplit.CellCount < 0)
+            //Determine which EAMonitorSettings is mapped to current targer in monitorInfo
+            EAMonitorSettings? eaSettings = null;
+            if (monitorSetting.Version < 1.00) //Older version
             {
-                //It's a settings migrated from DDM
+                monitorSetting.ConvertV0ToV1();
+                eaSettings = monitorSetting.EA1[0];
+                //Add Instance
+                eaSettings.Instance = instance;
+            }
+            else
+            {
+                eaSettings = monitorSetting.EA1.FirstOrDefault(x => x.Instance == instance);
+            }
+            if (eaSettings == null)
+            {
+                writelog($"@ ReadEAMonitorSettings: Settings for Instance=[{instance}] of (model={model}, serviceTag={serviceTag}) is not found (never be saved before).");
+                return Task.FromResult(defaultOutput);
+            }
 
+            //Convert SelectedSplit
+            //if (monitorSetting.EA.SelectedSplit.CellCount < 0)
+            if (eaSettings.SelectedSplit.CellCount < 0)
+            {
                 //If it's a custom layout
-                if (monitorSetting.EA.SelectedSplit.EAID >= 1000)
+                //if (monitorSetting.EA.SelectedSplit.CellCount < 0)
+                if (eaSettings.SelectedSplit.CellCount < 0)
                 {
-                    monitorSetting.EA.SelectedSplit = customList.Find(x => x.EAID == monitorSetting.EA.SelectedSplit.EAID);
-                    if (monitorSetting.EA.SelectedSplit == null)
-                        monitorSetting.EA.SelectedSplit = new SplitJson() { CellCount = 0, SplitKey = 'A' };
+                    //monitorSetting.EA.SelectedSplit = customList.Find(x => x.EAID == monitorSetting.EA.SelectedSplit.EAID);
+                    //if (monitorSetting.EA.SelectedSplit == null)
+                    //    monitorSetting.EA.SelectedSplit = new SplitJson() { CellCount = 0, SplitKey = 'A' };
+
+                    eaSettings.SelectedSplit = customList.Find(x => x.EAID == eaSettings.SelectedSplit.EAID);
+                    if (eaSettings.SelectedSplit == null)
+                        eaSettings.SelectedSplit = new SplitJson() { CellCount = 0, SplitKey = 'A' };
                 }
                 else
                 {
                     //It's a preset layout
-                    monitorSetting.EA.SelectedSplit = SplitJson.CreatePresetLayoutFromEAID(monitorSetting.EA.SelectedSplit.EAID);
+                    //monitorSetting.EA.SelectedSplit = SplitJson.CreatePresetLayoutFromEAID(monitorSetting.EA.SelectedSplit.EAID);
+                    eaSettings.SelectedSplit = SplitJson.CreatePresetLayoutFromEAID(eaSettings.SelectedSplit.EAID);
                 }
             }
 
             //Robert_Lin, 2024-10-11 for default RecentList, if RecentList is null, then assign default list to it
-            if ((monitorSetting.EA.RecentList == null) || (monitorSetting.EA.RecentList.Length == 0))
-                monitorSetting.EA.RecentList = SplitJson.DefaultRecentList.ToArray();
+            //if ((monitorSetting.EA.RecentList == null) || (monitorSetting.EA.RecentList.Length == 0))
+            //    monitorSetting.EA.RecentList = SplitJson.DefaultRecentList.ToArray();
+            if ((eaSettings.RecentList == null) || (eaSettings.RecentList.Length == 0))
+                eaSettings.RecentList = SplitJson.DefaultRecentList.ToArray();
             else
             {
                 //Convert RecentList
                 List<SplitJson> migratedRecentList = new List<SplitJson>();
-                foreach (SplitJson recentJson in monitorSetting.EA.RecentList)
+                //foreach (SplitJson recentJson in monitorSetting.EA.RecentList)
+                foreach (SplitJson recentJson in eaSettings.RecentList)
                 {
                     if (recentJson.CellCount < 0)
                     {
                         //If it's a custom layout
                         if (recentJson.EAID >= 1000)
                         {
-                            SplitJson? custJson = customList.Find(x => x.EAID == monitorSetting.EA.SelectedSplit.EAID);
+                            //SplitJson? custJson = customList.Find(x => x.EAID == monitorSetting.EA.SelectedSplit.EAID);
+                            SplitJson? custJson = customList.Find(x => x.EAID == eaSettings.SelectedSplit.EAID);
                             if (custJson != null)
                             {
                                 migratedRecentList.Add(custJson);
@@ -7842,7 +7923,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         else
                         {
                             //It's a preset layout
-                            SplitJson? presetJson = SplitJson.CreatePresetLayoutFromEAID(monitorSetting.EA.SelectedSplit.EAID);
+                            //SplitJson? presetJson = SplitJson.CreatePresetLayoutFromEAID(monitorSetting.EA.SelectedSplit.EAID);
+                            SplitJson? presetJson = SplitJson.CreatePresetLayoutFromEAID(eaSettings.SelectedSplit.EAID);
                             if (presetJson != null)
                             {
                                 migratedRecentList.Add(presetJson);
@@ -7854,12 +7936,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         migratedRecentList.Add(recentJson);
                     }
                 }
-                monitorSetting.EA.RecentList = migratedRecentList.ToArray();
+                //monitorSetting.EA.RecentList = migratedRecentList.ToArray();
+                eaSettings.RecentList = migratedRecentList.ToArray();
             }
 
             //_dump_SplitJsonList(monitorInfo, monitorSetting.EA.RecentList.ToList<SplitJson>());
             //Return the EA settings from the settings file
-            return Task.FromResult(monitorSetting.EA);
+            //return Task.FromResult(monitorSetting.EA);
+            return Task.FromResult(eaSettings);
         }
 
         #endregion EAMonitorSettings - EasyArrange
@@ -8224,6 +8308,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 string model = monitorInfo.modelName;
                 string serviceTag = monitorInfo.edid.ServiceTag;
+                string instance = monitorInfo.edid.Instance;
+                Trace.Write($"Model=[{model}], ServiceTag=[{serviceTag}], Instance=[{instance}]");
 
                 // Reload Monitor
                 List<DDPMMonitorSettings> settings = await _SettingsPlugin.ReloadMonitorSettings(model);
@@ -8248,8 +8334,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     return false;
                 }
 
+                //Robert_Lin, 2025-4-9 find the Instance of Monitor
+                int idxDesktop = monitorSettings.easyArrangementDDPM.FindIndexOfDesktop(instance);
+                if (idxDesktop < 0)
+                {
+                    //This Desktop (Instance) is not exist, add one
+                    List<DesktopDDPM> desktops = new List<DesktopDDPM>(monitorSettings.easyArrangementDDPM.Desktops);
+                    monitorSettings.easyArrangementDDPM.Desktops.Clear();
+                    DesktopDDPM newDesktop = new DesktopDDPM(instance, profileSettingDDPM.ID);
+                    desktops.Add(newDesktop);
+                    monitorSettings.easyArrangementDDPM.Desktops = desktops;
+                    idxDesktop = monitorSettings.easyArrangementDDPM.Desktops.IndexOf(newDesktop);
+                }
+                Trace.WriteLine($"idxDesktop=[{idxDesktop}]");
+
                 // 在 DesktopDDPM[0] 中尋找相同 ID 的 ProfileSetting
-                EzProfileSettingDDPM? existingProfileSetting = monitorSettings.easyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == profileSettingDDPM.ID);
+                //EzProfileSettingDDPM? existingProfileSetting = monitorSettings.easyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == profileSettingDDPM.ID);
+                EzProfileSettingDDPM? existingProfileSetting = monitorSettings.easyArrangementDDPM.Desktops[idxDesktop].ProfileSettings.FirstOrDefault(ps => ps.ID == profileSettingDDPM.ID);
 
                 if (existingProfileSetting != null)
                 {

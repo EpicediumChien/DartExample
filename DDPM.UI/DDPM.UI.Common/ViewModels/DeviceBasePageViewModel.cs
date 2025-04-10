@@ -120,6 +120,10 @@ namespace DDPM.UI.Common.ViewModels
                 GroupSelectedIndex = -1;
 
                 RefreshGroupManagerUIByModuleCapabilities();
+                //Robert_Lin 2025-4-8, fix, if the Monitor was DDC/CI off before DDPM startup
+                //We will go to here, and we need to check if DDC/CI is off, and call DDC/CI off handler
+                if ((_selectedHomeDevice != null) && (_selectedHomeDevice.MonitorInfo != null))
+                    HandleDdcCiOffEvent(_selectedHomeDevice.MonitorInfo.DDCisON);
             }
         }
 

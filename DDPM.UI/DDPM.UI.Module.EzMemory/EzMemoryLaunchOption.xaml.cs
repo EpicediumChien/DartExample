@@ -209,6 +209,8 @@ namespace DDPM.UI.Module.EzMemory
                         _vm.SelectedAMPM = amDesignator; // AM
                         _vm.SelectedHour = hourValue.ToString("D2");
                     }
+                    //Robert_Lin 20205-4-9 add minitues
+                    _vm.SelectedMinute = timeSpan.Minutes.ToString("D2");
                 }
                 else
                 {
@@ -340,6 +342,8 @@ namespace DDPM.UI.Module.EzMemory
                 }
 
                 // Handle Monitor Settings
+                string instance = _selecthomeDevice.MonitorInfo.edid.Instance;
+
                 if (_vm.IsAutoLaunch && (_vm.SelectedHour == string.Empty || _vm.SelectedAMPM == string.Empty))
                     return;
 
@@ -351,14 +355,23 @@ namespace DDPM.UI.Module.EzMemory
 
                     if (clickedeasyArrangementDDPM != null && clickedeasyArrangementDDPM.Desktops.Count > 0)
                     {
-                        foreach (var ps in clickedeasyArrangementDDPM.Desktops[0].ProfileSettings)
+                        int idxDesktop = clickedeasyArrangementDDPM.FindIndexOfDesktop(_selecthomeDevice.MonitorInfo.edid.Instance);
+
+                        if (idxDesktop < 0)
                         {
-                            if (ps.StartUpLaunch)
+                            //?? what to do?
+                        }
+                        else
+                        {
+                            foreach (var ps in clickedeasyArrangementDDPM.Desktops[idxDesktop].ProfileSettings)
                             {
-                                ps.StartUpLaunch = false;
-                                if(DdpmCommonHelper.DeviceManagerSA.UpdateMonitorEzProfileSettingDDPM(_selecthomeDevice.MonitorInfo, ps).Result)
+                                if (ps.StartUpLaunch)
                                 {
-                                    _log.Info($"@{nameof(EzMemoryLaunchOption)} _vm.IsLaunchAtStartup update success ");
+                                    ps.StartUpLaunch = false;
+                                    if (DdpmCommonHelper.DeviceManagerSA.UpdateMonitorEzProfileSettingDDPM(_selecthomeDevice.MonitorInfo, ps).Result)
+                                    {
+                                        _log.Info($"@{nameof(EzMemoryLaunchOption)} _vm.IsLaunchAtStartup update success ");
+                                    }
                                 }
                             }
                         }
@@ -373,18 +386,63 @@ namespace DDPM.UI.Module.EzMemory
                 long autoLaunchTime = _vm.IsAutoLaunch ? GetAutoLaunchTime() : default;
                 EzProfileSettingDDPM _ezProfileSettingDDPM = new EzProfileSettingDDPM(profileID, _vm.IsAutoLaunch, autoLaunchTime, _vm.IsLaunchAtStartup);
 
-                bool monitorSettingsSuccess = isEditMode
-                    ? DdpmCommonHelper.DeviceManagerSA.UpdateMonitorEzProfileSettingDDPM(_selecthomeDevice.MonitorInfo, _ezProfileSettingDDPM).Result
-                    : HandleMonitorEasyArrangement(_selecthomeDevice.MonitorInfo, _ezProfileSettingDDPM);
-
-                if (monitorSettingsSuccess)
+                #region Update to Per-monitor settings
+                //Robert_Lin 2025-4-9
+                //NEW:
+                //Read all EM MonitorSettings for selected monitor
+                EasyArrangementDDPM easyArrangement = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
+                if (easyArrangement != null)
                 {
+                    int idxDesktop = easyArrangement.FindIndexOfDesktop(instance);
+                    //if (isEditMode)
+                    {
+                        if (idxDesktop < 0)
+                        {
+                            List<DesktopDDPM> desktopList = new List<DesktopDDPM>(easyArrangement.Desktops);
+                            DesktopDDPM newAddDesktop = new DesktopDDPM(instance, layout);
+                            desktopList.Add(newAddDesktop);
+                            easyArrangement.Desktops = desktopList;
+                            idxDesktop = easyArrangement.Desktops.IndexOf(newAddDesktop);
+                        }
+                        EzProfileSettingDDPM? profileSettings = easyArrangement.Desktops[idxDesktop].ProfileSettings.Find(x => x.ID == profileID);
+                        if (profileSettings == null)
+                        {
+                            if (_vm.IsAutoLaunch)
+                            {
+                                profileSettings = new EzProfileSettingDDPM(profileID, _vm.IsAutoLaunch, autoLaunchTime, _vm.IsLaunchAtStartup);
+                                easyArrangement.Desktops[idxDesktop].ProfileSettings.Add(profileSettings);
+                            }
+                        }
+                        else
+                        {
+                            profileSettings.Auto = _vm.IsAutoLaunch;
+                            profileSettings.AutoStartTime = autoLaunchTime;
+                            profileSettings.StartUpLaunch = _vm.IsLaunchAtStartup;
+                        }
+                        _ = DdpmCommonHelper.DeviceManagerSA.WriteMonitorEasyArrangement(_selecthomeDevice.MonitorInfo, easyArrangement).Result;
+                    }
                     _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: Monitor Settings PASS");
                 }
                 else
                 {
                     _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: Monitor Settings FAIL");
                 }
+
+                //OLD:
+                //bool monitorSettingsSuccess = isEditMode
+                //        ? DdpmCommonHelper.DeviceManagerSA.UpdateMonitorEzProfileSettingDDPM(_selecthomeDevice.MonitorInfo, _ezProfileSettingDDPM).Result
+                //        : HandleMonitorEasyArrangement(_selecthomeDevice.MonitorInfo, _ezProfileSettingDDPM);
+
+                //if (monitorSettingsSuccess)
+                //{
+                //    _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: Monitor Settings PASS");
+                //}
+                //else
+                //{
+                //    _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: Monitor Settings FAIL");
+                //}
+
+                #endregion Update to Per-monitor settings
 
                 if (isEditMode)
                 {
@@ -471,15 +529,35 @@ namespace DDPM.UI.Module.EzMemory
                     easyArrangement = new EasyArrangementDDPM();
                 }
 
+                string instance = monitorInfo.edid.Instance;
+
                 if (easyArrangement.Desktops == null || easyArrangement.Desktops.Count == 0)
                 {
-                    DesktopDDPM newDesktop = new DesktopDDPM(string.Empty, 0);
+                    //Robert_Lin 2025-4-8 to support multiple partitions
+                    //DesktopDDPM newDesktop = new DesktopDDPM(string.Empty, 0);
+                    DesktopDDPM newDesktop = new DesktopDDPM(instance, 0);
                     newDesktop.ProfileSettings.Add(ezProfileSetting);
                     easyArrangement.Desktops = new List<DesktopDDPM> { newDesktop };
                 }
                 else
                 {
-                    easyArrangement.Desktops[0].ProfileSettings.Add(ezProfileSetting);
+                    //OLD:
+                    //easyArrangement.Desktops[0].ProfileSettings.Add(ezProfileSetting);
+                    //Check if the Instance is already exist
+                    int idxDesktop = easyArrangement.FindIndexOfDesktop(instance);
+                    //No this Instance found => add into Desktops[]
+                    if (idxDesktop < 0)
+                    {
+                        List<DesktopDDPM> desktopList = new List<DesktopDDPM>(easyArrangement.Desktops);
+                        DesktopDDPM newAddDesktop = new DesktopDDPM(instance, 0);
+                        desktopList.Add(newAddDesktop);
+                        easyArrangement.Desktops = desktopList;
+                        idxDesktop = easyArrangement.Desktops.IndexOf(newAddDesktop);
+                    }
+                    //Existing insrance
+                    easyArrangement.Desktops[idxDesktop].ProfileSettings.Add(ezProfileSetting);
+
+                    
                 }
 
                 return DdpmCommonHelper.DeviceManagerSA.WriteMonitorEasyArrangement(monitorInfo, easyArrangement).Result;
@@ -626,6 +704,7 @@ namespace DDPM.UI.Module.EzMemory
                             {
                                 _log.Info("[EzMemoryLaunchOption] StartupCB_Checked ... choice Yes");
                                 _vm.IsLaunchAtStartup = true;
+                                return;
                             }                            
                         }
                     }

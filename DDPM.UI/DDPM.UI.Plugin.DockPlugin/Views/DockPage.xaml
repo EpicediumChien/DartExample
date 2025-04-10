@@ -66,22 +66,25 @@
                 </Grid>
             </Grid>
             <!--Name & Model-->
-            <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Grid VerticalAlignment="Top" HorizontalAlignment="Left" d:Background="Cyan">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                         <Image x:Name="ArrowLeft" Margin="64,21,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Fill"
+                               d:Source="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/arrow-left.png"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="24" Height="24">
                             <Image.InputBindings>
                                 <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
                             </Image.InputBindings>
                         </Image>
                         <UXControls:UXTextBlock Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left"
+                                                d:Text="Dock Market Name"
                                                 Cursor=""
                                                 VerticalAlignment="Top"
                                                 Style="{StaticResource ProductNameTextStyle}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <UXControls:UXTextBlock Text="{Binding Model}" Margin="101,18,0,0" HorizontalAlignment="Left"
+                                                d:Text="Dock Model Name"
                                                 Style="{StaticResource ModelNumberTextStyle}" />
                         <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
                                VerticalAlignment="Top" Cursor="" Width="16" Height="16">
