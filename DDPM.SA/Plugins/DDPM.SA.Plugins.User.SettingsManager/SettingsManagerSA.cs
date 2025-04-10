@@ -1571,6 +1571,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 else
                 {
                     WriteLog("[ReadImportSettingsFile] file isn't exist : " + path);
+                    WriteLog($"[ReadImportSettingsFile] filePath check : \"{path}\"");
                 }
             }
             return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
