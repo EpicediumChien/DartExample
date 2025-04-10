@@ -10,7 +10,7 @@ namespace DDPM.SA.Common.Display
         private Action<MonitorInfo, Object[]> _action;
         private Object[] _param;
         private MonitorInfo _monitorInfo;
-        private readonly System.Timers.Timer _timer;
+        private System.Timers.Timer _timer = null;
         private readonly int _delayMilliseconds;
 
         public JobInfo(int delayMilliseconds, MonitorInfo monitor, Object[] param, Action<MonitorInfo, Object[]> action)
@@ -28,12 +28,22 @@ namespace DDPM.SA.Common.Display
         {
             if (_action != null)
                 _action(_monitorInfo, _param);
+            if (_timer != null)
+            {
+                _timer.Stop();
+                _timer.Elapsed -= TimerElapsed;
+                _timer.Dispose();
+                _timer = null;
+            }
         }
 
         public void Invoke()
         {
-            _timer.Stop();
-            _timer.Start();
+            if (_timer != null)
+            {
+                _timer.Stop();
+                _timer.Start();
+            }
             //_action(_monitorInfo, _param);
         }
     }
