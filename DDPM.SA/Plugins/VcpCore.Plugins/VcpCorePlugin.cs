@@ -898,7 +898,7 @@ namespace VcpCore.Plugins
                     _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
                     ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x52, new Type_Watcher0x52(_guid, default));
-                    _TaskQueue.Enqueue(parameterType, Priority.Low);
+                    _TaskQueue.Enqueue(parameterType, Priority.SuperLow);
 
                     Launch_TaskQueueExecutor();
                 }
@@ -925,7 +925,7 @@ namespace VcpCore.Plugins
                     _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
                     ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x02forStatusCheck, new Type_Watcher0x02forStatusCheck(_guid, default));
-                    _TaskQueue.Enqueue(parameterType, Priority.Low);
+                    _TaskQueue.Enqueue(parameterType, Priority.SuperLow);
 
                     Launch_TaskQueueExecutor();
                 }
@@ -2073,6 +2073,10 @@ namespace VcpCore.Plugins
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck UpdateMyself all Sucess");
                             else
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck UpdateMyself has Fail");
+
+                            monitor.MonitorInfosComplex.DDCisON = ori_DDCCIStatus;
+                            monitor.MonitorInfos.DDCisON = ori_DDCCIStatus;
+                            Initialize2TypesMonitorInfo(false, CancellationToken.None);
 
                             if (rt.IsUpdate)
                             {
