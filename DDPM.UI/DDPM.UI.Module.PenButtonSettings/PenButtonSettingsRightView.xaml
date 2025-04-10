@@ -12,9 +12,9 @@
              d:DesignHeight="675" d:DesignWidth="320" VerticalAlignment="Top" HorizontalAlignment="Left">
   <UserControl.Resources>
     <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
+      <!--<ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
-      </ResourceDictionary.MergedDictionaries>
+      </ResourceDictionary.MergedDictionaries>-->
       <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
       <PluginCommon:HeightConverter x:Key="HeightConverter" />
       <Style x:Key="UXTextBlockStyle1" TargetType="UXControls:UXTextBlock">
