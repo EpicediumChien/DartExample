@@ -57,10 +57,20 @@ namespace DDPM.UI.Module.PenButtonSettings
                     Interval = TimeSpan.FromSeconds(5)
                 };
                 timer.Tick += Timer_Tick;
+                Unloaded += PenButtonSettingsRightView_Unloaded;
             }
             catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs  PenButtonSettingsRightView() ex:" + ex.Message);
+            }
+        }
+
+        private void PenButtonSettingsRightView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (timer != null)
+            {
+                timer.Stop();
+                timer.Tick -= Timer_Tick;
             }
         }
 

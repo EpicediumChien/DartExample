@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Windows.ApplicationModel.UserDataTasks;
 namespace DDPM.SA.Common
 {
     /*public class IT_Command_Global
@@ -215,10 +216,14 @@ namespace DDPM.SA.Common
             }
 
             public int nTimeOutValue { get; set; } = 60;
-        }
 
+            public bool fromcli { get; set; } = false;
+        }
+        
         public CommandLineInput StringProcessing(string[] args)
         {
+            
+            _Log.Info($"[ICLICommandTable] from CLI IN {DateTime.Now.ToString("yyyy - MM - dd - HH - mm - ss")}]");
             if (args.Length == 0)
             {
                 args = ["HELP"];
@@ -226,6 +231,7 @@ namespace DDPM.SA.Common
             ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
             CommandLineInput commandInput = new CommandLineInput();
             commandInput.isCliCommandsProcessCompleted = false;
+            commandInput.fromcli = true;
 
             // [0824_CASPER]: marked for HELP function parsing
             //if (args.Length < 2)

@@ -43,6 +43,16 @@ namespace DDPM.UI.Module.KeyCustomization
                 Interval = TimeSpan.FromSeconds(5)
             };
             timer.Tick += Timer_Tick;
+            Unloaded += KeyCustomizationRightView_Unloaded;
+        }
+
+        private void KeyCustomizationRightView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (timer != null)
+            {
+                timer.Stop();
+                timer.Tick -= Timer_Tick;
+            }
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
@@ -133,7 +143,10 @@ namespace DDPM.UI.Module.KeyCustomization
             }
             else
             {
-                var cat = Actions.KnMActions[SelectedActionID].Category;
+                ActionCategory? cat = null;
+                if (Actions.KnMActions.TryGetValue(SelectedActionID, out var act))
+                    cat = act.Category;
+
                 if (cat == ActionCategory.None)
                 {
                     if (!string.IsNullOrEmpty(ActiveActionSection))

@@ -974,7 +974,7 @@ namespace DDPM.UI.Module.Color
 
             if (e.vcpcode.Equals("DC") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("14") || e.vcpcode.Equals("E2") || e.vcpcode.Equals("F4")) // Color changes by OSD menu
             {
-                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
+                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPresettoVCP(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
                 string strSync_CurrentColorPreset = string.Empty;
                 if(string.IsNullOrEmpty(curPreset))
                 {

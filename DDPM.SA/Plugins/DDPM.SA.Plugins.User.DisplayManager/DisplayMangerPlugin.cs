@@ -39,6 +39,7 @@ using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using static VcpCore.Common.EDIDReader;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 //using WinCopies;
@@ -645,6 +646,31 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg("[DisplayMangerPlugin] _VcpCorePlugin is null");
 
             return Task.FromResult(r);
+        }
+
+        public Task<ObjGetVCP> GetVCPCapability_NoGetCache(MonitorInfo monitorInfo, string FunctionName, Guid guid = default, int opt = 0, Priority priority = Priority.Low)
+        {
+            _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetVCPCapability_NoGetCache requested ...");
+            _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
+            _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
+            _logs.DebugMsg("[DisplayMangerPlugin] VcpCode is " + FunctionName);
+            _logs.DebugMsg("[DisplayMangerPlugin] opt is " + opt.ToString());
+
+            ObjGetVCP result = new ObjGetVCP() { result = false, value = null };
+
+            if (_VcpCorePlugin != null)
+            {
+                result = _VcpCorePlugin.GetVCPCapability(monitorInfo, FunctionName, guid, opt, priority).Result;
+                //Jason add color
+                if (result.result && FunctionName.Equals("colorpreset") && _displayDataManger != null)
+                {
+                    _displayDataManger.SetColor(monitorInfo, GetHDRStatus(monitorInfo).Result, (string)result.value);
+                }
+            }
+            else
+                _logs.DebugMsg("[DisplayMangerPlugin] _VcpCorePlugin is null");
+
+            return Task.FromResult(result);
         }
 
         #endregion
@@ -3060,7 +3086,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 SetMonitorVCPE9(e);
             }
             //Jason 0409 add DisplayData_Color
-            if (e.vcpcode.Equals("E2"))
+            if (e.vcpcode.Equals("DC") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("14") || e.vcpcode.Equals("E2") || e.vcpcode.Equals("F4"))
             {
                 SetMonitorColor(e);
             }
@@ -6114,13 +6140,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             if (vCPchangedEventArgs.monitor != null)
             {
+                ObjGetVCP result = new ObjGetVCP() { result = false, value = null };
                 if (_displayDataManger != null)
                 {
-                    Trace.WriteLine("SetMonitorColor value : " + vCPchangedEventArgs.value);
-                    //string strColor = VcpCodeList.VCPE2[int.Parse(vCPchangedEventArgs.value)];
-                    //Trace.WriteLine("SetMonitorColor code" + int.Parse(vCPchangedEventArgs.value).ToString());
-                    //Trace.WriteLine("SetMonitorColor strcode" + strColor);
-                    _displayDataManger.SetColor(vCPchangedEventArgs.monitor, GetHDRStatus(vCPchangedEventArgs.monitor).Result, vCPchangedEventArgs.value);
+                    result = _VcpCorePlugin.GetVCPCapability(vCPchangedEventArgs.monitor, "colorpreset").Result;
+                    if (result.result)
+                    {
+                        Trace.WriteLine("SetMonitorColor value : " + (string)result.value);
+                        _displayDataManger.SetColor(vCPchangedEventArgs.monitor, GetHDRStatus(vCPchangedEventArgs.monitor).Result, (string)result.value);
+                    }
                 }
             }
             else
