@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common.Display;
+using System; //For Array
 using System.Collections.Generic;
 using VcpCore.Common;
 
@@ -61,6 +62,13 @@ namespace DDPM.SA.Common.Settings
     /// </summary>
     public class EAMonitorSettings
     {
+        //Robert_Lin 2025-4-8 new added for DDPMMonitorSettings Version=1.0
+        /// <summary>
+        /// The property from MonitorInfo.edit.Instance. When a single monitor can be
+        /// partition to multiple instances. (For example, U4323QE model.)
+        /// </summary>
+        public string Instance { get; set; } = String.Empty;
+
         /// <summary>
         /// Current user selected Split item. Defaul is (CellCount=0, SplitKey='A')
         /// </summary>
@@ -114,9 +122,11 @@ namespace DDPM.SA.Common.Settings
         public bool SameModel { get; set; } = false;
     }
 
+    //Robert_Lin 2025-4-8 Change to Version=1 (from 0)
+    //Add "EA1" property to replace "EA"
     public class DDPMMonitorSettings
     {
-        public double Version { get; set; } = 0;
+        public double Version { get; set; } = 1;
         public string Model { get; set; } = string.Empty;
         public string ServiceTag { get; set; } = string.Empty;
         public InputSource Input { get; set; } = new InputSource();
@@ -133,6 +143,25 @@ namespace DDPM.SA.Common.Settings
         public Gaming Gaming { get; set; } = new Gaming();
         public PowerNapSetting PowerNap { get; set; } = new PowerNapSetting();//1126 move powerNap setting to here
         public HotkeyOption HotkeyOption { get; set; } = HotkeyOption.None; //20250408 move  USBkvm hotkey: ”auto swtich USB upstream port in PBP side-by-side mode“ setting to here
+        //Robert_Lin 2025-4-8 new added for DDPMMonitorSettings Version=1.0
+        public EAMonitorSettings[] EA1 { get; set; } = Array.Empty<EAMonitorSettings>();
+       //Convert v0 to v1 which will copy EA to EA1[0] if EA1 is empty.
+        public void ConvertV0ToV1()
+        {
+            Version = 1;
+            if (EA != null)
+            {
+                if ((EA1 == null) || (EA1.Length == 0))
+                {
+                    EA1 = new EAMonitorSettings[1];
+                    EA1[0] = EA;
+                }
+                //else
+                //{
+                //    EA1[0] = EA;
+                //}
+            }
+        }
     }
 
     public class HotkeyData

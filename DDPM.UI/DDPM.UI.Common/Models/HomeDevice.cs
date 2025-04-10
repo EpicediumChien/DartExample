@@ -1816,6 +1816,12 @@ namespace DDPM.UI.Common.Models
         {
             get
             {
+                //Robert_Lin, 2025-4-8 [PIMS-305799]The PIP PBP Tab can't disabled and
+                //the hotkey function cant hide when setting DUT OSD screen partition
+                //change to 234 PBP
+                if (IsScreenPartition)
+                    return false;
+
                 if (MonitorInfo != null && MonitorInfo.CapabilityDic != null)
                 {
                     return MonitorInfo.CapabilityDic.ContainsKey("E9");
@@ -2103,5 +2109,9 @@ namespace DDPM.UI.Common.Models
                 OnPropertyChanged(nameof(IsRestoreBtnVisible));
             }
         }
+
+        #region Monitor Properties
+        public bool IsScreenPartition { get; set; } = false;
+        #endregion Monitor Properties
     }
 }

@@ -1312,6 +1312,19 @@ namespace DDPM.UI.Module.EzArrange
             //Save MonitorSettings: Selected, RecentList
             EAMonitorSettings eaSettings = new EAMonitorSettings();
 
+            //Robert_Lin, 2025-4-8 Change DDPMMonitorSettings to v1 (from V0)
+            try
+            {
+                eaSettings.Instance = _homeDevice.MonitorInfo.edid.Instance;
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+
+            }
+
             SplitItem spItem = (SplitItem)_vm.SelectedSplitItem;
             eaSettings.SelectedSplit = spItem.ToSplitJson;
 

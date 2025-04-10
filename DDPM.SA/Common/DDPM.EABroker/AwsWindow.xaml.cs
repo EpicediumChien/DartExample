@@ -1,10 +1,22 @@
 ﻿using DDPM.Easy.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
+using Dell.Client.Framework.Common;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.Windows.Threading;
 using VcpCore.Common;
 
 namespace DDPM.EABroker
@@ -35,7 +47,10 @@ namespace DDPM.EABroker
         private Rect _rcHoveringIcon = new Rect();
         private Rect _rcHoveringCell = new Rect();
 
-
+        //Flags to prevent Dispatcher.InvokeAsync() twice
+        private DispatcherOperation? _pendingOp_RefreshCellRects = null;
+        private DispatcherOperation? _pendingOp_AwsWinVisibleChanged = null;
+        private DispatcherOperation? _pendingOp_WorkScreenChanged = null;
         #endregion Private members
 
         public ISplitCtrl? HoveringSplit { get; private set; } = null;
@@ -325,6 +340,8 @@ namespace DDPM.EABroker
             //    _vm.AwsWindowHoverMsg = $"Cursor({x},{y}) not inside AwsWindow";
             //    return null;
             //}
+            if (_vm.AwsIcon0 == null)
+                return null;
 
             CellObj? hoverCell = null;
             hoverCell = DeterminAwsIconHoveringCellObj(_vm.AwsIcon0, x, y);
@@ -692,6 +709,8 @@ namespace DDPM.EABroker
         private CellObj? DeterminAwsIconHoveringCellObj(ISplitCtrl awsIcon, int x, int y)
         {
             CellObj? hoverCell = null;
+            if (awsIcon == null)
+                return null;
 
             if (awsIcon.IsOverlapCustomLayout)
             {
@@ -1124,7 +1143,8 @@ namespace DDPM.EABroker
             if (!isVisible)
                 return;
 
-            _ = Dispatcher.BeginInvoke(new Action(() =>
+            _pendingOp_AwsWinVisibleChanged?.Abort();
+            _pendingOp_AwsWinVisibleChanged = Dispatcher.InvokeAsync(() =>
             {
                 //Get the Screen of the cursor
                 Screen showScreen = _vm.GetScreenFromCursor();
@@ -1149,10 +1169,11 @@ namespace DDPM.EABroker
 
                 RefreshAwsIconRects();
                 RefreshCellBordersInAwsIcons();
-                RefreshCellRects();
-                RefreshIcon0();
+                //RefreshCellRects();
+                Dispatcher_RefreshCellRects();
+                Dispatcher_RefreshIcon0();
 
-            }));
+            }, DispatcherPriority.Loaded);
 
 
         }
@@ -1164,9 +1185,10 @@ namespace DDPM.EABroker
             if (!_vm.IsAwsWindowVisible)
                 return;
 
-            _ = Dispatcher.BeginInvoke(new Action(() =>
+            _pendingOp_WorkScreenChanged?.Abort();
+            _pendingOp_WorkScreenChanged = Dispatcher.InvokeAsync(() =>
             {
-
+                _pendingOp_WorkScreenChanged = null;
                 _vm.WriteLog($"@ AwsWindow.HandleWorkScreenChanged(), Cursor=({_vm.xCursor},{_vm.yCursor})");
                 System.Windows.Point ptAws = CalculateAwsPosition();
                 _vm.xAwsWindow = ptAws.X;
@@ -1186,19 +1208,19 @@ namespace DDPM.EABroker
 
                 RefreshAwsIconRects();
                 RefreshCellBordersInAwsIcons();
-                RefreshCellRects();
-                RefreshIcon0();
+                Dispatcher_RefreshCellRects();
+                Dispatcher_RefreshIcon0();
 
-            }));
+            }, DispatcherPriority.Loaded);
         }
 
         #endregion ViewModel Event Handlers
 
         #region Icon0 - Monitors
-        private void RefreshIcon0()
+        private void Dispatcher_RefreshIcon0()
         {
-            _ = Dispatcher.BeginInvoke(new Action(() =>
-            {
+            //Dispatcher.BeginInvoke(new Action(() =>
+            //{
                 //if (_vm.AwsIcon0 != null)
                 //{
                 //    UI_RefreshIcon0_SplitCtrl0B();
@@ -1288,7 +1310,7 @@ namespace DDPM.EABroker
                     idxScr++;
                 }
                 _vm.OnPropertyChanged_AwsIconInfos();
-            }));
+            //}));
 
 
         }
@@ -1407,13 +1429,16 @@ namespace DDPM.EABroker
 
         private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue != null)
+            if (this.IsVisible)
             {
-                bool isVisible = (bool)e.NewValue;
-                if (isVisible)
+                _vm.rcAwsWindow = _vm.GetFrameworkElementRect(this);
+
+                _pendingOp_RefreshCellRects?.Abort();
+                _pendingOp_RefreshCellRects = Dispatcher.InvokeAsync(() =>
                 {
-                    _vm.rcAwsWindow = _vm.GetFrameworkElementRect(this);
-                }
+                    _pendingOp_RefreshCellRects = null;
+                    Dispatcher_RefreshCellRects();
+                }, DispatcherPriority.Loaded);
             }
 
         }

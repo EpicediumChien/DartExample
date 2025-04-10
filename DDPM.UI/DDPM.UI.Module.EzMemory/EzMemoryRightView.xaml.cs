@@ -377,6 +377,7 @@ namespace DDPM.UI.Module.EzMemory
 
                 _vm.UpdateRightViewUIFromCurrentSelectspItem();
 
+                
                 /*
                 // User Setting
                 List<EAProfileDDPM> clickedEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
@@ -678,7 +679,13 @@ namespace DDPM.UI.Module.EzMemory
                 splitListView_RecentForEzM.HasAddButton = true;
                 splitListView_RecentForEzM.IsVertical = _vm.IsVertical;
 
+                //Default Selected Profile item
+                int initProfileId = _vm.SelectedProfileId;
+                EAProfileDDPM? selectedProfile = _vm.CurrentSelectedProfile;
+
                 _vm.RightViewDataClear();
+
+                SplitItem? initSelItem = null;
 
                 // 取得User EAProfiles
                 List<EAProfileDDPM> initListViewIEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
@@ -744,6 +751,9 @@ namespace DDPM.UI.Module.EzMemory
 
                                     //Robert_Lin, 2025-1-9, SplitItem need ProfileID to identify the Profile
                                     item.ProfileID = profile.ID;
+
+                                    if (item.ProfileID == initProfileId)
+                                        initSelItem = item;
                                 }
                             }
                         }
@@ -764,6 +774,9 @@ namespace DDPM.UI.Module.EzMemory
                                 item.IsDeleteEnabled = true;
                                 item.IsEditEnabled = true;
                                 item.LayoutID = profile.Layout;
+
+                                if (profile.ID == initProfileId)
+                                    initSelItem = item;
                             }
                         }
                         //}
@@ -777,6 +790,19 @@ namespace DDPM.UI.Module.EzMemory
                     //{
                     //    _log.Info($"@[EzMemoryRightView] InitListViewItems: No valid ProfileSettings found in MonitorSettings.");
                     //}
+
+                    if (initSelItem != null)
+                    {
+                        if (_vm.CurrentSelectspItem != null)
+                        {
+                            _vm.CurrentSelectspItem.IsSelected = false;
+                        }
+                        _vm.CurrentSelectspItem = initSelItem;
+                        _vm.CurrentSelectspItem.IsSelected = true;
+
+                        _vm.UpdateRightViewUIFromCurrentSelectspItem();
+                        _vm.IsApplyEnabled = (_vm.CurrentSelectspItem != null);
+                    }
                 }
                 else
                 {

@@ -356,8 +356,28 @@ namespace DDPM.UI.Common.ViewModels
         {
             if (easyArrangementDDPM.Desktops != null && easyArrangementDDPM.Desktops.Count > 0)
             {
+                //Robert_Lin, to support multiple "Partitions" (multiple Desktops)
+                //Need to determine the index to Desktops
+                int idxDesktop = -1;
+                //Get the Instance of current monitor
+                if (_homeDevice != null)
+                {
+                    string instance = _homeDevice.MonitorInfo.edid.Instance;
+                    for (int idx=0; idx< easyArrangementDDPM.Desktops.Count; idx++)
+                    {
+                        if (easyArrangementDDPM.Desktops[idx].ID == instance)
+                        {
+                            idxDesktop = idx;
+                            break;
+                        }
+                    }
+                }
+                if (idxDesktop < 0)
+                {
+                    return null;
+                }
                 // 從 Desktops[0].ProfileSettings 中找 ID
-                EzProfileSettingDDPM matchingProfileSetting = easyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == profileID);
+                EzProfileSettingDDPM matchingProfileSetting = easyArrangementDDPM.Desktops[idxDesktop].ProfileSettings.FirstOrDefault(ps => ps.ID == profileID);
 
                 if (matchingProfileSetting != null)
                 {
@@ -651,9 +671,13 @@ namespace DDPM.UI.Common.ViewModels
             set
             {
                 SetProperty(ref _currentSelectedProfileSetting, value);
+                if (_currentSelectedProfile != null)
+                    SelectedProfileId = _currentSelectedProfile.ID;
             }
         }
 
+        //Robert_Lin 2025-4-9 The selected ProfileId at init state
+        public int SelectedProfileId { get; set; } = -1;
 
         /// <summary>
         /// Called after you updated the CurrentSelectspItem, it will:

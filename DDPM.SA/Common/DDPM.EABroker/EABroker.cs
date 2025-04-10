@@ -6,6 +6,7 @@ using DDPM.SA.Common.Interfaces;
 using DDPM.Win32Lib;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Interfaces;
+using System.ComponentModel;
 using VcpCore.Common;
 
 namespace DDPM.EABroker

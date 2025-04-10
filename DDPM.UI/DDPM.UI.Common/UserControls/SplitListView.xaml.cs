@@ -413,7 +413,12 @@ namespace DDPM.UI.Common.UserControls
 
         public SplitItem AddSplitCtrlTo2ndPosition(ISplitCtrl isp)
         {
-            using (SplitItem spItem = new SplitItem())
+            //Robert_Lin 2025-4-10, The new SplitItem will return to caller
+            //SO itcannot be created inside an using
+            //NEW:
+            SplitItem spItem = new SplitItem();
+            //OLD:
+            //using (SplitItem spItem = new SplitItem())
             {
                 spItem.InnerContent = isp.UC;
                 spItem.SplitOwner = vm.SplitOwner;

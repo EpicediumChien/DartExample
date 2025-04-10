@@ -194,6 +194,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             {
                                 _log.Info($"[DdpmHomePageViewModel] PrepareMonitorInfos inputList == null ... ");
                             }
+
+                            //Robert_Lin 2025-4-7 To get the IsScreenPartition state
+                            bool isScreenPartition = DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result;
+                            dev.IsScreenPartition = isScreenPartition;
+
+                            string devInstanceId = mi.edid.Instance;
+
                         }
                         //
                         ///////////////////////////////////////////////////////////////////////////////
