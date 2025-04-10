@@ -4,7 +4,9 @@ using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using VcpCore.Common;
+using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.DisplayManager
 {
@@ -78,6 +80,41 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 WriteLog("[InitDisplayData] monitorInfos is null...");
             }
+        }
+
+        public bool ResetDisplayData(MonitorInfo monitorInfo, string reset)
+        {
+            WriteLog("[ResetDisplayData] init...");
+            if (monitorInfo != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                    x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi == -1)
+                {
+                    switch (reset.ToUpper(CultureInfo.InvariantCulture))
+                    {
+                        case "ALL":
+                            WriteLog("[ResetDisplayData]Reset all DisplayData");
+                            DisplayData displayData = new DisplayData();
+                            _displayData[mi] = displayData;
+                            return true;
+                        case "COLOR":
+                            WriteLog("[ResetDisplayData]Reset DisplayData Color");
+                            Color color = new Color();
+                            _displayData[mi].Color = color;
+                            return true;
+                    }   
+                }
+                else
+                {
+                    WriteLog("[ResetDisplayData]_displayData is not find monitor");
+                }
+            }
+            else
+            {
+                WriteLog("[ResetDisplayData] monitorInfo is null...");
+            }
+            return false;
         }
 
         public bool GetMonitorUSB(MonitorInfo monitorInfo, string inputSource, out string USB)
