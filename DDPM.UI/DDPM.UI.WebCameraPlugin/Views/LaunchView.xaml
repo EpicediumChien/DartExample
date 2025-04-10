@@ -16,9 +16,9 @@
   Unloaded="LaunchView_Unloaded" Loaded="UserControl_Loaded">
   <UserControl.Resources>
     <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
+      <!--<ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
-      </ResourceDictionary.MergedDictionaries>
+      </ResourceDictionary.MergedDictionaries>-->
       <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
       <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
       <Storyboard x:Key="StoryGotoTwoView">

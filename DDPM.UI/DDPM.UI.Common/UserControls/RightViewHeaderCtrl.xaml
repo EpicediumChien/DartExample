@@ -8,13 +8,6 @@
              mc:Ignorable="d"
              d:DesignHeight="60" d:DesignWidth="600"
              Visibility="{Binding CtrlVisibility}">
-  <UserControl.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
-      </ResourceDictionary.MergedDictionaries>
-    </ResourceDictionary>
-  </UserControl.Resources>
   <Grid>
     <Border Grid.Row="0" CornerRadius="4" Background="{DynamicResource RightView_Header_BkColor}"
                 Height="30" Margin="0,0,0,12">
