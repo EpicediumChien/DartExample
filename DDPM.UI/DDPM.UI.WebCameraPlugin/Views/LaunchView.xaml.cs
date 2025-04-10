@@ -513,6 +513,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 CheckDisplayWebcamTestCase();
             }
+            else 
+            {
+                noPresenceFunction = false;
+                _vm.UPD_Visibility = Visibility.Collapsed; //HPD
+                _vm.MPS_Setting_Visibility = Visibility.Collapsed;//內建電腦MPS
+                _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;//FW Update
+            }
             //CheckTestCase2();
 
             /*noPresenceFunction = false;
@@ -618,7 +625,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;//FW Update
             CheckSupportWindowsHello(is_WindwosHelloSupport ? Visibility.Visible : Visibility.Collapsed);
             //C#1
-            if (is_DellPc && is_EsiSupport && is_WindowsVer_OK == 2)
+            if (is_DellPc && is_EsiSupport)
             {
                 print_debug("TestCase C#1");
                 _vm.UPD_Visibility = Visibility.Visible;
@@ -626,10 +633,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             }
             //C#3
-            if (!is_DellPc && is_EsiSupport && is_WindowsVer_OK == 2)
+            if (!is_DellPc && is_EsiSupport)
             {
                 print_debug("TestCase /C#3");
-                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                noPresenceFunction = true;
                 return;
             }
 
@@ -667,8 +674,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             public bool is_DellPc = true;
         }
 
-        public bool check_DellPc()
+        public bool check_DellPc(string modelName)
         {
+            if (modelName.StartsWith("AW")|| modelName.ToUpper().Contains("Alienware".ToUpper()))
+            {
+                return false;
+            }
+
             if (File.Exists(@"C:\ui_cond\dellpc.txt"))
                 return true;
 
@@ -763,7 +775,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             return false;
         }
-        string[] DisplayWebcameList = new string[] { "U3223QZ", "U3224KB", "U3224KBA", "P2424HEB", "P2724DEB", "P3424WEB" };
+        string[] DisplayWebcameList = new string[] { "U3223QZ", "U3224KB", "U3224KBA", "P2424HEB", "P2724DEB", "P3424WEB","P3426WEB","P2726DEB","P2426HEB"};
         public int check_camera_dell7(string model)
         {
             //hard code 指定特定型號是否為internal
