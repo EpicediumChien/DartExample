@@ -138,7 +138,7 @@ echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins
 echo "DllPath"="%BaseDir%\\DTP_dll.210\\DDPM.Peripherals.interface.dll">>%OutFile%
 echo.>>%OutFile%
 :: New one for DA225
-echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{E40CF224-7E8A-455B-8F61-E9FD214C82B5}]>>%OutFile%
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\DELL\DTP.Instrumentation.SubAgent\AgentPlugins\{832023C2-C24A-48C3-ADF5-251A21C1E1AD}]>>%OutFile%
 echo "DllPath"="%BaseDir%\\DTP_dll.210\\Dell.TechHub.Plugins.RtkHubCommodity.dll">>%OutFile%
 echo.>>%OutFile%
 
