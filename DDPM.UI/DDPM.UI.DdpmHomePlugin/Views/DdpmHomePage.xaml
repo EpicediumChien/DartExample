@@ -362,7 +362,7 @@
                                 -->
                                 <Border Name="bdItem"
                                         BorderBrush="{StaticResource FocusDotBrush}"
-                                        Background="#02000000"
+                                        Background="#00000000"
                                         Margin="0"
                                         Padding="0"
                                         Width="auto"
@@ -381,12 +381,15 @@
                                                     <Setter Property="BorderThickness"
                                                             Value="1" />
                                                 </DataTrigger>
-                                                <!-- When the ListViewItem is focus will show gray dot border -->
+                                                <!-- When the ListViewItem is focus will show gray dot border 
+                                                Robert_Lin 2025-4-11 removed
+                                                
                                                 <DataTrigger Binding="{Binding IsFocused, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem}}}"
                                                              Value="True">
                                                     <Setter Property="BorderThickness"
                                                             Value="1" />
                                                 </DataTrigger>
+                                                -->
                                                 <!--
                                                 <DataTrigger Binding="{Binding IsConnectionHoverViewShow}" Value="True">
                                                 <Setter Property="ToolTip" Value="{x:Null}" />
@@ -407,12 +410,13 @@
                                                Stretch="Uniform" HorizontalAlignment="Center"
                                                Focusable="False"
                                                AutomationProperties.Name="{Binding TooltipModelName}"
-                                               Margin="0,0,0,0"
+                                               Margin="0,0,0,0" RenderOptions.BitmapScalingMode="NearestNeighbor" SnapsToDevicePixels="True"
+                                               RenderTransformOrigin="0.5,0.5"
                                                Visibility="{Binding IsNotBootloader, Converter={StaticResource BoolToVisibilityConverter}}">
                                             <Image.RenderTransform>
                                                 <ScaleTransform x:Name="ImageScaleTransform"
                                                                 ScaleX="1"
-                                                                ScaleY="1" CenterX="0.5" CenterY="0.5" />
+                                                                ScaleY="1"/>
                                             </Image.RenderTransform>
                                             <Image.Triggers>
                                                 <EventTrigger RoutedEvent="Image.MouseEnter">
