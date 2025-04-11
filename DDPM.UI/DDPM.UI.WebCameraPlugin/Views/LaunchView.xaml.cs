@@ -625,7 +625,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;//FW Update
             CheckSupportWindowsHello(is_WindwosHelloSupport ? Visibility.Visible : Visibility.Collapsed);
             //C#1
-            if (is_DellPc && is_EsiSupport)
+            if (is_DellPc)
             {
                 print_debug("TestCase C#1");
                 _vm.UPD_Visibility = Visibility.Visible;
@@ -633,7 +633,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             }
             //C#3
-            if (!is_DellPc && is_EsiSupport)
+            if (!is_DellPc)
             {
                 print_debug("TestCase /C#3");
                 noPresenceFunction = true;
