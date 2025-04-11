@@ -5044,6 +5044,9 @@ namespace DDPM.CLI.Plugins.Display
                     {"SRGB", "sRGB"},
                     {"CustomColorHDR", "Custom Color HDR"},
                     {"HDRPeak1000", "HDR Peak 1000"},
+                    {"Rec709", "Rec.709"},//PIMS-356254
+                    {"REC709", "Rec.709"},//PIMS-356254
+                    {"BT709", "BT.709"},//PIMS-356254
                 };
                 value = colorPresetList.ContainsKey(value.ToUpper()) ? colorPresetList[value.ToUpper()] : value;
                 if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)

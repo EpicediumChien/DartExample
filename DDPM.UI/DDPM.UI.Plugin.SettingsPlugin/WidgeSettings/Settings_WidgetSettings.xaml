@@ -78,8 +78,7 @@
                                                         TextWrapping="WrapWithOverflow"
                                                         Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
                                 <!-- OLD:   <Grid Height="40" Margin="0,9">-->
-                                <Grid Height="40"
-                                      Margin="0,16,0,0">
+                                <Grid Height="40" Margin="0,16,0,0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
                                         <!-- 定义一行 and Add VerticalAlignment="Center" chewlin Fix PIMS-348202 20250312-->
@@ -100,6 +99,7 @@
                                                             Foreground="{DynamicResource DefaultTheme_TxtColor}" />
                                     <UXControls:UXToggleSwitch Grid.Column="1"
                                                                FontSize="14"
+                                                               IsEnabled="{Binding Path= GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}"
                                                                IsChecked="{Binding Path= GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder}"
                                                                ContentTextVisibility="True"
                                                                Content="{Binding Path=EnableQuickAccessWidget_Reminder_String}"
@@ -107,6 +107,16 @@
                                                                VerticalAlignment="Center"
                                                                Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                                Click="QuickAccessWidget_Reminder_Click"/>
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Setter Property="Opacity" Value="1" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path= GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}" Value="False">
+                                                    <Setter Property="Opacity" Value="0.4" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
                                 </Grid>
                             </StackPanel>
                         </Border>

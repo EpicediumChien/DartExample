@@ -785,7 +785,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             Command = commandLineInput.Command,
                             TargetFeature = commandLineInput.TargetFeature,
                             Result = "FAIL",
-                            Message = $"Functional error ({ex.Message})"
+                            Message = $"Functional error ({ex.GetType().ToString()})"//Dean 20250411 fix SDL issue: Information Exposure Through an Error Message
                         }, Formatting.Indented),
                         ExitCode = (int)CLI_ExitCode.functional_error,
                         ticket = DateTime.Now

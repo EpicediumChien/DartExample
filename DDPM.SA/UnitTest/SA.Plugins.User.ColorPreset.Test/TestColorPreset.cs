@@ -556,11 +556,18 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
         {
             string tempFilePath = Path.GetTempFileName();
             byte[] testData = { 1, 2, 3, 4, 5 };
-            File.WriteAllBytes(tempFilePath, testData);
-            PrivateObject privatecolorPresetObject = new PrivateObject(colorPresetPlugin);
-            //byte[] hash = (byte[])privatecolorPresetObject.Invoke("GetHashSha256", tempFilePath);   method remove
-            //Assert.IsNotNull(hash);
-            File.Delete(tempFilePath);
+            try
+            {
+                File.WriteAllBytes(tempFilePath, testData);            
+                PrivateObject privatecolorPresetObject = new PrivateObject(colorPresetPlugin);
+                //byte[] hash = (byte[])privatecolorPresetObject.Invoke("GetHashSha256", tempFilePath);   method remove
+                //Assert.IsNotNull(hash);
+                File.Delete(tempFilePath);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
         }
 
         [Test]

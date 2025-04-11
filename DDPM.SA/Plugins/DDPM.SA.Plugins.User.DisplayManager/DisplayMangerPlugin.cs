@@ -610,9 +610,20 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 r = _VcpCorePlugin.SetVCPCapability(monitorInfo, code, val, guid, priority).Result;
 
-                //Jason add 0xE9
-                if (r && code == 0xE9 && _displayDataManger != null)
-                    _displayDataManger.SetMonitorE9(monitorInfo, val);
+                if (_displayDataManger != null)
+                {
+                    //0410 Jason add 0x04
+                    if (r && code == 0x04)
+                        _displayDataManger.ResetDisplayData(monitorInfo, "ALL");
+
+                    //0410 Jason add 0x05
+                    if (r && code == 0x05)
+                        _displayDataManger.ResetDisplayData(monitorInfo, "COLOR");
+
+                    //Jason add 0xE9
+                    if (r && code == 0xE9 && _displayDataManger != null)
+                        _displayDataManger.SetMonitorE9(monitorInfo, val);
+                }
             }
             else
                 _logs.DebugMsg("[DisplayMangerPlugin] _VcpCorePlugin is null");

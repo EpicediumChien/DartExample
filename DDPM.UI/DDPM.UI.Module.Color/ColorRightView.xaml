@@ -17,7 +17,8 @@
         <common:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter"/>
     </UserControl.Resources>
     <Grid>
-        <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <!--Elsa 202504011 for PIMS-348407 change HorizontalScrollBarVisibility="Disabled" to HorizontalScrollBarVisibility="Hidden",add VerticalScrollBarVisibility="Auto"-->
+        <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" >
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

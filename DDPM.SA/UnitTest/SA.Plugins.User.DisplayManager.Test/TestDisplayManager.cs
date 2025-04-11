@@ -65,7 +65,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             result = false,
             ModelName = "DISPLAY7",
             Edid = new EDID() { SerialNumber = "808597589", ServiceTag = "123456" },
-            AutoBrightnessRangeLevel =  new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 }
+            AutoBrightnessRangeLevel = new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 }
         };
 
         private DisplayMangerPlugin CreateInitializeDisplayMangerPlugin()
@@ -197,6 +197,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             var VcpCoreServiceObject = VcpCoreService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
+            string capabilitystring = "(prot(monitor)type(LCD)model(U2424H)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C)E5 E7(02 03) E2(00 02 04 0C 0D 0F)";
+            monitorInfo1.CapabilityString = capabilitystring;
             var getVCPCapability = displayPlugin.GetVCPCapability(monitorInfo1, funName, opt: opt).Result;
             Assert.IsTrue(getVCPCapability.result);
             Assert.That(ObjGetvcpValue, Is.EqualTo(getVCPCapability.value));
@@ -801,7 +803,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             Assert.That(InputName2, Is.EqualTo(result["PC2"].InputName));
             Assert.That(InputType2, Is.EqualTo(result["PC2"].InputType));
         }*/
-        
+
         //Robert_Lin, 2025-1-7 EAPlugin.IsFunctionEnabled has been deleted.
         [Test]
         public void TestSetEAFunctionEnabled()
@@ -2476,51 +2478,51 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             Assert.IsNotNull(displayPropertiesPlugin);
         }
 
-       /* [Test]
-        public void TestSyncPrimaryMonitorBrightnessAndColorTemp()
-        {
-            MonitorInfo monitorInfoMain = monitorInfo1;
-            MonitorInfo monitorvalue = monitorInfo1;
-            string vcpcode;
-            ObjGetVCP val = new ObjGetVCP() { result = true, value = (uint)20 };
-            vcpcode = "60";
-            Mock<IVcpCoreService> mockVcpCoreService = new Mock<IVcpCoreService>();
-            if (vcpcode != "67" || vcpcode != "68")
-            {
-                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val.ToString()).Result;  // vcpcode = "60"
-                Assert.IsTrue(result);
-            }
+        /* [Test]
+         public void TestSyncPrimaryMonitorBrightnessAndColorTemp()
+         {
+             MonitorInfo monitorInfoMain = monitorInfo1;
+             MonitorInfo monitorvalue = monitorInfo1;
+             string vcpcode;
+             ObjGetVCP val = new ObjGetVCP() { result = true, value = (uint)20 };
+             vcpcode = "60";
+             Mock<IVcpCoreService> mockVcpCoreService = new Mock<IVcpCoreService>();
+             if (vcpcode != "67" || vcpcode != "68")
+             {
+                 var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val.ToString()).Result;  // vcpcode = "60"
+                 Assert.IsTrue(result);
+             }
 
-            vcpcode = "67";
-            if (vcpcode != "67" || vcpcode != "68")
-            {
-                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val.ToString()).Result;  // aconfig == null
-                Assert.IsFalse(result);
-            }
+             vcpcode = "67";
+             if (vcpcode != "67" || vcpcode != "68")
+             {
+                 var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val.ToString()).Result;  // aconfig == null
+                 Assert.IsFalse(result);
+             }
 
-            _AllALSConfig = new List<ALSConfig>();
-            aconfig.Edid = monitorInfo1.edid;
-            _AllALSConfig.Add(aconfig);
-            DisplayMangerPlugin.AllALSConfig = _AllALSConfig;  // aconfig != null
+             _AllALSConfig = new List<ALSConfig>();
+             aconfig.Edid = monitorInfo1.edid;
+             _AllALSConfig.Add(aconfig);
+             DisplayMangerPlugin.AllALSConfig = _AllALSConfig;  // aconfig != null
 
-            vcpcode = "68";
-            PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
-            mockVcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(true));
-            privatedispalypluginObject.SetFieldOrProperty("_VcpCorePlugin", mockVcpCoreService.Object);
+             vcpcode = "68";
+             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
+             mockVcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>(), It.IsAny<Guid>(), It.IsAny<Priority>())).Returns(Task.FromResult(true));
+             privatedispalypluginObject.SetFieldOrProperty("_VcpCorePlugin", mockVcpCoreService.Object);
 
-            if (vcpcode == "67" || vcpcode == "68")
-            {
-                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val.ToString()).Result; // vcpcode = "68"
-                Assert.IsTrue(result);
-            }
+             if (vcpcode == "67" || vcpcode == "68")
+             {
+                 var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val.ToString()).Result; // vcpcode = "68"
+                 Assert.IsTrue(result);
+             }
 
-            vcpcode = "67";
-            if (vcpcode == "67" || vcpcode == "68")
-            {
-                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val.ToString()).Result; //vcpcode = "67"
-                Assert.IsTrue(result);
-            }
-        }*/
+             vcpcode = "67";
+             if (vcpcode == "67" || vcpcode == "68")
+             {
+                 var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val.ToString()).Result; //vcpcode = "67"
+                 Assert.IsTrue(result);
+             }
+         }*/
 
         [Test]
         public void TestSyncPrimaryMonitorValueToOtherMonitor()

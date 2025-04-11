@@ -43,7 +43,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <UXControls:UXScrollViewer>
+        <!--Elsa 202504011 for PIMS-348407 add VerticalScrollBarVisibility="Auto"-->
+        <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="16,24,16,0">
                 <Grid>
                     <!--  Select KVM Setup Type -->
