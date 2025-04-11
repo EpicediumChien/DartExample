@@ -1536,43 +1536,46 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         public Task<DDPMImpExpSettings> ReadImportSettingsFile(string path)
         {
             DDPMImpExpSettings? ImpSettings = null;// new DDPMImpExpSettings();
+            string strReadJson = string.Empty;
+            string pathTrimmed = path?.Trim() ?? string.Empty;
 
-            if (!string.IsNullOrEmpty(path))
+            #region Check export file path
+            if (string.IsNullOrEmpty(pathTrimmed) || !File.Exists(pathTrimmed))
             {
-                if (File.Exists(path))
-                {
-                    //Elsa Add Security
-                    string FileInfo;
-                    if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
-                    {
-                        WriteLog($"{nameof(ReadImportSettingsFile)} {FileInfo}");
-                        return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
-                    }
-                    string strReadJson = string.Empty;
-
-                    //security SA
-                    string info;
-                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(path, out info);//, false);
-
-                    if (strReadJson == string.Empty || strReadJson.Length == 0)
-                    {
-                        WriteLog("[ReadImportSettingsFile] strReadJson is empty or length is 0.");
-                        return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
-                    }
-                    try
-                    {
-                        ImpSettings = RunImpExpDeserializeObject(strReadJson);
-                    }
-                    catch (Exception ex)
-                    {
-                        WriteLog($"[ReadImportSettingsFile] exception: {ex.Message}");
-                    }
-                }
-                else
-                {
-                    WriteLog("[ReadImportSettingsFile] file isn't exist : " + path);
-                }
+                WriteLog("[ReadImportSettingsFile] file isn't exist : " + path);
+                WriteLog($"[ReadImportSettingsFile] filePath check with spaces : \"{path}\"");
+                return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
             }
+
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+            {
+                WriteLog($"{nameof(ReadImportSettingsFile)} {FileInfo}");
+                return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
+            }
+            #endregion 
+
+            #region Check and read exported file JSON
+            //security SA
+            string info;
+            strReadJson = DDPMFileSecurity.GetSerializedJsonString(path, out info);//, false);
+
+            if (string.IsNullOrWhiteSpace(strReadJson))
+            {
+                WriteLog("[ReadImportSettingsFile] strReadJson is empty or length is 0.");
+                return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
+            }
+
+            try
+            {
+                ImpSettings = RunImpExpDeserializeObject(strReadJson);
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"[ReadImportSettingsFile] exception: {ex.Message}");
+            }
+            #endregion
+
             return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
         }
 
