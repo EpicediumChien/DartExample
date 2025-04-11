@@ -12,21 +12,28 @@ namespace DDPM.UI.Common
 {
     public class HostNameHandler
     {
+        private static string HostNameCheck(string? input)
+        {
+            input = input ?? "_ERROR";
+
+            Match match = Regex.Match(input, @"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$");
+
+            if (!match.Success || input.Length > 63 || input.Length < 1)
+            {
+                input = "_ERROR";
+            }
+
+            return input;
+        }
 
         private static string GetHostNameByDNS()
         {
-            string hostName = string.Empty;
+            string hostName = "_ERROR";
 
             try
             {
                 hostName = Dns.GetHostName();
-
-                Match match = Regex.Match(hostName, @"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$");
-
-                if (!match.Success || hostName.Length > 63 || hostName.Length < 1)
-                {
-                    hostName = "_ERROR";
-                }
+                hostName = HostNameCheck(hostName);
             }
             catch (Exception ex)
             {
@@ -38,11 +45,11 @@ namespace DDPM.UI.Common
 
         private static string GetHostNameByMachineName()
         {
-            string machineName = string.Empty;
+            string machineName = "_ERROR";
 
             try
             {
-                machineName = Environment.MachineName;
+                machineName = HostNameCheck(Environment.MachineName);
             }
             catch (Exception ex)
             {
@@ -54,7 +61,7 @@ namespace DDPM.UI.Common
 
         private static string GetHostNameByWMI()
         {
-            string hostName = string.Empty;
+            string hostName = "_ERROR";
 
             try
             {
@@ -71,6 +78,8 @@ namespace DDPM.UI.Common
             {
                 DdpmCommonHelper.WriteUILog("$\"[HostNameHandler] GetHostNameByWMI Exception : " + ex.Message);
             }
+
+            hostName = HostNameCheck(hostName);
 
             return hostName;
         }
