@@ -248,10 +248,10 @@ namespace DDPM.UI.Common.UserControls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            _stopwatch.Stop();
+            _stopwatch?.Stop();
             if (_log != null)
             {
-                _log.Info($"DeviceBasePage_Loaded, Elapsed {_stopwatch.Elapsed.TotalMilliseconds} msec.");
+                _log.Info($"DeviceBasePage_Loaded, Elapsed {_stopwatch?.Elapsed.TotalMilliseconds ?? 0} msec.");
             }
         }
 
@@ -281,7 +281,9 @@ namespace DDPM.UI.Common.UserControls
             if (groupIndex < 0)
                 return false;
             //Set the IsLocked for the VbatItem
-            VbarItem1 vbarItem = viewModel.VbarItems[groupIndex];
+            VbarItem1? vbarItem = viewModel?.VbarItems[groupIndex];
+            if (vbarItem == null) return false;
+
             vbarItem.IsLocked = isLocked;
 
             //Get the IsDdcciOn flag from SelectedHomeDevice
