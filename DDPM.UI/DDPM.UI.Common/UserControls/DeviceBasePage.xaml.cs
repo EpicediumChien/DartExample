@@ -277,7 +277,7 @@ namespace DDPM.UI.Common.UserControls
         public bool SetLockModuleGroup(string groupName, bool isLocked)
         {
             //Find the group index from groupName
-            int groupIndex = viewModel.FindGroupIndexByGroupName(groupName);
+            int groupIndex = viewModel?.FindGroupIndexByGroupName(groupName) ?? 0;
             if (groupIndex < 0)
                 return false;
             //Set the IsLocked for the VbatItem
