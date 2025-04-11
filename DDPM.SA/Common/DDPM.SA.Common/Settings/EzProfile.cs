@@ -74,6 +74,30 @@ namespace DDPM.SA.Common.Settings
         {
             Desktops = new List<DesktopDDPM>();
         }
+
+        //Robert_Lin, 2025-4-8 support multiple partitions
+        /// <summary>
+        /// Return the index to Desktops, or -1 if not found.
+        /// </summary>
+        /// <param name="desktopId"></param>
+        /// <returns></returns>
+        public int FindIndexOfDesktop(string desktopId)
+        {
+            if ((Desktops == null) || (Desktops.Count <= 0))
+                return -1;
+
+            for (int idx = 0; idx < Desktops.Count; idx++)
+            {
+                if (string.IsNullOrEmpty(Desktops[idx].ID))
+                    continue;
+
+                if (Desktops[idx].ID.Equals(desktopId))
+                {
+                    return idx;
+                }
+            }
+            return -1;
+        }
     }
 
     public class DesktopDDPM

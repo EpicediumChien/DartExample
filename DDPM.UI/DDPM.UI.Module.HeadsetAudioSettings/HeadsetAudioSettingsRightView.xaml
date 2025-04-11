@@ -1047,7 +1047,8 @@
                                             <UXControls:UXTextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAudioSettings.16], Source={x:Static lang:LangHelper.Instance}}" Margin="20,20,0,0" />
                                             <Image Grid.Column="1" Width="16" Height="16" Margin="8,20,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
-                                                    <ToolTip>
+                                                    <!--Elsa 202504010 for 3040 headset Mic Noise Cancellation Tooltips issue:add Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened"-->
+                                                    <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2" MaxWidth="272" Opened="toolTip_Opened">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <Border.Resources>
                                                                 <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
@@ -1055,8 +1056,9 @@
                                                             <StackPanel>
                                                                 <StackPanel Orientation="Horizontal">
                                                                     <!-- Derek for PIMS-335196 -->
+                                                                    <!--Elsa 202504010 for 3040 headset Mic Noise Cancellation Tooltips issue: change MaxWidth="350" to MaxWidth="230"-->
                                                                     <TextBlock Text="{Binding MicNoiseCancellationToolTip}"
-                                                                               MaxWidth="350" TextWrapping="WrapWithOverflow"/>
+                                                                               MaxWidth="230" TextWrapping="WrapWithOverflow"/>
                                                                 </StackPanel>
                                                             </StackPanel>
                                                         </Border>

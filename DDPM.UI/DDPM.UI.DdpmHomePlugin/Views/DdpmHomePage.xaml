@@ -404,15 +404,15 @@
                                     <Grid>
                                         <Image x:Name="devImg"
                                                Source="{Binding DeviceImage}"
-                                               Stretch="Uniform"
+                                               Stretch="Uniform" HorizontalAlignment="Center"
                                                Focusable="False"
                                                AutomationProperties.Name="{Binding TooltipModelName}"
-                                               Margin="0"
+                                               Margin="0,0,0,0"
                                                Visibility="{Binding IsNotBootloader, Converter={StaticResource BoolToVisibilityConverter}}">
                                             <Image.RenderTransform>
                                                 <ScaleTransform x:Name="ImageScaleTransform"
                                                                 ScaleX="1"
-                                                                ScaleY="1" />
+                                                                ScaleY="1" CenterX="0.5" CenterY="0.5" />
                                             </Image.RenderTransform>
                                             <Image.Triggers>
                                                 <EventTrigger RoutedEvent="Image.MouseEnter">

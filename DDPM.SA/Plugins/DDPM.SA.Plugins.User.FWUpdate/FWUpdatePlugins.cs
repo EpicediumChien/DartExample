@@ -995,7 +995,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     // 設定當前工作目錄
                     Directory.SetCurrentDirectory(originalDirectory);
-                    method.Dispose();
                     _IsDownloadAndInsytall = false;
 
                     // add @ 20250220 stephen : send fwupdate result event to cma
@@ -1007,7 +1006,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     // 設定當前工作目錄
                     Directory.SetCurrentDirectory(originalDirectory);
-                    method.Dispose();
                     if (_downloadTimer != null)
                     {
                         _downloadTimer.Stop();

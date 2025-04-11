@@ -8,6 +8,7 @@ using DDPM.SA.Common.Display;
 using DDPM.SA.Common;
 using VcpCore.Common;
 using DDPM.SA.Common.Settings;
+using System.Windows.Threading; // for DispatcherOperation
 
 
 namespace DDPM.EABroker
@@ -17,8 +18,12 @@ namespace DDPM.EABroker
     /// </summary>
     public partial class InfoWindow : Window
     {
+        #region Private members
         private readonly ArrangeVM _vm;
         private WinEventHook _winEventHook = new WinEventHook();
+        //Flags to prevent Dispatcher.InvokeAsync() twice
+        private DispatcherOperation? _pendingOp_DeterminHoveringCell = null;
+        #endregion
 
         #region Init
         public InfoWindow(ArrangeVM vm)
@@ -323,7 +328,35 @@ namespace DDPM.EABroker
             if (!_vm.IsMoving)
                 return;
 
-            _ = Dispatcher.BeginInvoke(new Action(() =>
+            //NEW: using Dispatcher.InvokeAsync
+            //
+            /*
+            //_pendingOp_DeterminHoveringCell?.Abort();
+            //Dispatcher.BeginInvoke(new Action(() =>
+            _pendingOp_DeterminHoveringCell = Dispatcher.InvokeAsync(() =>
+            {
+                _pendingOp_DeterminHoveringCell = null;
+
+                CellObj orgCell = _vm.HoveringCellObj;
+                CellObj? newCell = _vm.DetermineHoveringCellObj(x, y);
+
+                if (orgCell != _vm.HoveringCellObj)
+                {
+                    string strOrg = "null";
+                    if (orgCell != null)
+                        strOrg = orgCell.Name;
+                    string strNew = "null";
+                    if (_vm.HoveringCellObj != null)
+                        strNew = _vm.HoveringCell;
+
+                    Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
+                }
+            }, DispatcherPriority.Loaded);
+            */
+
+            //OLD: using Dispatcher.BeginInvoke
+            //
+            Dispatcher.BeginInvoke(new Action(() =>
             {
 
                 CellObj? orgCell = _vm.HoveringCellObj;

@@ -22,7 +22,7 @@ namespace DDPM.SA.Common.Settings
         public const bool isSupport200 = false;//for 2.0.1
         public const bool isSupport210 = false;
 #endif
-
+        public const bool enableCurrentColorCache = true;
         public const string major_url = "https://clientperipherals.dell.com/DDPM/";
         public const string percent_two_url = "https://downloads.dell.com";
         public const string Display_FWU_URL_Folder = @$"/Windows/Display/Firmware/";
