@@ -397,5 +397,39 @@ namespace DDPM.UI.Module.Color.Tests
             colorViewModel.IsBusy = true;
             Assert.That(colorViewModel.IsBusy, Is.EqualTo(true));
         }
+        [Test]
+        public void TestHDRStatus_String()
+        {
+            var result = colorViewModel!.HDRStatus_String;
+            Assert.That(result, Is.EqualTo("OFF"));
+
+            deviceManagerSAMock.Setup(x => x.GetDisplayPropertiesInfo(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new DisplayPropertiesInfo()));
+            deviceManagerSAMock.Setup(x => x.SetHDRStatus(It.IsAny<MonitorInfo>(), It.IsAny<bool>())).Returns(Task.FromResult(true));
+            colorViewModel.HDRStatus = true;
+            result = colorViewModel!.HDRStatus_String;
+            Assert.That(result, Is.EqualTo("ON"));
+        }
+
+        [Test]
+        public void TestSupportedHDR()
+        {
+            var result = colorViewModel!.SupportedHDR.ToString();
+            Assert.That(result, Is.EqualTo("Collapsed"));
+
+            privateObject.SetFieldOrProperty("_SupportedHDR", true);
+            result = colorViewModel!.SupportedHDR.ToString();
+            Assert.That(result, Is.EqualTo("Visible"));
+        }
+
+        [Test]
+        public void TestHDRStatus()
+        {
+            deviceManagerSAMock.Setup(x => x.GetDisplayPropertiesInfo(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new DisplayPropertiesInfo()));
+            deviceManagerSAMock.Setup(x => x.SetHDRStatus(It.IsAny<MonitorInfo>(), It.IsAny<bool>())).Returns(Task.FromResult(true));
+            bool myHDRStatus = true;
+            colorViewModel.HDRStatus = myHDRStatus;
+
+            Assert.That(colorViewModel.HDRStatus, Is.EqualTo(myHDRStatus));
+        }
     }
 }

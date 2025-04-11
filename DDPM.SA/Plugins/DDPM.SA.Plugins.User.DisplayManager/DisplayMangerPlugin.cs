@@ -2151,7 +2151,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         GetALSAll(monitorInfos, ref aconfig);
                     }
                     ParseMonitorInfo(monitorInfos, ref aconfig);
-                    AllALSConfig.Add(aconfig);               
+                    AllALSConfig.Add(aconfig);
                 }
                 _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync       modelName = {monitorInfos.modelName}");
                 _logs.DebugMsg($"[DisplayMangerPlugin] UpdateImportAlsValueAsync           value = {value.ToString()}");
@@ -2753,7 +2753,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] ALSFeature into SetALSAll to {monitorInfos.edid.ModelName}, param = {param.AllValue.ToString()}, value = {value}");
             _logs.DebugMsg($"[DisplayMangerPlugin] ALSFeature into SetALSAll AutoBrightness . = {param.isAutoBrightness.ToString()}");
-            _logs.DebugMsg($"[DisplayMangerPlugin] ALSFeature into SetALSAll AutoColorTemp .. = {param.isAutoColorTemp.ToString()}");          
+            _logs.DebugMsg($"[DisplayMangerPlugin] ALSFeature into SetALSAll AutoColorTemp .. = {param.isAutoColorTemp.ToString()}");
             _logs.DebugMsg($"[DisplayMangerPlugin] ALSFeature into SetALSAll RangeLevel Value = {param.AutoBrightnessRangeLevel.level_value.ToString()}");
             _logs.DebugMsg($"[DisplayMangerPlugin] ALSFeature into SetALSAll PrimaryMonitor . = {param.isPrimaryMonitorSync.ToString()}");
             Trace.WriteLine($"[DisplayMangerPlugin] ALSFeature into SetALSAll to {monitorInfos.edid.ModelName}...value = {value}");
@@ -3673,25 +3673,44 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     _logs.DebugMsg($"[DisplayMangerPlugin] _DisplayPropertiesPlugin.SetExtendMode done");
                     if (monitorInfos.CapabilityString != "" && monitorInfos.CapabilityString.Length > 10)
                     {
-                        string desktop_E2 = "27";
-                        string desktop_F0 = "34";
-                        string[] ss = monitorInfos.CapabilityString.Split("E2(");
-                        ss = ss[1].Split(")");
-                        ss = ss[0].Split(" ");
-                        for (int i = 0; i < ss.Length; i++)
+                        if (monitorInfos.CapabilityString.Contains("F4"))
                         {
-                            _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus ss:{ss[i]}");
-                            if (ss[i].Equals(desktop_E2))
+                            _logs.DebugMsg($"[DisplayMangerPlugin] monitorInfos.CapabilityString have F4");
+                            _logs.DebugMsg($"[DisplayMangerPlugin] GetCurrentGaming_HDRType go");
+                            Gaming_HDRType gaming_HDRType = GetCurrentGaming_HDRType(monitorInfos).Result;
+                            _logs.DebugMsg($"[DisplayMangerPlugin] GetCurrentGaming_HDRType done gaming_HDRType : {gaming_HDRType.ToString()}");
+                            if (!gaming_HDRType.Equals(Gaming_HDRType.Disable))
                             {
-                                var hexStyle = System.Globalization.NumberStyles.HexNumber;
-                                int number;
-                                if (int.TryParse(desktop_F0, hexStyle, CultureInfo.CurrentCulture, out number))
+                                if (gaming_HDRType.Equals(Gaming_HDRType.Off))
                                 {
-                                    _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability go");
-                                    _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability(monitorInfos, {0xF0},{(uint)number} )");
-                                    vcp_Ret = SetVCPCapability(monitorInfos, 0xF0, (uint)number).Result;
-                                    _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability done vcp_Ret : {vcp_Ret}");
-                                    break;
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] SetGaming_HDRType go");
+                                    bool b = SetGaming_HDRType(monitorInfos, Gaming_HDRType.Desktop).Result;
+                                    _logs.DebugMsg($"[DisplayMangerPlugin] SetGaming_HDRType done b : {b}");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            string desktop_E2 = "27";
+                            string desktop_F0 = "34";
+                            string[] ss = monitorInfos.CapabilityString.Split("E2(");
+                            ss = ss[1].Split(")");
+                            ss = ss[0].Split(" ");
+                            for (int i = 0; i < ss.Length; i++)
+                            {
+                                _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus ss:{ss[i]}");
+                                if (ss[i].Equals(desktop_E2))
+                                {
+                                    var hexStyle = System.Globalization.NumberStyles.HexNumber;
+                                    int number;
+                                    if (int.TryParse(desktop_F0, hexStyle, CultureInfo.CurrentCulture, out number))
+                                    {
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability go");
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability(monitorInfos, {0xF0},{(uint)number} )");
+                                        vcp_Ret = SetVCPCapability(monitorInfos, 0xF0, (uint)number).Result;
+                                        _logs.DebugMsg($"[DisplayMangerPlugin] SetHDRStatus SetVCPCapability done vcp_Ret : {vcp_Ret}");
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -6104,7 +6123,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     _logs.DebugMsg("[DisplayMangerPlugin][SetMonitorE9] E9 is 1 or 2.");
                 }
             }
-            else 
+            else
             {
                 _logs.DebugMsg("[DisplayMangerPlugin][SetMonitorE9] monitor info is null.");
             }
