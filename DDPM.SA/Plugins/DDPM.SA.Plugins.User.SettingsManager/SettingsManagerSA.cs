@@ -17,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Shapes;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -1537,9 +1538,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             DDPMImpExpSettings? ImpSettings = null;// new DDPMImpExpSettings();
             string strReadJson = string.Empty;
+            string pathTrimmed = path.Trim();
 
             #region Check export file path
-            if (string.IsNullOrEmpty(path.Trim()) || !File.Exists(path.Trim()))
+            if (string.IsNullOrEmpty(pathTrimmed) || !File.Exists(pathTrimmed))
             {
                 WriteLog("[ReadImportSettingsFile] file isn't exist : " + path);
                 WriteLog($"[ReadImportSettingsFile] filePath check with spaces : \"{path}\"");
