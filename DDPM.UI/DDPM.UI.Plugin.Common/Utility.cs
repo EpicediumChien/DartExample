@@ -79,8 +79,6 @@ namespace DDPM.UI.Plugin.Common
                 return false;
 
             var name = Path.GetFileNameWithoutExtension(fileName).ToUpperInvariant();
-            var path = @"\\?\C:\ui_cond\test:file.txt"; // ":" is invalid normally
-            File.WriteAllText(path, "Hello!");
             return !ReservedNames.Contains(name);
         }
 
