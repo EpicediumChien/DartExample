@@ -2372,7 +2372,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 WriteLog($"[User setting plugin] WARNING: read registry cause exception ({e.Message})");
                 return Task.FromResult(resvalue);
-                ;
             }
         }
 
