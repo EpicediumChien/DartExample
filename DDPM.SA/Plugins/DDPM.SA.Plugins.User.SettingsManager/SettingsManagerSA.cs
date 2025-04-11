@@ -17,7 +17,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Path = System.IO.Path;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -2566,6 +2565,4 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         #endregion Info Key
     }
-#endregion
-#endregion
 }
