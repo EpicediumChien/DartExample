@@ -107,6 +107,10 @@ namespace NetworkKVM.Plugins
 
         private int namedpipe_Fail = 0;
 
+        private bool isMonitorUpdate = false;
+
+        private string jsonstring_MonitorUpdate = string.Empty;
+
         #endregion Private Members
 
         #region Constructor
@@ -1124,6 +1128,7 @@ namespace NetworkKVM.Plugins
                     {
                         //_VcpCorePluginCondition = pluginCondition;
                         _VcpCorePlugin.VCPchanged += VCPchangedEvent;
+                        _VcpCorePlugin.MonitorinfoUpdated += MonitorUpdateEvent;
                         InitializeMonitorsList();
                     }
                 }
@@ -1993,6 +1998,14 @@ namespace NetworkKVM.Plugins
                         get_MONITORINFO_R.Success = true;
                         foreach (var item in _AllInfoMonitors)
                         {
+                            if (string.IsNullOrEmpty(item.CapabilityString))
+                            {
+                                isMonitorUpdate = true;
+                                jsonstring_MonitorUpdate = jsonstring;
+                                _logs.DebugMsg("[NetworkKVM] GetMonitorInfo isMonitorUpdate : " + isMonitorUpdate.ToString());
+                                _logs.DebugMsg("[NetworkKVM] GetMonitorInfo jsonstring_MonitorUpdate : " + jsonstring_MonitorUpdate);
+                                return Task.CompletedTask;
+                            }
                             if (IsDisposed)
                             {
                                 break;
@@ -2020,6 +2033,9 @@ namespace NetworkKVM.Plugins
                         if (get_MONITORINFO_R.ToJson() != string.Empty)
                         {
                             _ = WriteAsync(get_MONITORINFO_R.ToJson());
+                            isMonitorUpdate = false;
+                            _logs.DebugMsg("[NetworkKVM] GetMonitorInfo isMonitorUpdate : " + isMonitorUpdate.ToString());
+                            jsonstring_MonitorUpdate = string.Empty;
                         }
                         return Task.CompletedTask;
                     }
@@ -2782,6 +2798,16 @@ namespace NetworkKVM.Plugins
                 {
                     _logs.DebugMsg("[NetworkKVM] VCPchanged exception : " + ex.ToString());
                 }
+            }
+        }
+
+        private void MonitorUpdateEvent(object sender, MonitorinfoUpdateEventArgs e)
+        {
+            _logs.DebugMsg("[NetworkKVM] MonitorUpdateEvent...");
+            if (isMonitorUpdate && !string.IsNullOrEmpty(jsonstring_MonitorUpdate))
+            {
+                _logs.DebugMsg("[NetworkKVM] MonitorUpdateEvent jsonstring_MonitorUpdate : " + jsonstring_MonitorUpdate);
+                GetMonitorInfo(jsonstring_MonitorUpdate).Wait();
             }
         }
 
