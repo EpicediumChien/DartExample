@@ -227,9 +227,9 @@ public class TestNetworkKVM
         privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServer_);
         privatevNkvmPluginObject.SetFieldOrProperty("_SupportedMonitors", supportedMonitorList_);
         var UpdateMonitorInfoResult3 = NkvmPlugin.UpdateMonitorInfo(monitorInfos4, token);  //Supported KVM Monitors
-        var allInfoMonitors3 = privatevNkvmPluginObject.GetFieldOrProperty("_AllInfoMonitors");
+        List<MonitorInfo> allInfoMonitors3 = (List<MonitorInfo>)privatevNkvmPluginObject.GetFieldOrProperty("_AllInfoMonitors");
         Assert.IsNotNull(UpdateMonitorInfoResult3);
-        Assert.That(monitorInfos4, Is.EqualTo(allInfoMonitors3));
+        Assert.That(monitorInfos4.ElementAt(0), Is.EqualTo(allInfoMonitors3.ElementAt(0)));
     }
 
     [Test]

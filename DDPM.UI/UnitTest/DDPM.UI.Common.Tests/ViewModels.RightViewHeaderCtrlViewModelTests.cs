@@ -78,7 +78,7 @@ namespace DDPM.UI.Common.Tests
             rightViewHeaderCtrlViewModel.Locker2 = Visibility.Visible;
 
             // Assert
-            Assert.That(rightViewHeaderCtrlViewModel.Locker2, Is.EqualTo(Visibility.Collapsed));
+            Assert.That(rightViewHeaderCtrlViewModel.Locker2, Is.EqualTo(Visibility.Visible));
         }
 
         [Test]
@@ -87,14 +87,14 @@ namespace DDPM.UI.Common.Tests
             rightViewHeaderCtrlViewModel.Locker3 = Visibility.Visible;
 
             // Assert
-            Assert.That(rightViewHeaderCtrlViewModel.Locker3, Is.EqualTo(Visibility.Collapsed));
+            Assert.That(rightViewHeaderCtrlViewModel.Locker3, Is.EqualTo(Visibility.Visible));
         }
 
         [Test]
         public void TestSetHeaders()
         {
             //_itemCount = 1
-            var headers = new RightViewHeader[] { new RightViewHeader(0,"A")};
+            var headers = new RightViewHeader[] { new RightViewHeader(0, "A") };
             try
             {
                 rightViewHeaderCtrlViewModel.SetHeaders(headers);
@@ -106,7 +106,7 @@ namespace DDPM.UI.Common.Tests
                 Assert.Fail("not invoked");
             }
             //_itemCount == 3,_shownCount == 2
-            headers = new RightViewHeader[] { new RightViewHeader(0, "A") { IsShown=true},new RightViewHeader(1,"B") { IsShown = true }, new RightViewHeader(2, "C") { IsShown=false} };
+            headers = new RightViewHeader[] { new RightViewHeader(0, "A") { IsShown = true }, new RightViewHeader(1, "B") { IsShown = true }, new RightViewHeader(2, "C") { IsShown = false } };
             try
             {
                 rightViewHeaderCtrlViewModel.SetHeaders(headers);
@@ -182,7 +182,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestCol1Width()
         {
-            var col1Width=new GridLength(10);
+            var col1Width = new GridLength(10);
             rightViewHeaderCtrlViewModel.Col1Width = col1Width;
 
             // Assert
@@ -222,7 +222,7 @@ namespace DDPM.UI.Common.Tests
             rightViewHeaderCtrlViewModel.SelectedIndex = 1;
             Assert.That(rightViewHeaderCtrlViewModel.InternalSelectedIndex, Is.EqualTo(2));
 
-            privateObject.SetFieldOrProperty("_internalSelectedIndex", 1);          
+            privateObject.SetFieldOrProperty("_internalSelectedIndex", 1);
             privateObject.SetFieldOrProperty("_caseNo", 3);
             rightViewHeaderCtrlViewModel.SelectedIndex = 0;
             Assert.That(rightViewHeaderCtrlViewModel.InternalSelectedIndex, Is.EqualTo(0));

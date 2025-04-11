@@ -9,6 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Dell.Client.Framework.UX.WPF.ResourceManager;
+using DDPM.UI.Common.EAEM;
+using DDPM.UI.Resources.Helper;
 
 namespace DDPM.Easy.Common.Tests
 {
@@ -22,6 +25,14 @@ namespace DDPM.Easy.Common.Tests
         [SetUp]
         public void Setup()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            ResourceManager res = new ResourceManager();
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             var settings = new ObservableCollection<GridLength>() { new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength(), new GridLength() };
             vm = new SplitCtrlVM() { Settings = settings };
             splitCtrl0A = new SplitCtrl0A();
@@ -50,7 +61,7 @@ namespace DDPM.Easy.Common.Tests
         {
             // Act
             var CellList = new List<CellObj>();
-            splitCtrl0A.CellList=CellList;
+            splitCtrl0A.CellList = CellList;
             // Assert
             Assert.That(splitCtrl0A.CellList, Is.Not.Null);
 
@@ -108,7 +119,7 @@ namespace DDPM.Easy.Common.Tests
             Assert.That(splitCtrl0A.HSplitterList, Is.Not.Null);
         }
 
-                [Test]
+        [Test]
         public void TestInitSplitterList()
         {
             try
@@ -135,10 +146,10 @@ namespace DDPM.Easy.Common.Tests
         [Test]
         public void TestFriendlyName()
         {
-            // Act
-            splitCtrl0A.FriendlyName = "FriendlyName";
+            // Act          
+           string TooltipResourceName = "EATooltip_00";
             // Assert
-            Assert.That(splitCtrl0A.FriendlyName, Is.EqualTo("FriendlyName"));
+            Assert.That(splitCtrl0A.FriendlyName, Is.EqualTo(LangHelper.Instance[$"{TooltipResourceName}"]));
         }
 
         [Test]
