@@ -89,13 +89,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
                                                     x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (mi == -1)
+                if (mi != -1)
                 {
                     switch (reset.ToUpper(CultureInfo.InvariantCulture))
                     {
                         case "ALL":
                             WriteLog("[ResetDisplayData]Reset all DisplayData");
                             DisplayData displayData = new DisplayData();
+                            displayData.Model = monitorInfo.modelName;
+                            displayData.ServiceTag = monitorInfo.edid.ServiceTag;
                             _displayData[mi] = displayData;
                             return true;
                         case "COLOR":
@@ -135,10 +137,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         {
                             return true;
                         }
-                        else
-                        {
-                            return false;
-                        }
                     }
                 }
                 else
@@ -164,6 +162,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     _USBs = _displayData[mi].DisplayUSB;
                     return true;
+                }
+                else
+                {
+                    WriteLog("[GetMonitorUSB]_displayData not find DisplayUSB.");
                 }
             }
             else
@@ -306,6 +308,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     usbList = _displayData[mi].USBList;
                     return true;
                 }
+                else
+                {
+                    WriteLog("[GetMonitorUSBList]_displayData not find USBList.");
+                }
             }
             else
             {
@@ -354,6 +360,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     vcpcode = _displayData[mi].VCP_E9;
                     return true;
+                }
+                else
+                {
+                    WriteLog("[GetMonitorE9]_displayData not find VCP_E9.");
                 }
             }
             else
@@ -511,14 +521,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         {
                             color = _displayData[mi].Color.color_DisHDR;
                         }
-
+                        WriteLog("[GetColor]color : " + color);
                         if (color != string.Empty)
                         {
                             return true;
                         }
                         else
                         {
-                            WriteLog("[GetColor]_displayData is not set color");
+                            WriteLog("[GetColor]_displayData is not get color");
                             return false;
                         }
                     }
