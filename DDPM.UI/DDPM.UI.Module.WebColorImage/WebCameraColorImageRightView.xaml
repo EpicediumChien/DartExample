@@ -62,7 +62,8 @@
               <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=1}" />
             </MultiBinding>
           </DockPanel.Height>
-          <UXControls:UXScrollViewer>
+            <!--20250410 Chewlin Fix Gradient showing when content is too long issue ADD UseFadingScrolling="False" -->
+          <UXControls:UXScrollViewer UseFadingScrolling="False">
             <Grid>
               <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -213,7 +214,8 @@
                             </Style>
                           </Border.Style>
                           <!-- Elsa 20250121 For [PIMS-332096] add space between 50 and Hz -->
-                          <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.9], Source={x:Static lang:LangHelper.Instance},StringFormat={}50 {0}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
+                          <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                          <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.9], Source={x:Static lang:LangHelper.Instance},StringFormat={}50 {0}}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                             <UXControls:UXTextBlock.Style>
                               <Style TargetType="UXControls:UXTextBlock">
                                 <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -242,7 +244,8 @@
                             </Style>
                           </Border.Style>
                           <!-- Elsa 20250121 For [PIMS-332096] add space between 60 and Hz -->
-                          <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.9], Source={x:Static lang:LangHelper.Instance},StringFormat={}60 {0}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
+                          <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                          <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.9], Source={x:Static lang:LangHelper.Instance},StringFormat={}60 {0}}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                             <UXControls:UXTextBlock.Style>
                               <Style TargetType="UXControls:UXTextBlock">
                                 <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />

@@ -1,5 +1,6 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
@@ -457,39 +458,42 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public bool GetColor(MonitorInfo monitorInfo, bool isHDR, out string color)
         {
-            if (monitorInfo != null)
+            if (GlobalDefinitions.enableCurrentColorCache)
             {
-                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
-                                                     x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (mi != -1)
+                if (monitorInfo != null)
                 {
-                    if (isHDR)
+                    int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                         x.ServiceTag == monitorInfo.edid.ServiceTag);
+                    if (mi != -1)
                     {
-                        color = _displayData[mi].Color.color_EnHDR;
-                    }
-                    else
-                    {
-                        color = _displayData[mi].Color.color_DisHDR;
-                    }
+                        if (isHDR)
+                        {
+                            color = _displayData[mi].Color.color_EnHDR;
+                        }
+                        else
+                        {
+                            color = _displayData[mi].Color.color_DisHDR;
+                        }
 
-                    if (color != string.Empty)
-                    {
-                        return true;
+                        if (color != string.Empty)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            WriteLog("[GetColor]_displayData is not set color");
+                            return false;
+                        }
                     }
                     else
                     {
-                        WriteLog("[GetColor]_displayData is not set color");
-                        return false;
+                        WriteLog("[GetColor]_displayData is not find monitor");
                     }
                 }
                 else
                 {
-                    WriteLog("[GetColor]_displayData is not find monitor");
+                    WriteLog("[GetColor]monitorInfo is null.");
                 }
-            }
-            else
-            {
-                WriteLog("[GetColor]monitorInfo is null.");
             }
             color = string.Empty;
             return false;

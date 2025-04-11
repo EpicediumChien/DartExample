@@ -119,6 +119,8 @@ namespace DDPM.SA.Common
 
         //Dean add 0612
         public Task<string> ReadCurrentColorPreset(MonitorInfo m, Guid guid = default, Priority priority = Priority.Low);
+        //Jason add 0410
+        Task<string> ReadCurrentColorPresettoVCP(MonitorInfo m, Guid guid = default, Priority priority = Priority.Low);
 
         //Jim add 0621
         Task<bool> Notify_refresh_app_list();

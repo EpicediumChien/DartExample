@@ -101,7 +101,8 @@
                     </Style.Triggers>
                   </Style>
                 </Border.Style>
-                <UXControls:UXTextBlock x:Name="txtRes0" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
+                <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                <UXControls:UXTextBlock x:Name="txtRes0" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                   <UXControls:UXTextBlock.Style>
                     <Style TargetType="UXControls:UXTextBlock">
                       <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -130,7 +131,8 @@
                     </Style.Triggers>
                   </Style>
                 </Border.Style>
-                <UXControls:UXTextBlock x:Name="txtRes1" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
+                  <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                                <UXControls:UXTextBlock x:Name="txtRes1" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                   <UXControls:UXTextBlock.Style>
                     <Style TargetType="UXControls:UXTextBlock">
                       <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -160,7 +162,8 @@
                   </Style>
                 </Border.Style>
                 <Grid>
-                  <UXControls:UXTextBlock x:Name="txtRes2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
+                 <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                  <UXControls:UXTextBlock x:Name="txtRes2" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                     <UXControls:UXTextBlock.Style>
                       <Style TargetType="UXControls:UXTextBlock">
                         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -259,7 +262,8 @@
                     </Style.Triggers>
                   </Style>
                 </Border.Style>
-                <UXControls:UXTextBlock x:Name="txtFPS0" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
+                <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                <UXControls:UXTextBlock x:Name="txtFPS0" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                   <UXControls:UXTextBlock.Style>
                     <Style TargetType="UXControls:UXTextBlock">
                       <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -287,7 +291,8 @@
                     </Style.Triggers>
                   </Style>
                 </Border.Style>
-                <UXControls:UXTextBlock x:Name="txtFPS1" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
+                  <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                <UXControls:UXTextBlock x:Name="txtFPS1" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                   <UXControls:UXTextBlock.Style>
                     <Style TargetType="UXControls:UXTextBlock">
                       <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -316,7 +321,8 @@
                   </Style>
                 </Border.Style>
                 <Grid>
-                  <UXControls:UXTextBlock x:Name="txtFPS2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto">
+                  <!--20250410 Chewlin for PIMS-348246 change FontSize="14" to "16" ,ADD FontWeight="Medium" -->
+                  <UXControls:UXTextBlock x:Name="txtFPS2" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Medium" FontFamily="Roboto">
                     <UXControls:UXTextBlock.Style>
                       <Style TargetType="UXControls:UXTextBlock">
                         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />

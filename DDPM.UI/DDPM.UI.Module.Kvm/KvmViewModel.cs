@@ -593,6 +593,7 @@ namespace DDPM.UI.Module.Kvm
                     DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
                     IsBusy = false;
                     OnPropertyChanged("IsBusy");
+                    DdpmCommonHelper.isJumpFromUsbKvm = true;
                 }
             }
             Invoke_RefreshHotkeySettings();
