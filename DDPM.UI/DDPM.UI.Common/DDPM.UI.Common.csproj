@@ -170,6 +170,7 @@
 		<None Remove="Resources\WD19S.png" />
 		<None Remove="Resources\WD19S_130W.png" />
 		<None Remove="Resources\WD19S_180W.png" />
+		<None Remove="Resources\WD19TB.png" />
 		<None Remove="Resources\WD22TB4.png" />
 		<None Remove="Resources\WD25.png" />
 		<None Remove="Resources\WD25TB4.png" />
@@ -347,6 +348,9 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Resources\WD19S.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WD19TB.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Resources\WD25.png">
