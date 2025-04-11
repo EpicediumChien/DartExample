@@ -16,7 +16,7 @@
   <Window.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+        <!--<ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />-->
       </ResourceDictionary.MergedDictionaries>
       <Style x:Key="CaptionTextStyle" TargetType="UXControls:UXTextBlock">
         <Setter Property="FontFamily" Value="Roboto" />
@@ -106,6 +106,18 @@
                                          Width="94" />
         </StackPanel>
       </StackPanel>
+      <Grid x:Name="gdAlert" VerticalAlignment="Top" Height="136">
+        <Canvas>
+          <Border x:Name="bdAlert" Style="{StaticResource Tooltip_OutterBorderStyle}" Canvas.Bottom="0" Canvas.Left="72" Visibility="Hidden">
+            <Border.Resources>
+              <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+            </Border.Resources>
+            <StackPanel Orientation="Horizontal">
+              <TextBlock x:Name="txtAlert" TextWrapping="Wrap" MaxWidth="330" />
+            </StackPanel>
+          </Border>
+        </Canvas>
+      </Grid>
     </Grid>
   </Grid>
 </Window>
