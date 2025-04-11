@@ -2542,6 +2542,7 @@ namespace NetworkKVM.Plugins
                         VcpCoreCondition.PluginConditionChangeHandler -= OnVcpCorePluginConditionChangeHandler;
                     }
                     _VcpCorePlugin.VCPchanged -= VCPchangedEvent;
+                    _VcpCorePlugin.MonitorinfoUpdated -= MonitorUpdateEvent;
                 }
             }
 
