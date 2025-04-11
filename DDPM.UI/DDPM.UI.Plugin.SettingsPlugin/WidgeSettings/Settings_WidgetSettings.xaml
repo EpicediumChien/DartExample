@@ -96,18 +96,7 @@
                                                             TextBlockType="Caption"
                                                             TextWrapping="WrapWithOverflow"
                                                             VerticalAlignment="Center"
-                                                            Foreground="{DynamicResource DefaultTheme_TxtColor}">
-                                        <UXControls:UXTextBlock.Style>
-                                            <Style TargetType="UXControls:UXTextBlock">
-                                                <Setter Property="Opacity" Value="1" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path= GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}" Value="False">
-                                                        <Setter Property="Opacity" Value="0.4" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </UXControls:UXTextBlock.Style>
-                                    </UXControls:UXTextBlock>
+                                                            Foreground="{DynamicResource DefaultTheme_TxtColor}" />
                                     <UXControls:UXToggleSwitch Grid.Column="1"
                                                                FontSize="14"
                                                                IsEnabled="{Binding Path= GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}"
@@ -117,7 +106,17 @@
                                                                HorizontalAlignment="Right"
                                                                VerticalAlignment="Center"
                                                                Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                                               Click="QuickAccessWidget_Reminder_Click" />
+                                                               Click="QuickAccessWidget_Reminder_Click"/>
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Setter Property="Opacity" Value="1" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path= GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}" Value="False">
+                                                    <Setter Property="Opacity" Value="0.4" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
                                 </Grid>
                             </StackPanel>
                         </Border>
