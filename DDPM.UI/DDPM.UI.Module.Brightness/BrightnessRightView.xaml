@@ -53,7 +53,8 @@
     -->
     <Grid>
         <!--20250324 Chewlin Fix Gradient showing when content is too long issue ADD UseFadingScrolling="False" -->
-        <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Hidden" UseFadingScrolling="False" >
+        <!--Elsa 202504011 for PIMS-348407 add VerticalScrollBarVisibility="Auto"-->
+        <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Hidden" UseFadingScrolling="False" VerticalScrollBarVisibility="Auto" >
             <Grid>
                 <StackPanel>
                     <Grid>
