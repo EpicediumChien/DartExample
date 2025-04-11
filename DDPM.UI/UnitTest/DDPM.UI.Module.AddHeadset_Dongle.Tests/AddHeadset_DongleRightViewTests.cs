@@ -38,7 +38,7 @@ namespace DDPM.UI.Module.AddHeadset_Dongle.Tests
             peripheralPlugin = peripheralPluginMock.Object;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new AddDeviceViewModel(showPluginManager, console, log);
+            vm = new AddDeviceViewModel(console);
             addHeadset_DongleRightView = new AddHeadset_DongleRightView(vm);
             privateObject = new PrivateObject(addHeadset_DongleRightView);
         }

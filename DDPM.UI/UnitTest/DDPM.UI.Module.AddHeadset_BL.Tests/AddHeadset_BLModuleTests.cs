@@ -43,7 +43,7 @@ namespace DDPM.UI.Module.AddHeadset_BL.Tests
             peripheralPlugin = peripheralPluginMock.Object;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new AddDeviceViewModel(showPluginManager, console, log);
+            vm = new AddDeviceViewModel(console);
             addHeadset_BLModule = new AddHeadset_BLModule(vm);
             privateObject = new PrivateObject(addHeadset_BLModule);
 
@@ -61,12 +61,12 @@ namespace DDPM.UI.Module.AddHeadset_BL.Tests
         public void TestIsModuleActive()
         {
             // Act
-            addHeadset_BLModule.IsModuleActive=true;
+            addHeadset_BLModule.IsModuleActive = true;
 
             // Assert
             Assert.That(addHeadset_BLModule.IsModuleActive, Is.EqualTo(true));
         }
-        
+
 
         [Test]
         public void TestModuleName()

@@ -36,14 +36,14 @@ namespace DDPM.UI.Module.AddKnM_Dongle.Tests
             moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             consoleMock = new Mock<IConsole>();
-            console= consoleMock.Object;
+            console = consoleMock.Object;
             showPluginManagerMock = new Mock<IShowPluginManager>();
-            showPluginManager= showPluginManagerMock.Object;
+            showPluginManager = showPluginManagerMock.Object;
             peripheralPluginMock = new Mock<IDeviceManagerSA>();
             peripheralPlugin = peripheralPluginMock.Object;
-            logMock= new Mock<ILog>();
-            log= logMock.Object;
-            vm = new AddDeviceViewModel(showPluginManager,  console,  log);
+            logMock = new Mock<ILog>();
+            log = logMock.Object;
+            vm = new AddDeviceViewModel(console);
             addKnM_DongleModule = new AddKnM_DongleModule(vm);
             privateObject = new PrivateObject(addKnM_DongleModule);
 

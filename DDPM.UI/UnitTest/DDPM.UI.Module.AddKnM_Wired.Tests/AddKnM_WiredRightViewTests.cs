@@ -38,7 +38,7 @@ namespace DDPM.UI.Module.AddKnM_Wired.Tests
             peripheralPlugin = peripheralPluginMock.Object;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new AddDeviceViewModel(showPluginManager, console, log);
+            vm = new AddDeviceViewModel(console);
             addKnM_WiredRightView = new AddKnM_WiredRightView(vm);
             privateObject = new PrivateObject(addKnM_WiredRightView);
         }

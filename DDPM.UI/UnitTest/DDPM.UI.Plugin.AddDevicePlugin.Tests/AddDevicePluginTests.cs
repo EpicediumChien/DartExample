@@ -35,7 +35,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin.Tests
             _log = _logMock.Object;
             consoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(_logMock.Object);
             deviceManagerSAMock = new Mock<IDeviceManagerSA>();
-            DdpmCommonHelper.DeviceManagerSA= deviceManagerSAMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
             addDevicePlugin = new AddDevicePlugin(showPluginManagerMock.Object, pluginManagerMock.Object, consoleMock.Object, gearMenuMock.Object);
             privateObject = new PrivateObject(addDevicePlugin);
         }
@@ -66,7 +66,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin.Tests
                 addDevicePlugin.OnActivated();
                 Assert.True(true);
                 Assert.Null(Mouse.OverrideCursor);
-                
+
             }
             catch (Exception ex)
             {
@@ -77,7 +77,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin.Tests
         [Test]
         public void TestOnDeactivated()
         {
-            var viewModel = new AddDeviceViewModel(showPluginManagerMock.Object, consoleMock.Object, _logMock.Object);
+            var viewModel = new AddDeviceViewModel(consoleMock.Object);
             privateObject.SetFieldOrProperty("_viewModel", viewModel);
             try
             {

@@ -21,8 +21,6 @@ namespace DDPM.UI.Plugin.ViewModels
     public class AddDeviceViewModel : ObservableObject, INotifyPropertyChanged, IAddDeviceViewModel
     {
         private readonly IConsole _console;
-        private readonly IShowPluginManager _showPluginManager;
-        private readonly ILog _log;
 
         private int _groupSelIdx = -1;
         private readonly List<DeviceBarItem> _deviceBarItems = new();
@@ -36,16 +34,13 @@ namespace DDPM.UI.Plugin.ViewModels
         public event EventHandler<EventArgs>? PairingStopped;
         public bool IsPairingLoaded = false;
 
-        public AddDeviceViewModel(IShowPluginManager showPluginManager, IConsole console, ILog log)
+        public AddDeviceViewModel(IConsole console)
         {
             Requires.NotNull(console, nameof(console));
-            Requires.NotNull(log, nameof(log));
 
-            _showPluginManager = showPluginManager;
             _console = console;
-            _log = log;
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
-            _log!.Info($"[AddDeviceViewModel] AddDeviceViewModel Start ...");
+            DdpmCommonHelper.WriteUILog($"[AddDeviceViewModel] AddDeviceViewModel Start ...");
         }
 
         public bool IsPandoraPaired = false;
@@ -435,43 +430,43 @@ namespace DDPM.UI.Plugin.ViewModels
         public DeviceInfo? NewDevice = null;
         public string WacomVersion = "";
 
-        public void GotoNewDevice()
-        {
-            StopPairing();
-            IsPairing = false;
-            //PairingStatus = "Stopped";
-            //OnPropertyChanged(nameof(PairingStatus));
-            if (NewDevice == null)
-            {
-                _console.ShowHomePage();
-                return;
-            }
+        //public void GotoNewDevice()
+        //{
+        //    StopPairing();
+        //    IsPairing = false;
+        //    //PairingStatus = "Stopped";
+        //    //OnPropertyChanged(nameof(PairingStatus));
+        //    if (NewDevice == null)
+        //    {
+        //        _console.ShowHomePage();
+        //        return;
+        //    }
 
-            switch (NewDevice?.LogicalDeviceType.ToUpper())
-            {
-                case "LOGICALKEYBOARD":
-                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.KeyboardPluginId, NewDevice.ID.ToString());
-                    break;
+        //    switch (NewDevice?.LogicalDeviceType.ToUpper())
+        //    {
+        //        case "LOGICALKEYBOARD":
+        //            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.KeyboardPluginId, NewDevice.ID.ToString());
+        //            break;
 
-                case "LOGICALMOUSE":
-                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.MousePluginId, NewDevice.ID.ToString());
-                    break;
+        //        case "LOGICALMOUSE":
+        //            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.MousePluginId, NewDevice.ID.ToString());
+        //            break;
 
-                case "LOGICALHEADSET":
-                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.HeadsetPluginId, NewDevice.ID.ToString());
-                    break;
-                case "LOGICALAIRAUDIO":
-                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.AirAudioPluginId, NewDevice.ID.ToString());
-                    break;
-                case "LOGICALWIREDAUDIO":
-                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SoundBarPluginId, NewDevice.ID.ToString());
-                    break;
-                case "LOGICALPEN":
-                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.PenPluginId, NewDevice.ID.ToString());
-                    break;
-            }
-            NewDevice = null;
-        }
+        //        case "LOGICALHEADSET":
+        //            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.HeadsetPluginId, NewDevice.ID.ToString());
+        //            break;
+        //        case "LOGICALAIRAUDIO":
+        //            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.AirAudioPluginId, NewDevice.ID.ToString());
+        //            break;
+        //        case "LOGICALWIREDAUDIO":
+        //            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SoundBarPluginId, NewDevice.ID.ToString());
+        //            break;
+        //        case "LOGICALPEN":
+        //            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.PenPluginId, NewDevice.ID.ToString());
+        //            break;
+        //    }
+        //    NewDevice = null;
+        //}
 
         private void ImageUpdate(OSThemeEnum oSThemeEnum)
         {

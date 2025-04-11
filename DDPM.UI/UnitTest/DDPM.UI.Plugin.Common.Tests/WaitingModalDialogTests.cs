@@ -22,10 +22,10 @@ namespace DDPM.UI.Plugin.Common.Tests
         [SetUp]
         public void Setup()
         {
-            showPluginManagerMock=new Mock<IShowPluginManager>();
-            consoleMock=new Mock<IConsole>();
-            logMock=new Mock<ILog>();
-            waitingModalDialog = new WaitingModalDialog("caption", "message", "alert",new Plugin.ViewModels.AddDeviceViewModel(showPluginManagerMock.Object, consoleMock.Object, logMock.Object));
+            showPluginManagerMock = new Mock<IShowPluginManager>();
+            consoleMock = new Mock<IConsole>();
+            logMock = new Mock<ILog>();
+            waitingModalDialog = new WaitingModalDialog("caption", "message", "alert", new Plugin.ViewModels.AddDeviceViewModel(consoleMock.Object));
         }
 
         [Test]
