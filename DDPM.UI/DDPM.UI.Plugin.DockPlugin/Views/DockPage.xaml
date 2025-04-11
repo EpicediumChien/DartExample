@@ -110,7 +110,7 @@
                         <!-- #region ModelName -->
                         <Grid Height="40">
                             <UXControls:UXTextBlock Text="{Binding Model}"
-                                                d:Text="Model Name"  d:MaxWidth="200" d:Visibility="Collapsed"
+                                                d:Text="Model Name"  d:MaxWidth="200"
                                                 TextTrimming="CharacterEllipsis" x:Name="tbDisplayName"
                                                 HorizontalAlignment="Left"  VerticalAlignment="Center"
                                                 Focusable="True" KeyboardNavigation.TabIndex="13"
