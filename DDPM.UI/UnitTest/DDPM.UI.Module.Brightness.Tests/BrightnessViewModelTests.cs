@@ -640,7 +640,7 @@ namespace DDPM.UI.Module.Brightness.Tests
         public void TestUpdate_AutoBrightnessRangeLevelStatus()
         {
             var brightnessViewModel = new BrightnessViewModel();
-            var myAutoBrightnessLevel =  new AutoBrightnessRangeLevel() { level_name = "12", level_value = 34  };
+            var myAutoBrightnessLevel = new AutoBrightnessRangeLevel() { level_name = "12", level_value = 34 };
             brightnessViewModel.Update_AutoBrightnessRangeLevelStatus(myAutoBrightnessLevel);
             privateObject = new PrivateObject(brightnessViewModel);
             var _autoBrightnessRangeLevel = privateObject.GetFieldOrProperty("_autoBrightnessRangeLevel");
@@ -663,7 +663,7 @@ namespace DDPM.UI.Module.Brightness.Tests
         {
             //Start_ALSConfig.AutoBrightnessLevel.Count == 0
             var brightnessViewModel = new BrightnessViewModel();
-            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo(""));
+            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 0%"));
 
             //Start_ALSConfig.AutoBrightnessLevel[0].level_value == 0
             brightnessViewModel.Start_ALSConfig = new ALSConfig();
