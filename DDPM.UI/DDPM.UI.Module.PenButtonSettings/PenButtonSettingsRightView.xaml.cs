@@ -468,15 +468,15 @@ namespace DDPM.UI.Module.PenButtonSettings
                 {
                     action = AdvancedAction.AssignKeystroke;
 
-                    Window parentWindow = Window.GetWindow(this);
+                    Window mainWindow = System.Windows.Application.Current.MainWindow;
                     double windowLeft = 0;
                     double windowTop = 0;
-                    ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight, "", "PEN");
-                    if (parentWindow != null)
+                    ActionParameterModalDialog modalDialog = new(action, mainWindow.ActualWidth, mainWindow.ActualHeight, "", "PEN");
+                    if (mainWindow != null)
                     {
-                        modalDialog.Owner = parentWindow;
-                        windowLeft = parentWindow.Left;
-                        windowTop = parentWindow.Top;
+                        modalDialog.Owner = mainWindow;
+                        windowLeft = mainWindow.WindowState == WindowState.Maximized ? 0 : mainWindow.Left;
+                        windowTop = mainWindow.WindowState == WindowState.Maximized ? 0 : mainWindow.Top;
                     }
                     modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
                     modalDialog.Left = windowLeft;
@@ -495,15 +495,15 @@ namespace DDPM.UI.Module.PenButtonSettings
                 }
                 else if (id == 23)
                 {
-                    Window parentWindow = Window.GetWindow(this);
+                    Window mainWindow = System.Windows.Application.Current.MainWindow;
                     double windowLeft = 0;
                     double windowTop = 0;
-                    OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.LaunchableAppValues);
-                    if (parentWindow != null)
+                    OpenRunModalDialog modalDialog = new(mainWindow.ActualWidth, mainWindow.ActualHeight, _vm.LaunchableAppValues);
+                    if (mainWindow != null)
                     {
-                        modalDialog.Owner = parentWindow;
-                        windowLeft = parentWindow.Left;
-                        windowTop = parentWindow.Top;
+                        modalDialog.Owner = mainWindow;
+                        windowLeft = mainWindow.WindowState==WindowState.Maximized ? 0 : mainWindow.Left;
+                        windowTop = mainWindow.WindowState == WindowState.Maximized ? 0 : mainWindow.Top;
                     }
                     modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
                     modalDialog.Left = windowLeft;
@@ -625,17 +625,17 @@ namespace DDPM.UI.Module.PenButtonSettings
                 var id = int.Parse(((ActionButton)sender).Name.Replace("btn", ""));
                 var parameter = _vm.SelectedAction!.AssignedAction.Parameter;
 
-                Window parentWindow = Window.GetWindow(this);
+                Window mainWindow = System.Windows.Application.Current.MainWindow;
                 double windowLeft = 0;
                 double windowTop = 0;
                 if (id == 8)
                 {
-                    ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter, "PEN");
-                    if (parentWindow != null)
+                    ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, mainWindow.ActualWidth, mainWindow.ActualHeight, parameter, "PEN");
+                    if (mainWindow != null)
                     {
-                        modalDialog.Owner = parentWindow;
-                        windowLeft = parentWindow.Left;
-                        windowTop = parentWindow.Top;
+                        modalDialog.Owner = mainWindow;
+                        windowLeft = mainWindow.WindowState == WindowState.Maximized ? 0 : mainWindow.Left;
+                        windowTop = mainWindow.WindowState == WindowState.Maximized ? 0 : mainWindow.Top;
                     }
                     modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
                     modalDialog.Left = windowLeft;
@@ -649,12 +649,12 @@ namespace DDPM.UI.Module.PenButtonSettings
                 {
                     //var arr = parameter.Split('|');
                     //OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, int.Parse(arr[0]), arr[1]);
-                    OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.LaunchableAppValues, parameter);
-                    if (parentWindow != null)
+                    OpenRunModalDialog modalDialog = new(mainWindow.ActualWidth, mainWindow.ActualHeight, _vm.LaunchableAppValues, parameter);
+                    if (mainWindow != null)
                     {
-                        modalDialog.Owner = parentWindow;
-                        windowLeft = parentWindow.Left;
-                        windowTop = parentWindow.Top;
+                        modalDialog.Owner = mainWindow;
+                        windowLeft = mainWindow.Left;
+                        windowTop = mainWindow.Top;
                     }
                     modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
                     modalDialog.Left = windowLeft;
@@ -670,12 +670,12 @@ namespace DDPM.UI.Module.PenButtonSettings
                 }
                 else if (id == 41)
                 {
-                    RadialMenuModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm);
-                    if (parentWindow != null)
+                    RadialMenuModalDialog modalDialog = new(mainWindow.ActualWidth, mainWindow.ActualHeight, _vm);
+                    if (mainWindow != null)
                     {
-                        modalDialog.Owner = parentWindow;
-                        windowLeft = parentWindow.Left;
-                        windowTop = parentWindow.Top;
+                        modalDialog.Owner = mainWindow;
+                        windowLeft = mainWindow.Left;
+                        windowTop = mainWindow.Top;
                     }
                     modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
                     modalDialog.Left = windowLeft;

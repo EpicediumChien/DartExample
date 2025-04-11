@@ -132,7 +132,6 @@ namespace DDPM.UI.Plugin.Common
             timer.Tick += Timer_Tick;
             ;
             Unloaded += ActionParameterModalDialog_Unloaded;
-            ;
         }
 
         private void ActionParameterModalDialog_Unloaded(object sender, RoutedEventArgs e)

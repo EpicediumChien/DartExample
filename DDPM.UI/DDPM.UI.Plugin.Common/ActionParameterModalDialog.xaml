@@ -16,7 +16,7 @@
   <Window.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+        <!--<ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />-->
       </ResourceDictionary.MergedDictionaries>
       <Style x:Key="CaptionTextStyle" TargetType="UXControls:UXTextBlock">
         <Setter Property="FontFamily" Value="Roboto" />
