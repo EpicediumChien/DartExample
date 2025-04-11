@@ -1090,6 +1090,9 @@ namespace DDPM.SA.Common
         private bool IsCopilotEnabled = CheckCopilotEnabled();
         private void MonitorRegistryKey()
         {
+            if (_regKey == null)
+                return;
+
             IntPtr registryKeyHandle = _regKey.Handle.DangerousGetHandle();
 
             while (!_stopMonitoring)
