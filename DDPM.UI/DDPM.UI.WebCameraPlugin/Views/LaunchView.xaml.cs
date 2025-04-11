@@ -614,12 +614,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             string model = _vm.CurrentDeviceInfo?.ModelNumber ?? "";
             noPresenceFunction = false;
 
-            //if (is_camera_dell7==2 && !AllSupportedResolutions)
-            //{
-            //    print_debug("is_camera_dell7 ==2 && !AllSupportedResolutions");
-            //    noPresenceFunction = true;
-            //    return;
-            //}
+            if (!AllSupportedResolutions)
+            {
+                print_debug("is_camera_dell7 ==2 && !AllSupportedResolutions");
+                noPresenceFunction = true;
+                return;
+            }
             _vm.UPD_Visibility = Visibility.Collapsed; //HPD
             _vm.MPS_Setting_Visibility = Visibility.Collapsed;//內建電腦MPS
             _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;//FW Update
