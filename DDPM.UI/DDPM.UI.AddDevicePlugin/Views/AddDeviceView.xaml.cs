@@ -22,6 +22,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
@@ -480,6 +481,20 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             {
                 e.Handled = true;
                 _console.ShowHomePage();
+            }
+        }
+
+        private bool _hasInitialized = false;
+        private void UserControl_LayoutUpdated(object sender, EventArgs e)
+        {
+            if (!_hasInitialized && IsVisible)
+            {
+                _hasInitialized = true;
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    // UI is fully visible and rendered now
+                    Debug.WriteLine("UserControl is fully shown!");
+                }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
             }
         }
     }

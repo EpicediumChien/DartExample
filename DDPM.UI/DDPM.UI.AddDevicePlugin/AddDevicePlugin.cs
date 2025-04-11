@@ -125,8 +125,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         {
             DdpmCommonHelper.WriteUILog($"AddDevice pugin OnShown Begin timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
             ConfigureServices();
-            //GetPeripheralsAsync();
-            GetRFDongleAsync();
+            //GetRFDongleAsync();
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceChanged;
@@ -136,14 +135,6 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         }
 
         #endregion Interface IConsolePluginSupportsActivations
-
-        //private void GetPeripheralsAsync()
-        //{
-        //    _log.Debug($"GetPeripherals is invoked");
-        //    Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA.GetDevices(true);
-
-        //    _viewModel?.CheckPandora(task.Result.deviceInfo);
-        //}
 
         private void DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
