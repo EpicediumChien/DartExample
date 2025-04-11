@@ -225,7 +225,7 @@
                                 <!-- OLD:
                                         Margin="8,15,5,15"
                                 -->
-                                <Button Style="{DynamicResource Button_WhiteFrame}"
+                                <Button Style="{DynamicResource SecondaryButtonStyle}"
                                         MinWidth="226"
                                         Height="40"
                                         Click="SaveDiagnosticReport_Click"
@@ -247,7 +247,7 @@
                                 <!-- OLD:
                                         Margin="8,15,5,15"
                                 -->
-                                <Button Style="{StaticResource Button_WhiteFrame}"
+                                <Button Style="{StaticResource SecondaryButtonStyle}"
                                         MinWidth="226"
                                         Height="40"
                                         Click="SaveMonitorAssetReport_Click"

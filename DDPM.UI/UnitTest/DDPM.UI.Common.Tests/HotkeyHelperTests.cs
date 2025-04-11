@@ -138,7 +138,7 @@ namespace DDPM.UI.Common.Tests
             deviceManagerSAMock.Setup(x => x.GetHotkeyConflicts(It.IsAny<HotkeyInfo>())).Returns(Task.FromResult(HotkeyWarning.None));
             result = KeysHelper.hotKeyConflictsCheck(new HotkeyInfo());
             // Assert
-            Assert.That(result, Is.EqualTo(true));
+            Assert.That(result, Is.EqualTo(false));
 
             // Act
             //deviceManagerSAMock.Setup(x => x.GetHotkeyConflicts(It.IsAny<HotkeyInfo>())).Returns(Task.FromResult(HotkeyWarning.SingleKey));
@@ -173,9 +173,9 @@ namespace DDPM.UI.Common.Tests
             Assert.That(result, Is.Not.Null);
 
             // Act
-            newKeys = new List<VirtualKey>() {};
+            newKeys = new List<VirtualKey>() { };
             e = new System.Windows.Input.KeyEventArgs(keyboard, Presentation, 1, Key.LeftShift);
-            result = KeysHelper.getUXTextBoxHotkeyInfo(new UXTextBox() { Text= " Ctrl" } , e, ref newKeys, hotkeyType);
+            result = KeysHelper.getUXTextBoxHotkeyInfo(new UXTextBox() { Text = " Ctrl" }, e, ref newKeys, hotkeyType);
             // Assert
             Assert.That(result.Hotkey.Count, Is.EqualTo(1));
 

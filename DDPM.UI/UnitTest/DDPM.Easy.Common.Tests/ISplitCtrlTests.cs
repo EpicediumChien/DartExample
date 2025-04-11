@@ -81,7 +81,9 @@ namespace DDPM.Easy.Common.Tests
         {
             try
             {
-                ISplitCtrlMock.Setup(x => x.VM).Returns(new SplitCtrlVM());
+                var obj = new SplitCtrlVM();
+                ISplitCtrlMock.Setup(x => x.VM).Returns(obj);
+                obj.Dispose();
                 Assert.True(true);
             }
             catch (Exception ex)

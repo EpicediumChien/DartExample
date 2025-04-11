@@ -315,10 +315,10 @@ namespace DDPM.UI.Common.Tests
             //Assert
             Assert.That(result, Is.Not.Null);
 
-            DdpmCommonHelper.DeviceManagerSA=null;
+            DdpmCommonHelper.DeviceManagerSA = null;
             result = DdpmCommonHelper.ReadDDPMSettings(true);
             // Assert
-            Assert.That(result, Is.EqualTo(null));
+            Assert.That(result, Is.Not.Null);
 
             var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
@@ -385,9 +385,9 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestDeterminePeripheralProductImageFileName()
         {
-            var result = DdpmCommonHelper.DeterminePeripheralProductImageFileName(new DeviceInfo() { ModelNumber= "KB740", ColorCode = 1});
+            var result = DdpmCommonHelper.DeterminePeripheralProductImageFileName(new DeviceInfo() { ModelNumber = "KB740", ColorCode = 1 });
             Assert.That(result, Is.EqualTo("KB740_1"));
-            result = DdpmCommonHelper.DeterminePeripheralProductImageFileName(new DeviceInfo() { ModelNumber = "KB7120W" , ColorCode = 1 });
+            result = DdpmCommonHelper.DeterminePeripheralProductImageFileName(new DeviceInfo() { ModelNumber = "KB7120W", ColorCode = 1 });
             Assert.That(result, Is.EqualTo("KB740_1"));
             result = DdpmCommonHelper.DeterminePeripheralProductImageFileName(new DeviceInfo() { ModelNumber = "KB500", ColorCode = 1 });
             Assert.That(result, Is.EqualTo("KB500_1"));

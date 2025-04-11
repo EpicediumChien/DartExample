@@ -66,8 +66,89 @@
                 </Grid>
             </Grid>
             <!--Name & Model-->
-            <Grid VerticalAlignment="Top" HorizontalAlignment="Left" d:Background="Cyan">
-                <StackPanel Orientation="Vertical">
+            <Grid>
+                <!-- Robert_Lin 2025-4-11, PIMS-348402 [UI]Title Alignment -->
+                <!-- Fixed Solution (reference from DeviceBasePage.xaml) -->
+                <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="60,15,0,0"
+                  d:Background="Cyan" Visibility="Visible">
+                    <Grid.RowDefinitions>
+                        <RowDefinition MaxHeight="90" />
+                        <RowDefinition Height="6" />
+                        <RowDefinition Height="AUto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- #region LeftArrow -->
+                    <Button Grid.Row="0" Grid.Column="0" Width="24" Height="24"
+                                   Style="{StaticResource BackArrowButton}"
+                                   VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="Hand"
+                                   KeyboardNavigation.TabIndex="11" 
+                                   AutomationProperties.Name="{Binding [Back], Source={x:Static lang:LangHelper.Instance}}" 
+                                   Command="{Binding GoBackClickedCommand}"
+                                   />
+                    <!-- #endregion LeftArrow -->
+
+                    <!-- #region MarketName -->
+                    <Grid Grid.Row="0" Grid.Column="1">
+                        <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Name="marketName"
+                                            d:Text="Monitor Market Name" d:MaxWidth="200"
+                                            Text="{Binding Name}" FontWeight="Normal"
+                                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                                            TextBlockType="Header2" TextWrapping="Wrap"
+                                            TextBlockSemanticColorType="DefaultHeader"
+                                            Focusable="True" KeyboardNavigation.TabIndex="12"
+                                            Foreground="{DynamicResource DefaultTheme_TxtColor}" 
+                                            FontSize="24" TextTrimming="WordEllipsis"
+                                            MaxHeight="90"/>
+                    </Grid>
+                    <!-- #endregion MarketName -->
+
+                    <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+                        <!-- #region ModelName -->
+                        <Grid Height="40">
+                            <UXControls:UXTextBlock Text="{Binding Model}"
+                                                d:Text="Model Name"  d:MaxWidth="200"
+                                                TextTrimming="CharacterEllipsis" x:Name="tbDisplayName"
+                                                HorizontalAlignment="Left"  VerticalAlignment="Center"
+                                                Focusable="True" KeyboardNavigation.TabIndex="13"
+                                                FontWeight="Normal"  FontSize="20"
+                                                Foreground="{DynamicResource ModelNumberText_TxtColor}"
+                                                />
+                        </Grid>
+                        <!-- #endregion ModelName -->
+
+                        <!-- #region DeviceInfoIcon -->
+                        <Button Style="{StaticResource StatelessButton}" Width="16" Height="16" VerticalAlignment="Center"
+                            Margin="8,0,0,0" KeyboardNavigation.TabIndex="14"
+                            AutomationProperties.Name="{Binding FirmwareVersion2}">
+                            <!-- The (i) icon 16x16 -->
+                            <ContentControl Template="{StaticResource icon_Info}"/>
+
+                            <!-- ToolTip -->
+                            <Button.ToolTip>
+                                <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2"
+                                         BorderThickness="0" Background="Transparent">
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <Border.Resources>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
+                                        </Border.Resources>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding FirmwareVersion2}" />
+                                        </StackPanel>
+                                    </Border>
+                                </ToolTip>
+                            </Button.ToolTip>
+                        </Button>
+                        <!-- #endregion DeviceInfoIcon -->
+                    </StackPanel>
+                </Grid>
+                
+                <!-- Robert_Lin 2025-4-11 Comment-out the old solution -->
+                <!-- 
+                <StackPanel Orientation="Vertical" Visibility="Visible">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                         <Image x:Name="ArrowLeft" Margin="64,21,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Fill"
                                d:Source="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/arrow-left.png"
@@ -88,9 +169,6 @@
                                                 Style="{StaticResource ModelNumberTextStyle}" />
                         <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
                                VerticalAlignment="Top" Cursor="" Width="16" Height="16">
-                            <!--<Image.InputBindings>
-                                <MouseBinding Gesture="LeftClick" Command="{Binding ShowInfoClickedCommand}" />
-                            </Image.InputBindings>-->
                             <Image.ToolTip>
                                 <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
@@ -106,7 +184,9 @@
                         </Image>
                     </StackPanel>
                 </StackPanel>
+                -->
             </Grid>
+
             <!--Battery-->
             <Grid VerticalAlignment="Bottom">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
