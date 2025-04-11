@@ -56,19 +56,24 @@ namespace DDPM.UI.Plugin.DockPlugin.Views
                 txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo?.MaxPairingSlots - _vm.CurrentDeviceInfo?.PairedDeviceCount, _vm.CurrentDeviceInfo?.MaxPairingSlots);
             }
 
-            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+            //Robert_Lin 2025-4-11 PIMS-348402 [UI]Title Alignment
+            //Change the (i) icon to Path (original is an Image)
+            //So we don't need blow handler anymore.
+            //DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
 
         ~DockPage()
         {
-            DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+            //Robert_Lin 2025-4-11 PIMS-348402 [UI]Title Alignment
+            //DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
         }
 
-        private void ImageUpdate(OSThemeEnum oSThemeEnum)
-        {
-            ArrowLeft.Source = null;
-            ArrowLeft.Source = (BitmapImage)System.Windows.Application.Current.Resources["Arrow_Left"];
-        }
+        //Robert_Lin 2025-4-11 PIMS-348402 [UI]Title Alignment
+        //private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        //{
+        //    ArrowLeft.Source = null;
+        //    ArrowLeft.Source = (BitmapImage)System.Windows.Application.Current.Resources["Arrow_Left"];
+        //}
 
         #region RightViewHeader
 
