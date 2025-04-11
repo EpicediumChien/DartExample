@@ -5389,7 +5389,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 The file path either has exceeded the maximum of 260 characters, uses a reserved file name, or has invalid characters &amp;lt; &amp;gt; : &quot; / \ | ? 的當地語系化字串。
+        ///   查詢類似 The file path either has exceeded the maximum of 260 characters, uses a reserved file name, or has invalid characters &lt; &gt; : &quot; / \ | ? 的當地語系化字串。
         /// </summary>
         internal static string InputValidationTooltip_3 {
             get {
