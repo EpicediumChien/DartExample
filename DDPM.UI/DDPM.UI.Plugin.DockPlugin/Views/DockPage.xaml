@@ -129,7 +129,8 @@
 
                             <!-- ToolTip -->
                             <Button.ToolTip>
-                                <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                                <ToolTip Placement="Top" VerticalOffset="12" HorizontalOffset="2"
+                                         BorderThickness="0" Background="Transparent">
                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                         <Border.Resources>
                                             <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
