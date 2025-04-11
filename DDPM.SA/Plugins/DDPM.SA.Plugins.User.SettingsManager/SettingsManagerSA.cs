@@ -2365,7 +2365,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 {
                     WriteLog($"[User setting plugin] WARNING: un-defined registry hive ({hive})");
                     return Task.FromResult(resvalue);
-                    ;
                 }
             }
             catch (Exception e)
