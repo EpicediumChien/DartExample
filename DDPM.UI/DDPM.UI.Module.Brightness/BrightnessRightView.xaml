@@ -172,8 +172,8 @@
                                                 Source="{DynamicResource BrightnessImage}"
                                                 Stretch="UniformToFill" />-->
                                                 <ContentControl Grid.Column="0"
-                                                                Width="20"
-                                                                Height="20"
+                                                                Width="16"
+                                                                Height="16"
                                                                 HorizontalAlignment="Center"
                                                                 VerticalAlignment="Center"
                                                                 Template="{StaticResource icon_Brightness}"
@@ -237,8 +237,8 @@
                                                 Source="{DynamicResource ContrastImage}"
                                                 Stretch="UniformToFill" />-->
                                                 <ContentControl Grid.Column="0"
-                                                                Width="20"
-                                                                Height="20"
+                                                                Width="16"
+                                                                Height="16"
                                                                 HorizontalAlignment="Center"
                                                                 VerticalAlignment="Center"
                                                                 Focusable="True" KeyboardNavigation.IsTabStop="True"
