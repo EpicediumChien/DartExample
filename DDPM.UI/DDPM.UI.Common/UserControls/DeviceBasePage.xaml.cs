@@ -24,10 +24,10 @@ namespace DDPM.UI.Common.UserControls
     {
         #region Private members
         private readonly ILog _log;
-        private Stopwatch _stopwatch = new Stopwatch();
+        private Stopwatch? _stopwatch;
 
-        private DeviceBasePageViewModel viewModel = new DeviceBasePageViewModel();
-        public DeviceBasePageViewModel ViewModel { get { return viewModel; } }
+        private DeviceBasePageViewModel _viewModel;
+        public DeviceBasePageViewModel ViewModel { get { return _viewModel; } }
 
         //Derek 10/17 for RWD
         private readonly int breakPoints = 1050;
@@ -43,17 +43,19 @@ namespace DDPM.UI.Common.UserControls
         public DeviceBasePage()
         {
             InitializeComponent();
-            DataContext = viewModel;
-            viewModel.LeaveLandingMode += OnLeaveLandingMode;
-            viewModel.RightViewHeaderChanged += OnRightViewHeaderChanged;
-            viewModel.SelectedHomeDeviceChanged += OnSelectedHomeDeviceChanged;
+            _stopwatch = new Stopwatch();
+            _viewModel = new DeviceBasePageViewModel();
+            DataContext = _viewModel;
+            _viewModel.LeaveLandingMode += OnLeaveLandingMode;
+            _viewModel.RightViewHeaderChanged += OnRightViewHeaderChanged;
+            _viewModel.SelectedHomeDeviceChanged += OnSelectedHomeDeviceChanged;
 
             if (DdpmCommonHelper.MyConsole != null)
             {
                 _log = DdpmCommonHelper.MyConsole.CreateLog("BasePage");
                 _log.Info("DeviceBasePage ctor");
-                viewModel.InitLog();
-                _stopwatch.Restart();
+                _viewModel?.InitLog();
+                _stopwatch?.Restart();
             }
 
             //marketName.Text = Strings.Display;
@@ -83,8 +85,7 @@ namespace DDPM.UI.Common.UserControls
                     // 釋放託管資源
                     _stopwatch?.Stop();
                     _stopwatch = null;
-                    viewModel = null;
-
+                    _viewModel.Dispose();
                 }
 
                 // 釋放非託管資源
@@ -105,30 +106,30 @@ namespace DDPM.UI.Common.UserControls
 
         private void OnRightViewHeaderChanged(object sender, RoutedEventArgs e)
         {
-            rightViewHeaderCtrl.SetHeaders(viewModel.RightViewHeaders.ToArray());
+            rightViewHeaderCtrl.SetHeaders(_viewModel.RightViewHeaders.ToArray());
 
             //Check if new selected header is not show (IsShown==false), then change the selection
-            if (viewModel.RightViewHeaders.Count > 0 &&
-                !viewModel.RightViewHeaders[viewModel.RightViewHeaderSelectedIndex].IsShown)
+            if (_viewModel.RightViewHeaders.Count > 0 &&
+                !_viewModel.RightViewHeaders[_viewModel.RightViewHeaderSelectedIndex].IsShown)
             {
                 int newIndex = 0;
-                ModuleGroup? mg = viewModel.SelectedGroup;
+                ModuleGroup? mg = _viewModel.SelectedGroup;
                 if (mg != null)
                 {
                     newIndex = mg.HeaderSelectedIndex;
                 }
                 //Try to select [0] (NOTE. It's assume that the Headers[0] will be always isShown)
-                if (viewModel.RightViewHeaders[newIndex].IsShown)
-                    viewModel.RightViewHeaderSelectedIndex = newIndex;                
+                if (_viewModel.RightViewHeaders[newIndex].IsShown)
+                    _viewModel.RightViewHeaderSelectedIndex = newIndex;                
             }
-            rightViewHeaderCtrl.SelectedIndex = viewModel.RightViewHeaderSelectedIndex;
+            rightViewHeaderCtrl.SelectedIndex = _viewModel.RightViewHeaderSelectedIndex;
         }
 
         public void SetModuleGroupList(List<ModuleGroup> groupList)
         {
-            viewModel.ModuleGroups = groupList;
+            _viewModel.ModuleGroups = groupList;
             DataContext = null;
-            DataContext = viewModel;
+            DataContext = _viewModel;
         }
 
         #region Leave from LandingMode
@@ -156,10 +157,10 @@ namespace DDPM.UI.Common.UserControls
 
         private void OnSelectedHomeDeviceChanged(object sender, EventArgs e)
         {
-            if (viewModel.DefaultLeftView != null)
+            if (_viewModel.DefaultLeftView != null)
             {
-                viewModel.DefaultLeftView.DataContext = null;
-                viewModel.DefaultLeftView.DataContext = viewModel.SelectedHomeDevice;
+                _viewModel.DefaultLeftView.DataContext = null;
+                _viewModel.DefaultLeftView.DataContext = _viewModel.SelectedHomeDevice;
             }
         }
 
@@ -198,7 +199,7 @@ namespace DDPM.UI.Common.UserControls
             if (sender == null)
                 return;
 
-            viewModel.RightViewHeaderSelectedIndex = rightViewHeaderCtrl.SelectedIndex;
+            _viewModel.RightViewHeaderSelectedIndex = rightViewHeaderCtrl.SelectedIndex;
             /*
             int newSelId =
             if (newSelId != displaySettingsSelIdx)
@@ -215,35 +216,35 @@ namespace DDPM.UI.Common.UserControls
 
         public void SetLeftFrameWidth(double width)
         {
-            viewModel.LeftFrameWidth = width;
+            _viewModel.LeftFrameWidth = width;
         }
 
         public void SetHomeDevices(List<HomeDevice> devices)
         {
-            viewModel.HomeDevices = devices;
+            _viewModel.HomeDevices = devices;
         }
 
         public void SetSelectedHomeDevice(HomeDevice? device)
         {
-            viewModel.SelectedHomeDevice = device;
+            _viewModel.SelectedHomeDevice = device;
         }
 
         public void SelectGroupByIndex(int groupIndex)
         {
-            if ((groupIndex < 0) || (groupIndex >= viewModel.GroupCount))
+            if ((groupIndex < 0) || (groupIndex >= _viewModel.GroupCount))
                 return;
 
             //If we are in LandingMode, then will transit to TwoViewMode
-            if (viewModel.IsLandingMode)
+            if (_viewModel.IsLandingMode)
                 InvokeGotoTwoViewModeAnimation();
 
-            viewModel.GroupSelectedIndex = groupIndex;
+            _viewModel.GroupSelectedIndex = groupIndex;
         }
 
         public void SetDefaultLeftView(UserControl leftView)
         {
-            viewModel.DefaultLeftView = leftView;
-            viewModel.DefaultLeftView.DataContext = viewModel.SelectedHomeDevice;
+            _viewModel.DefaultLeftView = leftView;
+            _viewModel.DefaultLeftView.DataContext = _viewModel.SelectedHomeDevice;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -277,35 +278,35 @@ namespace DDPM.UI.Common.UserControls
         public bool SetLockModuleGroup(string groupName, bool isLocked)
         {
             //Find the group index from groupName
-            int groupIndex = viewModel?.FindGroupIndexByGroupName(groupName) ?? 0;
+            int groupIndex = _viewModel?.FindGroupIndexByGroupName(groupName) ?? 0;
             if (groupIndex < 0)
                 return false;
             //Set the IsLocked for the VbatItem
-            VbarItem1? vbarItem = viewModel?.VbarItems[groupIndex];
+            VbarItem1? vbarItem = _viewModel?.VbarItems[groupIndex];
             if (vbarItem == null) return false;
 
             vbarItem.IsLocked = isLocked;
 
             //Get the IsDdcciOn flag from SelectedHomeDevice
             bool isDdciOn = true;
-            if (viewModel.SelectedHomeDevice != null && viewModel.SelectedHomeDevice.MonitorInfo != null)
+            if (_viewModel?.SelectedHomeDevice != null && _viewModel.SelectedHomeDevice.MonitorInfo != null)
             {
-                isDdciOn = viewModel.SelectedHomeDevice.MonitorInfo.DDCisON;
+                isDdciOn = _viewModel.SelectedHomeDevice.MonitorInfo.DDCisON;
             }
 
 
             //If we are not in Landing mode which has selected group
-            if ((!viewModel.IsLandingMode) && isLocked)
+            if ((!_viewModel.IsLandingMode) && isLocked)
             {
                 //If DDC/CI is on
                 if (isDdciOn)
                 {
                     //If current locked group is currently selected
                     //then always change selection to the first group (DisplaySettings)
-                    if (groupIndex == viewModel.GroupSelectedIndex)
+                    if (groupIndex == _viewModel.GroupSelectedIndex)
                     {
                         //If current Selected Monitor DDC/CI is off => switch
-                        viewModel.GroupSelectedIndex = 0;
+                        _viewModel.GroupSelectedIndex = 0;
                     }
                 }
                 else
@@ -314,7 +315,7 @@ namespace DDPM.UI.Common.UserControls
                     //If we just lock EasyArrange, then should return to homepage
                     if (groupName.Equals(Constants.GroupName_EasyArrange))
                     {
-                        viewModel.GotoHomepage();
+                        _viewModel.GotoHomepage();
                     }
                 }
             }
@@ -335,7 +336,7 @@ namespace DDPM.UI.Common.UserControls
             //    ChangeToHorizontalLayout();
             //}
 
-            if (!viewModel.IsLandingMode)
+            if (!_viewModel.IsLandingMode)
                 ChangeToNonLandingMode();
             else
             { 
@@ -416,13 +417,13 @@ namespace DDPM.UI.Common.UserControls
                 AdjustHorizontalLayoutForNonLandingMode(false);
 
                 //restore vBar
-                foreach (var item in viewModel.VbarItems)
+                foreach (var item in _viewModel.VbarItems)
                 {
                     item.ResetStory();
                 }
 
                 vbarListLeft.ItemsSource = null;
-                vbarListLeft.ItemsSource = viewModel.VbarItems;
+                vbarListLeft.ItemsSource = _viewModel.VbarItems;
             }
             else
             {
@@ -443,8 +444,8 @@ namespace DDPM.UI.Common.UserControls
             */
 
             // Jim 20250109 to fix PIMS-340036 [DDPM Win 2.0][R19]Connect two monitors,switch the drop-down menu. One DUT of the Restore to default icons disappears.
-            ((System.Windows.Controls.Button)(viewModel.DefaultLeftView.FindName("btnRestore"))).Visibility = Visibility.Collapsed;
-            viewModel.SelectedHomeDevice.IsRestoreBtnVisible = Visibility.Collapsed; ;
+            ((System.Windows.Controls.Button)(_viewModel.DefaultLeftView.FindName("btnRestore"))).Visibility = Visibility.Collapsed;
+            _viewModel.SelectedHomeDevice.IsRestoreBtnVisible = Visibility.Collapsed; ;
         }
 
         private void ExtendVBarOnVerticalLayout()
@@ -456,7 +457,7 @@ namespace DDPM.UI.Common.UserControls
             //right side
             vBarRight.Width = vBarWidthNormal;
             //extend vBar
-            foreach (var item in viewModel.VbarItems)
+            foreach (var item in _viewModel.VbarItems)
             {
                 item.CompleteStory();
             }
@@ -464,7 +465,7 @@ namespace DDPM.UI.Common.UserControls
             stVbarRightFrame.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
 
             vbarListRight.ItemsSource = null;
-            vbarListRight.ItemsSource = viewModel.VbarItems;
+            vbarListRight.ItemsSource = _viewModel.VbarItems;
         }
 
         //for debug
@@ -504,7 +505,7 @@ namespace DDPM.UI.Common.UserControls
 
         private void vBar_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (topStackPanel.Orientation == System.Windows.Controls.Orientation.Horizontal && !viewModel.IsLandingMode)
+            if (topStackPanel.Orientation == System.Windows.Controls.Orientation.Horizontal && !_viewModel.IsLandingMode)
             {
                 ShowVBar();
                 AdjustHorizontalLayoutForNonLandingMode();
@@ -515,7 +516,7 @@ namespace DDPM.UI.Common.UserControls
         {
             if (!isFirstEntryNonLandingMode &&
                 topStackPanel.Orientation == System.Windows.Controls.Orientation.Horizontal &&
-                !viewModel.IsLandingMode)
+                !_viewModel.IsLandingMode)
             {
                 AdjustHorizontalLayoutForNonLandingMode(false);
             }
@@ -525,7 +526,7 @@ namespace DDPM.UI.Common.UserControls
             }
 
             //leave landing mode from Vertical layout
-            if (!viewModel.IsLandingMode && topStackPanel.Orientation == System.Windows.Controls.Orientation.Vertical)
+            if (!_viewModel.IsLandingMode && topStackPanel.Orientation == System.Windows.Controls.Orientation.Vertical)
                 ExtendVBarOnVerticalLayout();
         }
 
