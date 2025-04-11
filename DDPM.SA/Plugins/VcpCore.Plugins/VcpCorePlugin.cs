@@ -2564,10 +2564,6 @@ namespace VcpCore.Plugins
                     }
                     finally
                     {
-                        _logs.DebugMsg($"[VcpCorePlugin] {TheadGUID} Ready Exit ...");
-                        Interlocked.Add(ref _InitialThreadCounter, -1);
-                        _logs.DebugMsg($"[VcpCorePlugin] _InitialThreadCounter count : ({_InitialThreadCounter}) when InitializeMonitorsList finished and in finally");
-
                         if (!IsFromReGet)
                         {
                             DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs()
@@ -2577,6 +2573,10 @@ namespace VcpCore.Plugins
                             };
                             OnDisplaychanged(_displaychangedEventArgss);
                         }
+
+                        _logs.DebugMsg($"[VcpCorePlugin] {TheadGUID} Ready Exit ...");
+                        Interlocked.Add(ref _InitialThreadCounter, -1);
+                        _logs.DebugMsg($"[VcpCorePlugin] _InitialThreadCounter count : ({_InitialThreadCounter}) when InitializeMonitorsList finished and in finally");
 
                         if (IsStableMode)
                         {
