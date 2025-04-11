@@ -715,7 +715,6 @@ namespace DDPM.SA.Common
         private static int _RegCloseKey(IntPtr hKey)
         {
             int rst = RegCloseKey(hKey);
-            ;
 
             if (rst != 0)
             {
