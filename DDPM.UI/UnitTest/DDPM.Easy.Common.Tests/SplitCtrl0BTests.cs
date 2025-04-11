@@ -103,6 +103,7 @@ namespace DDPM.Easy.Common.Tests
             vm = new SplitCtrlVM() { Settings = settings };
             privateObject.SetFieldOrProperty("vm", vm);
             reuslt = splitCtrl0B.ApplySettingsToCellList(rcView);
+            vm.Dispose();
             Assert.False(reuslt);
         }
 
@@ -117,6 +118,7 @@ namespace DDPM.Easy.Common.Tests
             vm = new SplitCtrlVM() { Settings = settings };
             privateObject.SetFieldOrProperty("vm", vm);
             reuslt = splitCtrl0B.ConvertSettingsToRatioRects(rcView);
+            vm.Dispose();
             Assert.Null(reuslt);
         }
 

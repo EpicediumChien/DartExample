@@ -739,11 +739,21 @@ namespace DDPM.SA.Common
                                                 writer.WriteLine($"[{displayName}] : True, Ver = {versionInfo.FileVersion}");
                                                 log.Info($"SaveLogFile - [{displayName}] : True, Ver = {versionInfo.FileVersion}");
                                             }
-                                            catch (Exception ex)
+                                            //Dean 20250411, try to solve checkmarx issue: "Information Exposure Through an Error Message"
+                                            //catch (Exception ex)
+                                            //{
+                                            //    writer.WriteLine($"[{displayName}] : True, Ver = ({ex.Message})");
+                                            //    log.Info($"SaveLogFile - [{displayName}] : True, Ver = ({ex.Message})");
+                                            //}
+                                            catch (UnauthorizedAccessException)
                                             {
-                                                writer.WriteLine($"[{displayName}] : True, Ver = ({ex.Message})");
-                                                log.Info($"SaveLogFile - [{displayName}] : True, Ver = ({ex.Message})");
+                                                writer.WriteLine($"[{displayName}] : True, Ver = (Access denied)");
                                             }
+                                            catch (Exception)
+                                            {
+                                                writer.WriteLine($"[{displayName}] : True, Ver = (log exception)");
+                                            }
+                                            //End fix
                                         }
                                     }
 
