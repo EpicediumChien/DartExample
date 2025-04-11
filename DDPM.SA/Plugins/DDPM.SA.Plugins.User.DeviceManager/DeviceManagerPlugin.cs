@@ -11637,6 +11637,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
                         _IsZoomMeetingActive = false;
 
+                    if(!_IsZoomMeetingActive)
+                        _OSD_Controler.CloseMultipleOSDByGuidAndOp("C563A281-26EB-4DCD-8642-EC7498108266", OSDType_Op.None);
+
                     //if (1 == WebcamDevCnt)
                     //{
                     //    //QAMWebcamDeviceGuid = eventMsg.DeviceId;
@@ -11899,6 +11902,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         threadQAM = new Thread(() =>
                         {
+                            _OSD_Controler.CloseMultipleOSDByGuidAndOp("C563A281-26EB-4DCD-8642-EC7498108266", OSDType_Op.None);
+
                             _QAM = new QAMPage(deviceMangerPlugin, Log);
                             _QAM.Closed += QAMCloseEvent;
 
