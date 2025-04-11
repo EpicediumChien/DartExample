@@ -3388,7 +3388,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         osd_type = OSDType.Mute,
                         Message = message,
                         Status = newMuteStatus,
-                        Guid = deviceInfo.ID,
+                        Guid = deviceInfo.ID
                     };
                     OnOSDNotify(args);
                     _logs.DebugMsg_1("[PeripheralsPlugin] ILogicalWiredAudio_MuteStatusChanged ... OSD out ");
@@ -3593,7 +3593,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         osd_type = OSDType.Mute,
                         Message = message,
                         Status = newValue,
-                        Guid = deviceInfo.ID,
+                        Guid = deviceInfo.ID
                     };
                     OnOSDNotify(args);
                     _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_MuteStatusChanged OSD ... out ");
