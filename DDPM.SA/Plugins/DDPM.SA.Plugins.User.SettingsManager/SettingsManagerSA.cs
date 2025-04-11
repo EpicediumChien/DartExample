@@ -17,7 +17,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Windows.Shapes;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -1554,7 +1553,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 WriteLog($"{nameof(ReadImportSettingsFile)} {FileInfo}");
                 return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
             }
-            #region
+            #endregion 
 
             #region Check and read exported file JSON
             //security SA
