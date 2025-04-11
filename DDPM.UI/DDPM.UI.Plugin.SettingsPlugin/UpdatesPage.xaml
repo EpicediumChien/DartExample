@@ -101,7 +101,7 @@
                                             Visibility="Visible"
                                             x:Name="btnFWU"
                                             HorizontalAlignment="Left"
-                                            Style="{StaticResource Button_WhiteFrame}" >
+                                            Style="{StaticResource SecondaryButtonStyle}" >
                                         <Button.Content>
                                             <TextBlock Margin="10,0,10,0" Text="{Binding [Updates.2], Source={x:Static lang:LangHelper.Instance}}"></TextBlock>
                                         </Button.Content>
