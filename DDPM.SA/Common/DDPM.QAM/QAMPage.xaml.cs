@@ -15,6 +15,8 @@ namespace DDPM.QAM
     public partial class QAMPage : Window
     {
         CameraSetting? CameraSetting;
+        //Derek 2025/04/11 add timer to monitor zoom meeting window state for PIMS-351206
+        private System.Threading.Timer? timer = new System.Threading.Timer(TimerCallback, null, 10000, 10000);
 
         //public event EventHandler<UpdateUINotify> QAMUpdateUIHandler;
         public enum log_type
@@ -25,7 +27,12 @@ namespace DDPM.QAM
 
         private ILog Log { get; set; }
 
+        private static void TimerCallback(object? state)
+        {
+            MonitorZoomMeetingWindowState();
+        }
         
+
         /// <summary>
         /// NotificationFWupdate 呼叫DDPM UI事件
         /// </summary>
@@ -306,6 +313,11 @@ namespace DDPM.QAM
 
                 if (DataContext is QAMPageViewModel vm)
                     vm.RemoveQAMWebcamEvent();
+
+                //Derek 2025/04/11
+                DdpmCommonHelper.QAMPageViewModel = null;
+                timer?.Dispose();
+                timer = null;
             }
             catch (Exception ex)
             {
@@ -349,16 +361,16 @@ namespace DDPM.QAM
             }
         }
 
-        public static void FindZoom()
+        private static void MonitorZoomMeetingWindowState()
         {
-            string processName = "Zoom";
+            string processName = "notepad"; //"Zoom";
             Process[] processes = Process.GetProcessesByName(processName);
 
             if (processes.Length > 0)
             {
                 foreach (Process process in processes)
                 {
-                    System.Windows.MessageBox.Show($"{process.Id}， {process.MainWindowHandle}，{process.MainWindowTitle}, {process.MainModule?.FileName}, {process.MainModule?.ModuleName}");
+                    //System.Windows.MessageBox.Show($"{process.Id}， {process.MainWindowHandle}，{process.MainWindowTitle}, {process.MainModule?.FileName}, {process.MainModule?.ModuleName}");
 
                     IntPtr hwnd = process.MainWindowHandle;
                     if (hwnd != IntPtr.Zero)
