@@ -3977,6 +3977,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 cLI_SWU_RESPONSE.SWVersion = $"[{_GlobalSettingParam.GlobalSetting_About.SWVersion}]";
                                 cLI_SWU_RESPONSE.Message = "No update availible";
                                 cLI_SWU_RESPONSE.Result = "PASS";
+                                cLI_SWU_RESPONSE.SWUpdateRESPONSE = [$"No updates available: DDPM already last Version:{_GlobalSettingParam.GlobalSetting_About.SWVersion}"];
                             }
                         }
                         //else if (commandLineInput.Options.Count == 0)
