@@ -170,9 +170,16 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
 
             if (File.Exists(colorsettings_path1_))
             {
-                File.WriteAllText(colorsettings_path1_, jsonData); // mock data to temp data
-                var ReadColorPresetSettingsResult2 = SettingsManagerSAPlugin.ReadColorPresetSettings().Result; //strFilePath is  Exists, get strReadJson length is null
-                Assert.That(preset_settings1_, Is.EqualTo(ReadColorPresetSettingsResult2));
+                try
+                {
+                    File.WriteAllText(colorsettings_path1_, jsonData); // mock data to temp data
+                    var ReadColorPresetSettingsResult2 = SettingsManagerSAPlugin.ReadColorPresetSettings().Result; //strFilePath is  Exists, get strReadJson length is null
+                    Assert.That(preset_settings1_, Is.EqualTo(ReadColorPresetSettingsResult2));
+                }
+                catch (Exception ex)
+                {
+                    Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+                }
             }
             if (File.Exists(colorsettings_path1_) && jsonData != null)
             {
@@ -207,7 +214,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             colorPresetSettingsConfigs.Add(colorPresetSettings);
             string colorsettings_path1_ = "test_writeCroPresetpath.json";
             string jsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456\",\"RunType\":0,\"ColorManagement_Status\":0,\"ColorManagement_RunType\":1,\"AppInfo\":null}]";
-            File.WriteAllText(colorsettings_path1_, jsonData);
+            try
+            {
+                File.WriteAllText(colorsettings_path1_, jsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
             string colorsettings_path2 = Environment.CurrentDirectory + "\\" + colorsettings_path1_;
@@ -234,7 +248,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             List<ColorPresetSettings> colorPresetSettingsConfigs = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU3224KB", SerialNumber = "808792396", RunType = 1, AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>() } };
             string colorpresettingsObject_path1_ = "test_writeCroPresetpath.json";
             string jsonData = "[{\"DeviceInfo\":null,\"RunType\":0,\"AppInfo\":null,\"PresetForManual\":\"TestManual\"}]";
-            File.WriteAllText(colorpresettingsObject_path1_, jsonData);
+            try
+            {
+                File.WriteAllText(colorpresettingsObject_path1_, jsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
             privateSettingsManagerObject.SetFieldOrProperty("_colorsettings_path", colorpresettingsObject_path1_);
             //using (var reader = new StreamReader(colorpresettingsObject_path1_))
@@ -253,7 +274,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             List<ColorPresetSettings> colorPresetSettingsConfigs = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU3224KB", SerialNumber = "808792396", RunType = 1, AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>() } };
             string colorpresettingsObject_path1_ = "test_writeCroPresetpath.json";
             string jsonData = "[{\"DeviceInfo\":null,\"RunType\":0,\"AppInfo\":null,\"PresetForManual\":\"TestManual\"}]";
-            File.WriteAllText(colorpresettingsObject_path1_, jsonData);
+            try
+            {
+                File.WriteAllText(colorpresettingsObject_path1_, jsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
             privateSettingsManagerObject.SetFieldOrProperty("_colorsettings_path", colorpresettingsObject_path1_);
             //var RunSerializeObjectResult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", colorPresetSettingsConfigs);  
@@ -286,7 +314,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 var ReadHotkeySettingssResult1 = SettingsManagerSAPlugin.ReadHotkeySettings().Result;  // strFilePath is not Exists hotkeysettings_path1_ 
                 Assert.That(_hotkeySettings, Is.EqualTo(ReadHotkeySettingssResult1)); //run finnish will create hotkeysettings_path1_
             }
-            File.WriteAllText(hotkeysettings_path1_, jsonData);
+            try
+            {
+                File.WriteAllText(hotkeysettings_path1_, jsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             string hotkeysettings_path2_ = Environment.CurrentDirectory + "\\" + hotkeysettings_path1_;
             privateSettingsManagerObject.SetFieldOrProperty("_hotkeysettings_path", hotkeysettings_path2_);
             string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
@@ -311,7 +346,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             List<ColorPresetSettings> colorPresetSettingsConfigs = new List<ColorPresetSettings>() { new ColorPresetSettings() { } };
             string WriteHotkeySettings_path1_ = "test_WriteHotkeySettingspath.json";
             string jsonData = "{\"hotkeySettings\":[{\"DeviceInfo\":null,\"HotkeyOptions\":[],\"HotkeyInfo\":[{\"Description\":\"Testhotkey\",\"Hotkey\":[],\"Status\":\"Registered\",\"Job\":\"BrightnessIncrease\",\"InputSource\":[]}]}]}";
-            File.WriteAllText(WriteHotkeySettings_path1_, jsonData);
+            try
+            {
+                File.WriteAllText(WriteHotkeySettings_path1_, jsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
             string WriteHotkeySettings_path2_ = Environment.CurrentDirectory + "\\" + WriteHotkeySettings_path1_;
             privateSettingsManagerObject.SetFieldOrProperty("_hotkeysettings_path", WriteHotkeySettings_path2_);
@@ -337,7 +379,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             List<HotkeySettings> hotkeySettingsConfig = new List<HotkeySettings>() { new HotkeySettings() { ModelName = "DDPM", SerialNumber = "DDPM", ServiceTag = "DDPM", HotkeyInfo = new List<HotkeyInfo>(), HotkeyOptions = new List<HotkeyOption>() } };
             string RunSerializehotkeySettingsObject_path1_ = "test_WriteHotkeySettingspath.json";
             string jsonData = "{\"hotkeySettings\":[{\"DeviceInfo\":null,\"HotkeyOptions\":[],\"HotkeyInfo\":[{\"Description\":\"Testhotkey\",\"Hotkey\":[],\"Status\":\"Registered\",\"Job\":\"BrightnessIncrease\",\"InputSource\":[]}]}]}";
-            File.WriteAllText(RunSerializehotkeySettingsObject_path1_, jsonData);
+            try
+            {
+                File.WriteAllText(RunSerializehotkeySettingsObject_path1_, jsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
             //privateSettingsManagerObject.SetFieldOrProperty("_hotkeysettings_path", RunSerializehotkeySettingsObject_path1_);  // RunSerialize hotkeySettings method is remover in settingmanagerSA.cs 
             //var RunSerializeObjectResult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", hotkeySettingsConfig);
@@ -351,7 +400,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             List<HotkeySettings> hotkeySettingsConfig = new List<HotkeySettings>() { };
             string DeserializehotkeySettingsObject_path1_ = "test_RunHotkeyDeserializeObjectpath.json";
             string hotkeyjsonData = "{\"hotkeySettings\":[{\"DeviceInfo\":null,\"HotkeyOptions\":[],\"HotkeyInfo\":[{\"Description\":\"Testhotkey\",\"Hotkey\":[],\"Status\":\"Registered\",\"Job\":\"BrightnessIncrease\",\"InputSource\":[]}]}]}";
-            File.WriteAllText(DeserializehotkeySettingsObject_path1_, hotkeyjsonData);
+            try
+            {
+                File.WriteAllText(DeserializehotkeySettingsObject_path1_, hotkeyjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
             privateSettingsManagerObject.SetFieldOrProperty("_hotkeysettings_path", DeserializehotkeySettingsObject_path1_);
             var RunHotkeyDeserializeObjectResult = (List<HotkeySettings>)privateSettingsManagerObject.Invoke("RunHotkeyDeserializeObject", hotkeyjsonData);
@@ -385,7 +441,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 ReadGlobalSettingsResult1 = SettingsManagerSAPlugin.ReadGlobalSettings().Result;  // strFilePath is not Exists GlobalSettings_path1_ GlobalSetting.json"
                 Assert.That(_GlobalSettingParam, Is.EqualTo(ReadGlobalSettingsResult1)); //run finnish will create path1_
             }
-            File.WriteAllText(GlobalSettings_path1_, jsonData);
+            try
+            {
+                File.WriteAllText(GlobalSettings_path1_, jsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             string GlobalSettings_path2_ = Environment.CurrentDirectory + "\\" + GlobalSettings_path1_;
             privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", GlobalSettings_path2_);
             string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
@@ -415,7 +478,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             };
             string writeglobalSettings_path1_ = "test_WriteGlobalSettingsPath.json";
             string jsonData = "{\"GlobalSetting_General\":{\"Low_Battery_Level\":true,\"Keyboard_Lock_Key\":false,\"Webcam_WB7022_Presence_Detection_Sensor_Cover_State\":true,\"Display_MuteState\":true,\"Display_Color_Preset_and_Easy_Memory\":true},\"GlobalSetting_WidgetSettings\":{\"EnableQuickAccessWidget\":false,\"EnableQuickAccessWidget_Reminder\":false},\"GlobalSetting_About\":{\"SWVersion\":\"\",\"DriverVersion\":\"0000\"}}";
-            File.WriteAllText(writeglobalSettings_path1_, jsonData);
+            try
+            {
+                File.WriteAllText(writeglobalSettings_path1_, jsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
             string writeglobalSettings_path2_ = Environment.CurrentDirectory + "\\" + writeglobalSettings_path1_;
             privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", writeglobalSettings_path2_);
@@ -450,7 +520,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
         {
             string globalSettings_path1_ = "test_GlobalSettingsPath.json";
             string GlobalSettingsjsonData = "{\"GlobalSetting_General\":{\"Low_Battery_Level\":true,\"Keyboard_Lock_Key\":false,\"Webcam_WB7022_Presence_Detection_Sensor_Cover_State\":true,\"Display_MuteState\":true,\"Display_Color_Preset_and_Easy_Memory\":true},\"GlobalSetting_WidgetSettings\":{\"EnableQuickAccessWidget\":false,\"EnableQuickAccessWidget_Reminder\":false},\"GlobalSetting_About\":{\"SWVersion\":\"\",\"DriverVersion\":\"0000\"}}";
-            File.WriteAllText(globalSettings_path1_, GlobalSettingsjsonData);
+            try
+            {
+                File.WriteAllText(globalSettings_path1_, GlobalSettingsjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
             privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", globalSettings_path1_);
             GlobalSettingParam globalSettingParam = new GlobalSettingParam()
@@ -469,7 +546,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
         {
             string globalSettingsDes_path1_ = "test_GlobalSettingsPath.json";
             string GlobalSettingsDesjsonData = "{\"GlobalSetting_General\":{\"Low_Battery_Level\":true,\"Keyboard_Lock_Key\":false,\"Webcam_WB7022_Presence_Detection_Sensor_Cover_State\":true,\"Display_MuteState\":true,\"Display_Color_Preset_and_Easy_Memory\":true},\"GlobalSetting_WidgetSettings\":{\"EnableQuickAccessWidget\":false,\"EnableQuickAccessWidget_Reminder\":false},\"GlobalSetting_About\":{\"SWVersion\":\"0000\",\"DriverVersion\":\"0000\"}}";
-            File.WriteAllText(globalSettingsDes_path1_, GlobalSettingsDesjsonData);
+            try
+            {
+                File.WriteAllText(globalSettingsDes_path1_, GlobalSettingsDesjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
             privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", globalSettingsDes_path1_);
             GlobalSettingParam globalSettingParamDes = new GlobalSettingParam()
@@ -512,7 +596,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 var ReadPowerNapSettingsResult1 = SettingsManagerSAPlugin.ReadPowerNapSettings().Result;  // strFilePath is not Exists PowerNapSettings.json"
                 Assert.That(_powerNapSettings, Is.EqualTo(ReadPowerNapSettingsResult1)); //run finnish will create path
             }
-            File.WriteAllText(ReadPowerNapSettings_path1_, PowerNapSettingsjsonData);
+            try {
+                File.WriteAllText(ReadPowerNapSettings_path1_, PowerNapSettingsjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             if (File.Exists(ReadPowerNapSettings_path1_))
             {
                 var ReadPowerNapSettingsResult2 = SettingsManagerSAPlugin.ReadPowerNapSettings().Result;
@@ -532,7 +622,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
             string WritePowerNapSettings_path1_ = "test_WritePowerNapSettingsPath.json";
             string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
-            File.WriteAllText(WritePowerNapSettings_path1_, PowerNapSettingsjsonData);
+            try {
+                File.WriteAllText(WritePowerNapSettings_path1_, PowerNapSettingsjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
             string WritePowerNapSettings_path2_ = Environment.CurrentDirectory + "\\" + WritePowerNapSettings_path1_;
             privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", WritePowerNapSettings_path2_);
@@ -553,19 +649,25 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             }
         }*/
 
-       /* [Test]
-        public void TestRunPowerNapDeserializeObject()
-        {
-            List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
-            string SerializePowerNapSettings_path1_ = "test_SerializePowerNapSettingsPath.json";
-            string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
-            File.WriteAllText(SerializePowerNapSettings_path1_, PowerNapSettingsjsonData);
-            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
-            //privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", SerializePowerNapSettings_path1_); //_powerNapsettings_path remove in method
-            var RunDeserialObjectResult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", powerNapSettingsConfig, SerializePowerNapSettings_path1_);
-            Assert.Greater(RunDeserialObjectResult.Length, 0);
-            File.Delete(SerializePowerNapSettings_path1_);
-        }*/
+        /* [Test]
+         public void TestRunPowerNapDeserializeObject()
+         {
+             List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
+             string SerializePowerNapSettings_path1_ = "test_SerializePowerNapSettingsPath.json";
+             string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+             try {
+                File.WriteAllText(SerializePowerNapSettings_path1_, PowerNapSettingsjsonData);
+             }
+             catch (Exception ex)
+             {
+                 Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+             }
+             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+             //privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", SerializePowerNapSettings_path1_); //_powerNapsettings_path remove in method
+             var RunDeserialObjectResult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", powerNapSettingsConfig, SerializePowerNapSettings_path1_);
+             Assert.Greater(RunDeserialObjectResult.Length, 0);
+             File.Delete(SerializePowerNapSettings_path1_);
+         }*/
 
         /*[Test]
         public void TestRunPowerNapSettingDeserializeObject()
@@ -573,7 +675,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
             string DeserialPowerNapSettings_path1_ = "test_DeserialPowerNapSettingsPath.json";
             string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
-            File.WriteAllText(DeserialPowerNapSettings_path1_, PowerNapSettingsjsonData);
+            try {
+                File.WriteAllText(DeserialPowerNapSettings_path1_, PowerNapSettingsjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
             //privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", DeserialPowerNapSettings_path1_);//_powerNapsettings_path remove in method
             var RunPowerNapDeserializeObjectResult = (List<PowerNapSetting>)privateSettingsManagerObject.Invoke("RunPowerNapDeserializeObject", PowerNapSettingsjsonData);
@@ -591,7 +699,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
             string ImportPowerNapSettings_path1_ = "test_ImportPowerNapSettingsPath.json";
             string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
-            File.WriteAllText(ImportPowerNapSettings_path1_, PowerNapSettingsjsonData);
+            try { 
+                File.WriteAllText(ImportPowerNapSettings_path1_, PowerNapSettingsjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
             privateSettingsManagerObject.SetFieldOrProperty("_powerNapSettings", powerNapSettingsConfig);
             var ImportPowerNapSettingsResult1 = SettingsManagerSAPlugin.ImportPowerNapSettings(ImportPowerNapSettings_path1_).Result;
@@ -609,7 +723,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
             string ExportPowerNapSettings_path1_ = "test_ExportPowerNapSettingsPath.json";
             string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
-            File.WriteAllText(ExportPowerNapSettings_path1_, PowerNapSettingsjsonData);
+            try { 
+                File.WriteAllText(ExportPowerNapSettings_path1_, PowerNapSettingsjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
             privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", ExportPowerNapSettings_path1_);
             if (powerNapSettingsNull == null)
@@ -800,7 +920,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string accessInfo_ = "testaccessinfo";
             string serialized_string = "{\"key\":\"value\"}";
             string target_file = "testSetAppConfigDatafile.json";
-            File.WriteAllText(target_file, serialized_string);
+            try
+            {
+                File.WriteAllText(target_file, serialized_string);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", accessInfo_);
             privateSettingsManagerObject.SetFieldOrProperty("_settings_path", target_file);
             if (settings_Data != null)
@@ -888,8 +1015,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string accessInfo_ = "testaccessinfo";
             string serialized_string = "{\"key\":\"value\"}";
             string settings_path_target_file = "testReloadAppConfigDatafile.json";
-            File.WriteAllText(settings_path_target_file, serialized_string);
-
+            try
+            {
+                File.WriteAllText(settings_path_target_file, serialized_string);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             privateSettingsManagerObject.SetFieldOrProperty("_settings_path", settings_path_target_file);
             privateSettingsManagerObject.SetFieldOrProperty("_settings", null);
 
@@ -952,7 +1085,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             Assert.That(dDPMMonitorSettingsList, Is.EqualTo(ReloadMonitorSettingsResult1));
 
             string displayPath2 = Environment.CurrentDirectory;
-            File.WriteAllText(monitorSettings_path, MonitorListjsonData);
+            try { 
+                File.WriteAllText(monitorSettings_path, MonitorListjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             privatesettingsManagerObj.SetFieldOrProperty("_display_path", displayPath2);
 
             // displayPath is not null, file exist monitorSettings_path, _AllMonitorSettings is not contain model name 
@@ -1007,7 +1146,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string _display_path = "TestU2724DD.json";
             string _display_path2 = string.Empty;
             privatesettingsManagerObj.SetFieldOrProperty("_display_path", _display_path2);
-            File.WriteAllText(_display_path, MonitorListjsonData);
+            try {
+                File.WriteAllText(_display_path, MonitorListjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             var WriteMonitorSettingsResult2 = SettingsManagerSAPlugin.WriteMonitorSettings(modelname, dDPMMonitorSettingsList2).Result;  // dDPMMonitorSettingsList is not null,
             var Write_AllMonitorSettings = (Dictionary<string, List<DDPMMonitorSettings>>)privatesettingsManagerObj.GetFieldOrProperty("_AllMonitorSettings");
             Assert.IsNotNull(Write_AllMonitorSettings);
@@ -1036,7 +1181,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             dDPMMonitorSettingsList.Add(settings);
             string _display_path2 = string.Empty;
             privatesettingsManagerObj.SetFieldOrProperty("_display_path", _display_path2);
-            File.WriteAllText(_display_path, MonitorListjsonData);
+            try
+            {
+                File.WriteAllText(_display_path, MonitorListjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             var DDPMMonitorSettingsSerializ = (string)privatesettingsManagerObj.Invoke("RunSerializeObject_MonitorSettings", modelname, dDPMMonitorSettingsList); //Method name change
             Assert.Greater(DDPMMonitorSettingsSerializ.Length, 0);
             File.Delete(_display_path);
@@ -1069,7 +1221,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
         {
             string _display_path2 = "ReadAllMonitorSettings.json";
             string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
-            File.WriteAllText(_display_path2, MonitorListjsonData);
+            try {
+                File.WriteAllText(_display_path2, MonitorListjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             var displayPath2 = Environment.CurrentDirectory;
             Dictionary<string, List<DDPMMonitorSettings>> _allMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
             DDPMMonitorSettings settings = new DDPMMonitorSettings
@@ -1115,7 +1273,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
 
             string WriteDDPMImpExpSet_path3_ = "test_WriteDDPMImpExpSetjsonDataPath.json";
             string DDPMImpExpSetjsonData = "{\"AppSettings\":{\"Version\":2.0},\"UserSettings\":{\"Version\":1.5,\"Language\":1},\"MonitorSettings\":{\"Version\":1.2,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}}";
-            File.WriteAllText(WriteDDPMImpExpSet_path3_, DDPMImpExpSetjsonData);
+            try
+            {
+                File.WriteAllText(WriteDDPMImpExpSet_path3_, DDPMImpExpSetjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
 
             string WriteDDPMImpExpSet_path33_ = Environment.CurrentDirectory + "\\" + WriteDDPMImpExpSet_path3_;
@@ -1165,7 +1330,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             bool WriteImpExpSettingsF = false;
             string WriteImpExpSet_path2 = "WriteImpExpSet.json";
             string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
-            File.WriteAllText(WriteImpExpSet_path2, MonitorListjsonData);
+            try
+            {
+                File.WriteAllText(WriteImpExpSet_path2, MonitorListjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             DDPMImpExpSettings dDPMImpExpSettings = new DDPMImpExpSettings()
             {
                 AppSettings = new DDPMAppSettings() { Version = 1.0 },
@@ -1233,7 +1405,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             bool DisplayImportSettings1 = false;
             bool DisplayImportSettings2 = true;
             string DDPMImpExpSetjsonData = "{\"AppSettings\":{\"Version\":2.0},\"UserSettings\":{\"Version\":1.5,\"Language\":1},\"MonitorSettings\":{\"Version\":1.2,\"Model\":\"TestU2724DD\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}}";
-            File.WriteAllText(DisplayImportSettings_path, DDPMImpExpSetjsonData);
+            try
+            {
+                File.WriteAllText(DisplayImportSettings_path, DDPMImpExpSetjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             string DisplayImportSettings_path1 = Environment.CurrentDirectory + "\\" + DisplayImportSettings_path;
             PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
             string monitorSettings_path = string.Empty;
@@ -1244,7 +1423,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string monitorSettings_path2 = Environment.CurrentDirectory + "\\" + DisplayImportSettings_path2;
             privatesettingsManagerObj.SetFieldOrProperty("_display_path", Environment.CurrentDirectory);
             string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
-            File.WriteAllText(DisplayImportSettings_path2, MonitorListjsonData);
+            try
+            {
+                File.WriteAllText(DisplayImportSettings_path2, MonitorListjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             List<DDPMMonitorSettings> dDPMMonitorSettingsList = new List<DDPMMonitorSettings>();
             Dictionary<string, List<DDPMMonitorSettings>> _allMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
             DDPMMonitorSettings settings = new DDPMMonitorSettings
@@ -1324,7 +1510,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string accessInfo_ = "testaccessinfo";
             string serialized_string = "{\"key\":\"value\"}";
             string settings_path_target_file = "testReloadAppConfigDatafile.json";  //ReloadAppConfigData
-            File.WriteAllText(settings_path_target_file, serialized_string);
+            try
+            {
+                File.WriteAllText(settings_path_target_file, serialized_string);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", accessInfo_);
             privateSettingsManagerObject.SetFieldOrProperty("_settings_path", settings_path_target_file);
             privateSettingsManagerObject.SetFieldOrProperty("_settings", settings_Data); //settings_path_target_file is  not null , _settings not null
@@ -1334,7 +1527,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string monitorSettings_path2 = Environment.CurrentDirectory + "\\" + DisplayImportSettings_path2; //ReloadMonitorSettings
             privatesettingsManagerObj.SetFieldOrProperty("_display_path", Environment.CurrentDirectory);
             string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
-            File.WriteAllText(DisplayImportSettings_path2, MonitorListjsonData);
+            try
+            {
+                File.WriteAllText(DisplayImportSettings_path2, MonitorListjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             List<DDPMMonitorSettings> dDPMMonitorSettingsList = new List<DDPMMonitorSettings>();
             Dictionary<string, List<DDPMMonitorSettings>> _allMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
             DDPMMonitorSettings settings = new DDPMMonitorSettings
@@ -1382,8 +1582,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string DDMImpSettingsFile_path2 = "TestU2724DD.json";
             string monitorSettings_path2 = Environment.CurrentDirectory + "\\" + DDMImpSettingsFile_path2;
             string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"Display\":{}}]";
-            File.WriteAllText(DDMImpSettingsFile_path2, MonitorListjsonData);
-
+            try
+            {
+                File.WriteAllText(DDMImpSettingsFile_path2, MonitorListjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             var ReadDDMImpSettingsFile_result2 = SettingsManagerSAPlugin.ReadDDMImpSettingsFile(monitorSettings_path2).Result; // path is exist
             Assert.IsNotNull(ReadDDMImpSettingsFile_result2);
             File.Delete(DDMImpSettingsFile_path2);
@@ -1421,7 +1627,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             };
 
             string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestU2724DD\",\"ServiceTag\":\"123456\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"Display\":{}}]";
-            File.WriteAllText(DDMImpSettingsFile_path2, MonitorListjsonData);
+            try
+            {
+                File.WriteAllText(DDMImpSettingsFile_path2, MonitorListjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             var ReadDDMMonitorSettings_result1 = SettingsManagerSAPlugin.ReadDDMMonitorSettings(DDMImpSettingsFile_path2, ref DDMmonitorsettings).Result;
             Assert.IsNotNull(ReadDDMMonitorSettings_result1);
             File.Delete(DDMImpSettingsFile_path2);
@@ -1463,7 +1676,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 NetworkDataAccess = NetworkDataAccessState.Unknow,
             };
             string MonitorListjsonData = "[{\"Version\":1.7,\"OS\":\"Windows\",\"SnapEnable\":false,\"Hotkey\":{},\"CustLayout\":{}}]";
-            File.WriteAllText(ReadDDMUserSettings_path2, MonitorListjsonData);
+            try
+            {
+                File.WriteAllText(ReadDDMUserSettings_path2, MonitorListjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             var ReadDDMUserSettings_result1 = SettingsManagerSAPlugin.ReadDDMUserSettings(ReadDDMUserSettings_path2, ref dDMUserSettings).Result;
             Assert.IsNotNull(ReadDDMUserSettings_result1);
             File.Delete(ReadDDMUserSettings_path2);
@@ -1479,7 +1699,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
 
             string writeglobalSettings_path1_ = "test_WriteGlobalSettingsPath.json";
             string jsonData = "{\"GlobalSetting_General\":{\"Low_Battery_Level\":true,\"Keyboard_Lock_Key\":false,\"Webcam_WB7022_Presence_Detection_Sensor_Cover_State\":true,\"Display_MuteState\":true,\"Display_Color_Preset_and_Easy_Memory\":true},\"GlobalSetting_WidgetSettings\":{\"EnableQuickAccessWidget\":false,\"EnableQuickAccessWidget_Reminder\":false},\"GlobalSetting_About\":{\"SWVersion\":\"\",\"DriverVersion\":\"0000\"}}";
-            File.WriteAllText(writeglobalSettings_path1_, jsonData);
+            try
+            {
+                File.WriteAllText(writeglobalSettings_path1_, jsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
 
             string writeglobalSettings_path2_ = Environment.CurrentDirectory + "\\" + writeglobalSettings_path1_;
@@ -1496,7 +1723,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
         {
             string writeglobalSettings_path1_ = "test_WriteGlobalSettingsPath.json";
             string jsonData = "{\"GlobalSetting_General\":{\"Low_Battery_Level\":true,\"Keyboard_Lock_Key\":false,\"Webcam_WB7022_Presence_Detection_Sensor_Cover_State\":true,\"Display_MuteState\":true,\"Display_Color_Preset_and_Easy_Memory\":true},\"GlobalSetting_WidgetSettings\":{\"EnableQuickAccessWidget\":false,\"EnableQuickAccessWidget_Reminder\":false},\"GlobalSetting_About\":{\"SWVersion\":\"\",\"DriverVersion\":\"0000\"}}";
-            File.WriteAllText(writeglobalSettings_path1_, jsonData);
+            try
+            {
+                File.WriteAllText(writeglobalSettings_path1_, jsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
 
             string writeglobalSettings_path2_ = Environment.CurrentDirectory + "\\" + writeglobalSettings_path1_;
@@ -1569,8 +1803,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             powerNapSettings = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
             string SerializePowerNapSettings_path1_ = "test_SerializePowerNapSettingsPath2.json";
             string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
-            File.WriteAllText(SerializePowerNapSettings_path1_, PowerNapSettingsjsonData);
-
+            try {
+                File.WriteAllText(SerializePowerNapSettings_path1_, PowerNapSettingsjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             var ExportPowerNapSettings_result2 = SettingsManagerSAPlugin.ExportPowerNapSettings(powerNapSettings, SerializePowerNapSettings_path1_).Result;
             Assert.IsNotNull(ExportPowerNapSettings_result2);
             Assert.That(ExportPowerNapSettings_result2, Is.EqualTo(true));
@@ -1602,8 +1841,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             privateSettingsManagerObject.SetFieldOrProperty("_display_path", path);
 
             string SettingsjsonData = "[{\"ModelName\":\"TestmonitorSettingsModel\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
-            File.WriteAllText(monitorSettingspath2, SettingsjsonData);
-
+            try {
+                File.WriteAllText(monitorSettingspath2, SettingsjsonData);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"WriteAllBytes exception with {ex.Message}");
+            }
             var DisplayImpDDMSettings_result2 = SettingsManagerSAPlugin.DisplayImpDDMSettings(monitorSettingspath2, isSameModel, out impSettings).Result;
             Assert.IsNotNull(DisplayImpDDMSettings_result2);
             Assert.That(DisplayImpDDMSettings_result2, Is.EqualTo(false));
