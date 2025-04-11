@@ -14976,6 +14976,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 int devCnt = GetWebcamDeviceCount();
 
+                QAMPage.FindZoom();
+
                 writelog($"ALT+Z conditions: devcnt = {devCnt}, " +
                     $"global setting is {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}" +
                     $" IsZoomMeetingActive = {_IsZoomMeetingActive}");
