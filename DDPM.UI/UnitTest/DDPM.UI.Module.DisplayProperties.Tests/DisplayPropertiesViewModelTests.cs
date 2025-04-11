@@ -73,29 +73,7 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             Assert.That(displayPropertiesViewModel.Resolution_ItemsCollection, Is.EqualTo(myResolution_ItemsCollection));
         }
 
-        [Test]
-        public void TestHDRStatus_String()
-        {
-            var result = displayPropertiesViewModel!.HDRStatus_String;
-            Assert.That(result, Is.EqualTo("OFF"));
-
-            deviceManagerMock.Setup(x => x.GetDisplayPropertiesInfo(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new DisplayPropertiesInfo()));
-            deviceManagerMock.Setup(x => x.SetHDRStatus(It.IsAny<MonitorInfo>(), It.IsAny<bool>())).Returns(Task.FromResult(true));
-            displayPropertiesViewModel.HDRStatus = true;
-            result = displayPropertiesViewModel!.HDRStatus_String;
-            Assert.That(result, Is.EqualTo("ON"));
-        }
-
-        [Test]
-        public void TestSupportedHDR()
-        {
-            var result = displayPropertiesViewModel!.SupportedHDR.ToString();
-            Assert.That(result, Is.EqualTo("Collapsed"));
-
-            privateObject.SetFieldOrProperty("_SupportedHDR", true);
-            result = displayPropertiesViewModel!.SupportedHDR.ToString();
-            Assert.That(result, Is.EqualTo("Visible"));
-        }
+        
 
         [Test]
         public void TestSupportedUSBCPrioeitization()
@@ -163,17 +141,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
         }
 
         [Test]
-        public void TestHDRStatus()
-        {
-            deviceManagerMock.Setup(x => x.GetDisplayPropertiesInfo(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new DisplayPropertiesInfo()));           
-            deviceManagerMock.Setup(x => x.SetHDRStatus(It.IsAny<MonitorInfo>(),It.IsAny<bool>())).Returns(Task.FromResult(true));
-            bool myHDRStatus = true;
-            displayPropertiesViewModel.HDRStatus = myHDRStatus;
-
-            Assert.That(displayPropertiesViewModel.HDRStatus, Is.EqualTo(myHDRStatus));
-        }
-
-        [Test]
         public void TestIsHighDataSpeed()
         {
             privateObject.SetFieldOrProperty("_IsHighDataSpeed", true);
@@ -237,7 +204,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
 
             deviceManagerMock.Setup(x => x.GetDisplayPropertiesInfo(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new DisplayPropertiesInfo()));
             deviceManagerMock.Setup(x => x.SetHDRStatus(It.IsAny<MonitorInfo>(), It.IsAny<bool>())).Returns(Task.FromResult(true));
-            displayPropertiesViewModel.HDRStatus = true;
             displayPropertiesViewModel.MyModule = new DisplayPropertiesModule();
             displayPropertiesViewModel.MyModule.SelectedHomeDevice = selectedHomeDevice;
             var MyConsoleMock = new Mock<IConsole>();
@@ -253,8 +219,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             displayPropertiesViewModel.Resolution_ItemsCollection = myresolution_ItemsCollection;
             var myOrientation_ItemsCollection = new List<UI_Orientation>();
             displayPropertiesViewModel.Orientation_ItemsCollection = myOrientation_ItemsCollection;
-            var myHDRStatus = true;
-            displayPropertiesViewModel.HDRStatus = myHDRStatus;
             var myisHighDataSpeed = true;
             displayPropertiesViewModel.IsHighDataSpeed = myisHighDataSpeed;
             var myIsHighResolution = true;
