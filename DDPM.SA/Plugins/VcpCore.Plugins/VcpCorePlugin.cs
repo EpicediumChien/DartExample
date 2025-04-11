@@ -81,7 +81,8 @@ namespace VcpCore.Plugins
         private static readonly object TaskQueueExecutorLock = new object();
         private static readonly object GetVCPLock = new object();
         private static readonly object SetVCPLock = new object();
-        private static CancellationTokenSource _cancellationTokenSource;
+        private static CancellationTokenSource _cancellationTokenSource = null;
+        private static CancellationToken _PreCancellationToken;
         private static string _SupportClassification = string.Empty;
         private static Dictionary<string, List<modelinfos>> _SupportDictionary;
         private static readonly string targetFile = "LSTDDPM";
@@ -158,6 +159,7 @@ namespace VcpCore.Plugins
             _StatusTimer ??= new Timer(10500);
             _pauseEvent ??= new ManualResetEvent(true);
             _LockerSemaphoreSlim ??= new SemaphoreSlim(1, 1);
+            _PreCancellationToken = default(CancellationToken);
             _InitialThreadCounter = 0;
             _CoWorkSignal = 0;
             _AddSignalfor0X52 = 0;
@@ -178,10 +180,10 @@ namespace VcpCore.Plugins
             Get_SupportListFile();
             InitialColorPresets();
 
-            if (_cancellationTokenSource != null)
-                _ = Task.Run(() => InitializeMonitorsList(false, _cancellationTokenSource.Token));
-            else
+            if (_PreCancellationToken.Equals(default(CancellationToken)))
                 _ = Task.Run(() => InitializeMonitorsList(false, CancellationToken.None));
+            else
+                _ = Task.Run(() => InitializeMonitorsList(false, _PreCancellationToken));
         }
 
         #endregion
@@ -317,7 +319,7 @@ namespace VcpCore.Plugins
             {
                 try
                 {
-                    if (_cancellationTokenSource != null)
+                    if (_cancellationTokenSource is not null)
                     {
                         _logs.DebugMsg("[VcpCorePlugin] _cancellationTokenSource trigger cancel in Re_GetMonitors ...");
                         await _cancellationTokenSource.CancelAsync();
@@ -330,7 +332,7 @@ namespace VcpCore.Plugins
                 {
                     _logs.DebugMsg("[VcpCorePlugin] _cancellationTokenSource trigger cancel cancellation happened in Re_GetMonitors ...");
 
-                    if (_cancellationTokenSource != null)
+                    if (_cancellationTokenSource is not null)
                     {
                         _cancellationTokenSource.Dispose();
                         _cancellationTokenSource = null;
@@ -340,7 +342,7 @@ namespace VcpCore.Plugins
                 {
                     _logs.DebugMsg("[VcpCorePlugin] _cancellationTokenSource trigger cancel cancellation happened in Re_GetMonitors ...");
 
-                    if (_cancellationTokenSource != null)
+                    if (_cancellationTokenSource is not null)
                     {
                         _cancellationTokenSource.Dispose();
                         _cancellationTokenSource = null;
@@ -350,7 +352,7 @@ namespace VcpCore.Plugins
                 {
                     _logs.DebugMsg($"[VcpCorePlugin] _cancellationTokenSource in Re_GetMonitors ...there is an exception-- ({ex.Message})");
 
-                    if (_cancellationTokenSource != null)
+                    if (_cancellationTokenSource is not null)
                     {
                         _cancellationTokenSource.Dispose();
                         _cancellationTokenSource = null;
@@ -900,6 +902,8 @@ namespace VcpCore.Plugins
                     ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x52, new Type_Watcher0x52(_guid, default));
                     _TaskQueue.Enqueue(parameterType, Priority.SuperLow);
 
+                    if (_CacheTimer.Enabled) _CacheTimer.Stop();
+
                     Launch_TaskQueueExecutor();
                 }
                 else
@@ -926,6 +930,8 @@ namespace VcpCore.Plugins
 
                     ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x02forStatusCheck, new Type_Watcher0x02forStatusCheck(_guid, default));
                     _TaskQueue.Enqueue(parameterType, Priority.SuperLow);
+
+                    if (_StatusTimer.Enabled) _StatusTimer.Stop();
 
                     Launch_TaskQueueExecutor();
                 }
@@ -966,10 +972,10 @@ namespace VcpCore.Plugins
                 {
                     CancellationTokenSource newGetResultCancellationTokenSource;
 
-                    if ((_cancellationTokenSource != null) && (!_cancellationTokenSource.Token.Equals(CancellationToken.None)))
-                        newGetResultCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(tokenSource.Token, _cancellationTokenSource.Token);
-                    else
+                    if (_PreCancellationToken.Equals(default(CancellationToken)))
                         newGetResultCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(tokenSource.Token);
+                    else
+                        newGetResultCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(tokenSource.Token, _PreCancellationToken);
 
                     try
                     {
@@ -1225,11 +1231,6 @@ namespace VcpCore.Plugins
 
                             case Queue_CommandType.Watcher0x52:
                                 {
-                                    _logs.DebugMsg($"[VcpCorePlugin] Before Dequeue Watcher0x52 Task _AddSignalfor0X52: {_AddSignalfor0X52}");
-                                    if (_AddSignalfor0X52 > 0)
-                                        Interlocked.Add(ref _AddSignalfor0X52, -1);
-                                    _logs.DebugMsg($"[VcpCorePlugin] After Dequeue Watcher0x52 Task _AddSignalfor0X52: {_AddSignalfor0X52}");
-
                                     Type_Watcher0x52 parameter = (Type_Watcher0x52)p.Parameter;
                                     if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
                                     {
@@ -1238,16 +1239,16 @@ namespace VcpCore.Plugins
                                     }
                                     else
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Watcher0x52 GUID in CancelhashSet => " + parameter.guid);
+
+                                    _logs.DebugMsg($"[VcpCorePlugin] Before Dequeue Watcher0x52 Task _AddSignalfor0X52: {_AddSignalfor0X52}");
+                                    Interlocked.Add(ref _AddSignalfor0X52, -1);
+                                    if ((!_CacheTimer.Enabled) && IsOutInitialize) _CacheTimer.Start();
+                                    _logs.DebugMsg($"[VcpCorePlugin] After Dequeue Watcher0x52 Task _AddSignalfor0X52: {_AddSignalfor0X52}");
                                 }
                                 break;
 
                             case Queue_CommandType.Watcher0x02forStatusCheck:
                                 {
-                                    _logs.DebugMsg($"[VcpCorePlugin] Before Dequeue Watcher0x02forStatusCheck Task _AddSignalforStatusCheck: {_AddSignalforStatusCheck}");
-                                    if (_AddSignalforStatusCheck > 0)
-                                        Interlocked.Add(ref _AddSignalforStatusCheck, -1);
-                                    _logs.DebugMsg($"[VcpCorePlugin] After Dequeue Watcher0x02forStatusCheck Task _AddSignalforStatusCheck: {_AddSignalforStatusCheck}");
-
                                     Type_Watcher0x02forStatusCheck parameter = (Type_Watcher0x02forStatusCheck)p.Parameter;
                                     if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
                                     {
@@ -1256,6 +1257,11 @@ namespace VcpCore.Plugins
                                     }
                                     else
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Watcher0x02forStatusCheck GUID in CancelhashSet => " + parameter.guid);
+
+                                    _logs.DebugMsg($"[VcpCorePlugin] Before Dequeue Watcher0x02forStatusCheck Task _AddSignalforStatusCheck: {_AddSignalforStatusCheck}");
+                                    Interlocked.Add(ref _AddSignalforStatusCheck, -1);
+                                    if ((!_StatusTimer.Enabled) && IsOutInitialize) _StatusTimer.Start();
+                                    _logs.DebugMsg($"[VcpCorePlugin] After Dequeue Watcher0x02forStatusCheck Task _AddSignalforStatusCheck: {_AddSignalforStatusCheck}");
                                 }
                                 break;
 
@@ -2482,6 +2488,7 @@ namespace VcpCore.Plugins
                             _cancellationTokenSource = new CancellationTokenSource();
 
                         var TokenNew = _cancellationTokenSource.Token;
+                        _PreCancellationToken = TokenNew;
 
                         _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin into InitializeMonitorsList ...");
 
@@ -2521,7 +2528,7 @@ namespace VcpCore.Plugins
                             _AllInfoMonitors.Clear();
                             _AllInfoMonitors.AddRange(monitors.ToList());
                             _logs.DebugMsg($"[VcpCorePlugin] VcpCorePlugin Re_Get_Monitors Back & TaskCanceledException Monitors Count {monitors.Count}");
-                            Initialize2TypesMonitorInfo(true, _cancellationTokenSource.Token);
+                            Initialize2TypesMonitorInfo(true, _PreCancellationToken);
                             Initialize0x52toEmpty();
                         }
                     }
@@ -2536,7 +2543,7 @@ namespace VcpCore.Plugins
                             _AllInfoMonitors.Clear();
                             _AllInfoMonitors.AddRange(monitors.ToList());
                             _logs.DebugMsg($"[VcpCorePlugin] VcpCorePlugin Re_Get_Monitors Back & OperationCanceledException Monitors Count {monitors.Count}");
-                            Initialize2TypesMonitorInfo(true, _cancellationTokenSource.Token);
+                            Initialize2TypesMonitorInfo(true, _PreCancellationToken);
                             Initialize0x52toEmpty();
                         }
                     }
@@ -2551,7 +2558,7 @@ namespace VcpCore.Plugins
                             _AllInfoMonitors.Clear();
                             _AllInfoMonitors.AddRange(monitors.ToList());
                             _logs.DebugMsg($"[VcpCorePlugin] VcpCorePlugin Re_Get_Monitors Back & Exception Monitors Count {monitors.Count}");
-                            Initialize2TypesMonitorInfo(true, _cancellationTokenSource.Token);
+                            Initialize2TypesMonitorInfo(true, _PreCancellationToken);
                             Initialize0x52toEmpty();
                         }
                     }
@@ -2579,7 +2586,7 @@ namespace VcpCore.Plugins
                             Interlocked.Add(ref _InitialThreadCounter, 1);
                             _logs.DebugMsg($"[VcpCorePlugin] Set _CoWorkSignal +1 : {_CoWorkSignal}");
                             _logs.DebugMsg($"[VcpCorePlugin] _InitialThreadCounter count : ({_InitialThreadCounter}) when InitializeMonitorsList finished and in finally");
-                            T = Task.Run(() => DoMonitorDisplayChanged(monitors, _cancellationTokenSource.Token));
+                            T = Task.Run(() => DoMonitorDisplayChanged(monitors, _PreCancellationToken));
 
                             //-------------------------------------------
 
@@ -2699,19 +2706,19 @@ namespace VcpCore.Plugins
                         Initialize0x52toEmpty();
                         TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
 
-                        //------------------------------------------------------------------------------------------------//
-                        DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs()
-                        {
-                            count = _AllInfoMonitors_Mix.Count,
-                            monitors = _AllInfoMonitors_Mix.Select(x => x.MonitorInfos).ToList(),
-                        };
-                        OnDisplaychanged(_displaychangedEventArgss);
-                        //------------------------------------------------------------------------------------------------//
-
                         _IsThreadDetectNew = false;
 
                         if (IsOutInitialize && !TokenNew.IsCancellationRequested)
                         {
+                            //------------------------------------------------------------------------------------------------//
+                            DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs()
+                            {
+                                count = _AllInfoMonitors_Mix.Count,
+                                monitors = _AllInfoMonitors_Mix.Select(x => x.MonitorInfos).ToList(),
+                            };
+                            OnDisplaychanged(_displaychangedEventArgss);
+                            //------------------------------------------------------------------------------------------------//
+
                             if (!(_pauseEvent.WaitOne(0)))
                             {
                                 _logs.DebugMsg($"[VcpCorePlugin] _pauseEvent.Set() when Task run in 15sec check");
@@ -3728,7 +3735,7 @@ namespace VcpCore.Plugins
                         count++;
                         _logs.DebugMsg($"[VcpCorePlugin] Set_VCPCapability retry ({count})");
 
-                        if (retry) Task.Delay(1000).Wait();
+                        if (retry && IsOutInitialize) Task.Delay(1000).Wait();
                     } while (count < 3 && retry && IsOutInitialize);
                 }
                 else
@@ -3780,7 +3787,7 @@ namespace VcpCore.Plugins
                         count++;
                         _logs.DebugMsg("[VcpCorePlugin] Get_VCPCapability " + code.ToString("X2") + ", retry(" + count.ToString() + ")");
 
-                        if (retry) Task.Delay(1000).Wait();
+                        if (retry && IsOutInitialize) Task.Delay(1000).Wait();
                     } while (count < 3 && retry && IsOutInitialize);
                 }
                 else
