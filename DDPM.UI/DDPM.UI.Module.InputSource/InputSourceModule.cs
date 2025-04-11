@@ -64,6 +64,7 @@ namespace DDPM.UI.Module.InputSource
             if (IsModuleActive)
             {
                 isSelectChanged = false;
+                vm.CallCancel();
                 InitNewViewModel();
             }
         }

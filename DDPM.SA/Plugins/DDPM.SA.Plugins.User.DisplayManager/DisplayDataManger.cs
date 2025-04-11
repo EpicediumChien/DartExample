@@ -4,7 +4,9 @@ using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using VcpCore.Common;
+using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.DisplayManager
 {
@@ -80,6 +82,43 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
+        public bool ResetDisplayData(MonitorInfo monitorInfo, string reset)
+        {
+            WriteLog("[ResetDisplayData] init...");
+            if (monitorInfo != null)
+            {
+                int mi = _displayData.FindIndex(x => x.Model == monitorInfo.modelName &&
+                                                    x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (mi != -1)
+                {
+                    switch (reset.ToUpper(CultureInfo.InvariantCulture))
+                    {
+                        case "ALL":
+                            WriteLog("[ResetDisplayData]Reset all DisplayData");
+                            DisplayData displayData = new DisplayData();
+                            displayData.Model = monitorInfo.modelName;
+                            displayData.ServiceTag = monitorInfo.edid.ServiceTag;
+                            _displayData[mi] = displayData;
+                            return true;
+                        case "COLOR":
+                            WriteLog("[ResetDisplayData]Reset DisplayData Color");
+                            Color color = new Color();
+                            _displayData[mi].Color = color;
+                            return true;
+                    }   
+                }
+                else
+                {
+                    WriteLog("[ResetDisplayData]_displayData is not find monitor");
+                }
+            }
+            else
+            {
+                WriteLog("[ResetDisplayData] monitorInfo is null...");
+            }
+            return false;
+        }
+
         public bool GetMonitorUSB(MonitorInfo monitorInfo, string inputSource, out string USB)
         {
             if (monitorInfo != null && !string.IsNullOrEmpty(inputSource))
@@ -97,10 +136,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         if (USB != string.Empty)
                         {
                             return true;
-                        }
-                        else
-                        {
-                            return false;
                         }
                     }
                 }
@@ -127,6 +162,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     _USBs = _displayData[mi].DisplayUSB;
                     return true;
+                }
+                else
+                {
+                    WriteLog("[GetMonitorUSB]_displayData not find DisplayUSB.");
                 }
             }
             else
@@ -269,6 +308,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     usbList = _displayData[mi].USBList;
                     return true;
                 }
+                else
+                {
+                    WriteLog("[GetMonitorUSBList]_displayData not find USBList.");
+                }
             }
             else
             {
@@ -317,6 +360,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     vcpcode = _displayData[mi].VCP_E9;
                     return true;
+                }
+                else
+                {
+                    WriteLog("[GetMonitorE9]_displayData not find VCP_E9.");
                 }
             }
             else
@@ -474,14 +521,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         {
                             color = _displayData[mi].Color.color_DisHDR;
                         }
-
+                        WriteLog("[GetColor]color : " + color);
                         if (color != string.Empty)
                         {
                             return true;
                         }
                         else
                         {
-                            WriteLog("[GetColor]_displayData is not set color");
+                            WriteLog("[GetColor]_displayData is not get color");
                             return false;
                         }
                     }
