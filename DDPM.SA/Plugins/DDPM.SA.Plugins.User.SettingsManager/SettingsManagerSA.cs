@@ -1538,7 +1538,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             DDPMImpExpSettings? ImpSettings = null;// new DDPMImpExpSettings();
             string strReadJson = string.Empty;
-            string pathTrimmed = path.Trim();
+            string pathTrimmed = path?.Trim() ?? string.Empty;
 
             #region Check export file path
             if (string.IsNullOrEmpty(pathTrimmed) || !File.Exists(pathTrimmed))
