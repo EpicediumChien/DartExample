@@ -92,6 +92,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private static List<Guid> LogicalDevices3 = new();
         private static List<Guid> LogicalDevicesPen = new();
         private static List<Guid> LogicalDevicHeadset = new();
+        private static List<Guid> LogicalWiredAudio = new();
         private static List<Guid> IDevices = new();
 
         //private IDeviceManagerSA _DeviceManagerPlugin;
@@ -1669,7 +1670,16 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 //info.IsWiredAudioIMicNSEnable = _logicalWiredAudio.IsWiredAudioIMicNSEnable();
                                 //info.IsWiredAudioMicMuteSoundEnable = _logicalWiredAudio.IsWiredAudioMicMuteSoundEnable();
                                 //info.WiredAudioVolumeAdjustmentTone = _logicalWiredAudio.GetWiredAudioVolumeAdjustmentTone();
-                                _logicalWiredAudio.MuteStatusChanged += ILogicalWiredAudio_MuteStatusChanged;
+                                var wiredAudio = (ILogicalWiredAudio)item;
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalWiredAudio ScanDevices Add DTH event before ...  ");
+                                if (!LogicalWiredAudio.Contains(wiredAudio.Id))
+                                {
+                                    _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalWiredAudio Add Event ID : {wiredAudio.Id.ToString()}, in... ");
+                                    _logicalWiredAudio.MuteStatusChanged += ILogicalWiredAudio_MuteStatusChanged;
+                                    LogicalWiredAudio.Add(wiredAudio.Id);
+                                    _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalWiredAudio Add Event ID : {wiredAudio.Id.ToString()}, out... ");
+                                }
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalWiredAudio ScanDevices Add DTH event after ...  ");
                             }
 
                             if (item is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
@@ -1752,7 +1762,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                             if (item is ILogicalDeviceHeadset _logicalDeviceHeadset)
                             {
-                                _logs.DebugMsg_1($"[LogicalDevicHeadset] ScanDevices Add DTH event ... in ");
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceHeadset ScanDevices Add DTH value ... in ");
                                 _logs.DebugMsg_1("[PeripheralsPlugin] ILogicalDeviceHeadset ... FirmwareVersion " + item.FirmwareVersion.ToString("X4"));
                                 info.FirmwareVersion = item.FirmwareVersion.ToString("X4");
                                 info.IsReady = _logicalDeviceHeadset.IsReady;
@@ -1790,28 +1800,30 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.MuteStatus = _logicalDeviceHeadset.MuteStatus;
                                 info.BandsGain = _logicalDeviceHeadset.BandsGain;
                                 //SetEqualizerValues(_logicalDeviceHeadset, info);
-
-                                _logicalDeviceHeadset.IsReadyChanged += _logicalDeviceHeadset_IsReadyChanged;
-                                _logicalDeviceHeadset.IsDirtyChanged += _logicalDeviceHeadset_IsDirtyChanged;
-                                _logicalDeviceHeadset.MicNoiseCancellationChanged += _logicalDeviceHeadset_MicNoiseCancellationChanged;
-                                _logicalDeviceHeadset.MicNCIncomingChanged += _logicalDeviceHeadset_MicNCIncomingChanged;
-                                _logicalDeviceHeadset.SidetoneChanged += _logicalDeviceHeadset_SidetoneChanged;
-                                _logicalDeviceHeadset.BusyLightChanged += _logicalDeviceHeadset_BusyLightChanged;
-                                _logicalDeviceHeadset.VoiceGuidanceChanged += _logicalDeviceHeadset_VoiceGuidanceChanged;
-                                _logicalDeviceHeadset.SelectedPresetChanged += _logicalDeviceHeadset_SelectedPresetChanged;
-                                _logicalDeviceHeadset.SidetoneLevelChanged += _logicalDeviceHeadset_SidetoneLevelChanged;
-                                _logicalDeviceHeadset.MuteStatusChanged += _logicalDeviceHeadset_MuteStatusChanged;
-                                _logicalDeviceHeadset.BandsGainChanged += _logicalDeviceHeadset_BandsGainChanged;
-                                _logicalDeviceHeadset.AncModeChanged += _logicalDeviceHeadset_AncModeChanged;
-                                _logicalDeviceHeadset.AncGainChanged += _logicalDeviceHeadset_AncGainChanged;
-                                //Elie. R17.1 drop this function.1123
-                                //_logicalDeviceHeadset.WearDetectionChanged += _logicalDeviceHeadset_WearDetectionChanged;
                                 var headset = (ILogicalDeviceHeadset)item;
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceHeadset ScanDevices Add DTH event before ...  ");
                                 if (!LogicalDevicHeadset.Contains(headset.Id))
                                 {
+                                    _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceHeadset Add Event ID : {headset.Id.ToString()}, in... ");
+                                    _logicalDeviceHeadset.IsReadyChanged += _logicalDeviceHeadset_IsReadyChanged;
+                                    _logicalDeviceHeadset.IsDirtyChanged += _logicalDeviceHeadset_IsDirtyChanged;
+                                    _logicalDeviceHeadset.MicNoiseCancellationChanged += _logicalDeviceHeadset_MicNoiseCancellationChanged;
+                                    _logicalDeviceHeadset.MicNCIncomingChanged += _logicalDeviceHeadset_MicNCIncomingChanged;
+                                    _logicalDeviceHeadset.SidetoneChanged += _logicalDeviceHeadset_SidetoneChanged;
+                                    _logicalDeviceHeadset.BusyLightChanged += _logicalDeviceHeadset_BusyLightChanged;
+                                    _logicalDeviceHeadset.VoiceGuidanceChanged += _logicalDeviceHeadset_VoiceGuidanceChanged;
+                                    _logicalDeviceHeadset.SelectedPresetChanged += _logicalDeviceHeadset_SelectedPresetChanged;
+                                    _logicalDeviceHeadset.SidetoneLevelChanged += _logicalDeviceHeadset_SidetoneLevelChanged;
+                                    _logicalDeviceHeadset.MuteStatusChanged += _logicalDeviceHeadset_MuteStatusChanged;
+                                    _logicalDeviceHeadset.BandsGainChanged += _logicalDeviceHeadset_BandsGainChanged;
+                                    _logicalDeviceHeadset.AncModeChanged += _logicalDeviceHeadset_AncModeChanged;
+                                    _logicalDeviceHeadset.AncGainChanged += _logicalDeviceHeadset_AncGainChanged;
+                                    //Elie. R17.1 drop this function.1123
+                                    //_logicalDeviceHeadset.WearDetectionChanged += _logicalDeviceHeadset_WearDetectionChanged;
                                     LogicalDevicHeadset.Add(headset.Id);
-                                    _logs.DebugMsg_1($"[LogicalDevicHeadset] ScanDevices Add DTH event, LogicalDevicHeadset Headset ID : {headset.Id.ToString()} ... ");
+                                    _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceHeadset Add Event ID : {headset.Id.ToString()}, out... ");
                                 }
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceHeadset ScanDevices Add DTH event after ...  ");
                             }
 
                             if (item is ILogicalDeviceDock _logicalDeviceDock)
@@ -2308,6 +2320,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private string UpdateParingStausText(DonglePairingStatus donglePairingStatus)
         {
+            writelog($"UpdateDonglePairingStatus ... in ");
             switch (donglePairingStatus)
             {
                 case DonglePairingStatus.DonglePairingStatusStopped:
@@ -2334,11 +2347,13 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     writelog($"Old Device : DonglePairingStatusStopped");
                     return "Old Device";
             }
+            writelog($"Empty : DonglePairingStatus Return Empty");
             return "";
         }
 
         private string UpdateParingStausText(AudioDonglePairingStatus donglePairingStatus)
         {
+            writelog($"UpdateAudioDonglePairingStatusText ... in ");
             switch (donglePairingStatus)
             {
                 case AudioDonglePairingStatus.AudioDonglePairingStatusStopped:
@@ -2361,6 +2376,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     writelog($"Already Paired : AudioDonglePairingStatusAlreadyPaired");
                     return "Already Paired";
             }
+            writelog($"Empty : UpdateAudioDonglePairingStatusText Return Empty");
             return "";
         }
 
@@ -2847,9 +2863,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             _logicalDevicePen.KeyCaptureProgressDataChanged -= Pen_KeyCaptureProgressDataChanged;
                             LogicalDevicesPen.Remove(iLogicalDevice.Id);
                         }
+                        _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceHeadset Remove DTH Event before ...  ");
                         if (LogicalDevicHeadset.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
                         {
-                            _logs.DebugMsg_1($"[LogicalDevicHeadset] IPhysicalDevice_DeviceRemovedEvent Remove DTH event ... in");
+                            _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceHeadset Remove Event ID : {iLogicalDevice.Id.ToString()}, in ... ");
                             _logicalDeviceHeadset.IsReadyChanged -= _logicalDeviceHeadset_IsReadyChanged;
                             _logicalDeviceHeadset.IsDirtyChanged -= _logicalDeviceHeadset_IsDirtyChanged;
                             _logicalDeviceHeadset.MicNoiseCancellationChanged -= _logicalDeviceHeadset_MicNoiseCancellationChanged;
@@ -2864,8 +2881,19 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             _logicalDeviceHeadset.AncModeChanged -= _logicalDeviceHeadset_AncModeChanged;
                             _logicalDeviceHeadset.AncGainChanged -= _logicalDeviceHeadset_AncGainChanged;
                             LogicalDevicHeadset.Remove(iLogicalDevice.Id);
-                            _logs.DebugMsg_1($"[LogicalDevicHeadset] IPhysicalDevice_DeviceRemovedEvent Remove ID : {iLogicalDevice.Id.ToString()} ... ");
+                            _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceHeadset Remove Event ID : {iLogicalDevice.Id.ToString()}, out ... ");
                         }
+                        _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceWiredAudio Remove DTH Event after ...  ");
+
+                        _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceWiredAudio Remove DTH Event before ...  ");
+                        if (LogicalWiredAudio.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalWiredAudio _logicalDeviceWiredAudio)
+                        {
+                            _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceWiredAudio Remove Event ID : {iLogicalDevice.Id.ToString()}, in ... ");
+                            _logicalDeviceWiredAudio.MuteStatusChanged -= ILogicalWiredAudio_MuteStatusChanged;
+                            LogicalWiredAudio.Remove(iLogicalDevice.Id);
+                            _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceWiredAudio Remove Event ID : {iLogicalDevice.Id.ToString()}, out ... ");
+                        }
+                        _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceWiredAudio Remove DTH Event after ...  ");
                     }
 
                     // << 250218 added by Hess for PIMS-328225
@@ -2901,6 +2929,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 LogicalDevices2.Remove(deviceGuid);
                 LogicalDevices3.Remove(deviceGuid);
                 LogicalDevicesPen.Remove(deviceGuid);
+                LogicalDevicHeadset.Remove(deviceGuid);
                 LogicalDevicHeadset.Remove(deviceGuid);
                 // >>
             }
@@ -3555,7 +3584,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     deviceInfo.MuteStatus = newValue;
                 else
                 {
-                    writelog($"MuteStatusChanged: Error: deviceInfo is null");
+                    writelog($"[PeripheralsPlugin] MuteStatusChanged: Error: deviceInfo is null");
                     return;
                 }
 
@@ -3564,18 +3593,18 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "MuteStatusChanged";
                 OnNotify(_EventArgs);
-                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_MuteStatusChanged ... out " + newValue.ToString() + " , OSD in ...");
+                _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_MuteStatusChanged after OnNotify ... ");
                 try
                 {
                     var settings = _UserSettingsPlugin.ReadGlobalSettings().Result;
                     if (settings == null || settings.GlobalSetting_General == null)
                     {
-                        writelog("Retrieve global setting [Display_MuteState] got null data");
+                        writelog("[PeripheralsPlugin] Retrieve global setting [Display_MuteState] got null data");
                         return;
                     }
                     if (!settings.GlobalSetting_General.Display_MuteState)
                     {
-                        writelog("Retrieve global setting [Display_MuteState] got disable result");
+                        writelog("[PeripheralsPlugin] Retrieve global setting [Display_MuteState] got disable result");
                         return;
                     }
                     //if (_DeviceManagerPlugin.GetGlobalSettingParam().Result.GlobalSetting_General.Display_MuteState)
