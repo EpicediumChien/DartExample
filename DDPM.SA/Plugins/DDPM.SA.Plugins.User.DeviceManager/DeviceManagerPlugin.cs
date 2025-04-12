@@ -6857,15 +6857,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void DisplayFWCheck()
         {
             writelog($"DisplayFWCheck start");
-            if (displayUpdateHelper != null && displayUpdateHelper.Firmwares != null && _AllInfoMonitors != null)
-            {
-                writelog($"displayUpdateHelper.Firmwares.Count : {displayUpdateHelper.Firmwares.Count}");
-                writelog($"_AllInfoMonitors.Count : {_AllInfoMonitors.Count}");
-                if (displayUpdateHelper.Firmwares.Count != _AllInfoMonitors.Count)
-                {
-                    show_peripheralsUpdateNotify(this, true);
-                }
-            }
+            writelog($"DisplayFWCheck show_peripheralsUpdateNotify");
+            show_peripheralsUpdateNotify(this, true);
             writelog($"DisplayFWCheck done");
         }
 
