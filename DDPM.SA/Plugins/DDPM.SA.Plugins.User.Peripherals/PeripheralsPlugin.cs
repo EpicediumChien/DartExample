@@ -2026,6 +2026,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     writelog(_deviceHelper.ToString());
                     CheckDocks();
                     writelog($"after CheckDocks --- {_deviceHelper.ToString()}");
+                    OnUpdateNotify(true);//Bruce PIMS-346696 Because the DeviceInfo event is slower than the Update event, resulting in incomplete DeviceInfo, the Updater event is moved here.
                 }
             }
         }
@@ -3839,7 +3840,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     //Console.WriteLine(isAnyUpdateAvailable ? "UpdateAvailable" : "Already Updated.");
                     _logs.DebugMsg_1($"[PeripheralsPlugin] isAnyUpdateAvailable = {(isAnyUpdateAvailable ? "UpdateAvailable" : "Already Updated.")}");
                 }
-                OnUpdateNotify(isAnyUpdateAvailable);
+                //OnUpdateNotify(isAnyUpdateAvailable););//Bruce PIMS-346696 Updater event is moved to ScanDevices()
                 _logs.DebugMsg_1($"[PeripheralsPlugin] IUpdateManager_IsAnyUpdateAvailableChanged done");
             }
         }
