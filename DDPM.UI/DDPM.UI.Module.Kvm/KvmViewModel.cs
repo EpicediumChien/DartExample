@@ -2762,13 +2762,37 @@ namespace DDPM.UI.Module.Kvm
                     else
                     {
                         _log?.Info("[KvmViewModel] PCsList is not same.");
-                        pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
-                        pc3input = new InputSourceObj((UInt16)pcsList["PC3"].Code, pcsList["PC3"].InputType);
-                        pc4input = new InputSourceObj((UInt16)pcsList["PC4"].Code, pcsList["PC4"].InputType);
-                        bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(KvmModule.SelectedHomeDevice.MonitorInfo,
-                                                                                    pc2input, pc3input, pc4input).Result;
-                        string result = res ? "Success" : "Failed";
-                        _log?.Info($"[KvmViewModel] SubInputs PC Done with {result}.");
+                        if (pcsList.ContainsKey("PC2"))
+                        {
+                            _log?.Info("[KvmViewModel] PCsList has PC2.");
+                            pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                            if (pcsList.ContainsKey("PC3"))
+                            {
+                                _log?.Info("[KvmViewModel] PCsList has PC3.");
+                                pc3input = new InputSourceObj((UInt16)pcsList["PC3"].Code, pcsList["PC3"].InputType);
+                            }
+                            else
+                            {
+                                pc3input = null;
+                            }
+                            if (pcsList.ContainsKey("PC4"))
+                            {
+                                _log?.Info("[KvmViewModel] PCsList has PC4.");
+                                pc4input = new InputSourceObj((UInt16)pcsList["PC4"].Code, pcsList["PC4"].InputType);
+                            }
+                            else
+                            {
+                                pc4input = null;
+                            }
+                            bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(KvmModule.SelectedHomeDevice.MonitorInfo,
+                                                                                        pc2input, pc3input, pc4input).Result;
+                            string result = res ? "Success" : "Failed";
+                            _log?.Info($"[KvmViewModel] SubInputs PC Done with {result}.");
+                        }
+                        else 
+                        {
+                            _log?.Info("[KvmViewModel] PCsList not has PC2.");
+                        }
                     }
                 }
                 else
