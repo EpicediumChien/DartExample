@@ -638,18 +638,30 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 return null;
             if (HomeDevices.Count == 0)
                 return null;
-            foreach (HomeDevice device in HomeDevices)
+
+            try
             {
-                if (device.DeviceCategory != eDeviceCategory.Display)
+
+            }
+            catch (Exception)
+            {
+                foreach (HomeDevice device in HomeDevices)
                 {
-                    if (device.DeviceInfo != null)
+                    if (device.DeviceCategory != eDeviceCategory.Display)
                     {
-                        if (device.DeviceInfo.ID.Equals(guid))
+                        if (device.DeviceInfo != null)
                         {
+                            if (device.DeviceInfo.ID.Equals(guid))
+                            {
                                 return device;
+                            }
                         }
                     }
                 }
+            }
+            finally
+            {
+
             }
             return null;
         }
