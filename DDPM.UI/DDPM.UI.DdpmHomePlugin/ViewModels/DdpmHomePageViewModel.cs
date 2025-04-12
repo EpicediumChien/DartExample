@@ -641,10 +641,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
             try
             {
-
-            }
-            catch (Exception)
-            {
                 foreach (HomeDevice device in HomeDevices)
                 {
                     if (device.DeviceCategory != eDeviceCategory.Display)
@@ -658,6 +654,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         }
                     }
                 }
+            }
+            catch (Exception)
+            {
             }
             finally
             {
