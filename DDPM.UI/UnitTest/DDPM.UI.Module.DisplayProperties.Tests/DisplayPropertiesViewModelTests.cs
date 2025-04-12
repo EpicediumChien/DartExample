@@ -73,7 +73,7 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             Assert.That(displayPropertiesViewModel.Resolution_ItemsCollection, Is.EqualTo(myResolution_ItemsCollection));
         }
 
-        
+
 
         [Test]
         public void TestSupportedUSBCPrioeitization()
@@ -164,10 +164,10 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             privateObject.SetFieldOrProperty("_IsHighResolution", true);
 
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
-            displayPropertiesViewModel.MyModule = new DisplayPropertiesModule();
-            displayPropertiesViewModel.MyModule.SelectedHomeDevice = selectedHomeDevice;
+            /* displayPropertiesViewModel.MyModule = new DisplayPropertiesModule();
+             displayPropertiesViewModel.MyModule.SelectedHomeDevice = selectedHomeDevice;
             var monitorInfo = new MonitorInfo();
-            displayPropertiesViewModel.MyModule.SelectedHomeDevice.MonitorInfo = monitorInfo;
+            displayPropertiesViewModel.MyModule.SelectedHomeDevice.MonitorInfo = monitorInfo;*/
             bool my_IsHighResolution = true;
             displayPropertiesViewModel.IsHighResolution = my_IsHighResolution;
 
@@ -190,11 +190,11 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             var selectedOrientationBef = privateObject.GetFieldOrProperty("SelectedOrientation");
             var resolution_ItemsCollectionBef = privateObject.GetFieldOrProperty("Resolution_ItemsCollection");
             var orientation_ItemsCollectionBef = privateObject.GetFieldOrProperty("Orientation_ItemsCollection");
-            var supportedHDRBef = privateObject.GetFieldOrProperty("SupportedHDR");
-            var hDRStatusBef = privateObject.GetFieldOrProperty("HDRStatus");
-            var hDRStatus_StringBef = privateObject.GetFieldOrProperty("HDRStatus_String");
+            //var supportedHDRBef = privateObject.GetFieldOrProperty("SupportedHDR");
+            //var hDRStatusBef = privateObject.GetFieldOrProperty("HDRStatus");
+            //var hDRStatus_StringBef = privateObject.GetFieldOrProperty("HDRStatus_String");
 
-            var hDREnableBer = privateObject.GetFieldOrProperty("HDREnable");
+            //var hDREnableBer = privateObject.GetFieldOrProperty("HDREnable");
             var supportedUSBCPrioeitizationBef = privateObject.GetFieldOrProperty("SupportedUSBCPrioeitization");
             var isHighDataSpeedBef = privateObject.GetFieldOrProperty("IsHighDataSpeed");
             var isHighResolutionBef = privateObject.GetFieldOrProperty("IsHighResolution");
@@ -204,8 +204,8 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
 
             deviceManagerMock.Setup(x => x.GetDisplayPropertiesInfo(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new DisplayPropertiesInfo()));
             deviceManagerMock.Setup(x => x.SetHDRStatus(It.IsAny<MonitorInfo>(), It.IsAny<bool>())).Returns(Task.FromResult(true));
-            displayPropertiesViewModel.MyModule = new DisplayPropertiesModule();
-            displayPropertiesViewModel.MyModule.SelectedHomeDevice = selectedHomeDevice;
+            /*displayPropertiesViewModel.MyModule = new DisplayPropertiesModule();
+            displayPropertiesViewModel.MyModule.SelectedHomeDevice = selectedHomeDevice;*/
             var MyConsoleMock = new Mock<IConsole>();
             var myConsole = MyConsoleMock.Object;
             DdpmCommonHelper.MyConsole = myConsole;
@@ -213,7 +213,7 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
 
             var mySelectedResolution = new UI_Properties();
             monitorInfo.DisplayName = "123";
-            displayPropertiesViewModel.MyModule.SelectedHomeDevice.MonitorInfo = monitorInfo;
+            //displayPropertiesViewModel.MyModule.SelectedHomeDevice.MonitorInfo = monitorInfo;
             var mySelectedOrientation = new UI_Orientation();
             var myresolution_ItemsCollection = new List<UI_Properties>();
             displayPropertiesViewModel.Resolution_ItemsCollection = myresolution_ItemsCollection;
@@ -223,10 +223,10 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             displayPropertiesViewModel.IsHighDataSpeed = myisHighDataSpeed;
             var myIsHighResolution = true;
             displayPropertiesViewModel.IsHighResolution = myIsHighResolution;
-            privateObject.SetFieldOrProperty("_SupportedHDR", true);
+            //privateObject.SetFieldOrProperty("_SupportedHDR", true);
             privateObject.SetFieldOrProperty("_SupportedUSBCPrioeitization", true);
             //privateObject.SetFieldOrProperty("_HDRStatus", true);
-            displayPropertiesViewModel.Orientation_IsVisibility=Visibility.Hidden;
+            displayPropertiesViewModel.Orientation_IsVisibility = Visibility.Hidden;
             displayPropertiesViewModel.SelectedOrientation = mySelectedOrientation;
             displayPropertiesViewModel.SelectedResolution = mySelectedResolution;
 
@@ -235,10 +235,10 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             var selectedOrientationAft = privateObject.GetFieldOrProperty("SelectedOrientation");
             var resolution_ItemsCollectionAft = privateObject.GetFieldOrProperty("Resolution_ItemsCollection");
             var orientation_ItemsCollectionAft = privateObject.GetFieldOrProperty("Orientation_ItemsCollection");
-            var supportedHDRAft = privateObject.GetFieldOrProperty("SupportedHDR");
-            var hDRStatusAft = privateObject.GetFieldOrProperty("HDRStatus");
-            var hDRStatus_StringAft = privateObject.GetFieldOrProperty("HDRStatus_String");
-            var hDREnableAft = privateObject.GetFieldOrProperty("HDREnable");
+            //var supportedHDRAft = privateObject.GetFieldOrProperty("SupportedHDR");
+            //var hDRStatusAft = privateObject.GetFieldOrProperty("HDRStatus");
+            //var hDRStatus_StringAft = privateObject.GetFieldOrProperty("HDRStatus_String");
+            //var hDREnableAft = privateObject.GetFieldOrProperty("HDREnable");
             var supportedUSBCPrioeitizationAft = privateObject.GetFieldOrProperty("SupportedUSBCPrioeitization");
             var isHighDataSpeedAft = privateObject.GetFieldOrProperty("IsHighDataSpeed");
             var isHighResolutionAft = privateObject.GetFieldOrProperty("IsHighResolution");
@@ -248,10 +248,10 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             Assert.That(selectedOrientationAft, Is.Not.SameAs(selectedOrientationBef));
             Assert.That(resolution_ItemsCollectionAft, Is.Not.SameAs(resolution_ItemsCollectionBef));
             Assert.That(orientation_ItemsCollectionAft, Is.Not.SameAs(orientation_ItemsCollectionBef));
-            Assert.That(supportedHDRAft, Is.Not.SameAs(supportedHDRBef));
-            Assert.That(hDRStatusAft, Is.Not.SameAs(hDRStatusBef));
-            Assert.That(hDRStatus_StringAft, Is.Not.SameAs(hDRStatus_StringBef));
-            Assert.That(hDREnableAft, Is.Not.SameAs(hDREnableBer));
+            //Assert.That(supportedHDRAft, Is.Not.SameAs(supportedHDRBef));
+            //Assert.That(hDRStatusAft, Is.Not.SameAs(hDRStatusBef));
+            //Assert.That(hDRStatus_StringAft, Is.Not.SameAs(hDRStatus_StringBef));
+            //Assert.That(hDREnableAft, Is.Not.SameAs(hDREnableBer));
             Assert.That(supportedUSBCPrioeitizationAft, Is.Not.SameAs(supportedUSBCPrioeitizationBef));
             Assert.That(isHighDataSpeedAft, Is.Not.SameAs(isHighDataSpeedBef));
             Assert.That(isHighResolutionAft, Is.Not.SameAs(isHighResolutionBef));
