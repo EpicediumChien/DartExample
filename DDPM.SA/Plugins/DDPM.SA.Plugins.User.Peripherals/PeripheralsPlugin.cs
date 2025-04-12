@@ -92,7 +92,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private static List<Guid> LogicalDevices3 = new();
         private static List<Guid> LogicalDevicesPen = new();
         private static List<Guid> LogicalDevicHeadset = new();
-        private static List<Guid> ILogicalWiredAudio = new();
+        private static List<Guid> LogicalWiredAudio = new();
         private static List<Guid> IDevices = new();
 
         //private IDeviceManagerSA _DeviceManagerPlugin;
@@ -1672,11 +1672,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 //info.WiredAudioVolumeAdjustmentTone = _logicalWiredAudio.GetWiredAudioVolumeAdjustmentTone();
                                 var wiredAudio = (ILogicalWiredAudio)item;
                                 _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalWiredAudio ScanDevices Add DTH event before ...  ");
-                                if (!ILogicalWiredAudio.Contains(wiredAudio.Id))
+                                if (!LogicalWiredAudio.Contains(wiredAudio.Id))
                                 {
                                     _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalWiredAudio Add Event ID : {wiredAudio.Id.ToString()}, in... ");
                                     _logicalWiredAudio.MuteStatusChanged += ILogicalWiredAudio_MuteStatusChanged;
-                                    ILogicalWiredAudio.Add(wiredAudio.Id);
+                                    LogicalWiredAudio.Add(wiredAudio.Id);
                                     _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalWiredAudio Add Event ID : {wiredAudio.Id.ToString()}, out... ");
                                 }
                                 _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalWiredAudio ScanDevices Add DTH event after ...  ");
@@ -2883,7 +2883,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             LogicalDevicHeadset.Remove(iLogicalDevice.Id);
                             _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceHeadset Remove Event ID : {iLogicalDevice.Id.ToString()}, out ... ");
                         }
-                        _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceHeadset Remove DTH Event after ...  ");
+                        _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceWiredAudio Remove DTH Event after ...  ");
+
+                        _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceWiredAudio Remove DTH Event before ...  ");
+                        if (LogicalWiredAudio.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalWiredAudio _logicalDeviceWiredAudio)
+                        {
+                            _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceWiredAudio Remove Event ID : {iLogicalDevice.Id.ToString()}, in ... ");
+                            _logicalDeviceWiredAudio.MuteStatusChanged -= ILogicalWiredAudio_MuteStatusChanged;
+                            LogicalWiredAudio.Remove(iLogicalDevice.Id);
+                            _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceWiredAudio Remove Event ID : {iLogicalDevice.Id.ToString()}, out ... ");
+                        }
+                        _logs.DebugMsg_1($"[PeripheralsPlugin] ILogicalDeviceWiredAudio Remove DTH Event after ...  ");
                     }
 
                     // << 250218 added by Hess for PIMS-328225
@@ -2919,6 +2929,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 LogicalDevices2.Remove(deviceGuid);
                 LogicalDevices3.Remove(deviceGuid);
                 LogicalDevicesPen.Remove(deviceGuid);
+                LogicalDevicHeadset.Remove(deviceGuid);
                 LogicalDevicHeadset.Remove(deviceGuid);
                 // >>
             }
