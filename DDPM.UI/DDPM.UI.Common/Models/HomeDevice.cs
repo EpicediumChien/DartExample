@@ -118,7 +118,7 @@ namespace DDPM.UI.Common.Models
                     }
 
                     //Robert_Lin, 2024-9-30 Add Monitor Product Images
-                    DetermineMonitorImage();
+                    FetchMonitorImage();
                     WriteLog($"[HomeDevice] MonitorInfo DetermineMonitorImage finfish ... ");
                     //Robert_lin, 2024-11-14 add Pxp Capapbilies check support
                     InitPipPbpCaps();
@@ -155,7 +155,7 @@ namespace DDPM.UI.Common.Models
                         //indicator.BatteryStatus = _deviceInfo.BatteryStatus;
 
                         //2024-6-20 Determine the DeviceImage internally
-                        DeterminePeripheralDeviceImage();
+                        FetchPeripheralDeviceImage();
                         WriteLog($"[HomeDevice] DeviceInfo DetermineMonitorImage finfish ... ");
                     }
 
@@ -775,7 +775,7 @@ namespace DDPM.UI.Common.Models
         #endregion DisplayName
 
         #region DetermineDeviceImage - Robert_Lin 2024-6-20 added
-        private void DeterminePeripheralDeviceImage()
+        public void FetchPeripheralDeviceImage()
         {
             WriteLog($"@HomeDevice.DeterminePeripheralDeviceImage in ... ");
             //Robert_Lin, 2024-11-16, PIMS-295748, "MS300" no image at homepage
@@ -842,7 +842,7 @@ namespace DDPM.UI.Common.Models
         /// <summary>
         /// Called in MonitorInfo setter, will output to HomeDevice.DeviceImage
         /// </summary>
-        private void DetermineMonitorImage()
+        public void FetchMonitorImage()
         {
             try
             {

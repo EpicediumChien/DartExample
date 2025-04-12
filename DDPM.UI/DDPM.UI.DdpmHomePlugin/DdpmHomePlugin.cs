@@ -503,7 +503,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 throw;
             }
         }
-        
+
+        #region Device Changed
         private async void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
             _log.Info("DdpmHomePlugin._deviceManager_DeviceChanged() executed");
@@ -514,13 +515,21 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //Robert_Lin, 2024-7-22 log info
                     _log.Info($"@ ChangedProperty=[{e.changedProperty}], ChangedType=[{e.type}] DeviceID=[{e.deviceID}]");
 
+                    //Robert_Lin, 2025-4-12, If the changedProperty is Battery related, then call DeviceChanged_Battery to handle.
+                    if (e.changedProperty.Equals("BatteryStatusChanged", StringComparison.OrdinalIgnoreCase) || 
+                        e.changedProperty.Equals("BatteryLevelChanged", StringComparison.OrdinalIgnoreCase))
+                    {
+                        _ = Task.Run(() => { DeviceChanged_Battery(e); });
+                        return;
+                    }
+
                     //2024-8-6 Robert, fix bug. compare string should be lowercase due to ToLower()
                     //2024-07-02, Elie, we only handle remove and add event on the DdpmHomePlugin.
                     var lowerChangedProperty = e.changedProperty.ToLower();
                     bool isAddOrRemove = lowerChangedProperty.Contains("remove") || lowerChangedProperty.Contains("add");
 
                     if (isAddOrRemove ||
-                        lowerChangedProperty.Contains("batterystatuschanged") ||
+                        lowerChangedProperty.Contains("batterystatuschanged") || //Robert_Lin 2025-4-12, both battery* check can be removed.
                         lowerChangedProperty.Contains("batterylevelchanged") ||
                         string.Equals(e.changedProperty, "DisplayChanged", StringComparison.OrdinalIgnoreCase))
                     {
@@ -639,6 +648,31 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 ShowDdpmHome();
             }
         }
+
+        /// <summary>
+        /// Handle the Battery changed (Charging/Level).
+        /// </summary>
+        /// <returns></returns>
+        private async Task DeviceChanged_Battery(DeviceChangedEventArgs e)
+        {
+            _log.Info($"@ DeviceChanged_Battery(), ID={e.deviceID}, ChangedProperty={e.changedProperty}");
+            //Find the target device
+            if (e.device_peripherals == null)
+            {
+                _log.Info($"@ DeviceChanged_Battery(), device_peripherals is null");
+                return;
+            }
+            Guid guid = e.device_peripherals.ID;
+            HomeDevice? homeDev = _viewModel.FindPeripheralByGuid(guid);
+            if (homeDev != null)
+            {
+                homeDev.DeviceInfo = e.device_peripherals;
+                //TO DO: Raise an event to notify event handlers, or the Peripheral plugin
+                //should handle the event firectly from DeviceManagerSA
+            }
+
+        }
+        #endregion Device Canged
 
         private void CheckIfNeedImportSetting_Display(List<MonitorInfo> monitorInfos)
         {

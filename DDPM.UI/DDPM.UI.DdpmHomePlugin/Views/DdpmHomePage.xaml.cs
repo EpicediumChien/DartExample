@@ -18,6 +18,7 @@ using DDPM.SA.Common.Settings;
 using System.Diagnostics;
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using DDPM.UI.Common.UserControls;
+using System.Collections.ObjectModel;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -50,8 +51,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     UIDebugPanel.Visibility = Visibility.Visible;
                 }
-                //_ddpmHomePageViewModel.ShowConsentRequested -= _ddpmHomePageViewModel_ShowConsent;
-                //_ddpmHomePageViewModel.ShowConsentRequested += _ddpmHomePageViewModel_ShowConsent;
+                DdpmCommonHelper.BitmapImageUpdated -= _DDPMThemeChange;
+                DdpmCommonHelper.BitmapImageUpdated += _DDPMThemeChange;
 
                 AttachImportNotification();
             }
@@ -1171,6 +1172,54 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 || !_ddpmHomePageViewModel.ImportNotify.GetInvocationList().Any(e => e.Method.Name == nameof(ImportNotifyEventHandler)))
             {
                 _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
+            }
+        }
+
+        private UXFlyout? _flyout1 = null;
+
+        private void UXButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_flyout1 == null)
+            {
+                VbarItem1 vbarItem = new VbarItem1()
+                {
+                    Index = 0,
+                    //Text = mg.GroupName, //Robert_Lin,2024-7-26, GroupName is ID used to identify a Group
+                    Text = "VbarItem1 Text",      // VbarText is the display string on VbarItem
+                    //IconTemplate = mg.IconTemplate
+                    IconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.DisplaySettings)
+                };
+                UXButton uxBtn = (UXButton)sender;
+                _flyout1 = new UXFlyout();
+                _flyout1.PlacementTarget = uxBtn;
+                _flyout1.Child = vbarItem;
+                _flyout1.Placement = PlacementArea.Bottom;
+                _flyout1.Margin = new Thickness(0, 5, 0, 0);
+                _flyout1.IsOpen = true;
+            }
+            else
+            {
+                _flyout1.IsOpen = !_flyout1.IsOpen;
+            }
+        }
+
+        private void _DDPMThemeChange(OSThemeEnum oSThemeEnum)
+        {
+            ObservableCollection<HomeDevice>? homeDevices = _ddpmHomePageViewModel?.HomeDevices;
+            if (homeDevices != null && homeDevices.Count > 0)
+            {
+                foreach (HomeDevice homeDevice in homeDevices)
+                {
+                    if (homeDevice.MonitorInfo != null)
+                    { 
+                        homeDevice.FetchMonitorImage();
+                    }
+
+                    if (homeDevice.DeviceInfo != null)
+                    {
+                        homeDevice.FetchPeripheralDeviceImage();
+                    }
+                }
             }
         }
 
