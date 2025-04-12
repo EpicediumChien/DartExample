@@ -160,9 +160,9 @@ namespace DDPM.UI.Module.Kvm
             {
                 if (vm != null)
                 {
-                    vm.FinishtoSetPCs();
                     //set pxp
                     SetPxP();
+                    vm.FinishtoSetPCs();
                     vm.isOnUSBKVM(true);//bool b = DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(true).Result;
                     if (vm.NKVMisON)
                     {
@@ -361,8 +361,8 @@ namespace DDPM.UI.Module.Kvm
             if (vm != null)
             {
                 vm._log!.Info("[KVMPIPPBPFullView]SavePxP");
-                vm.FinishtoSetPCs();
                 SetPxP();
+                vm.FinishtoSetPCs();
                 vm.isPxPFullView = false;
             }
             //Return to DdpmHomePage
@@ -404,24 +404,24 @@ namespace DDPM.UI.Module.Kvm
 
         private void SetPxP()
         {
-            MonitorInfo monitorInfo = new MonitorInfo();
-            List<MonitorInfo> monitorList = new List<MonitorInfo>();
-            int i = 0;
-            while (i < 20)
-            {
-                Task.Delay(2000).Wait();
-                monitorList = DdpmCommonHelper.DeviceManagerSA.GetMonitors().Result;
-                if (monitorList != null && monitorList.Count > 0)
-                {
-                    monitorInfo = monitorList.Find(x => x.modelName == DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.modelName &&
-                                                        x.edid.ServiceTag == DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.edid.ServiceTag);
-                    if (monitorInfo != null)
-                    {
-                        break;
-                    }
-                }
-                i++;
-            }
+            MonitorInfo monitorInfo = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
+            //List<MonitorInfo> monitorList = new List<MonitorInfo>();
+            //int i = 0;
+            //while (i < 20)
+            //{
+            //    Task.Delay(2000).Wait();
+            //    monitorList = DdpmCommonHelper.DeviceManagerSA.GetMonitors().Result;
+            //    if (monitorList != null && monitorList.Count > 0)
+            //    {
+            //        monitorInfo = monitorList.Find(x => x.modelName == DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.modelName &&
+            //                                            x.edid.ServiceTag == DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.edid.ServiceTag);
+            //        if (monitorInfo != null)
+            //        {
+            //            break;
+            //        }
+            //    }
+            //    i++;
+            //}
             bool bt = false;
             if (vm.CurPxpMode != _pbpcode || vm.isPipSmall != vm.pipSmallMode || vm.isPipLarge != vm.pipLargeMode)
             {
@@ -476,6 +476,7 @@ namespace DDPM.UI.Module.Kvm
                         DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(monitorInfo, "USBKVMMode", "Full");
                     }
                 }
+                vm.ReGetMonitorInfo();
             }
         }
     }
