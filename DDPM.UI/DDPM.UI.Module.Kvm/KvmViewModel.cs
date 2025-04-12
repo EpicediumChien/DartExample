@@ -1003,7 +1003,6 @@ namespace DDPM.UI.Module.Kvm
             bw.DoWork += DoWork_RefreshData;
             if (USBKVMisON && !NKVMisON && !NoKVMisON)
             {
-                UpdateArrow(true);
                 bw.DoWork -= DoWork_USBKVM;
                 bw.DoWork += DoWork_USBKVM;
                 bw.RunWorkerCompleted -= RunWorkerCompleted_USBKVMisON;
@@ -1227,7 +1226,7 @@ namespace DDPM.UI.Module.Kvm
                 //Update Left view Text1
                 Text1 = selHomeDevice.Text1;
                 OnPropertyChanged("Text1");
-
+                UpdateArrow(true);
                 if (mi.CapabilityDic.ContainsKey("E7"))
                 {
                     _log?.Info("[KvmViewModel]Have 0xEE");
