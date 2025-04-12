@@ -477,6 +477,8 @@ namespace DDPM.SA.Plugin.User.CLIManager
 
                 try
                 {
+                    WriteLog($"command ID: {e.command_guid_string}, command target type: {e.commandLineInput.TargetType}, command target feature: {e.commandLineInput.TargetFeature}, fromCMA: {e.commandLineInput.fromcma}");
+
                     if (commandLineInput.PluginsType.Equals("APP") && commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS"))
                     {
                         IDeviceManagerSA _devMgr = _DevManagerPlugin;
@@ -683,6 +685,8 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             case "SCREENNOTIFICATION":
                             case "DIAGNOSTICSREPORT":
                                 //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                                if (e.commandLineInput.TargetFeature.ToUpper().Equals("CONNECTEDDEVICES"))
+                                    WriteLog($"Execute ConnectedDevices");
                                 cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
                                 break;
                             case "FIRMWAREUPDATE":
@@ -816,17 +820,17 @@ namespace DDPM.SA.Plugin.User.CLIManager
         {
             var header = string.Empty;
             bool is_model = false;
+            WriteLog($"commandLine: {e.defer_item.commanddata}");
             if (e.defer_item.commanddata.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase) || e.defer_item.commanddata.Contains("dock=fwupdate", StringComparison.OrdinalIgnoreCase))
             {
-                
+                WriteLog($"Firmware Update");
                 var deviceType = e.defer_item.commanddata.ToLower()
                                                          .Split()
                                                          .FirstOrDefault(_ => _.Contains("value"));
-
+                
                 var devicemodel = e.defer_item.commanddata.ToLower()
                                                          .Split()
                                                          .FirstOrDefault(_ => _.Contains("model"));
-
                 var deviceName = "[Device Marketing Name with Model in parenthesis]";
 
                 if (!string.IsNullOrWhiteSpace(deviceType))
@@ -859,6 +863,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 }
 
                 var delldevicetype = getdevicetype(deviceName);
+                WriteLog($"device Type: {deviceType}, device model: {devicemodel} device name: {deviceName} dell device name: {delldevicetype}");
 
                 if (is_model && deviceType.Equals("display"))
                     header = e.is_defer ? $"Dell Display {devicemodel.ToUpper()} firmware update" : "Update will be applied";
@@ -871,14 +876,15 @@ namespace DDPM.SA.Plugin.User.CLIManager
             }
             else if (e.toast_message.Contains("app=update", StringComparison.OrdinalIgnoreCase))
             {
+                WriteLog($"SW Update");
                 header = e.is_defer ? "Update available" : "Update will be applied";
                 e.toast_message = e.is_defer ? $"Dell Display and Peripheral Manager has a pending update. This update can be deferred {e.defer_item.count + 1} times before it is required." : "There is a required software update for Dell Display and Peripheral Manager.";
             }
-            else if (e.defer_item.commanddata.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase))
-            {
-                header = e.is_defer ? "Pending Changes to settings" : "Changes to settings will be applied";
-                e.toast_message = e.is_defer ? $"Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator.\nThe configuration can be deferred {e.defer_item.count + 1} times before it is required." : "Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator.";
-            }
+            //else if (e.defer_item.commanddata.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    header = e.is_defer ? "Pending Changes to settings" : "Changes to settings will be applied";
+            //    e.toast_message = e.is_defer ? $"Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator.\nThe configuration can be deferred {e.defer_item.count + 1} times before it is required." : "Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator.";
+            //}
             else
             {
                 header = e.is_defer ? "Pending Changes to settings" : "Changes to settings will be applied";
@@ -923,6 +929,10 @@ namespace DDPM.SA.Plugin.User.CLIManager
             else if (devicetype.Contains("KB", StringComparison.OrdinalIgnoreCase))
             {
                 devicetype = "Dell Keyboard";
+            }
+            else
+            {
+                devicetype = "Dell Display";
             }
             return devicetype;
         }
