@@ -363,7 +363,7 @@ namespace DDPM.QAM
 
         private static void MonitorZoomMeetingWindowState()
         {
-            string processName = "notepad"; //"Zoom";
+            string processName = "Zoom"; //"notepad";
             Process[] processes = Process.GetProcessesByName(processName);
 
             if (processes.Length > 0)
