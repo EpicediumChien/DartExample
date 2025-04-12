@@ -179,6 +179,11 @@ namespace DDPM.SA.Common.Settings
         {
             return 1 == DevSettings.ReadInt("forceGearIconGlowEffectAtStartup");
         }
+
+        public static UInt32 GetTimeoutToWaitForDTHServiceRunning(UInt32 defaultSeconds)
+        {
+            return (UInt32)DevSettings.ReadInt("TimeoutToWaitForDTHServiceRunning", (int)defaultSeconds);
+        }
         #endregion DdpmHomePlgin
 
         #region PIP PBP

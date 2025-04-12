@@ -780,6 +780,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             ShowConsentRequested?.Invoke(this, EventArgs.Empty);
         }
 
+        public event Action DTHServiceStopped;
+
+
         public void Invoke_PleaseWait()
         {
             BackgroundWorker bw = new BackgroundWorker
@@ -802,17 +805,29 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             {
                 Task.Delay(1500).Wait(); //Thread.Sleep(1500);
 
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                //Check if DTH service is running
-                ServiceController sc = new ServiceController("DellTechHub");
+                UInt32 defaultTimeoutToWaitDTHServiceRunning = 30; //sec
+                UInt32 timeoutToWaitDTHServiceRunning = DevSettings.GetTimeoutToWaitForDTHServiceRunning(defaultTimeoutToWaitDTHServiceRunning);
+                double timeoutDth = (double)timeoutToWaitDTHServiceRunning;
 
+                Stopwatch sw = new Stopwatch();
+                //Check if DTH service is running
+                ServiceController sc = new ServiceController(Constants.DTH_ServiceName); // "DellTechHub"
+
+                sw.Start();
                 while (sc.Status == ServiceControllerStatus.Stopped ||
                     sc.Status == ServiceControllerStatus.StopPending)
                 {
                     PleaseWaitMessage = LangHelper.Instance["Wait_DTH"];// "DellTechHub service is not running";
                     Task.Delay(200).Wait(); //Thread.Sleep(200);
                     _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait Wait_DTH {PleaseWaitMessage} ... ");
+                    if (sw.Elapsed.TotalSeconds >= timeoutDth)
+                    {
+                        sw.Stop();
+                        if (DTHServiceStopped != null)
+                            DTHServiceStopped?.Invoke();
+                        e.Result = "DTH Service stopped.";
+                        return;
+                    }
                 }
                 while (!IsDeviceManagerReady)
                 {

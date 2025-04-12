@@ -1421,28 +1421,33 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private UXFlyout? _flyout1 = null;
         private void UXButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_flyout1 == null)
-            {
-                VbarItem1 vbarItem = new VbarItem1()
-                {
-                    Index = 0,
-                    //Text = mg.GroupName, //Robert_Lin,2024-7-26, GroupName is ID used to identify a Group
-                    Text = "VbarItem1 Text",      // VbarText is the display string on VbarItem
-                    //IconTemplate = mg.IconTemplate
-                    IconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.DisplaySettings)
-                };
-                UXButton uxBtn = (UXButton)sender;
-                _flyout1 = new UXFlyout();
-                _flyout1.PlacementTarget = uxBtn;
-                _flyout1.Child = vbarItem;
-                _flyout1.Placement = PlacementArea.Bottom;
-                _flyout1.Margin = new Thickness(0, 5, 0, 0);
-                _flyout1.IsOpen = true;
-            }
-            else
-            {
-                _flyout1.IsOpen = !_flyout1.IsOpen;
-            }
+            IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
+            console?.ShowPluginById(DDPM.UI.Common.Constants.ExitAppPluginId);
+
+            //if (_flyout1 == null)
+            //{
+            //    VbarItem1 vbarItem = new VbarItem1()
+            //    {
+            //        Index = 0,
+            //        //Text = mg.GroupName, //Robert_Lin,2024-7-26, GroupName is ID used to identify a Group
+            //        Text = "VbarItem1 Text",      // VbarText is the display string on VbarItem
+            //        //IconTemplate = mg.IconTemplate
+            //        IconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.DisplaySettings)
+            //    };
+            //    UXButton uxBtn = (UXButton)sender;
+            //    _flyout1 = new UXFlyout();
+            //    _flyout1.PlacementTarget = uxBtn;
+            //    _flyout1.Child = vbarItem;
+            //    _flyout1.Placement = PlacementArea.Bottom;
+            //    _flyout1.Margin = new Thickness(0, 5, 0, 0);
+            //    _flyout1.IsOpen = true;
+            //}
+            //else
+            //{
+            //    _flyout1.IsOpen = !_flyout1.IsOpen;
+            //}
+
+
         }
     }
 }
