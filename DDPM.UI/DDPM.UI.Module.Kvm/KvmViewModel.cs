@@ -1842,18 +1842,48 @@ namespace DDPM.UI.Module.Kvm
 
         private void SelectUSB(string usb, string pcnum)
         {
-            if (pcsList.TryGetValue(pcnum, out var pc))
+            _log?.Info("[SelectUSB]...");
+            if (pcsList.ContainsKey(pcnum))
             {
-                pcsList[pcnum].USBUpstream = usb;
-                //bool b = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
-                OnPropertyChanged("PC1USB_Selected");
-                OnPropertyChanged("PC2USB_Selected");
-                OnPropertyChanged("PC3USB_Selected");
-                OnPropertyChanged("PC4USB_Selected");
+                PCsInfo pcInfo = new PCsInfo();
+                foreach (var input in inputList)
+                {
+                    if (pcsList[pcnum].InputType == input.Key)
+                    {
+                        pcInfo.InputType = input.Key;
+                        pcInfo.InputName = input.Value.InputName;
+                        pcInfo.USBUpstream = usb;
+                        pcInfo.Code = input.Value.Code;
+                        break;
+                    }
+                }
+                pcsList[pcnum] = pcInfo;
+                _log?.Info("[SelectUSB] " + pcnum + " USB is " + pcsList[pcnum].USBUpstream);
+                _log?.Info("[SelectUSB] " + pcnum + " original_USB is " + original_pcsList[pcnum].USBUpstream);
+                if (pcnum == "PC1")
+                {
+                    _PC1selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
+                    OnPropertyChanged("PC1USB_Selected");
+                }
+                else if (pcnum == "PC2")
+                {
+                    _PC2selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
+                    OnPropertyChanged("PC2USB_Selected");
+                }
+                else if (pcnum == "PC3")
+                {
+                    _PC3selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
+                    OnPropertyChanged("PC3USB_Selected");
+                }
+                else if (pcnum == "PC4")
+                {
+                    _PC4selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
+                    OnPropertyChanged("PC4USB_Selected");
+                }
             }
             else
             {
-                _log?.Info(pcnum + " not found in pcsList.");
+                _log?.Info("[SelectUSB] " + pcnum + " not found in pcsList.");
             }
         }
 
@@ -2648,6 +2678,9 @@ namespace DDPM.UI.Module.Kvm
                 {
                     // Since Profile issue PCs will be inconsistent need to rewrite each change,
                     // Monitor info is only updated by monitor info updated. Originally get from profile not real monitor status
+                    InputSourceObj pc2input = new InputSourceObj();
+                    InputSourceObj pc3input = new InputSourceObj();
+                    InputSourceObj pc4input = new InputSourceObj();
                     if (!isPCsListSame(pcsList, original_pcsList))
                     {
                         Dictionary<string, PCsInfo> usbPCsList = new Dictionary<string, PCsInfo>();
@@ -2681,20 +2714,20 @@ namespace DDPM.UI.Module.Kvm
                         if (pcsList.TryGetValue("PC1", out var pc1) && pcsList.TryGetValue("PC2", out var pc2))
                         {
                             InputSourceObj pc1input = new InputSourceObj((UInt16)pcsList["PC1"].Code, pcsList["PC1"].InputType);
-                            InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                            pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
                             inputList[pcsList["PC1"].InputType].InputName = pcsList["PC1"].InputName;
                             inputList[pcsList["PC2"].InputType].InputName = pcsList["PC2"].InputName;
                             if (pcsList.Count >= 3)
                             {
                                 if (pcsList.TryGetValue("PC3", out var pc3))
                                 {
-                                    InputSourceObj pc3input = new InputSourceObj((UInt16)pcsList["PC3"].Code, pcsList["PC3"].InputType);
+                                    pc3input = new InputSourceObj((UInt16)pcsList["PC3"].Code, pcsList["PC3"].InputType);
                                     inputList[pcsList["PC3"].InputType].InputName = pcsList["PC3"].InputName;
                                     if (pcsList.Count == 4)
                                     {
                                         if (pcsList.TryGetValue("PC4", out var pc4))
                                         {
-                                            InputSourceObj pc4input = new InputSourceObj((UInt16)pcsList["PC4"].Code, pcsList["PC4"].InputType);
+                                            pc4input = new InputSourceObj((UInt16)pcsList["PC4"].Code, pcsList["PC4"].InputType);
                                             inputList[pcsList["PC4"].InputType].InputName = pcsList["PC4"].InputName;
                                             SetPCInput(pcsList, pc2input, pc3input, pc4input);
                                         }
@@ -2725,6 +2758,17 @@ namespace DDPM.UI.Module.Kvm
                         {
                             _log?.Info("PC1 or PC2 not found in pcsList.");
                         }
+                    }
+                    else
+                    {
+                        _log?.Info("[KvmViewModel] PCsList is not same.");
+                        pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                        pc3input = new InputSourceObj((UInt16)pcsList["PC3"].Code, pcsList["PC3"].InputType);
+                        pc4input = new InputSourceObj((UInt16)pcsList["PC4"].Code, pcsList["PC4"].InputType);
+                        bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(KvmModule.SelectedHomeDevice.MonitorInfo,
+                                                                                    pc2input, pc3input, pc4input).Result;
+                        string result = res ? "Success" : "Failed";
+                        _log?.Info($"[KvmViewModel] SubInputs PC Done with {result}.");
                     }
                 }
                 else
