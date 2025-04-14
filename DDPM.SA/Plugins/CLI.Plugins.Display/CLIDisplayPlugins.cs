@@ -1388,8 +1388,11 @@ namespace DDPM.CLI.Plugins.Display
                             Message = "No device found"
                         }.ToJson();
                     }
-                    if (_deviceinfo == null || _deviceinfo.Count == 0)
+                    if ((_AllInfoMonitors == null || _AllInfoMonitors.Count == 0) && (_deviceinfo == null || _deviceinfo.Count == 0))
+                    {
+                        writelog($"No Devices Connected");
                         return ((int)CLI_ExitCode.null_device_manager, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
+                    }
                 }
                 else if (commandLineInput.Options.Count == 0)
                 {
