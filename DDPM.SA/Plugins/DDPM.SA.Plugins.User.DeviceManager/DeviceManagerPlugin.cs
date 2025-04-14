@@ -7315,6 +7315,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_NKVMPlugin != null && _SettingsPlugin != null)
             {
+                writelog($"[SetOnNKVM] ison : {ison.ToString()}");
                 _NKVMPlugin.SetOnNKVM(monitorInfo, ison, _SettingsPlugin).Wait();
                 //Jason add save NKVM off to UserSettings
                 bool bit = _SettingsPlugin.UpdateNKVMFeatureFlag(ison).Result;
@@ -7325,6 +7326,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     Task.Run(() => SentKVMtoTelementry(monitorInfo, "KVMMode", "Network"));
                 }
+            }
+            else
+            {
+                writelog($"[SetOnNKVM] _NKVMPlugin or _SettingsPlugin is null");
             }
 
             return Task.CompletedTask;
