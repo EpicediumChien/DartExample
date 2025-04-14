@@ -40,7 +40,8 @@
       By Dell's requirements, we should enable the scrollbar at this situation.
       Fix: Move the Grid of major content into a UXScrollViewer, and will auto show Vert scrollbar.
         -->
-        <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Grid.ColumnSpan="2">
+        <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+        <UXControls:UXScrollViewer UseFadingScrolling="False" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Grid.ColumnSpan="2">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="312" />

@@ -113,7 +113,8 @@
                       <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=2}" />
                     </MultiBinding>
                   </DockPanel.Height>
-                  <UXControls:UXScrollViewer x:Name="svProductivity" VerticalScrollBarVisibility="Auto">
+                    <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+                  <UXControls:UXScrollViewer x:Name="svProductivity" VerticalScrollBarVisibility="Auto" UseFadingScrolling="False">
                     <ItemsControl Name="ProductivityItems">
                       <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -155,7 +156,8 @@
                       <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=2}" />
                     </MultiBinding>
                   </DockPanel.Height>
-                  <UXControls:UXScrollViewer x:Name="svWindows" VerticalScrollBarVisibility="Auto">
+                    <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+                  <UXControls:UXScrollViewer x:Name="svWindows" VerticalScrollBarVisibility="Auto" UseFadingScrolling="False">
                     <ItemsControl Name="WindowsItems">
                       <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -197,7 +199,8 @@
                       <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=2}" />
                     </MultiBinding>
                   </DockPanel.Height>
-                  <UXControls:UXScrollViewer x:Name="svMultimedia" VerticalScrollBarVisibility="Auto">
+                    <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+                  <UXControls:UXScrollViewer x:Name="svMultimedia" VerticalScrollBarVisibility="Auto" UseFadingScrolling="False">
                     <ItemsControl Name="MultimediaItems">
                       <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -241,7 +244,8 @@
                       <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=2}" />
                     </MultiBinding>
                   </DockPanel.Height>
-                  <UXControls:UXScrollViewer x:Name="svOffice" VerticalScrollBarVisibility="Auto">
+                    <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+                  <UXControls:UXScrollViewer x:Name="svOffice" VerticalScrollBarVisibility="Auto" UseFadingScrolling="False">
                     <ItemsControl Name="OfficeItems">
                       <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -278,7 +282,8 @@
                     <Binding Path="MaxHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=2}" />
                   </MultiBinding>
                 </DockPanel.Height>
-                <UXControls:UXScrollViewer x:Name="svSearch" VerticalScrollBarVisibility="Auto">
+                  <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+                <UXControls:UXScrollViewer x:Name="svSearch" VerticalScrollBarVisibility="Auto" UseFadingScrolling="False">
                   <ItemsControl Name="SearchItems">
                     <ItemsControl.ItemTemplate>
                       <DataTemplate>
