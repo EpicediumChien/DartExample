@@ -10,8 +10,14 @@
         Title="InterruptScreen"
         WindowStyle="None"
         AllowsTransparency="True"
-        WindowStartupLocation="CenterScreen"
-        Closing="Window_Closing">
+        WindowStartupLocation="CenterOwner"
+        Closing="Window_Closing"
+        Height="600"
+        Width="1000"
+        MinHeight="600"
+        MinWidth="1000"
+        MaxHeight="600"
+        MaxWidth="1000">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

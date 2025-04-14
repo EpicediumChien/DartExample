@@ -80,6 +80,7 @@ namespace DDPM.SA.Common
         public string id { get; set; }
         public string imageUrl { get; set; }
         public byte[] image { get; set; }
+        public bool IsShowName { get; set; }
         public ProductLabel productLabel { get; set; }
         public List<DetailsList> detailsList { get; set; }
         public BugDescription bugDescription { get; set; }
@@ -88,6 +89,7 @@ namespace DDPM.SA.Common
             id = string.Empty;
             imageUrl = string.Empty;
             image = new byte[0];
+            IsShowName = true;
             productLabel = new ProductLabel();
             detailsList = new List<DetailsList>();
             bugDescription = new BugDescription();
