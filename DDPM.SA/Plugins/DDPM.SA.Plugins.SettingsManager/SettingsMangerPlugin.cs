@@ -296,7 +296,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             }
             _settings = data;
             string info = "Success";
-            if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), _settings_path, out info))
+            if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(data).ToString(), _settings_path, out info))
             {
                 WriteLog($"WriteITConfigData: write failed. Info({info})");
                 return Task.FromResult(false);
@@ -841,5 +841,39 @@ namespace DDPM.SA.Plugins.SettingsManager
             return Task.CompletedTask;
         }
         #endregion
+
+        public Task<bool> UpdateNKVMFeatureFlag(bool enable)
+        {
+            try
+            {
+                DDPMITConfig tmp = ReadITConfigData(true).Result;
+                if (tmp == null)
+                {
+                    throw new Exception("ReadITConfigData got null result");
+                }
+                tmp.Enable_Display_NetworkKVM = enable;
+                //Task.Run(() =>
+                //{
+                //    _settings = tmp;
+                //    WriteLog("[UpdateNKVMFeatureFlag] update setting object ok");
+                //});
+
+                //set feature list to null to avoid possible event loop back
+                if (WriteITConfigData(tmp, null).Result)
+                {
+                    WriteLog("[UpdateNKVMFeatureFlag] update flag to file ok");
+                }
+                else
+                {
+                    WriteLog("[UpdateNKVMFeatureFlag] update to file failed");
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"[UpdateNKVMFeatureFlag] {ex.Message}");
+                return Task.FromResult(false);
+            }
+            return Task.FromResult(true);
+        }
     }
 }
