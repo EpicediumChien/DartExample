@@ -38,7 +38,7 @@ namespace DDPM.UI.Module.AddSpeaker.Tests
             peripheralPlugin = peripheralPluginMock.Object;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new AddDeviceViewModel(showPluginManager, console, log);
+            vm = new AddDeviceViewModel(console);
             addSpeakerRightView = new AddSpeakerRightView(vm);
             privateObject = new PrivateObject(addSpeakerRightView);
         }

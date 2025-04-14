@@ -22,6 +22,8 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
+using Microsoft.VisualBasic.Logging;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
@@ -481,6 +483,31 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             {
                 e.Handled = true;
                 _console.ShowHomePage();
+            }
+        }
+
+        private bool _hasInitialized = false;
+        private void UserControl_LayoutUpdated(object sender, EventArgs e)
+        {
+            if (!_hasInitialized && IsVisible)
+            {
+                _hasInitialized = true;
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    GetRFDongleAsync();
+                }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+            }
+        }
+        private void GetRFDongleAsync()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA == null)
+            {
+                DdpmCommonHelper.WriteUILog($"Error: DeviceManagerSA is null");
+            }
+            else
+            {
+                var _deviceHelper = DdpmCommonHelper.DeviceManagerSA.GetRFDongleDevices().Result;
+                _vm?.PrepareDongleInfo(_deviceHelper.dongleInfo);
             }
         }
     }

@@ -40,7 +40,7 @@ namespace DDPM.UI.Module.AddKnM_Dongle.Tests
             peripheralPlugin = peripheralPluginMock.Object;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new AddDeviceViewModel(showPluginManager, console, log);
+            vm = new AddDeviceViewModel(console);
             addKnM_DongleRightView = new AddKnM_DongleRightView(vm);
             privateObject = new PrivateObject(addKnM_DongleRightView);
         }

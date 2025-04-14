@@ -90,7 +90,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             set
             {
                 SetProperty(ref _homeDevices, value);
-                OnPropertyChanged("HomeDeviceCount");
+                // 250414 modified by Hess to prevent no device screen appear when call ResetDevices()
+                // call OnPropertyChanged in PrepareDeviceInfos(_deviceInfos) after devices refreshed
+                //OnPropertyChanged(nameof(HomeDeviceCount));
 
                 if (HomeDevicesChanged != null)
                 {
@@ -596,6 +598,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 {
                     _log.Error($"[DdpmHomePageViewModel] PrepareDeviceInfos Exception: {ex.Message}");
                 }
+                OnPropertyChanged(nameof(HomeDeviceCount));
             }
         }
         public void ResetDevices()

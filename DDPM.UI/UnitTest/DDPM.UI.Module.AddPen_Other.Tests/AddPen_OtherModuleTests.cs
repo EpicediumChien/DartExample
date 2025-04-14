@@ -42,7 +42,7 @@ namespace DDPM.UI.Module.AddPen_Other.Tests
             peripheralPlugin = peripheralPluginMock.Object;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new AddDeviceViewModel(showPluginManager, console, log);
+            vm = new AddDeviceViewModel(console);
             addPen_OtherModule = new AddPen_OtherModule(vm);
             privateObject = new PrivateObject(addPen_OtherModule);
 
