@@ -7319,7 +7319,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //Jason add save NKVM off to UserSettings
                 bool bit = _SettingsPlugin.UpdateNKVMFeatureFlag(ison).Result;
                 DDPMSettings data = ReloadAppConfigData().Result;
-                data.LockSettings.Enable_Display_NetworkKVM = false;
+                data.LockSettings.Enable_Display_NetworkKVM = ison;
                 bool be = SetAppConfigData(data).Result;
                 if (ison)
                 {
