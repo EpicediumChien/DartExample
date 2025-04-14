@@ -3989,6 +3989,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void PhysicalDevicePen_IsdVersionChanged(IPhysicalPenDevice physicalPenDevice, string arg2, string arg3)
         {
+            writelog($"IsdVersionChanged: physicalPenDeviceID: {physicalPenDevice.Id} Arg2: {arg2} Arg3: {arg3}");
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.PhyscialDeviceID.ToString() == physicalPenDevice.Id.ToString());
