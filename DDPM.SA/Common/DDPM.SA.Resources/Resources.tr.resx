@@ -540,4 +540,91 @@
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>Güncelleştirmeler tamamlanana kadar sistemi kapatmayın</value>
   </data>
+  <data name="Update_failed_due_to_network_error" xml:space="preserve">
+    <value>Ağ hatası sebebiyle güncelleştirme işlemi başarısız oldu. Yeniden deneyin.</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>İlgili fareyi hareket ettirin veya sol düğmesine iki kez tıklayın.</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>İlgili klavyenin bellenim güncelleştirmesini başlatmak için &quot;U&quot; tuşuna iki kez basın.</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>Varsayılan ICC profili Akıllı HDR içindir. Renk ön ayarı değiştirilemiyor.</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>Varsayılan ICC profili, Akıllı HDR için uygun değildir. Renk ön ayarı değiştirilemiyor.</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>Güncelleştirmenin tamamlanması, monitörünüzün modeline ve kurulumuna (ör. bağlantı türü) bağlı olarak tahmini 10 ila 30 dakika sürebilir. Aynı modele ait birden fazla monitörü güncelleştiriyorsanız bu işlem daha uzun sürebilir. Güncelleştirme indirilirken ekranınızı kapatmayın veya kabloları çıkarmayın.</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Başarılı</value>
+  </data>
+  <data name="Firmware_updated" xml:space="preserve">
+    <value>Bellenim güncelleştirildi.</value>
+  </data>
+  <data name="Display_FWU_Error_1" xml:space="preserve">
+    <value>Bir bellenim yardımcı program paketi sorunu nedeniyle bellenim güncelleştirmesi başarısız oldu. Dosya bozulmuş olabilir.</value>
+  </data>
+  <data name="Display_FWU_Error_3" xml:space="preserve">
+    <value>Bellenim güncelleştirmesi sırasında bir hata meydana geldi. Sorunu çözmek için USB kablosunu çıkarıp yeniden bağlayın ve monitörü kapatıp açın. Ardından bellenimi yeniden güncelleştirmeyi deneyin.</value>
+  </data>
+  <data name="Display_FWU_Error_5" xml:space="preserve">
+    <value>Bellenim güncelleştirmesi sırasında bir hata meydana geldi. Sorunu çözmek için USB kablosunu çıkarıp yeniden bağlayın ve monitörü kapatıp açın. Ardından bellenimi yeniden güncelleştirmeyi deneyin.</value>
+  </data>
+  <data name="Display_FWU_Error_7" xml:space="preserve">
+    <value>Bellenim güncelleştirmesi başarısız oldu. Bellenim kodu silindi ve bellenim kodu doğrulanamadı.</value>
+  </data>
+  <data name="Display_FWU_Error_9" xml:space="preserve">
+    <value>Monitörünüzün bellenim sürümü güncel.</value>
+  </data>
+  <data name="Display_FWU_Error_10" xml:space="preserve">
+    <value>Başka bir Bellenim Güncelleştirme yardımcı programı çalışıyor olabilir. Devam etmek için ilgili yardımcı programı kapatın.</value>
+  </data>
+  <data name="Display_FWU_Error_12" xml:space="preserve">
+    <value>Başka bir Bellenim Güncelleştirme yardımcı programı çalışıyor olabilir. Devam etmek için ilgili yardımcı programı kapatın.</value>
+  </data>
+  <data name="Display_FWU_Error_201" xml:space="preserve">
+    <value>Güncelleştirme xx dakika kadar sürebilir. Güncelleştirme sırasında monitörünüzün açık ve bağlı olduğundan emin olun.</value>
+  </data>
+  <data name="Display_FWU_Error_501" xml:space="preserve">
+    <value>Monitörünüzde tespit edilen bellenim sürümü resmi bir sürüm değildir.</value>
+  </data>
+  <data name="Display_FWU_Error_61" xml:space="preserve">
+    <value>Bellenim güncelleştirmesi sırasında bir hata meydana geldi. Sorunu çözmek için USB kablosunu çıkarıp yeniden bağlayın ve monitörü kapatıp açın. Ardından bellenimi yeniden güncelleştirmeyi deneyin.</value>
+  </data>
+  <data name="Display_FWU_Error_Other" xml:space="preserve">
+    <value>Bellenim güncelleştirmesi başarısız oldu.</value>
+  </data>
+  <data name="Update_Display_Alert_2" xml:space="preserve">
+    <value>Güncelleştirme [XXXXXX] dakika kadar sürebilir. İşlem boyunca aygıtın açık ve bağlı olduğundan emin olun.</value>
+  </data>
+  <data name="Update_in_progress_body" xml:space="preserve">
+    <value>[XXXXXX] aygıtının bellenimi güncelleştirilmektedir. Aygıt zaman zaman kullanıma kapalı olabilir. Güncelleştirme sırasında aygıtın bağlantısını kesmeyin. </value>
+  </data>
+  <data name="Update_successful_body" xml:space="preserve">
+    <value>[XXXXXX] bellenimi başarıyla güncelleştirildi</value>
+  </data>
+  <data name="Update_failed_body" xml:space="preserve">
+    <value>[XXXXXX] bellenimi güncelleştirilemedi</value>
+  </data>
+  <data name="Update_successful" xml:space="preserve">
+    <value>Güncelleştirme başarılı</value>
+  </data>
+  <data name="Update_failed" xml:space="preserve">
+    <value>Güncelleştirme başarısız oldu</value>
+  </data>
+  <data name="Update_in_progress" xml:space="preserve">
+    <value>Güncelleştirme sürüyor</value>
+  </data>
+  <data name="Software_update_successful" xml:space="preserve">
+    <value>Yazılım başarıyla güncelleştirildi</value>
+  </data>
+  <data name="Software_update_failed" xml:space="preserve">
+    <value>Yazılım güncelleştirilemedi</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>Bellenim güncelleştirmesi sırasında oluşabilecek sorunları önlemek için lütfen monitörünüzü USB yukarı akış bağlantı noktası ile bağlayın.</value>
+  </data>
 </root>

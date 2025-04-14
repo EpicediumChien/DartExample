@@ -540,4 +540,91 @@
   <data name="Multiple_docks_are_detected2" xml:space="preserve">
     <value>Se detectan varias docking stations. Mantenga una sola conectada para evitar daños en ellas.</value>
   </data>
+  <data name="Update_failed_due_to_network_error" xml:space="preserve">
+    <value>La actualización ha fallado debido a un error de red. Inténtelo de nuevo.</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>Mueva o haga clic doble con el botón izquierdo del ratón en el destino</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>Pulse la tecla &quot;U&quot; dos veces para activar la actualización del firmware del teclado de destino</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>El perfil ICC predeterminado es para HDR inteligente. No podemos cambiar los valores de color predefinidos en el</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>El perfil ICC predeterminado no es adecuado para HDR inteligente. No podemos cambiar los valores de color predefinidos en el</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>La actualización puede entre 10 y 30 minutos en realizarse, en función del modelo y la configuración del monitor (por ejemplo, el tipo de conexión). Si se van a actualizar varios monitores del mismo modelo, puede que tarde más tiempo. No apague la pantalla ni desconecte los cables mientras se esté descargando la actualización.</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Éxito</value>
+  </data>
+  <data name="Firmware_updated" xml:space="preserve">
+    <value>Firmware actualizado.</value>
+  </data>
+  <data name="Display_FWU_Error_1" xml:space="preserve">
+    <value>No se ha podido actualizar el firmware debido a un problema en el paquete de utilidad de firmware. Puede que el archivo esté dañado.</value>
+  </data>
+  <data name="Display_FWU_Error_3" xml:space="preserve">
+    <value>Se ha producido un error al actualizar el firmware. Para resolver este problema, desconecte y vuelva a conectar el cable USB y encienda el monitor. A continuación, vuelva a intentar la actualización del firmware.</value>
+  </data>
+  <data name="Display_FWU_Error_5" xml:space="preserve">
+    <value>Se ha producido un error al actualizar el firmware. Para resolver este problema, desconecte y vuelva a conectar el cable USB y encienda el monitor. A continuación, vuelva a intentar la actualización del firmware.</value>
+  </data>
+  <data name="Display_FWU_Error_7" xml:space="preserve">
+    <value>No se ha podido actualizar el firmware. El código de firmware se ha borrado y ha fallado la verificación del código de firmware.</value>
+  </data>
+  <data name="Display_FWU_Error_9" xml:space="preserve">
+    <value>El firmware de su monitor es de la versión más reciente.</value>
+  </data>
+  <data name="Display_FWU_Error_10" xml:space="preserve">
+    <value>Puede que se esté ejecutando otra instancia de la utilidad de actualización del firmware. Cierre una instancia de la utilidad para continuar.</value>
+  </data>
+  <data name="Display_FWU_Error_12" xml:space="preserve">
+    <value>Puede que se esté ejecutando otra instancia de la utilidad de actualización del firmware. Cierre una instancia de la utilidad para continuar.</value>
+  </data>
+  <data name="Display_FWU_Error_201" xml:space="preserve">
+    <value>La actualización puede tardar hasta xx minutos en realizarse. Mantenga el monitor encendido y conectado durante la actualización.</value>
+  </data>
+  <data name="Display_FWU_Error_501" xml:space="preserve">
+    <value>La versión del firmware detectada en el monitor no es una versión oficial.</value>
+  </data>
+  <data name="Display_FWU_Error_61" xml:space="preserve">
+    <value>Se ha producido un error al actualizar el firmware. Para resolver este problema, desconecte y vuelva a conectar el cable USB y encienda el monitor. A continuación, vuelva a intentar la actualización del firmware.</value>
+  </data>
+  <data name="Display_FWU_Error_Other" xml:space="preserve">
+    <value>La actualización del firmware no se ha realizado correctamente.</value>
+  </data>
+  <data name="Update_Display_Alert_2" xml:space="preserve">
+    <value>La actualización puede tardar hasta [XXXXXX] minutos en realizarse. Mantenga el dispositivo encendido y conectado durante este tiempo.</value>
+  </data>
+  <data name="Update_in_progress_body" xml:space="preserve">
+    <value>Hay una actualización de firmware en curso para [XXXXX]. La disponibilidad puede ser intermitente. No desconecte el dispositivo durante la actualización. </value>
+  </data>
+  <data name="Update_successful_body" xml:space="preserve">
+    <value>El firmware de [XXXXXX] se ha actualizado correctamente</value>
+  </data>
+  <data name="Update_failed_body" xml:space="preserve">
+    <value>No se ha podido actualizar el firmware de [XXXXXX]</value>
+  </data>
+  <data name="Update_successful" xml:space="preserve">
+    <value>Actualización correcta</value>
+  </data>
+  <data name="Update_failed" xml:space="preserve">
+    <value>Error en actualización</value>
+  </data>
+  <data name="Update_in_progress" xml:space="preserve">
+    <value>Actualización en curso</value>
+  </data>
+  <data name="Software_update_successful" xml:space="preserve">
+    <value>Se ha actualizado el software correctamente</value>
+  </data>
+  <data name="Software_update_failed" xml:space="preserve">
+    <value>Error al actualizar el software</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>Conecte el monitor mediante el puerto USB ascendente para evitar errores durante el proceso de actualización del firmware</value>
+  </data>
 </root>

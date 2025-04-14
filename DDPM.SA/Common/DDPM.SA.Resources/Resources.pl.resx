@@ -540,4 +540,91 @@
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>Nie wyłączaj systemu do czasu zakończenia aktualizacji</value>
   </data>
+  <data name="Update_failed_due_to_network_error" xml:space="preserve">
+    <value>Aktualizacja nie powiodła się z powodu błędu sieci. Spróbuj ponownie.</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>Przesuń lub kliknij dwukrotnie lewy przycisk docelowej myszy</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>Naciśnij dwukrotnie przycisk „U”, aby aktywować aktualizację oprogramowania wewnętrznego docelowej klawiatury</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>Domyślny profil ICC to Smart HDR. Nie możemy zmienić predefiniowanych ustawień kolorów w</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>Domyślny profil ICC nie jest odpowiedni dla Smart HDR. Nie można zmienić predefiniowanych ustawień kolorów w</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>Aktualizacja może potrwać od 10 do 30 minut, w zależności od modelu i konfiguracji monitora (np. typu połączenia). Aktualizacja wielu monitorów tego samego modelu może potrwać dłużej. Nie wyłączaj wyświetlania ani nie odłączaj kabli podczas pobierania aktualizacji.</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Udane</value>
+  </data>
+  <data name="Firmware_updated" xml:space="preserve">
+    <value>Oprogramowanie wewnętrzne zaktualizowane.</value>
+  </data>
+  <data name="Display_FWU_Error_1" xml:space="preserve">
+    <value>Aktualizacja oprogramowania wewnętrznego nie powiodła się z powodu błędu pakietu oprogramowania wewnętrznego. Plik może być uszkodzony.</value>
+  </data>
+  <data name="Display_FWU_Error_3" xml:space="preserve">
+    <value>Podczas aktualizacji oprogramowania wewnętrznego wystąpił błąd. Aby rozwiązać ten problem, odłącz i ponownie podłącz kabel USB oraz wyłącz i ponownie włącz monitor. Następnie ponów próbę aktualizacji oprogramowania wewnętrznego.</value>
+  </data>
+  <data name="Display_FWU_Error_5" xml:space="preserve">
+    <value>Podczas aktualizacji oprogramowania wewnętrznego wystąpił błąd. Aby rozwiązać ten problem, odłącz i ponownie podłącz kabel USB oraz wyłącz i ponownie włącz monitor. Następnie ponów próbę aktualizacji oprogramowania wewnętrznego.</value>
+  </data>
+  <data name="Display_FWU_Error_7" xml:space="preserve">
+    <value>Aktualizacja oprogramowania wewnętrznego nie powiodła się. Kod oprogramowania wewnętrznego został skasowany i weryfikacja kodu oprogramowania wewnętrznego nie powiodła się.</value>
+  </data>
+  <data name="Display_FWU_Error_9" xml:space="preserve">
+    <value>Oprogramowanie wewnętrzne monitora jest najnowszą wersją.</value>
+  </data>
+  <data name="Display_FWU_Error_10" xml:space="preserve">
+    <value>Może być uruchomione inne wystąpienie narzędzia aktualizacji oprogramowania wewnętrznego. Zamknij jedno z wystąpień narzędzia, aby kontynuować.</value>
+  </data>
+  <data name="Display_FWU_Error_12" xml:space="preserve">
+    <value>Może być uruchomione inne wystąpienie narzędzia aktualizacji oprogramowania wewnętrznego. Zamknij jedno z wystąpień narzędzia, aby kontynuować.</value>
+  </data>
+  <data name="Display_FWU_Error_201" xml:space="preserve">
+    <value>Aktualizacja może potrwać do xx minut. Podczas aktualizacji monitor powinien być włączony i podłączony.</value>
+  </data>
+  <data name="Display_FWU_Error_501" xml:space="preserve">
+    <value>Wersja oprogramowania wewnętrznego wykryta na monitorze nie jest oficjalną wersją.</value>
+  </data>
+  <data name="Display_FWU_Error_61" xml:space="preserve">
+    <value>Podczas aktualizacji oprogramowania wewnętrznego wystąpił błąd. Aby rozwiązać ten problem, odłącz i ponownie podłącz kabel USB oraz wyłącz i ponownie włącz monitor. Następnie ponów próbę aktualizacji oprogramowania wewnętrznego.</value>
+  </data>
+  <data name="Display_FWU_Error_Other" xml:space="preserve">
+    <value>Aktualizacja oprogramowania wewnętrznego nie powiodła się.</value>
+  </data>
+  <data name="Update_Display_Alert_2" xml:space="preserve">
+    <value>Aktualizacja może potrwać do [XXXXXX] minut. W tym czasie urządzenie powinno być włączone i podłączone.</value>
+  </data>
+  <data name="Update_in_progress_body" xml:space="preserve">
+    <value>[XXXXXX] ma teraz aktualizowane oprogramowanie wewnętrzne. Mogą wystąpić przerwy w dostępności urządzenia. Nie odłączaj go podczas aktualizacji. </value>
+  </data>
+  <data name="Update_successful_body" xml:space="preserve">
+    <value>Aktualizacja oprogramowania wewnętrznego [XXXXXX] powiodła się</value>
+  </data>
+  <data name="Update_failed_body" xml:space="preserve">
+    <value>Aktualizacja oprogramowania wewnętrznego [XXXXXX] nie powiodła się</value>
+  </data>
+  <data name="Update_successful" xml:space="preserve">
+    <value>Zaktualizowano pomyślnie</value>
+  </data>
+  <data name="Update_failed" xml:space="preserve">
+    <value>Aktualizacja nie powiodła się</value>
+  </data>
+  <data name="Update_in_progress" xml:space="preserve">
+    <value>Aktualizacja w toku</value>
+  </data>
+  <data name="Software_update_successful" xml:space="preserve">
+    <value>Aktualizacja oprogramowania powiodła się</value>
+  </data>
+  <data name="Software_update_failed" xml:space="preserve">
+    <value>Aktualizacja oprogramowania nie powiodła się</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>Podłącz monitor za pomocą portu USB typu upstream, aby uniknąć błędów podczas aktualizacji oprogramowania wewnętrznego.</value>
+  </data>
 </root>
