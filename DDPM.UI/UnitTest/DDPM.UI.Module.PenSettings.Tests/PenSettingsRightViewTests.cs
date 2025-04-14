@@ -84,11 +84,11 @@ namespace DDPM.UI.Module.PenSettings.Tests
             Assert.That(privateObject!.GetFieldOrProperty("_vm"), Is.EqualTo(vm));
             Assert.That(txtCaptionText, Is.EqualTo("Pen Settings"));
             Assert.That(txtTipSensitivityText, Is.EqualTo("Tip Sensitivity"));
-            Assert.That(txtTipTooltipText, Is.EqualTo("Moving the slider to the right will gradually\ndecrease the sensitivity to pressure and you\nneed to apply firmer pen pressure"));
+            Assert.That(txtTipTooltipText, Is.EqualTo("Moving the slider to the right will gradually decrease the sensitivity to pressure and you need to apply firmer pen pressure"));
             Assert.That(txtTiltSensitivityText, Is.EqualTo("Tilt Sensitivity"));
-            Assert.That(txtTiltTooltipText, Is.EqualTo("Moving the slider to the right will gradually\nincrease the tilting effect, and you need to\napply less tilting angle"));
+            Assert.That(txtTiltTooltipText, Is.EqualTo("Moving the slider to the right will gradually increase the tilting effect, and you need to apply less tilting angle"));
             Assert.That(txtPairWithTileText, Is.EqualTo("Pair with Tile"));
-            Assert.That(txtPairTooltipText, Is.EqualTo("Pair your pen to your mobile device using\nthe Tile app"));
+            Assert.That(txtPairTooltipText, Is.EqualTo("Pair your pen to your mobile device using the Tile app"));
             Assert.That(btnGetStartContent, Is.EqualTo("Get started"));
         }
     }

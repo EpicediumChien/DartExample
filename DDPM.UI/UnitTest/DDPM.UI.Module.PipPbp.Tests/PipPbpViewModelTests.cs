@@ -362,7 +362,7 @@ namespace DDPM.UI.Module.PipPbp.Tests
 
         [Test]
         public void TestIsVideoSwapButtonVisible()
-        {          
+        {
             Assert.That(pipPbpViewModel.IsVideoSwapButtonVisible, Is.EqualTo(false));
 
             pipPbpViewModel.CurPxpMode = 0x23;
@@ -407,15 +407,18 @@ namespace DDPM.UI.Module.PipPbp.Tests
         public void TestIsUsbSwitchButtonVisible()
         {
             //SelectedHomeDevice == null
-            bool result = pipPbpViewModel.IsUsbSwitchButtonVisible;
-            Assert.That(result, Is.EqualTo(false));
-
             //SelectedHomeDevice.HasCapability_NetworkKvm==true
             HomeDevice device = new HomeDevice();
             PrivateObject privateObjecta = new PrivateObject(device);
-            privateObjecta.SetFieldOrProperty("_hasCapability_NetworkKvm", true);
             pipPbpViewModel.SelectedHomeDevice = device;
+            bool result = pipPbpViewModel.IsUsbSwitchButtonVisible;
+            Assert.That(result, Is.EqualTo(false));
+            privateObjecta.SetFieldOrProperty("_hasCapability_NetworkKvm", true);
             privateObject.SetFieldOrProperty("_isNetworkKvmOn", true);
+            privateObject.SetFieldOrProperty("_selectedSplitItem", new SplitItem());
+            var dictionary = new Dictionary<string, List<string>>();
+            dictionary.Add("E7", new List<string>());
+            device.MonitorInfo = new MonitorInfo() { CapabilityDic = dictionary };
             result = pipPbpViewModel.IsUsbSwitchButtonVisible;
             Assert.That(result, Is.EqualTo(true));
 

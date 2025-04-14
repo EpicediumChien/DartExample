@@ -74,9 +74,9 @@ namespace DDPM.UI.Module.EzMemory.Tests
             deviceManagerSAMock = new Mock<IDeviceManagerSA>();
             //Robert_Lin, 2025-1-7, IsEAFunctionEnabled is deleted
             //deviceManagerSAMock.Setup(x => x.GetEAFunctionEnabled()).Returns(Task.FromResult(new ObjGetVCP() { result = true, value = true }));
-            DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             deviceManagerSA = deviceManagerSAMock.Object;
             HomeDevice.DeviceManagerSA = deviceManagerSAMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             ISplitCtrlMock = new Mock<ISplitCtrl>();
             ISplitCtrlMock.Setup(x => x.Clone()).Returns(ISplitCtrlMock.Object);
             ISplitCtrlMock.Setup(x => x.CellList).Returns(new List<CellObj>() { new CellObj("name1", new Border()) { CellBd = new CellBorder() }, new CellObj("name1", new Border()) { CellBd = new CellBorder() } });
@@ -84,7 +84,14 @@ namespace DDPM.UI.Module.EzMemory.Tests
             splitItem = new SplitItem();
             privateObjecta = new PrivateObject(splitItem);
             privateObjecta.SetFieldOrProperty("vm", new SplitItemViewModel() { SplitCtrl = ISplitCtrlMock.Object });
-            vm = new EzArrangeViewModel(new HomeDevice()) { SelectedSplitItem = splitItem, IsEditProfile = true, currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() } };
+            vm = new EzArrangeViewModel(new HomeDevice() { vmEzArrange = new EzArrangeViewModel(new HomeDevice()) })
+            {
+                SelectedSplitItem = splitItem,
+                IsEditProfile = true,
+                currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() },
+                CurrentEditSelectspItem = splitItem
+            };
+            System.Windows.Application.Current.MainWindow = new Window();
             logMock = new Mock<ILog>();
             log = logMock.Object;
             consoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(logMock.Object);
@@ -145,7 +152,16 @@ namespace DDPM.UI.Module.EzMemory.Tests
         [Test]
         public void TestSyncEditStatusForAssignPage()
         {
-            vm = new EzArrangeViewModel(new HomeDevice()) { SelectedSplitItem = splitItem, IsEditProfile = true, currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() { new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDPM" }, new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDP" } } }, _sortApps = new Dictionary<string, Bind_AddFullPage_AppCollectionData>(), SelectedValue = 1, _bind_apps = new System.Collections.ObjectModel.ObservableCollection<Bind_AddFullPage_AppCollectionData>() { new Bind_AddFullPage_AppCollectionData() { AppPath = "EAAppInfoDDPM", AppName = "Name1", AppUserModelID = "1", AppType = "Type1", AppIcon = "Icon1" } } };
+            vm = new EzArrangeViewModel(new HomeDevice())
+            {
+                SelectedSplitItem = splitItem,
+                IsEditProfile = true,
+                currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() { new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDPM" }, new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDP" } } },
+                _sortApps = new Dictionary<string, Bind_AddFullPage_AppCollectionData>(),
+                SelectedValue = 1,
+                _bind_apps = new System.Collections.ObjectModel.ObservableCollection<Bind_AddFullPage_AppCollectionData>() { new Bind_AddFullPage_AppCollectionData() { AppPath = "EAAppInfoDDPM", AppName = "Name1", AppUserModelID = "1", AppType = "Type1", AppIcon = "Icon1" } },
+                CurrentEditSelectspItem = splitItem
+            };
             ISplitCtrlMock.Setup(x => x.CellList).Returns(new List<CellObj>() { new CellObj("name1", new Border()) { CellBd = new CellBorder() }, new CellObj("name2", new Border()) { CellBd = new CellBorder() }, new CellObj("name3", new Border()) { CellBd = new CellBorder() } });
             ezMemoryAssignProgram = new EzMemoryAssignProgram(vmDisplay, vm, new HomeDevice());
             ezMemoryAssignProgram.SyncEditStatusForAssignPage();
@@ -171,7 +187,17 @@ namespace DDPM.UI.Module.EzMemory.Tests
         [Test]
         public void TestPreviousPage()
         {
-            vm = new EzArrangeViewModel(new HomeDevice()) { _currentPageIndex = 3, SelectedSplitItem = splitItem, IsEditProfile = true, currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() { new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDPM" }, new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDP" } } }, _sortApps = new Dictionary<string, Bind_AddFullPage_AppCollectionData>(), SelectedValue = 1, _bind_apps = new System.Collections.ObjectModel.ObservableCollection<Bind_AddFullPage_AppCollectionData>() { new Bind_AddFullPage_AppCollectionData() { AppPath = "EAAppInfoDDPM", AppName = "Name1", AppUserModelID = "1", AppType = "Type1", AppIcon = "Icon1" } } };
+            vm = new EzArrangeViewModel(new HomeDevice())
+            {
+                _currentPageIndex = 3,
+                SelectedSplitItem = splitItem,
+                IsEditProfile = true,
+                currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() { new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDPM" }, new SA.Common.Settings.EAAppInfoDDPM() { Path = "EAAppInfoDDP" } } },
+                _sortApps = new Dictionary<string, Bind_AddFullPage_AppCollectionData>(),
+                SelectedValue = 1,
+                _bind_apps = new System.Collections.ObjectModel.ObservableCollection<Bind_AddFullPage_AppCollectionData>() { new Bind_AddFullPage_AppCollectionData() { AppPath = "EAAppInfoDDPM", AppName = "Name1", AppUserModelID = "1", AppType = "Type1", AppIcon = "Icon1" } },
+                CurrentEditSelectspItem = splitItem
+            };
             ezMemoryAssignProgram = new EzMemoryAssignProgram(vmDisplay, vm, new HomeDevice());
             ezMemoryAssignProgram.PreviousPage();
             // Assert
