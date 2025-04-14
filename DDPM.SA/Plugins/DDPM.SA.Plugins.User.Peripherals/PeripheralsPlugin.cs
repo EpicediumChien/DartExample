@@ -3996,6 +3996,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 if (deviceInfo != null)
                 {
                     deviceInfo.IsdDriverVersion = arg2;
+                    deviceInfo.IsdServiceVersion = arg3;
 
                     DeviceChangedEventArgs _EventArgs = new();
                     _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
