@@ -8,7 +8,7 @@
              d:Background="Black"
              d:DesignHeight="60" d:DesignWidth="80"
              d:DataContext="{DynamicResource vmDesign}"
-             Name="uc"
+             Name="uc" IsVisibleChanged="uc_IsVisibleChanged"
              >
     <UserControl.Resources>
         <ResourceDictionary>

@@ -452,6 +452,9 @@ namespace DDPM.EABroker
             //Robert_Lin, 2024-12-6, use the CommonFunctions
             _screenScale = CommonFunctions.GetDpiX();
             OnPropertyChanged("ScreenScale");
+
+            //ISplitCtrl.ScreenScale = _screenScale;
+
             //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
             //if (dpiXProperty != null)
             //{

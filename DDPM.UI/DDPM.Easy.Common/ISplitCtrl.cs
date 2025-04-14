@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace DDPM.Easy.Common
 {
@@ -199,6 +200,22 @@ namespace DDPM.Easy.Common
         public List<CellObj> CellList { get; set; }
 
         public void UpdateRatioRectsFromSettings();
+
+        public void RefreshCellRects()
+        {
+            if (SplitMode == eSplitModes.AWS)
+            {
+                UC.Dispatcher.InvokeAsync(() => {
+                    foreach (CellObj cellObj in CellList)
+                    {
+                        Point ptTopLeft = cellObj.CellBd.PointToScreen(new Point(0, 0));
+                        double w = cellObj.CellBd.ActualWidth * ScreenScale;
+                        double h = cellObj.CellBd.ActualHeight * ScreenScale;
+                        cellObj.rc = new Rect(ptTopLeft.X, ptTopLeft.Y, w, h);
+                    }
+                }, System.Windows.Threading.DispatcherPriority.Loaded);
+            }
+        }
         #endregion Cell list
 
         #region CellBorders
@@ -316,5 +333,6 @@ namespace DDPM.Easy.Common
         }
         #endregion
 
+        public static double ScreenScale { get; set; } = 1.000;
     }
 }
