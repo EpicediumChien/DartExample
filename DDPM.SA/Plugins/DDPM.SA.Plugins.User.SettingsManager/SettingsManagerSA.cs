@@ -2562,5 +2562,16 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         }
 
         #endregion Info Key
+
+        public Task<bool> UpdateNKVMFeatureFlag(bool enable)
+        {
+            if(_SysSettingsPlugin == null)
+            {
+                WriteLog("[UpdateNKVMFeatureFlag] null sys setting plugin, return false");
+                return Task.FromResult(false);
+            }
+            bool tmp = _SysSettingsPlugin.UpdateNKVMFeatureFlag(enable).Result;
+            return Task.FromResult(tmp);
+        }
     }
 }

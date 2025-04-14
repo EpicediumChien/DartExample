@@ -12871,7 +12871,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _VCPchangedEventArgs.value = e.value;
             //0607 Bruce 因VCPChange事件需要取得螢幕資訊故請Jarvis新增這段變數 代為新增
             _VCPchangedEventArgs.monitor = e.monitor;
+#if DEBUG
             Debug.WriteLine($"show_display=>monitor:{e.monitor.modelName}=={e.vcpcode}:{e.value}");
+            Console.WriteLine($"show_display=>monitor:{e.monitor.modelName}=={e.vcpcode}:{e.value}");
+#endif
             //1106 add PBP mode status
             Task.Run(() => updatePBPModeStatus(e.monitor, e.vcpcode)).ConfigureAwait(false);
             //Jason add USB change

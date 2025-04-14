@@ -6,7 +6,7 @@
 		<Var name="HidePrivateApi" value="true" />
 		<Var name="HideStrings" value="true" />
 		<Var name="UseControlFlow" value="true" />
-		<AssemblySearchPath path="c:\progra~1\dotnet\shared\microsoft.netcore.app\8.0.11" />
-		<AssemblySearchPath path="c:\progra~1\dotnet\shared\microsoft.aspnetcore.app\8.0.11" />
+		<AssemblySearchPath path="c:\progra~1\dotnet\shared\microsoft.netcore.app\8.0.15" />
+		<AssemblySearchPath path="c:\progra~1\dotnet\shared\microsoft.aspnetcore.app\8.0.15" />
 		<Module file="DDPM.SA.Obfuscation.dll" />
 </Obfuscator>
