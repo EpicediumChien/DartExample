@@ -1,4 +1,5 @@
 ﻿using DDPM.UI.Resources.Helper;
+using System.Windows;
 using System.Windows.Controls;
 using Rect = System.Windows.Rect;
 
@@ -144,6 +145,19 @@ namespace DDPM.Easy.Common
                     VM.Settings_Double[0] / sum, 0, 1, 1);
             }
         }
+
+        //public void RefreshCellsRect()
+        //{
+        //    Dispatcher.InvokeAsync(() => {
+        //        foreach (CellObj cellObj in CellList)
+        //        {
+        //            Point ptTopLeft = cellObj.CellBd.PointFromScreen(new Point(0, 0));
+        //            double w = cellObj.CellBd.ActualWidth;
+        //            double h = cellObj.CellBd.ActualHeight;
+        //            cellObj.rc = new Rect(ptTopLeft.X, ptTopLeft.Y, w, h);
+        //        }
+        //    }, System.Windows.Threading.DispatcherPriority.Loaded);
+        //}
         #endregion Cell List
 
         #region CellBorders
@@ -276,5 +290,14 @@ namespace DDPM.Easy.Common
         }
         #endregion
 
+        #region UserControl event handlers
+        private void UserControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (this.IsVisible)
+            {
+                ((ISplitCtrl)this).RefreshCellRects();
+            }
+        }
+        #endregion UserControl event handlers
     }
 }

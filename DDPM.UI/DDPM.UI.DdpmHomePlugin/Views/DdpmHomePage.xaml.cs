@@ -1467,11 +1467,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         }
         #endregion
 
-        private UXFlyout? _flyout1 = null;
-        private void UXButton_Click(object sender, RoutedEventArgs e)
-        {
-            IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
-            console?.ShowPluginById(DDPM.UI.Common.Constants.ExitAppPluginId);
+        //private UXFlyout? _flyout1 = null;
+        //private void UXButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
+        //    console?.ShowPluginById(DDPM.UI.Common.Constants.ExitAppPluginId);
 
             //if (_flyout1 == null)
             //{
@@ -1497,6 +1497,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //}
 
 
-        }
+        //}
     }
 }
