@@ -18,7 +18,8 @@
     </UserControl.Resources>
     <Grid>
         <!--Elsa 202504011 for PIMS-348407 add VerticalScrollBarVisibility="Auto"-->
-        <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto">
+        <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+        <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" UseFadingScrolling="False">
             <Grid>
                 <StackPanel>
                     <Border Style="{StaticResource RightGroupBorderStyle}" Width="Auto">

@@ -53,7 +53,8 @@
     <Grid Opacity="{Binding UpdatesPageUI_Opacity}">
         <!-- bdUpdate -->
         <Border Style="{StaticResource GroupBorderStyle}" CornerRadius="13" Padding="16">
-            <UXControls:UXScrollViewer>
+            <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False" VerticalScrollBarVisibility="Auto"-->
+            <UXControls:UXScrollViewer UseFadingScrolling="False" VerticalScrollBarVisibility="Auto">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
