@@ -16,7 +16,7 @@ namespace DDPM.QAM
     {
         CameraSetting? CameraSetting;
         //Derek 2025/04/11 add timer to monitor zoom meeting window state for PIMS-351206
-        private System.Threading.Timer? timer = new System.Threading.Timer(TimerCallback, null, 10000, 10000);
+        private System.Threading.Timer? timer = null;
 
         //public event EventHandler<UpdateUINotify> QAMUpdateUIHandler;
         public enum log_type
@@ -26,12 +26,6 @@ namespace DDPM.QAM
         }
 
         private ILog Log { get; set; }
-
-        private static void TimerCallback(object? state)
-        {
-            MonitorZoomMeetingWindowState();
-        }
-        
 
         /// <summary>
         /// NotificationFWupdate 呼叫DDPM UI事件
@@ -101,6 +95,7 @@ namespace DDPM.QAM
 
             Microsoft.Win32.SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
             Log = log;
+            timer = new System.Threading.Timer(TimerCallback, null, 10000, 10000);
         }
 
         private void SystemEvents_SessionSwitch(object sender, Microsoft.Win32.SessionSwitchEventArgs e)
@@ -361,7 +356,25 @@ namespace DDPM.QAM
             }
         }
 
-        private static void MonitorZoomMeetingWindowState()
+        // Structure to hold window's position and size
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern int GetWindowRect(IntPtr hWnd, ref RECT rect);
+
+        private void TimerCallback(object? state)
+        {
+            MonitorZoomMeetingWindowState();
+        }
+
+        private void MonitorZoomMeetingWindowState()
         {
             string processName = "Zoom"; //"notepad";
             Process[] processes = Process.GetProcessesByName(processName);
@@ -375,34 +388,27 @@ namespace DDPM.QAM
                     IntPtr hwnd = process.MainWindowHandle;
                     if (hwnd != IntPtr.Zero)
                     {
-                        WINDOWPLACEMENT wp = new WINDOWPLACEMENT();
-                        wp.length = Marshal.SizeOf(wp);
-                        if (GetWindowPlacement(hwnd, ref wp))
+                        RECT rect = new RECT();
+                        // Get the window's position and size
+                        GetWindowRect(hwnd, ref rect);
+
+                        // Get screen size (Working area of the screen excluding taskbar)
+                        var screen = Screen.PrimaryScreen.WorkingArea;
+
+                        if (rect.Left == 0 && rect.Top == 0 && rect.Right == screen.Width && rect.Bottom == screen.Height)
                         {
-                            switch (wp.showCmd)
-                            {
-                                case SW_SHOWMINIMIZED:
-                                    System.Windows.MessageBox.Show($"进程 {processName} 的窗口处于最小化状态。");
-                                    break;
-                                case SW_SHOWMAXIMIZED:
-                                    System.Windows.MessageBox.Show($"进程 {processName} 的窗口处于最大化状态。");
-                                    break;
-                                case SW_SHOWNORMAL:
-                                    System.Windows.MessageBox.Show($"进程 {processName} 的窗口处于正常显示状态。");
-                                    break;
-                                default:
-                                    System.Windows.MessageBox.Show($"进程 {processName} 的窗口状态未知。");
-                                    break;
-                            }
+                            WriteLog($"[MonitorZoomMeetingWindowState] Zoom is in full-screen mode!");
+                            SetToBottomWindow();
                         }
                         else
                         {
-                            System.Windows.MessageBox.Show($"无法获取进程 {processName} 的窗口状态。");
+                            WriteLog($"[MonitorZoomMeetingWindowState] Zoom is NOT in full-screen mode.");
+                            SetToTopWindow();
                         }
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show($"进程 {processName} 没有主窗口。");
+                        WriteLog($"[MonitorZoomMeetingWindowState] Process {processName} doesn't have window.");
                     }
 
                     process.Dispose();
@@ -507,14 +513,29 @@ namespace DDPM.QAM
             return rst;
         }
         private static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
+        private static readonly IntPtr HWND_TOP = new IntPtr(0);
         private const UInt32 SWP_NOSIZE = 0x0001;
         private const UInt32 SWP_NOMOVE = 0x0002;
         private const UInt32 SWP_NOACTIVATE = 0x0010;
+
         public void SetToBottomWindow()
         {
-            IntPtr hWnd = new WindowInteropHelper(this).Handle;
-
-            _SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+            Dispatcher.Invoke(() =>
+            {
+                this.Topmost = false;
+                IntPtr hWnd = new WindowInteropHelper(this).Handle;
+                _SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+            });
+        }
+        public void SetToTopWindow()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                this.Topmost = true;
+                IntPtr hWnd = new WindowInteropHelper(this).Handle;
+                _SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+                this.Activate();
+            });
         }
 
         [DllImport("user32.dll", SetLastError = true)]

@@ -11652,8 +11652,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomScreenShareActiveChanged start");
                     isQAMHandleEvent = true;
 
+                    Debug.WriteLine($"HandleQAMV2 eventMsg event type is {eventMsg.EventType} new Value is {eventMsg.NewValue}");
                     if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
                         _IsZoomScreenShareActive = false;
+                    
+                    if(_IsZoomScreenShareActive)
+                        _QAM.SetToBottomWindow();
+                    else
+                        _QAM.SetToTopWindow();
 
                     //if (1 == WebcamDevCnt)
                     //{
