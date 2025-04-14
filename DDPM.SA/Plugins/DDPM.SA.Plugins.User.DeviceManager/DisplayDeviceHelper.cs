@@ -192,23 +192,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             try
                             {
                                 var files = Directory.GetFiles(exportpath.Trim()); // This will throw if access is denied
-                                Console.WriteLine($"Found {files.Length} files.");
+                                WriteLog($"Found {files.Length} files.");
                             }
                             catch (UnauthorizedAccessException ex)
                             {
-                                Console.WriteLine("[CheckAndTriggerToastWhileMonitorPlugged] [Permission Error] You don't have access: " + ex.Message);
+                                WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] [Permission Error] You don't have access: " + ex.Message);
                             }
                             catch (SecurityException ex)
                             {
-                                Console.WriteLine($"[CheckAndTriggerToastWhileMonitorPlugged] [Security Error] Access denied due to security policy: {ex.Message}");
+                                WriteLog($"[CheckAndTriggerToastWhileMonitorPlugged] [Security Error] Access denied due to security policy: {ex.Message}");
                             }
                             catch (PathTooLongException ex)
                             {
-                                Console.WriteLine($"[CheckAndTriggerToastWhileMonitorPlugged] [Path Error] Path too long: {ex.Message}");
+                                WriteLog($"[CheckAndTriggerToastWhileMonitorPlugged] [Path Error] Path too long: {ex.Message}");
                             }
                             catch (Exception ex)
                             {
-                                Console.WriteLine("[CheckAndTriggerToastWhileMonitorPlugged] [Other Error] " + ex.Message);
+                                WriteLog("[CheckAndTriggerToastWhileMonitorPlugged] [Other Error] " + ex.Message);
                             }
                         }
                     }
