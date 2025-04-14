@@ -1236,7 +1236,6 @@
                                                             Name="PR1_Name_UXTextBox"
                                                             Grid.Row="1"
                                                             VerticalContentAlignment="Center"
-                                                            BorderBrush="#7E7E7E"
                                                             BorderThickness="1"
                                                             FontSize="14"
                                                             KeyboardNavigation.TabIndex="132" AutomationProperties.LabeledBy="{Binding ElementName=labelPreset1Name}"
@@ -1244,7 +1243,23 @@
                                                             MaxLength="30"
                                                             PreviewTextInput="InputName_PreviewTextInput"
                                                             Text="{Binding PR1Name}"
-                                                            TextChanged="PR1Name_TextChanged" />
+                                                            TextChanged="PR1Name_TextChanged">
+                                                            <UXControls:UXTextBox.Style>
+                                                                <Style TargetType="UXControls:UXTextBox" BasedOn="{StaticResource {x:Type UXControls:UXTextBox}}">
+                                                                    <Setter Property="Opacity" Value="1" />
+                                                                    <Setter Property="BorderBrush" Value="{DynamicResource DefaultTheme_ComboBdColor}" />
+                                                                    <Setter Property="Background" Value="{DynamicResource DefaultTheme_ComboBkColor}" />
+                                                                    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}" Value="False">
+                                                                            <Setter Property="Opacity" Value="0.6" />
+                                                                            <Setter Property="Background" Value="{DynamicResource DefaultTheme_ComboBkColor}" />
+                                                                            <Setter Property="Foreground" Value="#7E7E7E" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </UXControls:UXTextBox.Style>
+                                                        </UXControls:UXTextBox>
                                                     </Grid>
 
                                                     <Grid Grid.Column="1" />
@@ -1686,7 +1701,6 @@
                                                             Name="PR2_Name_UXTextBox"
                                                             Grid.Row="1"
                                                             VerticalContentAlignment="Center"
-                                                            BorderBrush="#7E7E7E"
                                                             BorderThickness="1"
                                                             FontSize="14"
                                                             KeyboardNavigation.TabIndex="152"
@@ -1695,7 +1709,23 @@
                                                             MaxLength="30"
                                                             PreviewTextInput="InputName_PreviewTextInput"
                                                             Text="{Binding PR2Name}"
-                                                            TextChanged="PR2Name_TextChanged" />
+                                                            TextChanged="PR2Name_TextChanged">
+                                                            <UXControls:UXTextBox.Style>
+                                                                <Style TargetType="UXControls:UXTextBox" BasedOn="{StaticResource {x:Type UXControls:UXTextBox}}">
+                                                                    <Setter Property="Opacity" Value="1" />
+                                                                    <Setter Property="BorderBrush" Value="{DynamicResource DefaultTheme_ComboBdColor}" />
+                                                                    <Setter Property="Background" Value="{DynamicResource DefaultTheme_ComboBkColor}" />
+                                                                    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}" Value="False">
+                                                                            <Setter Property="Opacity" Value="0.6" />
+                                                                            <Setter Property="Background" Value="{DynamicResource DefaultTheme_ComboBkColor}" />
+                                                                            <Setter Property="Foreground" Value="#7E7E7E" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </UXControls:UXTextBox.Style>
+                                                        </UXControls:UXTextBox>
                                                     </Grid>
 
                                                     <Grid Grid.Column="1" />
@@ -2250,14 +2280,29 @@
                                                             Name="PR1_Luminance_Name_UXTextBox"
                                                             Grid.Row="1"
                                                             VerticalContentAlignment="Center"
-                                                            BorderBrush="#7E7E7E"
                                                             BorderThickness="1"
                                                             FontSize="14"
                                                             IsEnabled="{Binding IsPR_Luminance_Preview, Converter={StaticResource boolReverseConverter}}"
                                                             MaxLength="30"
                                                             PreviewTextInput="InputName_PreviewTextInput"
                                                             Text="{Binding PR1Name}"
-                                                            TextChanged="PR1Name_TextChanged" />
+                                                            TextChanged="PR1Name_TextChanged">
+                                                            <UXControls:UXTextBox.Style>
+                                                                <Style TargetType="UXControls:UXTextBox" BasedOn="{StaticResource {x:Type UXControls:UXTextBox}}">
+                                                                    <Setter Property="Opacity" Value="1" />
+                                                                    <Setter Property="BorderBrush" Value="{DynamicResource DefaultTheme_ComboBdColor}" />
+                                                                    <Setter Property="Background" Value="{DynamicResource DefaultTheme_ComboBkColor}" />
+                                                                    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding IsPR_Luminance_Preview, Converter={StaticResource boolReverseConverter}}" Value="False">
+                                                                            <Setter Property="Opacity" Value="0.6" />
+                                                                            <Setter Property="Background" Value="{DynamicResource DefaultTheme_ComboBkColor}" />
+                                                                            <Setter Property="Foreground" Value="#7E7E7E" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </UXControls:UXTextBox.Style>
+                                                        </UXControls:UXTextBox>
                                                     </Grid>
 
                                                     <Grid Grid.Column="1" />
@@ -2547,7 +2592,23 @@
                                                             MaxLength="30"
                                                             PreviewTextInput="InputName_PreviewTextInput"
                                                             Text="{Binding PR2Name}"
-                                                            TextChanged="PR2Name_TextChanged" />
+                                                            TextChanged="PR2Name_TextChanged">
+                                                            <UXControls:UXTextBox.Style>
+                                                                <Style TargetType="UXControls:UXTextBox" BasedOn="{StaticResource {x:Type UXControls:UXTextBox}}">
+                                                                    <Setter Property="Opacity" Value="1" />
+                                                                    <Setter Property="BorderBrush" Value="{DynamicResource DefaultTheme_ComboBdColor}" />
+                                                                    <Setter Property="Background" Value="{DynamicResource DefaultTheme_ComboBkColor}" />
+                                                                    <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding IsPR_Luminance_Preview, Converter={StaticResource boolReverseConverter}}" Value="False">
+                                                                            <Setter Property="Opacity" Value="0.6" />
+                                                                            <Setter Property="Background" Value="{DynamicResource DefaultTheme_ComboBkColor}" />
+                                                                            <Setter Property="Foreground" Value="#7E7E7E" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </UXControls:UXTextBox.Style>
+                                                        </UXControls:UXTextBox>
                                                     </Grid>
 
                                                     <Grid Grid.Column="1" />
