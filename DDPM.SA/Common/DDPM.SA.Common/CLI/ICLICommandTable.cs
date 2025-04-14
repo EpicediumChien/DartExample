@@ -126,12 +126,12 @@ namespace DDPM.SA.Common
             /// <summary>
             /// 呼叫的方法
             /// </summary>
-            public string Option_Name { get; set; }
+            public string Option_Name { get; set; } = string.Empty;
 
             /// <summary>
             /// 設定的數值，如果不是設定(set)，為空值
             /// </summary>
-            public string Option_Value { get; set; }
+            public string Option_Value { get; set; } = string.Empty;
 
             public CommandType_Option(string Model, string Value = "")
             {
@@ -142,8 +142,8 @@ namespace DDPM.SA.Common
 
         public class CommandType_Name
         {
-            public string target { get; set; }
-            public string feature { get; set; }
+            public string target { get; set; } = string.Empty;
+            public string feature { get; set; } = string.Empty;
 
             public CommandType_Name(string name, string Value)
             {
@@ -164,15 +164,15 @@ namespace DDPM.SA.Common
             /// <summary>
             /// 設定 get, set, config, or new others的功能型態
             /// </summary>
-            public string Command { get; set; }
+            public string Command { get; set; } = string.Empty;
 
             public string TargetType { get; set; }//name, log, applyconfig; ex: -Display=BrightnessLevel
-            public string TargetFeature { get; set; }
+            public string TargetFeature { get; set; } = string.Empty;
 
             /// <summary>
             /// 要呼叫的插件
             /// </summary>
-            public string PluginsType { get; set; }
+            public string PluginsType { get; set; } = string.Empty;
 
             /// <summary>
             /// 呼叫的方法
@@ -185,7 +185,7 @@ namespace DDPM.SA.Common
             public List<string> GuidString { get; set; }//for peripherals
             public List<string> PPID { get; set; } //for peripherals
             public List<string> SerialNumber { get; set; } //for peripherals
-            public string LogPath { get; set; }
+            public string LogPath { get; set; } = string.Empty;
 
             //Here are 3 possible conditions,
             // 1.only normal command (pass to CLIProxy)
@@ -201,7 +201,7 @@ namespace DDPM.SA.Common
             public bool isCliCommandsProcessCompleted { get; set; } = false;
 
             // 2024-10-22 Stephen: Add jsonDeviceConfig for CMA while using DeviceConfiguration and pass json string 
-            public string jsonDeviceConfig { get; set; }    =   String.Empty;
+            public string jsonDeviceConfig { get; set; } = String.Empty;
 
             public CommandLineInput()
             {
@@ -217,13 +217,13 @@ namespace DDPM.SA.Common
 
             public int nTimeOutValue { get; set; } = 60;
 
-            public bool fromcli { get; set; } = false;
+            public bool fromcma { get; set; } = false;
         }
         
         public CommandLineInput StringProcessing(string[] args)
         {
             
-            _Log.Info($"[ICLICommandTable] from CLI IN {DateTime.Now.ToString("yyyy - MM - dd - HH - mm - ss")}]");
+            //_Log.Info($"[ICLICommandTable] from CLI IN {DateTime.Now.ToString("yyyy - MM - dd - HH - mm - ss")}]");
             if (args.Length == 0)
             {
                 args = ["HELP"];
@@ -231,7 +231,7 @@ namespace DDPM.SA.Common
             ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
             CommandLineInput commandInput = new CommandLineInput();
             commandInput.isCliCommandsProcessCompleted = false;
-            commandInput.fromcli = true;
+            //commandInput.fromcli = true;
 
             // [0824_CASPER]: marked for HELP function parsing
             //if (args.Length < 2)

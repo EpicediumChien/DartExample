@@ -685,6 +685,7 @@ namespace DDPM.SA.Plugins.CMAManager
                     commandLineInput.isCliRunAdmin = true;
                     commandLineInput.jsonDeviceConfig = taskInfo.jsonconfig;
                     commandLineInput.remote_mgr_guid = gid;
+                    commandLineInput.fromcma = true;
 
                     cliResult = await _CliManagerPlugin.PerformCommandLineRelay(commandLineInput);
 

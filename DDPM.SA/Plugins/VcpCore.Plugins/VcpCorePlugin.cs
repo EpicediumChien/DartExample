@@ -70,26 +70,26 @@ namespace VcpCore.Plugins
         private const bool _IsOnlyGetDellMontor = true;
         private static Logs _logs;
 
-        private static List<MonitorInfo_complex> _AllInfoMonitors;
-        private static List<LocalMonitorsData> _AllInfoMonitors_Mix;
-        private static Dictionary<string, Dictionary<string, string>> _ColorPresets;
-        private static TaskLockQueue<ParameterType> _TaskQueue;
-        private static BackgroundWorker _TaskQueueExecutor;
-        private static ResultLockPool _TaskQueueResult;
-        private static Timer _CacheTimer = new Timer(8000);
-        private static Timer _StatusTimer = new Timer(10500);
-        private static readonly object TaskQueueExecutorLock = new object();
-        private static readonly object GetVCPLock = new object();
-        private static readonly object SetVCPLock = new object();
+        private static List<MonitorInfo_complex> _AllInfoMonitors = new();
+        private static List<LocalMonitorsData> _AllInfoMonitors_Mix = new();
+        private static Dictionary<string, Dictionary<string, string>> _ColorPresets = new();
+        private static TaskLockQueue<ParameterType> _TaskQueue = new();
+        private static BackgroundWorker _TaskQueueExecutor = new();
+        private static ResultLockPool _TaskQueueResult = new();
+        private static Timer _CacheTimer = new(8000);
+        private static Timer _StatusTimer = new(15000);
+        private static readonly object TaskQueueExecutorLock = new();
+        private static readonly object GetVCPLock = new();
+        private static readonly object SetVCPLock = new();
         private static CancellationTokenSource _cancellationTokenSource = null;
-        private static CancellationToken _PreCancellationToken;
+        private static CancellationToken _PreCancellationToken = default;
         private static string _SupportClassification = string.Empty;
-        private static Dictionary<string, List<modelinfos>> _SupportDictionary;
+        private static Dictionary<string, List<modelinfos>> _SupportDictionary = new();
         private static readonly string targetFile = "LSTDDPM";
         private static VcpLockCache _CacheTable;
-        private static HashSet<Guid> _CancelhashSet;
-        private static ManualResetEvent _pauseEvent = new ManualResetEvent(true);
-        private static SemaphoreSlim _LockerSemaphoreSlim = new SemaphoreSlim(1, 1);
+        private static HashSet<Guid> _CancelhashSet = new();
+        private static ManualResetEvent _pauseEvent = new(true);
+        private static SemaphoreSlim _LockerSemaphoreSlim = new(1, 1);
         private int _CoWorkSignal = 0;
         private int _InitialThreadCounter = 0;
         private int _AddSignalfor0X52 = 0;
@@ -143,44 +143,47 @@ namespace VcpCore.Plugins
             _agent = agent;
             _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
             _logs ??= new Logs(Log);
-            _TaskQueueResult ??= new ResultLockPool();
-            _AllInfoMonitors ??= new List<MonitorInfo_complex>();
-            _AllInfoMonitors_Mix ??= new List<LocalMonitorsData>();
-            _CacheTable ??= new VcpLockCache(_logs);
-            _CancelhashSet ??= new HashSet<Guid>();
-            _ColorPresets ??= new Dictionary<string, Dictionary<string, string>>();
-            _TaskQueue ??= new TaskLockQueue<ParameterType>();
-            _TaskQueueExecutor ??= new BackgroundWorker();
-            _TaskQueueExecutor.DoWork += TaskQueueExecutor_DoWork;
-            _TaskQueueExecutor.RunWorkerCompleted += TaskQueueExecutor_RunWorkerCompleted;
-            _TaskQueueExecutor.WorkerSupportsCancellation = true;
-            _SupportDictionary ??= new Dictionary<string, List<modelinfos>>();
-            _CacheTimer ??= new Timer(8000);
-            _StatusTimer ??= new Timer(10500);
-            _pauseEvent ??= new ManualResetEvent(true);
-            _LockerSemaphoreSlim ??= new SemaphoreSlim(1, 1);
-            _PreCancellationToken = default(CancellationToken);
+            _TaskQueueResult ??= new();
+            _AllInfoMonitors ??= new();
+            _AllInfoMonitors_Mix ??= new();
+            _CacheTable ??= new(_logs);
+            _CancelhashSet ??= new();
+            _ColorPresets ??= new();
+            _TaskQueue ??= new();
+            _TaskQueueExecutor ??= new();
+            _SupportClassification = string.Empty;
+            _SupportDictionary ??= new();
+            _CacheTimer ??= new(8000);
+            _StatusTimer ??= new(15000);
+            _pauseEvent ??= new(true);
+            _LockerSemaphoreSlim ??= new(1, 1);
+            _PreCancellationToken = default;
             _InitialThreadCounter = 0;
             _CoWorkSignal = 0;
             _AddSignalfor0X52 = 0;
             _AddSignalforStatusCheck = 0;
+            _IsUserActive = true;
+            _IsThreadDetectNew = false;
+
+            _TaskQueueExecutor.WorkerSupportsCancellation = true;
+            _TaskQueueExecutor.DoWork += TaskQueueExecutor_DoWork;
+            _TaskQueueExecutor.RunWorkerCompleted += TaskQueueExecutor_RunWorkerCompleted;
+
             _CacheTimer.Elapsed += OnCacheTimedRaise;
             _CacheTimer.AutoReset = true;
             _CacheTimer.Enabled = false;
+
             _StatusTimer.Elapsed += OnStatusTimedRaise;
             _StatusTimer.AutoReset = true;
             _StatusTimer.Enabled = false;
-            _IsUserActive = true;
-            _IsThreadDetectNew = false;
 
             _logs.DebugMsg("[VcpCorePlugin] Does VcpCorePlugin have Administrator: " + _IsAdministrator.ToString());
 
             RegisterAgentEvents(_agent);
-
             Get_SupportListFile();
             InitialColorPresets();
 
-            if (_PreCancellationToken.Equals(default(CancellationToken)))
+            if (_PreCancellationToken.Equals(default))
                 _ = Task.Run(() => InitializeMonitorsList(false, CancellationToken.None));
             else
                 _ = Task.Run(() => InitializeMonitorsList(false, _PreCancellationToken));
@@ -198,7 +201,7 @@ namespace VcpCore.Plugins
 
         protected override void OnPluginProcess()
         {
-            if (PluginCondition != null)
+            if (PluginCondition is not null)
                 _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin on OnPluginProcess PluginCondition:" + PluginCondition.Message);
             else
                 _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin on OnPluginProcess PluginCondition: null");
@@ -498,7 +501,7 @@ namespace VcpCore.Plugins
                         {
                             object or;
 
-                            if ((or = _CacheTable.GetFromCacheTable(moX.MonitorInfosComplex, "CapabilityString".ToLower(CultureInfo.InvariantCulture))) != null)
+                            if ((or = _CacheTable.GetFromCacheTable(moX.MonitorInfosComplex, "CapabilityString".ToLower(CultureInfo.InvariantCulture))) is not null)
                                 return Task.FromResult(or.ToString());
                             else
                             {
@@ -512,7 +515,7 @@ namespace VcpCore.Plugins
                                 Launch_TaskQueueExecutor();
 
                                 or = GetResultObjectAsync(_guid).Result;
-                                string r = (or != null) ? or.ToString() : string.Empty;
+                                string r = (or is not null) ? or.ToString() : string.Empty;
 
                                 return Task.FromResult(r);
                                 //
@@ -561,7 +564,7 @@ namespace VcpCore.Plugins
                         {
                             object or;
 
-                            if ((or = _CacheTable.GetFromCacheTable(moX.MonitorInfosComplex, "Capabilities".ToLower(CultureInfo.InvariantCulture))) != null)
+                            if ((or = _CacheTable.GetFromCacheTable(moX.MonitorInfosComplex, "Capabilities".ToLower(CultureInfo.InvariantCulture))) is not null)
                                 return Task.FromResult(or.ToString());
                             else
                             {
@@ -575,7 +578,7 @@ namespace VcpCore.Plugins
                                 Launch_TaskQueueExecutor();
 
                                 or = GetResultObjectAsync(_guid).Result;
-                                string r = (or != null) ? or.ToString() : string.Empty;
+                                string r = (or is not null) ? or.ToString() : string.Empty;
 
                                 return Task.FromResult(r);
                                 //
@@ -628,7 +631,7 @@ namespace VcpCore.Plugins
                             {
                                 object or;
 
-                                if ((or = _CacheTable.GetFromCacheTable(moX.MonitorInfosComplex, code)) != null)
+                                if ((or = _CacheTable.GetFromCacheTable(moX.MonitorInfosComplex, code)) is not null)
                                     return Task.FromResult(new ObjGetVCP() { value = or, result = true });
                                 else
                                 {
@@ -642,7 +645,7 @@ namespace VcpCore.Plugins
                                     Launch_TaskQueueExecutor();
 
                                     or = GetResultObjectAsync(_guid).Result;
-                                    ObjGetVCP r = (or != null) ? (new ObjGetVCP() { value = or, result = true }) : (new ObjGetVCP() { value = or, result = false });
+                                    ObjGetVCP r = (or is not null) ? (new ObjGetVCP() { value = or, result = true }) : (new ObjGetVCP() { value = or, result = false });
 
                                     return Task.FromResult(r);
                                     //
@@ -699,7 +702,7 @@ namespace VcpCore.Plugins
                         {
                             object or;
 
-                            if ((or = _CacheTable.GetFromCacheTable(moX.MonitorInfosComplex, FunctionName.ToLower(CultureInfo.InvariantCulture))) != null)
+                            if ((or = _CacheTable.GetFromCacheTable(moX.MonitorInfosComplex, FunctionName.ToLower(CultureInfo.InvariantCulture))) is not null)
                                 return Task.FromResult(new ObjGetVCP() { value = or, result = true });
                             else
                             {
@@ -713,7 +716,7 @@ namespace VcpCore.Plugins
                                 Launch_TaskQueueExecutor();
 
                                 or = GetResultObjectAsync(_guid).Result;
-                                ObjGetVCP r = (or != null) ? (new ObjGetVCP() { value = or, result = true }) : (new ObjGetVCP() { value = or, result = false });
+                                ObjGetVCP r = (or is not null) ? (new ObjGetVCP() { value = or, result = true }) : (new ObjGetVCP() { value = or, result = false });
 
                                 return Task.FromResult(r);
                                 //
@@ -774,7 +777,7 @@ namespace VcpCore.Plugins
                                 Launch_TaskQueueExecutor();
 
                                 object or = GetResultObjectAsync(_guid).Result;
-                                bool r = (or != null) ? ((bool)or) : false;
+                                bool r = (or is not null) ? ((bool)or) : false;
 
                                 return Task.FromResult(r);
                                 //
@@ -838,7 +841,7 @@ namespace VcpCore.Plugins
                             Launch_TaskQueueExecutor();
 
                             object or = GetResultObjectAsync(_guid).Result;
-                            bool r = (or != null) ? ((bool)or) : false;
+                            bool r = (or is not null) ? ((bool)or) : false;
 
                             return Task.FromResult(r);
                             //
@@ -972,7 +975,7 @@ namespace VcpCore.Plugins
                 {
                     CancellationTokenSource newGetResultCancellationTokenSource;
 
-                    if (_PreCancellationToken.Equals(default(CancellationToken)))
+                    if (_PreCancellationToken.Equals(default))
                         newGetResultCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(tokenSource.Token);
                     else
                         newGetResultCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(tokenSource.Token, _PreCancellationToken);
@@ -1286,7 +1289,7 @@ namespace VcpCore.Plugins
         {
             if (e.Cancelled)
                 _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin TaskQueueExecutor Cancellation ...");
-            else if (e.Error != null)
+            else if (e.Error is not null)
                 _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin TaskQueueExecutor exception: " + e.Error.ToString() + " ...");
             else
                 _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin TaskQueueExecutor Completed ...");
@@ -1314,7 +1317,7 @@ namespace VcpCore.Plugins
                     {
                         if (monitorInfoX.DDCisON)
                         {
-                            var r = GetCapabilities_String(in monitorInfoX, CancellationToken.None);
+                            var r = GetCapabilities_String(in monitorInfoX, _PreCancellationToken);
 
                             if (!string.IsNullOrWhiteSpace(r))
                             {
@@ -1549,7 +1552,7 @@ namespace VcpCore.Plugins
                         if (opt == 0)
                             r = _CacheTable.GetFromCacheTable(monitorInfoX, code);
 
-                        if (opt != 0 || r == null)
+                        if (opt != 0 || r is null)
                             r = Get_VCPCapability(monitorInfoX, code, opt, IsOutInitialize);
                     }
                     else
@@ -1597,14 +1600,14 @@ namespace VcpCore.Plugins
                                     {
                                         var tmp = GetInputSource(monitorInfoX);
                                         var monitor = _AllInfoMonitors_Mix.FirstOrDefault(t => t.MonitorInfosComplex.edid.Equals(monitorInfoX.edid));
-                                        if (monitor.MonitorInfosComplex != null && monitor.MonitorInfos != null)
+                                        if (monitor.MonitorInfosComplex is not null && monitor.MonitorInfos is not null)
                                         {
                                             monitor.MonitorInfosComplex.inputSource = tmp.inputSource;
                                             monitor.MonitorInfosComplex.inputCable = tmp.Cable;
                                             monitor.MonitorInfos.inputSource = tmp.inputSource;
                                             monitor.MonitorInfos.inputCable = tmp.Cable;
 
-                                            Initialize2TypesMonitorInfo(false, CancellationToken.None);
+                                            Initialize2TypesMonitorInfo(false, _PreCancellationToken);
 
                                             ro = tmp.inputSource;
                                         }
@@ -1623,7 +1626,7 @@ namespace VcpCore.Plugins
                                     if (IsVcpFunctionSupport(monitorInfoX, 0x60))
                                     {
                                         ro = _CacheTable.GetFromCacheTable(monitorInfoX, func.ToLower(CultureInfo.InvariantCulture));
-                                        if (ro == null)
+                                        if (ro is null)
                                         {
                                             string VCPCapabilities_ = GetVCPCapabilities_(monitorInfoX);
 
@@ -1666,7 +1669,7 @@ namespace VcpCore.Plugins
                                     if (IsVcpFunctionSupport(monitorInfoX, 0xEA))
                                     {
                                         ro = GetVcp2Steps(monitorInfoX, 0xEA, 0xF8FF);
-                                        ro = (ro == null) ? ro : NodeFormatter.FormatVCP_F8(((uint)ro).ToString("X"));
+                                        ro = (ro is null) ? ro : NodeFormatter.FormatVCP_F8(((uint)ro).ToString("X"));
                                     }
                                     else
                                         _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability USB-C Prioritization Fail => IsVcpFunctionSupport is false");
@@ -1687,7 +1690,7 @@ namespace VcpCore.Plugins
                                     if (IsVcpFunctionSupport(monitorInfoX, 0xF4))
                                     {
                                         var temp = GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x1F);
-                                        if (temp != null)
+                                        if (temp is not null)
                                             ro = ((uint)temp & 0x0f);
                                     }
                                     else
@@ -1700,7 +1703,7 @@ namespace VcpCore.Plugins
                                     if (IsVcpFunctionSupport(monitorInfoX, 0xF4))
                                     {
                                         var temp = GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x2F);
-                                        if (temp != null)
+                                        if (temp is not null)
                                             ro = ((uint)temp & 0x0f);
                                     }
                                     else
@@ -1713,7 +1716,7 @@ namespace VcpCore.Plugins
                                     if (IsVcpFunctionSupport(monitorInfoX, 0xF4))
                                     {
                                         var temp = GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x3F);
-                                        if (temp != null)
+                                        if (temp is not null)
                                             ro = ((uint)temp & 0x0f);
                                     }
                                     else
@@ -1726,7 +1729,7 @@ namespace VcpCore.Plugins
                                     if (IsVcpFunctionSupport(monitorInfoX, 0xF4))
                                     {
                                         var temp = GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x4F);
-                                        if (temp != null)
+                                        if (temp is not null)
                                             ro = ((uint)temp & 0x0f);
                                     }
                                     else
@@ -1790,11 +1793,11 @@ namespace VcpCore.Plugins
                             switch (code)
                             {
                                 case 0x04:
-                                    InitializeCacheTable(CancellationToken.None);
+                                    InitializeCacheTable(_PreCancellationToken);
                                     break;
 
                                 case 0x05:
-                                    InitializeCacheTable(CancellationToken.None);
+                                    InitializeCacheTable(_PreCancellationToken);
                                     break;
 
                                 default:
@@ -1878,7 +1881,7 @@ namespace VcpCore.Plugins
                                             if (rc)
                                             {
                                                 var inputsourcelist = _CacheTable.GetFromCacheTable(monitorInfoX, "inputsourcelist".ToLower(CultureInfo.InvariantCulture));
-                                                if (inputsourcelist != null)
+                                                if (inputsourcelist is not null)
                                                 {
                                                     var inputsourcelist_ = inputsourcelist as List<InputSourceObject>;
 
@@ -1925,7 +1928,7 @@ namespace VcpCore.Plugins
                                                     }
                                                 }
 
-                                                Initialize2TypesMonitorInfo(false, CancellationToken.None);
+                                                Initialize2TypesMonitorInfo(false, _PreCancellationToken);
 
                                                 VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                                 _VCPchangedEventArgs.vcpcode = FunctionName.ToLower(CultureInfo.InvariantCulture);
@@ -2012,7 +2015,7 @@ namespace VcpCore.Plugins
                             object_0x02 = Get_VCPCapability(monitorInfoX, 0x02, 0, IsOutInitialize);
 
                             var FailTimes = 0;
-                            while ((object_0x02 != null) && (((uint)object_0x02) != 1) && (FailTimes < 5) && IsOutInitialize)
+                            while ((object_0x02 is not null) && (((uint)object_0x02) != 1) && (FailTimes < 5) && IsOutInitialize)
                             {
                                 if (IsDisposed) break;
 
@@ -2063,26 +2066,23 @@ namespace VcpCore.Plugins
 
                         object_0x02 = Get_VCPCapability(monitor.MonitorInfosComplex, 0x02, 0, IsOutInitialize);
 
-                        if (object_0x02 != null)
+                        if (object_0x02 is not null)
                         {
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck 0x02 is " + ((uint)object_0x02).ToString("X"));
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck DDC/CI is connected");
 
                             var ori_DDCCIStatus = monitor.MonitorInfosComplex.DDCisON;
 
-                            monitor.MonitorInfosComplex.DDCisON = true;
-                            monitor.MonitorInfos.DDCisON = true;
+                            var rt = UpdateMyself(ref monitor, _PreCancellationToken);
 
-                            var rt = UpdateMyself(ref monitor, CancellationToken.None);
+                            monitor.MonitorInfosComplex.DDCisON = ori_DDCCIStatus;
+                            monitor.MonitorInfos.DDCisON = ori_DDCCIStatus;
+                            Initialize2TypesMonitorInfo(false, _PreCancellationToken);
 
                             if (rt.IsConnectAllCorrect)
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck UpdateMyself all Sucess");
                             else
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck UpdateMyself has Fail");
-
-                            monitor.MonitorInfosComplex.DDCisON = ori_DDCCIStatus;
-                            monitor.MonitorInfos.DDCisON = ori_DDCCIStatus;
-                            Initialize2TypesMonitorInfo(false, CancellationToken.None);
 
                             if (rt.IsUpdate)
                             {
@@ -2104,7 +2104,7 @@ namespace VcpCore.Plugins
                                     monitor.MonitorInfosComplex.DDCisON = true;
                                     monitor.MonitorInfos.DDCisON = true;
 
-                                    Initialize2TypesMonitorInfo(false, CancellationToken.None);
+                                    Initialize2TypesMonitorInfo(false, _PreCancellationToken);
 
                                     DDCCIchangedEventArgs _ddcceventArg = new DDCCIchangedEventArgs();
                                     _ddcceventArg.DDCisON = true;
@@ -2121,7 +2121,7 @@ namespace VcpCore.Plugins
 
                                 monitor.MonitorInfosComplex.DDCisON = false;
                                 monitor.MonitorInfos.DDCisON = false;
-                                Initialize2TypesMonitorInfo(false, CancellationToken.None);
+                                Initialize2TypesMonitorInfo(false, _PreCancellationToken);
                             }
                         }
                         else
@@ -2148,7 +2148,7 @@ namespace VcpCore.Plugins
                                     monitor.MonitorInfosComplex.DDCisON = false;
                                     monitor.MonitorInfos.DDCisON = false;
 
-                                    Initialize2TypesMonitorInfo(false, CancellationToken.None);
+                                    Initialize2TypesMonitorInfo(false, _PreCancellationToken);
 
                                     DDCCIchangedEventArgs _ddcceventArg = new DDCCIchangedEventArgs();
                                     _ddcceventArg.DDCisON = false;
@@ -2198,12 +2198,12 @@ namespace VcpCore.Plugins
 
                             object_0x02 = Get_VCPCapability(monitor.MonitorInfosComplex, 0x02, 0, IsOutInitialize);
 
-                            if (object_0x02 != null)
+                            if (object_0x02 is not null)
                             {
                                 monitor.MonitorInfosComplex.DDCCIFail = 0;
 
                                 var FailTimes = 0;
-                                while ((object_0x02 != null) && (((uint)object_0x02) != 1) && (FailTimes < 5) && IsOutInitialize)
+                                while ((object_0x02 is not null) && (((uint)object_0x02) != 1) && (FailTimes < 5) && IsOutInitialize)
                                 {
                                     if (IsDisposed) break;
 
@@ -2211,13 +2211,13 @@ namespace VcpCore.Plugins
 
                                     object_0x52 = Get_VCPCapability(monitor.MonitorInfosComplex, 0x52, 0, IsOutInitialize);
 
-                                    if (object_0x52 != null)
+                                    if (object_0x52 is not null)
                                     {
                                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x52_ VCP 0x52 is " + ((uint)object_0x52).ToString("X"));
 
                                         var object_0x52_value = Get_VCPCapability(monitor.MonitorInfosComplex, Convert.ToByte(object_0x52), 0, IsOutInitialize);
 
-                                        if (object_0x52_value != null)
+                                        if (object_0x52_value is not null)
                                         {
                                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x52_ VCP " + Convert.ToUInt32(object_0x52).ToString("X") + " is " + Convert.ToUInt32(object_0x52_value).ToString());
 
@@ -2253,7 +2253,7 @@ namespace VcpCore.Plugins
                                                 {
                                                     List<InputSourceObject> r = new List<InputSourceObject>();
                                                     var R = _CacheTable.GetFromCacheTable(monitor.MonitorInfosComplex, "inputsourcelist".ToLower(CultureInfo.InvariantCulture));
-                                                    if (R != null)
+                                                    if (R is not null)
                                                         r.AddRange(R as List<InputSourceObject>);
 
                                                     var n = NodeFormatter.FormatVCP_60(rc_str.ToLower(CultureInfo.InvariantCulture));
@@ -2287,7 +2287,7 @@ namespace VcpCore.Plugins
                                                         rstring = rs;
                                                     }
 
-                                                    Initialize2TypesMonitorInfo(false, CancellationToken.None);
+                                                    Initialize2TypesMonitorInfo(false, _PreCancellationToken);
 
                                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ 0x52 ctr code is input select");
                                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ 0x52 ctr code value is " + rstring);
@@ -2334,7 +2334,7 @@ namespace VcpCore.Plugins
 
                                     object_0x02 = Get_VCPCapability(monitor.MonitorInfosComplex, 0x02, 0, IsOutInitialize);
 
-                                    if ((object_0x02 != null) && (((uint)object_0x02) == 1))
+                                    if ((object_0x02 is not null) && (((uint)object_0x02) == 1))
                                         object_0x02 = 0x0;
                                 }
                             }
@@ -2362,7 +2362,7 @@ namespace VcpCore.Plugins
                                         monitor.MonitorInfosComplex.DDCisON = false;
                                         monitor.MonitorInfos.DDCisON = false;
 
-                                        Initialize2TypesMonitorInfo(false, CancellationToken.None);
+                                        Initialize2TypesMonitorInfo(false, _PreCancellationToken);
 
                                         DDCCIchangedEventArgs _ddcceventArg = new DDCCIchangedEventArgs();
                                         _ddcceventArg.DDCisON = false;
@@ -2396,7 +2396,7 @@ namespace VcpCore.Plugins
 
             //VCPchanged?.Invoke(this, e);
             EventHandler<VCPchangedEventArgs> handler = VCPchanged;
-            if (handler != null)
+            if (handler is not null)
                 _ = Task.Run(() => handler.Invoke(this, e)).ConfigureAwait(false);
         }
 
@@ -2406,7 +2406,7 @@ namespace VcpCore.Plugins
 
             //MonitorUpdatechanged?.Invoke(this, e);
             EventHandler<MonitorinfoUpdateEventArgs> handler = MonitorinfoUpdated;
-            if (handler != null)
+            if (handler is not null)
                 _ = Task.Run(() => handler.Invoke(this, e)).ConfigureAwait(false);
         }
 
@@ -2417,7 +2417,7 @@ namespace VcpCore.Plugins
 
             //Displaychanged?.Invoke(this, e);
             EventHandler<DisplaychangedEventArgs> handler = Displaychanged;
-            if (handler != null)
+            if (handler is not null)
                 _ = Task.Run(() => handler.Invoke(this, e)).ConfigureAwait(false);
         }
 
@@ -2427,7 +2427,7 @@ namespace VcpCore.Plugins
 
             //DDCCIStatuschanged?.Invoke(this, e);
             EventHandler<DDCCIchangedEventArgs> handler = DDCCIStatuschanged;
-            if (handler != null)
+            if (handler is not null)
                 _ = Task.Run(() => handler.Invoke(this, e)).ConfigureAwait(false);
         }
 
@@ -2482,7 +2482,7 @@ namespace VcpCore.Plugins
                     var monitors = new List<MonitorInfo_complex>();
                     try
                     {
-                        if (!token.Equals(CancellationToken.None))
+                        if (!token.Equals(default))
                             _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token);
                         else
                             _cancellationTokenSource = new CancellationTokenSource();
@@ -2789,29 +2789,7 @@ namespace VcpCore.Plugins
 
                         var MonitorInfoX = _AllInfoMonitors[i];
 
-                        MonitorInfo monitorInfo = new MonitorInfo()
-                        {
-                            AliasDeviceName = MonitorInfoX.AliasDeviceName,
-                            IsDellMonitor = MonitorInfoX.IsDellMonitor,
-                            Index = MonitorInfoX.Index,
-                            CapabilityString = MonitorInfoX.CapabilityString,
-                            DDCisON = MonitorInfoX.DDCisON,
-                            DisplayName = MonitorInfoX.DisplayName,
-                            edid = MonitorInfoX.edid,
-                            FwVersion = MonitorInfoX.FwVersion,
-                            inputSource = MonitorInfoX.inputSource,
-                            inputCable = MonitorInfoX.inputCable,
-                            CapabilityDic = MonitorInfoX.CapabilityDic,
-                            modelName = MonitorInfoX.modelName,
-                            series = MonitorInfoX.series,
-                            MarketingName = MonitorInfoX.MarketingName,
-                            ImageFileName = MonitorInfoX.ImageFileName,
-                            SupplierID = MonitorInfoX.SupplierID,
-                            D_Ctrl = MonitorInfoX.D_Ctrl,
-                            scalingFactor = MonitorInfoX.scalingFactor,
-                        };
-
-                        _AllInfoMonitors_Mix.Add((MonitorInfoX, monitorInfo));
+                        _AllInfoMonitors_Mix.Add((MonitorInfoX, MonitorInfoX.ToMonitorInfo()));
                     }
 
                     InitializeCacheTable(token);
@@ -2823,12 +2801,13 @@ namespace VcpCore.Plugins
                         return;
                     }
 
-                    foreach (var Monitor in _AllInfoMonitors_Mix)
+                    for (int i = 0; i < _AllInfoMonitors_Mix.Count; i++)
                     {
                         if (IsDisposed) break;
 
-                        if (token.IsCancellationRequested)
-                            return;
+                        if (token.IsCancellationRequested) return;
+
+                        var Monitor = _AllInfoMonitors_Mix[i];
 
                         if (Monitor.MonitorInfosComplex.DDCisON)
                         {
@@ -2896,7 +2875,7 @@ namespace VcpCore.Plugins
                     if (r)
                     {
                         ro = Get_VCPCapability(monitor, ctr, 0, false);
-                        if (ro != null) { return ro; }
+                        if (ro is not null) { return ro; }
                     }
 
                     count += 1;
@@ -3027,7 +3006,7 @@ namespace VcpCore.Plugins
                             _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors() open regCount ...");
                             try
                             {
-                                if (regCount != null)
+                                if (regCount is not null)
                                 {
                                     count_reg = (uint)((int)regCount.GetValue("Count"));
 
@@ -3053,7 +3032,7 @@ namespace VcpCore.Plugins
                             }
                             finally
                             {
-                                if (regCount != null)
+                                if (regCount is not null)
                                 {
                                     regCount.Close();
                                     regCount.Dispose();
@@ -3256,7 +3235,7 @@ namespace VcpCore.Plugins
                                         _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors GetCapability String from Monitor Fail");
                                         _TargetMonitor.DDCisON = false;
                                         var ro = _CacheTable.GetFromCacheTable(new MonitorInfo_complex() { edid = _TargetMonitor.edid, AliasDeviceName = _TargetMonitor.AliasDeviceName }, "CapabilityString".ToLower(CultureInfo.InvariantCulture));
-                                        if (ro != null)
+                                        if (ro is not null)
                                         {
                                             _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors GetCapability String from Cache Success");
                                             _TargetMonitor.CapabilityString = ro.ToString();
@@ -3359,7 +3338,7 @@ namespace VcpCore.Plugins
                                             //------------------------------------------------------------------------------------------------//
                                             //_TargetMonitor.CapabilityString = GetCapabilities_String(in _TargetMonitor, token);
                                             var ro = _CacheTable.GetFromCacheTable(new MonitorInfo_complex() { edid = _TargetMonitor.edid, AliasDeviceName = _TargetMonitor.AliasDeviceName }, "CapabilityString".ToLower(CultureInfo.InvariantCulture));
-                                            if (ro != null)
+                                            if (ro is not null)
                                             {
                                                 _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors GetCapability String from Cache Success");
                                                 _TargetMonitor.CapabilityString = ro.ToString();
@@ -3382,7 +3361,7 @@ namespace VcpCore.Plugins
                                             //------------------------------------------------------------------------------------------------//
                                             //_TargetMonitor.CapabilityString = GetCapabilities_String(in _TargetMonitor, token);
                                             var ro = _CacheTable.GetFromCacheTable(new MonitorInfo_complex() { edid = _TargetMonitor.edid, AliasDeviceName = _TargetMonitor.AliasDeviceName }, "CapabilityString".ToLower(CultureInfo.InvariantCulture));
-                                            if (ro != null)
+                                            if (ro is not null)
                                             {
                                                 _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors GetCapability String from Cache Success");
                                                 _TargetMonitor.CapabilityString = ro.ToString();
@@ -3536,7 +3515,7 @@ namespace VcpCore.Plugins
                 if (!CapDic.TryGetValue("E2", out value))
                     return blResult;
 
-                if (value == null)
+                if (value is null)
                 {
                     blResult = true;
                     return blResult;
@@ -3633,7 +3612,7 @@ namespace VcpCore.Plugins
 
                     var value = Get_VCPCapability(monitorInfo_, 0x60, 0, IsOutInitialize);
 
-                    if (value != null)
+                    if (value is not null)
                     {
                         uint val_H = (Convert.ToUInt32(value) >> 8) & 0XFF;
                         uint val_L = Convert.ToUInt32(value) & 0XFF;
@@ -3645,7 +3624,7 @@ namespace VcpCore.Plugins
                         {
                             List<InputSourceObject> r = new List<InputSourceObject>();
                             var R = _CacheTable.GetFromCacheTable(monitorInfo_, "inputsourcelist".ToLower(CultureInfo.InvariantCulture));
-                            if (R != null)
+                            if (R is not null)
                                 r.AddRange(R as List<InputSourceObject>);
 
                             var n_H = NodeFormatter.FormatVCP_60(rc_H.ToLower(CultureInfo.InvariantCulture));
@@ -3843,7 +3822,7 @@ namespace VcpCore.Plugins
 
                         var lookup = myresources.FirstOrDefault(x => x.Key.Equals(presetName, StringComparison.OrdinalIgnoreCase));
 
-                        if (lookup.Key != null)
+                        if (lookup.Key is not null)
                         {
                             GetResourceName = ResourceName;
                             GetPresetValue = myresources[lookup.Key];
@@ -3927,7 +3906,7 @@ namespace VcpCore.Plugins
 
                     value = Get_VCPCapability(monitor, 0xE2, 0, IsOutInitialize);
 
-                    if (value != null)
+                    if (value is not null)
                     {
                         uint val = (Convert.ToUInt32(value) & 0XFFFF);
                         string valstring = val.ToString("X2");
@@ -3996,7 +3975,7 @@ namespace VcpCore.Plugins
 
             bool CheckStatus()
             {
-                if (token.Equals(CancellationToken.None))
+                if (token.Equals(default))
                 {
                     if (IsOutInitialize)
                         return true;   // Not In Initialize and No thread trigger Initialize
@@ -4010,7 +3989,7 @@ namespace VcpCore.Plugins
             int count = 0;
             try
             {
-                if (token.Equals(CancellationToken.None))
+                if (token.Equals(default))
                 {
                     TimeoutTokenSource = CancellationTokenSource.CreateLinkedTokenSource(CancellationToken.None);
                     TimeoutToken = CancellationToken.None;
@@ -4104,7 +4083,7 @@ namespace VcpCore.Plugins
                 rcString += (indents + formattedNode + "\n");
             }
 
-            if (node.Nodes != null && node.Nodes.Any())
+            if (node.Nodes is not null && node.Nodes.Any())
             {
                 foreach (var childNode in node.Nodes)
                 {
@@ -4209,7 +4188,7 @@ namespace VcpCore.Plugins
                                     list.Add(text);
                             }
                             CapabilityDic.Add(key, list);
-                            if (array != null && array.Length > 1 && array[1].Length > 0)
+                            if (array is not null && array.Length > 1 && array[1].Length > 0)
                                 CapabilityDic.Add(array[1], null);
 
                             array = null;
@@ -4258,7 +4237,7 @@ namespace VcpCore.Plugins
                                     list.Add(text);
                             }
                             CapabilityDic.Add(key, list);
-                            if (array != null && array.Length > 1 && array[1].Length > 0)
+                            if (array is not null && array.Length > 1 && array[1].Length > 0)
                                 CapabilityDic.Add(array[1], null);
 
                             array = null;
@@ -4612,7 +4591,7 @@ namespace VcpCore.Plugins
                         UnDefinedColorPresets.Add(presetvaluevalue);
                 }
 
-                if (SupportColorPresets == null)
+                if (SupportColorPresets is null)
                     SupportColorPresets = new Dictionary<string, Dictionary<string, string>>();
 
                 SupportColorPresets.Add(ResourceName, Resourcepreset);
@@ -4660,12 +4639,17 @@ namespace VcpCore.Plugins
             }
         }
 
-        private UpdateMyselfResult UpdateMyself(ref LocalMonitorsData Monitor, CancellationToken token)
+        private UpdateMyselfResult UpdateMyself(ref LocalMonitorsData MonitorInfos, CancellationToken token)
         {
             try
             {
-                var _TargetMonitorx = Monitor.MonitorInfosComplex;
-                var _TargetMonitor = Monitor.MonitorInfos;
+                var MonitorShadow = new LocalMonitorsData(MonitorInfos.MonitorInfosComplex, MonitorInfos.MonitorInfos);
+
+                MonitorShadow.MonitorInfosComplex.DDCisON = true;
+                MonitorShadow.MonitorInfos.DDCisON = true;
+
+                var _TargetMonitorx = MonitorShadow.MonitorInfosComplex;
+                var _TargetMonitor = MonitorShadow.MonitorInfos;
 
                 _logs.DebugMsg("[VcpCorePlugin] UpdateMyself  Let's go ...");
                 _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} UpdateMyself ...");
@@ -4681,7 +4665,7 @@ namespace VcpCore.Plugins
                         if (IsDisposed) break;
 
                         var ro = _CacheTable.GetFromCacheTable(_TargetMonitorx, "CapabilityString".ToLower(CultureInfo.InvariantCulture));
-                        if (ro != null)
+                        if (ro is not null)
                         {
                             if (!string.IsNullOrWhiteSpace(ro.ToString()))
                                 _TargetMonitorx.CapabilityString = ro.ToString();
@@ -4753,7 +4737,7 @@ namespace VcpCore.Plugins
                                 //------------------------------------------------------------------------------------------------//
                                 //_TargetMonitorx.CapabilityString = GetCapabilities_String(in _TargetMonitorx, token);
                                 var ro = _CacheTable.GetFromCacheTable(new MonitorInfo_complex() { edid = _TargetMonitorx.edid, AliasDeviceName = _TargetMonitorx.AliasDeviceName }, "CapabilityString".ToLower(CultureInfo.InvariantCulture));
-                                if (ro != null)
+                                if (ro is not null)
                                 {
                                     _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors GetCapability String from Cache Success");
                                     _TargetMonitorx.CapabilityString = ro.ToString();
@@ -4776,7 +4760,7 @@ namespace VcpCore.Plugins
                                 //------------------------------------------------------------------------------------------------//
                                 //_TargetMonitorx.CapabilityString = GetCapabilities_String(in _TargetMonitorx, token);
                                 var ro = _CacheTable.GetFromCacheTable(new MonitorInfo_complex() { edid = _TargetMonitorx.edid, AliasDeviceName = _TargetMonitorx.AliasDeviceName }, "CapabilityString".ToLower(CultureInfo.InvariantCulture));
-                                if (ro != null)
+                                if (ro is not null)
                                 {
                                     _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors GetCapability String from Cache Success");
                                     _TargetMonitorx.CapabilityString = ro.ToString();
@@ -4849,7 +4833,7 @@ namespace VcpCore.Plugins
                     (string.IsNullOrWhiteSpace(_TargetMonitorx.D_Ctrl)) ||
                     (string.IsNullOrWhiteSpace(_TargetMonitorx.SupplierID)))
                 {
-                    var FwTmp = FwVersion(in _TargetMonitorx, _TargetMonitorx.modelName, CancellationToken.None);
+                    var FwTmp = FwVersion(in _TargetMonitorx, _TargetMonitorx.modelName, token);
                     _TargetMonitorx.FwVersion = FwTmp.FW;
                     _TargetMonitorx.D_Ctrl = FwTmp.Scalar;
                     _TargetMonitorx.SupplierID = FwTmp.SI;
@@ -4899,29 +4883,13 @@ namespace VcpCore.Plugins
                     _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} UpdateMyself inputSource & inputCable exist ...");
                 }
 
-                _TargetMonitor.AliasDeviceName = _TargetMonitorx.AliasDeviceName;
-                _TargetMonitor.IsDellMonitor = _TargetMonitorx.IsDellMonitor;
-                _TargetMonitor.Index = _TargetMonitorx.Index;
-                _TargetMonitor.CapabilityString = _TargetMonitorx.CapabilityString;
-                _TargetMonitor.DDCisON = _TargetMonitorx.DDCisON;
-                _TargetMonitor.DisplayName = _TargetMonitorx.DisplayName;
-                _TargetMonitor.edid = _TargetMonitorx.edid;
-                _TargetMonitor.FwVersion = _TargetMonitorx.FwVersion;
-                _TargetMonitor.inputSource = _TargetMonitorx.inputSource;
-                _TargetMonitor.inputCable = _TargetMonitorx.inputCable;
-                _TargetMonitor.CapabilityDic = _TargetMonitorx.CapabilityDic;
-                _TargetMonitor.modelName = _TargetMonitorx.modelName;
-                _TargetMonitor.series = _TargetMonitorx.series;
-                _TargetMonitor.MarketingName = _TargetMonitorx.MarketingName;
-                _TargetMonitor.ImageFileName = _TargetMonitorx.ImageFileName;
-                _TargetMonitor.SupplierID = _TargetMonitorx.SupplierID;
-                _TargetMonitor.D_Ctrl = _TargetMonitorx.D_Ctrl;
-                _TargetMonitor.scalingFactor = _TargetMonitorx.scalingFactor;
+                _TargetMonitor.UpToDate(_TargetMonitorx.ToMonitorInfo());
 
-                _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} UpdateMyself go to Initialize2TypesMonitorInfo ...");
+                _TargetMonitorx.DDCisON = MonitorInfos.MonitorInfosComplex.DDCisON;
+                _TargetMonitor.DDCisON = MonitorInfos.MonitorInfos.DDCisON;
 
-                Initialize2TypesMonitorInfo(false, CancellationToken.None);
-                _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} Initialize2TypesMonitorInfo ok...");
+                MonitorInfos.MonitorInfosComplex.UpToDate(_TargetMonitorx);
+                MonitorInfos.MonitorInfos.UpToDate(_TargetMonitor);
 
                 return (IsConnectAllCorrect, IsUpdate);
             }
@@ -4993,10 +4961,10 @@ namespace VcpCore.Plugins
                 {
                     if (IsDisposed) break;
 
-                    if (F1supportBit == null)
+                    if (F1supportBit is null)
                         F1supportBit = Get_VCPCapability(monitorx, 0xF1, 0, IsOutInitialize);
 
-                    if (F1supportBit != null)
+                    if (F1supportBit is not null)
                     {
                         uint r = ((Convert.ToUInt32(F1supportBit)) & 0xA000);
                         if (r > 0)
@@ -5123,22 +5091,22 @@ namespace VcpCore.Plugins
                 if (token.IsCancellationRequested)
                     return (string.Empty, string.Empty, string.Empty);
 
-                if (OFWstring == null && (!token.IsCancellationRequested))
+                if (OFWstring is null && (!token.IsCancellationRequested))
                     OFWstring = Get_VCPCapability(monitorx, Convert.ToByte(VcpCode.Version), 0, IsOutInitialize);
 
                 if (token.IsCancellationRequested)
                     return (string.Empty, string.Empty, string.Empty);
 
-                if (ScalarICID == null && (!token.IsCancellationRequested))
+                if (ScalarICID is null && (!token.IsCancellationRequested))
                     ScalarICID = Get_VCPCapability(monitorx, 0xC8, 0, IsOutInitialize);
 
                 if (token.IsCancellationRequested)
                     return (string.Empty, string.Empty, string.Empty);
 
-                if (OEMID == null && (!token.IsCancellationRequested))
+                if (OEMID is null && (!token.IsCancellationRequested))
                     OEMID = Get_VCPCapability(monitorx, 0xFD, 0, IsOutInitialize);
 
-                if ((OFWstring != null) && (ScalarICID != null) && (OEMID != null) && (!token.IsCancellationRequested))
+                if ((OFWstring is not null) && (ScalarICID is not null) && (OEMID is not null) && (!token.IsCancellationRequested))
                 {
                     _logs.DebugMsg("[VcpCorePlugin] FwVersion 0XC8 : 0X" + Convert.ToUInt32(ScalarICID).ToString("X"));
                     _logs.DebugMsg("[VcpCorePlugin] FwVersion 0XC9 : 0X" + Convert.ToUInt32(OFWstring).ToString("X"));
@@ -5576,7 +5544,7 @@ namespace VcpCore.Plugins
 
         private void RegisterAgentEvents(IAgent agent)
         {
-            if (agent == null)
+            if (agent is null)
             {
                 _logs.DebugMsg($"[VcpCorePlugin] RegisterAgentEvents, agent is null.");
                 return;
@@ -5591,7 +5559,7 @@ namespace VcpCore.Plugins
 
         private void UnregisterAgentEvents(IAgent agent)
         {
-            if (agent == null)
+            if (agent is null)
             {
                 _logs.DebugMsg($"[VcpCorePlugin] UnregisterAgentEvents, agent is null.");
                 return;
@@ -5608,7 +5576,7 @@ namespace VcpCore.Plugins
         {
             if (e is PluginStatusChangedEventArgs args)
             {
-                if (args.Info == null)
+                if (args.Info is null)
                 {
                     _logs.DebugMsg($"[VcpCorePlugin] agent_PluginStatusChangedHandler, Info is null.");
                     return;
@@ -5739,7 +5707,7 @@ namespace VcpCore.Plugins
 #if DEBUG
             Console.WriteLine(text);
 #endif
-            if (Log != null)
+            if (Log is not null)
             {
                 if (log_type == log_type.info)
                     Log.Info(text);
@@ -5866,9 +5834,9 @@ namespace VcpCore.Plugins
 
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
-            if (e == null)
+            if (e is null)
                 return;
-            if (e.ChangedPlugins == null)
+            if (e.ChangedPlugins is null)
                 return;
             if (e.ChangedPlugins.Any() == false)
                 return;

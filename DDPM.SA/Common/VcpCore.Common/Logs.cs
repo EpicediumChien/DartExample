@@ -1,6 +1,5 @@
 ﻿using Dell.Client.Framework.Common;
 using System;
-using System.IO;
 
 namespace VcpCore.Common
 {

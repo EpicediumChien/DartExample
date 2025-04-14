@@ -1,4 +1,5 @@
 ﻿using DDPM.UI.Resources.Helper;
+using System.Windows;
 using System.Windows.Controls;
 using Rect = System.Windows.Rect;
 
@@ -341,5 +342,15 @@ namespace DDPM.Easy.Common
             Dispose(false);
         }
         #endregion
+
+        #region UserControl event handlers
+        private void UserControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (this.IsVisible)
+            {
+                ((ISplitCtrl)this).RefreshCellRects();
+            }
+        }
+        #endregion UserControl event handlers
     }
 }

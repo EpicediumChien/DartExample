@@ -176,7 +176,6 @@ namespace DDPM.SA.Plugin.CLIManager
 
         public Task<CLIEventResult> PerformCommandLineRelay(CommandLineInput commandLineInput)
         {
-            WriteLog($"Command Line from CLI {commandLineInput.fromcli}");
             if (commandLineInput == null)
             {
                 WriteLog("Empty command input from CLI subagent");
@@ -189,7 +188,7 @@ namespace DDPM.SA.Plugin.CLIManager
                 commandLineInput = commandLineInput
             };
 
-            WriteLog($"Got CLI request: ID:{arg.command_guid_string}, command: {arg.commandLineInput.Command}, target type: {arg.commandLineInput.TargetType}");
+            WriteLog($"Got CLI request: ID:{arg.command_guid_string}, command: {arg.commandLineInput.Command}, target type: {arg.commandLineInput.TargetType}, target feature: {arg.commandLineInput.TargetFeature}, command from CMA: {arg.commandLineInput.fromcma}");
             Trace.WriteLine($"check is ITcommand: {commandLineInput.isITCommands}, option value: {commandLineInput.Options.ToString()}");
             //Dean 0816, check if IT admin command and do not relay to CLIProxy if it's IT lock command.
             if (commandLineInput.isITCommands)

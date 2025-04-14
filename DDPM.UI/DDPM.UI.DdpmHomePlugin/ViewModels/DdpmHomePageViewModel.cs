@@ -632,6 +632,39 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             return null;
         }
 
+        public HomeDevice? FindPeripheralByGuid(Guid guid)
+        {
+            if (HomeDevices == null)
+                return null;
+            if (HomeDevices.Count == 0)
+                return null;
+
+            try
+            {
+                foreach (HomeDevice device in HomeDevices)
+                {
+                    if (device.DeviceCategory != eDeviceCategory.Display)
+                    {
+                        if (device.DeviceInfo != null)
+                        {
+                            if (device.DeviceInfo.ID.Equals(guid))
+                            {
+                                return device;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+
+            }
+            return null;
+        }
+
         #region Refresh CollectionView
 
         /// <summary>
@@ -780,6 +813,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             ShowConsentRequested?.Invoke(this, EventArgs.Empty);
         }
 
+        public event Action DTHServiceStopped;
+
+
         public void Invoke_PleaseWait()
         {
             BackgroundWorker bw = new BackgroundWorker
@@ -800,19 +836,32 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait in ... ");
             try
             {
-                Task.Delay(1500).Wait(); //Thread.Sleep(1500);
+                //Robert_Lin 2025-4-12, per discuss result with Elie, remove this delay
+                //Task.Delay(1500).Wait(); //Thread.Sleep(1500);
+
+                UInt32 defaultTimeoutToWaitDTHServiceRunning = 30; //sec
+                UInt32 timeoutToWaitDTHServiceRunning = DevSettings.GetTimeoutToWaitForDTHServiceRunning(defaultTimeoutToWaitDTHServiceRunning);
+                double timeoutDth = (double)timeoutToWaitDTHServiceRunning;
 
                 Stopwatch sw = new Stopwatch();
-                sw.Start();
                 //Check if DTH service is running
-                ServiceController sc = new ServiceController("DellTechHub");
+                ServiceController sc = new ServiceController(Constants.DTH_ServiceName); // "DellTechHub"
 
+                sw.Start();
                 while (sc.Status == ServiceControllerStatus.Stopped ||
                     sc.Status == ServiceControllerStatus.StopPending)
                 {
                     PleaseWaitMessage = LangHelper.Instance["Wait_DTH"];// "DellTechHub service is not running";
                     Task.Delay(200).Wait(); //Thread.Sleep(200);
                     _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait Wait_DTH {PleaseWaitMessage} ... ");
+                    if (sw.Elapsed.TotalSeconds >= timeoutDth)
+                    {
+                        sw.Stop();
+                        if (DTHServiceStopped != null)
+                            DTHServiceStopped?.Invoke();
+                        e.Result = "DTH Service stopped.";
+                        return;
+                    }
                 }
                 while (!IsDeviceManagerReady)
                 {
