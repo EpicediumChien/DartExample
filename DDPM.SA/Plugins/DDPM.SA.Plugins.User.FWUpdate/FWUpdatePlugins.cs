@@ -1902,7 +1902,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 _updateErrorCode = FWUErrorCode.FirmwareUpdateTimeout;
                 _notificationStr = LangHelper.Instance["Timeout_error"];
-                _logs.DebugMsg_1("Get E7:Firmware update timeout");
+                _logs.DebugMsg_1($"_timeOutCount == 0 name pipe no response received within {_fwTimeOutCount} seconds so Firmware update timeout");
                 resetState();
             }
         }
@@ -2020,6 +2020,30 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _logs.DebugMsg_1("Get M2: but device is not keyboard");
                         }
                     }
+                    else if (msg1Node.InnerText == "M3")
+                    {
+                        _logs.DebugMsg_1("Get M3:Firmware Update Successfully completed");
+                    }
+                    else if (msg1Node.InnerText == "M0")
+                    {
+                        _logs.DebugMsg_1("Get M0:Display contents passed in with ");
+                    }
+                    else if (msg1Node.InnerText == "M4")
+                    {
+                        _logs.DebugMsg_1("Get M4:Do not power off and disturb device");
+                    }
+                    else if (msg1Node.InnerText == "M5")
+                    {
+                        _logs.DebugMsg_1("Get M5:Not detecting Target Device");
+                    }
+                    else if (msg1Node.InnerText == "M7")
+                    {
+                        _logs.DebugMsg_1("Get M7:Firmware Update of multiple dongles of same kind is not supported. Keep one Target RF dongle of same kind on computer only.");
+                    }
+                    else if (msg1Node.InnerText == "M6")
+                    {
+                        _logs.DebugMsg_1("Get M6:Firmware Update started, do not power off RF Dongle under Firmware Update");
+                    }
                     else
                     {
                         _logs.DebugMsg_1("Should got M1 or M2 but got : " + msg1Node.InnerText + Environment.NewLine);
@@ -2097,11 +2121,23 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         var errorCodeNode = xmlDoc.SelectSingleNode("Root/" + "ErrorCode".ToUpper(new CultureInfo("en-US", false)));
                         if (errorCodeNode != null)
                         {
-                            if (errorCodeNode.InnerText == "E2")
+                            if (errorCodeNode.InnerText == "E1")
+                            {
+                                _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
+                                _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get E1:Firmware update In progress. Fail to abort");
+                            }
+                            else if(errorCodeNode.InnerText == "E2")
                             {
                                 _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
                                 _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get E2:Firmware update unsuccessful");
+                            }
+                            else if (errorCodeNode.InnerText == "E3")
+                            {
+                                _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
+                                _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get E3:User Abort Firmware Update");
                             }
                             else if (errorCodeNode.InnerText == "E4")
                             {
@@ -2121,11 +2157,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 _notificationStr = LangHelper.Instance["Timeout_error"];
                                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get E6:Firmware update timeout");
                             }
+                            else if (errorCodeNode.InnerText == "E7")
+                            {
+                                _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
+                                _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get E7:Firmware Update aborted. Found more than One(1) same device type exists on the same computer.");
+                            }
                             else
                             {
                                 _updateErrorCode = FWUErrorCode.Unknow;
                                 _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
-                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} ErrorCode should got E2,E4,E5 but got : " + errorCodeNode.InnerText);
+                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get undefined error code, ErrorCode : " + errorCodeNode.InnerText);
                             }
                             UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                             {
