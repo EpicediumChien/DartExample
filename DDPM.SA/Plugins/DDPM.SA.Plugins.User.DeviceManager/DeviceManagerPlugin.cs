@@ -7313,19 +7313,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task SetOnNKVM(MonitorInfo monitorInfo, bool ison)
         {
-            if (_NKVMPlugin != null)
+            if (_NKVMPlugin != null && _SettingsPlugin != null)
             {
                 _NKVMPlugin.SetOnNKVM(monitorInfo, ison, _SettingsPlugin).Wait();
+                //Jason add save NKVM off to UserSettings
+                bool bit = _SettingsPlugin.UpdateNKVMFeatureFlag(ison).Result;
+                DDPMSettings data = ReloadAppConfigData().Result;
+                data.LockSettings.Enable_Display_NetworkKVM = false;
+                bool be = SetAppConfigData(data).Result;
                 if (ison)
                 {
-                    bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
-                }
-                else
-                {
-                    //Jason add save NKVM off to UserSettings
-                    DDPMSettings data = ReloadAppConfigData().Result;
-                    data.LockSettings.Enable_Display_NetworkKVM = false;
-                    bool be = SetAppConfigData(data).Result;
+                    Task.Run(() => SentKVMtoTelementry(monitorInfo, "KVMMode", "Network"));
                 }
             }
 
