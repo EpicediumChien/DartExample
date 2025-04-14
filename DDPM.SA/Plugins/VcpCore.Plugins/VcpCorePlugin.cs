@@ -1120,7 +1120,7 @@ namespace VcpCore.Plugins
                             case Queue_CommandType.GetCapabilitiesString:
                                 {
                                     Type_GetCapabilitiesString parameter = (Type_GetCapabilitiesString)p.Parameter;
-                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    if (parameter.user_guid.Equals(default) || (!_CancelhashSet.Contains(parameter.user_guid)))
                                     {
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetCapabilitiesString GUID => " + parameter.guid);
                                         var rt = GetCapabilitiesString_(parameter.monitorInfoX);
@@ -1137,7 +1137,7 @@ namespace VcpCore.Plugins
                             case Queue_CommandType.GetVCPCapabilities:
                                 {
                                     Type_GetVCPCapabilities parameter = (Type_GetVCPCapabilities)p.Parameter;
-                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    if (parameter.user_guid.Equals(default) || (!_CancelhashSet.Contains(parameter.user_guid)))
                                     {
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetVCPCapabilities GUID => " + parameter.guid);
                                         var rt = GetVCPCapabilities_(parameter.monitorInfoX);
@@ -1154,7 +1154,7 @@ namespace VcpCore.Plugins
                             case Queue_CommandType.GetVCPCapability_I:
                                 {
                                     Type_GetVCPCapability_I parameter = (Type_GetVCPCapability_I)p.Parameter;
-                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    if (parameter.user_guid.Equals(default) || (!_CancelhashSet.Contains(parameter.user_guid)))
                                     {
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetVCPCapability_I GUID => " + parameter.guid);
                                         var rt = GetVCPCapability_(parameter.monitorInfoX, parameter.code, parameter.opt);
@@ -1171,7 +1171,7 @@ namespace VcpCore.Plugins
                             case Queue_CommandType.GetVCPCapability_II:
                                 {
                                     Type_GetVCPCapability_II parameter = (Type_GetVCPCapability_II)p.Parameter;
-                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    if (parameter.user_guid.Equals(default) || (!_CancelhashSet.Contains(parameter.user_guid)))
                                     {
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing GetVCPCapability_II GUID => " + parameter.guid);
                                         var rt = GetVCPCapability_(parameter.monitorInfoX, parameter.FunctionName, parameter.opt);
@@ -1188,7 +1188,7 @@ namespace VcpCore.Plugins
                             case Queue_CommandType.SetVCPCapability_I:
                                 {
                                     Type_SetVCPCapability_I parameter = (Type_SetVCPCapability_I)p.Parameter;
-                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    if (parameter.user_guid.Equals(default) || (!_CancelhashSet.Contains(parameter.user_guid)))
                                     {
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing SetVCPCapability_I GUID => " + parameter.guid);
                                         var rt = SetVCPCapability_(parameter.monitorInfoX, parameter.code, parameter.val);
@@ -1205,7 +1205,7 @@ namespace VcpCore.Plugins
                             case Queue_CommandType.SetVCPCapability_II:
                                 {
                                     Type_SetVCPCapability_II parameter = (Type_SetVCPCapability_II)p.Parameter;
-                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    if (parameter.user_guid.Equals(default) || (!_CancelhashSet.Contains(parameter.user_guid)))
                                     {
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing SetVCPCapability_II GUID => " + parameter.guid);
                                         var rt = SetVCPCapability_(parameter.monitorInfoX, parameter.FunctionName, parameter.val);
@@ -1222,7 +1222,7 @@ namespace VcpCore.Plugins
                             case Queue_CommandType.Initialize0x52toEmpty:
                                 {
                                     Type_Initialize0x52toEmpty parameter = (Type_Initialize0x52toEmpty)p.Parameter;
-                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    if (parameter.user_guid.Equals(default) || (!_CancelhashSet.Contains(parameter.user_guid)))
                                     {
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Initialize0x52toEmpty GUID => " + parameter.guid);
                                         Initialize0x52toEmpty_();
@@ -1235,7 +1235,7 @@ namespace VcpCore.Plugins
                             case Queue_CommandType.Watcher0x52:
                                 {
                                     Type_Watcher0x52 parameter = (Type_Watcher0x52)p.Parameter;
-                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    if (parameter.user_guid.Equals(default) || (!_CancelhashSet.Contains(parameter.user_guid)))
                                     {
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Watcher0x52 GUID => " + parameter.guid);
                                         Watcher0x52_();
@@ -1253,7 +1253,7 @@ namespace VcpCore.Plugins
                             case Queue_CommandType.Watcher0x02forStatusCheck:
                                 {
                                     Type_Watcher0x02forStatusCheck parameter = (Type_Watcher0x02forStatusCheck)p.Parameter;
-                                    if ((!_CancelhashSet.Contains(parameter.user_guid)) || parameter.user_guid.Equals(default))
+                                    if (parameter.user_guid.Equals(default) || (!_CancelhashSet.Contains(parameter.user_guid)))
                                     {
                                         _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Watcher0x02forStatusCheck GUID => " + parameter.guid);
                                         Watcher0x02forStatusCheck_();
