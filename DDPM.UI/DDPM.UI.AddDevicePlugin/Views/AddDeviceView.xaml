@@ -41,20 +41,21 @@
       By Dell's requirements, we should enable the scrollbar at this situation.
       Fix: Move the Grid of major content into a UXScrollViewer, and will auto show Vert scrollbar.
         -->
-    <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Grid.ColumnSpan="2">
-      <Grid>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="312" />
-          <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <!-- Right side: Header + RightView -->
-        <Border CornerRadius="13" Background="{DynamicResource Vbar_BkBrush_Default}" Grid.Column="1" Margin="8,80,100,60" >
-          <Grid Grid.Column="1" Name="RightFrame">
-            <Grid.RowDefinitions>
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <!--<Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="16,23,16,-5" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding AlertVisibility}">
+        <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+        <UXControls:UXScrollViewer UseFadingScrolling="False" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="312" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <!-- Right side: Header + RightView -->
+                <Border CornerRadius="13" Background="{DynamicResource Vbar_BkBrush_Default}" Grid.Column="1" Margin="8,80,100,60" >
+                    <Grid Grid.Column="1" Name="RightFrame">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <!--<Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="16,23,16,-5" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding AlertVisibility}">
                         <StackPanel Orientation="Horizontal">
                         <Grid VerticalAlignment="top">
                         <Image x:Name="InfoIcon" Margin="12,0,0,0" Source="/DDPM.UI.Common;component/Resources/alert.png" Stretch="Fill"

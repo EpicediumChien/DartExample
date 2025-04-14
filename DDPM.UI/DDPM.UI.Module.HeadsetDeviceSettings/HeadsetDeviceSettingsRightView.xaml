@@ -88,7 +88,8 @@
             </LinearGradientBrush>
         </ResourceDictionary>
     </UserControl.Resources>
-    <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+    <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" UseFadingScrolling="False">
         <Grid Margin="0,0,0,15">
             <!--Elsa 20250331 for PIMS-348388 change Width="520" to Width="auto",change Margin="0,10,10,0" to Margin="0,10,16,1" -->
             <Border x:Name="MainBorder" CornerRadius="13" Width="auto" Margin="0,10,16,1">

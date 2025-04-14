@@ -19,7 +19,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <UXControls:UXScrollViewer>
+        <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+        <UXControls:UXScrollViewer UseFadingScrolling="False">
             <Grid>
                 <StackPanel>
                     <Border Style="{StaticResource RightGroupBorderStyle}" Width="Auto">
