@@ -50,7 +50,7 @@ namespace DDPM.UI.Module.Color
         //Robert_Lin 2025-2-26 Narrator. The default value of KeyboardNavigation.TabNavigation is "Conntinue".
         //Howerever, I add a constant string below to restore back to original value.
         public const string DefaultTabNavigation = "Continue"; //"Cycle";
-        private bool _HDRStatus, _SupportedHDR, _HDREnable = true;
+        private bool _HDRStatus, _SupportedHDR = true, _HDREnable = true;
 
         public bool ColorEnable
         {

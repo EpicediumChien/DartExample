@@ -518,6 +518,19 @@ namespace DDPM.UI.Module.Kvm
 
         public Visibility ArrowinFullscreen { get; set; } = Visibility.Collapsed;
 
+        public Visibility PCImage_2 {  get; set; } = Visibility.Collapsed;
+        public Visibility PCImage_3 { get; set; } = Visibility.Collapsed;
+        public Visibility PCImage_4 { get; set; } = Visibility.Collapsed;
+
+        //public class PathData
+        //{
+        //    public string Data { get; set; }
+        //    public double StrokeThickness { get; set; } = 1;
+        //    public Transform RenderTransform { get; set; }
+        //}
+
+        //public ObservableCollection<PathData> PCsPaths { get; set; }
+
         #region Hotkey
 
         private string _kvmHotkeyTooltip = LangHelper.Instance["None"];
@@ -1419,7 +1432,10 @@ namespace DDPM.UI.Module.Kvm
                                                 }
                                                 InputName4 = pcsList["PC4"].InputName;
                                                 PC4_Visibility = Visibility.Visible;
-                                                PCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_4PCs.png");
+                                                PCImage_2 = Visibility.Collapsed;
+                                                PCImage_3 = Visibility.Collapsed;
+                                                PCImage_4 = Visibility.Visible;
+                                                //PCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_4PCs.png");
                                             }
                                             else
                                             {
@@ -1428,7 +1444,10 @@ namespace DDPM.UI.Module.Kvm
                                         }
                                         else
                                         {
-                                            PCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_3PCs.png");
+                                            PCImage_2 = Visibility.Collapsed;
+                                            PCImage_3 = Visibility.Visible;
+                                            PCImage_4 = Visibility.Collapsed;
+                                            //PCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_3PCs.png");
                                         }
                                     }
                                     else
@@ -1438,7 +1457,86 @@ namespace DDPM.UI.Module.Kvm
                                 }
                                 else
                                 {
-                                    PCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_2PCs.png");
+                                    PCImage_2 = Visibility.Visible;
+                                    PCImage_3 = Visibility.Collapsed;
+                                    PCImage_4 = Visibility.Collapsed;
+                                    //PCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_2PCs.png");
+                                    //PCsPaths = new ObservableCollection<PathData>
+                                    //{
+                                    //    new PathData
+                                    //    {
+                                    //        Data = "M125.293 122.707C125.683 123.098 126.317 123.098 126.707 122.707L133.071 116.343C133.462 115.953 133.462 115.319 133.071 114.929C132.681 114.538 132.047 114.538 131.657 114.929L126 120.586L120.343 114.929C119.953 114.538 119.319 114.538 118.929 114.929C118.538 115.319 118.538 115.953 118.929 116.343L125.293 122.707ZM127 122V77.8526H125V122H127ZM113 63.8526H14V65.8526H113V63.8526ZM2 51.8526V0H0V51.8526H2ZM14 63.8526C7.37258 63.8526 2 58.48 2 51.8526H0C0 59.5846 6.26801 65.8526 14 65.8526V63.8526ZM127 77.8526C127 70.1207 120.732 63.8526 113 63.8526V65.8526C119.627 65.8526 125 71.2252 125 77.8526H127Z",
+                                    //        StrokeThickness = 1.5,
+                                    //        RenderTransform = new TranslateTransform(-75, 0)
+                                    //    },
+                                    //    new PathData
+                                    //    {
+                                    //        Data = "M1.00001 122 V77.8526 C1.00001 70.6729 6.82031 64.8526 14 64.8526H113C120.18 64.8526 126 59.0323 126 51.8526V0",
+                                    //        StrokeThickness = 2,
+                                    //        RenderTransform = new TranslateTransform(50, 0)
+                                    //    },
+                                    //    new PathData
+                                    //    {
+                                    //        Data = "M291.966 99H141.867C141.388 99 141 99.3918 141 99.8752V185.5C141 185.984 141.388 186.376 141.867 186.376H291.966C292.445 186.376 292.833 185.984 292.833 185.5V99.8752C292.833 99.3918 292.445 99 291.966 99Z",
+                                    //        StrokeThickness = 1,
+                                    //        RenderTransform = new TranslateTransform(-165, 25)
+                                    //    },
+                                    //    new PathData
+                                    //    {
+                                    //        Data = "M290.622 184.498V101.211L143.212 101.211V184.498H290.622Z",
+                                    //        StrokeThickness = 0.4,
+                                    //        RenderTransform = new TranslateTransform(-165, 25)
+                                    //    },
+                                    //    new PathData
+                                    //    {
+                                    //        Data = "M220.881 208.623V186.805H212.255V208.623C212.255 208.918 212.373 209.2 212.581 209.408C212.789 209.616 213.072 209.733 213.366 209.733H219.771C220.065 209.733 220.347 209.616 220.556 209.408C220.764 209.2 220.881 208.917 220.881 208.623Z",
+                                    //        StrokeThickness = 0.5,
+                                    //        RenderTransform = new TranslateTransform(-165, 25)
+                                    //    },
+                                    //    new PathData
+                                    //    {
+                                    //        Data = "M212.254 208.355H186.087C185.931 208.355 185.778 208.396 185.643 208.474C185.509 208.552 185.397 208.665 185.319 208.8C185.242 208.935 185.201 209.088 185.202 209.244C185.203 209.4 185.245 209.552 185.323 209.687L188.442 215.014C188.519 215.147 188.631 215.258 188.765 215.335C188.899 215.412 189.051 215.452 189.205 215.452H244.065C244.215 215.453 244.363 215.415 244.494 215.342C244.625 215.269 244.735 215.164 244.815 215.037L248.152 209.71C248.236 209.576 248.282 209.422 248.287 209.264C248.291 209.106 248.253 208.95 248.176 208.812C248.1 208.673 247.988 208.558 247.852 208.478C247.716 208.397 247.561 208.355 247.403 208.355H220.879",
+                                    //        StrokeThickness = 0.4,
+                                    //        RenderTransform = new TranslateTransform(-165, 25)
+                                    //    },
+                                    //    new PathData
+                                    //    {
+                                    //        Data = "M213.829 186.805V191.916C213.829 192.166 213.878 192.414 213.974 192.646C214.07 192.877 214.211 193.088 214.388 193.265C214.565 193.442 214.775 193.583 215.007 193.678C215.238 193.774 215.486 193.824 215.737 193.824H217.3C217.55 193.824 217.798 193.774 218.03 193.678C218.261 193.583 218.472 193.442 218.649 193.265C218.826 193.088 218.967 192.877 219.062 192.646C219.158 192.414 219.208 192.166 219.208 191.916V186.805",
+                                    //        StrokeThickness = 0.4,
+                                    //        RenderTransform = new TranslateTransform(-165, 25)
+                                    //    },
+                                    //    new PathData
+                                    //    {
+                                    //        Data = "M219.208 190.011H213.829",
+                                    //        StrokeThickness = 0.4,
+                                    //        RenderTransform = new TranslateTransform(-165, 25)
+                                    //    },
+                                    //    new PathData
+                                    //    {
+                                    //        Data = "M185.648 210.243L188.155 215.83C188.255 216.052 188.417 216.241 188.622 216.374C188.827 216.506 189.066 216.577 189.31 216.577H243.861C244.095 216.577 244.325 216.512 244.524 216.389C244.724 216.266 244.885 216.089 244.991 215.88L247.824 210.251",
+                                    //        StrokeThickness = 0.4,
+                                    //        RenderTransform = new TranslateTransform(-165, 25)
+                                    //    },
+                                    //    new PathData
+                                    //    {
+                                    //        Data = "M195.861 216.571H190.704V217H195.861V216.571Z",
+                                    //        StrokeThickness = 0.4,
+                                    //        RenderTransform = new TranslateTransform(-165, 25)
+                                    //    },
+                                    //    new PathData
+                                    //    {
+                                    //        Data = "M219.352 216.571H214.195V217H219.352V216.571Z",
+                                    //        StrokeThickness = 0.4,
+                                    //        RenderTransform = new TranslateTransform(-165, 25)
+                                    //    },
+                                    //    new PathData
+                                    //    {
+                                    //        Data = "M242.842 216.571H237.686V217H242.842V216.571Z",
+                                    //        StrokeThickness = 0.4,
+                                    //        RenderTransform = new TranslateTransform(-165, 25)
+                                    //    },
+                                    //};
+
                                 }
                                 if (Cancelled_RefreshData(e, bwk))
                                 {
