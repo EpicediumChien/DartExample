@@ -3634,7 +3634,7 @@
     <value>Only use alpha-numeric characters and the following special characters {0}</value>
   </data>
   <data name="InputValidationTooltip.3" xml:space="preserve">
-    <value>The file path either has exceeded the maximum of 260 characters, uses a reserved file name, or has invalid characters &amp;lt; &amp;gt; : " / \ | ?</value>
+    <value>The file path either has exceeded the maximum of 260 characters, uses a reserved file name, or has invalid characters &lt; &gt; : " / \ | ?</value>
   </data>
   <data name="InputValidationTooltip.4" xml:space="preserve">
     <value>Enter only a full URL path, not a relative path</value>

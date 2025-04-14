@@ -36,6 +36,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 if (ret == 0)
                 {
                     blOnOff = info.advancedColorEnabled;
+                    _logs?.DebugMsg_1($"{nameof(GetWindowsHDRStatus)} blOnOff : {blOnOff}");
                     result = true;
                 }
             }

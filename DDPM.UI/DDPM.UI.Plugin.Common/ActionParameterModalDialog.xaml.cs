@@ -14,6 +14,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Windows.Media.Animation;
 using System.Diagnostics;
 using System.Reflection.Metadata;
+using System.Windows.Threading;
 
 namespace DDPM.UI.Plugin.Common
 {
@@ -30,6 +31,7 @@ namespace DDPM.UI.Plugin.Common
         private readonly string guid;
         private readonly string pType;
         private readonly AdvancedAction action;
+        private readonly DispatcherTimer timer;
 
         public string Parameter { get; private set; } = "";
 
@@ -121,6 +123,30 @@ namespace DDPM.UI.Plugin.Common
             btnClear.Caption = Strings.Clear;
             btnSave.Caption = Strings.Save;
             btnBrowse.Caption = Strings.Browse;
+            txtAlert.Text = LangHelper.Instance["InputValidationTooltip.3"];
+
+            timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            timer.Tick += Timer_Tick;
+            ;
+            Unloaded += ActionParameterModalDialog_Unloaded;
+        }
+
+        private void ActionParameterModalDialog_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (timer != null)
+            {
+                timer.Stop();
+                timer.Tick -= Timer_Tick;
+            }
+        }
+
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+            bdAlert.Visibility = Visibility.Collapsed;
+            timer.Stop();
         }
 
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
@@ -323,12 +349,25 @@ namespace DDPM.UI.Plugin.Common
             }
         }
 
+        private void ShowAlert()
+        {
+            bdAlert.Visibility = Visibility.Visible;
+            timer.Stop();
+            timer.Start();
+        }
+
         private void BrowseClick(object sender, MouseButtonEventArgs e)
         {
             if (folderBrowserDialog == null)
             {
                 if (openFileDialog!.ShowDialog() == true)
                 {
+                    if (openFileDialog.FileName.Length > 260 || !Utility.IsPathValid(openFileDialog.FileName))
+                    {
+                        ShowAlert();
+                        txtOpen.Text = "";
+                        return;
+                    }
                     txtOpen.Text = openFileDialog.FileName;
                 }
             }

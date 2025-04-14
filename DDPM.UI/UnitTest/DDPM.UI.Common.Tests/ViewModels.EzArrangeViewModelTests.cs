@@ -59,14 +59,14 @@ namespace DDPM.UI.Common.Tests
             var myConsoleMock = new Mock<IConsole>();
             DdpmCommonHelper.MyConsole = myConsoleMock.Object;
             myConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(log);
-            deviceManagerSAMock= new Mock<IDeviceManagerSA>();
-            HomeDevice.DeviceManagerSA=deviceManagerSAMock.Object;
+            deviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            HomeDevice.DeviceManagerSA = deviceManagerSAMock.Object;
             //Robert_Lin, 2025-1-7 IsEAFuctionEnabled is deleted.
             //deviceManagerSAMock.Setup(x => x.GetEAFunctionEnabled()).Returns(Task.FromResult(new ObjGetVCP()));
             ezArrangeViewModel = new EzArrangeViewModel(homeDev);
             privateObject = new PrivateObject(ezArrangeViewModel);
         }
-        
+
         [Test]
         public void TestConstructor_EzArrangeViewModel()
         {
@@ -183,7 +183,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestCreateLog()
         {
-            var consoleMock=new Mock<IConsole>();
+            var consoleMock = new Mock<IConsole>();
             try
             {
                 ezArrangeViewModel.CreateLog(consoleMock.Object, "logName");
@@ -220,7 +220,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestsplitListRightView()
         {
-            var splitListRightView=new SplitListView();
+            var splitListRightView = new SplitListView();
             ezArrangeViewModel.splitListRightView = splitListRightView;
             Assert.That(ezArrangeViewModel.splitListRightView, Is.EqualTo(splitListRightView));
         }
@@ -229,16 +229,18 @@ namespace DDPM.UI.Common.Tests
         public void TestFindProfileSettingById()
         {
             var easyArrangementDDPM = new EasyArrangementDDPM();
-            var result = ezArrangeViewModel.FindProfileSettingById(easyArrangementDDPM,1);
-            Assert.That(result, Is.EqualTo(null));
-
-            easyArrangementDDPM = new EasyArrangementDDPM() { Desktops = new List<DesktopDDPM>() { new DesktopDDPM("1", 2) { ProfileSettings=new List<EzProfileSettingDDPM>() { new EzProfileSettingDDPM(1, true, 2,true) { ID=1} } }, new DesktopDDPM("3", 4) } };
+            var result = ezArrangeViewModel.FindProfileSettingById(easyArrangementDDPM, 1);
+            Assert.That(result, Is.Null);
+            HomeDevice homeDevice = new HomeDevice();
+            homeDevice.MonitorInfo = new MonitorInfo { edid = new EDID { Instance = "1" } };
+            privateObject.SetFieldOrProperty("_homeDevice", homeDevice);
+            easyArrangementDDPM = new EasyArrangementDDPM() { Desktops = new List<DesktopDDPM>() { new DesktopDDPM("1", 2) { ProfileSettings = new List<EzProfileSettingDDPM>() { new EzProfileSettingDDPM(1, true, 2, true) { ID = 1 } } }, new DesktopDDPM("3", 4) } };
             result = ezArrangeViewModel.FindProfileSettingById(easyArrangementDDPM, 1);
             Assert.That(result, Is.Not.Null);
 
             easyArrangementDDPM = new EasyArrangementDDPM() { Desktops = new List<DesktopDDPM>() { new DesktopDDPM("a", 2), new DesktopDDPM("3", 4) } };
             result = ezArrangeViewModel.FindProfileSettingById(easyArrangementDDPM, 1);
-            Assert.That(result, Is.EqualTo(null));
+            Assert.That(result, Is.Null);
 
         }
 
@@ -255,10 +257,10 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestConvertToLayout()
         {
-            var result = ezArrangeViewModel.ConvertToLayout(15,'B');
+            var result = ezArrangeViewModel.ConvertToLayout(15, 'B');
             Assert.That(result, Is.EqualTo(0));
 
-            result = ezArrangeViewModel.ConvertToLayout(1,'0');
+            result = ezArrangeViewModel.ConvertToLayout(1, '0');
             Assert.That(result, Is.EqualTo(0));
 
             result = ezArrangeViewModel.ConvertToLayout(1, 'B');
@@ -275,7 +277,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestProgressValue()
         {
-            ezArrangeViewModel.ProgressValue=12;
+            ezArrangeViewModel.ProgressValue = 12;
             Assert.That(ezArrangeViewModel.ProgressValue, Is.EqualTo(12));
         }
 
@@ -304,7 +306,7 @@ namespace DDPM.UI.Common.Tests
         public void TestGetEzPages()
         {
             var result = ezArrangeViewModel.GetEzPages();
-            Assert.That(result,Is.Not.Null);
+            Assert.That(result, Is.Not.Null);
         }
 
         [Test]
@@ -424,18 +426,18 @@ namespace DDPM.UI.Common.Tests
             try
             {
                 ezArrangeViewModel.ClearTextBlockAppName();
-                Assert.That(ezArrangeViewModel.Window2_1AppName, Is.EqualTo(""));    
+                Assert.That(ezArrangeViewModel.Window2_1AppName, Is.EqualTo(""));
                 Assert.That(ezArrangeViewModel.Window2_2AppName, Is.EqualTo(""));
-                Assert.That(ezArrangeViewModel.Window1AppName, Is.EqualTo("")); 
-                Assert.That(ezArrangeViewModel.Window2AppName, Is.EqualTo("")); 
-                Assert.That(ezArrangeViewModel.Window3AppName, Is.EqualTo("")); 
-                Assert.That(ezArrangeViewModel.Window4AppName, Is.EqualTo("")); 
-                Assert.That(ezArrangeViewModel.Window5AppName, Is.EqualTo(""));              
-                Assert.That(ezArrangeViewModel.Window6AppName, Is.EqualTo(""));               
-                Assert.That(ezArrangeViewModel.Window7AppName, Is.EqualTo(""));               
-                Assert.That(ezArrangeViewModel.Window8AppName, Is.EqualTo(""));                
-                Assert.That(ezArrangeViewModel.Window9AppName, Is.EqualTo(""));               
-                Assert.That(ezArrangeViewModel.Window10AppName, Is.EqualTo(""));                
+                Assert.That(ezArrangeViewModel.Window1AppName, Is.EqualTo(""));
+                Assert.That(ezArrangeViewModel.Window2AppName, Is.EqualTo(""));
+                Assert.That(ezArrangeViewModel.Window3AppName, Is.EqualTo(""));
+                Assert.That(ezArrangeViewModel.Window4AppName, Is.EqualTo(""));
+                Assert.That(ezArrangeViewModel.Window5AppName, Is.EqualTo(""));
+                Assert.That(ezArrangeViewModel.Window6AppName, Is.EqualTo(""));
+                Assert.That(ezArrangeViewModel.Window7AppName, Is.EqualTo(""));
+                Assert.That(ezArrangeViewModel.Window8AppName, Is.EqualTo(""));
+                Assert.That(ezArrangeViewModel.Window9AppName, Is.EqualTo(""));
+                Assert.That(ezArrangeViewModel.Window10AppName, Is.EqualTo(""));
                 Assert.That(ezArrangeViewModel.Window11AppName, Is.EqualTo(""));
                 Assert.That(ezArrangeViewModel.Window12AppName, Is.EqualTo(""));
             }
@@ -469,7 +471,7 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestHourList()
         {
-            var hourList=new List<string>();
+            var hourList = new List<string>();
             ezArrangeViewModel.HourList = hourList;
             Assert.That(ezArrangeViewModel.HourList, Is.EqualTo(hourList));
         }

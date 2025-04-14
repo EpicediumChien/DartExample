@@ -10,8 +10,8 @@ namespace DDPM.UI.Module.Color
     public class ColorModule : IDdpmModule
     {
         private UserControl? _leftView = null;
-        private UserControl _rightView = new ColorRightView();
-        private ColorViewModel? vm = null;
+        private UserControl? _rightView = new ColorRightView();
+        private ColorViewModel? vm = new ColorViewModel();
 
         private bool isSelectChanged = true;
         public bool IsModuleActive { get; set; } = false;
@@ -63,6 +63,9 @@ namespace DDPM.UI.Module.Color
             if (IsModuleActive)
             {
                 isSelectChanged = false;
+                vm.CallCancel();
+                vm.WatchForProcessStart_Stop();
+                vm.WatchForProcessEnd_Stop();
                 InitNewViewModel();
             }
             //vm.Invoke_RefreshData();
@@ -83,7 +86,6 @@ namespace DDPM.UI.Module.Color
         public void OnActivated()
         {
             Trace.WriteLine("ColorModule.OnActivated");
-
             InitNewViewModel();
             vm.UpdateHDRStatus();
         }
@@ -92,6 +94,8 @@ namespace DDPM.UI.Module.Color
         {
             Trace.WriteLine("ColorModule.OnDeactivated");
             vm.CallCancel();
+            vm.WatchForProcessStart_Stop();
+            vm.WatchForProcessEnd_Stop();
         }
 
         #endregion Event Handlers

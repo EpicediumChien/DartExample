@@ -54,7 +54,8 @@
     </UserControl.Resources>
     <Grid>
         <!-- Robert_lin, 2024-11-30, LightMode, Remove all Foreground settings, will apply to App Resource Defaults -->
-        <UXControls:UXScrollViewer>
+        <!--Elsa 202504011 for PIMS-348407 add VerticalScrollBarVisibility="Auto"-->
+        <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto">
             <Grid>
                 <!-- #region Main Content -->
                 <StackPanel>

@@ -17,8 +17,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Windows.Shapes;
-using Path = System.IO.Path;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -1556,7 +1554,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 WriteLog($"{nameof(ReadImportSettingsFile)} {FileInfo}");
                 return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
             }
-            #region
+            #endregion 
 
             #region Check and read exported file JSON
             //security SA
@@ -2367,14 +2365,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 {
                     WriteLog($"[User setting plugin] WARNING: un-defined registry hive ({hive})");
                     return Task.FromResult(resvalue);
-                    ;
                 }
             }
             catch (Exception e)
             {
                 WriteLog($"[User setting plugin] WARNING: read registry cause exception ({e.Message})");
                 return Task.FromResult(resvalue);
-                ;
             }
         }
 
@@ -2567,6 +2563,4 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         #endregion Info Key
     }
-    #endregion
-    #endregion
 }

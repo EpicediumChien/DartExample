@@ -27,7 +27,7 @@ namespace DDPM.SA.Common
         {
             int rst = RegOpenKeyEx(hKey, subKey, options, samDesired, out phkResult);
 
-            if (rst != 0) 
+            if (rst != 0)
             {
 #if DEBUG
                 Console.WriteLine("[RegistryMonitor_NightLight] RegOpenKeyEx failed.");
@@ -714,7 +714,7 @@ namespace DDPM.SA.Common
         private static extern int RegCloseKey(IntPtr hKey);
         private static int _RegCloseKey(IntPtr hKey)
         {
-            int rst = RegCloseKey(hKey); ;
+            int rst = RegCloseKey(hKey);
 
             if (rst != 0)
             {
@@ -1045,15 +1045,28 @@ namespace DDPM.SA.Common
 
         public RegistryMonitor_Copilot(RegistryKey registryKey, string subKey)
         {
+            if (registryKey == null)
+            {
+                throw new ArgumentNullException(nameof(registryKey), "RegistryKey cannot be null.");
+            }
+
+            if (string.IsNullOrEmpty(subKey))
+            {
+                throw new ArgumentException("SubKey cannot be null or empty.", nameof(subKey));
+            }
+
             try
             {
                 _regKey = registryKey.OpenSubKey(subKey, writable: false) ?? registryKey.CreateSubKey(subKey);
                 _registryKey = subKey;
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
-                EventLogHelper.WriteEventLog($"[RegistryMonitor_Copilot] RegistryMonitor_Copilot Exception: {ex.Message}", EventLogEntryType.Warning);
-                return;
+                //EventLogHelper.WriteEventLog($"[RegistryMonitor_Copilot] RegistryMonitor_Copilot Exception: {ex.Message}", EventLogEntryType.Warning);
+                //return;
+                string errorMessage = $"[RegistryMonitor_Copilot] Failed to handle registry key '{subKey}' in '{registryKey.Name}' - Exception: {ex.Message}";
+                EventLogHelper.WriteEventLog(errorMessage, EventLogEntryType.Warning);
+                throw new ApplicationException(errorMessage, ex);
             }
         }
 
@@ -1077,6 +1090,9 @@ namespace DDPM.SA.Common
         private bool IsCopilotEnabled = CheckCopilotEnabled();
         private void MonitorRegistryKey()
         {
+            if (_regKey == null)
+                return;
+
             IntPtr registryKeyHandle = _regKey.Handle.DangerousGetHandle();
 
             while (!_stopMonitoring)

@@ -632,6 +632,39 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             return null;
         }
 
+        public HomeDevice? FindPeripheralByGuid(Guid guid)
+        {
+            if (HomeDevices == null)
+                return null;
+            if (HomeDevices.Count == 0)
+                return null;
+
+            try
+            {
+                foreach (HomeDevice device in HomeDevices)
+                {
+                    if (device.DeviceCategory != eDeviceCategory.Display)
+                    {
+                        if (device.DeviceInfo != null)
+                        {
+                            if (device.DeviceInfo.ID.Equals(guid))
+                            {
+                                return device;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+
+            }
+            return null;
+        }
+
         #region Refresh CollectionView
 
         /// <summary>
@@ -800,7 +833,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             _log.Info($"[DdpmHomePageViewModel] DoWork_PleaseWait in ... ");
             try
             {
-                Task.Delay(1500).Wait(); //Thread.Sleep(1500);
+                //Robert_Lin 2025-4-12, per discuss result with Elie, remove this delay
+                //Task.Delay(1500).Wait(); //Thread.Sleep(1500);
 
                 Stopwatch sw = new Stopwatch();
                 sw.Start();

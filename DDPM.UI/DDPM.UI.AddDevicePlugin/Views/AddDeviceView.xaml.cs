@@ -61,6 +61,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         private WaitingModalDialog? waitingModalDialog;
         private bool WaitingModalDialogIsOpen = false;
+        private ModuleGroup moduleGroup;
 
         public AddDeviceView()
         {
@@ -231,7 +232,6 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         private void BuildModuleGroups()
         {
             List<ModuleGroup> groups = new();
-            ModuleGroup moduleGroup;
 
             moduleGroup = new ModuleGroup()
             {
@@ -474,6 +474,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             _vm.RightViewHeaderSelectedIndex = -1;
             WaitingModalDialogIsOpen = false;
             waitingModalDialog?.Close();
+            moduleGroup.Dispose();
         }
 
         private void ArrowLeft_PreviewKeyDown(object sender, KeyEventArgs e)

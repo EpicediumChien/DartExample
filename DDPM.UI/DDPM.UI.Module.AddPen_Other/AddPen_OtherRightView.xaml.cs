@@ -35,7 +35,7 @@ namespace DDPM.UI.Module.AddPen_Other
 
             txtOther.Text = Strings.AddDeviceTypeOther;
             txtCaption.Text = UI.Resources.Helper.LangHelper.Instance["AddDevice.Pen.5"];
-            txtStep1.Text = string.Format(Step1, HostNameHandler.GetDNSHostName());
+            txtStep1.Text = string.Format(Step1, HostNameHandler.GetHostName());
             //txtStep2.Text = Step2;
 
             breakPoints = DdpmCommonHelper.GetBreakPoints();

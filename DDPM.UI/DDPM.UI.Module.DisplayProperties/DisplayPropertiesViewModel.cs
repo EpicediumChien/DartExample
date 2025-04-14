@@ -20,7 +20,7 @@ namespace DDPM.UI.Module.DisplayProperties
     {
         private UI_Properties? _selectedResolution;
         private UI_Orientation? _selectedOrientation;
-        private bool _HDRStatus, _IsHighDataSpeed, _IsHighResolution, _SupportedHDR, _SupportedUSBCPrioeitization, _HDREnable = true;
+        private bool _IsHighDataSpeed, _IsHighResolution, _SupportedUSBCPrioeitization;
         public IModuleOwner? ModuleOwner { get; set; }
         public DisplayPropertiesModule MyModule { get; set; }
         public List<UI_Properties> Resolution_ItemsCollection { get; set; }
@@ -71,31 +71,6 @@ namespace DDPM.UI.Module.DisplayProperties
                 }
             }
         }
-
-        public bool HDRStatus
-        {
-            get => _HDRStatus;
-            set
-            {
-                if (DdpmCommonHelper.DeviceManagerSA.SetHDRStatus(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, value).Result)
-                {
-                    SetProperty(ref _HDRStatus, value);
-                }
-                EventManagerArgs args = new EventManagerArgs(_HDRStatus);
-                DdpmCommonHelper.MyConsole.RaiseEvent("DisplayHDRStatusChanged", this, args);
-                RefreshUI();
-                DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
-            }
-        }
-
-        public string HDRStatus_String
-        {
-            get
-            {
-                return HDRStatus ? LangHelper.Instance["On"] : LangHelper.Instance["Off"];
-            }
-        }
-
         public bool IsHighDataSpeed
         {
             get => _IsHighDataSpeed;
@@ -123,37 +98,11 @@ namespace DDPM.UI.Module.DisplayProperties
                 }
             }
         }
-
-        public Visibility SupportedHDR
-        {
-            get => _SupportedHDR ? Visibility.Visible : Visibility.Collapsed;
-        }
-
         public Visibility SupportedUSBCPrioeitization
         {
             get => _SupportedUSBCPrioeitization ? Visibility.Visible : Visibility.Collapsed;
         }
-
-        public bool HDREnable
-        {
-            get
-            {
-                OnPropertyChanged("HDROpacity");
-                return _HDREnable;
-            }
-        }
-
-        public string HDROpacity
-        {
-            get
-            {
-                if (_HDREnable)
-                {
-                    return "1.0";
-                }
-                return "0.5";
-            }
-        }
+        
         #region Lock/Unlock
         #region RefreshRate
         private bool _Lock_RefreshRate;
@@ -276,31 +225,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(currentMonitorInfo).Result;
                 //Add return to let program continue running
                 //return;
-                _SupportedHDR = displayPropertiesInfo.SupportedHDR;
-                _HDRStatus = displayPropertiesInfo.isHDREnable;
-                EventManagerArgs args = new EventManagerArgs(_HDRStatus);
-                DdpmCommonHelper.MyConsole.RaiseEvent("DisplayHDRStatusChanged", this, args);
-                _HDREnable = true;
-                if (_SupportedHDR)
-                {
-                    UInt16 PipMode_Off = 0;
-                    ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(currentMonitorInfo).Result;
-                    if (ret.result)
-                    {
-                        try
-                        {
-                            UInt16 _curPxpMode = Convert.ToUInt16(ret.value);
-                            if (_curPxpMode != PipMode_Off)
-                            {
-                                _HDREnable = false;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            DdpmCommonHelper.WriteUILog($"[DisplayPropertiesViewModel] DoWork_RefreshData exception with {ex.Message}");
-                        }
-                    }
-                }
+                
                 _SupportedUSBCPrioeitization = displayPropertiesInfo.SupportedUSBCPrioritization;
                 switch (displayPropertiesInfo.USBCPrioritizationType)
                 {
@@ -374,10 +299,6 @@ namespace DDPM.UI.Module.DisplayProperties
             OnPropertyChanged("SelectedOrientation");
             OnPropertyChanged("Resolution_ItemsCollection");
             OnPropertyChanged("Orientation_ItemsCollection");
-            OnPropertyChanged("SupportedHDR");
-            OnPropertyChanged("HDRStatus");
-            OnPropertyChanged("HDRStatus_String");
-            OnPropertyChanged("HDREnable");
             OnPropertyChanged("SupportedUSBCPrioeitization");
             OnPropertyChanged("IsHighDataSpeed");
             OnPropertyChanged("IsHighResolution");
@@ -385,7 +306,7 @@ namespace DDPM.UI.Module.DisplayProperties
             OnPropertyChanged("Orientation_IsEnabled");
         }
 
-        public void UpdateHDRStatus()
+        /*public void UpdateHDRStatus()
         {
             if (Resolution_ItemsCollection != null && Resolution_ItemsCollection.Count > 0)
             {
@@ -405,7 +326,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 }
                 RefreshUI();
             }
-        }
+        }*/
         public void OSDOrientationChang(object o, DisplayOrientation? e)
         {
             if (e != null)

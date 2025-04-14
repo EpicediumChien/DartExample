@@ -83,10 +83,12 @@ namespace DDPM.Easy.Common.Tests
             try
             {
                 splitCtrl6I.UpdateRatioRectsFromSettings();
+                vm.Dispose();
                 Assert.True(true);
             }
             catch (Exception ex)
             {
+                vm.Dispose();
                 Assert.Fail("not invoked");
             }
 
@@ -101,6 +103,7 @@ namespace DDPM.Easy.Common.Tests
             }
             catch (Exception ex)
             {
+                vm.Dispose();
                 Assert.Fail("not invoked");
             }
 
@@ -109,10 +112,12 @@ namespace DDPM.Easy.Common.Tests
             try
             {
                 splitCtrl6I.UpdateRatioRectsFromSettings();
+                vm.Dispose();
                 Assert.True(true);
             }
             catch (Exception ex)
             {
+                vm.Dispose();
                 Assert.Fail("not invoked");
             }
         }

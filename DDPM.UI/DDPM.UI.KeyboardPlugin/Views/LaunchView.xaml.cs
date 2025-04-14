@@ -492,7 +492,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             if (_vm == null)
                 return;
 
-            string hostName = HostNameHandler.GetDNSHostName();
+            string hostName = HostNameHandler.GetHostName();
 
             txt1.Style = ConnectionStyle2;
             txtBLHost1.Style = ConnectionStyle2;

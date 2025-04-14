@@ -9,8 +9,8 @@ namespace DDPM.UI.Module.Kvm
     public class KvmModule : IDdpmModule
     {
         public UserControl? _leftView; // = new KvmLeftView();
-        private UserControl _rightView;
-        private KvmViewModel vm = new KvmViewModel();
+        private UserControl? _rightView;
+        private KvmViewModel? vm = new KvmViewModel();
 
         private bool isSelectChanged = false;
         public bool IsModuleActive { get; set; } = false;
@@ -71,6 +71,7 @@ namespace DDPM.UI.Module.Kvm
             if (IsModuleActive)
             {
                 isSelectChanged = false;
+                vm.CallCancel();
                 InitNewViewModel();
             }
         }
