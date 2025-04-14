@@ -3390,7 +3390,10 @@ namespace DDPM.UI.Module.Brightness
                     {
                         if (hd.MonitorInfo.IsDellMonitor && hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
                         {
-                            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue);
+                            var r = DdpmCommonHelper.DeviceManagerSA.CheckIsSyncBriCon(ModuleOwner.SelectedHomeDevice.MonitorInfo, hd.MonitorInfo).Result;
+
+                            if (r)
+                                _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue);
                         }
                     }
                 }
@@ -3464,8 +3467,13 @@ namespace DDPM.UI.Module.Brightness
 
                 foreach (HomeDevice hd in ModuleOwner.HomeDevices)
                 {
-                    if (hd.MonitorInfo.IsDellMonitor)
-                        _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x12, nNewValue).Result;
+                    if (hd.MonitorInfo.IsDellMonitor && hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
+                    {
+                        var r = DdpmCommonHelper.DeviceManagerSA.CheckIsSyncBriCon(ModuleOwner.SelectedHomeDevice.MonitorInfo, hd.MonitorInfo).Result;
+
+                        if (r)
+                            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x12, nNewValue);
+                    }
                 }
             }
             else
@@ -3488,10 +3496,12 @@ namespace DDPM.UI.Module.Brightness
 
                 foreach (HomeDevice hd in ModuleOwner.HomeDevices)
                 {
-                    if (hd.MonitorInfo.IsDellMonitor &&
-                        !hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
+                    if (hd.MonitorInfo.IsDellMonitor && !hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
                     {
-                        _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;
+                        var r = DdpmCommonHelper.DeviceManagerSA.CheckIsSyncBriCon(ModuleOwner.SelectedHomeDevice.MonitorInfo, hd.MonitorInfo).Result;
+
+                        if (r)
+                            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue);
                     }
                 }
             }

@@ -1,5 +1,4 @@
-﻿using DDPM.QAM;
-using DDPM.SA.Common;
+﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Resources.Helper;
@@ -382,7 +381,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     return;
                 }
                 WriteLog($"PerformHotKeyBrightnessContrastLuminanceAction,monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] ,UP2720Q Luminance targetValue={targetValue}");
-
             }
             WriteLog($"PerformHotKeyBrightnessContrastLuminanceAction,monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] ,before SetVCPCapability:code={code}; targetValue={targetValue}");
             bool ret = devManagerSA.SetVCPCapability(currentMoInfo, code, targetValue, priority: Priority.High).Result;
@@ -407,7 +405,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             targetValue = ((uint)obVCPValue.value) <= 5 ? 0 : ((uint)obVCPValue.value - 5);
                         else
                             continue;
-                        ret = devManagerSA.SetVCPCapability(mi, code, targetValue, priority: Priority.High).Result;
+
+                        var r = devManagerSA.CheckIsSyncBriCon(currentMoInfo, mi).Result;
+                        if (r) ret = devManagerSA.SetVCPCapability(mi, code, targetValue, priority: Priority.High).Result;
                         WriteLog($"{job}:[{mi.edid.ModelName}:{mi.edid.SerialNumber}] from [{(uint)obVCPValue.value}] to [{targetValue}]" + (ret ? "success" : "fail"));
                     }
                 }
@@ -533,7 +533,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize ALS Monitor Count = 3 ... ");
                         //0x12 = non Luminance
                         //22 Test Scenario : 2 monitors with Brightness/Contrast and 1 monitor with Luminance
-                        if (CheckLuminanceMonitorCount(moLists) == 2)
+                        if (CheckNoneLuminanceMonitorCount(moLists) == 2)
                         {
                             bool obj = currentMoInfo.CapabilityDic.ContainsKey("12");
                             if (obj)
@@ -550,7 +550,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             }
                         }
                         //23 Test Scenario : 1 monitor with Brightness/Contrast and 2 monitors with Luminance
-                        if (CheckLuminanceMonitorCount(moLists) == 1)
+                        if (CheckNoneLuminanceMonitorCount(moLists) == 1)
                         {
                             bool obj = currentMoInfo.CapabilityDic.ContainsKey("12");
                             if (obj)
@@ -615,7 +615,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         WriteLog($"[DisplayDeviceHelper] CheckisShowSynchronize ALS Monitor Count = 4 ... ");
                         //24 Test Scenario : 2 monitors with Brightness/Contrast and 2 monitors with Luminance
-                        if (CheckLuminanceMonitorCount(moLists) == 2)
+                        if (CheckNoneLuminanceMonitorCount(moLists) == 2)
                         {
                             bool obj = currentMoInfo.CapabilityDic.ContainsKey("12");
                             if (obj)
@@ -723,24 +723,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         ///  Check the number of Luminance Monitor.0x12 = non Luminance
         /// </summary>
         /// <returns>Return Luminance count</returns>
-        private int CheckLuminanceMonitorCount(List<MonitorInfo> moLists)
+        private int CheckNoneLuminanceMonitorCount(List<MonitorInfo> moLists)
         {
-            int _isLuminanceCount = 0;
+            int _isNoneLuminanceCount = 0;
             try
             {
                 for (int i = 0; i < moLists.Count; i++)
                 {
-                    if (!moLists[i].CapabilityDic.ContainsKey("12"))
+                    if (moLists[i].CapabilityDic.ContainsKey("12"))
                     {
-                        _isLuminanceCount++;
+                        _isNoneLuminanceCount++;
                     }
                 }
             }
             catch (Exception e)
             {
-                WriteLog($"[DisplayDeviceHelper] CheckLuminanceMonitorCount Exception: {e.Message}");
+                WriteLog($"[DisplayDeviceHelper] CheckNoneLuminanceMonitorCount Exception: {e.Message}");
             }
-            return _isLuminanceCount;
+            return _isNoneLuminanceCount;
         }
 
         /// <summary>
