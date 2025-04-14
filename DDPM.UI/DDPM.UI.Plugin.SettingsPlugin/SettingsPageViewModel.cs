@@ -270,14 +270,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
                             InterruptScreen interruptScreen = new InterruptScreen(SWUpdateInfoPackage.SWUpdateInfo[0].TheLatestVersion, myDeserializedClass, DdpmCommonHelper.DeviceManagerSA, SWUpdateInfoPackage, Log);
                             interruptScreen.Show();
-                            //b = interruptScreen.ShowDialog();
-                            //if (b == true)
-                            //{
-                            //    Log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall go");
-                            //    List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(SWUpdateInfoPackage.SWUpdateInfo, true, "").Result;
-                            //    Log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall finish");
-                            //    //SetSelected(1);
-                            //}
+                            /*b = interruptScreen.ShowDialog();
+                            if (b == true)
+                            {
+                                Log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall go");
+                                List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(SWUpdateInfoPackage.SWUpdateInfo, true, "").Result;
+                                Log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall finish");
+                                //SetSelected(1);
+                            }*/
 
                         }
                     }));
