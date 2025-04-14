@@ -540,4 +540,91 @@
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>Не вимикайте живлення системи до завершення оновлення</value>
   </data>
+  <data name="Update_failed_due_to_network_error" xml:space="preserve">
+    <value>Не вдалося оновити систему через помилку мережі. Спробуй ще раз.</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>Перемістіть або двічі клацніть ліву кнопку цільової миші</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>Для активації оновлення вбудованого програмного забезпечення цільової клавіатури двічі натисніть клавішу «U»</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>Профіль ICC за замовчуванням використовується для Smart HDR. Неможливо змінити попередні налаштування кольорів у</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>Профіль ICC за замовчуванням не підходить для Smart HDR. Неможливо змінити налаштування кольорів у</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>Оновлення може зайняти орієнтовно від 10 до 30 хвилин, залежно від моделі монітора й налаштувань (наприклад, типу підключення). Якщо оновлюються кілька моніторів однієї моделі, процес може тривати довше. Не вимикайте дисплей і не від’єднуйте кабелі під час завантаження оновлення.</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Успішно</value>
+  </data>
+  <data name="Firmware_updated" xml:space="preserve">
+    <value>Вбудоване програмне забезпечення оновлено.</value>
+  </data>
+  <data name="Display_FWU_Error_1" xml:space="preserve">
+    <value>Не вдалося оновити вбудоване програмне забезпечення через проблему з пакетом утиліти. Файл може бути пошкоджений.</value>
+  </data>
+  <data name="Display_FWU_Error_3" xml:space="preserve">
+    <value>Під час оновлення вбудованого програмного забезпечення сталася помилка. Щоб усунути її, від’єднайте й повторно під’єднайте USB-кабель і виконайте перезапуск монітора. Після цього повторіть оновлення.</value>
+  </data>
+  <data name="Display_FWU_Error_5" xml:space="preserve">
+    <value>Під час оновлення вбудованого програмного забезпечення сталася помилка. Щоб усунути її, від’єднайте й повторно під’єднайте USB-кабель і виконайте перезапуск монітора. Після цього повторіть оновлення.</value>
+  </data>
+  <data name="Display_FWU_Error_7" xml:space="preserve">
+    <value>Не вдалося оновити вбудоване програмне забезпечення. Його код було стерто, і перевірка коду завершилася невдало.</value>
+  </data>
+  <data name="Display_FWU_Error_9" xml:space="preserve">
+    <value>На ваш монітор уже встановлено найновішу версію вбудованого програмного забезпечення.</value>
+  </data>
+  <data name="Display_FWU_Error_10" xml:space="preserve">
+    <value>Інший екземпляр утиліти оновлення мікропрограми вже може бути активним. Щоб продовжити, закрийте один із запущених екземплярів.</value>
+  </data>
+  <data name="Display_FWU_Error_12" xml:space="preserve">
+    <value>Інший екземпляр утиліти оновлення мікропрограми вже може бути активним. Щоб продовжити, закрийте один із запущених екземплярів.</value>
+  </data>
+  <data name="Display_FWU_Error_201" xml:space="preserve">
+    <value>Оновлення може зайняти до xx хв. Не вимикайте монітор і не від’єднуйте його під час оновлення.</value>
+  </data>
+  <data name="Display_FWU_Error_501" xml:space="preserve">
+    <value>Установлена на моніторі версія вбудованого програмного забезпечення не є офіційною.</value>
+  </data>
+  <data name="Display_FWU_Error_61" xml:space="preserve">
+    <value>Під час оновлення вбудованого програмного забезпечення сталася помилка. Щоб усунути її, від’єднайте й повторно під’єднайте USB-кабель і виконайте перезапуск монітора. Після цього повторіть оновлення.</value>
+  </data>
+  <data name="Display_FWU_Error_Other" xml:space="preserve">
+    <value>Не вдалося оновити вбудоване програмне забезпечення.</value>
+  </data>
+  <data name="Update_Display_Alert_2" xml:space="preserve">
+    <value>Оновлення може зайняти до [XXXXXX] хв. Не вимикайте монітор і не від’єднуйте його під час оновлення.</value>
+  </data>
+  <data name="Update_in_progress_body" xml:space="preserve">
+    <value>Для [XXXXXX] виконується оновлення мікропрограми. Доступність пристрою може бути нестабільною. Не від’єднуйте пристрій під час оновлення. </value>
+  </data>
+  <data name="Update_successful_body" xml:space="preserve">
+    <value>Вбудоване програмне забезпечення [XXXXXX] оновлено</value>
+  </data>
+  <data name="Update_failed_body" xml:space="preserve">
+    <value>Не вдалося оновити вбудоване програмне забезпечення [XXXXXX]</value>
+  </data>
+  <data name="Update_successful" xml:space="preserve">
+    <value>Оновлення виконано</value>
+  </data>
+  <data name="Update_failed" xml:space="preserve">
+    <value>Не вдалося виконати оновлення</value>
+  </data>
+  <data name="Update_in_progress" xml:space="preserve">
+    <value>Триває оновлення</value>
+  </data>
+  <data name="Software_update_successful" xml:space="preserve">
+    <value>Оновлення програмного забезпечення виконано</value>
+  </data>
+  <data name="Software_update_failed" xml:space="preserve">
+    <value>Не вдалося оновити програмне забезпечення</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>Щоб уникнути помилок під час оновлення вбудованого програмного забезпечення, під’єднайте монітор через висхідний USB-порт</value>
+  </data>
 </root>

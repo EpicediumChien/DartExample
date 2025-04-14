@@ -540,4 +540,91 @@
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>在更新完成前，請勿關閉系統電源</value>
   </data>
+  <data name="Update_failed_due_to_network_error" xml:space="preserve">
+    <value>更新失敗，因為發生網路錯誤。請再試一次。</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>移動或按兩下目標滑鼠的左鍵</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>按兩下「U」鍵以啟用目標鍵盤的韌體更新</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>預設的 ICC 設定檔用於 Smart HDR。我們無法變更其中的色彩預設</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>預設的 ICC 設定檔不適用於 Smart HDR。我們無法變更其中的色彩預設</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>更新可能需要大約 10 到 30 分鐘才能完成，視您的顯示器型號和設定 (例如連線類型) 而定。若您要更新同一型號的多部顯示器，可能需要更長的時間。下載更新時，請勿關閉顯示器電源或拔下纜線。</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>成功</value>
+  </data>
+  <data name="Firmware_updated" xml:space="preserve">
+    <value>韌體已更新。</value>
+  </data>
+  <data name="Display_FWU_Error_1" xml:space="preserve">
+    <value>由於韌體公用程式套件出現問題，韌體更新失敗。檔案可能已損壞。</value>
+  </data>
+  <data name="Display_FWU_Error_3" xml:space="preserve">
+    <value>韌體更新發生錯誤。若要解決此問題，請拔下並重新連接 USB 纜線，再重新啟動顯示器。然後，重試韌體更新。</value>
+  </data>
+  <data name="Display_FWU_Error_5" xml:space="preserve">
+    <value>韌體更新發生錯誤。若要解決此問題，請拔下並重新連接 USB 纜線，再重新啟動顯示器。然後，重試韌體更新。</value>
+  </data>
+  <data name="Display_FWU_Error_7" xml:space="preserve">
+    <value>韌體更新失敗。韌體代碼已清除，且韌體代碼驗證失敗。</value>
+  </data>
+  <data name="Display_FWU_Error_9" xml:space="preserve">
+    <value>您的顯示器韌體已是最新版本。</value>
+  </data>
+  <data name="Display_FWU_Error_10" xml:space="preserve">
+    <value>韌體更新公用程式的另一個例項可能正在運作。請關閉該公用程式的其中一個例項以繼續。</value>
+  </data>
+  <data name="Display_FWU_Error_12" xml:space="preserve">
+    <value>韌體更新公用程式的另一個例項可能正在運作。請關閉該公用程式的其中一個例項以繼續。</value>
+  </data>
+  <data name="Display_FWU_Error_201" xml:space="preserve">
+    <value>更新可能需要最多 xx 分鐘。更新期間，請保持顯示器電源開啟並連線。</value>
+  </data>
+  <data name="Display_FWU_Error_501" xml:space="preserve">
+    <value>在您的顯示器上偵測到的韌體版本不是官方版本。</value>
+  </data>
+  <data name="Display_FWU_Error_61" xml:space="preserve">
+    <value>韌體更新發生錯誤。若要解決此問題，請拔下並重新連接 USB 纜線，再重新啟動顯示器。然後，重試韌體更新。</value>
+  </data>
+  <data name="Display_FWU_Error_Other" xml:space="preserve">
+    <value>韌體更新失敗。</value>
+  </data>
+  <data name="Update_Display_Alert_2" xml:space="preserve">
+    <value>更新可能需要最多 [XXXXXX] 分鐘。在此期間，請保持裝置電源開啟並連線。</value>
+  </data>
+  <data name="Update_in_progress_body" xml:space="preserve">
+    <value>[XXXXXX] 正在進行韌體更新。其可用性可能會呈間歇性狀態。更新期間，請勿拔下裝置。 </value>
+  </data>
+  <data name="Update_successful_body" xml:space="preserve">
+    <value>[XXXXXX] 的韌體更新成功</value>
+  </data>
+  <data name="Update_failed_body" xml:space="preserve">
+    <value>[XXXXXX] 的韌體更新失敗</value>
+  </data>
+  <data name="Update_successful" xml:space="preserve">
+    <value>更新成功</value>
+  </data>
+  <data name="Update_failed" xml:space="preserve">
+    <value>更新失敗</value>
+  </data>
+  <data name="Update_in_progress" xml:space="preserve">
+    <value>更新進行中</value>
+  </data>
+  <data name="Software_update_successful" xml:space="preserve">
+    <value>軟體更新成功</value>
+  </data>
+  <data name="Software_update_failed" xml:space="preserve">
+    <value>軟體更新失敗</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>請使用 USB 上游連接埠連接顯示器，避免在韌體更新程序中出現錯誤</value>
+  </data>
 </root>

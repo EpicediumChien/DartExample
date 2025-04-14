@@ -540,4 +540,91 @@
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>Schalten Sie das System erst aus, wenn die Updates abgeschlossen sind</value>
   </data>
+  <data name="Update_failed_due_to_network_error" xml:space="preserve">
+    <value>Update aufgrund eines Netzwerkfehlers fehlgeschlagen. Wiederholen.</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>Bewegen oder klicken Sie zweimal auf die linke Maustaste der Zielmaus.</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>Drücken Sie zweimal die Taste „U“, um das Firmware-Update der Zieltastatur zu aktivieren.</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>Das Standard-ICC-Profil ist für Smart HDR. Die Farbvoreinstellung im kann nicht geändert werden.</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>Das Standard-ICC-Profil ist für Smart HDR nicht geeignet. Die Farbvoreinstellung im kann nicht geändert werden.</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>Je nach Monitormodell und Konfiguration (z. B. Verbindungsart) kann das Update ca. 10 bis 30 Minuten dauern. Es kann länger dauern, wenn Sie mehrere Monitore desselben Modells aktualisieren. Schalten Sie den Bildschirm nicht aus und trennen Sie keine Kabel, während das Update heruntergeladen wird.</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Erfolg</value>
+  </data>
+  <data name="Firmware_updated" xml:space="preserve">
+    <value>Firmware aktualisiert.</value>
+  </data>
+  <data name="Display_FWU_Error_1" xml:space="preserve">
+    <value>Das Firmware-Update war aufgrund eines Problems mit dem Firmware-Dienstprogramm nicht erfolgreich. Die Datei ist möglicherweise beschädigt.</value>
+  </data>
+  <data name="Display_FWU_Error_3" xml:space="preserve">
+    <value>Beim Firmware-Update ist ein Fehler aufgetreten. Um dieses Problem zu beheben, trennen Sie das USB-Kabel, schließen Sie es wieder an, und schalten Sie den Monitor aus und wieder ein. Wiederholen Sie dann das Firmware-Update.</value>
+  </data>
+  <data name="Display_FWU_Error_5" xml:space="preserve">
+    <value>Beim Firmware-Update ist ein Fehler aufgetreten. Um dieses Problem zu beheben, trennen Sie das USB-Kabel, schließen Sie es wieder an, und schalten Sie den Monitor aus und wieder ein. Wiederholen Sie dann das Firmware-Update.</value>
+  </data>
+  <data name="Display_FWU_Error_7" xml:space="preserve">
+    <value>Das Firmware-Update war nicht erfolgreich. Der Firmware-Code wurde gelöscht, und die Überprüfung des Firmware-Codes ist fehlgeschlagen.</value>
+  </data>
+  <data name="Display_FWU_Error_9" xml:space="preserve">
+    <value>Die Firmware Ihres Monitors ist auf dem neuesten Stand.</value>
+  </data>
+  <data name="Display_FWU_Error_10" xml:space="preserve">
+    <value>Möglicherweise wird eine andere Instanz des Dienstprogramms zum Firmware-Update ausgeführt. Schließen Sie eine Instanz des Dienstprogramms, um fortzufahren.</value>
+  </data>
+  <data name="Display_FWU_Error_12" xml:space="preserve">
+    <value>Möglicherweise wird eine andere Instanz des Dienstprogramms zum Firmware-Update ausgeführt. Schließen Sie eine Instanz des Dienstprogramms, um fortzufahren.</value>
+  </data>
+  <data name="Display_FWU_Error_201" xml:space="preserve">
+    <value>Das Update kann bis zu xx Minuten dauern. Lassen Sie den Monitor während des Updates eingeschaltet und verbunden.</value>
+  </data>
+  <data name="Display_FWU_Error_501" xml:space="preserve">
+    <value>Die auf Ihrem Monitor erkannte Firmware-Version ist keine offizielle Version.</value>
+  </data>
+  <data name="Display_FWU_Error_61" xml:space="preserve">
+    <value>Beim Firmware-Update ist ein Fehler aufgetreten. Um dieses Problem zu beheben, trennen Sie das USB-Kabel, schließen Sie es wieder an, und schalten Sie den Monitor aus und wieder ein. Wiederholen Sie dann das Firmware-Update.</value>
+  </data>
+  <data name="Display_FWU_Error_Other" xml:space="preserve">
+    <value>Das Firmware-Update war nicht erfolgreich.</value>
+  </data>
+  <data name="Update_Display_Alert_2" xml:space="preserve">
+    <value>Das Update kann bis zu [XXXXXX] Minuten dauern. Lassen Sie das Gerät während dieser Zeit eingeschaltet und verbunden.</value>
+  </data>
+  <data name="Update_in_progress_body" xml:space="preserve">
+    <value>[XXXXXX] hat ein Firmware-Update durchgeführt. Die Verfügbarkeit kann zeitweilig sein. Trennen Sie das Gerät während des Updates nicht. </value>
+  </data>
+  <data name="Update_successful_body" xml:space="preserve">
+    <value>Firmware von [XXXXXX] erfolgreich aktualisiert.</value>
+  </data>
+  <data name="Update_failed_body" xml:space="preserve">
+    <value>Firmware von [XXXXXX] konnte nicht aktualisiert werden.</value>
+  </data>
+  <data name="Update_successful" xml:space="preserve">
+    <value>Aktualisierung erfolgreich</value>
+  </data>
+  <data name="Update_failed" xml:space="preserve">
+    <value>Update fehlgeschlagen</value>
+  </data>
+  <data name="Update_in_progress" xml:space="preserve">
+    <value>Aktualisierung wird durchgeführt</value>
+  </data>
+  <data name="Software_update_successful" xml:space="preserve">
+    <value>Software-Update erfolgreich</value>
+  </data>
+  <data name="Software_update_failed" xml:space="preserve">
+    <value>Software-Updates fehlgeschlagen</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>Schließen Sie den Monitor über den vorgelagerten USB-Anschluss an, um Fehler während des Firmware-Updates zu vermeiden.</value>
+  </data>
 </root>

@@ -135,9 +135,6 @@
   <data name="FirmwareVersion" xml:space="preserve">
     <value>Firmware Version</value>
   </data>
-  <data name="DeviceID" xml:space="preserve">
-    <value>Device ID</value>
-  </data>
   <data name="Gaming" xml:space="preserve">
     <value>Gaming</value>
   </data>
@@ -502,9 +499,6 @@
   </data>
   <data name="Brightness.16" xml:space="preserve">
     <value>Transition Length</value>
-  </data>
-  <data name="Brightness.17" xml:space="preserve">
-    <value>This feature enables our eyes to adapt to a desired setting</value>
   </data>
   <data name="Min" xml:space="preserve">
     <value>min</value>
@@ -1040,9 +1034,6 @@
   <data name="Kvm.29" xml:space="preserve">
     <value>Setup through network</value>
   </data>
-  <data name="Kvm.30" xml:space="preserve">
-    <value>Easy and secure file-sharing between PCs (Mac &amp; Windows)</value>
-  </data>
   <data name="Kvm.31" xml:space="preserve">
     <value>Open Network KVM</value>
   </data>
@@ -1189,12 +1180,6 @@
   </data>
   <data name="SpeakerInteractions.5" xml:space="preserve">
     <value>Skype for Business</value>
-  </data>
-  <data name="WebCameraCapture.0" xml:space="preserve">
-    <value>3-2-1 Countdown</value>
-  </data>
-  <data name="WebCameraCapture.1" xml:space="preserve">
-    <value>Framing Grid</value>
   </data>
   <data name="WebCameraCapture.2" xml:space="preserve">
     <value>Open</value>
@@ -1378,18 +1363,6 @@
   </data>
   <data name="WebCameraSettings.26" xml:space="preserve">
     <value>Automatically switches between Dell UltraSharp Webcam and other webcams (integrated and external). Windows Hello will use the active webcam for facial recognition.\n\nNote: Only one camera can be enabled and accessible at a time.</value>
-  </data>
-  <data name="WebCameraSettings.28" xml:space="preserve">
-    <value>Background Blur</value>
-  </data>
-  <data name="WebCameraSettings.29" xml:space="preserve">
-    <value>WebCameraSettings.28 tooltip</value>
-  </data>
-  <data name="WebCameraSettings.30" xml:space="preserve">
-    <value>Standard</value>
-  </data>
-  <data name="WebCameraSettings.31" xml:space="preserve">
-    <value>Portrait</value>
   </data>
   <data name="Mouse.8" xml:space="preserve">
     <value>Touch Scroll Sensitivity</value>
@@ -3479,6 +3452,66 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Learn more for software</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>NO DEVICE DETECTED</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>Add your first device</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Connect</value>
+  </data>
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>To access Microsoft Presence Sensing features, visit Windows Settings</value>
+  </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>Compatible Firmware</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>To access presence sensing features, use the link below to download compatible webcam firmware</value>
+  </data>
+  <data name="Bootloader" xml:space="preserve">
+    <value>Bootloader</value>
+  </data>
+  <data name="Bootloader.0" xml:space="preserve">
+    <value>Your device is unavailable.</value>
+  </data>
+  <data name="Bootloader.1" xml:space="preserve">
+    <value>Please click</value>
+  </data>
+  <data name="Bootloader.2" xml:space="preserve">
+    <value>here</value>
+  </data>
+  <data name="Bootloader.3" xml:space="preserve">
+    <value>to update your firmware in order to restore functionality.</value>
+  </data>
+  <data name="SearchActions" xml:space="preserve">
+    <value>Search actions</value>
+  </data>
+  <data name="Update_Dock_Alert_2" xml:space="preserve">
+    <value>Note: peripherals connecting with this dock may not be available during the update process</value>
+  </data>
+  <data name="Color.14" xml:space="preserve">
+    <value>Color Preset</value>
+  </data>
+  <data name="HDR" xml:space="preserve">
+    <value>HDR</value>
+  </data>
+  <data name="DeviceID" xml:space="preserve">
+    <value>Device ID</value>
+  </data>
+  <data name="Brightness.17" xml:space="preserve">
+    <value>This feature enables our eyes to adapt to a desired setting</value>
+  </data>
+  <data name="Kvm.30" xml:space="preserve">
+    <value>Easy and secure file-sharing between PCs (Mac &amp; Windows)</value>
+  </data>
+  <data name="WebCameraCapture.0" xml:space="preserve">
+    <value>3-2-1 Countdown</value>
+  </data>
+  <data name="WebCameraCapture.1" xml:space="preserve">
+    <value>Framing Grid</value>
+  </data>
   <data name="Brightness.21" xml:space="preserve">
     <value>Applies brightness/luminance, contrast, schedule settings\nand color presets to the connected monitors</value>
   </data>
@@ -3491,35 +3524,17 @@
   <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers" xml:space="preserve">
     <value>Firmware update of multiple USB wireless receivers of same kind is not supported. Keep one target USB wireless receiver connected.</value>
   </data>
-  <data name="NoDeviceDetected" xml:space="preserve">
-    <value>NO DEVICE DETECTED</value>
-  </data>
-  <data name="Add1sDevice" xml:space="preserve">
-    <value>Add your first device</value>
-  </data>
-  <data name="Connect" xml:space="preserve">
-    <value>Connect</value>
-  </data>
   <data name="DisplayAlert" xml:space="preserve">
     <value>The monitor is currently busy. You can only control limited functions.</value>
   </data>
   <data name="ColorMsg.0" xml:space="preserve">
     <value>Color is not available when</value>
   </data>
-  <data name="WebcamMPS.0" xml:space="preserve">
-    <value>To access Microsoft Presence Sensing features, visit Windows Settings</value>
-  </data>
-  <data name="CompatibleFirmware" xml:space="preserve">
-    <value>Compatible Firmware</value>
-  </data>
   <data name="LearnMoreMsg.0" xml:space="preserve">
     <value>Scan to download the Dell Audio app to customize your headset</value>
   </data>
   <data name="EzArrange.11" xml:space="preserve">
     <value>Save Icon Images...</value>
-  </data>
-  <data name="ColorMsg.1" xml:space="preserve">
-    <value>To access presence sensing features, use the link below to download compatible webcam firmware</value>
   </data>
   <data name="Camera.26" xml:space="preserve">
     <value>Connect your monitor via USB 3.0 to enable 4K UHD resolution.</value>
@@ -3569,32 +3584,11 @@
   <data name="CustomizeSideButtonFCaption" xml:space="preserve">
     <value>Customize Side Button Forward</value>
   </data>
-  <data name="Bootloader" xml:space="preserve">
-    <value>Bootloader</value>
-  </data>
-  <data name="Bootloader.0" xml:space="preserve">
-    <value>Your device is unavailable.</value>
-  </data>
-  <data name="Bootloader.1" xml:space="preserve">
-    <value>Please click</value>
-  </data>
-  <data name="Bootloader.2" xml:space="preserve">
-    <value>here</value>
-  </data>
-  <data name="Bootloader.3" xml:space="preserve">
-    <value>to update your firmware in order to restore functionality.</value>
-  </data>
-  <data name="SearchActions" xml:space="preserve">
-    <value>Search actions</value>
-  </data>
   <data name="Incompatible" xml:space="preserve">
     <value>This device is not compatible with Dell Display and Peripheral Manager</value>
   </data>
   <data name="WalkThroughPen_Sub.1_1" xml:space="preserve">
     <value>Your pen is charged X%.\n\nTo charge your pen fully, make sure it is attached to your tablet screen. You will be notified once the pen is done charging.\n\nLow battery notifications will appear once the battery charge is below 10%. </value>
-  </data>
-  <data name="Update_Dock_Alert_2" xml:space="preserve">
-    <value>Note: peripherals connecting with this dock may not be available during the update process</value>
   </data>
   <data name="Save_dock_asset_report" xml:space="preserve">
     <value>Save dock asset report</value>
@@ -3614,12 +3608,6 @@
   <data name="Update_Webcam_Alert2" xml:space="preserve">
     <value>This update will enable presence sensing controls through Microsoft settings in systems: Win 11 22H2 or higher, and with OS build
 22621 or higher</value>
-  </data>
-  <data name="Color.14" xml:space="preserve">
-    <value>Color Preset</value>
-  </data>
-  <data name="HDR" xml:space="preserve">
-    <value>HDR</value>
   </data>
   <data name="Update_Display_Alert_3" xml:space="preserve">
     <value>Please connect your monitor using the USB upstream port to avoid errors during the firmware update process</value>
@@ -3644,5 +3632,17 @@
   </data>
   <data name="InputValidationTooltip.5" xml:space="preserve">
     <value>spacebar</value>
+  </data>
+  <data name="WebCameraSettings.28" xml:space="preserve">
+    <value>Background Blur</value>
+  </data>
+  <data name="WebCameraSettings.29" xml:space="preserve">
+    <value>WebCameraSettings.28 tooltip</value>
+  </data>
+  <data name="WebCameraSettings.30" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="WebCameraSettings.31" xml:space="preserve">
+    <value>Portrait</value>
   </data>
 </root>

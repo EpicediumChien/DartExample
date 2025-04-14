@@ -52,7 +52,7 @@ namespace DDPM.UI.Common.Tests
         {
             // Assert
             Assert.That(deviceBasePage, Is.Not.Null);
-            Assert.That(deviceBasePage.DataContext, Is.EqualTo(privateObject.GetFieldOrProperty("viewModel")));
+            Assert.That(deviceBasePage.DataContext, Is.EqualTo(privateObject.GetFieldOrProperty("_viewModel")));
 
         }
 
@@ -63,8 +63,8 @@ namespace DDPM.UI.Common.Tests
             try
             {
                 deviceBasePage.SetModuleGroupList(groupList);
-                DeviceBasePageViewModel viewModelam = (DeviceBasePageViewModel)privateObject.GetFieldOrProperty("viewModel");
-                Assert.That(deviceBasePage.DataContext, Is.EqualTo(privateObject.GetFieldOrProperty("viewModel")));
+                DeviceBasePageViewModel viewModelam = (DeviceBasePageViewModel)privateObject.GetFieldOrProperty("_viewModel");
+                Assert.That(deviceBasePage.DataContext, Is.EqualTo(privateObject.GetFieldOrProperty("_viewModel")));
                 Assert.That(viewModelam.ModuleGroups, Is.EqualTo(groupList));
                 Assert.True(true);
             }
@@ -80,7 +80,7 @@ namespace DDPM.UI.Common.Tests
             try
             {
                 deviceBasePage.SetLeftFrameWidth(2.0);
-                DeviceBasePageViewModel viewModelam = (DeviceBasePageViewModel)privateObject.GetFieldOrProperty("viewModel");
+                DeviceBasePageViewModel viewModelam = (DeviceBasePageViewModel)privateObject.GetFieldOrProperty("_viewModel");
                 Assert.That(viewModelam.LeftFrameWidth, Is.EqualTo(2));
                 Assert.True(true);
             }
@@ -97,7 +97,7 @@ namespace DDPM.UI.Common.Tests
             try
             {
                 deviceBasePage.SetHomeDevices(devices);
-                DeviceBasePageViewModel viewModelam = (DeviceBasePageViewModel)privateObject.GetFieldOrProperty("viewModel");
+                DeviceBasePageViewModel viewModelam = (DeviceBasePageViewModel)privateObject.GetFieldOrProperty("_viewModel");
                 Assert.That(viewModelam.HomeDevices, Is.EqualTo(devices));
                 Assert.True(true);
             }
@@ -114,7 +114,7 @@ namespace DDPM.UI.Common.Tests
             try
             {
                 deviceBasePage.SetSelectedHomeDevice(devices);
-                DeviceBasePageViewModel viewModelam = (DeviceBasePageViewModel)privateObject.GetFieldOrProperty("viewModel");
+                DeviceBasePageViewModel viewModelam = (DeviceBasePageViewModel)privateObject.GetFieldOrProperty("_viewModel");
                 Assert.That(viewModelam.SelectedHomeDevice, Is.EqualTo(devices));
                 Assert.True(true);
             }
@@ -142,9 +142,9 @@ namespace DDPM.UI.Common.Tests
             {
                 var deviceBasePageViewModel = new DeviceBasePageViewModel() { ModuleGroups = new List<ModuleGroup>() { new ModuleGroup(), new ModuleGroup() } };
                 var privateobject = new PrivateObject(deviceBasePageViewModel);
-                privateObject.SetFieldOrProperty("viewModel", deviceBasePageViewModel);
-                DeviceBasePageViewModel viewModelam = (DeviceBasePageViewModel)privateObject.GetFieldOrProperty("viewModel");
-                viewModelam = (DeviceBasePageViewModel)privateObject.GetFieldOrProperty("viewModel");
+                privateObject.SetFieldOrProperty("_viewModel", deviceBasePageViewModel);
+                DeviceBasePageViewModel viewModelam = (DeviceBasePageViewModel)privateObject.GetFieldOrProperty("_viewModel");
+                viewModelam = (DeviceBasePageViewModel)privateObject.GetFieldOrProperty("_viewModel");
                 deviceBasePage.SelectGroupByIndex(1);
                 Assert.That(viewModelam.GroupSelectedIndex, Is.EqualTo(1));
                 Assert.True(true);
@@ -162,7 +162,7 @@ namespace DDPM.UI.Common.Tests
             try
             {
                 deviceBasePage.SetDefaultLeftView(leftView);
-                DeviceBasePageViewModel viewModelam = (DeviceBasePageViewModel)privateObject.GetFieldOrProperty("viewModel");
+                DeviceBasePageViewModel viewModelam = (DeviceBasePageViewModel)privateObject.GetFieldOrProperty("_viewModel");
                 Assert.That(viewModelam.DefaultLeftView, Is.EqualTo(leftView));
                 Assert.That(viewModelam.DefaultLeftView.DataContext, Is.EqualTo(viewModelam.SelectedHomeDevice));
                 Assert.True(true);
@@ -178,12 +178,12 @@ namespace DDPM.UI.Common.Tests
         {
             var deviceBasePageViewModel = new DeviceBasePageViewModel() { ModuleGroups = new List<ModuleGroup>() { new ModuleGroup(), new ModuleGroup() } };
             var privateobject = new PrivateObject(deviceBasePageViewModel);
-            privateObject.SetFieldOrProperty("viewModel", deviceBasePageViewModel);
+            privateObject.SetFieldOrProperty("_viewModel", deviceBasePageViewModel);
             var result = deviceBasePage.SetLockModuleGroup(Constants.GroupName_InputSource, true);
             Assert.That(result, Is.EqualTo(false));
 
             deviceBasePageViewModel = new DeviceBasePageViewModel() { ModuleGroups = new List<ModuleGroup>() { new ModuleGroup() { GroupName = "InputSource" }, new ModuleGroup() } };
-            privateObject.SetFieldOrProperty("viewModel", deviceBasePageViewModel);
+            privateObject.SetFieldOrProperty("_viewModel", deviceBasePageViewModel);
             result = deviceBasePage.SetLockModuleGroup(Constants.GroupName_InputSource, true);
             Assert.That(result, Is.EqualTo(true));
         }

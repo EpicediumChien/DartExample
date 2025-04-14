@@ -498,9 +498,6 @@
   <data name="Brightness.16" xml:space="preserve">
     <value>Übergangslänge</value>
   </data>
-  <data name="Brightness.17" xml:space="preserve">
-    <value>TEST.</value>
-  </data>
   <data name="Min" xml:space="preserve">
     <value>Min.</value>
   </data>
@@ -1035,9 +1032,6 @@
   <data name="Kvm.29" xml:space="preserve">
     <value>Einrichtung über das Netzwerk</value>
   </data>
-  <data name="Kvm.30" xml:space="preserve">
-    <value>Einfache Dateifreigabe zwischen PCs (Mac &amp; Windows)</value>
-  </data>
   <data name="Kvm.31" xml:space="preserve">
     <value>KVM mit offenem Netzwerk</value>
   </data>
@@ -1181,12 +1175,6 @@
   </data>
   <data name="SpeakerInteractions.5" xml:space="preserve">
     <value>Skype for Business</value>
-  </data>
-  <data name="WebCameraCapture.0" xml:space="preserve">
-    <value>3-2-1 Countdown</value>
-  </data>
-  <data name="WebCameraCapture.1" xml:space="preserve">
-    <value>Rahmenraster</value>
   </data>
   <data name="WebCameraCapture.2" xml:space="preserve">
     <value>Öffnen</value>
@@ -3504,19 +3492,137 @@
   <data name="HDR" xml:space="preserve">
     <value>HDR</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+    <value>Geräte-ID</value>
+  </data>
+  <data name="Brightness.17" xml:space="preserve">
+    <value>Diese Funktion ermöglicht es unseren Augen, sich an eine gewünschte Einstellung anzupassen.</value>
+  </data>
+  <data name="Kvm.30" xml:space="preserve">
+    <value>Einfache und sichere Dateifreigabe zwischen PCs (Mac und Windows)</value>
+  </data>
+  <data name="WebCameraCapture.0" xml:space="preserve">
+    <value>3-2-1 Countdown</value>
+  </data>
+  <data name="WebCameraCapture.1" xml:space="preserve">
+    <value>Rahmenraster</value>
+  </data>
+  <data name="Brightness.21" xml:space="preserve">
+    <value>Wendet Helligkeit/Luminanz, Kontrast, Zeitplaneinstellungen\nund Farbvoreinstellungen auf die angeschlossenen Monitore an</value>
+  </data>
+  <data name="slot" xml:space="preserve">
+    <value>Verfügbare Steckplätze</value>
+  </data>
+  <data name="Hotkey.10" xml:space="preserve">
+    <value>Der Hotkey steht in Konflikt mit einem Hotkey, der in einer anderen Anwendung konfiguriert ist. Verwenden Sie eine andere Tastenkombination.</value>
+  </data>
+  <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers" xml:space="preserve">
+    <value>Das Firmware-Update mehrerer USB-WLAN-Empfänger derselben Art wird nicht unterstützt. Lassen Sie einen USB-Empfänger angeschlossen.</value>
+  </data>
+  <data name="DisplayAlert" xml:space="preserve">
+    <value>Der Monitor ist derzeit ausgelastet. Sie können nur eingeschränkte Funktionen steuern.</value>
+  </data>
+  <data name="ColorMsg.0" xml:space="preserve">
+    <value>Farbe ist nicht verfügbar, wenn</value>
+  </data>
+  <data name="LearnMoreMsg.0" xml:space="preserve">
+    <value>Scannen, um die Dell Audio-App herunterzuladen und das Headset anzupassen.</value>
+  </data>
+  <data name="EzArrange.11" xml:space="preserve">
+    <value>Symbolbilder speichern...</value>
+  </data>
+  <data name="Camera.26" xml:space="preserve">
+    <value>Schließen Sie Ihren Monitor über USB 3.0 an, um 4K UHD-Auflösung zu aktivieren.</value>
+  </data>
+  <data name="Camera.27" xml:space="preserve">
+    <value>Schließen Sie Ihre Webcam über USB 3.0 an, um 4K UHD-Auflösung zu aktivieren.</value>
+  </data>
+  <data name="WebCameraPresenceDetection.12" xml:space="preserve">
+    <value>Sekunden</value>
+  </data>
+  <data name="WebCameraPresenceDetection.13" xml:space="preserve">
+    <value>Minuten</value>
+  </data>
+  <data name="Cardi.1" xml:space="preserve">
+    <value>Mikrofongeräuschunterdrückung</value>
+  </data>
+  <data name="Cardi.2" xml:space="preserve">
+    <value>Multimedia-Voreinstellungen</value>
+  </data>
+  <data name="Cardi.3" xml:space="preserve">
+    <value>Bei Anrufen werden die Funktionen automatisch angewendet.</value>
+  </data>
+  <data name="Cardi.4" xml:space="preserve">
+    <value>Die Funktionen werden automatisch angewendet, wenn Sie Musik und andere Inhalte hören.</value>
+  </data>
+  <data name="Cardi.5" xml:space="preserve">
+    <value>Begrenzt das Geräusch Ihres Mikrofons am nahen Ende, um ein besseres Audioerlebnis für andere zu schaffen.</value>
+  </data>
+  <data name="Cardi.6" xml:space="preserve">
+    <value>Begrenzt das Geräusch Ihres Mikrofons am entfernten Ende, um ein besseres Audioerlebnis für Sie zu schaffen.</value>
+  </data>
+  <data name="Cardi.7" xml:space="preserve">
+    <value>Anpassung des Equalizers an die gewählte Voreinstellung</value>
+  </data>
+  <data name="CustomizeScrollTiltLCaption" xml:space="preserve">
+    <value>Anpassen der Bildlaufneigung nach links</value>
+  </data>
+  <data name="CustomizeScrollTiltRCaption" xml:space="preserve">
+    <value>Anpassen der Bildlaufneigung nach rechts</value>
+  </data>
+  <data name="CustomizeScrollWheelCaption" xml:space="preserve">
+    <value>Passen Sie die Klickfunktion des Scrollrads an.</value>
+  </data>
+  <data name="CustomizeSideButtonBCaption" xml:space="preserve">
+    <value>Seitenknopf hinten anpassen</value>
+  </data>
+  <data name="CustomizeSideButtonFCaption" xml:space="preserve">
+    <value>Seitenknopf vorn anpassen</value>
+  </data>
+  <data name="Incompatible" xml:space="preserve">
+    <value>Dieses Gerät ist nicht mit Dell Display und Peripheral Manager kompatibel.</value>
+  </data>
+  <data name="WalkThroughPen_Sub.1_1" xml:space="preserve">
+    <value>Ihr Stift ist zu X % geladen.\n\nUm den Stift vollständig aufzuladen, stellen Sie sicher, dass er am Display Ihres Tablets befestigt ist. Sie werden benachrichtigt, sobald der Ladevorgang des Stifts abgeschlossen ist.\n\nSobald die Akkuladung unter 10 % liegt, werden Benachrichtigungen über niedrigen Akkustand angezeigt. </value>
+  </data>
+  <data name="Save_dock_asset_report" xml:space="preserve">
+    <value>Dockingbestandsbericht speichern</value>
+  </data>
+  <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers2" xml:space="preserve">
+    <value>Update für mehrere USB-Wireless-Empfänger derselben Art wird nicht unterstützt. Lassen Sie einen USB-Empfänger angeschlossen.</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>Je nach Monitormodell und Konfiguration (z. B. Verbindungsart) kann das Update ca. 10 bis 30 Minuten dauern. Es kann länger dauern, wenn Sie mehrere Monitore desselben Modells aktualisieren. Schalten Sie den Bildschirm nicht aus und trennen Sie keine Kabel, während das Update heruntergeladen wird.</value>
+  </data>
+  <data name="Update_Mouse_Alert2" xml:space="preserve">
+    <value>Drücken Sie eine Taste auf diesem Gerät, um dieses Update zu aktivieren.</value>
+  </data>
+  <data name="Update_BatteryLow_Alert2" xml:space="preserve">
+    <value>Der Akkustand auf diesem Gerät ist niedrig. Ersetzen/laden Sie den Akku auf, um dieses Update zu aktivieren.</value>
+  </data>
+  <data name="Update_Webcam_Alert2" xml:space="preserve">
+    <value>Mit diesem Update wird die Steuerung der Anwesenheitserkennung über die Microsoft-Einstellungen in Systemen: Win 11 22H2 oder höher und mit BS-Build
+22621 oder höher</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>Schließen Sie den Monitor über den vorgelagerten USB-Anschluss an, um Fehler während des Firmware-Updates zu vermeiden.</value>
+  </data>
   <data name="UnableToLoadDdpm" xml:space="preserve">
-    <value />
+    <value>Dell Display und Peripheral Manager-App können derzeit nicht geladen werden. Schließen Sie die App, und versuchen Sie es erneut.</value>
   </data>
   <data name="InputValidationTooltip.1" xml:space="preserve">
-    <value />
+    <value>Verwenden Sie maximal {0} Zeichen</value>
   </data>
   <data name="InputValidationTooltip.2" xml:space="preserve">
-    <value />
+    <value>Verwenden Sie nur alphanumerische Zeichen und die folgenden Sonderzeichen {0}</value>
   </data>
   <data name="InputValidationTooltip.3" xml:space="preserve">
-    <value />
+    <value>Der Dateipfad hat entweder die maximal 260 Zeichen überschritten, verwendet einen reservierten Dateinamen oder enthält ungültige Zeichen &lt; &amp;gt; : &quot; / \ | ?</value>
   </data>
   <data name="InputValidationTooltip.4" xml:space="preserve">
-    <value />
+    <value>Geben Sie nur einen vollständigen URL-Pfad ein, keinen relativen Pfad</value>
+  </data>
+  <data name="ErrorMsg.0" xml:space="preserve">
+    <value>Dell Display und Peripheral Manager-App können derzeit nicht geladen werden. Schließen Sie die App, und versuchen Sie es erneut.</value>
   </data>
 </root>

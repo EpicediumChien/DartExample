@@ -59,7 +59,7 @@ namespace DDPM.UI.Module.EzArrange.Tests
             logMock = new Mock<ILog>();
             log = logMock.Object;
             vmDisplay = new DisplayViewModel(console, log, deviceManagerSA, easyArrange);
-            HomeDevice.DeviceManagerSA= deviceManagerSAMock.Object;
+            HomeDevice.DeviceManagerSA = deviceManagerSAMock.Object;
             //Robert_Lin, 2025-1-7, IsEAFunctionEnabled is deleted
             //deviceManagerSAMock.Setup(x => x.GetEAFunctionEnabled()).Returns(Task.FromResult(new ObjGetVCP() { result = true ,value=true}));
             ezArrangeModule = new EzArrangeModule(new DisplayViewModel(console, log, deviceManagerSA, easyArrange) { SelectedHomeDevice = new HomeDevice() { MonitorInfo = new MonitorInfo() { DisplayName = "AA" } } });
@@ -97,7 +97,11 @@ namespace DDPM.UI.Module.EzArrange.Tests
         public void TestGetRightView()
         {
             // Act
-            var _vmDisplay = new DisplayViewModel(console, log, deviceManagerSA, easyArrange) { SelectedHomeDevice = new HomeDevice() {MonitorInfo=new MonitorInfo() { DisplayName="displayName"}, vmEzArrange = new EzArrangeViewModel(new HomeDevice()) { SelectedSplitItem =new Common.UserControls.SplitItem()} } };
+            var moduleOwnerMock = new Mock<IModuleOwner>();
+            var moduleOwner = moduleOwnerMock!.Object;
+            DdpmCommonHelper.ModuleOwner = moduleOwner;
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice() { MonitorInfo = new MonitorInfo() { DisplayName = "displayName" } });
+            var _vmDisplay = new DisplayViewModel(console, log, deviceManagerSA, easyArrange) { SelectedHomeDevice = new HomeDevice() { MonitorInfo = new MonitorInfo() { DisplayName = "displayName" }, vmEzArrange = new EzArrangeViewModel(new HomeDevice()) { SelectedSplitItem = new Common.UserControls.SplitItem() } } };
             privateObject.SetFieldOrProperty("_vmDisplay", _vmDisplay);
             var result = ezArrangeModule!.GetRightView();
             // Assert
@@ -148,7 +152,7 @@ namespace DDPM.UI.Module.EzArrange.Tests
         {
             privateObject.SetFieldOrProperty("isSelectChanged", true);
             try
-            {               
+            {
                 ezArrangeModule.OnActivated();
                 Assert.True(true);
                 Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
