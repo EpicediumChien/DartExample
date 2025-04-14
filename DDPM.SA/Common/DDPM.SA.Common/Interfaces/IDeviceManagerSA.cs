@@ -119,6 +119,7 @@ namespace DDPM.SA.Common
 
         //Dean add 0612
         public Task<string> ReadCurrentColorPreset(MonitorInfo m, Guid guid = default, Priority priority = Priority.Low);
+
         //Jason add 0410
         Task<string> ReadCurrentColorPresettoVCP(MonitorInfo m, Guid guid = default, Priority priority = Priority.Low);
 
@@ -793,6 +794,7 @@ namespace DDPM.SA.Common
         public Task<bool> SaveHotkeySetting(MonitorInfo mo, HotkeyInfo info);
 
         public Task<bool> SaveHotkeyOptionOnly(HotkeySettings hotkeySettings);
+
         public Task<bool> SaveHotkeyOptionOnly(MonitorInfo mo, HotkeyOption hotkeyOption);
 
         public Task<HotkeyOption> ReadHotkeyOption(MonitorInfo mo);
@@ -864,6 +866,8 @@ namespace DDPM.SA.Common
         Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS);
 
         Task<String> CheckisShowSynchronize(MonitorInfo currentMoInfo, List<ALSConfig> alsSynchronizeList);
+
+        Task<bool> CheckIsSyncBriCon(MonitorInfo SourceMonitor, MonitorInfo TargetMonitor);
 
         #endregion public ALS functions
 
@@ -1193,7 +1197,9 @@ namespace DDPM.SA.Common
         Task<string> GetWebcamSerialNumber(string Guid);
 
         Task<int> GetBgBlur(string Guid);
+
         Task<bool> GetIsBgBlurEnable(string Guid);
+
         Task<bool> GetIsPropertyBgBlurSupported(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
@@ -1688,6 +1694,7 @@ namespace DDPM.SA.Common
         Task<bool> GetDTPProxyPluginReady();
 
         #region Get
+
         Task<HeadsetConnectionType> GetAirAudioConnectionTypeAsync(string Guid);
 
         Task<JArray> GetAirAudioDeviceItemsAsync();
@@ -1717,15 +1724,20 @@ namespace DDPM.SA.Common
         Task<string> GetAirAudioDeviceIdAsync(string Guid);
 
         Task<string> GetAirAudioDeviceNameAsync(string Guid);
+
         Task<string> GetAirAudioSerialNumberCaseAsync(string Guid);
 
         Task<string> GetAirAudioBatteryStatusLeftAsync(string Guid);
+
         Task<string> GetAirAudioBatteryStatusRightAsync(string Guid);
+
         Task<string> GetAirAudioBatteryStatusCaseAsync(string Guid);
+
         Task<DeviceInterfaceType> GetAirAudioDeviceInterfaceTypeAsync(string Guid);
 
         //Task<bool> GetAirAudioIsWearDetectionAsync(string Guid);
         Task<bool> GetAirAudioIsAutoPowerOffEnabledAsync(string Guid);
+
         Task<bool> GetAirAudioMuteStatusAsync(string Guid);
 
         Task<bool> GetAirAudioBoomMicAsync(string Guid);
@@ -1777,10 +1789,13 @@ namespace DDPM.SA.Common
         Task<bool> GetAirAudioIsWearDetectionPauseMusicEnabledAsync(string Guid);
 
         Task<bool> GetAirAudioIsWearDetectionMuteMicEnabledAsync(string Guid);
+
         Task<bool> GetAirAudioIsWearDetectionAnswerCallsEnabledAsync(string Guid);
+
         Task<bool> GetAirAudioIsBatteryLevelSupportedAsync(string Guid);
 
         Task<int> GetAirAudioWearDetectionSensitivityAsync(string Guid);
+
         Task<int> GetAirAudioAutoPowerOffIntervalAsync(string Guid);
 
         Task<int> GetAirAudioIsWearDetectionQuickPauseAsync(string Guid);
@@ -1818,9 +1833,13 @@ namespace DDPM.SA.Common
         Task<int> GetAirAudioODMIdAsync(string Guid);
 
         Task<int> GetAirAudioBatteryLevelLeftAsync(string Guid);
+
         Task<int> GetAirAudioBatteryLevelRightAsync(string Guid);
+
         Task<int> GetAirAudioBatteryLevelCaseAsync(string Guid);
+
         Task<int> GetAirAudioMaxAllowedPariedHost(string Guid);
+
         #endregion Get
 
         #region Set
@@ -1874,9 +1893,11 @@ namespace DDPM.SA.Common
         Task<bool> SetFactoryResetAsyncValueForAirAudioAsync(string Guid, bool newValue);
 
         Task<bool> SetAirAudioIsAutoPowerOffEnabledAsync(string Guid, bool newValue);
+
         Task<bool> SetAirAudioIsWearDetectionAnswerCallsEnabledAsync(string Guid, bool newValue);
 
         Task<bool> SetAirAudioAutoPowerOffIntervalAsync(string Guid, int newValue);
+
         #endregion Set
 
         #endregion IAirAudioCommodity

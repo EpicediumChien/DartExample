@@ -453,7 +453,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             writelog($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:KvmAutoApply OFF");
                             Debug.WriteLine($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:KvmAutoApply OFF");
                         }
-
                     }
                     else
                     {
@@ -7265,6 +7264,75 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(_disDevHelper.CheckisShowSynchronize(_DisplayManagerPlugin, _AllInfoMonitors, currentMoInfo, alsSynchronizeList).Result);
         }
 
+        public Task<bool> CheckIsSyncBriCon(MonitorInfo SourceMonitor, MonitorInfo TargetMonitor)
+        {
+            var IsSourceLumiumce = false;
+            var IsTargetLumiumce = false;
+
+            if (SourceMonitor is not null && TargetMonitor is not null)
+            {
+                if (_DisplayManagerPlugin is not null)
+                {
+                    List<ALSConfig> ALSConfig = _DisplayManagerPlugin.GetAllExistAlsConfig().Result;
+
+                    if (SourceMonitor.CapabilityDic.ContainsKey("12")) IsSourceLumiumce = true;
+                    else IsSourceLumiumce = false;
+
+                    if (TargetMonitor.CapabilityDic.ContainsKey("12")) IsTargetLumiumce = true;
+                    else IsTargetLumiumce = false;
+
+                    var rstring = CheckisShowSynchronize(SourceMonitor, ALSConfig).Result;
+
+                    switch (rstring.ToUpper(CultureInfo.InvariantCulture))
+                    {
+                        case "A":
+                            {
+                                if (IsSourceLumiumce)
+                                    return Task.FromResult(IsTargetLumiumce ? true : false);
+                                else
+                                    return Task.FromResult(IsTargetLumiumce ? false : true);
+                            }
+                        case "B":
+                            {
+                                if (IsSourceLumiumce)
+                                    return Task.FromResult(IsTargetLumiumce ? true : false);
+                                else
+                                    return Task.FromResult(IsTargetLumiumce ? false : true);
+                            }
+                        case "C":
+                            {
+                                if (IsSourceLumiumce)
+                                    return Task.FromResult(IsTargetLumiumce ? true : false);
+                                else
+                                    return Task.FromResult(IsTargetLumiumce ? false : true);
+                            }
+                        case "D":
+                            {
+                                return Task.FromResult(false);
+                            }
+                        case "E":
+                            {
+                                return Task.FromResult(false);
+                            }
+                        default:
+                            return Task.FromResult(false);
+                    }
+                }
+                else
+                {
+                    writelog("[CheckIsSyncBriCon] _DisplayManagerPlugin is null.");
+                    return Task.FromResult(false);
+                }
+            }
+            else
+            {
+                if (SourceMonitor is null) writelog("[CheckIsSyncBriCon] SourceMonitor is null.");
+                if (TargetMonitor is null) writelog("[CheckIsSyncBriCon] TargetMonitor is null.");
+
+                return Task.FromResult(false);
+            }
+        }
+
         #endregion
 
         #region NKVM implementation
@@ -7784,7 +7852,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
 
-
             if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
             {
                 writelog($"@ WriteEAMonitorSettings(model={model}, serviceTage={serviceTag}) OK.");
@@ -7818,7 +7885,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("@ ReadEAMonitorSettings: _SettingsPlugin is null.");
                 return Task.FromResult(defaultOutput);
             }
-
 
             //Read all settings for this model
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
@@ -14228,6 +14294,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             hotkeyOption = monitorSettings.HotkeyOption;
             return Task.FromResult(hotkeyOption);
         }
+
         public Task<bool> SaveHotkeyOptionOnly(HotkeySettings hotkeySettings)
         {
             List<HotkeySettings> settings = ReadHotkeySettings().Result;
@@ -16624,7 +16691,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
                     writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF,[0xE0,r={getvalue},w={(uint)getvalue}] and setVcp: " + (ret ? "success" : "fail"));
                 }
-
             }
             else
             {
@@ -19055,7 +19121,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         });
                                         /*if (_OSD_Controler.ExistMultipleOSD())
                                         {
-                                            
                                         }
                                         else
                                         {
@@ -19102,7 +19167,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         });
                                         /*if (_OSD_Controler.ExistMultipleOSD())
                                         {
-                                            
                                         }
                                         else
                                         {
@@ -19243,7 +19307,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     {
                                         if (State)
                                         {
-
                                             string tmpCapsLockOnGuid = Guid.NewGuid().ToString();
                                             if (_OSD_Controler.ExistMultipleOSD())
                                             {
@@ -19331,7 +19394,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         });
                                         /*if (_OSD_Controler.ExistMultipleOSD())
                                         {
-                                            
                                         }
                                         else
                                         {
