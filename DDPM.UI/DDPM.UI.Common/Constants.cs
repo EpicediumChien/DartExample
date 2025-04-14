@@ -92,6 +92,11 @@ public class Constants
     /// DDPM.UI.Plugin.Bootloader PluginId
     /// </summary>
     public const string BootloaderPluginId = "{7EA1CB12-F945-4CAB-915B-BD4C3D25259E}";
+
+    /// <summary>
+    /// DDPM.UI.Plugin.ExitAppPlugin PluginId
+    /// </summary>
+    public const string ExitAppPluginId = "{10AFA730-380B-4F3F-8427-E96392FC2796}";
     #endregion Plugin IDs
 
     // (Move to DDPM.SA.Common/Display/EAEMConstants.cs)
@@ -141,4 +146,8 @@ public class Constants
     public const string ModuleName_DisplayOthers = "DisplayOthersModule";
 
     #endregion  ModuleNames - DisplayPlugin
+
+    #region General Constants
+    public const string DTH_ServiceName = "DellTechHub";
+    #endregion General Constants
 }

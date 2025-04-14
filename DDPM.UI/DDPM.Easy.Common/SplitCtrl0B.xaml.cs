@@ -536,5 +536,15 @@ namespace DDPM.Easy.Common
             Dispose(false);
         }
         #endregion
+
+        #region UserControl event handlers
+        private void uc_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (this.IsVisible)
+            {
+                ((ISplitCtrl)this).RefreshCellRects();
+            }
+        }
+        #endregion UserControl event handlers
     }
 }

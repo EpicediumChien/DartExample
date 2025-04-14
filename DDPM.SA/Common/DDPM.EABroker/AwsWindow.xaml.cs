@@ -1091,6 +1091,11 @@ namespace DDPM.EABroker
             }
             else
             {
+                if ((awsIcon.CellCount == 2) || (awsIcon.CellCount == 3))
+                    return true;
+                if (awsIcon.CtrlClass.Equals("SplitCtrl4A"))
+                    return true;
+
                 foreach (CellObj objCell in awsIcon.CellList)
                 {
                     if (objCell.CellBd == null)
@@ -1285,15 +1290,17 @@ namespace DDPM.EABroker
 
                     System.Windows.Point topLeft = new System.Windows.Point(left, top);
                     topLeft = icon0Canvas.PointToScreen(topLeft);
-                    cellBd.rect = new Rect(topLeft.X, topLeft.Y, cellBd.Width, cellBd.Height);
+                    cellBd.rect = new Rect(topLeft.X, 
+                        topLeft.Y, cellBd.Width, cellBd.Height);
 
                     icon0Canvas.Children.Add(cellBd);
                     Canvas.SetLeft(cellBd, left);
                     Canvas.SetTop(cellBd, top);
 
                     CellObj cellObj = new CellObj(text.Text, cellBd);
-                    cellObj.rc = new Rect(left, top, cellBd.Width, cellBd.Height);
-                    _vm.AwsIcon0.CellList.Add(cellObj);
+               //cellObj.rc = new Rect(left, top, cellBd.Width, cellBd.Height);
+                cellObj.rc = new Rect(topLeft.X + left, topLeft.Y + top, cellBd.Width, cellBd.Height);
+                _vm.AwsIcon0.CellList.Add(cellObj);
 
                     if (isHorzFit)
                     {

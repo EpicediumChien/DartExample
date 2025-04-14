@@ -119,6 +119,11 @@ namespace DDPM.EABroker
                         //Robert_Lin 2025-3-19, the ScreenIdWindows are not used in DDPM v2.0.1
                         //Remoarked below, don't create them.
                         //_vm.InitScreenIdWindows();
+                        if (_vm!=null)
+                        {
+                            _vm.RefreshScreenScale();
+                            ISplitCtrl.ScreenScale = _vm.ScreenScale;
+                        }
                     }
                     catch (Exception exIn)
                     {
