@@ -41,6 +41,11 @@ namespace DDPM.UI.Plugin.ViewModels
             _console = console;
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             DdpmCommonHelper.WriteUILog($"[AddDeviceViewModel] AddDeviceViewModel Start ...");
+            var _globalSettings = DdpmCommonHelper.DeviceManagerSA?.GetGlobalSettingParam().Result;
+            if (_globalSettings != null)
+            {
+                WacomVersion = _globalSettings.GlobalSetting_About.DriverVersion.Replace("N/A", "");
+            }
         }
 
         public bool IsPandoraPaired = false;

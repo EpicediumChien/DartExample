@@ -66,10 +66,10 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             }
             else
             {
-                _viewModel!.WacomVersion = DdpmCommonHelper.DeviceManagerSA.GetIsdDriverVersion().Result;
-                //_deviceHelper = DdpmCommonHelper.DeviceManagerSA.GetRFDongleDevices().Result;
+                //_viewModel!.WacomVersion = DdpmCommonHelper.DeviceManagerSA.GetIsdDriverVersion().Result;
+                _deviceHelper = DdpmCommonHelper.DeviceManagerSA.GetRFDongleDevices().Result;
 
-                //_viewModel?.PrepareDongleInfo(_deviceHelper.dongleInfo);
+                _viewModel?.PrepareDongleInfo(_deviceHelper.dongleInfo);
             }
             _log.Info($"[AddDevicePlugin] GetRFDongleAsync is invoked ... out");
         }
@@ -125,7 +125,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         {
             DdpmCommonHelper.WriteUILog($"AddDevice pugin OnShown Begin timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
             ConfigureServices();
-            GetRFDongleAsync();
+            //GetRFDongleAsync();
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceChanged;
