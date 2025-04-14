@@ -135,10 +135,6 @@ namespace DDPM.UI.Module.Kvm
                 {
                     vm.isNKVM = true;
                 }
-                else
-                {
-                    vm.isNoKVM = true;
-                }
             }
 
         }

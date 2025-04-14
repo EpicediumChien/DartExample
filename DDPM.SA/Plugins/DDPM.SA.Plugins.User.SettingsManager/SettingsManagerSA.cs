@@ -986,7 +986,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 DDPMImpExpSettings impexpSettings = new DDPMImpExpSettings();
                 impexpSettings.UserSettings = settings.UserSettings;
                 // PIMS-328022 to renew EzMemory
-                impexpSettings.UserSettings.EAProfile = new List<EAProfileDDPM>(); 
+                impexpSettings.UserSettings.EAProfile = new List<EAProfileDDPM>();
                 List<HotkeySettings> hotkeySettings = ReadHotkeySettings().Result;
                 if (hotkeySettings != null)
                 {
@@ -1082,7 +1082,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     userSettings = ImpExpSettings.UserSettings;
                     List<HotkeySettings> hotkeySettings = new List<HotkeySettings>();
                     hotkeySettings.Add(userSettings.HotkeySettings);
-                    if(!WriteHotkeySettings(hotkeySettings).Result)
+                    if (!WriteHotkeySettings(hotkeySettings).Result)
                     {
                         WriteLog("[DisplayImportSettings] WriteHotkeySettings is fail ");
                     }
@@ -1143,7 +1143,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                                         {
                                             if (!isSameModel)
                                             {
-                                                if (isEzMemoryOverride) return Task.FromResult(DisplayImportResultCode.DoneWithEzMemoryCleared);
+                                                if (isEzMemoryOverride)
+                                                    return Task.FromResult(DisplayImportResultCode.DoneWithEzMemoryCleared);
                                                 return Task.FromResult(DisplayImportResultCode.Done);
                                             }
                                         }
@@ -1208,10 +1209,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 if (File.Exists(path))
                 {
-                    if(DDMMonitorSettings.restoreDDMMonitorSettings(ref DDMmonitorsettings, path))
+                    if (DDMMonitorSettings.restoreDDMMonitorSettings(ref DDMmonitorsettings, path))
                     {
                         return Task<bool>.FromResult(true);
-                    } 
+                    }
                     else
                     {
                         WriteLog($"[ReadDDMMonitorSettings] restoreDDMMonitorSettings failed");
@@ -1220,7 +1221,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 else
                     WriteLog($"[ReadDDMMonitorSettings] file not exist");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 WriteLog($"[ReadDDMMonitorSettings] restoreDDMMonitorSettings exception: {ex.Message}");
             }
@@ -1234,7 +1235,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 if (File.Exists(path))
                 {
-                    if(DDMUserSettings.restoreDDMUserSettings(ref DDMusersettings, path))
+                    if (DDMUserSettings.restoreDDMUserSettings(ref DDMusersettings, path))
                     {
                         return Task<bool>.FromResult(true);
                     }
@@ -1246,7 +1247,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 else
                     WriteLog($"[ReadDDMUserSettings] file not exist");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 WriteLog($"[ReadDDMUserSettings] restoreDDMUserSettings exception: {ex.Message}");
             }
@@ -1536,43 +1537,46 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         public Task<DDPMImpExpSettings> ReadImportSettingsFile(string path)
         {
             DDPMImpExpSettings? ImpSettings = null;// new DDPMImpExpSettings();
+            string strReadJson = string.Empty;
+            string pathTrimmed = path?.Trim() ?? string.Empty;
 
-            if (!string.IsNullOrEmpty(path))
+            #region Check export file path
+            if (string.IsNullOrEmpty(pathTrimmed) || !File.Exists(pathTrimmed))
             {
-                if (File.Exists(path))
-                {
-                    //Elsa Add Security
-                    string FileInfo;
-                    if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
-                    {
-                        WriteLog($"{nameof(ReadImportSettingsFile)} {FileInfo}");
-                        return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
-                    }
-                    string strReadJson = string.Empty;
-
-                    //security SA
-                    string info;
-                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(path, out info);//, false);
-
-                    if (strReadJson == string.Empty || strReadJson.Length == 0)
-                    {
-                        WriteLog("[ReadImportSettingsFile] strReadJson is empty or length is 0.");
-                        return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
-                    }
-                    try
-                    {
-                        ImpSettings = RunImpExpDeserializeObject(strReadJson);
-                    }
-                    catch (Exception ex)
-                    {
-                        WriteLog($"[ReadImportSettingsFile] exception: {ex.Message}");
-                    }
-                }
-                else
-                {
-                    WriteLog("[ReadImportSettingsFile] file isn't exist : " + path);
-                }
+                WriteLog("[ReadImportSettingsFile] file isn't exist : " + path);
+                WriteLog($"[ReadImportSettingsFile] filePath check with spaces : \"{path}\"");
+                return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
             }
+
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+            {
+                WriteLog($"{nameof(ReadImportSettingsFile)} {FileInfo}");
+                return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
+            }
+            #endregion 
+
+            #region Check and read exported file JSON
+            //security SA
+            string info;
+            strReadJson = DDPMFileSecurity.GetSerializedJsonString(path, out info);//, false);
+
+            if (string.IsNullOrWhiteSpace(strReadJson))
+            {
+                WriteLog("[ReadImportSettingsFile] strReadJson is empty or length is 0.");
+                return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
+            }
+
+            try
+            {
+                ImpSettings = RunImpExpDeserializeObject(strReadJson);
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"[ReadImportSettingsFile] exception: {ex.Message}");
+            }
+            #endregion
+
             return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
         }
 
@@ -1711,7 +1715,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                             WriteLog($"[ReadGlobalSettings] ver result: {_settingsAccessInfoVer}");
                         }
 
-                        if(_GlobalSettingParam != null)
+                        if (_GlobalSettingParam != null)
                             _GlobalSettingParam.GlobalSetting_About.SWVersion = _settingsAccessInfoVer;
                     }
                     catch (Exception ex)
@@ -2360,13 +2364,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 else
                 {
                     WriteLog($"[User setting plugin] WARNING: un-defined registry hive ({hive})");
-                    return Task.FromResult(resvalue); ;
+                    return Task.FromResult(resvalue);
                 }
             }
             catch (Exception e)
             {
                 WriteLog($"[User setting plugin] WARNING: read registry cause exception ({e.Message})");
-                return Task.FromResult(resvalue); ;
+                return Task.FromResult(resvalue);
             }
         }
 

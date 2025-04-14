@@ -16,6 +16,7 @@ using VcpCore.Common;
 using System.Windows.Input;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
+using DDPM.UI.Resources.Helper;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Color.Tests")]
 namespace DDPM.UI.Module.Color
@@ -49,6 +50,7 @@ namespace DDPM.UI.Module.Color
         //Robert_Lin 2025-2-26 Narrator. The default value of KeyboardNavigation.TabNavigation is "Conntinue".
         //Howerever, I add a constant string below to restore back to original value.
         public const string DefaultTabNavigation = "Continue"; //"Cycle";
+        private bool _HDRStatus, _SupportedHDR, _HDREnable = true;
 
         public bool ColorEnable
         {
@@ -190,7 +192,53 @@ namespace DDPM.UI.Module.Color
                     last_selected_value = ColorPresets_ItemsCollection[_colorPresetSelectedIndex];
             }
         }
+        public Visibility SupportedHDR
+        {
+            get => _SupportedHDR ? Visibility.Visible : Visibility.Collapsed;
+        }
+        public bool HDRStatus
+        {
+            get => _HDRStatus;
+            set
+            {
+                if (DdpmCommonHelper.DeviceManagerSA.SetHDRStatus(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, value).Result)
+                {
+                    SetProperty(ref _HDRStatus, value);
+                }
+                EventManagerArgs args = new EventManagerArgs(_HDRStatus);
+                DdpmCommonHelper.MyConsole.RaiseEvent("DisplayHDRStatusChanged", this, args);
+                RefreshUI();
+                DdpmCommonHelper.MyShowPluginManager?.ShowHomePage("GeHomeFirst");
+            }
+        }
 
+        public string HDRStatus_String
+        {
+            get
+            {
+                return HDRStatus ? LangHelper.Instance["On"] : LangHelper.Instance["Off"];
+            }
+        }
+        public bool HDREnable
+        {
+            get
+            {
+                OnPropertyChanged("HDROpacity");
+                return _HDREnable;
+            }
+        }
+
+        public string HDROpacity
+        {
+            get
+            {
+                if (_HDREnable)
+                {
+                    return "1.0";
+                }
+                return "0.5";
+            }
+        }
         public ColorViewModel()
         {
             DdpmCommonHelper.MyConsole.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
@@ -709,6 +757,38 @@ namespace DDPM.UI.Module.Color
                 DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] ReadCurrentColorPreset() call");
                 string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, (Guid)guid, Priority.High).Result;               
 
+                if (Cancelled_RefreshData(e, bwk))
+                {
+                    return;
+                }
+
+                DdpmCommonHelper.WriteUILog("[ColorViewModel] [DoWork_RefreshData] GetDisplayPropertiesInfo() call");
+                DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                _SupportedHDR = displayPropertiesInfo.SupportedHDR;
+                _HDRStatus = displayPropertiesInfo.isHDREnable;
+                EventManagerArgs args = new EventManagerArgs(_HDRStatus);
+                DdpmCommonHelper.MyConsole.RaiseEvent("DisplayHDRStatusChanged", this, args);
+                _HDREnable = true;
+                if (_SupportedHDR)
+                {
+                    UInt16 PipMode_Off = 0;
+                    ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    if (ret.result)
+                    {
+                        try
+                        {
+                            UInt16 _curPxpMode = Convert.ToUInt16(ret.value);
+                            if (_curPxpMode != PipMode_Off)
+                            {
+                                _HDREnable = false;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            DdpmCommonHelper.WriteUILog($"[ColorViewModel] [DoWork_RefreshData] DoWork_RefreshData exception with {ex.Message}");
+                        }
+                    }
+                }
                 if (Cancelled_RefreshData(e, bwk))
                 {
                     return;
@@ -1232,6 +1312,10 @@ namespace DDPM.UI.Module.Color
             OnPropertyChanged("IsisAdvanced_Settings");
             OnPropertyChanged("TabNavigation");
             OnPropertyChanged("isTabStoppable");
+            OnPropertyChanged("SupportedHDR");
+            OnPropertyChanged("HDRStatus");
+            OnPropertyChanged("HDRStatus_String");
+            OnPropertyChanged("HDREnable");
         }
 
         private void update_ui_over_runtype(ColorPresetSettings config)

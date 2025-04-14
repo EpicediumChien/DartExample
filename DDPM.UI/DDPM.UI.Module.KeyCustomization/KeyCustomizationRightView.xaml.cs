@@ -267,15 +267,15 @@ namespace DDPM.UI.Module.KeyCustomization
                     _ => throw new Exception()
                 };
 
-                Window parentWindow = Window.GetWindow(this);
+                Window mainWindow = System.Windows.Application.Current.MainWindow;
                 double windowLeft = 0;
                 double windowTop = 0;
-                ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight, "", "KB", _vm.CurrentDeviceID.ToString());
-                if (parentWindow != null)
+                ActionParameterModalDialog modalDialog = new(action, mainWindow.ActualWidth, mainWindow.ActualHeight, "", "KB", _vm.CurrentDeviceID.ToString());
+                if (mainWindow != null)
                 {
-                    modalDialog.Owner = parentWindow;
-                    windowLeft = parentWindow.Left;
-                    windowTop = parentWindow.Top;
+                    modalDialog.Owner = mainWindow;
+                    windowLeft = mainWindow.WindowState == WindowState.Maximized ? 0 : mainWindow.Left;
+                    windowTop = mainWindow.WindowState == WindowState.Maximized ? 0 : mainWindow.Top;
                 }
                 modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
                 modalDialog.Left = windowLeft;
@@ -325,15 +325,15 @@ namespace DDPM.UI.Module.KeyCustomization
                 _ => throw new Exception()
             };
 
-            Window parentWindow = Window.GetWindow(this);
+            Window mainWindow = System.Windows.Application.Current.MainWindow;
             double windowLeft = 0;
             double windowTop = 0;
-            ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter, "KB", _vm.CurrentDeviceID.ToString());
-            if (parentWindow != null)
+            ActionParameterModalDialog modalDialog = new(action, mainWindow.ActualWidth, mainWindow.ActualHeight, parameter, "KB", _vm.CurrentDeviceID.ToString());
+            if (mainWindow != null)
             {
-                modalDialog.Owner = parentWindow;
-                windowLeft = parentWindow.Left;
-                windowTop = parentWindow.Top;
+                modalDialog.Owner = mainWindow;
+                windowLeft = mainWindow.WindowState == WindowState.Maximized ? 0 : mainWindow.Left;
+                windowTop = mainWindow.WindowState == WindowState.Maximized ? 0 : mainWindow.Top;
             }
             modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
             modalDialog.Left = windowLeft;

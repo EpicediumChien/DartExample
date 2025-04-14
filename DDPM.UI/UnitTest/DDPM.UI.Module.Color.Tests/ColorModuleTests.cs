@@ -38,14 +38,17 @@ namespace DDPM.UI.Module.Color.Tests
             moduleOwner = moduleOwnerMock!.Object;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
             DdpmCommonHelper.ModuleOwner = moduleOwner;
-            var myconsoleMock=new Mock<IConsole>();
-            DdpmCommonHelper.MyConsole= myconsoleMock.Object;
+            var myconsoleMock = new Mock<IConsole>();
+            DdpmCommonHelper.MyConsole = myconsoleMock.Object;
             var DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
-            DdpmCommonHelper.DeviceManagerSA= DeviceManagerSAMock.Object;
-            DeviceManagerSAMock.Setup(x=>x.GetHDRStatus(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(true));
+            DdpmCommonHelper.DeviceManagerSA = DeviceManagerSAMock.Object;
+            DeviceManagerSAMock.Setup(x => x.GetHDRStatus(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(true));
             colorModule = new ColorModule();
+            colorModule.SelectedHomeDevice = new HomeDevice();
             colorModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo() { modelName = "AWA" };
             privateObject = new PrivateObject(colorModule);
+            privateObject.SetFieldOrProperty("vm", new ColorViewModel());
+
         }
 
         [Test]
@@ -96,6 +99,7 @@ namespace DDPM.UI.Module.Color.Tests
         [Test]
         public void TestModuleOwner()
         {
+
             // Arrange
             colorModule.ModuleOwner = moduleOwner;
             Assert.That(colorModule.ModuleOwner, Is.EqualTo(moduleOwner));

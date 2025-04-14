@@ -6159,6 +6159,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog("[DeviceMangerPlugin] deviceInfos is null");
                     deviceInfos = new List<DeviceInfo>();
                 }
+                writelog($"[DeviceMangerPlugin] deviceInfos.Count : {deviceInfos.Count}");
                 displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
                 if (displayUpdateHelper == null || displayUpdateHelper.Firmwares == null)
                 {
@@ -6856,15 +6857,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void DisplayFWCheck()
         {
             writelog($"DisplayFWCheck start");
-            if (displayUpdateHelper != null && displayUpdateHelper.Firmwares != null && _AllInfoMonitors != null)
-            {
-                writelog($"displayUpdateHelper.Firmwares.Count : {displayUpdateHelper.Firmwares.Count}");
-                writelog($"_AllInfoMonitors.Count : {_AllInfoMonitors.Count}");
-                if (displayUpdateHelper.Firmwares.Count != _AllInfoMonitors.Count)
-                {
-                    show_peripheralsUpdateNotify(this, true);
-                }
-            }
+            writelog($"DisplayFWCheck show_peripheralsUpdateNotify");
+            show_peripheralsUpdateNotify(this, true);
             writelog($"DisplayFWCheck done");
         }
 
@@ -8717,12 +8711,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (!string.IsNullOrEmpty(ver))
                         _GlobalSettingParam.GlobalSetting_About.SWVersion = ver;
                     writelog($"[SW_GetSWUpdateInfo] ver: {_GlobalSettingParam.GlobalSetting_About.SWVersion}");
+                    return Task.FromResult(_SWUpdatePlugin.GetSWUpdateInfo(isShowNotify, _GlobalSettingParam.GlobalSetting_About.SWVersion, reScan).Result);
                 }
                 catch (Exception ex)
                 {
                     writelog($"[SW_GetSWUpdateInfo], Error : {ex.Message}");
                 }
-                return Task.FromResult(_SWUpdatePlugin.GetSWUpdateInfo(isShowNotify, _GlobalSettingParam.GlobalSetting_About.SWVersion, reScan).Result);
             }
             return Task.FromResult(new SWUpdateInfoPackage());
         }
@@ -11637,6 +11631,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
                         _IsZoomMeetingActive = false;
 
+                    if (!_IsZoomMeetingActive)
+                        _OSD_Controler.CloseMultipleOSDByGuidAndOp("C563A281-26EB-4DCD-8642-EC7498108266", OSDType_Op.None);
+
                     //if (1 == WebcamDevCnt)
                     //{
                     //    //QAMWebcamDeviceGuid = eventMsg.DeviceId;
@@ -11905,6 +11902,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         threadQAM = new Thread(() =>
                         {
+                            _OSD_Controler.CloseMultipleOSDByGuidAndOp("C563A281-26EB-4DCD-8642-EC7498108266", OSDType_Op.None);
+
                             _QAM = new QAMPage(deviceMangerPlugin, Log);
                             _QAM.Closed += QAMCloseEvent;
 

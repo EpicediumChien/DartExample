@@ -71,15 +71,15 @@ namespace DDPM.UI.Module.PenSettings
         {
             try
             {
-                Window parentWindow = Window.GetWindow(this);
+                Window mainWindow = System.Windows.Application.Current.MainWindow;
                 double windowLeft = 0;
                 double windowTop = 0;
-                PairTileModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight);
-                if (parentWindow != null)
+                PairTileModalDialog modalDialog = new(mainWindow.ActualWidth, mainWindow.ActualHeight);
+                if (mainWindow != null)
                 {
-                    modalDialog.Owner = parentWindow;
-                    windowLeft = parentWindow.Left;
-                    windowTop = parentWindow.Top;
+                    modalDialog.Owner = mainWindow;
+                    windowLeft = mainWindow.WindowState == WindowState.Maximized ? 0 : mainWindow.Left;
+                    windowTop = mainWindow.WindowState == WindowState.Maximized ? 0 : mainWindow.Top;
                 }
                 modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
                 modalDialog.Left = windowLeft;

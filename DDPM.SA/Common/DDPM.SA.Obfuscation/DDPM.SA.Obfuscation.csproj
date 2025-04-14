@@ -22,7 +22,7 @@
 
 	<Target Name="ObfuscarTask" AfterTargets="AfterBuild">
 		<PropertyGroup>
-			<ObfuscateCommand>$(Obfuscar) "Obfuscar.xml"</ObfuscateCommand>
+			<ObfuscateCommand>"$(Obfuscar)" "Obfuscar.xml"</ObfuscateCommand>
 		</PropertyGroup>
 		<PropertyGroup>
 			<ReplaceCommand>xcopy "$(ProjectDir)$(OutDir).Obfuscated\DDPM.SA.Obfuscation.*" "$(ProjectDir)$(OutDir)" /Y /S /Q</ReplaceCommand>

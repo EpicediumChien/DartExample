@@ -41,6 +41,68 @@ namespace VcpCore.Common
         public uint cPhysicalMonitors_index { get; set; } = 0x0;
         public bool IsSupportDisplay { get; set; } = false;
 
+        public void UpToDate(MonitorInfo_complex other)
+        {
+            UnDefinedColorPreset = other.UnDefinedColorPreset;
+            ColorPresentDescription = other.ColorPresentDescription;
+            CapabilityDic = other.CapabilityDic;
+            AliasDeviceName = other.AliasDeviceName;
+            Handle = other.Handle;
+            IsDellMonitor = other.IsDellMonitor;
+            Index = other.Index;
+            CapabilityString = other.CapabilityString;
+            hMonitor = other.hMonitor;
+            hPhysicalMonitor = other.hPhysicalMonitor;
+            szPhysicalMonitorDescription = other.szPhysicalMonitorDescription;
+            DisplayName = other.DisplayName;
+            DDCisON = other.DDCisON;
+            DDCCIFail = other.DDCCIFail;
+            edid = other.edid;
+            displaydevice = other.displaydevice;
+            pMonitorInfoEx = other.pMonitorInfoEx;
+            pDevmode = other.pDevmode;
+            ColorPresetSupportList = other.ColorPresetSupportList;
+            FwVersion = other.FwVersion;
+            inputSource = other.inputSource;
+            inputCable = other.inputCable;
+            pathInfoTarget = other.pathInfoTarget;
+            SmartHDRSupportList = other.SmartHDRSupportList;
+            modelName = other.modelName;
+            series = other.series;
+            MarketingName = other.MarketingName;
+            ImageFileName = other.ImageFileName;
+            SupplierID = other.SupplierID;
+            D_Ctrl = other.D_Ctrl;
+            scalingFactor = other.scalingFactor;
+            cPhysicalMonitors_index = other.cPhysicalMonitors_index;
+            IsSupportDisplay = other.IsSupportDisplay;
+        }
+
+        public MonitorInfo ToMonitorInfo()
+        {
+            return new MonitorInfo()
+            {
+                AliasDeviceName = AliasDeviceName,
+                IsDellMonitor = IsDellMonitor,
+                Index = Index,
+                CapabilityString = CapabilityString,
+                DDCisON = DDCisON,
+                DisplayName = DisplayName,
+                edid = edid,
+                FwVersion = FwVersion,
+                inputSource = inputSource,
+                inputCable = inputCable,
+                CapabilityDic = CapabilityDic,
+                modelName = modelName,
+                series = series,
+                MarketingName = MarketingName,
+                ImageFileName = ImageFileName,
+                SupplierID = SupplierID,
+                D_Ctrl = D_Ctrl,
+                scalingFactor = scalingFactor,
+            };
+        }
+
         public override bool Equals(object obj)
         {
             return Equals(obj as MonitorInfo_complex);

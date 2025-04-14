@@ -119,8 +119,8 @@ namespace DDPM.UI.Module.Color.Tests
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
-            colorViewModel.MyModule = new ColorModule();
-            colorViewModel.MyModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            /* colorViewModel.MyModule = new ColorModule();
+             colorViewModel.MyModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();*/
             deviceManagerMock.Setup(x => x.GetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<int>())).Returns(Task.FromResult(new ALSConfig()));
             colorViewModel.SupportColorPresets = new List<string>();
             var myColorModule = 1;
@@ -139,10 +139,10 @@ namespace DDPM.UI.Module.Color.Tests
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
-            colorViewModel.MyModule = new ColorModule();
-            colorViewModel.MyModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            /*colorViewModel.MyModule = new ColorModule();
+            colorViewModel.MyModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();*/
             deviceManagerMock.Setup(x => x.GetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<int>())).Returns(Task.FromResult(new ALSConfig()));
-            colorViewModel.SupportColorPresets = new List<string>() { "a","b","c"};
+            colorViewModel.SupportColorPresets = new List<string>() { "a", "b", "c" };
             colorViewModel.ColorPresetSelectedIndex = -1;
             colorViewModel.UpdateColorPresetSelectedIndex(1);
             Assert.That(colorViewModel.ColorPresetSelectedIndex, Is.EqualTo(1));
@@ -301,13 +301,13 @@ namespace DDPM.UI.Module.Color.Tests
         //}
 
         //[Test]
-       //public void TestStopRegistryMonitor()
+        //public void TestStopRegistryMonitor()
         //{
-            //colorViewModel.registryMonitor_NightLight = new RegistryMonitor_NightLight("HKEY_CLASSES_ROOT");
-            //colorViewModel.registryMonitor_ICC = new RegistryMonitor_ICC("HKEY_CLASSES_ROOT");
-            //colorViewModel.StopRegistryMonitor();
-            //Assert.That(colorViewModel.registryMonitor_NightLight, Is.EqualTo(null));
-            //Assert.That(colorViewModel.registryMonitor_ICC, Is.EqualTo(null));
+        //colorViewModel.registryMonitor_NightLight = new RegistryMonitor_NightLight("HKEY_CLASSES_ROOT");
+        //colorViewModel.registryMonitor_ICC = new RegistryMonitor_ICC("HKEY_CLASSES_ROOT");
+        //colorViewModel.StopRegistryMonitor();
+        //Assert.That(colorViewModel.registryMonitor_NightLight, Is.EqualTo(null));
+        //Assert.That(colorViewModel.registryMonitor_ICC, Is.EqualTo(null));
         //}
 
         //[Test]
@@ -396,6 +396,48 @@ namespace DDPM.UI.Module.Color.Tests
         {
             colorViewModel.IsBusy = true;
             Assert.That(colorViewModel.IsBusy, Is.EqualTo(true));
+        }
+        [Test]
+        public void TestHDRStatus_String()
+        {
+            var result = colorViewModel!.HDRStatus_String;
+            Assert.That(result, Is.EqualTo("OFF"));
+
+            deviceManagerSAMock.Setup(x => x.GetDisplayPropertiesInfo(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new DisplayPropertiesInfo()));
+            deviceManagerSAMock.Setup(x => x.SetHDRStatus(It.IsAny<MonitorInfo>(), It.IsAny<bool>())).Returns(Task.FromResult(true));
+            var moduleOwnerMock = new Mock<IModuleOwner>();
+            var moduleOwner = moduleOwnerMock!.Object;
+            DdpmCommonHelper.ModuleOwner = moduleOwner;
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            colorViewModel.HDRStatus = true;
+            result = colorViewModel!.HDRStatus_String;
+            Assert.That(result, Is.EqualTo("ON"));
+        }
+
+        [Test]
+        public void TestSupportedHDR()
+        {
+            var result = colorViewModel!.SupportedHDR.ToString();
+            Assert.That(result, Is.EqualTo("Collapsed"));
+
+            privateObject.SetFieldOrProperty("_SupportedHDR", true);
+            result = colorViewModel!.SupportedHDR.ToString();
+            Assert.That(result, Is.EqualTo("Visible"));
+        }
+
+        [Test]
+        public void TestHDRStatus()
+        {
+            deviceManagerSAMock.Setup(x => x.GetDisplayPropertiesInfo(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new DisplayPropertiesInfo()));
+            deviceManagerSAMock.Setup(x => x.SetHDRStatus(It.IsAny<MonitorInfo>(), It.IsAny<bool>())).Returns(Task.FromResult(true));
+            bool myHDRStatus = true;
+            var moduleOwnerMock = new Mock<IModuleOwner>();
+            var moduleOwner = moduleOwnerMock!.Object;
+            DdpmCommonHelper.ModuleOwner = moduleOwner;
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            colorViewModel.HDRStatus = myHDRStatus;
+
+            Assert.That(colorViewModel.HDRStatus, Is.EqualTo(myHDRStatus));
         }
     }
 }

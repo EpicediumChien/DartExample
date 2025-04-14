@@ -20,7 +20,8 @@
     1 All TextBlock: add Focusable=True
     -->
     <Grid>
-        <UXControls:UXScrollViewer>
+        <!--Elsa 202504011 for PIMS-348407 add VerticalScrollBarVisibility="Auto"-->
+        <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto">
             <!-- Container -->
             <!--
             <Border CornerRadius="13" Background="{StaticResource RightViewContainerBkColor}">
@@ -112,28 +113,7 @@
 
                                 </ComboBox>
                             </Grid>
-                            <Grid Height="40"
-                                  Margin="0,8"
-                                  Visibility="{Binding SupportedHDR}"
-                                  IsEnabled="{Binding HDREnable}"
-                                  Opacity="{Binding HDROpacity}">
-                                <UXControls:UXTextBlock Text="{Binding [HDR], Source={x:Static lang:LangHelper.Instance}}"
-                                                        FontSize="16"
-                                                        Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                                        TextBlockSemanticColorType="Light"
-                                                        TextBlockType="Caption"
-                                                        Focusable="True" KeyboardNavigation.TabIndex="107" x:Name="labelHDR"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalAlignment="Left" />
-                                <UXControls:UXToggleSwitch IsChecked="{Binding Path= HDRStatus}"
-                                                           ContentTextVisibility="True"
-                                                           Content="{Binding Path=HDRStatus_String}"
-                                                           HorizontalAlignment="Right"
-                                                           VerticalAlignment="Center"
-                                                           Focusable="True" KeyboardNavigation.TabIndex="108"
-                                                           AutomationProperties.LabeledBy="{Binding ElementName=labelHDR}"
-                                                           Foreground="{DynamicResource TextBlock_ForegroundColor}" />
-                            </Grid>
+                            
                             <Grid Height="60"
                                   Margin="0,8">
                                 <!-- Robert_Lin 2025-2-19 PIMS-347082 The link to "Windows settings" in this option is not aligned with the

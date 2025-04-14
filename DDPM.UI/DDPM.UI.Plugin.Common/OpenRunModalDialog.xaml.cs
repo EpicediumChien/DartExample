@@ -1,8 +1,10 @@
 ﻿using DDPM.UI.Common;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace DDPM.UI.Plugin.Common
 {
@@ -16,6 +18,7 @@ namespace DDPM.UI.Plugin.Common
         public string Parameter { get; private set; } = "";
         //public int ID { get; private set; } = 0;
         private int id;
+        private readonly DispatcherTimer timer;
 
         List<string> OpenRunApps;
 
@@ -52,6 +55,30 @@ namespace DDPM.UI.Plugin.Common
             //OpenRunItems.ItemsSource = Actions.OpenRunActionsList;
             OpenRunItems.ItemsSource = OpenRunApps;
             btnSave.IsEnabled = id >= 0;
+
+            txtAlert.Text = LangHelper.Instance["InputValidationTooltip.3"];
+            timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
+            timer.Tick += Timer_Tick;
+            ;
+            Unloaded += OpenRunModalDialog_Unloaded;
+        }
+
+        private void OpenRunModalDialog_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (timer != null)
+            {
+                timer.Stop();
+                timer.Tick -= Timer_Tick;
+            }
+        }
+
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+            bdAlert.Visibility = Visibility.Collapsed;
+            timer.Stop();
         }
 
         private void CancelClick(object sender, MouseButtonEventArgs e)
@@ -66,10 +93,22 @@ namespace DDPM.UI.Plugin.Common
             Close();
         }
 
+        private void ShowAlert()
+        {
+            bdAlert.Visibility = Visibility.Visible;
+            timer.Stop();
+            timer.Start();
+        }
         private void BrowseClick(object sender, MouseButtonEventArgs e)
         {
             if (openFileDialog!.ShowDialog() == true)
             {
+                if (openFileDialog.FileName.Length > 260 || !Utility.IsPathValid(openFileDialog.FileName))
+                {
+                    ShowAlert();
+                    //txtOpen.Text = "";
+                    return;
+                }
                 Parameter = openFileDialog.FileName;
                 txtBrowse.Text = $"{Strings.SelectedFile} : \"{Parameter}\"";
                 FilePath.Visibility = Visibility.Visible;

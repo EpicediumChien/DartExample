@@ -26,6 +26,28 @@ namespace VcpCore.Common
         public string D_Ctrl { get; set; } = string.Empty;
         public double scalingFactor { get; set; } = 0x0;
 
+        public void UpToDate(MonitorInfo other)
+        {
+            AliasDeviceName = other.AliasDeviceName;
+            IsDellMonitor = other.IsDellMonitor;
+            Index = other.Index;
+            CapabilityString = other.CapabilityString;
+            DDCisON = other.DDCisON;
+            DisplayName = other.DisplayName;
+            edid = other.edid;
+            FwVersion = other.FwVersion;
+            inputSource = other.inputSource;
+            inputCable = other.inputCable;
+            CapabilityDic = other.CapabilityDic;
+            modelName = other.modelName;
+            series = other.series;
+            MarketingName = other.MarketingName;
+            ImageFileName = other.ImageFileName;
+            SupplierID = other.SupplierID;
+            D_Ctrl = other.D_Ctrl;
+            scalingFactor = other.scalingFactor;
+        }
+
         public MonitorInfo ShallowCopy()
         {
             return (MonitorInfo)this.MemberwiseClone();

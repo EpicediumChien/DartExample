@@ -53,7 +53,8 @@
     -->
     <Grid>
         <!--20250324 Chewlin Fix Gradient showing when content is too long issue ADD UseFadingScrolling="False" -->
-        <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Hidden" UseFadingScrolling="False" >
+        <!--Elsa 202504011 for PIMS-348407 add VerticalScrollBarVisibility="Auto"-->
+        <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Hidden" UseFadingScrolling="False" VerticalScrollBarVisibility="Auto" >
             <Grid>
                 <StackPanel>
                     <Grid>
@@ -172,8 +173,8 @@
                                                 Source="{DynamicResource BrightnessImage}"
                                                 Stretch="UniformToFill" />-->
                                                 <ContentControl Grid.Column="0"
-                                                                Width="20"
-                                                                Height="20"
+                                                                Width="16"
+                                                                Height="16"
                                                                 HorizontalAlignment="Center"
                                                                 VerticalAlignment="Center"
                                                                 Template="{StaticResource icon_Brightness}"
@@ -237,8 +238,8 @@
                                                 Source="{DynamicResource ContrastImage}"
                                                 Stretch="UniformToFill" />-->
                                                 <ContentControl Grid.Column="0"
-                                                                Width="20"
-                                                                Height="20"
+                                                                Width="16"
+                                                                Height="16"
                                                                 HorizontalAlignment="Center"
                                                                 VerticalAlignment="Center"
                                                                 Focusable="True" KeyboardNavigation.IsTabStop="True"
@@ -454,13 +455,22 @@
                                                     <ColumnDefinition Width="Auto" />
                                                 </Grid.ColumnDefinitions>
 
-                                                <Image
+                                                <!--<Image
                                                     Grid.Column="0"
                                                     Width="20"
                                                     Height="20"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
-                                                    Source="{DynamicResource LuminanceImage}" />
+                                                    Source="{DynamicResource LuminanceImage}" />-->
+                                                <!--icon_Luminance-->
+                                                <ContentControl Grid.Column="0"
+                                                                Width="16"
+                                                                Height="16"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center"
+                                                                Template="{StaticResource icon_Luminance}"
+                                                                Focusable="True" KeyboardNavigation.IsTabStop="True"
+                                                                Foreground="{DynamicResource DefaultTheme_PathColor}" />
 
                                                 <UXControls:UXSlider
                                                     Name="LuminanceSlider"
@@ -2302,7 +2312,13 @@
                                                             ItemsSource="{Binding mIns}"
                                                             SelectedItem="{Binding mIns1, Mode=TwoWay}"
                                                             SelectionChanged="ComboBox_SelectionChanged"
-                                                            Style="{StaticResource DdpmComboBoxStyle}" />
+                                                            Style="{StaticResource DdpmComboBoxStyle}">
+                                                            <ComboBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding StringFormat=D2}" />
+                                                                </DataTemplate>
+                                                            </ComboBox.ItemTemplate>
+                                                        </UXControls:UXComboBox>
 
                                                         <UXControls:UXTextBlock
                                                             Grid.Row="1"
@@ -2380,7 +2396,13 @@
                                                             ItemsSource="{Binding dUration}"
                                                             SelectedItem="{Binding dUration1, Mode=TwoWay}"
                                                             SelectionChanged="ComboBox_SelectionChanged"
-                                                            Style="{StaticResource DdpmComboBoxStyle}" />
+                                                            Style="{StaticResource DdpmComboBoxStyle}">
+                                                            <ComboBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding StringFormat=D2}" />
+                                                                </DataTemplate>
+                                                            </ComboBox.ItemTemplate>
+                                                        </UXControls:UXComboBox>
 
                                                         <UXControls:UXTextBlock
                                                             Grid.Row="1"
@@ -2416,14 +2438,14 @@
                                                         <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
 
-                                                    <Image
-                                                        Grid.Column="0"
-                                                        Width="20"
-                                                        Height="20"
-                                                        HorizontalAlignment="Center"
-                                                        VerticalAlignment="Center"
-                                                        Source="{DynamicResource LuminanceImage}"
-                                                        Stretch="UniformToFill" />
+                                                    <ContentControl Grid.Column="0"
+                                                                Width="16"
+                                                                Height="16"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center"
+                                                                Template="{StaticResource icon_Luminance}"
+                                                                Focusable="True" KeyboardNavigation.IsTabStop="True"
+                                                                Foreground="{DynamicResource DefaultTheme_PathColor}" />
 
                                                     <UXControls:UXSlider
                                                         Name="preset1_LuminanceSlider"
@@ -2580,7 +2602,13 @@
                                                             ItemsSource="{Binding mIns}"
                                                             SelectedItem="{Binding mIns2, Mode=TwoWay}"
                                                             SelectionChanged="ComboBox_SelectionChanged"
-                                                            Style="{StaticResource DdpmComboBoxStyle}" />
+                                                            Style="{StaticResource DdpmComboBoxStyle}">
+                                                            <ComboBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding StringFormat=D2}" />
+                                                                </DataTemplate>
+                                                            </ComboBox.ItemTemplate>
+                                                        </UXControls:UXComboBox>
 
                                                         <UXControls:UXTextBlock
                                                             Grid.Row="1"
@@ -2694,13 +2722,14 @@
                                                         <ColumnDefinition Width="Auto" />
                                                     </Grid.ColumnDefinitions>
 
-                                                    <Image
-                                                        Grid.Column="0"
-                                                        Width="20"
-                                                        Height="20"
-                                                        HorizontalAlignment="Center"
-                                                        VerticalAlignment="Center"
-                                                        Source="{Binding LuminanceImage}" />
+                                                    <ContentControl Grid.Column="0"
+                                                                Width="16"
+                                                                Height="16"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center"
+                                                                Template="{StaticResource icon_Luminance}"
+                                                                Focusable="True" KeyboardNavigation.IsTabStop="True"
+                                                                Foreground="{DynamicResource DefaultTheme_PathColor}" />
 
                                                     <UXControls:UXSlider
                                                         Name="preset2_LuminanceSlider"

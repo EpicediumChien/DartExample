@@ -257,6 +257,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             int exitcode = 0;
                             result.serialize_Json_response = ConnectedDevicesX(commandLineInput, devMgr, ref exitcode);
+                            writelog($"ConnectedDevice Result: {result.serialize_Json_response}");
                             result.ExitCode = exitcode;
                         }
                         else
@@ -941,7 +942,7 @@ namespace DDPM.CLI.Plugins.Display
         {
             var result = ConnectedDevices(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Model, commandLineInput).Result;
             exitcode = result.code;
-            return result.result; ;
+            return result.result;
         }
 
         public string FirstCharSubstring(string input)
@@ -1111,7 +1112,7 @@ namespace DDPM.CLI.Plugins.Display
 
             //if (_AllInfoMonitors == null)
             writelog($"Connecteddevices IN = {commandLineInput}");
-            writelog($"Connecteddevices from CLI = {commandLineInput.fromcli}");
+            writelog($"Connecteddevices from CMA = {commandLineInput.fromcma}");
             _AllInfoMonitors = await devMgr.GetMonitors();
             writelog($"Connecteddevices _AllInfoMonitors count  = {_AllInfoMonitors.Count}");
             string output = string.Empty;
@@ -5044,6 +5045,9 @@ namespace DDPM.CLI.Plugins.Display
                     {"SRGB", "sRGB"},
                     {"CustomColorHDR", "Custom Color HDR"},
                     {"HDRPeak1000", "HDR Peak 1000"},
+                    {"Rec709", "Rec.709"},//PIMS-356254
+                    {"REC709", "Rec.709"},//PIMS-356254
+                    {"BT709", "BT.709"},//PIMS-356254
                 };
                 value = colorPresetList.ContainsKey(value.ToUpper()) ? colorPresetList[value.ToUpper()] : value;
                 if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
