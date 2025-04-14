@@ -311,8 +311,21 @@ namespace DDPM.QAM
 
                 //Derek 2025/04/11
                 DdpmCommonHelper.QAMPageViewModel = null;
-                timer?.Dispose();
-                timer = null;
+                if (timer != null)
+                {
+                    try
+                    {
+                        timer.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteLog($"Exception while disposing timer: {ex.Message}");
+                    }
+                    finally
+                    {
+                        timer = null;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -384,34 +397,42 @@ namespace DDPM.QAM
                 foreach (Process process in processes)
                 {
                     //System.Windows.MessageBox.Show($"{process.Id}， {process.MainWindowHandle}，{process.MainWindowTitle}, {process.MainModule?.FileName}, {process.MainModule?.ModuleName}");
-
-                    IntPtr hwnd = process.MainWindowHandle;
-                    if (hwnd != IntPtr.Zero)
+                    try
                     {
-                        RECT rect = new RECT();
-                        // Get the window's position and size
-                        GetWindowRect(hwnd, ref rect);
-
-                        // Get screen size (Working area of the screen excluding taskbar)
-                        var screen = Screen.PrimaryScreen.WorkingArea;
-
-                        if (rect.Left == 0 && rect.Top == 0 && rect.Right == screen.Width && rect.Bottom == screen.Height)
+                        IntPtr hwnd = process.MainWindowHandle;
+                        if (hwnd != IntPtr.Zero)
                         {
-                            WriteLog($"[MonitorZoomMeetingWindowState] Zoom is in full-screen mode!");
-                            SetToBottomWindow();
+                            RECT rect = new RECT();
+                            // Get the window's position and size
+                            GetWindowRect(hwnd, ref rect);
+
+                            // Get screen size (Working area of the screen excluding taskbar)
+                            var screen = Screen.PrimaryScreen.WorkingArea;
+
+                            if (rect.Left == 0 && rect.Top == 0 && rect.Right == screen.Width && rect.Bottom == screen.Height)
+                            {
+                                WriteLog($"[MonitorZoomMeetingWindowState] Zoom is in full-screen mode!");
+                                SetToBottomWindow();
+                            }
+                            else
+                            {
+                                WriteLog($"[MonitorZoomMeetingWindowState] Zoom is NOT in full-screen mode.");
+                                SetToTopWindow();
+                            }
                         }
                         else
                         {
-                            WriteLog($"[MonitorZoomMeetingWindowState] Zoom is NOT in full-screen mode.");
-                            SetToTopWindow();
+                            WriteLog($"[MonitorZoomMeetingWindowState] Process {processName} doesn't have window.");
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        WriteLog($"[MonitorZoomMeetingWindowState] Process {processName} doesn't have window.");
+                        WriteLog($"[MonitorZoomMeetingWindowState] Throws exception on process [{processName}] {ex.ToString()}, StackTrace: {ex.StackTrace}.");
                     }
-
-                    process.Dispose();
+                    finally
+                    {
+                        process.Dispose();
+                    }
                 }
             }
         }
