@@ -1561,6 +1561,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                     {
                         InterruptScreen interruptScreen = new InterruptScreen(sWUpdateInfoPackage.SWUpdateInfo[0].TheLatestVersion, myDeserializedClass, DdpmCommonHelper.DeviceManagerSA, sWUpdateInfoPackage, _log);
+                        interruptScreen.Owner = System.Windows.Application.Current.MainWindow;
                         interruptScreen.Show();
                         /*if (b == true)
                         {

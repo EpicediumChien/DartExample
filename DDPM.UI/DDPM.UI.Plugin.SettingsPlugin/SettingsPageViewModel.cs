@@ -269,6 +269,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                             bool? b = false;
 
                             InterruptScreen interruptScreen = new InterruptScreen(SWUpdateInfoPackage.SWUpdateInfo[0].TheLatestVersion, myDeserializedClass, DdpmCommonHelper.DeviceManagerSA, SWUpdateInfoPackage, Log);
+                            interruptScreen.Owner = System.Windows.Application.Current.MainWindow;
                             interruptScreen.Show();
                             /*b = interruptScreen.ShowDialog();
                             if (b == true)

@@ -370,8 +370,8 @@ namespace DDPM.UI.Common
         {
             if (_timer != null)
             {
-                _timer.Tick -= (sender, e) => NextItem();
                 _timer.Stop();
+                _timer.Tick -= (sender, e) => NextItem();
                 _timer = null;
             }
         }

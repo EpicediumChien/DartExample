@@ -10,7 +10,7 @@
         Title="InterruptScreen"
         WindowStyle="None"
         AllowsTransparency="True"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterOwner"
         Closing="Window_Closing"
         Height="600"
         Width="1000"
