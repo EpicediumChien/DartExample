@@ -44,6 +44,7 @@
 
                                 <UXControls:UXTextBlock Loaded="UXDisplayHotkeys1TextBlock_Loaded" TextTrimming="CharacterEllipsis" MaxWidth="300" 
                                                         Focusable="True" KeyboardNavigation.TabIndex="102" Name="labelToggleNextInputSource"
+                                                        FontSize="16" FontFamily="{StaticResource RobotoFontMedium}" 
                                                         Text="{Binding [DisplayHotkeys.1], Source={x:Static lang:LangHelper.Instance}}">
                                     <UXControls:UXTextBlock.ToolTip>
                                         <ToolTip Placement="Center" Visibility="Hidden" VerticalOffset="45" x:Name="displayHotkeys1Tooltip">
@@ -107,6 +108,7 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.2], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" Grid.ColumnSpan="2" 
+                                                            FontSize="16" FontFamily="{StaticResource RobotoFontMedium}" 
                                                             Focusable="True" KeyboardNavigation.TabIndex="105" Name="labelFavoriteInput"/>
                                     <UXControls:UXTextBox Grid.Column="2" Margin="2" Height="20"
                                                           Text="{Binding FavoriteInputSourceKey,Mode=TwoWay}"
@@ -140,6 +142,7 @@
                                     </ComboBox>
                                     <UXControls:UXTextBlock Loaded="UXDisplayHotkeys3TextBlock_Loaded"  TextTrimming="CharacterEllipsis" MaxWidth="300"
                                                             Focusable="True" KeyboardNavigation.TabIndex="108" Name="labelSwitchInputSource"
+                                                            FontSize="16" FontFamily="{StaticResource RobotoFontMedium}"
                                                             Text="{Binding [DisplayHotkeys.3], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="2" Grid.ColumnSpan="2">
                                         <UXControls:UXTextBlock.ToolTip>
                                             <ToolTip Placement="Center" VerticalOffset="45" x:Name="displayHotkeys3Tooltip" Visibility="Hidden">
@@ -236,6 +239,7 @@
                                 </Grid.RowDefinitions>
                                 <!--Chewlin 20240114 Fix RU/UK inputsource hotkeys PIP/PBP clpping issue ADD TextTrimming="CharacterEllipsis" Width="300" -->
                                 <UXControls:UXTextBlock Loaded="UXTextBlock_Loaded" TextTrimming="CharacterEllipsis" Width="300" 
+                                                        FontSize="16" FontFamily="{StaticResource RobotoFontMedium}"
                                                         Text="{Binding [DisplayHotkeys.4], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0"
                                                         Focusable="True" KeyboardNavigation.TabIndex="121" Name="labelSwapPxpWindows">
                                     <UXControls:UXTextBlock.ToolTip>
@@ -274,6 +278,7 @@
                                 <!-- Robert_Lin, 2024-11-14, if the Monitor has no PIP position capability then will collapse this row -->
                                 <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.5], Source={x:Static lang:LangHelper.Instance}}" 
                                                         Grid.Row="1" Name="labelChangePipPosition" Focusable="True" KeyboardNavigation.TabIndex="123"
+                                                        FontSize="16" FontFamily="{StaticResource RobotoFontMedium}"
                                                         Visibility="{Binding HasCapability_PipTogglePosition, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 <UXControls:UXTextBox Grid.Column="2" Grid.Row="1" Margin="2" Height="20"
                                                       Text="{Binding ChangePIPPositionKey,Mode=TwoWay}"
