@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="DDPM.UI.Plugin.ExitAppPlugin.Views.ExitAppView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DDPM.UI.Plugin.ExitAppPlugin.Views"
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+    <Grid>
+        <StackPanel VerticalAlignment="Center">
+            <Grid MaxWidth="560">
+                <UXControls:UXTextBlock FontFamily="Roboto" FontSize="20"
+                                        TextWrapping="Wrap"
+                                        Text="{Binding [UnableToLoadDdpm], Source={x:Static lang:LangHelper.Instance}}" />
+            </Grid>
+            <UXControls:UXButton Content="{Binding [Close], Source={x:Static lang:LangHelper.Instance}}"
+                                 ButtonType="Primary" ButtonSize="Large" Padding="40,8"
+                                 HorizontalAlignment="Center" Margin="0,32,0,0" Click="CloseButton_Click"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

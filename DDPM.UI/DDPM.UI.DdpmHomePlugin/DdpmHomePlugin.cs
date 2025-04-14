@@ -48,6 +48,7 @@ using System.Globalization;
 using DDPM.UI.Resources.Helper;
 using Microsoft.VisualBasic.Logging;
 using System.Diagnostics.Eventing.Reader;
+using System;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -136,6 +137,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private int _updateAvailableCount_SW = 0;
 
         private CancellationTokenSource _deviceChangedDebounceCts;
+
+  //      private WindowsServiceMonitor _dthMonitor = new WindowsServiceMonitor(UI.Common.Constants.DTH_ServiceName);
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -263,11 +267,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 _viewModel.DeviceManagerPlugin = _deviceManager;
 
                             }
-                            _HasRegisted = true;
-                            _deviceManager.DeviceChanged += _deviceManager_DeviceChanged;
-                            _deviceManager.VCPchanged += _deviceManager_VCPchanged;
-                            _deviceManager.UIUpdateNotify += _deviceManager_UIUpdateNotify;
-                            _deviceManager.MonitorinfoUpdated += _deviceManager_MonitorinfoUpdated;
+
+                            //Robert_Lin 2025-4-12 move these registers to RegisterDeviceManagerEvents()
+                            RegisterDeviceManagerEvents();
+                            //_HasRegisted = true;
+                            //_deviceManager.DeviceChanged += _deviceManager_DeviceChanged;
+                            //_deviceManager.VCPchanged += _deviceManager_VCPchanged;
+                            //_deviceManager.UIUpdateNotify += _deviceManager_UIUpdateNotify;
+                            //_deviceManager.MonitorinfoUpdated += _deviceManager_MonitorinfoUpdated;
 
                             //Elapsed= 4, 2 msec
                             //Robert_Lin, 2024-6-21 UI shown, tell VCPCore to increase polling rate to 0x52
@@ -772,6 +779,36 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _log.Info($"Run CloseMyself successfully.");
         }
 
+        #region DeviceManager event handlers
+        private void RegisterDeviceManagerEvents()
+        {
+            if (_deviceManager != null)
+            {
+                if (!_HasRegisted)
+                {
+                    _HasRegisted = true;
+                    _deviceManager.DeviceChanged += _deviceManager_DeviceChanged;
+                    _deviceManager.VCPchanged += _deviceManager_VCPchanged;
+                    _deviceManager.UIUpdateNotify += _deviceManager_UIUpdateNotify;
+                    _deviceManager.MonitorinfoUpdated += _deviceManager_MonitorinfoUpdated;
+                }
+            }
+        }
+        private void UnregisterDeviceMnagerEvents()
+        {
+            if (_deviceManager != null)
+            {
+                if (_HasRegisted)
+                {
+                    _HasRegisted = false;
+                    _deviceManager.DeviceChanged -= _deviceManager_DeviceChanged;
+                    _deviceManager.VCPchanged -= _deviceManager_VCPchanged;
+                    _deviceManager.UIUpdateNotify -= _deviceManager_UIUpdateNotify;
+                    _deviceManager.MonitorinfoUpdated -= _deviceManager_MonitorinfoUpdated;
+                }
+            }
+        }
+        #endregion DeviceManager event handers
         private void _deviceManager_VCPchanged(object? sender, VCPchangedEventArgs e)
         {
             string monitorName = "";
@@ -997,11 +1034,21 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _viewModel = (DdpmHomePageViewModel?)PluginIoc.GetService<IDdpmHomePageViewModel>();
             if (_viewModel != null)
             {
+                _viewModel.DTHServiceStopped += _viewModel_DTHServiceStopped;
                 _log.Info($"[DdpmHomePlugin] ConfigureServices Invoke_PleaseWait");
                 _viewModel.Invoke_PleaseWait();
             }
             _isConfigured = true;
             _log.Info($"[DdpmHomePlugin] ConfigureServices _isConfigured = true, out ...");
+        }
+
+        private void _viewModel_DTHServiceStopped()
+        {
+            //_console?.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, new EventManagerArgs() { Tag = new List<bool> { false, false } });
+            //_console?.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsIcon, this, new EventManagerArgs() { Tag = new List<bool> { false, false } });
+
+            UnregisterDeviceMnagerEvents();
+            _console?.ShowPluginById(DDPM.UI.Common.Constants.ExitAppPluginId);
         }
 
         #region Interface IConsolePluginSupportsActivations
@@ -1321,7 +1368,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 else
                 {
                     if (_iconAddDevice != null)
-                        _iconAddDevice.Visibility = Visibility.Collapsed;
+                    {
+                        Dispatcher.CurrentDispatcher.InvokeAsync(() => {
+                            _iconAddDevice.Visibility = Visibility.Collapsed;
+                        }, DispatcherPriority.Loaded);
+                    }
                 }
 
 
@@ -1334,7 +1385,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 else
                 {
                     if (_iconAddDevice != null)
-                        _iconAddDevice.IsEnabled = isEnabled;
+                    {
+                        Dispatcher.CurrentDispatcher.InvokeAsync(() => {
+                            _iconAddDevice.IsEnabled = isEnabled;
+                        }, DispatcherPriority.Loaded);
+                    }
                 }
             }
         }
@@ -1360,18 +1415,24 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
                 else
                 {
-                    if (_gearBtn != null)
-                        _gearBtn.Visibility = Visibility.Collapsed;
-                    if (_iconGear != null)
-                        _iconGear.Visibility = Visibility.Collapsed;
+                    Dispatcher.CurrentDispatcher.InvokeAsync(() => {
+                        if (_gearBtn != null)
+                            _gearBtn.Visibility = Visibility.Collapsed;
+                        if (_iconGear != null)
+                            _iconGear.Visibility = Visibility.Collapsed;
+                    }, DispatcherPriority.Loaded);
+
                 }
 
                 bool isEnabled = param[1];
 
-                if (_gearBtn != null)
-                    _gearBtn.IsEnabled = isEnabled;
-                if (_iconGear != null)
-                    _iconGear.IsEnabled = isEnabled;
+                Dispatcher.CurrentDispatcher.InvokeAsync(() => {
+                    if (_gearBtn != null)
+                        _gearBtn.IsEnabled = isEnabled;
+                    if (_iconGear != null)
+                        _iconGear.IsEnabled = isEnabled;
+                }, DispatcherPriority.Loaded);
+
             }
         }
 
@@ -1415,6 +1476,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         {
                             //_log.Info("pluginCondition is PluginRunningCondition");
                             _deviceManager.Reset0x52TimerTick(8000);
+
+                            UnregisterDeviceMnagerEvents();
                         }
                         //else
                         //{
