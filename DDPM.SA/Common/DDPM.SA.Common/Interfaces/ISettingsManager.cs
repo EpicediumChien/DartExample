@@ -59,6 +59,8 @@ namespace DDPM.SA.Common
         Task<bool> SaveLog(string saveFolderPath);
 
         Task GetTelemetryRegistryAndApplyData();
+
+        Task<bool> UpdateNKVMFeatureFlag(bool enable);
     }
 
     /// <summary>
@@ -155,5 +157,7 @@ namespace DDPM.SA.Common
         Task<InterruptScreenRoot> ReadInterruptScreen();
         Task<bool> WriteInterruptScreen(InterruptScreenRoot interruptScreenParam);
         Task<bool> SaveLog(string saveFolderPath);
+
+        Task<bool> UpdateNKVMFeatureFlag(bool enable);
     }
 }
