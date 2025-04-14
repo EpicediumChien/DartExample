@@ -1562,7 +1562,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     info.SideBottomSwitchSinglePressSetting = pen.SideBottomSwitchSinglePressSetting;
                                     info.SideSwitchSinglePressValues = pen.SideSwitchSinglePressValues;
                                     info.SideTopSwitchSinglePressSetting = pen.SideTopSwitchSinglePressSetting;
-                                    physicalDevicePen.IsdVersionChanged += IPhysicalDevicePen_IsdVersionChanged;
+                                    physicalDevicePen.IsdVersionChanged += PhysicalDevicePen_IsdVersionChanged;
                                     if (!LogicalDevicesPen.Contains(pen.Id))
                                     {
                                         pen.PenSettingChanged += Pen_PenSettingChanged;
@@ -3965,14 +3965,36 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             OnNotify(_EventArgs);
         }
 
-        private void IPhysicalDevicePen_IsdVersionChanged(IPhysicalPenDevice physicalPenDevice, string newValue)
+        //private void IPhysicalDevicePen_IsdVersionChanged(IPhysicalPenDevice physicalPenDevice, string newValue)
+        //{
+        //    if (_deviceHelper is { deviceInfo: not null })
+        //    {
+        //        var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.PhyscialDeviceID.ToString() == physicalPenDevice.Id.ToString());
+        //        if (deviceInfo != null)
+        //        {
+        //            deviceInfo.IsdDriverVersion = newValue;
+
+        //            DeviceChangedEventArgs _EventArgs = new();
+        //            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+        //            _EventArgs.device_peripherals = deviceInfo;
+        //            _EventArgs.changedProperty = "PenVersionChanged";
+        //            OnNotify(_EventArgs);
+        //        }
+        //        else
+        //        {
+        //            writelog($"PenVersionChanged: Error: deviceInfo is null");
+        //        }
+        //    }
+        //}
+
+        private void PhysicalDevicePen_IsdVersionChanged(IPhysicalPenDevice physicalPenDevice, string arg2, string arg3)
         {
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.PhyscialDeviceID.ToString() == physicalPenDevice.Id.ToString());
                 if (deviceInfo != null)
                 {
-                    deviceInfo.IsdDriverVersion = newValue;
+                    deviceInfo.IsdDriverVersion = arg2;
 
                     DeviceChangedEventArgs _EventArgs = new();
                     _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
