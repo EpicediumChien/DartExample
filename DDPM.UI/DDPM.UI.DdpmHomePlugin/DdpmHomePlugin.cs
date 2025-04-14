@@ -1560,15 +1560,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     bool? b = false;
                     System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        InterruptScreen interruptScreen = new InterruptScreen(sWUpdateInfoPackage.SWUpdateInfo[0].TheLatestVersion, myDeserializedClass);
-                        b = interruptScreen.ShowDialog();
-                        if (b == true)
+                        InterruptScreen interruptScreen = new InterruptScreen(sWUpdateInfoPackage.SWUpdateInfo[0].TheLatestVersion, myDeserializedClass, DdpmCommonHelper.DeviceManagerSA, sWUpdateInfoPackage, _log);
+                        interruptScreen.Show();
+                        /*if (b == true)
                         {
                             _log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall go");
                             List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(sWUpdateInfoPackage.SWUpdateInfo, true).Result;
                             _log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall finish");
                             //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
-                        }
+                        }*/
                     }));
                 }
             }
