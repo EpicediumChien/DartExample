@@ -1096,7 +1096,7 @@ namespace DDPM.SA.Common
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "GetNetworkKVMIncomingPort" },  { "Value", "N/A" },         { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMOutgoingPort" },     { "Value", "[1024-49151]" }, { "Type", 1 }}, // NetworkKVMOutgoingPort[1024-49151]
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "GetNetworkKVMOutgoingPort" }, { "Value", "N/A" },          { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMContentTransferPort " },{ "Value", "[1024-49151]" }, { "Type", 1 }}, // NetworkKVMContentTransferPort [1024 - 49151]
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMContentTransferPort" },{ "Value", "[1024-49151]" }, { "Type", 1 }}, // NetworkKVMContentTransferPort [1024 - 49151]
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "GetNetworkKVMContentTransferPort" },{ "Value", "N/A" },    { "Type", 1 }},
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "NetworkKVMAccessReset" },     { "Value", "N/A" },          { "Type", 0 }},
 
