@@ -33,7 +33,7 @@ using Application = System.Windows.Application;
 namespace DDPM.UI.Common
 {
     /// <summary>
-    /// Interaction logic for InterruptScreen.xaml
+    /// Interaction lox94gic for InterruptScreen.xaml
     /// </summary>
     public partial class InterruptScreen : Window, INotifyPropertyChanged
     {
@@ -389,7 +389,7 @@ namespace DDPM.UI.Common
                 _Log?.Error($"UXButton_Click error : {ex.Message}");
             }
             finally
-            { 
+            {
                 //this.DialogResult = true;
                 this.Close();
             }
