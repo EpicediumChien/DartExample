@@ -95,7 +95,7 @@ namespace DDPM.QAM
 
             Microsoft.Win32.SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
             Log = log;
-            timer = new System.Threading.Timer(TimerCallback, null, 10000, 10000);
+            timer = new System.Threading.Timer(TimerCallback, null, 5000, 3000);
         }
 
         private void SystemEvents_SessionSwitch(object sender, Microsoft.Win32.SessionSwitchEventArgs e)
@@ -369,6 +369,7 @@ namespace DDPM.QAM
             }
         }
 
+        #region Get Full Screen State of Zoom and move to bottom of layer
         // Structure to hold window's position and size
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT
@@ -378,9 +379,6 @@ namespace DDPM.QAM
             public int Right;
             public int Bottom;
         }
-
-        [DllImport("user32.dll")]
-        private static extern int GetWindowRect(IntPtr hWnd, ref RECT rect);
 
         private void TimerCallback(object? state)
         {
@@ -407,9 +405,13 @@ namespace DDPM.QAM
                             GetWindowRect(hwnd, ref rect);
 
                             // Get screen size (Working area of the screen excluding taskbar)
-                            var screen = Screen.PrimaryScreen.WorkingArea;
+                            var screen = Screen.PrimaryScreen?.Bounds ?? new System.Drawing.Rectangle();
 
-                            if (rect.Left == 0 && rect.Top == 0 && rect.Right == screen.Width && rect.Bottom == screen.Height)
+                            // Compare window size to screen size (not considering the position)
+                            int windowWidth = rect.Right - rect.Left;
+                            int windowHeight = rect.Bottom - rect.Top;
+
+                            if (Math.Abs(windowWidth - screen.Width) <= 10 && Math.Abs(windowHeight - screen.Height) <= 10)
                             {
                                 WriteLog($"[MonitorZoomMeetingWindowState] Zoom is in full-screen mode!");
                                 SetToBottomWindow();
@@ -589,6 +591,11 @@ namespace DDPM.QAM
 
             return rst;
         }
+
+        [DllImport("user32.dll")]
+        private static extern int GetWindowRect(IntPtr hWnd, ref RECT rect);
+        #endregion
+
         #endregion
     }
 }
