@@ -68,12 +68,18 @@ namespace DDPM.UI.Module.WebCameraSettings
                 if (_vm.CurrentDeviceInfo.IsPropertyZoomSupported)
                     InitializeAutofocus();
 
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    _vm.CurrentDeviceInfo.IsWindowsHelloSupported = DdpmCommonHelper.DeviceManagerSA.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo?.ID.ToString() ?? "").Result;
+                }
                 if (!_vm.CurrentDeviceInfo.IsWindowsHelloSupported)
                 {
 
                     //bdrPrioritize.Visibility = Visibility.Collapsed;
                     _vm.bdrPrioritize_show = Visibility.Collapsed;
                     brdHello.Visibility = Visibility.Collapsed;
+                    _vm.brdHello_show = Visibility.Collapsed;
+                    _vm.brdHello_show_control = Visibility.Collapsed;
                 }
             }
             catch (Exception ex) 

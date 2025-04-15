@@ -473,7 +473,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //SUT 指電腦本身 DUT 外接Cam
             //
             is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA?.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo?.ID.ToString() ?? "").Result ?? false;
-
+            if (_vm.CurrentDeviceInfo != null) 
+            {
+                _vm.CurrentDeviceInfo.IsWindowsHelloSupported = is_WindwosHelloSupport;
+            }
             //Windows.Devices.Sensors.HumanPresenceSensor.GetDefaultAsync()
 
             //api回傳camera是否支援ESI
