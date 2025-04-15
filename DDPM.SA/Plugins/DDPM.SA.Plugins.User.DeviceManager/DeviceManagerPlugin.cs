@@ -7281,6 +7281,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (TargetMonitor.CapabilityDic.ContainsKey("12")) IsTargetLumiumce = true;
                     else IsTargetLumiumce = false;
 
+                    var TargetALSConfig = ALSConfig.First(x => x.MoInfo.edid.Equals(TargetMonitor.edid));
+                    var SourceALSConfig = ALSConfig.First(x => x.MoInfo.edid.Equals(SourceMonitor.edid));
+
                     var rstring = CheckisShowSynchronize(SourceMonitor, ALSConfig).Result;
 
                     switch (rstring.ToUpper(CultureInfo.InvariantCulture))
@@ -7290,21 +7293,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (IsSourceLumiumce)
                                     return Task.FromResult(IsTargetLumiumce ? true : false);
                                 else
-                                    return Task.FromResult(IsTargetLumiumce ? false : true);
+                                    return Task.FromResult(IsTargetLumiumce ? false : (((TargetALSConfig?.isAutoBrightness ?? true) || (TargetALSConfig?.isAutoColorTemp ?? true)) ? false : true));
                             }
                         case "B":
                             {
                                 if (IsSourceLumiumce)
                                     return Task.FromResult(IsTargetLumiumce ? true : false);
                                 else
-                                    return Task.FromResult(IsTargetLumiumce ? false : true);
+                                    return Task.FromResult(IsTargetLumiumce ? false : (((TargetALSConfig?.isAutoBrightness ?? true) || (TargetALSConfig?.isAutoColorTemp ?? true)) ? false : true));
                             }
                         case "C":
                             {
                                 if (IsSourceLumiumce)
                                     return Task.FromResult(IsTargetLumiumce ? true : false);
                                 else
-                                    return Task.FromResult(IsTargetLumiumce ? false : true);
+                                    return Task.FromResult(IsTargetLumiumce ? false : (((TargetALSConfig?.isAutoBrightness ?? true) || (TargetALSConfig?.isAutoColorTemp ?? true)) ? false : true));
                             }
                         case "D":
                             {
@@ -11721,8 +11724,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Debug.WriteLine($"HandleQAMV2 eventMsg event type is {eventMsg.EventType} new Value is {eventMsg.NewValue}");
                     if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
                         _IsZoomScreenShareActive = false;
-                    
-                    if(_IsZoomScreenShareActive)
+
+                    if (_IsZoomScreenShareActive)
                         _QAM.SetToBottomWindow();
                     else
                         _QAM.SetToTopWindow();
