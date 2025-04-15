@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common.Settings;
 using System.Collections.Generic;
 using System.Linq;
+using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Common
 {
@@ -50,7 +51,7 @@ namespace DDPM.SA.Common
             Name = di.Name;
             Model = di.ModelNumber;
             Guid = di.ID.ToString();
-            ServiceTag = di.DockServiceTag ?? "N/A";
+            ServiceTag = string.IsNullOrWhiteSpace(di.DockServiceTag) ? "N/A" : di.DockServiceTag;
             //Guid = "DellPeripheral.Webcam.0";
             Command = "GET";
             DDPMSettings data = _devMgr.ReloadAppConfigData().Result;
