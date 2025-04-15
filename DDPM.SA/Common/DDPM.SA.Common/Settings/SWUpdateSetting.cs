@@ -39,6 +39,7 @@ namespace DDPM.SA.Common.Settings
                 {
                     try
                     {
+                        client.DefaultRequestHeaders.UserAgent.ParseAdd("Dell Display and Peripheral Agent 2.x.x.x");
                         client.Timeout = TimeSpan.FromSeconds(60);
                         HttpResponseMessage response = client.GetAsync(SW_URL + "SWMetaData.json").Result;
                         response.EnsureSuccessStatusCode();
