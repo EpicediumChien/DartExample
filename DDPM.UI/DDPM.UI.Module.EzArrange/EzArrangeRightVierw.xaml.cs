@@ -232,7 +232,9 @@ namespace DDPM.UI.Module.EzArrange
             {
                 _vm.LogInfo("Building preset layout ListViews - Start");
                 sw.Restart();
-                foreach (ISplitCtrl spCtrl in ISplitCtrl.Splits_EA)
+                //Robert_Lin 2025-4-15 "Splits_EA" has been changed to AllSplitCtrls
+                //foreach (ISplitCtrl spCtrl in ISplitCtrl.Splits_EA)
+                foreach (ISplitCtrl spCtrl in ISplitCtrl.AllSplitCtrls)
                 {
                     SplitItem? spItem = null;
                     //Reused
@@ -745,14 +747,14 @@ namespace DDPM.UI.Module.EzArrange
 
         }
 
-        private void InitSplitListViews_Unused()
-        {
-            //A Build WindowLists
-            //
-            foreach (ISplitCtrl isp in ISplitCtrl.Splits_EA)
-            {
-            }
-        }
+        //private void InitSplitListViews_Unused()
+        //{
+        //    //A Build WindowLists
+        //    //
+        //    foreach (ISplitCtrl isp in ISplitCtrl.Splits_EA)
+        //    {
+        //    }
+        //}
 
         private void InitRecentListView_Unused()
         {
