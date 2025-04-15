@@ -11372,6 +11372,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Webcamcom.Esi_IsWALLockCountdownStartedChanged += Webcam_Esi_IsWALLockCountdownStartedChanged;
                     _Webcamcom.Esi_IsCameraSensorCoveredChanged += Webcam_Esi_IsCameraSensorCoveredChanged;
                     _Webcamcom.Esi_WALLockCountdownChanged += Webcam_Esi_WALLockCountdownChanged;
+                    _Webcamcom.IsAllSupportedResolutionsFoundChanged += _Webcamcom_IsAllSupportedResolutionsFoundChanged;
 
                     writelog($"Webcam Commodity {_Webcamcom.DeviceName}/{_Webcamcom.DeviceId}/{_Webcamcom.ModelNumber} events registered successfully");
 
@@ -11390,6 +11391,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 return false;
             }
+        }
+
+        private void _Webcamcom_IsAllSupportedResolutionsFoundChanged(object sender, IsAllSupportedResolutionsFoundChangedArgs e)
+        {
+            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsAllSupportedResolutionsFoundChanged",
+                                    e.DeviceId, $"NewValue:{e.IsAllSupportedResolutionsFound}"));
+
+            writelog($"Catch event _Webcamcom_IsAllSupportedResolutionsFoundChanged, NewValue:{e.IsAllSupportedResolutionsFound}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private async Task<bool> RegisterEventsForWebcamAsync(int index)
