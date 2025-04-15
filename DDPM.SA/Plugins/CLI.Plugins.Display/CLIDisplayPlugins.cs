@@ -1080,6 +1080,19 @@ namespace DDPM.CLI.Plugins.Display
                     }
 
                     return audio;
+                case "LogicalAirAudio":
+                    writelog("LogicalAirAudio entry");
+                    var airAudio = new DeviceDataAudioResponse(index, device);
+                    writelog("_devMgr.GetAirAudioSerialNumberAsync entry");
+                    airAudio.SerialNumber = _devMgr.GetAirAudioSerialNumberAsync(guid).Result ?? "N/A";
+                    writelog("_devMgr.GetAirAudioIsMicNoiseCancellationSupportedAsync entry");
+                    if (_devMgr.GetAirAudioIsMicNoiseCancellationSupportedAsync(guid).Result)
+                    {
+                        writelog("_devMgr.GetAirAudioMicNoiseCancellationAsync entry");
+                        airAudio.MicNoiseCancellation = _devMgr.GetAirAudioMicNoiseCancellationAsync(guid).Result ? "ON" : "OFF";
+                    }
+
+                    return airAudio;
                 case "LogicalKeyboard":
                     return new DeviceDataKeyboardResponse(index, device);
                 case "LogicalMouse":
@@ -12792,7 +12805,12 @@ namespace DDPM.CLI.Plugins.Display
                     case "MICNOISECANCELLATION":
                         writelog("MICNOISECANCELLATION entry");
                         writelog("_devMgr.GetIsMicNoiseCancellationSupportedAsync entry");
-                        if (_devMgr.GetIsMicNoiseCancellationSupportedAsync(device.ID.ToString()).Result)
+                        var isAirAudio = device.LogicalDeviceType.Equals("LogicalAirAudio", System.StringComparison.OrdinalIgnoreCase);
+                        var support = isAirAudio
+                            ? _devMgr.GetAirAudioIsMicNoiseCancellationSupportedAsync(device.ID.ToString()).Result
+                            : device.IsMicNoiseCancellationSupported;
+
+                        if (support)
                         {
                             if (property.Value.ToString() == "ON")
                             {
@@ -12801,6 +12819,12 @@ namespace DDPM.CLI.Plugins.Display
                                     writelog("_devMgr.SetMicNoiseCancellationForMito entry");
                                     _devMgr.SetMicNoiseCancellationForMito(true, device.ID);
                                     writelog("_devMgr.SetMicNoiseCancellationForMito exit");
+                                }
+                                else if (isAirAudio)
+                                {
+                                    writelog("_devMgr.SetAirAudioMicNoiseCancellationAsync entry");
+                                    _devMgr.SetAirAudioMicNoiseCancellationAsync(device.ID.ToString(), true);
+                                    writelog("_devMgr.SetAirAudioMicNoiseCancellationAsync exit");
                                 }
                                 else
                                 {
@@ -12816,6 +12840,12 @@ namespace DDPM.CLI.Plugins.Display
                                     writelog("_devMgr.SetMicNoiseCancellationForMito entry");
                                     _devMgr.SetMicNoiseCancellationForMito(false, device.ID);
                                     writelog("_devMgr.SetMicNoiseCancellationForMito exit");
+                                }
+                                else if (isAirAudio)
+                                {
+                                    writelog("_devMgr.SetAirAudioMicNoiseCancellationAsync entry");
+                                    _devMgr.SetAirAudioMicNoiseCancellationAsync(device.ID.ToString(), true);
+                                    writelog("_devMgr.SetAirAudioMicNoiseCancellationAsync exit");
                                 }
                                 else
                                 {
