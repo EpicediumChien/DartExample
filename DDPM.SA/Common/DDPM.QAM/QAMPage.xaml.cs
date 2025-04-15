@@ -17,6 +17,8 @@ namespace DDPM.QAM
         CameraSetting? CameraSetting;
         //Derek 2025/04/11 add timer to monitor zoom meeting window state for PIMS-351206
         private System.Threading.Timer? timer = null;
+        private bool _isTopmost = true;
+        private int fullScreenModeGetFailCount = 0;
 
         //public event EventHandler<UpdateUINotify> QAMUpdateUIHandler;
         public enum log_type
@@ -95,7 +97,7 @@ namespace DDPM.QAM
 
             Microsoft.Win32.SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
             Log = log;
-            timer = new System.Threading.Timer(TimerCallback, null, 10000, 10000);
+            timer = new System.Threading.Timer(TimerCallback, null, 5000, 3000);
         }
 
         private void SystemEvents_SessionSwitch(object sender, Microsoft.Win32.SessionSwitchEventArgs e)
@@ -369,6 +371,7 @@ namespace DDPM.QAM
             }
         }
 
+        #region Get Full Screen State of Zoom and move to bottom of layer
         // Structure to hold window's position and size
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT
@@ -378,9 +381,6 @@ namespace DDPM.QAM
             public int Right;
             public int Bottom;
         }
-
-        [DllImport("user32.dll")]
-        private static extern int GetWindowRect(IntPtr hWnd, ref RECT rect);
 
         private void TimerCallback(object? state)
         {
@@ -407,17 +407,27 @@ namespace DDPM.QAM
                             GetWindowRect(hwnd, ref rect);
 
                             // Get screen size (Working area of the screen excluding taskbar)
-                            var screen = Screen.PrimaryScreen.WorkingArea;
+                            var screen = Screen.PrimaryScreen?.Bounds ?? new System.Drawing.Rectangle();
 
-                            if (rect.Left == 0 && rect.Top == 0 && rect.Right == screen.Width && rect.Bottom == screen.Height)
+                            // Compare window size to screen size (not considering the position)
+                            int windowWidth = rect.Right - rect.Left;
+                            int windowHeight = rect.Bottom - rect.Top;
+
+                            if (Math.Abs(windowWidth - screen.Width) <= 10 && Math.Abs(windowHeight - screen.Height) <= 10
+                                && _isTopmost)
                             {
+                                fullScreenModeGetFailCount = 0;
                                 WriteLog($"[MonitorZoomMeetingWindowState] Zoom is in full-screen mode!");
                                 SetToBottomWindow();
                             }
                             else
                             {
-                                WriteLog($"[MonitorZoomMeetingWindowState] Zoom is NOT in full-screen mode.");
-                                SetToTopWindow();
+                                if (fullScreenModeGetFailCount > 3 && !_isTopmost)
+                                {
+                                    WriteLog($"[MonitorZoomMeetingWindowState] Zoom is NOT in full-screen mode.");
+                                    SetToTopWindow();
+                                }
+                                fullScreenModeGetFailCount++;
                             }
                         }
                         else
@@ -543,6 +553,7 @@ namespace DDPM.QAM
         {
             Dispatcher.Invoke(() =>
             {
+                this._isTopmost = false;
                 this.Topmost = false;
                 IntPtr hWnd = new WindowInteropHelper(this).Handle;
                 _SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
@@ -552,6 +563,7 @@ namespace DDPM.QAM
         {
             Dispatcher.Invoke(() =>
             {
+                this._isTopmost = true;
                 this.Topmost = true;
                 IntPtr hWnd = new WindowInteropHelper(this).Handle;
                 _SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
@@ -589,6 +601,11 @@ namespace DDPM.QAM
 
             return rst;
         }
-        #endregion
+
+        [DllImport("user32.dll")]
+        private static extern int GetWindowRect(IntPtr hWnd, ref RECT rect);
+        #endregion Win32API
+
+        #endregion Get Full Screen State of Zoom and move to bottom of layer
     }
 }
