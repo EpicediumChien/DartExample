@@ -80,15 +80,13 @@ namespace DDPM.Easy.Common
         //public List<CellObj> CellList { get; set; } = new List<CellObj>();
         public void InitCellList()
         {
-            ClearCellList();
-
-            //cellListH.Clear();
+            cellListH.Clear();
             cellListH.Add(new CellObj("4a1", cell_4a1) { rcRatio = new Rect(0, 0, 0.5, 0.5) });
             cellListH.Add(new CellObj("4a2", cell_4a2) { rcRatio = new Rect(0.5, 0, 0.5, 0.5) });
             cellListH.Add(new CellObj("4a3", cell_4a3) { rcRatio = new Rect(0, 0.5, 0.5, 0.5) });
             cellListH.Add(new CellObj("4a4", cell_4a4) { rcRatio = new Rect(0.5, 0.5, 0.5, 0.5) });
 
-            //cellListV.Clear();
+            cellListV.Clear();
             cellListV.Add(new CellObj("4A1", cell_4A1) { rcRatio = new Rect(0.5, 0, 0.5, 0.5) });
             cellListV.Add(new CellObj("4A2", cell_4A2) { rcRatio = new Rect(0.5, 0.5, 0.5, 0.5) });
             cellListV.Add(new CellObj("4A3", cell_4A3) { rcRatio = new Rect(0, 0, 0.5, 0.5) });
@@ -104,7 +102,7 @@ namespace DDPM.Easy.Common
                     cell.Dispose();
                 }
                 cellListH.Clear();
-                //cellListH = null;
+                cellListH = null;
             }
             if (cellListV != null)
             {
@@ -113,7 +111,7 @@ namespace DDPM.Easy.Common
                     cell.Dispose();
                 }
                 cellListV.Clear();
-                //cellListV = null;
+                cellListV = null;
             }
         }
         /// <summary>
@@ -283,7 +281,7 @@ namespace DDPM.Easy.Common
                     cellBd.Dispose();
                 }
                 celBordersH.Clear();
-                //celBordersH = null;
+                celBordersH = null;
             }
             if (celBordersV != null)
             {
@@ -292,7 +290,7 @@ namespace DDPM.Easy.Common
                     cellBd.Dispose();
                 }
                 celBordersV.Clear();
-                //celBordersV = null;
+                celBordersV = null;
             }
         }
         #endregion
@@ -318,12 +316,12 @@ namespace DDPM.Easy.Common
             if (VSplitterList != null)
             {
                 VSplitterList.Clear();
-                //VSplitterList = null;
+                VSplitterList = null;
             }
             if (HSplitterList != null)
             {
                 HSplitterList.Clear();
-                //HSplitterList = null;
+                HSplitterList = null;
             }
         }
         #endregion Splitter List
@@ -398,15 +396,6 @@ namespace DDPM.Easy.Common
                     ClearCellList();
                     ClearCellBorders();
                     ClearSplitterList();
-
-                    cellListH = null;
-                    cellListV = null;
-
-                    celBordersH = null;
-                    celBordersV = null;
-
-                    VSplitterList = null;
-                    HSplitterList = null;
 
                     if (DefaultSettings != null)
                     {

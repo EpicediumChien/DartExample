@@ -89,9 +89,7 @@ namespace DDPM.Easy.Common
         //public List<CellObj> CellList { get; set; } = new List<CellObj>();
         public void InitCellList()
         {
-            ClearCellList();
-
-            //cellListH.Clear();
+            cellListH.Clear();
             cellListH.Add(new CellObj("7i1", cell_7i1) { rcRatio = new Rect(0, 0, 1 / 3, 1 / 2) });
             cellListH.Add(new CellObj("7i2", cell_7i2) { rcRatio = new Rect(1 / 3, 0, 1 / 3, 1 / 2) });
             cellListH.Add(new CellObj("7i3", cell_7i3) { rcRatio = new Rect(2 / 3, 0, 1 / 3, 1 / 2) });
@@ -101,7 +99,7 @@ namespace DDPM.Easy.Common
             cellListH.Add(new CellObj("7i7", cell_7i7) { rcRatio = new Rect(2 / 3, 1 / 2, 1 / 3, 1 / 2) });
             cellListH.Add(new CellObj("7i8", cell_7i8) { rcRatio = new Rect(2 / 3, 1 / 2, 1 / 3, 1 / 2) });
 
-            //cellListV.Clear();
+            cellListV.Clear();
             cellListV.Add(new CellObj("7I1", cell_7I1) { rcRatio = new Rect(0, 2 / 3, 1 / 2, 1 / 3) });
             cellListV.Add(new CellObj("7I2", cell_7I2) { rcRatio = new Rect(0, 1 / 3, 1 / 2, 1 / 3) });
             cellListV.Add(new CellObj("7I3", cell_7I3) { rcRatio = new Rect(0, 0, 1 / 2, 1 / 3) });
@@ -121,7 +119,7 @@ namespace DDPM.Easy.Common
                     cell.Dispose();
                 }
                 cellListH.Clear();
-                //cellListH = null;
+                cellListH = null;
             }
             if (cellListV != null)
             {
@@ -130,7 +128,7 @@ namespace DDPM.Easy.Common
                     cell.Dispose();
                 }
                 cellListV.Clear();
-                //cellListV = null;
+                cellListV = null;
             }
         }
         /// <summary>
@@ -228,7 +226,7 @@ namespace DDPM.Easy.Common
                     cellBd.Dispose();
                 }
                 celBordersH.Clear();
-                //celBordersH = null;
+                celBordersH = null;
             }
             if (celBordersV != null)
             {
@@ -237,7 +235,7 @@ namespace DDPM.Easy.Common
                     cellBd.Dispose();
                 }
                 celBordersV.Clear();
-                //celBordersV = null;
+                celBordersV = null;
             }
         }
         #endregion
@@ -249,15 +247,13 @@ namespace DDPM.Easy.Common
 
         public void InitSplitterList()
         {
-            ClearSplitterList();
-
-            //VSplitterList.Clear();
+            VSplitterList.Clear();
             VSplitterList.Add(v1);
             VSplitterList.Add(v2);
             VSplitterList.Add(v3);
             VSplitterList.Add(V1);
 
-            //HSplitterList.Clear();
+            HSplitterList.Clear();
             HSplitterList.Add(h1);
             HSplitterList.Add(H1);
             HSplitterList.Add(H2);
@@ -349,15 +345,6 @@ namespace DDPM.Easy.Common
                     ClearCellList();
                     ClearCellBorders();
                     ClearSplitterList();
-
-                    cellListH = null;
-                    cellListV = null;
-
-                    celBordersH = null;
-                    celBordersV = null;
-
-                    VSplitterList = null;
-                    HSplitterList = null;
 
                     if (DefaultSettings != null)
                     {

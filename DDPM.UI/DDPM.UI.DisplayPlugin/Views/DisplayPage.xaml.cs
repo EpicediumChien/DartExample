@@ -1029,6 +1029,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                         _ivm.VbarItemClickCommand = null;
 
                     }
+
                     basePage.LeftArrowClick -= OnLeftArrowClick;
                     basePage.Dispose();
 
