@@ -3238,6 +3238,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else if (device != null && device.LogicalDeviceType.ToString().ToUpper().Contains("WEBCAM"))
                             {
+                                if (commandLineInput.fromcma)
+                                {
+                                    Thread.Sleep(15000);
+                                }                               
                                 serialNumbers.Add(_devMgr.GetWebcamSerialNumber(device.ID.ToString()).Result ?? "N/A");
                             }
                             else
