@@ -2771,11 +2771,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.device_peripherals = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == iLogicalDevice.Id.ToString());
                     _EventArgs.changedProperty = "LogicalDeviceAdded";
                     OnNotify(_EventArgs);
-                    writelog("LogicalDeviceAdded event published, Id : " + iLogicalDevice.Id + ", Name : " + iLogicalDevice.Name);
+                    writelog($"LogicalDeviceAdded event published, Id: {iLogicalDevice.Id}, Name: {iLogicalDevice.Name ?? ""}");
                 }
                 else
                 {
-                    writelog("LogicalDeviceAdded event bypassed, Id : " + iLogicalDevice.Id + ", Name : " + iLogicalDevice.Name);
+                    writelog($"LogicalDeviceAdded event bypassed, Id: {iLogicalDevice.Id}, Name: {iLogicalDevice.Name ?? ""}");
                 }
             }
         }
