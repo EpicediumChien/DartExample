@@ -74,7 +74,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                 }
                 if (!_vm.CurrentDeviceInfo.IsWindowsHelloSupported)
                 {
-
+                    DdpmCommonHelper.WriteUILog($"_vm.CurrentDeviceInfo.IsWindowsHelloSupported:{_vm.CurrentDeviceInfo.IsWindowsHelloSupported}");
                     //bdrPrioritize.Visibility = Visibility.Collapsed;
                     _vm.bdrPrioritize_show = Visibility.Collapsed;
                     brdHello.Visibility = Visibility.Collapsed;
