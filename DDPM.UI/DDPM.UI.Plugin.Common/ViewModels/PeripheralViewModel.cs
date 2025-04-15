@@ -242,7 +242,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 _name = DDPM.SA.Common.UI.SAUICommonHelper.MappingEOLName(Model);
                 _name = _name.Replace(Model, "").Trim();
-                _name = _name.Replace("  ", " ");
+                //_name = _name.Replace("  ", " ");
             }
             else
                 Name = DDPM.SA.Common.UI.SAUICommonHelper.MappingName(Model, CurrentDeviceInfo.Name.Trim());
