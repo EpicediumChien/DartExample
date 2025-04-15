@@ -85,6 +85,7 @@ namespace DDPM.UI.Module.EzMemory.Tests
             privateObjecta = new PrivateObject(splitItem);
             privateObjecta.SetFieldOrProperty("vm", new SplitItemViewModel() { SplitCtrl = ISplitCtrlMock.Object });
             vm = new EzArrangeViewModel(new HomeDevice()) { currentEditprofileSetting = new SA.Common.Settings.EzProfileSettingDDPM(1, true, 2, true) { Auto = true }, SelectedSplitItem = splitItem, IsEditProfile = true, currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() } };
+            System.Windows.Application.Current.MainWindow = new Window();
             logMock = new Mock<ILog>();
             log = logMock.Object;
             consoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(logMock.Object);
@@ -112,12 +113,16 @@ namespace DDPM.UI.Module.EzMemory.Tests
             var MainTextText = pageData.MainText!;
             var SubTextText = pageData.SubText!;
             EzArrangeViewModel vma = (EzArrangeViewModel)privateObject.GetFieldOrProperty("_vm");
-            Assert.That(vma.IsLaunchAtStartup, Is.EqualTo(true));
-            Assert.That(vma.IsAutoLaunch, Is.EqualTo(true));
-            Assert.That(vma.IsManualLaunch, Is.EqualTo(false));
-            Assert.That(vma.SelectedHour, Is.EqualTo("12"));
-            Assert.That(vma.SelectedAMPM, Is.EqualTo("AM"));
-            Assert.That(vma.SelectedMinute, Is.EqualTo("00"));
+            Assert.That(vma.IsLaunchAtStartup, Is.EqualTo(false));
+            Assert.That(vma.IsAutoLaunch, Is.EqualTo(false));
+            Assert.That(vma.IsManualLaunch, Is.EqualTo(true));
+            DateTime now = DateTime.Now;
+            int hour = now.Hour % 12;
+            int minute = now.Minute;
+            string period = now.ToString("tt");
+            Assert.That(vma.SelectedHour, Is.EqualTo(hour.ToString("00")));
+            Assert.That(vma.SelectedAMPM, Is.EqualTo(period));
+            Assert.That(vma.SelectedMinute, Is.EqualTo(minute.ToString("00")));
         }
 
         [Test]
@@ -130,12 +135,16 @@ namespace DDPM.UI.Module.EzMemory.Tests
             var MainTextText = pageData.MainText!;
             var SubTextText = pageData.SubText!;
             EzArrangeViewModel vma = (EzArrangeViewModel)privateObject.GetFieldOrProperty("_vm");
-            Assert.That(vma.IsLaunchAtStartup, Is.EqualTo(true));
+            Assert.That(vma.IsLaunchAtStartup, Is.EqualTo(false));
             Assert.That(vma.IsAutoLaunch, Is.EqualTo(false));
             Assert.That(vma.IsManualLaunch, Is.EqualTo(true));
-            Assert.That(vma.SelectedHour, Is.EqualTo("02"));
-            Assert.That(vma.SelectedAMPM, Is.EqualTo("AM"));
-            Assert.That(vma.SelectedMinute, Is.EqualTo("46"));
+            DateTime now = DateTime.Now;
+            int hour = now.Hour % 12;
+            int minute = now.Minute;
+            string period = now.ToString("tt");
+            Assert.That(vma.SelectedHour, Is.EqualTo(hour.ToString("00")));
+            Assert.That(vma.SelectedAMPM, Is.EqualTo(period));
+            Assert.That(vma.SelectedMinute, Is.EqualTo(minute.ToString("00")));
         }
 
         [Test]
@@ -149,12 +158,16 @@ namespace DDPM.UI.Module.EzMemory.Tests
             var MainTextText = pageData.MainText!;
             var SubTextText = pageData.SubText!;
             EzArrangeViewModel vma = (EzArrangeViewModel)privateObject.GetFieldOrProperty("_vm");
-            Assert.That(vma.IsLaunchAtStartup, Is.EqualTo(true));
-            Assert.That(vma.IsAutoLaunch, Is.EqualTo(true));
-            Assert.That(vma.IsManualLaunch, Is.EqualTo(false));
-            Assert.That(vma.SelectedHour, Is.EqualTo("05"));
-            Assert.That(vma.SelectedAMPM, Is.EqualTo("PM"));
-            Assert.That(vma.SelectedMinute, Is.EqualTo("46"));
+            Assert.That(vma.IsLaunchAtStartup, Is.EqualTo(false));
+            Assert.That(vma.IsAutoLaunch, Is.EqualTo(false));
+            Assert.That(vma.IsManualLaunch, Is.EqualTo(true));
+            DateTime now = DateTime.Now;
+            int hour = now.Hour % 12;
+            int minute = now.Minute;
+            string period = now.ToString("tt");
+            Assert.That(vma.SelectedHour, Is.EqualTo(hour.ToString("00")));
+            Assert.That(vma.SelectedAMPM, Is.EqualTo(period));
+            Assert.That(vma.SelectedMinute, Is.EqualTo(minute.ToString("00")));
         }
 
         [Test]

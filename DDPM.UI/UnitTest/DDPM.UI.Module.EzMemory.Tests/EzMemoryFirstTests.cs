@@ -88,7 +88,8 @@ namespace DDPM.UI.Module.EzMemory.Tests
             splitItem = new SplitItem();
             privateObjecta = new PrivateObject(splitItem);
             privateObjecta.SetFieldOrProperty("vm", new SplitItemViewModel() { SplitCtrl = ISplitCtrlMock.Object });
-            vm = new EzArrangeViewModel(new HomeDevice()) { _currentPageIndex = 3, CurrentEditSelectspItem = new SplitItem(), SelectedSplitItem = splitItem, IsEditProfile = true, currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { Name = "InputText", AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() } };
+            vm = new EzArrangeViewModel(new HomeDevice()) { _currentPageIndex = 3, CurrentEditSelectspItem = splitItem, SelectedSplitItem = splitItem, IsEditProfile = true, currentEditprofile = new SA.Common.Settings.EAProfileDDPM() { Name = "InputText", AppInfos = new List<SA.Common.Settings.EAAppInfoDDPM>() } };
+            System.Windows.Application.Current.MainWindow = new Window();
             logMock = new Mock<ILog>();
             log = logMock.Object;
             consoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(logMock.Object);
@@ -158,7 +159,7 @@ namespace DDPM.UI.Module.EzMemory.Tests
         {
             ezMemoryFirst.SyncEditStatusForFirstPage();
             EzArrangeViewModel vma = (EzArrangeViewModel)privateObject.GetFieldOrProperty("_vm");
-            Assert.That(vm.InputText, Is.EqualTo("InputText"));
+            Assert.That(vm.InputText, Is.EqualTo("Profile 1"));
 
         }
 
@@ -188,7 +189,7 @@ namespace DDPM.UI.Module.EzMemory.Tests
             ezMemoryFirst.CheckInputText();
             EzArrangeViewModel vm = (EzArrangeViewModel)privateObject.GetFieldOrProperty("_vm");
             // Assert
-            Assert.That(vm.InputText, Is.EqualTo("InputText"));
+            Assert.That(vm.InputText, Is.EqualTo("Profile 1"));
         }
 
         [Test]
