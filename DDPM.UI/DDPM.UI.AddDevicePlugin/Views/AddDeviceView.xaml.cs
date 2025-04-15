@@ -93,6 +93,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 switch (e.type)
                 {
                     case DeviceChangedType.Peripherals_PlugIn:
+                        DdpmCommonHelper.WriteUILog($"AddDevice Device PlugIn event received.");
                         if (_vm.CurrentDongle != null && e.device_peripherals != null && e.device_peripherals.PhyscialDeviceID == _vm.CurrentDongle.ID)
                         {
                             _vm.NewDevice = e.device_peripherals;
@@ -108,6 +109,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                                 {
                                     waitingModalDialog?.Close();
                                     //_vm.GotoNewDevice();
+                                    DdpmCommonHelper.WriteUILog($"AddDevice Device paired: ID: {e.device_peripherals.ID} Name: {e.device_peripherals.Name}");
                                     _console.ShowHomePage();
                                 }));
                             }
@@ -117,6 +119,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                             {
                                 WaitingModalDialogIsOpen = false;
                                 waitingModalDialog?.Close();
+                                DdpmCommonHelper.WriteUILog($"AddDevice Device added.");
                                 _console.ShowHomePage();
                             }));
                         break;
