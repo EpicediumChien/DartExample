@@ -85,6 +85,11 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             //DdpmCommonHelper.DeviceManagerSA.DeviceChanged += AddDeviceView_DeviceChanged;
         }
 
+        ~AddDeviceView()
+        {
+            moduleGroup.Dispose();
+        }
+
         bool IsRequested = false;
         private void AddDeviceView_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
         {
