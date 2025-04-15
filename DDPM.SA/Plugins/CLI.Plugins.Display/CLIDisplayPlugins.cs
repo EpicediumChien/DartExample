@@ -11151,8 +11151,8 @@ namespace DDPM.CLI.Plugins.Display
 
                     List<int> _monitorIndeies = new List<int>();
 
-                    if (_AllInfoMonitors == null)
-                        _AllInfoMonitors = devMgr.GetMonitors().Result;
+                    //if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
 
                     _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
                     writelog($"CLI /set -display=applyConfiguration -value={commandLineInput.Options[0].Option_Value}");
@@ -11182,6 +11182,22 @@ namespace DDPM.CLI.Plugins.Display
                                         foreach (var property in jsonObject.Properties())
                                         {
                                             Console.WriteLine($"Key: {property.Name}, Value: {property.Value}");
+                                            List<MonitorInfo> MonitorInfo_Reget = devMgr.GetMonitors().Result;
+                                            MonitorInfo monitor_incase = null;
+                                            try
+                                            {
+                                               monitor_incase = MonitorInfo_Reget.Single(x => x.edid.ServiceTag.ToString().Equals(commandLineInput.ServiceTag[0].ToString(), StringComparison.OrdinalIgnoreCase));
+                                            }
+                                            catch 
+                                            {
+                                                CLI_RESPONSE cli_Response___ = new CLI_RESPONSE();
+                                                cli_Response___.Command = commandLineInput.Command;
+                                                cli_Response___.TargetFeature = commandLineInput.TargetFeature;
+                                                cli_Response___.Result = "FAIL";
+                                                cli_Response___.Message = "No servicetag found.";
+                                                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response___.ToJson());
+                                            }
+                                            writelog($"Re-get Monitor Info before each configuration setting");
 
                                             switch (property.Name.ToString())
                                             {
@@ -11213,8 +11229,8 @@ namespace DDPM.CLI.Plugins.Display
                                                             break;
                                                     }
                                                     if (displayOrientation != null)
-                                                    {
-                                                        retcode = _devMgr.SetDisplayPropertiest(monitor, new Properties(), (DisplayOrientation)displayOrientation).Result;
+                                                    {                                                       
+                                                        retcode = _devMgr.SetDisplayPropertiest(monitor_incase, new Properties(), (DisplayOrientation)displayOrientation).Result;
                                                     }
                                                     if (!retcode) ispass = false;
                                                     else ApplyConfiguration.ScreenOrientation = property.Value.ToString();
@@ -11229,9 +11245,10 @@ namespace DDPM.CLI.Plugins.Display
 
                                                 case "ACTIVEINPUTSOURCE":
                                                     writelog($"ActiveInputSource entry");
+
                                                     if (monitor.CapabilityDic.ContainsKey("60"))
                                                     {
-                                                        retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(get_inputsource_type(property.Value.ToString().ToUpper()).ToString())).Result;
+                                                        retcode = SetVCPCode(devMgr, monitor_incase, "0x60", get_InputSource_code(get_inputsource_type(property.Value.ToString().ToUpper()).ToString())).Result;
                                                         if (!retcode) ispass = false;
                                                         else ApplyConfiguration.ActiveInputSource = property.Value.ToString();
                                                         writelog($"ActiveInputSource={ApplyConfiguration.ActiveInputSource}");
@@ -11250,7 +11267,7 @@ namespace DDPM.CLI.Plugins.Display
                                                     //{
                                                     string[] ss = property.Value.ToString().Split(" ");
                                                     displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[2]), Frequency = int.Parse(ss[4].Split(".00HZ")[0]) };
-                                                    retcode = devMgr.SetDisplayPropertiest(monitor, displayProperties, displayPropertiesInfo.CurrentOrientation).Result;
+                                                    retcode = devMgr.SetDisplayPropertiest(monitor_incase, displayProperties, displayPropertiesInfo.CurrentOrientation).Result;
                                                     if (!retcode) ispass = false;
                                                     else ApplyConfiguration.Resolution = property.Value.ToString();
                                                     writelog($"RESOLUTION={ApplyConfiguration.Resolution}");
@@ -11273,7 +11290,7 @@ namespace DDPM.CLI.Plugins.Display
                                                     writelog($"ContrastLevel entry");
                                                     if (monitor.CapabilityDic.ContainsKey("12"))
                                                     {
-                                                        retcode = SetVCPCode(devMgr, monitor, "0x12", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                        retcode = SetVCPCode(devMgr, monitor_incase, "0x12", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
                                                         if (!retcode) ispass = false;
                                                         else ApplyConfiguration.ContrastLevel = property.Value.ToString();
                                                         writelog($"ContrastLevel={ApplyConfiguration.ContrastLevel}");
@@ -11290,7 +11307,7 @@ namespace DDPM.CLI.Plugins.Display
                                                     writelog($"BrightnessLevel entry");
                                                     if (monitor.CapabilityDic.ContainsKey("10"))
                                                     {
-                                                        retcode = SetVCPCode(devMgr, monitor, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                        retcode = SetVCPCode(devMgr, monitor_incase, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
                                                         if (!retcode) ispass = false;
                                                         else ApplyConfiguration.BrightnessLevel = property.Value.ToString();
                                                         writelog($"BrightnessLevel={ApplyConfiguration.BrightnessLevel}");
@@ -11307,7 +11324,7 @@ namespace DDPM.CLI.Plugins.Display
                                                     writelog($"LuminanceLevel entry");
                                                     if (!monitor.CapabilityDic.ContainsKey("10"))
                                                     {
-                                                        retcode = SetVCPCode(devMgr, monitor, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
+                                                        retcode = SetVCPCode(devMgr, monitor_incase, "0x10", property.Value.ToString().Substring(0, property.Value.ToString().Length - 1)).Result;
                                                         if (!retcode) ispass = false;
                                                         else ApplyConfiguration.LuminanceLevel = property.Value.ToString();
                                                         writelog($"LuminanceLevel={ApplyConfiguration.LuminanceLevel}");
@@ -11324,7 +11341,7 @@ namespace DDPM.CLI.Plugins.Display
                                                     writelog($"AutoBrightness entry");
                                                     if (monitor.CapabilityDic.ContainsKey("66"))
                                                     {
-                                                        retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightness, property.Value.ToString().ToUpper());
+                                                        retcode = await devMgr.SetALSFeatureValue(monitor_incase, param, ALSFeatureQueryType.AutoBrightness, property.Value.ToString().ToUpper());
                                                         if (!retcode) ispass = false;
                                                         else ApplyConfiguration.AutoBrightness = property.Value.ToString();
                                                         writelog($"AutoBrightness={ApplyConfiguration.AutoBrightness}");
@@ -11341,7 +11358,7 @@ namespace DDPM.CLI.Plugins.Display
                                                     writelog($"AutoBrightnessRangeLevel entry");
                                                     if (monitor.CapabilityDic.ContainsKey("66"))
                                                     {
-                                                        retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoBrightnessRangeLevel, get_RangeLevel(property.Value.ToString().ToUpper()));
+                                                        retcode = await devMgr.SetALSFeatureValue(monitor_incase, param, ALSFeatureQueryType.AutoBrightnessRangeLevel, get_RangeLevel(property.Value.ToString().ToUpper()));
                                                         if (!retcode) ispass = false;
                                                         else ApplyConfiguration.AutoBrightnessRangeLevel = property.Value.ToString();
                                                         writelog($"AutoBrightnessRangeLevel={ApplyConfiguration.AutoBrightnessRangeLevel}");
@@ -11358,7 +11375,7 @@ namespace DDPM.CLI.Plugins.Display
                                                     writelog($"AutoColorTemp entry");
                                                     if (monitor.CapabilityDic.ContainsKey("66"))
                                                     {
-                                                        retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.AutoColorTemperature, property.Value.ToString().ToUpper());
+                                                        retcode = await devMgr.SetALSFeatureValue(monitor_incase, param, ALSFeatureQueryType.AutoColorTemperature, property.Value.ToString().ToUpper());
                                                         if (!retcode) ispass = false;
                                                         else ApplyConfiguration.AutoColorTemp = property.Value.ToString();
                                                         writelog($"AutoColorTemp={ApplyConfiguration.AutoColorTemp}");
@@ -11375,7 +11392,7 @@ namespace DDPM.CLI.Plugins.Display
                                                     writelog($"PrimaryMonitorForSync entry");
                                                     if (monitor.CapabilityDic.ContainsKey("66"))
                                                     {
-                                                        retcode = await devMgr.SetALSFeatureValue(monitor, param, ALSFeatureQueryType.PrimaryMonitorSync, property.Value.ToString().ToUpper());
+                                                        retcode = await devMgr.SetALSFeatureValue(monitor_incase, param, ALSFeatureQueryType.PrimaryMonitorSync, property.Value.ToString().ToUpper());
                                                         if (!retcode) ispass = false;
                                                         else ApplyConfiguration.PrimaryMonitorForSync = property.Value.ToString();
                                                         writelog($"PrimaryMonitorForSync={ApplyConfiguration.PrimaryMonitorForSync}");
@@ -11394,7 +11411,7 @@ namespace DDPM.CLI.Plugins.Display
                                                         USBCPrioritizationType gettype = get_USBCPrioritization(property.Value.ToString());
                                                         if (gettype != USBCPrioritizationType.Unknow)
                                                         {
-                                                            retcode = devMgr.SetUSBCPrioritizationType(monitor, gettype).Result;
+                                                            retcode = devMgr.SetUSBCPrioritizationType(monitor_incase, gettype).Result;
                                                             if (!retcode) ispass = false;
                                                             else ApplyConfiguration.USB_CPrioritization = property.Value.ToString();
                                                             writelog($"USB_CPrioritization={ApplyConfiguration.USB_CPrioritization}");
@@ -11416,7 +11433,7 @@ namespace DDPM.CLI.Plugins.Display
                                                         case ColorManagementRunType.Byhost:
                                                         case ColorManagementRunType.Bymonitor:
                                                             writelog($"ColorManagement {colorManagementType.ToString()} entry");
-                                                            retcode = devMgr.AutoColorManagementForMonitorConfig(monitor, colorManagementType.ToString().ToUpper(), string.Empty, string.Empty).Result;
+                                                            retcode = devMgr.AutoColorManagementForMonitorConfig(monitor_incase, colorManagementType.ToString().ToUpper(), string.Empty, string.Empty).Result;
                                                             if (!retcode) ispass = false;
                                                             else ApplyConfiguration.ColorManagement = property.Value.ToString();
                                                             writelog($"ColorManagement={ApplyConfiguration.ColorManagement}");
@@ -11431,11 +11448,11 @@ namespace DDPM.CLI.Plugins.Display
                                                     break;
                                                 case "SPEAKERMICROPHONE":
                                                     writelog($"SpeakerMicrophone entry");
-                                                    if (CheckSpeakerSupported(monitor, commandLineInput) && CheckMicrophoneSupported(monitor, commandLineInput))
+                                                    if (CheckSpeakerSupported(monitor_incase, commandLineInput) && CheckMicrophoneSupported(monitor_incase, commandLineInput))
                                                     {
-                                                        rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                                        rc = GetVCPCode(devMgr, monitor_incase, "0x62").Result;
                                                         int getvalue = Convert.ToInt32(rc.value);
-                                                        retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(property.Value.ToString(), getvalue)).Result;
+                                                        retcode = SetVCPCode(devMgr, monitor_incase, "0x62", get_SpeakerMicrophone(property.Value.ToString(), getvalue)).Result;
 
                                                         //rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
                                                         //int getvalue2 = Convert.ToInt32(rc.value);
@@ -11457,15 +11474,15 @@ namespace DDPM.CLI.Plugins.Display
 
                                                 case "SPEAKERVOLUME":
                                                     writelog($"SpeakerVolume entry");
-                                                    if (CheckSpeakerSupported(monitor, commandLineInput))
+                                                    if (CheckSpeakerSupported(monitor_incase, commandLineInput))
                                                     {
-                                                        rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                                        rc = GetVCPCode(devMgr, monitor_incase, "0x62").Result;
                                                         int getvalue = Convert.ToInt32(rc.value);
                                                         string setvalue = get_SpeakerVolume(property.Value.ToString(), getvalue);
                                                         if (setvalue != "unknown_command")
-                                                            retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
+                                                            retcode = SetVCPCode(devMgr, monitor_incase, "0x62", setvalue).Result;
                                                         else
-                                                            retcode = SetVCPCode(devMgr, monitor, "0x62", property.Value.ToString()).Result;
+                                                            retcode = SetVCPCode(devMgr, monitor_incase, "0x62", property.Value.ToString()).Result;
                                                         if (!retcode) ispass = false;
                                                         else ApplyConfiguration.SpeakerVolume = property.Value.ToString();
                                                         writelog($"SpeakerVolume={ApplyConfiguration.SpeakerVolume}");
@@ -11482,11 +11499,11 @@ namespace DDPM.CLI.Plugins.Display
 
                                                 case "MICROPHONECONTROL":
                                                     writelog($"MicrophoneControl entry");
-                                                    if (CheckMicrophoneSupported(monitor, commandLineInput))
+                                                    if (CheckMicrophoneSupported(monitor_incase, commandLineInput))
                                                     {
-                                                        rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                                        rc = GetVCPCode(devMgr, monitor_incase, "0x8D").Result;
                                                         int getvalue = Convert.ToInt32(rc.value);
-                                                        retcode = SetVCPCode(devMgr, monitor, "0x8D", get_MicrophoneControl(property.Value.ToString(), getvalue)).Result;
+                                                        retcode = SetVCPCode(devMgr, monitor_incase, "0x8D", get_MicrophoneControl(property.Value.ToString(), getvalue)).Result;
                                                         if (!retcode) ispass = false;
                                                         else ApplyConfiguration.MicrophoneControl = property.Value.ToString();
                                                         writelog($"MicrophoneControl={ApplyConfiguration.MicrophoneControl}");
@@ -11521,7 +11538,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                                 case "POWERNAP":
                                                     writelog($"PowerNap entry");
-                                                    await SetPowerNapAsync(get_PowerNapType_code(property.Value.ToString()), devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
+                                                    await SetPowerNapAsync(get_PowerNapType_code(property.Value.ToString()), devMgr, monitor_incase.edid.ModelName, monitor_incase.edid.SerialNumber, monitor_incase.edid.ServiceTag);
                                                     //PowerNapSetting setting = new PowerNapSetting
                                                     //{
                                                     //    Status = false,
@@ -11542,7 +11559,7 @@ namespace DDPM.CLI.Plugins.Display
                                                     writelog($"OSD_language entry");
                                                     if (monitor.CapabilityDic.ContainsKey("CC"))
                                                     {
-                                                        retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(property.Value.ToString()).ToString()).Result;
+                                                        retcode = SetVCPCode(devMgr, monitor_incase, "0xCC", GetOSDLanguage_index(property.Value.ToString()).ToString()).Result;
                                                         writelog($"OSD_language={GetOSDLanguage_index(property.Value.ToString()).ToString()}");
                                                         if (!retcode) ispass = false;
                                                         else ApplyConfiguration.OSD_language = property.Value.ToString();
