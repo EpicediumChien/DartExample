@@ -9273,6 +9273,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 DisplayImportResultCode backendImportResult = _SettingsPlugin.DisplayImportSettings(path, isSameModel, monitorInfo.edid.ServiceTag, out DDPMImpExpSettings ImpExpSettings).Result;
                 if ((int)backendImportResult > 0)
                 {
+                    writelog($"[DisplayImportSettings] _SettingsPlugin.DisplayImportSettings successfully.");
                     // Apply new Hotkey setting
                     ReloadHotkeyConfigData();
                     RegistHotkey(true);
@@ -9330,6 +9331,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         impVCPSequence.ALSConfig = ImpExpSettings.MonitorSettings.ALSConfig;
                                         SetVCPSequence(monitorInfo, impVCPSequence, vcps);
                                         writelog("[DisplayImportSettings] ALSConfig : " + impVCPSequence.ALSConfig.ToString());
+#if DEBUG
+                                        Debug.WriteLine($"[DisplayImportSettings] ALSConfig : {impVCPSequence.ALSConfig.ToString()}");
+#endif
                                         foreach (VCPCode code in vcps)
                                         {
                                             if (code.Code != null && (code.Value != null && code.Value.Count > 0))
@@ -9433,6 +9437,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 else
                 {
+                    writelog($"[DisplayImportSettings] _SettingsPlugin.DisplayImportSettings failed. Import DDM settings.");
                     //Import DDMSettings
                     DDMImpSettings impSettings = new DDMImpSettings();
                     impSettings = _SettingsPlugin.ReadDDMImpSettingsFile(path).Result;

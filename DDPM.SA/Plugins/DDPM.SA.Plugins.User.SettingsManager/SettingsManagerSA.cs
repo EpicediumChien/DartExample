@@ -1074,7 +1074,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             bool isEzMemoryOverride = false;
             WriteLog($"[DisplayImportSettings] path : {Path.GetDirectoryName(path)}, model {Path.GetFileName(path).Replace(".json", "", StringComparison.OrdinalIgnoreCase)}");
             ImpExpSettings = ReadImportSettingsFile(path).Result;
-            if (ImpExpSettings != null)
+            if (!string.IsNullOrEmpty(ImpExpSettings?.MonitorSettings?.Model))
             {
                 if (ImpExpSettings.UserSettings != null)
                 {
@@ -1128,6 +1128,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                                 foreach (DDPMMonitorSettings settings in monitorSettingsList)
                                 {
                                     WriteLog($"[DisplayImportSettings] isSameModel : {isSameModel}. ");
+#if DEBUG
+                                    Debug.WriteLine($"[DisplayImportSettings] Model: {settings.Model}, isSameModelFlag : {isSameModel}.");
+#endif
                                     WriteLog($"[DisplayImportSettings] current settings.ServiceTag : {serviceTag}, profile data serviceTag: {settings.ServiceTag}. ");
                                     // SameModel flag on will override all same model
                                     if (isSameModel || settings.ServiceTag == serviceTag)
@@ -1141,12 +1144,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                                         settings.scheduleInfo = monitorSettings.scheduleInfo;
                                         if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
                                         {
-                                            if (!isSameModel)
-                                            {
-                                                if (isEzMemoryOverride)
-                                                    return Task.FromResult(DisplayImportResultCode.DoneWithEzMemoryCleared);
-                                                return Task.FromResult(DisplayImportResultCode.Done);
-                                            }
+                                            if (isEzMemoryOverride)
+                                                return Task.FromResult(DisplayImportResultCode.DoneWithEzMemoryCleared);
+                                            return Task.FromResult(DisplayImportResultCode.Done);
                                         }
                                         else
                                         {
