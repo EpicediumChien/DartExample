@@ -2497,7 +2497,7 @@
     <value>確定</value>
   </data>
   <data name="Collab.2" xml:space="preserve">
-    <value>提供快速存取會議控制項。切換\n開啟/關閉鍵將於 Microsoft Teams 或 Zoom 通話時，\n在鍵盤上顯示或隱藏這些按鍵。</value>
+    <value>提供快速存取會議控制項。切換開啟/關閉鍵將於 Microsoft Teams 或 Zoom 通話時，在鍵盤上顯示或隱藏這些按鍵。</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
     <value>在會議通話中出現新的聊天訊息時啟用閃爍\n效果</value>
@@ -3508,7 +3508,7 @@
     <value>構圖格線</value>
   </data>
   <data name="Brightness.21" xml:space="preserve">
-    <value>將亮度/光度、對比度、排程設定\n和色彩預設套用至連接的顯示器</value>
+    <value>將亮度/光度、對比度、排程設定和色彩預設套用至連接的顯示器</value>
   </data>
   <data name="slot" xml:space="preserve">
     <value>可用插槽</value>

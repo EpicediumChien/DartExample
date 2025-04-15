@@ -2497,7 +2497,7 @@
     <value>OK</value>
   </data>
   <data name="Collab.2" xml:space="preserve">
-    <value>Permet d’accéder rapidement aux commandes de conférence. Si elles sont activées,\nles touches s’afficheront sur le clavier lors d’un appel Microsoft Teams ou Zoom.\nElles seront masquées dans le cas contraire.</value>
+    <value>Permet d’accéder rapidement aux commandes de conférence. Si elles sont activées,les touches s’afficheront sur le clavier lors d’un appel Microsoft Teams ou Zoom.Elles seront masquées dans le cas contraire.</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
     <value>Activez l’effet de clignotement à réception d’un nouveau message de chat\nau cours d’une conférence</value>
@@ -3508,7 +3508,7 @@
     <value>Grille de cadrage</value>
   </data>
   <data name="Brightness.21" xml:space="preserve">
-    <value>Applique la luminosité/la luminance, le contraste, les paramètres de planification\net les couleurs prédéfinies aux écrans connectés</value>
+    <value>Applique la luminosité/la luminance, le contraste, les paramètres de planification et les couleurs prédéfinies aux écrans connectés</value>
   </data>
   <data name="slot" xml:space="preserve">
     <value>logements disponibles</value>
