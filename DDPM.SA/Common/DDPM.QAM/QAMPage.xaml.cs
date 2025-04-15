@@ -604,8 +604,8 @@ namespace DDPM.QAM
 
         [DllImport("user32.dll")]
         private static extern int GetWindowRect(IntPtr hWnd, ref RECT rect);
-        #endregion
+        #endregion Win32API
 
-        #endregion
+        #endregion Get Full Screen State of Zoom and move to bottom of layer
     }
 }
