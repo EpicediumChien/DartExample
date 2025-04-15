@@ -1,4 +1,5 @@
-﻿using DDPM.UI.Resources.Helper;
+﻿#define REMOVE_EA_SPLITTERS //Define this symbol to remove all (unused VSplitters and HSplitters)
+using DDPM.UI.Resources.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,9 @@ namespace DDPM.Easy.Common
             VM.Settings = SplitCtrlVM.Double_To_GridLength(DefaultSettings);
             DataContext = vm;
             InitCellList();
+#if !REMOVE_EA_SPLITTERS
             InitSplitterList();
+#endif
         }
         #endregion ctor
 
@@ -234,6 +237,7 @@ namespace DDPM.Easy.Common
         }
         #endregion
 
+#if !REMOVE_EA_SPLITTERS
         #region Splitter List
 
         public List<GridSplitter> VSplitterList { get; set; } = new List<GridSplitter>();
@@ -266,6 +270,7 @@ namespace DDPM.Easy.Common
             }
         }
         #endregion Splitter List
+#endif //#if !REMOVE_EA_SPLITTERS
 
         #region Settings
 
@@ -337,8 +342,9 @@ namespace DDPM.Easy.Common
                     }
                     ClearCellList();
                     ClearCellBorders();
+#if !REMOVE_EA_SPLITTERS
                     ClearSplitterList();
-
+#endif
                     if (DefaultSettings != null)
                     {
                         DefaultSettings.Clear();
