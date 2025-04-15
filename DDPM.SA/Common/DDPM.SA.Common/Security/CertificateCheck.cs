@@ -1,4 +1,6 @@
 ﻿using DDPM.SA.Common.Settings;
+using DDPM.SA.Obfuscation;
+using IndiLogic.DPeM.Broker;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -170,6 +172,8 @@ namespace DDPM.SA.Common.Security
                             handler.ServerCertificateCustomValidationCallback = PinPublicKey;
                             using (HttpClient client = new HttpClient(handler))
                             {
+                                //DDPMW-2896
+                                client.DefaultRequestHeaders.UserAgent.ParseAdd(GlobalDefinitions.HttpAgentNamePreset + SettingsAccess.QueryAppAccessInfo().ver);
                                 _logs?.DebugMsg_1($"CheckURLCACertificate client.GetAsync go");
                                 HttpResponseMessage response = client.GetAsync(baseUrl).Result;
                             }
@@ -211,6 +215,7 @@ namespace DDPM.SA.Common.Security
                     HttpClientHandler httpClientHandler = new HttpClientHandler();
                     httpClientHandler.ServerCertificateCustomValidationCallback = ValidateCertificate;
                     HttpClient client = new HttpClient(httpClientHandler);
+                    client.DefaultRequestHeaders.UserAgent.ParseAdd(GlobalDefinitions.HttpAgentNamePreset + SettingsAccess.QueryAppAccessInfo().ver);//DDPMW-2896
                     _logs?.DebugMsg_1($"CheckCAHTTP GetResponse go");
                     bool response = GetResponse(client, URL);
                     _logs?.DebugMsg_1($"CheckCAHTTP GetResponse finish");
@@ -285,6 +290,7 @@ namespace DDPM.SA.Common.Security
             {
                 HttpClientHandler handler = new HttpClientHandler();
                 HttpClient httpClient = new HttpClient(handler);
+                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(GlobalDefinitions.HttpAgentNamePreset + SettingsAccess.QueryAppAccessInfo().ver);//DDPMW-2896
                 httpClient.GetAsync(URL).GetAwaiter().GetResult();
                 return true;
             }
