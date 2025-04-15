@@ -197,13 +197,6 @@ namespace DDPM.Easy.Common
             {
                 if (disposing)
                 {
-                    if(vm != null)
-                    {
-                        vm.Dispose();
-                        vm = null;
-                    }
-                    InitCellList();
-                    InitSplitterList();
                 }
                 _isDisposed = true;
             }
