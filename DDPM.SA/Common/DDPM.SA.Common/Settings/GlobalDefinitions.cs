@@ -30,6 +30,9 @@ namespace DDPM.SA.Common.Settings
         public const string Dongle_BeforeGen2_Name = "Dell Universal Receiver";
         public const string Display_ICC_URL_Folder = @"ICC/";
 
+        //DDPMW-2896, Dean add 2025/4/15
+        public const string HttpAgentNamePreset = "Dell Display and Peripheral Agent ";
+
         //for log print comparison
         private const string production_server = "clientperipherals.dell.com";
         private const string staging_server = "clientperipherals-uat.dell.com";
