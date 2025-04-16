@@ -185,7 +185,7 @@
             <Border Name="bdrMultimedia" MaxHeight="420" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,16,0,5000" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave">
               <StackPanel>
                 <Grid>
-                  <UXControls:UXTextBlock Name="txtMultimediaActions" Style="{StaticResource ActionsTextBlockStyle}" />
+                  <UXControls:UXTextBlock Name="txtMultimediaActions" Style="{StaticResource ActionsTextBlockStyle}" Width="240" TextTrimming="CharacterEllipsis" />
                   <Image x:Name="imgMultimedia" Source="{DynamicResource down_Expand}"  MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
                                            Style="{StaticResource ActionArrowStyle}" Margin="0,19,15,19">
                     <Image.RenderTransform>
