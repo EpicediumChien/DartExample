@@ -726,7 +726,7 @@ namespace DDPM.SA.Common
 
         void OnUIUpdateNotify(UpdateUINotify e);
 
-        event EventHandler<CMAIDEventArgs> HeadsetForCMAChanged;
+        event EventHandler<CMAIDEventArgs> DTPEventForCMAChanged;
 
         void OnCMAUpdateNotify(CMAIDEventArgs e);
 

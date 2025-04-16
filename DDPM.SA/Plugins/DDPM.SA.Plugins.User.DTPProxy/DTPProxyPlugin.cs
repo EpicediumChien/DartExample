@@ -8804,7 +8804,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (string.IsNullOrEmpty(devicefw))
                 devicefw = string.Empty;
 
-            SendHeadsetEventToCMA("Headset", e.DeviceId, e.SerialNumber, devicename, devicefw);
+            SendDTPEventToCMA("Headset", e.DeviceId, e.SerialNumber, devicename, devicefw);
             writelog($"[Headset] Catch event Headset_SerialNumberChangedForCMA : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
@@ -8883,15 +8883,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             OnUIUpdateNotify(headsetEventNotify);
         }
 
-        public void SendHeadsetEventToCMA(string deviceType, string GUID, string SNnumber, string Model, string FWversion)
+        public void SendDTPEventToCMA(string deviceType, string GUID, string SNnumber, string Model, string FWversion)
         {
-            CMAIDEventArgs headsetEventToCMANotify = new CMAIDEventArgs();
-            headsetEventToCMANotify.deviceType = deviceType;
-            headsetEventToCMANotify.guid = GUID;
-            headsetEventToCMANotify.snNumber = SNnumber;
-            headsetEventToCMANotify.model = Model;
-            headsetEventToCMANotify.fwVersion = FWversion;
-            UpdateCMANotify(headsetEventToCMANotify);
+            writelog($"[SendDTPEventToCMA] deviceType : {deviceType}, GUID : {GUID}, SNnumber : {SNnumber}, Model : {Model}, FWversion : {FWversion}");
+            CMAIDEventArgs dtpEventToCMANotify = new CMAIDEventArgs();
+            dtpEventToCMANotify.deviceType = deviceType;
+            dtpEventToCMANotify.guid = GUID;
+            dtpEventToCMANotify.snNumber = SNnumber;
+            dtpEventToCMANotify.model = Model;
+            dtpEventToCMANotify.fwVersion = FWversion;
+            UpdateCMANotify(dtpEventToCMANotify);
         }
 
         #endregion Headset Event
