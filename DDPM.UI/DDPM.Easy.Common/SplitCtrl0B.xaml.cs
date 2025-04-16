@@ -267,6 +267,12 @@ namespace DDPM.Easy.Common
                 Canvas.SetTop(cellBorder, top);
 
                 CellBorders.Add(cellBorder);
+
+                //[Checkmarx] Handle Improper Resource Shutdown or Release
+                cellBorder = new();
+                cellBorder.Dispose();
+                //[Checkmarx] Handle Improper Resource Shutdown or Release
+
             }
 
             return true;
