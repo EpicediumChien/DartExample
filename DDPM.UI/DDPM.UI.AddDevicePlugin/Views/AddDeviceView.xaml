@@ -109,10 +109,23 @@
         <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" Margin="60,8,0,0">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <!-- Robert_Lin 2025-4-16 use Statless button -->
+                    <Button Name="backArrow" Width="24" Height="24" Margin="0,0,16,0" Style="{StaticResource StatelessButton}"
+                            VerticalAlignment="Stretch" HorizontalAlignment="Left" Cursor="Hand"
+                            KeyboardNavigation.TabIndex="11" 
+                            AutomationProperties.Name="{Binding [Back], Source={x:Static lang:LangHelper.Instance}}" Click="backArrowButton_Click" 
+                            >
+                        <Grid Background="{StaticResource FakeTransparent}" >
+                            <ContentControl Template="{StaticResource icon_BackArrow}" Foreground="{DynamicResource TextBlock_ForegroundColor}"/>
+                        </Grid>
+                    </Button>
+                    <!-- OLD by Eric 2025-4-16 -->
+                    <!-- 
                     <Grid Width="24" Height="24" Margin="0,0,16,0" Background="{StaticResource FakeTransparent}" 
                               MouseLeftButtonDown="GoBackHomepage" PreviewKeyDown="ArrowLeft_PreviewKeyDown">
                         <ContentControl x:Name="ArrowLeft" Template="{StaticResource icon_BackArrow}" Foreground="{DynamicResource TextBlock_ForegroundColor}"/>
                     </Grid>
+                    -->
                     <!--<Image x:Name="ArrowLeft" Margin="64,8,0,0" Source="{DynamicResource Arrow_Left}" Stretch="Fill"
                  Focusable="True" KeyboardNavigation.TabIndex="11" 
                  AutomationProperties.Name="{Binding [Back], Source={x:Static lang:LangHelper.Instance}}" 
