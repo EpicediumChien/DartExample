@@ -13,6 +13,7 @@ namespace DDPM.Easy.Common
     {
         #region Private members
         private bool _isDisposed = false;
+        private CellBorder cellBorder;
         #endregion Private members
 
         #region ctor
@@ -227,7 +228,7 @@ namespace DDPM.Easy.Common
 
                 //Create a CellBorder
                 //
-                CellBorder cellBorder = new CellBorder();
+                cellBorder = new CellBorder();
                 cellBorder.CellName = cellName;
                 cellBorder.Width = settings[idxSettings + 2] * xRatio;
                 cellBorder.Height = settings[idxSettings + 3] * yRatio;
@@ -267,11 +268,6 @@ namespace DDPM.Easy.Common
                 Canvas.SetTop(cellBorder, top);
 
                 CellBorders.Add(cellBorder);
-
-                //[Checkmarx] Handle Improper Resource Shutdown or Release
-                cellBorder = new();
-                cellBorder.Dispose();
-                //[Checkmarx] Handle Improper Resource Shutdown or Release
 
             }
 
@@ -520,7 +516,7 @@ namespace DDPM.Easy.Common
                     InitCellList();
                     cellListH = null;
                     cellListV = null;
-
+                    cellBorder.Dispose();
 #if !REMOVE_EA_SPLITTERS
                     InitSplitterList();
 #endif
