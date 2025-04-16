@@ -435,7 +435,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //需要特殊邏輯處理的型號
             List<string> SpecialCase = new List<string>()
             {
-                "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB","WB7022"
+                "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB","WB7022","P2426HEB","P2726DEB","P3426WEB"
             };
 
             string? model = _vm.CurrentDeviceInfo?.ModelNumber;
@@ -819,7 +819,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //需要特殊邏輯處理的型號
             List<string> SpecialCase = new List<string>()
             {
-                "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB","WB7022"
+                "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB","WB7022","P2426HEB","P2726DEB","P3426WEB"
             };
 
             string model = _vm.CurrentDeviceInfo?.ModelNumber ?? "";
@@ -1126,7 +1126,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         SetPrioritizeShow(Visibility.Visible); // Jim 20250116 modify for PIMS-297931 by lio comment
                     }
                     break;
-
+                case "P2426HEB":
+                case "P2726DEB":
+                case "P3426WEB":
                 case "P2424HEB":
                 case "P2724DEB":
                 case "P3424WEB":
@@ -1780,7 +1782,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             groups.Add(moduleGroup);
 
 
-            if (_vm.Model == "WB7022" || _vm.Model == "P2424HEB" || _vm.Model == "P2724DEB" || _vm.Model == "P3424WEB" || _vm.Model == "U3223QZ" || _vm.Model == "U3224KB" || _vm.Model == "U3224KBA")
+            if (_vm.Model == "WB7022" || _vm.Model == "P2424HEB" || _vm.Model == "P2724DEB" || _vm.Model == "P3424WEB" || _vm.Model == "U3223QZ" || _vm.Model == "U3224KB" || _vm.Model == "U3224KBA"
+                || _vm.Model == "P2426HEB" || _vm.Model == "P2726DEB" || _vm.Model == "P3426WEB")
             {
                 //bool blRet = true;
 
