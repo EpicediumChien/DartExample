@@ -3508,7 +3508,7 @@
     <value>Rahmenraster</value>
   </data>
   <data name="Brightness.21" xml:space="preserve">
-    <value>Wendet Helligkeit/Luminanz, Kontrast, Zeitplaneinstellungen\nund Farbvoreinstellungen auf die angeschlossenen Monitore an</value>
+    <value>Wendet Helligkeit/Luminanz, Kontrast, Zeitplaneinstellungen und Farbvoreinstellungen auf die angeschlossenen Monitore an</value>
   </data>
   <data name="slot" xml:space="preserve">
     <value>Verfügbare Steckplätze</value>

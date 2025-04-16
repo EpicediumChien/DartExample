@@ -133,7 +133,7 @@
     <value>Network fail</value>
   </data>
   <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>Update failed due to network error. Try again.</value>
+    <value>Update for [XXXXXX] failed due to network error. Try again.</value>
   </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>Dock FW is loaded. Disconnect dock for completing FW application and reconnect dock after 1 min.</value>
@@ -142,7 +142,7 @@
     <value>Dock UOD FW update info</value>
   </data>
   <data name="Firmware_update_unsuccessful" xml:space="preserve">
-    <value>Firmware update unsuccessful</value>
+    <value>Firmware update for [XXXXXX] was unsuccessful</value>
   </data>
   <data name="Multiple_docks_are_detected" xml:space="preserve">
     <value>Multiple docks are detected. Keep only one dock connected to prevent damage to your docks.</value>
@@ -256,7 +256,7 @@
     <value>update failed with unknown error</value>
   </data>
   <data name="User_aborted_firmware_update" xml:space="preserve">
-    <value>User aborted firmware update</value>
+    <value>User aborted firmware update for [XXXXXX]</value>
   </data>
   <data name="Installing" xml:space="preserve">
     <value>Installing</value>
@@ -481,13 +481,13 @@
     <value>The same monitor is detected, do you want to import settings for %1?</value>
   </data>
   <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
-    <value>Firmware update aborted. Ensure only one device of same model is connected to system.</value>
+    <value>Firmware update for [XXXXXX] aborted. Ensure only one device of same model is connected to system.</value>
   </data>
   <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
     <value>USB wireless receiver firmware is unable to support device firmware upgrade</value>
   </data>
   <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
-    <value>Firmware update in progress. Fail to abort.</value>
+    <value>Firmware update for [XXXXXX] in progress. Fail to abort.</value>
   </data>
   <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
     <value>Dell Display and Peripheral Manager</value>

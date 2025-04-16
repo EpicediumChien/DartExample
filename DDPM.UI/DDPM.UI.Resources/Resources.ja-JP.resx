@@ -2497,7 +2497,7 @@
     <value>OK</value>
   </data>
   <data name="Collab.2" xml:space="preserve">
-    <value>会議のコントロールにすばやくアクセスできます。\nキーのオン/オフを切り替えると、Microsoft TeamsやZoomで通話中に\nキーボードのキーが表示または非表示になります。</value>
+    <value>会議のコントロールにすばやくアクセスできます。キーのオン/オフを切り替えると、Microsoft TeamsやZoomで通話中にキーボードのキーが表示または非表示になります。</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
     <value>電話会議に新しいチャット メッセージがあるときに点滅効果を有効にします\n</value>

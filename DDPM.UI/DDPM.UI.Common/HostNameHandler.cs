@@ -26,22 +26,23 @@ namespace DDPM.UI.Common
             return input;
         }
 
-        private static string GetHostNameByDNS()
-        {
-            string hostName = "_ERROR";
+        // [Checkmarx] Reliance on DNS Lookups in a Decision
+        //private static string GetHostNameByDNS()
+        //{
+        //    string hostName = "_ERROR";
 
-            try
-            {
-                hostName = Dns.GetHostName();
-                hostName = HostNameCheck(hostName);
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog("$\"[HostNameHandler] GetHostNameByDNS Exception : " + ex.Message);
-            }
+        //    try
+        //    {
+        //        hostName = Dns.GetHostName();
+        //        hostName = HostNameCheck(hostName);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        DdpmCommonHelper.WriteUILog("$\"[HostNameHandler] GetHostNameByDNS Exception : " + ex.Message);
+        //    }
 
-            return hostName;
-        }
+        //    return hostName;
+        //}
 
         private static string GetHostNameByMachineName()
         {

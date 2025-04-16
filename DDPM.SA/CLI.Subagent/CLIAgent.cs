@@ -178,6 +178,13 @@ namespace CLI.Subagent
                 return;
             }
 
+            idx = commandLineInputs.FindIndex(x => x.TargetType != "DISPLAY" && x.SerialNumber.Count > 0);
+            if (idx >= 0)
+            {
+                _exitcode = ICLICommandTable.Response_FormatError();
+                return;
+            }
+
             List<string> DeviceType = new List<string>()
             {
                 "DISPLAY",

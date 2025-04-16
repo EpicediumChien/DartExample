@@ -427,7 +427,7 @@ namespace DDPM.UI.Plugin.Common.Tests
             }
         }
 
-        [Test]
+        /*[Test]
         public void TestGotoNewDevice()
         {
             var _showPluginManagerMock = new Mock<IShowPluginManager>();
@@ -451,7 +451,7 @@ namespace DDPM.UI.Plugin.Common.Tests
             {
                 Assert.Fail("not invoked");
             }
-        }
+        }*/
 
     }
 

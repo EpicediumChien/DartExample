@@ -8,6 +8,10 @@ using System.Windows.Threading;
 namespace DDPM.Easy.Common
 {
     //LastModified: Robert_Lin 2024-9-4 16:48
+    //[2025-4-15 13:41] for SDL and memory usage
+    //1 Change Splits_EA to private and add 'readonly'
+    //2 Add a AllSplitCtrls for enumeation usage (for exmaple, foreach)
+    //3 Add DisposeAllSplitCtrls() to dispose allocated SplitCtrls in the list
     //[2024-9-4 16:48]
     //1 Add Clone()
     /// <summary>
@@ -18,7 +22,8 @@ namespace DDPM.Easy.Common
         #region Collection of support SplitCtrl classes
 
         //EasyArrange preset layouts
-        public static List<ISplitCtrl> Splits_EA = new List<ISplitCtrl>()
+        //public static List<ISplitCtrl> Splits_EA = new List<ISplitCtrl>()
+        private static readonly List<ISplitCtrl> _allSplitCtrls = new List<ISplitCtrl>
         {
             // 2 Windows
             new SplitCtrl2A(), new SplitCtrl2B(), new SplitCtrl2C(), new SplitCtrl2D(),
@@ -42,7 +47,8 @@ namespace DDPM.Easy.Common
 
         public static bool IsExisted(int cellCount, char splitKey)
         {
-            ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.CellCount == cellCount) && (x.SplitKey == splitKey));
+            //ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.CellCount == cellCount) && (x.SplitKey == splitKey));
+            ISplitCtrl? iSplit = ISplitCtrl._allSplitCtrls.Find(x => (x.CellCount == cellCount) && (x.SplitKey == splitKey));
             return (iSplit != null);
         }
 
@@ -54,6 +60,20 @@ namespace DDPM.Easy.Common
         public static bool IsExistedPresetEAID(int eaId)
         {
             return (eaId >= 0) && (eaId <= 49);
+        }
+
+        //Robert_Lin 2025-4-15 new added for enumeration
+        //Usage:
+        //  foreach (ISplitCtrl sp in ISplitCtrl.AllSplitCtrls)
+        public static IEnumerable<ISplitCtrl> AllSplitCtrls
+        {
+            get
+            {
+                foreach (ISplitCtrl sp in _allSplitCtrls)
+                {
+                    yield return sp;
+                }
+            }
         }
         #endregion Collection of support SplitCtrl classes
 
@@ -120,7 +140,8 @@ namespace DDPM.Easy.Common
             {
                 return new SplitCtrl0B();
             }
-            ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.CellCount == cellCount) && (x.SplitKey == splitKey));
+            //ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.CellCount == cellCount) && (x.SplitKey == splitKey));
+            ISplitCtrl? iSplit = ISplitCtrl._allSplitCtrls.Find(x => (x.CellCount == cellCount) && (x.SplitKey == splitKey));
             if (iSplit == null)
                 return null;
             return iSplit.New();
@@ -133,7 +154,8 @@ namespace DDPM.Easy.Common
         /// <returns></returns>
         public static ISplitCtrl? Create(int eaId)
         {
-            ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.EAID == eaId));
+            //ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.EAID == eaId));
+            ISplitCtrl? iSplit = ISplitCtrl._allSplitCtrls.Find(x => (x.EAID == eaId));
             if (iSplit == null)
                 return null;
             return iSplit.New();
@@ -216,6 +238,8 @@ namespace DDPM.Easy.Common
                 }, System.Windows.Threading.DispatcherPriority.Loaded);
             }
         }
+        //Used for RefreshCellRects()
+        public static double ScreenScale { get; set; } = 1.000;
         #endregion Cell list
 
         #region CellBorders
@@ -333,6 +357,28 @@ namespace DDPM.Easy.Common
         }
         #endregion
 
-        public static double ScreenScale { get; set; } = 1.000;
+        #region Dispose
+        private static readonly object _lockDisposeAll = new object();
+        public static void DisposeAll()
+        {
+            lock (_lockDisposeAll)
+            {
+                foreach (var spCtrl in _allSplitCtrls)
+                {
+                    try
+                    {
+                        if (spCtrl != null)
+                        {
+                            if (spCtrl is IDisposable disposable)
+                                disposable.Dispose();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+            }
+        }
+        #endregion Dispose
     }
 }
