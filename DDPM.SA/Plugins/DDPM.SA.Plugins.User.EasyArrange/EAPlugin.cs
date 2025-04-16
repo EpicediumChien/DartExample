@@ -1808,10 +1808,14 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
             _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
 
+            //Robert_Lin, 2025-4-16 remove the comment-out by Derek.
+            //QT and myself found sometime the EA has no function after startup.
+            //It happend when EABroker is started later than DisplayManager has invoke DisplaySettingsChanged and AllMonitorInfoChanged.
+            //
             //Derek0403 why raise DisplaySettingsChanged event here?
             //Remove???????
-            //EventManagerArgs evtArgs = new EventManagerArgs() { Tag = "init" };
-            //_agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, evtArgs);
+            EventManagerArgs evtArgs = new EventManagerArgs() { Tag = "init" };
+            _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, evtArgs);
 
             //Robert_Lin, 2024-12-10
             _agent.RegisterForEvent(AgentEventNames.AllInfoMonitorsChanged, AllInfoMonitorChangedHandler);

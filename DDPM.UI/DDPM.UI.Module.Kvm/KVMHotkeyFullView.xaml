@@ -16,11 +16,11 @@
             <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <UserControl.Style>
+    <!--<UserControl.Style>
         <Style TargetType="UserControl">
             <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBdColor}" />
         </Style>
-    </UserControl.Style>
+    </UserControl.Style>-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

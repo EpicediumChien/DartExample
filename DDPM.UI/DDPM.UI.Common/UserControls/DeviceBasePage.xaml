@@ -7,10 +7,12 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:common="clr-namespace:DDPM.UI.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources" 
-             xmlns:viewmodels="clr-namespace:DDPM.UI.Common.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:DeviceBasePageViewModel}"
+             xmlns:viewmodels="clr-namespace:DDPM.UI.Common.ViewModels" 
+             d:DataContext="{d:DesignInstance Type=viewmodels:DeviceBasePageViewModel}"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              Loaded="UserControl_Loaded"
+
              SizeChanged="UserControl_SizeChanged" Unloaded="UserControl_Unloaded">
 
     <UserControl.Resources>
@@ -46,21 +48,33 @@
             </DrawingBrush>
 
             <CollectionViewSource x:Key="ItemsViewSource" Source="{Binding VbarItems}" />
+            <common:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
     <!--<UXControls:UXScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">-->
-        <Grid>
+    <Grid>
             <!-- ImageSource Uri
         "pack://application:,,,/" + assemblyName + ";component/" + resourceName
         -->
-            <Image x:Name="imgBkGlow"
-               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png"
-               Stretch="UniformToFill"/>
+        <Image x:Name="imgBkGlow" Visibility="Collapsed"
+            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png"
+            Stretch="UniformToFill"/>
 
-            <!-- Layers: buttom to top, 1,2,3, ... -->
-            <!-- Layer 1 -->
-            <Grid >
+        <!-- Layers: buttom to top, 1,2,3, ... -->
+        <!-- Layer 1 -->
+        <Grid >
+                <!-- Robert_Lin 2025-4-16 Use IsFullViewOpened to control show/hide -->
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsFullViewOpened}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
 
                 <StackPanel Orientation="Horizontal" x:Name="topStackPanel">
                     <!-- LeftFrame -->
@@ -432,18 +446,19 @@
             </Grid>
 
             <!-- Layer : FullView -->
-            <ContentControl Name="FullFrame" Content="{Binding FullView}">
-                <ContentControl.Style>
+            <!-- Robert_Lin 2025-4-16, Binding to IsFullViewOpened to show/hide -->
+            <ContentControl Name="FullFrame" Content="{Binding FullView}"
+                            Visibility="{Binding IsFullViewOpened, Converter={StaticResource BoolToVisibilityConverter}}">
+                <!--<ContentControl.Style>
                     <Style TargetType="ContentControl">
                         <Setter Property="Visibility" Value="Visible" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding FullView}" Value="{x:Null}">
-                                <!-- Debug to set always Visible -->
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </ContentControl.Style>
+                </ContentControl.Style>-->
             </ContentControl>
         </Grid>
     <!--</UXControls:UXScrollViewer>-->

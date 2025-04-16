@@ -204,6 +204,9 @@
 		<Resource Include="Resources\AW.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
+		<Resource Include="Resources\Background_Glow.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Resources\Background_InterruptScreen.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
