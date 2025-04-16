@@ -389,7 +389,7 @@ namespace DDPM.UI.Common
                 _Log?.Error($"UXButton_Click error : {ex.Message}");
             }
             finally
-            { 
+            {
                 //this.DialogResult = true;
                 this.Close();
             }

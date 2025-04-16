@@ -453,7 +453,7 @@
     <value>Synchronize between monitors</value>
   </data>
   <data name="Brightness.5" xml:space="preserve">
-    <value>Apply the above brightness/luminance, contrast, and color\npreset controls to your connected monitors.</value>
+    <value>Apply the above brightness/luminance, contrast, and color preset controls to your connected monitors.</value>
   </data>
   <data name="Luminance" xml:space="preserve">
     <value>Luminance</value>
@@ -2502,7 +2502,7 @@
     <value>OK</value>
   </data>
   <data name="Collab.2" xml:space="preserve">
-    <value>Provides quick access to conference controls. Toggling the\nkeys on/off will show or hide them on the keyboard while in\na Microsoft Teams or Zoom call.</value>
+    <value>Provides quick access to conference controls. Toggling the keys on/off will show or hide them on the keyboard while in a Microsoft Teams or Zoom call.</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
     <value>Enable blink effect when there is a new chat message in conference\ncall</value>
@@ -3513,7 +3513,7 @@
     <value>Framing Grid</value>
   </data>
   <data name="Brightness.21" xml:space="preserve">
-    <value>Applies brightness/luminance, contrast, schedule settings\nand color presets to the connected monitors</value>
+    <value>Applies brightness/luminance, contrast, schedule settings and color presets to the connected monitors</value>
   </data>
   <data name="slot" xml:space="preserve">
     <value>slots available</value>

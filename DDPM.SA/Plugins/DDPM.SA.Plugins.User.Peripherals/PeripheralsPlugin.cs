@@ -101,6 +101,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private IDTPProxyPlugin _DTPProxyPlugin = null;
         private ISettingsManagerDev _UserSettingsPlugin = null;
+
+        private readonly object _Lock = new object();
         #endregion
 
         public IUpdateManager IUpdateManager => _iUpdateManager;
@@ -156,7 +158,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 return await System.Threading.Tasks.Task.Run(() =>
                 {
-                    lock (this)
+                    lock (_Lock)//this)
                     {
                         if (_isClientConnected && _deviceHelper != null)
                         {
@@ -1430,7 +1432,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         }*/
         private void ScanDevices()
         {
-            lock (this)
+            lock (_Lock)//this)
             {
                 if (CommonFunctions.IsServiceRunning(GlobalDefinitions.DPeMServiceName, Log) && _isClientConnected && _iClient != null && _iDeviceManager != null)
                 {
@@ -2489,7 +2491,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
             if (status == ClientStatus.Connected)
             {
-                lock (this)
+                lock (_Lock)//this)
                 {
                     writelog($"_isClientConnected turn true ... ");
                     _isClientConnected = true;
@@ -2529,7 +2531,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
             else
             {
-                lock (this)
+                lock (_Lock)//this)
                 {
                     if (_isClientConnected)
                     {
@@ -2677,7 +2679,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             //System.Diagnostics.Debug.WriteLine("ParentPhysicalDevice Added, Id : " + iPhysicalDevice.Id + ", Name : " + iPhysicalDevice.Name);
             writelog("ParentPhysicalDevice Added, Id : " + iPhysicalDevice.Id + ", Name : " + iPhysicalDevice.Name);
 
-            lock (this)
+            lock (_Lock)//this)
             {
                 if (_isClientConnected)
                 {
@@ -2760,7 +2762,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             else
                 writelog("LogicalDevice Added, Id : " + iLogicalDevice.Id + ", Name : " + iLogicalDevice.Name);
 
-            lock (this)
+            lock (_Lock)//this)
             {
                 if (_isClientConnected)
                 {
@@ -2771,6 +2773,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.device_peripherals = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == iLogicalDevice.Id.ToString());
                     _EventArgs.changedProperty = "LogicalDeviceAdded";
                     OnNotify(_EventArgs);
+                    writelog($"LogicalDeviceAdded event published, Id: {iLogicalDevice.Id}, Name: {iLogicalDevice.Name ?? ""}");
+                }
+                else
+                {
+                    writelog($"LogicalDeviceAdded event bypassed, Id: {iLogicalDevice.Id}, Name: {iLogicalDevice.Name ?? ""}");
                 }
             }
         }
@@ -2781,7 +2788,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 writelog("ParentPhysicalDevice Removed, Id : " + deviceGuid.ToString());
             }
-            lock (this)
+            lock (_Lock)//this)
             {
                 if (_isClientConnected)
                 {
@@ -3805,7 +3812,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         }
         private void IUpdateManager_IsAnyUpdateAvailableChanged(bool isAnyUpdateAvailable)
         {
-            lock (this)
+            lock (_Lock)//this)
             {
                 if (_isClientConnected && _iUpdateManager != null)
                 {
@@ -4078,7 +4085,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _logs.DebugMsg_1($"[PeripheralsPlugin] GetFWUpdateInfo done and _updateHelper is no null");
                 return await Task.Run(() =>
                 {
-                    lock (this)
+                    lock (_Lock)//this)
                     {
                         if (_isClientConnected && _updateHelper != null)
                         {

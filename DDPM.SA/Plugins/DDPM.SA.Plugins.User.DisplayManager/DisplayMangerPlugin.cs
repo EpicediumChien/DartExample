@@ -16,6 +16,7 @@ using DDPM.SA.Common.Interfaces;
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
 using DDPM.SA.Common.Settings;
+using DDPM.SA.Obfuscation;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
@@ -5969,6 +5970,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 try
                 {
+                    client.DefaultRequestHeaders.UserAgent.ParseAdd(GlobalDefinitions.HttpAgentNamePreset + SettingsAccess.QueryAppAccessInfo().ver);//DDPMW-2896
                     _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} get jsonContent");
                     client.Timeout = TimeSpan.FromSeconds(60);
                     HttpResponseMessage response = client.GetAsync(display_FWU_URL + "version_sha256.json").Result;

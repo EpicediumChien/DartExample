@@ -21,7 +21,7 @@
   </UserControl.Resources>
   <!--Elsa 20250331 for PIMS-348388 change Margin="0,0,0,15" to Margin="0,0,6,16",change Width="320" to Width="auto" -->
   <Grid Margin="0,0,6,16">
-    <Border Style="{StaticResource RightMenuBgStyle}"  CornerRadius="13" Width="auto" Margin="0,10,10,0">
+    <Border Style="{StaticResource RightMenuBgStyle}"  CornerRadius="13" Width="auto" Margin="0,10,0,0">
       <Border.Height>
         <MultiBinding Converter="{StaticResource HeightConverter}">
           <Binding Path="Height" RelativeSource="{RelativeSource AncestorType=Grid}" />
@@ -39,12 +39,12 @@
         </StackPanel>
         <Line X1="0" Y1="17" X2="288" Y2="17" Stroke="{DynamicResource MenuSeperatorColor}" StrokeThickness="1" />
         <StackPanel Orientation="Vertical" x:Name="Section1" Margin="0,0,0,2000" Visibility="Collapsed">
-                    <UXControls:UXTextBlock Name="txtMessage" FontSize="16" Foreground="{DynamicResource txtMessage_TxtColor}"  FontFamily="{StaticResource RobotoFont}" FontWeight="Normal" TextWrapping="Wrap"
+          <UXControls:UXTextBlock Name="txtMessage" FontSize="16" Foreground="{DynamicResource txtMessage_TxtColor}"  FontFamily="{StaticResource RobotoFont}" FontWeight="Normal" TextWrapping="Wrap"
                                             Margin="0,18,0,0" Width="288" LineHeight="24" VerticalAlignment="Top" HorizontalAlignment="Left" />
 
           <!--Chewlin 20250114 fix Mouse RestoreToDefault clipping issue change Width="245" Heigh="40" to MinWidth="245" MinHeight="45" ADD Width="auto" Height="auto" TextWrapping="WrapWithOverflow" Padding="10,0,10,0" -->
           <Border x:Name="btnRestore" Style="{StaticResource Button1BorderStyle}" Cursor="Hand" MinWidth="245" Width="auto" MinHeight="45" Height="auto" IsEnabled="{Binding IsRestoreEnable}" MouseLeftButtonDown="btnRestoreClicked" Margin="0,431,0,0">
-                        <UXControls:UXTextBlock Name="txtRestore" Style="{StaticResource Button1TextStyle}" IsEnabled="{Binding IsRestoreEnable}" Text="{Binding RestoreToDefaultText}" 
+            <UXControls:UXTextBlock Name="txtRestore" Style="{StaticResource Button1TextStyle}" IsEnabled="{Binding IsRestoreEnable}" Text="{Binding RestoreToDefaultText}" 
                                                 FontFamily="{StaticResource RobotoFontMedium}" FontSize="14" TextWrapping="WrapWithOverflow" Padding="10,0,10,0"/>
           </Border>
         </StackPanel>
@@ -113,7 +113,7 @@
                       <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=2}" />
                     </MultiBinding>
                   </DockPanel.Height>
-                    <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+                  <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
                   <UXControls:UXScrollViewer x:Name="svProductivity" VerticalScrollBarVisibility="Auto" UseFadingScrolling="False">
                     <ItemsControl Name="ProductivityItems">
                       <ItemsControl.ItemTemplate>
@@ -156,7 +156,7 @@
                       <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=2}" />
                     </MultiBinding>
                   </DockPanel.Height>
-                    <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+                  <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
                   <UXControls:UXScrollViewer x:Name="svWindows" VerticalScrollBarVisibility="Auto" UseFadingScrolling="False">
                     <ItemsControl Name="WindowsItems">
                       <ItemsControl.ItemTemplate>
@@ -199,7 +199,7 @@
                       <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=2}" />
                     </MultiBinding>
                   </DockPanel.Height>
-                    <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+                  <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
                   <UXControls:UXScrollViewer x:Name="svMultimedia" VerticalScrollBarVisibility="Auto" UseFadingScrolling="False">
                     <ItemsControl Name="MultimediaItems">
                       <ItemsControl.ItemTemplate>
@@ -244,7 +244,7 @@
                       <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=2}" />
                     </MultiBinding>
                   </DockPanel.Height>
-                    <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+                  <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
                   <UXControls:UXScrollViewer x:Name="svOffice" VerticalScrollBarVisibility="Auto" UseFadingScrolling="False">
                     <ItemsControl Name="OfficeItems">
                       <ItemsControl.ItemTemplate>
@@ -282,7 +282,7 @@
                     <Binding Path="MaxHeight" RelativeSource="{RelativeSource AncestorType=Border, AncestorLevel=2}" />
                   </MultiBinding>
                 </DockPanel.Height>
-                  <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+                <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
                 <UXControls:UXScrollViewer x:Name="svSearch" VerticalScrollBarVisibility="Auto" UseFadingScrolling="False">
                   <ItemsControl Name="SearchItems">
                     <ItemsControl.ItemTemplate>

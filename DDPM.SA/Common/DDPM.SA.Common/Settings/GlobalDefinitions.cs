@@ -1,5 +1,6 @@
 ﻿//#define SUPPORT_200
 //#define SUPPORT_210
+#define REMOVE_EA_SPLITTERS //Robert_Lin 2025-4-15, Define this symbol to remove all (unused VSplitters and HSplitters)
 
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,9 @@ namespace DDPM.SA.Common.Settings
         public const string SW_URL_Folder = @$"/Windows/Application/";
         public const string Dongle_BeforeGen2_Name = "Dell Universal Receiver";
         public const string Display_ICC_URL_Folder = @"ICC/";
+
+        //DDPMW-2896, Dean add 2025/4/15
+        public const string HttpAgentNamePreset = "Dell Display and Peripheral Agent ";
 
         //for log print comparison
         private const string production_server = "clientperipherals.dell.com";

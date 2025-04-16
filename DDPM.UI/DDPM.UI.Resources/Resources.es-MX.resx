@@ -2494,7 +2494,7 @@
     <value>Aceptar</value>
   </data>
   <data name="Collab.2" xml:space="preserve">
-    <value>Proporciona acceso rápido a los controles de conferencia. Activar o desactivar las\nteclas las mostrará u ocultará en el teclado mientras se encuentra en\nuna llamada de Microsoft Teams o Zoom.</value>
+    <value>Proporciona acceso rápido a los controles de conferencia. Activar o desactivar las teclas las mostrará u ocultará en el teclado mientras se encuentra en una llamada de Microsoft Teams o Zoom.</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
     <value>Habilitar parpadeo cuando hay un nuevo mensaje de chat en una llamada\nde conferencia</value>

@@ -2500,7 +2500,7 @@
     <value>OK</value>
   </data>
   <data name="Collab.2" xml:space="preserve">
-    <value>Fornece acesso rápido aos controlos de conferência. Ligar e desligar as \nteclas irá mostrá-las ou ocultá-las no teclado durante uma chamada\nno Microsoft Teams ou no Zoom.</value>
+    <value>Fornece acesso rápido aos controlos de conferência. Ligar e desligar as teclas irá mostrá-las ou ocultá-las no teclado durante uma chamada no Microsoft Teams ou no Zoom.</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
     <value>Ativar o efeito de piscar quando há uma nova mensagem de chat na chamada em conferência</value>
@@ -3511,7 +3511,7 @@
     <value>Grelha de Enquadramento</value>
   </data>
   <data name="Brightness.21" xml:space="preserve">
-    <value>Aplica brilho/luminância, contraste, definições de agendamento\ne predefinições de cor aos monitores ligados</value>
+    <value>Aplica brilho/luminância, contraste, definições de agendamento e predefinições de cor aos monitores ligados</value>
   </data>
   <data name="slot" xml:space="preserve">
     <value>ranhuras disponíveis</value>
