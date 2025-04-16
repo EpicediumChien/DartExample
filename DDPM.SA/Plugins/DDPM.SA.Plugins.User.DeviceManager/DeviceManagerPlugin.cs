@@ -5791,6 +5791,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        public event EventHandler<CMAIDEventArgs> HeadsetForCMAChanged;
+        public void OnCMAUpdateNotify(CMAIDEventArgs e)
+        {
+            writelog($"[OnCMAUpdateNotify] HeadsetForCMAChanged ... in ");
+            EventHandler<CMAIDEventArgs> Handler = HeadsetForCMAChanged;
+            if (Handler != null)
+            {
+                _ = Task.Run(() => Handler.Invoke(this, e));
+                writelog($"[OnCMAUpdateNotify] HeadsetForCMAChanged be Invoked");
+            }
+            writelog($"[OnCMAUpdateNotify] HeadsetForCMAChanged ... out ");
+        }
+
         #endregion
 
         #region display properties implementation
@@ -14158,6 +14171,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         //Derek 1119
                         _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
+                        _DTPProxyPlugin.CMAEventHandler += HeadsetForCMAChanged;
                         UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
                         if (_AirAudioHelper == null)
                             _AirAudioHelper = new PeripheralAirAudioHelper(Log);
