@@ -1554,7 +1554,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 WriteLog($"{nameof(ReadImportSettingsFile)} {FileInfo}");
                 return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
             }
-            #endregion 
+            #endregion Check export file path
 
             #region Check and read exported file JSON
             //security SA
@@ -1575,7 +1575,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 WriteLog($"[ReadImportSettingsFile] exception: {ex.Message}");
             }
-            #endregion
+            #endregion Check and read exported file JSON
 
             return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
         }
