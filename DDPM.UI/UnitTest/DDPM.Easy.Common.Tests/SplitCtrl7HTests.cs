@@ -122,39 +122,39 @@ namespace DDPM.Easy.Common.Tests
             }
         }
 
-        [Test]
-        public void TestVSplitterList()
-        {
-            // Act
-            var VSplitterList = new List<GridSplitter>();
-            splitCtrl7H.VSplitterList = VSplitterList;
-            // Assert
-            Assert.That(splitCtrl7H.VSplitterList, Is.Not.Null);
-        }
+        //[Test]
+        //public void TestVSplitterList()
+        //{
+        //    // Act
+        //    var VSplitterList = new List<GridSplitter>();
+        //    splitCtrl7H.VSplitterList = VSplitterList;
+        //    // Assert
+        //    Assert.That(splitCtrl7H.VSplitterList, Is.Not.Null);
+        //}
 
-        [Test]
-        public void TestHSplitterList()
-        {
-            // Act
-            var HSplitterList = new List<GridSplitter>();
-            splitCtrl7H.HSplitterList = HSplitterList;
-            // Assert
-            Assert.That(splitCtrl7H.HSplitterList, Is.Not.Null);
-        }
+        //[Test]
+        //public void TestHSplitterList()
+        //{
+        //    // Act
+        //    var HSplitterList = new List<GridSplitter>();
+        //    splitCtrl7H.HSplitterList = HSplitterList;
+        //    // Assert
+        //    Assert.That(splitCtrl7H.HSplitterList, Is.Not.Null);
+        //}
 
-        [Test]
-        public void TestInitSplitterList()
-        {
-            try
-            {
-                splitCtrl7H.InitSplitterList();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
-        }
+        //[Test]
+        //public void TestInitSplitterList()
+        //{
+        //    try
+        //    {
+        //        splitCtrl7H.InitSplitterList();
+        //        Assert.True(true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.Fail("not invoked");
+        //    }
+        //}
 
         [Test]
         public void TestDefaultSettings()

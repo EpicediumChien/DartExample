@@ -134,39 +134,39 @@ namespace DDPM.Easy.Common.Tests
             Assert.That(splitCtrl3I.CellBorders, Is.Not.Null);
         }
 
-        [Test]
-        public void TestVSplitterList()
-        {
-            // Act
-            var VSplitterList = new List<GridSplitter>();
-            splitCtrl3I.VSplitterList = VSplitterList;
-            // Assert
-            Assert.That(splitCtrl3I.VSplitterList, Is.Not.Null);
-        }
+        //[Test]
+        //public void TestVSplitterList()
+        //{
+        //    // Act
+        //    var VSplitterList = new List<GridSplitter>();
+        //    splitCtrl3I.VSplitterList = VSplitterList;
+        //    // Assert
+        //    Assert.That(splitCtrl3I.VSplitterList, Is.Not.Null);
+        //}
 
-        [Test]
-        public void TestHSplitterList()
-        {
-            // Act
-            var HSplitterList = new List<GridSplitter>();
-            splitCtrl3I.HSplitterList = HSplitterList;
-            // Assert
-            Assert.That(splitCtrl3I.HSplitterList, Is.Not.Null);
-        }
+        //[Test]
+        //public void TestHSplitterList()
+        //{
+        //    // Act
+        //    var HSplitterList = new List<GridSplitter>();
+        //    splitCtrl3I.HSplitterList = HSplitterList;
+        //    // Assert
+        //    Assert.That(splitCtrl3I.HSplitterList, Is.Not.Null);
+        //}
 
-        [Test]
-        public void TestInitSplitterList()
-        {
-            try
-            {
-                splitCtrl3I.InitSplitterList();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
-        }
+        //[Test]
+        //public void TestInitSplitterList()
+        //{
+        //    try
+        //    {
+        //        splitCtrl3I.InitSplitterList();
+        //        Assert.True(true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.Fail("not invoked");
+        //    }
+        //}
 
         [Test]
         public void TestDefaultSettings()

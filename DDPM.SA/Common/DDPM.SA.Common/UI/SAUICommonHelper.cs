@@ -124,17 +124,18 @@ namespace DDPM.SA.Common.UI
             {
                 case "WK636":
                 case "KM714":
-                    return $"Dell {model} Wireless Keyboard";
+                    return $"Dell Wireless Keyboard {model}";
                 case "WK717":
                     return $"Dell Premier Wireless Keyboard WK717";
                 case "WM514":
-                    return $"Dell {model} Wireless Laser Mouse";
+                    return $"Dell Wireless Laser Mouse WM514";
                 case "UV514":
                 case "WM116":
                 case "WM126":
                 case "WM326":
+                    return $"Dell Wireless Mouse {model}";
                 case "WM527":
-                    return $"Dell {model} Wireless Mouse";
+                    return $"Dell Premier Wireless Mouse WM527";
                 default:
                     return model;
             }

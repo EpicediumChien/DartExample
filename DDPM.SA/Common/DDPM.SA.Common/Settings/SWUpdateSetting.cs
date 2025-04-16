@@ -1,5 +1,6 @@
 ﻿using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
+using DDPM.SA.Obfuscation;
 using Dell.Client.Framework.Common;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.Win32;
@@ -39,6 +40,8 @@ namespace DDPM.SA.Common.Settings
                 {
                     try
                     {
+                        //DDPMW-2896
+                        client.DefaultRequestHeaders.UserAgent.ParseAdd(GlobalDefinitions.HttpAgentNamePreset + SettingsAccess.QueryAppAccessInfo().ver);
                         client.Timeout = TimeSpan.FromSeconds(60);
                         HttpResponseMessage response = client.GetAsync(SW_URL + "SWMetaData.json").Result;
                         response.EnsureSuccessStatusCode();
@@ -181,6 +184,8 @@ namespace DDPM.SA.Common.Settings
                 {
                     try
                     {
+                        //DDPMW-2896
+                        client.DefaultRequestHeaders.UserAgent.ParseAdd(GlobalDefinitions.HttpAgentNamePreset + SettingsAccess.QueryAppAccessInfo().ver);
                         client.Timeout = TimeSpan.FromSeconds(60);
                         HttpResponseMessage response = client.GetAsync(SW_URL + "AppUpdates.json").Result;
                         response.EnsureSuccessStatusCode();
@@ -274,6 +279,7 @@ namespace DDPM.SA.Common.Settings
             {
                 using (HttpClient client = new HttpClient())
                 {
+                    client.DefaultRequestHeaders.UserAgent.ParseAdd(GlobalDefinitions.HttpAgentNamePreset + SettingsAccess.QueryAppAccessInfo().ver);//DDPMW-2896
                     imageBytes = client.GetByteArrayAsync(url).Result;
                 }
             }

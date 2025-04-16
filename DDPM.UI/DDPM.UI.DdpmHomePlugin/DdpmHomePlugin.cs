@@ -49,6 +49,7 @@ using DDPM.UI.Resources.Helper;
 using Microsoft.VisualBasic.Logging;
 using System.Diagnostics.Eventing.Reader;
 using System;
+using DDPM.Easy.Common;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -175,6 +176,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //Robert_Lin, 2024-12-21 Register a event handler to handle when mainwindow
             // move to new position
             _console.RegisterForEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, Handle_MainWindow_MoveToNewPosition);
+
+            //Robert_Lin 2025-4-15 Add for dispose when the process exit
+            AppDomain.CurrentDomain.ProcessExit += (s, e) =>
+            {
+                ISplitCtrl.DisposeAll();
+            };
         }
 
         private void PluginManager_PluginsStarted(object? sender, PluginsStartedEventArgs pluginsStartedEventArgs)

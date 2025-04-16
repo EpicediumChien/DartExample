@@ -3508,7 +3508,7 @@
     <value>Grille de cadrage</value>
   </data>
   <data name="Brightness.21" xml:space="preserve">
-    <value>Applique les préréglages de luminosité/luminance, de contraste, de programmation des paramètres\net de couleurs aux moniteurs connectés</value>
+    <value>Applique les préréglages de luminosité/luminance, de contraste, de programmation des paramètres et de couleurs aux moniteurs connectés</value>
   </data>
   <data name="slot" xml:space="preserve">
     <value>emplacements disponibles</value>

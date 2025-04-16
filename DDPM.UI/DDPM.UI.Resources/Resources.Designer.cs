@@ -943,7 +943,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Applies brightness/luminance, contrast, schedule settings\nand color presets to the connected monitors.
+        ///   Looks up a localized string similar to Applies brightness/luminance, contrast, schedule settings and color presets to the connected monitors.
         /// </summary>
         internal static string Brightness_21 {
             get {
@@ -970,7 +970,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apply the above brightness/luminance, contrast, and color\npreset controls to your connected monitors..
+        ///   Looks up a localized string similar to Apply the above brightness/luminance, contrast, and color preset controls to your connected monitors..
         /// </summary>
         internal static string Brightness_5 {
             get {
@@ -1645,7 +1645,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Provides quick access to conference controls. Toggling the\nkeys on/off will show or hide them on the keyboard while in\na Microsoft Teams or Zoom call..
+        ///   Looks up a localized string similar to Provides quick access to conference controls. Toggling the keys on/off will show or hide them on the keyboard while in a Microsoft Teams or Zoom call..
         /// </summary>
         internal static string Collab_2 {
             get {
