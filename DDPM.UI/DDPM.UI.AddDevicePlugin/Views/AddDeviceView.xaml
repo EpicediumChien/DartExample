@@ -49,7 +49,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <!-- Right side: Header + RightView -->
-                <Border CornerRadius="13" Background="{DynamicResource Vbar_BkBrush_Default}" Grid.Column="1" Margin="8,80,100,60" >
+                <Border CornerRadius="13" Background="{DynamicResource Vbar_BkBrush_Default}" Grid.Column="1" Margin="8,84,100,60" >
                     <Grid Grid.Column="1" Name="RightFrame">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -88,8 +88,8 @@
                 <Grid Grid.Column="0">
                     <!--<Border Background="Transparent" StylusDown="Pairing"></Border>-->
                     <!-- DeviceBar -->
-                    <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
-                        <ItemsControl Name="vbarList" Margin="0,80,0,0" Focusable="False"
+                    <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid" Margin="100,0,0,0">
+                        <ItemsControl Name="vbarList" Margin="0,84,0,0" Focusable="False"
                         KeyboardNavigation.TabIndex="13" KeyboardNavigation.TabNavigation="Continue"
                                   HorizontalAlignment="Right" VerticalAlignment="Top"
                                   ItemsSource="{Binding DeviceBarItems}">
