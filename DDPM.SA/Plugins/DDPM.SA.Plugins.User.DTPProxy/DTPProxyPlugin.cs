@@ -12065,10 +12065,83 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_SerialNumberChanged(object sender, SerialNumberChangedArgs e)
         {
-            SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_SerialNumberChanged",
-                                    e.DeviceId, $"NewValue:{e.SerialNumber}"));
+            //SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_SerialNumberChanged",
+            //                        e.DeviceId, $"NewValue:{e.SerialNumber}"));
 
-            writelog($"Catch event _Webcamcom_SerialNumberChanged, NewValue:{e.SerialNumber}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            string devicename = GetWebcamNameAsync(e.DeviceId).Result;
+            if (string.IsNullOrEmpty(devicename))
+                devicename = string.Empty;
+
+            string devicefw = GetWebcamFirmwareVersionAsync(e.DeviceId).Result;
+            if (string.IsNullOrEmpty(devicefw))
+                devicefw = string.Empty;
+
+            writelog($"[Webcam] Catch event SerialNumberChanged, NewValue:{e.SerialNumber}: {DateTime.Now:hh.mm.ss.ffffff}");
+            SendDTPEventToCMA("Webcam", e.DeviceId, e.SerialNumber, devicename, devicefw);
+        }
+
+        private async Task<string> GetWebcamNameAsync(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return ""; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "DeviceName");
+
+                if (value == null)
+                {
+                    writelog("[GetWebcamNameAsync] GetPropertyValue returned null for DeviceName.");
+                    return "";
+                }
+                else if (value is string stringValue)
+                {
+                    writelog($"[GetWebcamNameAsync] Successfully retrieved DeviceName: {stringValue}");
+                    return stringValue;
+                }
+                else
+                {
+                    writelog("[GetWebcamNameAsync] GetPropertyValue returned a non-string value for DeviceName.");
+                    return "";
+                }
+            }
+            else
+            {
+                writelog($"[GetWebcamNameAsync]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                return "";
+            }
+        }
+
+        private async Task<string> GetWebcamFirmwareVersionAsync(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return ""; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "FirmwareVersion");
+
+                if (value == null)
+                {
+                    writelog("[GetWebcamFirmwareVersionAsync] GetPropertyValue returned null for FirmwareVersion.");
+                    return "";
+                }
+                else if (value is string stringValue)
+                {
+                    writelog($"[GetWebcamFirmwareVersionAsync] Successfully retrieved FirmwareVersion: {stringValue}");
+                    return stringValue;
+                }
+                else
+                {
+                    writelog("[GetWebcamFirmwareVersionAsync] GetPropertyValue returned a non-string value for FirmwareVersion.");
+                    return "";
+                }
+            }
+            else
+            {
+                writelog($"[GetWebcamFirmwareVersionAsync]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                return "";
+            }
         }
 
         //private void Webcam_IsHDROnChanged(object sender, IsHDROnChangedArgs e)
