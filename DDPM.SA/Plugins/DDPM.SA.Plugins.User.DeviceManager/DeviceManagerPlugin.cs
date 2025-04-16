@@ -12340,6 +12340,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             writelog($"[DeviceMangerPlugin] SystemEventsDisplaySettingsChangedAsync() get monitor count {NewMonitors.Count} ...");
 
                             var T1 = Task.Run(() => InitMonitorSettings(NewMonitors.ToList(), token), token);
+                            //04/16 Jason Lin add InitDisplayData due to timing
+                            _DisplayManagerPlugin.InitDisplayData(NewMonitors.ToList()).Wait(token);
                             var T2 = Task.Run(() => InitAllDisplayData(NewMonitors.ToList(), token), token);
 
                             // add @ 20250303 stephen
@@ -13073,7 +13075,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 if (AllMonitors != null && AllMonitors.Count > 0)
                 {
-                    _DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait(cancellationToken);
+                    //_DisplayManagerPlugin.InitDisplayData(AllMonitors).Wait(cancellationToken);
 
                     for (int i = 0; ((i < AllMonitors.Count) && (!cancellationToken.IsCancellationRequested)); i++)
                     {
@@ -13125,7 +13127,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"monitor count {e.monitors.Count} ...");
 
             InitMonitorSettings((e.monitors).ToList(), CancellationToken.None);
-
+            //04/16 Jason Lin add InitDisplayData due to timing
+            _DisplayManagerPlugin.InitDisplayData((e.monitors).ToList()).Wait(CancellationToken.None);
             Task.Run(() => InitAllDisplayData((e.monitors).ToList(), CancellationToken.None));
 
             DisplaychangedEventArgs _displaychangedEventArgs = new DisplaychangedEventArgs();

@@ -54,6 +54,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                                         x.ServiceTag == info.edid.ServiceTag);
                     if (mi == -1)
                     {
+                        WriteLog("[InitDisplayData] add monitor is " + info.modelName.ToString());
+                        WriteLog("[InitDisplayData] add monitor is " + info.edid.ServiceTag.ToString());
                         DisplayData displayData = new DisplayData();
                         displayData.Model = info.modelName;
                         displayData.ServiceTag = info.edid.ServiceTag;
@@ -68,6 +70,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                                          x.edid.ServiceTag == _displayData[i].ServiceTag);
                     if (di == -1)
                     {
+                        WriteLog("[InitDisplayData] remove monitor is " + _displayData[i].Model.ToString());
+                        WriteLog("[InitDisplayData] remove monitor is " + _displayData[i].ServiceTag.ToString());
                         _displayData.RemoveAt(i);
                     }
                     else
