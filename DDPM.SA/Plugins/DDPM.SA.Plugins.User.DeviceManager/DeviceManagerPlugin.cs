@@ -5791,6 +5791,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        public event EventHandler<CMAIDEventArgs> DTPEventForCMAChanged;
+        public void OnCMAUpdateNotify(CMAIDEventArgs e)
+        {
+            writelog($"[OnCMAUpdateNotify] DTPEventForCMAChanged ... in ");
+            EventHandler<CMAIDEventArgs> Handler = DTPEventForCMAChanged;
+            if (Handler != null)
+            {
+                _ = Task.Run(() => Handler.Invoke(this, e));
+                writelog($"[OnCMAUpdateNotify] DTPEventForCMAChanged be Invoked");
+            }
+            writelog($"[OnCMAUpdateNotify] DTPEventForCMAChanged ... out ");
+        }
+
         #endregion
 
         #region display properties implementation
@@ -14158,6 +14171,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         //Derek 1119
                         _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
+                        _DTPProxyPlugin.CMAEventHandler += DTPEventForCMAChanged;
                         UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
                         if (_AirAudioHelper == null)
                             _AirAudioHelper = new PeripheralAirAudioHelper(Log);
@@ -17683,6 +17697,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     if (_SettingsPlugin != null)
                         _SettingsPlugin.ITSettingsActionEvent -= _SettingsPlugin_ITSettingsActionEvent;
+
+                    if (_DTPProxyPlugin != null)
+                        _DTPProxyPlugin.CMAEventHandler -= DTPEventForCMAChanged;
                 }
 
                 IsDisposed = true;

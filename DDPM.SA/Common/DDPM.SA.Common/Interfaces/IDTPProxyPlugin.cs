@@ -151,6 +151,8 @@ namespace DDPM.SA.Common
         //event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
         event EventHandler<UpdateUINotify>? DTPEventHandler;
 
+        event EventHandler<CMAIDEventArgs>? CMAEventHandler;
+
         Task<JArray> GetPresetProfiles(string Guid);
         Task<JArray> GetCustomProfiles(string Guid);
         Task<string> GetProfile(string Guid);
@@ -368,7 +370,7 @@ namespace DDPM.SA.Common
         Task<bool> SetResetToDefaultAsyncForSoundbar(string Guid, bool newValue);
 
         ////////////////////////////////Get////////////////////////////////
-        
+
         Task<string> GetWiredAudioSerialNumberAsync(string item);
         Task<string> GetProfileNameAsync(string item);
         Task<string> GetProfileAsync(string item);
@@ -540,7 +542,7 @@ namespace DDPM.SA.Common
         Task<int> GetAirAudioBatteryLevelLeftAsync(string Guid);
         Task<int> GetAirAudioBatteryLevelRightAsync(string Guid);
         Task<int> GetAirAudioBatteryLevelCaseAsync(string Guid);
-        Task<int>  GetAirAudioMaxAllowedPariedHost(string Guid);
+        Task<int> GetAirAudioMaxAllowedPariedHost(string Guid);
 
         //Task<string> GetAirAudioPairedHostName2Async(string Guid);
         #endregion Get
