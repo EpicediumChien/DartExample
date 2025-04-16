@@ -1,4 +1,5 @@
-﻿using DDPM.UI.Common.UserControls;
+﻿using DDPM.SA.Common.Settings;
+using DDPM.UI.Common.UserControls;
 using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
 using Newtonsoft.Json;
@@ -222,8 +223,17 @@ namespace DDPM.UI.Common
             }
             else
             {
-                BitmapImage bitmapImage = new BitmapImage(new Uri($"/DDPM.UI.Resources;component/Resources/Images/{ConnectionType}.png", UriKind.Relative));
-                ConnectionTypeImage.Source = bitmapImage;
+                if (GlobalDefinitions.isSupport210 && ConnectionType == "24")
+                {
+                    ConnectionTypeIcon = (ControlTemplate)this.TryFindResource("icon_Port");
+                    txt1.Text = Strings.USB_C;
+                    txt1.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    BitmapImage bitmapImage = new BitmapImage(new Uri($"/DDPM.UI.Resources;component/Resources/Images/{ConnectionType}.png", UriKind.Relative));
+                    ConnectionTypeImage.Source = bitmapImage;
+                }
             }
             UpdateBatteryLevelIndicator();
         }

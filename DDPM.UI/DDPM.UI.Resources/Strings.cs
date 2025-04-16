@@ -633,5 +633,8 @@ namespace DDPM.UI.Common
         public static readonly string DTPUnavailable = GetString("DTPUnavailable");//"DTP service is unavailable!";
 
         public static readonly string Auto_Color_Temperature_MSG = GetString("Color.10");
+
+        //For DDPM 2.1.x.x
+        public static readonly string USB_C = GetString("USBC");
     }
 }

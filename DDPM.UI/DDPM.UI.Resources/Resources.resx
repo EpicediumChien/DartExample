@@ -3645,4 +3645,7 @@
   <data name="WebCameraSettings.31" xml:space="preserve">
     <value>Portrait</value>
   </data>
+  <data name="USBC" xml:space="preserve">
+    <value>USB-C</value>
+  </data>
 </root>
