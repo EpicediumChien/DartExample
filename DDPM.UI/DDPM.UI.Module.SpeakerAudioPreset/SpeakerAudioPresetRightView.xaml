@@ -31,26 +31,22 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <!--20250411 Chewlin for PIMS-348396 ADD UseFadingScrolling="False"-->
-    <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" UseFadingScrolling="False">
-        <Grid x:Name="MainGrid">
-            <!--Elsa 20250331 for PIMS-348388 change Width="470" to Width="auto",20250408 remove Margin="0,10,0,16" add Border.Style  -->
-            <Border x:Name="MainBorder" CornerRadius="13" Width="auto" Height="auto">
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=UXControls:UXScrollViewer},Path=ComputedVerticalScrollBarVisibility}" Value="Visible">
-                                <Setter Property="Margin" Value="0,10,0,16"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=UXControls:UXScrollViewer},Path=ComputedVerticalScrollBarVisibility}" Value="Collapsed">
-                                <Setter Property="Margin" Value="0,10,16,16"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-                <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
-
-                    <Grid VerticalAlignment="Top" Margin="0,0,0,15">
+    <Grid x:Name="MainGrid">
+        <!--Elsa 20250331 for PIMS-348388 change Width="470" to Width="auto",20250408 remove Margin="0,10,0,16" add Border.Style  -->
+        <Border x:Name="MainBorder" CornerRadius="13" Width="auto" Height="auto" Margin="0,0,16,16">
+            <UXControls:UXScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" UseFadingScrolling="False">
+                <StackPanel x:Name="MainStackPanel" Orientation="Vertical">
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Margin" Value="16" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=UXControls:UXScrollViewer},Path=ComputedVerticalScrollBarVisibility}" Value="Visible">
+                                    <Setter Property="Margin" Value="16,16,0,16"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    <Grid VerticalAlignment="Top" Margin="0,0,0,16">
                         <Border x:Name="AudioPresetBorder" CornerRadius="6" Width="auto" Height="Auto" VerticalAlignment="Top">
                             <StackPanel x:Name="AudioModesStackPanel" Orientation="Vertical">
                                 <Grid x:Name="TitleGrid" VerticalAlignment="Top" Margin="20,0,0,0">
@@ -166,7 +162,7 @@
                         </Border>
                     </Grid>
                     <!--Elsa 20250320 for PIMS-348396 change Margin="-8,0,0,0" to Margin="0,0,0,0" add Border and StackPanel,change Width="456" to Width="auto"-->
-                    <Grid Visibility="{Binding IsDefaultChecked, Converter={StaticResource BooleanToVisibilityConverter}}"  x:Name="AudioEqualizerGrid" Grid.Row="4" Grid.ColumnSpan="1" Width="auto" Height="344" VerticalAlignment="Top" Margin="0,0,0,0">
+                    <Grid Visibility="{Binding IsDefaultChecked, Converter={StaticResource BooleanToVisibilityConverter}}"  x:Name="AudioEqualizerGrid" Grid.Row="4" Grid.ColumnSpan="1" Width="auto" Height="344" VerticalAlignment="Top">
                         <Border x:Name="AudioEqualizer" CornerRadius="6" Width="auto" Height="Auto" VerticalAlignment="Top">
                             <StackPanel x:Name="AudioEqualizerStackPanel" Orientation="Vertical">
                                 <Grid>
@@ -241,7 +237,7 @@
                         </Border>
                     </Grid>
                 </StackPanel>
-            </Border>
-        </Grid>
-    </UXControls:UXScrollViewer>
+            </UXControls:UXScrollViewer>
+        </Border>
+    </Grid>
 </UserControl>
