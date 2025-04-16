@@ -82,7 +82,7 @@
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Column="0">
                             <StackPanel Orientation="Horizontal">
-                                <UXControls:UXTextBlock Name="txtCollabsCaption" FontSize="20" FontFamily="Roboto"
+                                <UXControls:UXTextBlock Name="txtCollabsCaption" FontSize="20" FontFamily="{StaticResource RobotoFont}"
                                                         Margin="16,24,0,0" FontWeight="Normal" AutomationProperties.Name="nattt"
                                                         TextBlockType="Caption" MouseEnter="MessageBox_MouseEnter"
                                                         VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding [Collaboration.0], Source={x:Static lang:LangHelper.Instance}}"/>

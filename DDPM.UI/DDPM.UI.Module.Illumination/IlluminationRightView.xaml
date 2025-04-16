@@ -28,7 +28,8 @@
         <RowDefinition Height="*" />
       </Grid.RowDefinitions>
       <Grid Height="60" VerticalAlignment="top" Grid.Row="0">
-        <UXControls:UXTextBlock Text="{Binding [Illumination.1], Source={x:Static lang:LangHelper.Instance}}" FontSize="20" Foreground="{DynamicResource DefaultTheme_TxtColor}"
+                <UXControls:UXTextBlock Text="{Binding [Illumination.1], Source={x:Static lang:LangHelper.Instance}}" 
+                                        FontFamily="{StaticResource RobotoFont}" FontSize="20" Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                         TextBlockSemanticColorType="Light" Margin="18,24,0,0"
                                         TextBlockType="Caption"
                                         VerticalAlignment="Top" HorizontalAlignment="Left" />

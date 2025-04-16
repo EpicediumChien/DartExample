@@ -1964,7 +1964,7 @@
     <Style TargetType="UXControls:UXTextBlock" x:Key="ProductNameTextStyle">
         <Setter Property="Foreground" Value="{DynamicResource HomePageKeyFeature_TxtColor}" />
         <Setter Property="FontSize" Value="24" />
-        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontFamily" Value="{StaticResource RobotoFont}" />
     </Style>
 
 

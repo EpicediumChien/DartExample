@@ -33,8 +33,9 @@
           <Image Name="imgBack" Margin="0,0,10,0" Source="{DynamicResource left_img}"  Stretch="Uniform"
                            HorizontalAlignment="Left" VerticalAlignment="Center" Cursor="Hand" Width="16" Height="16" MouseLeftButtonDown="GoBackClicked">
           </Image>
-          <UXControls:UXTextBlock Name="txtCaption" Style="{StaticResource txtCaptionStyle}" FontWeight="Normal"
-                        VerticalAlignment="Center" HorizontalAlignment="Left" Focusable="True" />
+                    <UXControls:UXTextBlock Name="txtCaption" Style="{StaticResource txtCaptionStyle}" 
+                                            FontFamily="{StaticResource RobotoFont}"
+                                            VerticalAlignment="Center" HorizontalAlignment="Left" Focusable="True" />
         </StackPanel>
         <Line X1="0" Y1="17" X2="288" Y2="17" Stroke="{DynamicResource MenuSeperatorColor}" StrokeThickness="1" />
         <StackPanel Orientation="Vertical" x:Name="Section1" Margin="0,0,0,2000" Visibility="Collapsed">
