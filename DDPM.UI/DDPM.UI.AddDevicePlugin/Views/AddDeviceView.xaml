@@ -105,7 +105,7 @@
                 </Grid>
             </Grid>
         </UXControls:UXScrollViewer>
-
+        
         <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Grid.ColumnSpan="2" Margin="60,8,0,0">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
@@ -117,8 +117,10 @@
                  Focusable="True" KeyboardNavigation.TabIndex="11" 
                  AutomationProperties.Name="{Binding [Back], Source={x:Static lang:LangHelper.Instance}}" 
                            VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="GoBackHomepage" PreviewKeyDown="ArrowLeft_PreviewKeyDown"/>-->
-                    <UXControls:UXTextBlock Name="txtCaption" HorizontalAlignment="Left" Style="{StaticResource ProductNameTextStyle}" VerticalAlignment="Top" 
-                                  Focusable="True" KeyboardNavigation.TabIndex="12"/>
+                    <UXControls:UXTextBlock Text="{Binding [AddDevice], Source={x:Static lang:LangHelper.Instance}}" 
+                                            VerticalAlignment="Top" HorizontalAlignment="Left" 
+                                            FontSize="24" FontFamily="{StaticResource RobotoFont}" Focusable="True"
+                                            KeyboardNavigation.TabIndex="12"/>
                 </StackPanel>
             </StackPanel>
         </Grid>

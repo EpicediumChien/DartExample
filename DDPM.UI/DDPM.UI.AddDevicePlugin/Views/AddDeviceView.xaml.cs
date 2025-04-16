@@ -41,7 +41,6 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         private readonly IConsole _console;
         private readonly AddDeviceViewModel _vm;
 
-        private readonly string Caption = LangHelper.Instance["AddDevice"];
         private int selectedTab = -1;
         private readonly string Display = LangHelper.Instance["AddDevice.Display"];
         private readonly string Webcam = LangHelper.Instance["AddDevice.Webcam"];
@@ -80,7 +79,6 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             {
                 rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
             }
-            txtCaption.Text = Caption;
             //DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             //DdpmCommonHelper.DeviceManagerSA.DeviceChanged += AddDeviceView_DeviceChanged;
         }
