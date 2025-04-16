@@ -17698,7 +17698,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (_SettingsPlugin != null)
                         _SettingsPlugin.ITSettingsActionEvent -= _SettingsPlugin_ITSettingsActionEvent;
 
-                    if (_SettingsPlugin != null)
+                    if (_DTPProxyPlugin != null)
                         _DTPProxyPlugin.CMAEventHandler -= DTPEventForCMAChanged;
                 }
 
