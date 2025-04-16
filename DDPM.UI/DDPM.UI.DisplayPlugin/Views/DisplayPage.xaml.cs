@@ -1007,8 +1007,20 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         #region Exit
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
+            //Robert_Lin 2025-4-16, Problem found if we call Dispose() here
+            //When the Unloaded will be invoked? Ans: When Theme changed
+            //Problems found:
+            //1 Cannot change RightView when change VbarItem
+            //2 Click [BackArrow] button cannot return to homepage.
+            //Root cause:
+            //1 The DisplayPage.Dispose() will call to 
+            //  basePage.LeftArrowClick -= OnLeftArrowClick;
+            //  basePage.Dispose();
+            //  And basePage.Dispose() will release its ViewModel.
+            //Workaround solution:
+            //1 Move this DisplayPage.Dispose() call to destructor of DisplayPage
             _log?.Info("DisplayPage.UserControl_Unloaded");
-            Dispose();
+            //Dispose();
             _log?.Info("DisplayPage.UserControl_Unloaded exit");
         }
 

@@ -11,7 +11,6 @@
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              d:DataContext="{d:DesignInstance Type=viewmodels:EzArrangeViewModel}"
              mc:Ignorable="d" 
-             Background="{DynamicResource mainWindowBkColor}"
              d:DesignHeight="671" 
              d:DesignWidth="1378">
 
@@ -81,7 +80,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <Image x:Name="imgBkGlow"
+        <Image x:Name="imgBkGlow" Visibility="Collapsed"
                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png"
                Stretch="UniformToFill"
                HorizontalAlignment="Center" 

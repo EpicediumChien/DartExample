@@ -9,7 +9,7 @@
              xmlns:eaem="clr-namespace:DDPM.UI.Common.EAEM;assembly=DDPM.UI.Common"
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-             mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
+             mc:Ignorable="d" 
              d:DesignHeight="671" d:DesignWidth="1279"
              Loaded="UserControl_Loaded">
     <UserControl.Resources>
@@ -33,7 +33,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <Image x:Name="imgBkGlow"
+        <Image x:Name="imgBkGlow" Visibility="Collapsed"
                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png"
                Stretch="UniformToFill"
                HorizontalAlignment="Center" VerticalAlignment="Center" />
