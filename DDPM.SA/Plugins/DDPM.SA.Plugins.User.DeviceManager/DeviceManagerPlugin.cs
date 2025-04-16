@@ -11498,7 +11498,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 int devCnt = GetWebcamDeviceCount();
                 writelog($"GetWebcamDeviceCount = {devCnt}, GetWebcamDeviceCountAsync = {GetWebcamDeviceCountAsync().Result}, current webcam device ID = {GetWebcamDeviceID().Result}");
-
+#if DEBUG
+                Debug.WriteLine($"GetWebcamDeviceCount = {devCnt}, _GlobalSettingParam = {_GlobalSettingParam}, isWindowsScreenNotLocked = {isWindowsScreenNotLocked}, _GlobalSettingParam.GlobalSetting_WidgetSettings = {_GlobalSettingParam.GlobalSetting_WidgetSettings}");
+#endif
                 if (1 != devCnt || _GlobalSettingParam == null || !isWindowsScreenNotLocked ||
                     _GlobalSettingParam.GlobalSetting_WidgetSettings == null //||
                                                                              //QAMWebcamDeviceGuid == string.Empty ||
@@ -12046,7 +12048,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else
                 {
                     //_QAM.Show();
-                    _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
+                    _QAM?.Dispatcher.Invoke(() => {
+                        _QAM?.Show();
+                        _QAM?.Activate();
+                    });
                     //Dispatcher.Run(); //may block the process Derek 1219
 
                     writelog($"CallQAM_UI: Show QAM UI due to _QAM != null");
