@@ -382,8 +382,8 @@ namespace DDPM.SA.Common
                                     }
                                     else if (tmpSS[0].ToUpper().Contains("SERIALNUMBER"))
                                     {
-                                        int temp = int.Parse(t) - 1;
-                                        commandInput.SerialNumber.Add(temp.ToString());
+                                        //int temp = int.Parse(t) - 1;
+                                        commandInput.SerialNumber.Add(t);
                                     }
                                     else
                                     {
