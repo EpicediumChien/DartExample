@@ -95,5 +95,25 @@ namespace DDPM.Easy.Common.Tests
                 cellObjc = null;
             }
         }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            if (cellObja != null)
+            {
+                cellObja.Dispose();
+                cellObja = null;
+            }
+            if (cellObjb != null)
+            {
+                cellObjb.Dispose();
+                cellObjb = null;
+            }
+            if (cellObjc != null)
+            {
+                cellObjc.Dispose();
+                cellObjc = null;
+            }
+        }
     }
 }
