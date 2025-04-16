@@ -223,11 +223,11 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         }
 
-        private void ImageUpdate(OSThemeEnum oSThemeEnum)
-        {
-            ArrowLeft.Source = null;
-            ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
-        }
+        //private void ImageUpdate(OSThemeEnum oSThemeEnum)
+        //{
+        //    ArrowLeft.Source = null;
+        //    ArrowLeft.Source = (BitmapImage)Application.Current.Resources["Arrow_Left"];
+        //}
 
         private void BuildModuleGroups()
         {
@@ -440,7 +440,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             //Robert_Ln 2025-2-19 for Narrator, setup the focus to the left Arrow at start up
             ArrowLeft.Focus();
 
-            DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+            //DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             if (DdpmCommonHelper.DeviceManagerSA != null)
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged += AddDeviceView_DeviceChanged;
         }
@@ -467,7 +467,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+            //DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
             if (DdpmCommonHelper.DeviceManagerSA != null)
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= AddDeviceView_DeviceChanged;
             _vm.StopPairing();
@@ -477,13 +477,13 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             moduleGroup.Dispose();
         }
 
-        private void ArrowLeft_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void ArrowLeft_PreviewKeyDown(object sender, RoutedEventArgs e)
         {
-            if (e.Key == Key.Enter)
-            {
+            //if (e.Key == Key.Enter)
+            //{
                 e.Handled = true;
                 _console.ShowHomePage();
-            }
+            //}
         }
 
         private bool _hasInitialized = false;
