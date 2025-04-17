@@ -5792,6 +5792,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         public event EventHandler<CMAIDEventArgs> DTPEventForCMAChanged;
+
         public void OnCMAUpdateNotify(CMAIDEventArgs e)
         {
             writelog($"[OnCMAUpdateNotify] DTPEventForCMAChanged ... in ");
@@ -7288,11 +7289,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     List<ALSConfig> ALSConfig = _DisplayManagerPlugin.GetAllExistAlsConfig().Result;
 
-                    if (SourceMonitor.CapabilityDic.ContainsKey("12")) IsSourceLumiumce = true;
-                    else IsSourceLumiumce = false;
+                    if (SourceMonitor.CapabilityDic.ContainsKey("12")) IsSourceLumiumce = false;
+                    else IsSourceLumiumce = true;
 
-                    if (TargetMonitor.CapabilityDic.ContainsKey("12")) IsTargetLumiumce = true;
-                    else IsTargetLumiumce = false;
+                    if (TargetMonitor.CapabilityDic.ContainsKey("12")) IsTargetLumiumce = false;
+                    else IsTargetLumiumce = true;
 
                     var TargetALSConfig = ALSConfig.First(x => x.MoInfo.edid.Equals(TargetMonitor.edid));
                     var SourceALSConfig = ALSConfig.First(x => x.MoInfo.edid.Equals(SourceMonitor.edid));
@@ -12048,7 +12049,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else
                 {
                     //_QAM.Show();
-                    _QAM?.Dispatcher.Invoke(() => {
+                    _QAM?.Dispatcher.Invoke(() =>
+                    {
                         _QAM?.Show();
                         _QAM?.Activate();
                     });
