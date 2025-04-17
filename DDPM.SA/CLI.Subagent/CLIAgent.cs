@@ -424,6 +424,8 @@ namespace CLI.Subagent
                     CLIEventResult result = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
                     returnCode.Add(result.ExitCode);
                     Console.WriteLine(result.serialize_Json_response);
+                    WriteLog($"[Pass to CLIProxy] Command ID:{result.command_guid_string}, ExitCode:{result.ExitCode}");
+                    WriteLog($"[Response]: {result.serialize_Json_response}");
                 }
                 int n = returnCode.FindIndex(x => (x != (int)CLI_ExitCode.success));
                 if (n >= 0)
