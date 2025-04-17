@@ -290,13 +290,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 else if (_ddpmHomePageViewModel.HomeDevices.Count == 4)
                 {
                     if (cxView < bkpt4) //1200
-                        newWidth = CalculateItemWidthV3_ItemsPerRow2(cxView, cyView);
+                        newWidth = CalculateItemWidthV3_ItemsPerRow2(cxView, cyView, 2);
                     else
                         newWidth = CalculateItemWidthV3_ItemsPerRow4(cxView, cyView);
                 }
                 else if (_ddpmHomePageViewModel.HomeDevices.Count < 7)
                 {
-                    newWidth = CalculateItemWidthV3_ItemsPerRow3(cxView, cyView);
+                    newWidth = CalculateItemWidthV3_ItemsPerRow3(cxView, cyView, 2);
                 }
                 //2024-6-23, HomePage RWD, 4 items per row first, so never > 4 items/row
                 //ItemCount > 4
@@ -382,7 +382,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             return justifyMinMaxWidth(sizeItem);
         }
 
-        private double CalculateItemWidthV3_ItemsPerRow2(double cxView, double cyView)
+        private double CalculateItemWidthV3_ItemsPerRow2(double cxView, double cyView, double rowCount = 1)
         {
             //Robert_Lin, 2024-10-1 Special for huge monitor (4K)
             //When screen resolution is very large, the ratio to gap to batteryIndicator is very large
@@ -393,7 +393,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 gapRatio = 2.0;
             }
             double cxItem = (cxView - minGap * 3.000 * gapRatio) / 2.000;
-            double cyItem = (cyView - minGap * gapRatio) / 2.00;
+            double cyItem = (cyView - minGap * gapRatio) / rowCount;
             double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2 * gapRatio);
             if(_ddpmHomePageViewModel != null)
                 _ddpmHomePageViewModel.OrderingWidth = justifyMinMaxWidth(sizeItem) * 2 + minGap * 3;
@@ -401,7 +401,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             return sizeItem;
         }
 
-        private double CalculateItemWidthV3_ItemsPerRow3(double cxView, double cyView)
+        private double CalculateItemWidthV3_ItemsPerRow3(double cxView, double cyView, double rowCount = 1)
         {
             //Robert_Lin, 2024-10-1 Special for huge monitor (4K)
             double hugeReduce = 0;
@@ -410,7 +410,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 hugeReduce = 100;
             }
             double cxItem = (cxView - minGap * 4.000) / 3.000;
-            double cyItem = (cyView - minGap) / 2.00;
+            double cyItem = (cyView - minGap) / rowCount;
             double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2 - hugeReduce * 3);
 
             if (_ddpmHomePageViewModel != null)
