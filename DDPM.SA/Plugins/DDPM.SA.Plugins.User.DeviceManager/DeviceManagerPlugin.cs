@@ -15079,6 +15079,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _OSD_Controler.CloseMultipleOSDByGuidAndOp("377C7B36-ED5B-446F-93A6-3418F0447836", OSDType_Op.None);
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", false);
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("FW", LangHelper.Instance["Firmware_update_unsuccessful"], true));
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("Update in progress", "Dell Pro Premium Mouse(MS900) may be intermittently available. Do not disconnect the device during the update.", true));
                 ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("Error", LangHelper.Instance["Timeout_error"], true));
             }*/
             //will register as ALT+Z ?
