@@ -479,7 +479,9 @@ namespace DDPM.UI.Module.EzMemory
 
             //A Build WindowLists
             //
-            foreach (ISplitCtrl spCtrl in ISplitCtrl.Splits_EA)
+            //Robert_Lin 2025-4-15 "Splits_EA" has been changed to AllSplitCtrls
+            //foreach (ISplitCtrl spCtrl in ISplitCtrl.Splits_EA)
+            foreach (ISplitCtrl spCtrl in ISplitCtrl.AllSplitCtrls)
             {
                 SplitItem? spItem = null;
                 ISplitCtrl newSplit = spCtrl.New();

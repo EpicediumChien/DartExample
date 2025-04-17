@@ -498,9 +498,6 @@
   <data name="Brightness.16" xml:space="preserve">
     <value>Довжина переходу</value>
   </data>
-  <data name="Brightness.17" xml:space="preserve">
-    <value>ТЕСТ.</value>
-  </data>
   <data name="Min" xml:space="preserve">
     <value>хв</value>
   </data>
@@ -1035,9 +1032,6 @@
   <data name="Kvm.29" xml:space="preserve">
     <value>Налаштування через мережу</value>
   </data>
-  <data name="Kvm.30" xml:space="preserve">
-    <value>Зручний і безпечний обмін файлами між ПК (Mac і Windows)</value>
-  </data>
   <data name="Kvm.31" xml:space="preserve">
     <value>Відкрити KVM мережі</value>
   </data>
@@ -1184,12 +1178,6 @@
   </data>
   <data name="SpeakerInteractions.5" xml:space="preserve">
     <value>Skype для бізнесу</value>
-  </data>
-  <data name="WebCameraCapture.0" xml:space="preserve">
-    <value>Зворотний відлік 3-2-1</value>
-  </data>
-  <data name="WebCameraCapture.1" xml:space="preserve">
-    <value>Сітка кадрів</value>
   </data>
   <data name="WebCameraCapture.2" xml:space="preserve">
     <value>Відкрити</value>
@@ -2512,7 +2500,7 @@
     <value>ОК</value>
   </data>
   <data name="Collab.2" xml:space="preserve">
-    <value>Забезпечує швидкий доступ до елементів керування конференціями. Перемикайте клавіші,\nщоб показати або приховати їх на клавіатурі під час \nконференц-виклику Microsoft Teams або Zoom.</value>
+    <value>Забезпечує швидкий доступ до елементів керування конференціями. Перемикайте клавіші,щоб показати або приховати їх на клавіатурі під час конференц-виклику Microsoft Teams або Zoom.</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
     <value>Увімкнення ефекту миготіння, коли з’являється нове повідомлення чату\nпід час конференц-виклику</value>
@@ -3507,19 +3495,137 @@
   <data name="HDR" xml:space="preserve">
     <value>HDR</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+    <value>Ідентифікатор пристрою</value>
+  </data>
+  <data name="Brightness.17" xml:space="preserve">
+    <value>Ця функція дає очам змогу адаптуватися до бажаних умов</value>
+  </data>
+  <data name="Kvm.30" xml:space="preserve">
+    <value>Зручний і безпечний обмін файлами між ПК (Mac і Windows)</value>
+  </data>
+  <data name="WebCameraCapture.0" xml:space="preserve">
+    <value>Зворотний відлік 3-2-1</value>
+  </data>
+  <data name="WebCameraCapture.1" xml:space="preserve">
+    <value>Сітка кадрів</value>
+  </data>
+  <data name="Brightness.21" xml:space="preserve">
+    <value>Застосовує налаштування яскравості / освітлення, контрасту, планування та попередні налаштування кольорів NAND до під’єднаних моніторів</value>
+  </data>
+  <data name="slot" xml:space="preserve">
+    <value>доступні слоти</value>
+  </data>
+  <data name="Hotkey.10" xml:space="preserve">
+    <value>Ця гаряча клавіша конфліктує з гарячою клавішею, налаштованою в іншій програмі. Використайте іншу комбінацію клавіш.</value>
+  </data>
+  <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers" xml:space="preserve">
+    <value>Оновлення вбудованого програмного забезпечення для кількох бездротових USB-приймачів одного типу не підтримується. Залиште під’єднаним лише один бездротовий USB-приймач.</value>
+  </data>
+  <data name="DisplayAlert" xml:space="preserve">
+    <value>Монітор наразі зайнятий. Доступне лише обмежене керування функціями.</value>
+  </data>
+  <data name="ColorMsg.0" xml:space="preserve">
+    <value>Кольори недоступні в наведених нижче випадках</value>
+  </data>
+  <data name="LearnMoreMsg.0" xml:space="preserve">
+    <value>Виконайте пошук, щоб завантажити програму Dell Audio і налаштувати гарнітуру</value>
+  </data>
+  <data name="EzArrange.11" xml:space="preserve">
+    <value>Триває збереження зображень піктограм…</value>
+  </data>
+  <data name="Camera.26" xml:space="preserve">
+    <value>Щоб активувати роздільну здатність 4K UHD, під’єднайте монітор через USB 3.0.</value>
+  </data>
+  <data name="Camera.27" xml:space="preserve">
+    <value>Щоб активувати роздільну здатність 4K UHD, під’єднайте вебкамеру через USB 3.0.</value>
+  </data>
+  <data name="WebCameraPresenceDetection.12" xml:space="preserve">
+    <value>секунди</value>
+  </data>
+  <data name="WebCameraPresenceDetection.13" xml:space="preserve">
+    <value>хв</value>
+  </data>
+  <data name="Cardi.1" xml:space="preserve">
+    <value>Усунення шуму мікрофона за допомогою ШІ</value>
+  </data>
+  <data name="Cardi.2" xml:space="preserve">
+    <value>Попередні налаштування для мультимедіа</value>
+  </data>
+  <data name="Cardi.3" xml:space="preserve">
+    <value>Під час викликів функції застосовуються автоматично</value>
+  </data>
+  <data name="Cardi.4" xml:space="preserve">
+    <value>Під час прослуховування музики та іншого вмісту функції застосовуються автоматично</value>
+  </data>
+  <data name="Cardi.5" xml:space="preserve">
+    <value>Обмежує шум від ближнього мікрофона, щоб покращити звук для інших</value>
+  </data>
+  <data name="Cardi.6" xml:space="preserve">
+    <value>Обмежує шум від віддаленого мікрофона, щоб покращити звук для вас</value>
+  </data>
+  <data name="Cardi.7" xml:space="preserve">
+    <value>Параметри еквалайзера адаптуються до вибраної конфігурації</value>
+  </data>
+  <data name="CustomizeScrollTiltLCaption" xml:space="preserve">
+    <value>Налаштування прокручування з нахилом вліво</value>
+  </data>
+  <data name="CustomizeScrollTiltRCaption" xml:space="preserve">
+    <value>Налаштування прокручування з нахилом вправо</value>
+  </data>
+  <data name="CustomizeScrollWheelCaption" xml:space="preserve">
+    <value>Налаштування клацання коліщатком прокручування</value>
+  </data>
+  <data name="CustomizeSideButtonBCaption" xml:space="preserve">
+    <value>Налаштування бічної кнопки «Назад»</value>
+  </data>
+  <data name="CustomizeSideButtonFCaption" xml:space="preserve">
+    <value>Налаштування бічної кнопки «Вперед»</value>
+  </data>
+  <data name="Incompatible" xml:space="preserve">
+    <value>Цей пристрій несумісний із Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="WalkThroughPen_Sub.1_1" xml:space="preserve">
+    <value>Стан заряду пера: X%.\n\nЩоб повністю зарядити перо, переконайтеся, що його під’єднано до екрана планшета. Після завершення заряджання ви отримає сповіщення.\n\nЩойно рівень заряду стане нижче ніж 10%, ви отримаєте відповідне сповіщення. </value>
+  </data>
+  <data name="Save_dock_asset_report" xml:space="preserve">
+    <value>Зберегти звіт про ресурси док-станцій</value>
+  </data>
+  <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers2" xml:space="preserve">
+    <value>Оновлення для кількох бездротових USB-приймачів одного типу не підтримується. Залиште під’єднаним лише один бездротовий USB-приймач.</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>Оновлення може зайняти орієнтовно від 10 до 30 хвилин, залежно від моделі монітора й налаштувань (наприклад, типу підключення). Якщо оновлюються кілька моніторів однієї моделі, процес може тривати довше. Не вимикайте дисплей і не від’єднуйте кабелі під час завантаження оновлення.</value>
+  </data>
+  <data name="Update_Mouse_Alert2" xml:space="preserve">
+    <value>Натисніть кнопку або клавішу на цьому пристрої, щоб увімкнути це оновлення</value>
+  </data>
+  <data name="Update_BatteryLow_Alert2" xml:space="preserve">
+    <value>На цьому пристрої низький рівень заряду акумулятора. Замініть / перезарядіть акумулятор, щоб увімкнути це оновлення.</value>
+  </data>
+  <data name="Update_Webcam_Alert2" xml:space="preserve">
+    <value>Це оновлення дасть змогу керувати датчиком присутності через налаштування Microsoft у системах: Win 11 версії 22H2 або новішої, а також зі збіркою ОС
+22621 або новішою</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>Щоб уникнути помилок під час оновлення вбудованого програмного забезпечення, під’єднайте монітор через висхідний USB-порт</value>
+  </data>
   <data name="UnableToLoadDdpm" xml:space="preserve">
-    <value />
+    <value>Наразі не вдається завантажити програму Dell Display and Peripheral Manager. Закрийте її та повторіть спробу.</value>
   </data>
   <data name="InputValidationTooltip.1" xml:space="preserve">
-    <value />
+    <value>Максимальна кількість символів: {0}</value>
   </data>
   <data name="InputValidationTooltip.2" xml:space="preserve">
-    <value />
+    <value>Дозволено використовувати лише буквено-цифрові символи й спеціальні символи, наведені нижче {0}</value>
   </data>
   <data name="InputValidationTooltip.3" xml:space="preserve">
-    <value />
+    <value>Недопустимий шлях до файлу: він не може містити більше ніж 260 символів, містити зарезервоване ім’я файлу або недопустимі символи, а саме &lt; &gt; : &quot; / \ | ?</value>
   </data>
   <data name="InputValidationTooltip.4" xml:space="preserve">
-    <value />
+    <value>Введіть лише повний шлях URL, а не відносний</value>
+  </data>
+  <data name="ErrorMsg.0" xml:space="preserve">
+    <value>Наразі не вдається завантажити програму Dell Display and Peripheral Manager. Закрийте її та повторіть спробу.</value>
   </data>
 </root>

@@ -6,8 +6,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Forms;
 using System.Windows.Interop;
-using Microsoft.Win32;
-using System.Windows.Media.Imaging;
 
 namespace DDPM.QAM
 {
@@ -17,28 +15,12 @@ namespace DDPM.QAM
     public partial class QAMPage : Window
     {
         CameraSetting? CameraSetting;
+        //Derek 2025/04/11 add timer to monitor zoom meeting window state for PIMS-351206
+        private System.Threading.Timer? timer = null;
+        private bool _isTopmost = true;
+        private int fullScreenModeGetFailCount = 0;
 
         //public event EventHandler<UpdateUINotify> QAMUpdateUIHandler;
-
-        [DllImport("user32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        private static bool _ShowWindow(IntPtr hWnd, int nCmdShow)
-        {
-            bool rst = ShowWindow(hWnd, nCmdShow);
-
-            if (!rst)
-            {
-                Debug.WriteLine("[QAMPage] Windows was hidden before.");
-            }
-
-            return rst;
-        }
-        [DllImport("user32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
-
         public enum log_type
         {
             info = 0,
@@ -47,17 +29,6 @@ namespace DDPM.QAM
 
         private ILog Log { get; set; }
 
-        private static bool _SetForegroundWindow(IntPtr hWnd)
-        {
-            bool rst = SetForegroundWindow(hWnd);
-
-            if (!rst)
-            {
-                Debug.WriteLine("[QAMPage] SetForegroundWindow failed.");
-            }
-
-            return rst;
-        }
         /// <summary>
         /// NotificationFWupdate 呼叫DDPM UI事件
         /// </summary>
@@ -126,6 +97,7 @@ namespace DDPM.QAM
 
             Microsoft.Win32.SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
             Log = log;
+            timer = new System.Threading.Timer(TimerCallback, null, 5000, 3000);
         }
 
         private void SystemEvents_SessionSwitch(object sender, Microsoft.Win32.SessionSwitchEventArgs e)
@@ -325,31 +297,6 @@ namespace DDPM.QAM
         //    QAMUpdateUIHandler?.Invoke(this, e);
         //}
 
-        [DllImport("user32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
-        public static bool _SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags)
-        {
-            bool rst = SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
-
-            if (!rst)
-            {
-                Debug.WriteLine("[QAMPage] SetWindowPos failed.");
-            }
-
-            return rst;
-        }
-        private static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
-        private const UInt32 SWP_NOSIZE = 0x0001;
-        private const UInt32 SWP_NOMOVE = 0x0002;
-        private const UInt32 SWP_NOACTIVATE = 0x0010;
-        public void SetToBottomWindow()
-        {
-            IntPtr hWnd = new WindowInteropHelper(this).Handle;
-
-            _SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-        }
-
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             try
@@ -363,6 +310,24 @@ namespace DDPM.QAM
 
                 if (DataContext is QAMPageViewModel vm)
                     vm.RemoveQAMWebcamEvent();
+
+                //Derek 2025/04/11
+                DdpmCommonHelper.QAMPageViewModel = null;
+                if (timer != null)
+                {
+                    try
+                    {
+                        timer.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteLog($"Exception while disposing timer: {ex.Message}");
+                    }
+                    finally
+                    {
+                        timer = null;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -405,5 +370,242 @@ namespace DDPM.QAM
                 WriteLog($"Window_IsVisibleChanged catch exception; {ex.Message}");
             }
         }
+
+        #region Get Full Screen State of Zoom and move to bottom of layer
+        // Structure to hold window's position and size
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
+
+        private void TimerCallback(object? state)
+        {
+            MonitorZoomMeetingWindowState();
+        }
+
+        private void MonitorZoomMeetingWindowState()
+        {
+            string processName = "Zoom"; //"notepad";
+            Process[] processes = Process.GetProcessesByName(processName);
+
+            if (processes.Length > 0)
+            {
+                foreach (Process process in processes)
+                {
+                    //System.Windows.MessageBox.Show($"{process.Id}， {process.MainWindowHandle}，{process.MainWindowTitle}, {process.MainModule?.FileName}, {process.MainModule?.ModuleName}");
+                    try
+                    {
+                        IntPtr hwnd = process.MainWindowHandle;
+                        if (hwnd != IntPtr.Zero)
+                        {
+                            RECT rect = new RECT();
+                            // Get the window's position and size
+                            GetWindowRect(hwnd, ref rect);
+
+                            // Get screen size (Working area of the screen excluding taskbar)
+                            var screen = Screen.PrimaryScreen?.Bounds ?? new System.Drawing.Rectangle();
+
+                            // Compare window size to screen size (not considering the position)
+                            int windowWidth = rect.Right - rect.Left;
+                            int windowHeight = rect.Bottom - rect.Top;
+
+                            if (Math.Abs(windowWidth - screen.Width) <= 10 && Math.Abs(windowHeight - screen.Height) <= 10
+                                && _isTopmost)
+                            {
+                                fullScreenModeGetFailCount = 0;
+                                WriteLog($"[MonitorZoomMeetingWindowState] Zoom is in full-screen mode!");
+                                SetToBottomWindow();
+                            }
+                            else
+                            {
+                                if (fullScreenModeGetFailCount > 3 && !_isTopmost)
+                                {
+                                    WriteLog($"[MonitorZoomMeetingWindowState] Zoom is NOT in full-screen mode.");
+                                    SetToTopWindow();
+                                }
+                                fullScreenModeGetFailCount++;
+                            }
+                        }
+                        else
+                        {
+                            WriteLog($"[MonitorZoomMeetingWindowState] Process {processName} doesn't have window.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteLog($"[MonitorZoomMeetingWindowState] Throws exception on process [{processName}] {ex.ToString()}, StackTrace: {ex.StackTrace}.");
+                    }
+                    finally
+                    {
+                        process.Dispose();
+                    }
+                }
+            }
+        }
+
+        #region Win32API
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        public static IntPtr _FindWindow(string lpClassName, string lpWindowName)
+        {
+            IntPtr rst = FindWindow(lpClassName, lpWindowName);
+
+            if (rst == IntPtr.Zero)
+            {
+#if DEBUG
+                Console.WriteLine("[CallUser32dll] FindWindow failed.");
+#endif
+            }
+
+            return rst;
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
+
+        // 定义WINDOWPLACEMENT结构体
+        [Serializable]
+        [StructLayout(LayoutKind.Sequential)]
+        public struct WINDOWPLACEMENT
+        {
+            public int length;
+            public int flags;
+            public int showCmd;
+            public System.Drawing.Point ptMinPosition;
+            public System.Drawing.Point ptMaxPosition;
+            public System.Drawing.Rectangle rcNormalPosition;
+        }
+
+        const int SW_SHOWMINIMIZED = 2; // 最小化
+        const int SW_SHOWMAXIMIZED = 3; // 最大化
+        const int SW_SHOWNORMAL = 1;    // 正常显示
+
+        public static int _GetWindowPlacement(IntPtr hWnd)
+        {
+            try
+            {
+                WINDOWPLACEMENT wp = new WINDOWPLACEMENT();
+                wp.length = Marshal.SizeOf(wp);
+
+                if (GetWindowPlacement(hWnd, ref wp))
+                {
+                    //switch (wp.showCmd)
+                    //{
+                    //    case SW_SHOWMINIMIZED:
+                    //        Console.WriteLine($"窗口处于最小化状态。");
+                    //        break;
+                    //    case SW_SHOWMAXIMIZED:
+                    //        Console.WriteLine($"窗口处于最大化状态。");
+                    //        break;
+                    //    case SW_SHOWNORMAL:
+                    //        Console.WriteLine($"窗口处于正常显示状态。");
+                    //        break;
+
+                    //    default:
+                    //        Console.WriteLine($"窗口状态未知。");
+                    //        break;
+                    //}
+                    return wp.showCmd;
+                }
+                else
+                {
+                    Console.WriteLine($"无法获取窗口状态。");
+                    return -1;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"_GetWindowPlacement catch exception; {e.Message}");
+
+                return -2;
+            }
+            
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        public static bool _SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags)
+        {
+            bool rst = SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
+
+            if (!rst)
+            {
+                Debug.WriteLine("[QAMPage] SetWindowPos failed.");
+            }
+
+            return rst;
+        }
+        private static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
+        private static readonly IntPtr HWND_TOP = new IntPtr(0);
+        private const UInt32 SWP_NOSIZE = 0x0001;
+        private const UInt32 SWP_NOMOVE = 0x0002;
+        private const UInt32 SWP_NOACTIVATE = 0x0010;
+
+        public void SetToBottomWindow()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                this._isTopmost = false;
+                this.Topmost = false;
+                IntPtr hWnd = new WindowInteropHelper(this).Handle;
+                _SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+            });
+        }
+        public void SetToTopWindow()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                this._isTopmost = true;
+                this.Topmost = true;
+                IntPtr hWnd = new WindowInteropHelper(this).Handle;
+                _SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+                this.Activate();
+            });
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        private static bool _ShowWindow(IntPtr hWnd, int nCmdShow)
+        {
+            bool rst = ShowWindow(hWnd, nCmdShow);
+
+            if (!rst)
+            {
+                Debug.WriteLine("[QAMPage] Windows was hidden before.");
+            }
+
+            return rst;
+        }
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        private static bool _SetForegroundWindow(IntPtr hWnd)
+        {
+            bool rst = SetForegroundWindow(hWnd);
+
+            if (!rst)
+            {
+                Debug.WriteLine("[QAMPage] SetForegroundWindow failed.");
+            }
+
+            return rst;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern int GetWindowRect(IntPtr hWnd, ref RECT rect);
+        #endregion Win32API
+
+        #endregion Get Full Screen State of Zoom and move to bottom of layer
     }
 }

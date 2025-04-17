@@ -148,37 +148,37 @@ namespace DDPM.Easy.Common.Tests
             Assert.That(splitCtrl0B.CellBorders, Is.Not.Null);
         }
 
-        [Test]
-        public void TestVSplitterList()
-        {
-            var vSplitterList = new List<GridSplitter>();
-            splitCtrl0B.VSplitterList = vSplitterList;
-            Assert.That(splitCtrl0B.VSplitterList, Is.EqualTo(vSplitterList));
-        }
+        //[Test]
+        //public void TestVSplitterList()
+        //{
+        //    var vSplitterList = new List<GridSplitter>();
+        //    splitCtrl0B.VSplitterList = vSplitterList;
+        //    Assert.That(splitCtrl0B.VSplitterList, Is.EqualTo(vSplitterList));
+        //}
 
-        [Test]
-        public void TestHSplitterList()
-        {
-            var hSplitterList = new List<GridSplitter>();
-            splitCtrl0B.HSplitterList = hSplitterList;
-            Assert.That(splitCtrl0B.HSplitterList, Is.EqualTo(hSplitterList));
-        }
+        //[Test]
+        //public void TestHSplitterList()
+        //{
+        //    var hSplitterList = new List<GridSplitter>();
+        //    splitCtrl0B.HSplitterList = hSplitterList;
+        //    Assert.That(splitCtrl0B.HSplitterList, Is.EqualTo(hSplitterList));
+        //}
 
-        [Test]
-        public void TestInitSplitterList()
-        {
-            try
-            {
-                splitCtrl0B.InitSplitterList();
-                Assert.True(true);
-                Assert.That(splitCtrl0B.VSplitterList.Count, Is.EqualTo(0));
-                Assert.That(splitCtrl0B.HSplitterList.Count, Is.EqualTo(0));
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
-        }
+        //[Test]
+        //public void TestInitSplitterList()
+        //{
+        //    try
+        //    {
+        //        splitCtrl0B.InitSplitterList();
+        //        Assert.True(true);
+        //        Assert.That(splitCtrl0B.VSplitterList.Count, Is.EqualTo(0));
+        //        Assert.That(splitCtrl0B.HSplitterList.Count, Is.EqualTo(0));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.Fail("not invoked");
+        //    }
+        //}
 
         [Test]
         public void TestDefaultSettings()

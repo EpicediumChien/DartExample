@@ -846,7 +846,7 @@ namespace DDPM.UI.Module.Kvm
         private bool IsPBPMode(MonitorInfo mo, UInt16 curPxpMode)
         {
             bool ret = false;
-            UInt16 pxpModeValue = 0;
+            UInt16 pxpModeValue = curPxpMode;
             if (!mo.CapabilityDic.ContainsKey("E9"))
                 return ret;
             if (curPxpMode == 0 &&
@@ -2912,7 +2912,7 @@ namespace DDPM.UI.Module.Kvm
                             string result = res ? "Success" : "Failed";
                             _log?.Info($"[KvmViewModel] SubInputs PC Done with {result}.");
                         }
-                        else 
+                        else
                         {
                             _log?.Info("[KvmViewModel] PCsList not has PC2.");
                         }

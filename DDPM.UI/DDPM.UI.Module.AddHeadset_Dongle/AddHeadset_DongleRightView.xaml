@@ -49,7 +49,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <UXControls:UXScrollViewer>
+        <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False"-->
+        <UXControls:UXScrollViewer UseFadingScrolling="False">
             <Border Background="Transparent">
                 <StackPanel Orientation="Vertical">
                     <Border Name="bdrAlert" Background="{DynamicResource bdrAlert_BgColor}" CornerRadius="4" Margin="17,2,0,10" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding DongleAlertHeadsetVisibility}">

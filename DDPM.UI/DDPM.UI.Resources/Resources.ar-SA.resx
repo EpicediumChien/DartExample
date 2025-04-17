@@ -498,9 +498,6 @@
   <data name="Brightness.16" xml:space="preserve">
     <value>فترة الانتقال</value>
   </data>
-  <data name="Brightness.17" xml:space="preserve">
-    <value>اختبر.</value>
-  </data>
   <data name="Min" xml:space="preserve">
     <value>دقيقة</value>
   </data>
@@ -1035,9 +1032,6 @@
   <data name="Kvm.29" xml:space="preserve">
     <value>الإعداد من خلال الشبكة</value>
   </data>
-  <data name="Kvm.30" xml:space="preserve">
-    <value>سهولة مشاركة الملفات بين أجهزة الكمبيوتر الشخصية (Mac وWindows) بأمان</value>
-  </data>
   <data name="Kvm.31" xml:space="preserve">
     <value>فتح وحدة KVM للشبكة</value>
   </data>
@@ -1181,12 +1175,6 @@
   </data>
   <data name="SpeakerInteractions.5" xml:space="preserve">
     <value>Skype for Business</value>
-  </data>
-  <data name="WebCameraCapture.0" xml:space="preserve">
-    <value>‎3-2-1 Countdown</value>
-  </data>
-  <data name="WebCameraCapture.1" xml:space="preserve">
-    <value>شبكة التأطير</value>
   </data>
   <data name="WebCameraCapture.2" xml:space="preserve">
     <value>فتح</value>
@@ -2509,7 +2497,7 @@
     <value>موافق</value>
   </data>
   <data name="Collab.2" xml:space="preserve">
-    <value>توفر وصولاً سريعًا إلى عناصر التحكم في المؤتمرات. سيؤدي التبديل بين \nتشغيل/إيقاف تشغيل المفاتيح إلى إظهارها أو إخفائها على لوحة المفاتيح في أثناء إجراء مكالمة\nعبر Zoom أو Microsoft Teams.</value>
+    <value>توفر وصولاً سريعًا إلى عناصر التحكم في المؤتمرات. سيؤدي التبديل بين  تشغيل/إيقاف تشغيل المفاتيح إلى إظهارها أو إخفائها على لوحة المفاتيح في أثناء إجراء مكالمة عبر Zoom أو Microsoft Teams.</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
     <value>قم بتمكين تأثير الوميض عند وجود رسالة دردشة جديدة في المكالمة\nالجماعية</value>
@@ -3504,19 +3492,137 @@
   <data name="HDR" xml:space="preserve">
     <value>HDR</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+    <value>معرّف الجهاز</value>
+  </data>
+  <data name="Brightness.17" xml:space="preserve">
+    <value>تتيح هذه الميزة للعين التكيّف مع الإعداد المرغوب</value>
+  </data>
+  <data name="Kvm.30" xml:space="preserve">
+    <value>مشاركة سهلة وآمنة للملفات بين أجهزة الكمبيوتر (Mac &amp; Windows)</value>
+  </data>
+  <data name="WebCameraCapture.0" xml:space="preserve">
+    <value>‎3-2-1 Countdown</value>
+  </data>
+  <data name="WebCameraCapture.1" xml:space="preserve">
+    <value>شبكة التأطير</value>
+  </data>
+  <data name="Brightness.21" xml:space="preserve">
+    <value>تطبيق إعدادات السطوع /الإضاءة والتباين والجدولة والإعدادات المسبقة للألوان على الشاشات المتصلة</value>
+  </data>
+  <data name="slot" xml:space="preserve">
+    <value>المنافذ المتاحة</value>
+  </data>
+  <data name="Hotkey.10" xml:space="preserve">
+    <value>يتعارض مفتاح التشغيل السريع مع مفتاح تشغيل سريع تم تكوينه في تطبيق آخر. استخدم مجموعة مختلفة لمفتاح التشغيل السريع.</value>
+  </data>
+  <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers" xml:space="preserve">
+    <value>لم يتم دعم تحديث البرنامج الثابت لعدة أجهزة استقبال USB لاسلكية من النوع نفسه. اترك جهاز استقبال USB لاسلكيًا قيد الاتصال.</value>
+  </data>
+  <data name="DisplayAlert" xml:space="preserve">
+    <value>الشاشة مشغولة حاليًا. يمكنك التحكم في عدد محدود فقط من الوظائف.</value>
+  </data>
+  <data name="ColorMsg.0" xml:space="preserve">
+    <value>لا يتوفر اللون عندما</value>
+  </data>
+  <data name="LearnMoreMsg.0" xml:space="preserve">
+    <value>امسح الرمز ضوئيًا لتنزيل تطبيق Dell Audio لتخصيص سماعة الرأس الخاصة بك</value>
+  </data>
+  <data name="EzArrange.11" xml:space="preserve">
+    <value>حفظ صور الأيقونات...</value>
+  </data>
+  <data name="Camera.26" xml:space="preserve">
+    <value>وصّل الشاشة عبر منفذ USB 3.0 لتمكين دقة 4K UHD.</value>
+  </data>
+  <data name="Camera.27" xml:space="preserve">
+    <value>وصّل كاميرا الويب الخاصة بك عبر منفذ USB 3.0 لتمكين دقة 4K UHD.</value>
+  </data>
+  <data name="WebCameraPresenceDetection.12" xml:space="preserve">
+    <value>من الثواني</value>
+  </data>
+  <data name="WebCameraPresenceDetection.13" xml:space="preserve">
+    <value>من الدقائق</value>
+  </data>
+  <data name="Cardi.1" xml:space="preserve">
+    <value>إلغاء ضوضاء الميكروفون باستخدام الذكاء الاصطناعي</value>
+  </data>
+  <data name="Cardi.2" xml:space="preserve">
+    <value>الإعدادات المسبقة للوسائط المتعددة</value>
+  </data>
+  <data name="Cardi.3" xml:space="preserve">
+    <value>تُطبق الميزات تلقائيًا في أثناء المكالمات</value>
+  </data>
+  <data name="Cardi.4" xml:space="preserve">
+    <value>تُطبق الميزات تلقائيًا عند الاستماع إلى الموسيقى والمحتوى الآخر</value>
+  </data>
+  <data name="Cardi.5" xml:space="preserve">
+    <value>للحد من ضوضاء الميكروفون لديك لتوفير تجربة صوتية أفضل للآخرين</value>
+  </data>
+  <data name="Cardi.6" xml:space="preserve">
+    <value>للحد من ضوضاء ميكروفون الطرف الآخر لتوفير تجربة صوتية أفضل لك</value>
+  </data>
+  <data name="Cardi.7" xml:space="preserve">
+    <value>لضبط الموازن بناءً على الإعداد المسبق المختار</value>
+  </data>
+  <data name="CustomizeScrollTiltLCaption" xml:space="preserve">
+    <value>تخصيص التمرير والإمالة لليسار</value>
+  </data>
+  <data name="CustomizeScrollTiltRCaption" xml:space="preserve">
+    <value>تخصيص التمرير والإمالة لليمين</value>
+  </data>
+  <data name="CustomizeScrollWheelCaption" xml:space="preserve">
+    <value>تخصيص النقر على عجلة التمرير</value>
+  </data>
+  <data name="CustomizeSideButtonBCaption" xml:space="preserve">
+    <value>تخصيص الزر الجانبي للخلف</value>
+  </data>
+  <data name="CustomizeSideButtonFCaption" xml:space="preserve">
+    <value>تخصيص الزر الجانبي للأمام</value>
+  </data>
+  <data name="Incompatible" xml:space="preserve">
+    <value>هذا الجهاز غير متوافق مع Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="WalkThroughPen_Sub.1_1" xml:space="preserve">
+    <value>قلمك مشحون بنسبة X%.\n\nلشحن قلمك بالكامل، تأكد من توصيله بشاشة الكمبيوتر اللوحي. سيتم إعلامك بمجرد الانتهاء من شحن القلم.\n\nستظهر إشعارات انخفاض المنخفضة بمجرد أن يكون شحن البطارية أقل من 10%. </value>
+  </data>
+  <data name="Save_dock_asset_report" xml:space="preserve">
+    <value>حفظ التقرير حول أصول وحدة الإرساء</value>
+  </data>
+  <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers2" xml:space="preserve">
+    <value>لم يتم دعم تحديث أجهزة استقبال USB لاسلكية من النوع نفسه. اترك جهاز استقبال USB لاسلكيًا قيد الاتصال.</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>قد يستغرق إكمال عملية التحديث ما بين 10 إلى 30 دقيقة، اعتمادًا على طراز الشاشة والإعداد (على سبيل المثال، نوع الاتصال). قد يستغرق الأمر وقتًا أطول إذا كنت تقوم بتحديث شاشات متعددة من الطراز نفسه. لا تقم بإيقاف تشغيل الشاشة أو فصل الكابلات في أثناء تنزيل التحديث.</value>
+  </data>
+  <data name="Update_Mouse_Alert2" xml:space="preserve">
+    <value>اضغط على زر أو مفتاح في هذا الجهاز لتمكين هذا التحديث</value>
+  </data>
+  <data name="Update_BatteryLow_Alert2" xml:space="preserve">
+    <value>مستوى البطارية في هذا الجهاز منخفض. استبدل/أعد شحن البطارية لتمكين هذا التحديث.</value>
+  </data>
+  <data name="Update_Webcam_Alert2" xml:space="preserve">
+    <value>سيُتيح هذا التحديث التحكم في استشعار التواجد من خلال إعدادات Microsoft في الأنظمة: Win 11 22H2 أو أعلى، ومع إصدار نظام
+التشغيل 22621 أو أعلى</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>يُرجى توصيل شاشتك باستخدام منفذ USB العلوي لتفادي حدوث أخطاء في أثناء عملية تحديث البرنامج الثابت</value>
+  </data>
   <data name="UnableToLoadDdpm" xml:space="preserve">
-    <value />
+    <value>يتعذر تحميل تطبيق Dell Display and Peripheral Manager في الوقت الحالي. يُرجى إغلاق التطبيق والمحاولة مرة أخرى.</value>
   </data>
   <data name="InputValidationTooltip.1" xml:space="preserve">
-    <value />
+    <value>استخدم {0} من الأحرف بحد أقصى</value>
   </data>
   <data name="InputValidationTooltip.2" xml:space="preserve">
-    <value />
+    <value>استخدم فقط الأحرف الأبجدية الرقمية والأحرف الخاصة التالية {0}</value>
   </data>
   <data name="InputValidationTooltip.3" xml:space="preserve">
-    <value />
+    <value>تجاوز مسار الملف الحد الأقصى البالغ 260 حرفًا، أو يستخدم اسم ملف محجوزًا، أو يحتوي على أحرف غير صالحة مثل &amp;lt; &amp;gt; : &quot; / \ | ?</value>
   </data>
   <data name="InputValidationTooltip.4" xml:space="preserve">
-    <value />
+    <value>أدخل فقط مسار URL كاملاً، وليس مسارًا نسبيًا</value>
+  </data>
+  <data name="ErrorMsg.0" xml:space="preserve">
+    <value>يتعذر تحميل تطبيق Dell Display and Peripheral Manager في الوقت الحالي. يُرجى إغلاق التطبيق والمحاولة مرة أخرى.</value>
   </data>
 </root>

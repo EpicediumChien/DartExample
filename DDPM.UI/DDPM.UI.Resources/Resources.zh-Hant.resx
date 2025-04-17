@@ -498,9 +498,6 @@
   <data name="Brightness.16" xml:space="preserve">
     <value>傳輸長度</value>
   </data>
-  <data name="Brightness.17" xml:space="preserve">
-    <value>測試。</value>
-  </data>
   <data name="Min" xml:space="preserve">
     <value>分</value>
   </data>
@@ -1035,9 +1032,6 @@
   <data name="Kvm.29" xml:space="preserve">
     <value>透過網路設定</value>
   </data>
-  <data name="Kvm.30" xml:space="preserve">
-    <value>在電腦 (Mac 和 Windows) 之間安全輕鬆共用檔案</value>
-  </data>
   <data name="Kvm.31" xml:space="preserve">
     <value>開放式網路 KVM</value>
   </data>
@@ -1181,12 +1175,6 @@
   </data>
   <data name="SpeakerInteractions.5" xml:space="preserve">
     <value>Skype for Business</value>
-  </data>
-  <data name="WebCameraCapture.0" xml:space="preserve">
-    <value>3-2-1 倒數計時</value>
-  </data>
-  <data name="WebCameraCapture.1" xml:space="preserve">
-    <value>構圖格線</value>
   </data>
   <data name="WebCameraCapture.2" xml:space="preserve">
     <value>開啟</value>
@@ -2509,7 +2497,7 @@
     <value>確定</value>
   </data>
   <data name="Collab.2" xml:space="preserve">
-    <value>提供快速存取會議控制項。切換\n開啟/關閉鍵將於 Microsoft Teams 或 Zoom 通話時，\n在鍵盤上顯示或隱藏這些按鍵。</value>
+    <value>提供快速存取會議控制項。切換開啟/關閉鍵將於 Microsoft Teams 或 Zoom 通話時，在鍵盤上顯示或隱藏這些按鍵。</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
     <value>在會議通話中出現新的聊天訊息時啟用閃爍效果</value>
@@ -3504,19 +3492,137 @@
   <data name="HDR" xml:space="preserve">
     <value>HDR</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+    <value>裝置 ID</value>
+  </data>
+  <data name="Brightness.17" xml:space="preserve">
+    <value>此功能使我們的眼睛能夠適應所需的設定</value>
+  </data>
+  <data name="Kvm.30" xml:space="preserve">
+    <value>在電腦之間輕鬆且安全地共用檔案 (Mac 與 Windows)</value>
+  </data>
+  <data name="WebCameraCapture.0" xml:space="preserve">
+    <value>3-2-1 倒數計時</value>
+  </data>
+  <data name="WebCameraCapture.1" xml:space="preserve">
+    <value>構圖格線</value>
+  </data>
+  <data name="Brightness.21" xml:space="preserve">
+    <value>將亮度/光度、對比度、排程設定和色彩預設套用至連接的顯示器</value>
+  </data>
+  <data name="slot" xml:space="preserve">
+    <value>可用插槽</value>
+  </data>
+  <data name="Hotkey.10" xml:space="preserve">
+    <value>此快速鍵與另一個應用程式中設定的快速鍵有所衝突。請使用不同的快速鍵組合。</value>
+  </data>
+  <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers" xml:space="preserve">
+    <value>不支援多個相同類型 USB 無線接收器的韌體更新。請將一個目標 USB 無線接收器保持連線。</value>
+  </data>
+  <data name="DisplayAlert" xml:space="preserve">
+    <value>顯示器目前忙碌中。您只能控制有限的功能。</value>
+  </data>
+  <data name="ColorMsg.0" xml:space="preserve">
+    <value>在以下情況時，色彩不可用</value>
+  </data>
+  <data name="LearnMoreMsg.0" xml:space="preserve">
+    <value>掃描來下載 Dell Audio 應用程式，以自訂您的耳機</value>
+  </data>
+  <data name="EzArrange.11" xml:space="preserve">
+    <value>儲存圖示映像…</value>
+  </data>
+  <data name="Camera.26" xml:space="preserve">
+    <value>透過 USB 3.0 連接顯示器，以啟用 4K UHD 解析度。</value>
+  </data>
+  <data name="Camera.27" xml:space="preserve">
+    <value>透過 USB 3.0 連接網路攝影機，以啟用 4K UHD 解析度。</value>
+  </data>
+  <data name="WebCameraPresenceDetection.12" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="WebCameraPresenceDetection.13" xml:space="preserve">
+    <value>分鐘</value>
+  </data>
+  <data name="Cardi.1" xml:space="preserve">
+    <value>AI 麥克風降噪</value>
+  </data>
+  <data name="Cardi.2" xml:space="preserve">
+    <value>多媒體預設設定</value>
+  </data>
+  <data name="Cardi.3" xml:space="preserve">
+    <value>功能會在通話期間自動套用</value>
+  </data>
+  <data name="Cardi.4" xml:space="preserve">
+    <value>功能會在您聆聽音樂和其他內容時自動套用</value>
+  </data>
+  <data name="Cardi.5" xml:space="preserve">
+    <value>限制近端麥克風噪音，為其他人創造更優質的音訊體驗</value>
+  </data>
+  <data name="Cardi.6" xml:space="preserve">
+    <value>限制遠端麥克風噪音，為自己打造更優質的音訊體驗</value>
+  </data>
+  <data name="Cardi.7" xml:space="preserve">
+    <value>等化器會根據所選的預設值調整</value>
+  </data>
+  <data name="CustomizeScrollTiltLCaption" xml:space="preserve">
+    <value>自訂捲動向左傾斜</value>
+  </data>
+  <data name="CustomizeScrollTiltRCaption" xml:space="preserve">
+    <value>自訂捲動向右傾斜</value>
+  </data>
+  <data name="CustomizeScrollWheelCaption" xml:space="preserve">
+    <value>自訂按一下滾輪的動作</value>
+  </data>
+  <data name="CustomizeSideButtonBCaption" xml:space="preserve">
+    <value>自訂側邊按鈕背面</value>
+  </data>
+  <data name="CustomizeSideButtonFCaption" xml:space="preserve">
+    <value>自訂側邊按鈕向前</value>
+  </data>
+  <data name="Incompatible" xml:space="preserve">
+    <value>此裝置與 Dell Display and Peripheral Manager 不相容</value>
+  </data>
+  <data name="WalkThroughPen_Sub.1_1" xml:space="preserve">
+    <value>您的手寫筆已充電至 X%。\n\n要完全充飽您的手寫筆，請確實將其吸附平板電腦螢幕。充電完成時會通知您。\n\n當電池電力低於 10% 時，會出現電力偏低通知。 </value>
+  </data>
+  <data name="Save_dock_asset_report" xml:space="preserve">
+    <value>儲存擴充基座資產報告</value>
+  </data>
+  <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers2" xml:space="preserve">
+    <value>不支援多個相同類型 USB 無線接收器的更新。請將一個目標 USB 無線接收器保持連線。</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>更新可能需要大約 10 到 30 分鐘才能完成，視您的顯示器型號和設定 (例如連線類型) 而定。若您要更新同一型號的多部顯示器，可能需要更長的時間。下載更新時，請勿關閉顯示器電源或拔下纜線。</value>
+  </data>
+  <data name="Update_Mouse_Alert2" xml:space="preserve">
+    <value>請按下裝置上的按鈕或按鍵以啟用此更新</value>
+  </data>
+  <data name="Update_BatteryLow_Alert2" xml:space="preserve">
+    <value>此裝置電量過低。請更換電池/為電池充電，以啟用此更新。</value>
+  </data>
+  <data name="Update_Webcam_Alert2" xml:space="preserve">
+    <value>此更新將透過以下系統中的 Microsoft 設定，啟用在場感應控制功能：Win 11 22H2 或更高版本，以及作業系統組建
+22621 或更高版本</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>請使用 USB 上游連接埠連接顯示器，避免在韌體更新程序中出現錯誤</value>
+  </data>
   <data name="UnableToLoadDdpm" xml:space="preserve">
-    <value />
+    <value>目前無法載入 Dell Display and Peripheral Manager 應用程式。請關閉應用程式，然後再試一次。</value>
   </data>
   <data name="InputValidationTooltip.1" xml:space="preserve">
-    <value>Use a maximum of {0} characters</value>
+    <value>使用最多 {0} 個字元</value>
   </data>
   <data name="InputValidationTooltip.2" xml:space="preserve">
-    <value>Only use alpha-numeric characters and the following special characters {0}</value>
+    <value>僅可使用英數字元和以下特殊字元 {0}</value>
   </data>
   <data name="InputValidationTooltip.3" xml:space="preserve">
-    <value>The file path either has exceeded the maximum of 260 characters, uses a reserved file name, or has invalid characters &lt; &gt; : " / \ | ?</value>
+    <value>此檔案路徑已超過最多 260 個字元的限制，請使用保留的檔案名稱；或包含無效的字元 &amp;lt; &amp;gt; : &quot; / \ | ?</value>
   </data>
   <data name="InputValidationTooltip.4" xml:space="preserve">
-    <value />
+    <value>僅可輸入完整的 URL 路徑，不可輸入相對路徑</value>
+  </data>
+  <data name="ErrorMsg.0" xml:space="preserve">
+    <value>目前無法載入 Dell Display and Peripheral Manager 應用程式。請關閉應用程式，然後再試一次。</value>
   </data>
 </root>

@@ -28,7 +28,8 @@
                     CornerRadius="13">
             <!--20250331 Chewlin for PIMS-348208 ADD ScrollViewer.VerticalScrollBarVisibility="Disabled"-->
             <!--20250401 Chewlin for PIMS-348208 Remove ScrollViewer.VerticalScrollBarVisibility="Disabled" Fix clipping issue in minimized DDPM APP-->
-            <UXControls:UXScrollViewer>
+            <!--20250414 Chewlin for PIMS-348204 ADD UseFadingScrolling="False" VerticalScrollBarVisibility="Auto"-->
+            <UXControls:UXScrollViewer UseFadingScrolling="False" VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <!-- Robert_Lin 2025-3-6 PIMS-348208 S-348208 Multiple Instances of Incorrect Padding (too much space) in Settings
                      1 Problem: The Margin.Left of each Region below should be 16 (original 20)

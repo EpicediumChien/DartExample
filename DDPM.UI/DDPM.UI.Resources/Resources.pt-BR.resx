@@ -498,9 +498,6 @@
   <data name="Brightness.16" xml:space="preserve">
     <value>Comprimento de transição</value>
   </data>
-  <data name="Brightness.17" xml:space="preserve">
-    <value>TESTE.</value>
-  </data>
   <data name="Min" xml:space="preserve">
     <value>min</value>
   </data>
@@ -1035,9 +1032,6 @@
   <data name="Kvm.29" xml:space="preserve">
     <value>Configuração pela rede</value>
   </data>
-  <data name="Kvm.30" xml:space="preserve">
-    <value>Compartilhamento fácil de arquivos entre PCs (Mac e Windows) com segurança</value>
-  </data>
   <data name="Kvm.31" xml:space="preserve">
     <value>KVM de rede aberta</value>
   </data>
@@ -1184,12 +1178,6 @@
   </data>
   <data name="SpeakerInteractions.5" xml:space="preserve">
     <value>Skype for Business</value>
-  </data>
-  <data name="WebCameraCapture.0" xml:space="preserve">
-    <value>3-2-1 Countdown</value>
-  </data>
-  <data name="WebCameraCapture.1" xml:space="preserve">
-    <value>Grade de enquadramento</value>
   </data>
   <data name="WebCameraCapture.2" xml:space="preserve">
     <value>Abrir</value>
@@ -2512,7 +2500,7 @@
     <value>OK</value>
   </data>
   <data name="Collab.2" xml:space="preserve">
-    <value>Fornece acesso rápido aos controles de conferência. Ativar/desativar as\nteclas exibirá ou ocultará essas teclas no teclado durante\numa chamada do Microsoft Teams ou Zoom.</value>
+    <value>Fornece acesso rápido aos controles de conferência. Ativar/desativar as teclas exibirá ou ocultará essas teclas no teclado durante uma chamada do Microsoft Teams ou Zoom.</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
     <value>Ative o efeito de piscar quando houver uma nova mensagem de chat durante uma chamada</value>
@@ -3507,19 +3495,137 @@
   <data name="HDR" xml:space="preserve">
     <value>HDR</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+    <value>ID do dispositivo</value>
+  </data>
+  <data name="Brightness.17" xml:space="preserve">
+    <value>Esse recurso permite que nossos olhos se adaptem a uma configuração desejada</value>
+  </data>
+  <data name="Kvm.30" xml:space="preserve">
+    <value>Compartilhamento de arquivos fácil e seguro entre PCs (Mac e Windows)</value>
+  </data>
+  <data name="WebCameraCapture.0" xml:space="preserve">
+    <value>3-2-1 Countdown</value>
+  </data>
+  <data name="WebCameraCapture.1" xml:space="preserve">
+    <value>Grade de enquadramento</value>
+  </data>
+  <data name="Brightness.21" xml:space="preserve">
+    <value>Aplica brilho/luminosidade, contraste, configurações de programação e predefinições de cor aos monitores conectados</value>
+  </data>
+  <data name="slot" xml:space="preserve">
+    <value>slots disponíveis</value>
+  </data>
+  <data name="Hotkey.10" xml:space="preserve">
+    <value>A tecla de atalho está em conflito com uma tecla de atalho configurada em outro aplicativo. Use uma combinação de teclas de atalho diferente.</value>
+  </data>
+  <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers" xml:space="preserve">
+    <value>A atualização de firmware de vários receptores USB sem fio do mesmo tipo não é permitida. Mantenha um receptor USB de destino sem fio ligado.</value>
+  </data>
+  <data name="DisplayAlert" xml:space="preserve">
+    <value>O monitor está ocupado no momento. Você só pode controlar funções limitadas.</value>
+  </data>
+  <data name="ColorMsg.0" xml:space="preserve">
+    <value>A cor não está disponível quando</value>
+  </data>
+  <data name="LearnMoreMsg.0" xml:space="preserve">
+    <value>Digitalize para fazer download do aplicativo Dell Audio e personalizar seu headset</value>
+  </data>
+  <data name="EzArrange.11" xml:space="preserve">
+    <value>Imagens do ícone Salvar...</value>
+  </data>
+  <data name="Camera.26" xml:space="preserve">
+    <value>Conecte seu monitor via USB 3.0 para ativar a resolução UHD 4K.</value>
+  </data>
+  <data name="Camera.27" xml:space="preserve">
+    <value>Conecte sua webcam via USB 3.0 para ativar a resolução UHD 4K.</value>
+  </data>
+  <data name="WebCameraPresenceDetection.12" xml:space="preserve">
+    <value>segundos</value>
+  </data>
+  <data name="WebCameraPresenceDetection.13" xml:space="preserve">
+    <value>minutos</value>
+  </data>
+  <data name="Cardi.1" xml:space="preserve">
+    <value>Cancelamento de ruído do microfone por IA</value>
+  </data>
+  <data name="Cardi.2" xml:space="preserve">
+    <value>Predefinições de multimídia</value>
+  </data>
+  <data name="Cardi.3" xml:space="preserve">
+    <value>Os recursos são aplicados automaticamente durante as chamadas</value>
+  </data>
+  <data name="Cardi.4" xml:space="preserve">
+    <value>Os recursos são aplicados automaticamente quando você ouve música e outros conteúdos</value>
+  </data>
+  <data name="Cardi.5" xml:space="preserve">
+    <value>Limita o ruído próximo ao microfone para criar uma melhor experiência de áudio para outras pessoas</value>
+  </data>
+  <data name="Cardi.6" xml:space="preserve">
+    <value>Limita o ruído extremo do microfone para criar uma melhor experiência de áudio para você</value>
+  </data>
+  <data name="Cardi.7" xml:space="preserve">
+    <value>O equalizador é ajustado com base na predefinição escolhida</value>
+  </data>
+  <data name="CustomizeScrollTiltLCaption" xml:space="preserve">
+    <value>Personalizar inclinação de rolagem para a esquerda</value>
+  </data>
+  <data name="CustomizeScrollTiltRCaption" xml:space="preserve">
+    <value>Personalizar inclinação de rolagem para a direita</value>
+  </data>
+  <data name="CustomizeScrollWheelCaption" xml:space="preserve">
+    <value>Personalizar o clique da roda de rolagem</value>
+  </data>
+  <data name="CustomizeSideButtonBCaption" xml:space="preserve">
+    <value>Personalizar botão lateral para trás</value>
+  </data>
+  <data name="CustomizeSideButtonFCaption" xml:space="preserve">
+    <value>Personalizar botão lateral para frente</value>
+  </data>
+  <data name="Incompatible" xml:space="preserve">
+    <value>Este dispositivo não é compatível com o Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="WalkThroughPen_Sub.1_1" xml:space="preserve">
+    <value>A caneta está X% carregada.\n\nPara carregá-la completamente, verifique se ela está conectada à tela do tablet. Você será notificado quando a caneta terminar de carregar.\n\nNotificações de bateria fraca serão exibidas quando a carga da bateria estiver abaixo de 10%. </value>
+  </data>
+  <data name="Save_dock_asset_report" xml:space="preserve">
+    <value>Salvar relatório de ativos da docking station</value>
+  </data>
+  <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers2" xml:space="preserve">
+    <value>A atualização para vários receptores USB sem fio do mesmo tipo não é permitida. Mantenha um receptor USB de destino sem fio ligado.</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>A atualização pode levar de 10 a 30 minutos para ser concluída, dependendo do modelo e da configuração do monitor (por exemplo, tipo de conexão). O processo poderá demorar mais se você estiver atualizando vários monitores do mesmo modelo. Não desligue a tela nem desconecte os cabos enquanto estiver ocorrendo o download da atualização.</value>
+  </data>
+  <data name="Update_Mouse_Alert2" xml:space="preserve">
+    <value>Pressione um botão ou uma tecla neste dispositivo para ativar esta atualização</value>
+  </data>
+  <data name="Update_BatteryLow_Alert2" xml:space="preserve">
+    <value>O nível da bateria neste dispositivo está baixo. Substitua/recarregue a bateria para ativar esta atualização.</value>
+  </data>
+  <data name="Update_Webcam_Alert2" xml:space="preserve">
+    <value>Esta atualização ativará controles de detecção de presença por meio das configurações do Windows nos sistemas: Win 11 22H2 ou superior e com compilação do sistema operacional
+22621 ou superior</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>Conecte seu monitor usando a porta USB upstream para evitar erros durante o processo de atualização do firmware</value>
+  </data>
   <data name="UnableToLoadDdpm" xml:space="preserve">
-    <value />
+    <value>Não é possível carregar o aplicativo Dell Display and Peripheral Manager no momento. Feche o aplicativo e tente novamente.</value>
   </data>
   <data name="InputValidationTooltip.1" xml:space="preserve">
-    <value />
+    <value>Use no máximo {0} caracteres</value>
   </data>
   <data name="InputValidationTooltip.2" xml:space="preserve">
-    <value />
+    <value>Use somente caracteres alfanuméricos e os seguintes caracteres especiais {0}</value>
   </data>
   <data name="InputValidationTooltip.3" xml:space="preserve">
-    <value />
+    <value>O caminho do arquivo excedeu o máximo de 260 caracteres, usa um nome de arquivo reservado ou tem caracteres inválidos &amp;lt; &amp;gt; : &quot; / \ | ?</value>
   </data>
   <data name="InputValidationTooltip.4" xml:space="preserve">
-    <value />
+    <value>Insira apenas um caminho de URL completo, não um caminho relativo</value>
+  </data>
+  <data name="ErrorMsg.0" xml:space="preserve">
+    <value>Não é possível carregar o aplicativo Dell Display and Peripheral Manager no momento. Feche o aplicativo e tente novamente.</value>
   </data>
 </root>

@@ -293,7 +293,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void OnWebcamCloseEvent(object sender, EventManagerArgs e)
         {
             DdpmCommonHelper.WriteUILog($"[WebcamPlugin][OnWebcamCloseEvent] event MainWindow_Force_Camera_Unlock received");
-
             FreeWebcamResource();
             //if (writeableBitmap != null)
             //{
@@ -474,7 +473,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //SUT 指電腦本身 DUT 外接Cam
             //
             is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA?.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo?.ID.ToString() ?? "").Result ?? false;
-
+            if (_vm.CurrentDeviceInfo != null) 
+            {
+                _vm.CurrentDeviceInfo.IsWindowsHelloSupported = is_WindwosHelloSupport;
+            }
             //Windows.Devices.Sensors.HumanPresenceSensor.GetDefaultAsync()
 
             //api回傳camera是否支援ESI
@@ -1639,11 +1641,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private async void FreeWebcamResource()
         {
-            DdpmCommonHelper.WriteUILog("FreeWebcamResource");
+            // Unexpected closed recording.
+            if (_vm.IsRecording)
+            {
+                DdpmCommonHelper.WriteUILog($"[FreeWebcamResource] force stop recording.");
+                StopRecord();
+            }
 
             try
             {
-                DdpmCommonHelper.WriteUILog($"FreeWebcamResource Free PowerEventControl");
+                DdpmCommonHelper.WriteUILog($"[FreeWebcamResource] Free PowerEventControl");
 
                 if (_pwr_Mon != null)
                 {
@@ -1656,7 +1663,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("PowerEvent Control got exception: " + ex.Message);
+                DdpmCommonHelper.WriteUILog("[FreeWebcamResource] PowerEvent Control got exception: " + ex.Message);
             }
 
 
@@ -1668,7 +1675,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"FreeWebcamResource got exception 1:{ex.ToString()}");
+                DdpmCommonHelper.WriteUILog($"[FreeWebcamResource] got exception 1:{ex.ToString()}");
             }
 
             try
@@ -1684,7 +1691,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"FreeWebcamResource got exception 2:{ex.ToString()}");
+                DdpmCommonHelper.WriteUILog($"[FreeWebcamResource] got exception 2:{ex.ToString()}");
             }
 
 
@@ -1695,7 +1702,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("Free MediaFrameReader got exception: " + ex.Message);
+                DdpmCommonHelper.WriteUILog("[FreeWebcamResource] Free MediaFrameReader got exception: " + ex.Message);
             }
 
             try
@@ -1708,7 +1715,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"FreeWebcamResource got exception 4:{ex.ToString()}");
+                DdpmCommonHelper.WriteUILog($"[FreeWebcamResource] got exception 4:{ex.ToString()}");
             }
 
             try
@@ -1717,7 +1724,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  FreeWebcamResource()  CleanupMediaCaptureAsync() ex 2: " + ex.Message);
+                DdpmCommonHelper.WriteUILog("[FreeWebcamResource] DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  FreeWebcamResource()  CleanupMediaCaptureAsync() ex 2: " + ex.Message);
             }
 
             //try
@@ -1735,7 +1742,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //{
             //    DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 2: " + ex.Message);
             //}
-            DdpmCommonHelper.WriteUILog("Webcam LaunchView_Unloaded end");
+            DdpmCommonHelper.WriteUILog("[FreeWebcamResource] Webcam LaunchView_Unloaded end");
             /*if ( _vm?.close_app == true )
             {
                 Console.WriteLine("force exit");

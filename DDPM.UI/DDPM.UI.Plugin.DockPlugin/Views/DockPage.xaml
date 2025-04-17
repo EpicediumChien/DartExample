@@ -226,6 +226,8 @@
                                 Click="FWUpdate_Click"
                                 Cursor="Hand"
                                 Margin="8,0,0,70"
+                                FontSize="14"
+                                FontFamily="{StaticResource RobotoFontMedium}"
                                 Visibility="Visible"
                                 x:Name="btnFWU"
                                 HorizontalAlignment="Left"

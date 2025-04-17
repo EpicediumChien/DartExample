@@ -498,9 +498,6 @@
   <data name="Brightness.16" xml:space="preserve">
     <value>Geçiş Uzunluğu</value>
   </data>
-  <data name="Brightness.17" xml:space="preserve">
-    <value>TEST.</value>
-  </data>
   <data name="Min" xml:space="preserve">
     <value>dk</value>
   </data>
@@ -1035,9 +1032,6 @@
   <data name="Kvm.29" xml:space="preserve">
     <value>Ağ üzerinden kurulum</value>
   </data>
-  <data name="Kvm.30" xml:space="preserve">
-    <value>PC'ler (Mac ve Windows) arasında güvenli bir şekilde kolay dosya paylaşımı</value>
-  </data>
   <data name="Kvm.31" xml:space="preserve">
     <value>Ağ KVM Aç</value>
   </data>
@@ -1181,12 +1175,6 @@
   </data>
   <data name="SpeakerInteractions.5" xml:space="preserve">
     <value>Skype Kurumsal</value>
-  </data>
-  <data name="WebCameraCapture.0" xml:space="preserve">
-    <value>3-2-1 Geri Sayımı</value>
-  </data>
-  <data name="WebCameraCapture.1" xml:space="preserve">
-    <value>Çerçeveleme Kılavuzu</value>
   </data>
   <data name="WebCameraCapture.2" xml:space="preserve">
     <value>Aç</value>
@@ -2514,7 +2502,7 @@
     <value>Tamam</value>
   </data>
   <data name="Collab.2" xml:space="preserve">
-    <value>Konferans denetimlerine hızlı erişim sağlar.\nTuşları açmak/kapatmak, Microsoft Teams veya\nZoom araması sırasında tuşları klavyede gösterir veya gizler.</value>
+    <value>Konferans denetimlerine hızlı erişim sağlar.Tuşları açmak/kapatmak, Microsoft Teams veya Zoom araması sırasında tuşları klavyede gösterir veya gizler.</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
     <value>Konferans görüşmesinde yeni bir sohbet mesajı olduğunda göz kırpma efektini etkinleştirin</value>
@@ -3509,19 +3497,136 @@
   <data name="HDR" xml:space="preserve">
     <value>HDR</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+    <value>Aygıt kimliği</value>
+  </data>
+  <data name="Brightness.17" xml:space="preserve">
+    <value>Bu özellik, gözlerimizin istenilen bir ortama uyum sağlamasını sağlar.</value>
+  </data>
+  <data name="Kvm.30" xml:space="preserve">
+    <value>Bilgisayarlar arasında kolay, güvenli dosya paylaşımı (Mac ve Windows)</value>
+  </data>
+  <data name="WebCameraCapture.0" xml:space="preserve">
+    <value>3-2-1 Geri Sayımı</value>
+  </data>
+  <data name="WebCameraCapture.1" xml:space="preserve">
+    <value>Çerçeveleme Kılavuzu</value>
+  </data>
+  <data name="Brightness.21" xml:space="preserve">
+    <value>Bağlı monitörlere parlaklık/ışık, kontrast, planlama ayarları ve renk ön ayarlarını uygular.</value>
+  </data>
+  <data name="slot" xml:space="preserve">
+    <value>yuva mevcut</value>
+  </data>
+  <data name="Hotkey.10" xml:space="preserve">
+    <value>Kısayol tuşu, başka bir uygulamadaki yapılandırılmış bir kısayol tuşuyla çakışıyor. Farklı bir kısayol kombinasyonu kullanın.</value>
+  </data>
+  <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers" xml:space="preserve">
+    <value>Aynı türden birden fazla USB kablosuz alıcının bellenim güncelleştirmesi desteklenmez. İlgili bir adet USB kablosuz alıcıyı bağlayın.</value>
+  </data>
+  <data name="DisplayAlert" xml:space="preserve">
+    <value>Monitör şu anda meşgul. Yalnızca sınırlı işlevleri kullanabilirsiniz.</value>
+  </data>
+  <data name="ColorMsg.0" xml:space="preserve">
+    <value>Renk şu durumlarda kullanılamaz:</value>
+  </data>
+  <data name="LearnMoreMsg.0" xml:space="preserve">
+    <value>Dell Audio uygulamasını indirip kulaklığınızı kişiselleştirmek için tarayın.</value>
+  </data>
+  <data name="EzArrange.11" xml:space="preserve">
+    <value>Kaydet Simgesi Görüntüleri...</value>
+  </data>
+  <data name="Camera.26" xml:space="preserve">
+    <value>4K UHD çözünürlüğü etkinleştirmek için monitörünüzü USB 3.0 ile bağlayın.</value>
+  </data>
+  <data name="Camera.27" xml:space="preserve">
+    <value>4K UHD çözünürlüğü etkinleştirmek için web kameranızı USB 3.0 ile bağlayın.</value>
+  </data>
+  <data name="WebCameraPresenceDetection.12" xml:space="preserve">
+    <value>saniye</value>
+  </data>
+  <data name="WebCameraPresenceDetection.13" xml:space="preserve">
+    <value>dakika</value>
+  </data>
+  <data name="Cardi.1" xml:space="preserve">
+    <value>Yapay Zeka Destekli Mikrofon Gürültüsü Engelleme</value>
+  </data>
+  <data name="Cardi.2" xml:space="preserve">
+    <value>Multimedya Ön Ayarları</value>
+  </data>
+  <data name="Cardi.3" xml:space="preserve">
+    <value>Özellikler, aramalar sırasında otomatik olarak uygulanır.</value>
+  </data>
+  <data name="Cardi.4" xml:space="preserve">
+    <value>Özellikler, müzik ve diğer içerikleri dinlediğinizde otomatik olarak uygulanır.</value>
+  </data>
+  <data name="Cardi.5" xml:space="preserve">
+    <value>Başkaları için daha iyi bir ses deneyimi oluşturmak amacıyla yakın uç mikrofon gürültünüzü sınırlar</value>
+  </data>
+  <data name="Cardi.6" xml:space="preserve">
+    <value>Size daha iyi bir ses deneyimi sunmak amacıyla uzak uç mikrofon gürültüsünü sınırlar</value>
+  </data>
+  <data name="Cardi.7" xml:space="preserve">
+    <value>Ekolayzer, seçilen ön ayara göre ayarlanır</value>
+  </data>
+  <data name="CustomizeScrollTiltLCaption" xml:space="preserve">
+    <value>Kaydırma Sola Eğme Tuşunu Özelleştirme</value>
+  </data>
+  <data name="CustomizeScrollTiltRCaption" xml:space="preserve">
+    <value>Kaydırma Sağa Eğme Tuşunu Özelleştirme</value>
+  </data>
+  <data name="CustomizeScrollWheelCaption" xml:space="preserve">
+    <value>Kaydırma Tekerleği Tıklamasını Özelleştirme</value>
+  </data>
+  <data name="CustomizeSideButtonBCaption" xml:space="preserve">
+    <value>Yan Düğme Geri Tuşunu Özelleştirme</value>
+  </data>
+  <data name="CustomizeSideButtonFCaption" xml:space="preserve">
+    <value>Yan Düğme İleri Tuşunu Özelleştirme</value>
+  </data>
+  <data name="Incompatible" xml:space="preserve">
+    <value>Bu aygıt, Dell Display and Peripheral Manager ile uyumlu değil.</value>
+  </data>
+  <data name="WalkThroughPen_Sub.1_1" xml:space="preserve">
+    <value>Kaleminiz %X oranında şarj edildi.\n\nKaleminizin tam olarak şarj olabilmesi için tabletinizin ekranına takılı olduğundan emin olun. Kalemin şarj işlemi tamamlandığında size bildirilecektir.\n\nPil şarjı %10&apos;un altına düştüğünde düşük pil bildirimleri gösterilir. </value>
+  </data>
+  <data name="Save_dock_asset_report" xml:space="preserve">
+    <value>Bağlantı istasyonu varlık raporunu kaydet</value>
+  </data>
+  <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers2" xml:space="preserve">
+    <value>Aynı türden birden fazla USB kablosuz alıcının güncelleştirilmesi desteklenmez. İlgili bir adet USB kablosuz alıcıyı bağlayın.</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>Güncelleştirmenin tamamlanması, monitörünüzün modeline ve kurulumuna (ör. bağlantı türü) bağlı olarak tahmini 10 ila 30 dakika sürebilir. Aynı modele ait birden fazla monitörü güncelleştiriyorsanız bu işlem daha uzun sürebilir. Güncelleştirme indirilirken ekranınızı kapatmayın veya kabloları çıkarmayın.</value>
+  </data>
+  <data name="Update_Mouse_Alert2" xml:space="preserve">
+    <value>Bu güncelleştirmeyi etkinleştirmek için aygıttaki bir düğmeye veya tuşa basın.</value>
+  </data>
+  <data name="Update_BatteryLow_Alert2" xml:space="preserve">
+    <value>Bu aygıtın pil seviyesi düşük. Bu güncelleştirmeyi etkinleştirmek için pili değiştirin veya şarj edin.</value>
+  </data>
+  <data name="Update_Webcam_Alert2" xml:space="preserve">
+    <value>Bu güncelleştirme, Win 11 22H2 veya üzeri ve ayrıca işletim sistemi derlemesi 22621 veya üzeri olan sistemlerde Windows ayarları aracılığıyla varlık algılama kontrollerini etkinleştirir.</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>Bellenim güncelleştirmesi sırasında oluşabilecek sorunları önlemek için lütfen monitörünüzü USB yukarı akış bağlantı noktası ile bağlayın.</value>
+  </data>
   <data name="UnableToLoadDdpm" xml:space="preserve">
-    <value />
+    <value>Dell Display and Peripheral Manager uygulaması şu anda yüklenemiyor. Lütfen uygulamayı kapatıp tekrar deneyin.</value>
   </data>
   <data name="InputValidationTooltip.1" xml:space="preserve">
-    <value />
+    <value>En fazla {0} karakter kullanın.</value>
   </data>
   <data name="InputValidationTooltip.2" xml:space="preserve">
-    <value />
+    <value>Yalnızca alfasayısal karakterler ve aşağıdaki özel karakterleri kullanın. {0}</value>
   </data>
   <data name="InputValidationTooltip.3" xml:space="preserve">
-    <value />
+    <value>Dosya yolu 260 karakterlik maksimum sınırı aşıyor, özel bir dosya adı kullanıyor veya geçersiz karakterler (&amp;lt; &amp;gt; : &quot; / \ | ?) içeriyor olabilir.</value>
   </data>
   <data name="InputValidationTooltip.4" xml:space="preserve">
-    <value />
+    <value>Göreli bir yol değil, yalnızca tam bir URL yolu girin.</value>
+  </data>
+  <data name="ErrorMsg.0" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager uygulaması şu anda yüklenemiyor. Lütfen uygulamayı kapatıp tekrar deneyin.</value>
   </data>
 </root>

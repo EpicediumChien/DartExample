@@ -540,4 +540,91 @@
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>Не выключайте питание системы до завершения обновлений</value>
   </data>
+  <data name="Update_failed_due_to_network_error" xml:space="preserve">
+    <value>Не удалось выполнить обновление из-за ошибки сети. Повторите попытку.</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>Переместите или дважды нажмите левую кнопку мыши</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>Дважды нажмите клавишу «U», чтобы активировать обновление микропрограммы целевой клавиатуры</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>Профиль ICC по умолчанию предназначен для Smart HDR. Не удается изменить предустановку цвета в</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>Профиль ICC по умолчанию не совместим с Smart HDR. Не удается изменить предустановку цвета в</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>Обновление может занять от 10 до 30 минут в зависимости от модели и конфигурации монитора (например, типа подключения). Обновление нескольких мониторов одной модели может занять больше времени. Не выключайте дисплей и не отсоединяйте кабели во время скачивания обновления.</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Успех</value>
+  </data>
+  <data name="Firmware_updated" xml:space="preserve">
+    <value>Микропрограмма обновлена.</value>
+  </data>
+  <data name="Display_FWU_Error_1" xml:space="preserve">
+    <value>Не удалось выполнить обновление микропрограммы из-за проблемы с пакетом утилиты микропрограммы. Файл может быть поврежден.</value>
+  </data>
+  <data name="Display_FWU_Error_3" xml:space="preserve">
+    <value>При обновлении микропрограммы произошла ошибка. Чтобы решить эту проблему, отключите и заново подключите кабель USB, а затем перезапустите монитор. Затем повторите попытку обновления микропрограммы.</value>
+  </data>
+  <data name="Display_FWU_Error_5" xml:space="preserve">
+    <value>При обновлении микропрограммы произошла ошибка. Чтобы решить эту проблему, отключите и заново подключите кабель USB, а затем перезапустите монитор. Затем повторите попытку обновления микропрограммы.</value>
+  </data>
+  <data name="Display_FWU_Error_7" xml:space="preserve">
+    <value>Не удалось выполнить обновление микропрограммы. Не удалось проверить код микропрограммы, поскольку он был удален.</value>
+  </data>
+  <data name="Display_FWU_Error_9" xml:space="preserve">
+    <value>Микропрограмма монитора имеет последнюю версию.</value>
+  </data>
+  <data name="Display_FWU_Error_10" xml:space="preserve">
+    <value>Возможно, запущен другой экземпляр утилиты обновления микропрограммы. Чтобы продолжить, закройте один экземпляр утилиты.</value>
+  </data>
+  <data name="Display_FWU_Error_12" xml:space="preserve">
+    <value>Возможно, запущен другой экземпляр утилиты обновления микропрограммы. Чтобы продолжить, закройте один экземпляр утилиты.</value>
+  </data>
+  <data name="Display_FWU_Error_201" xml:space="preserve">
+    <value>Обновление может занять до xx мин. Во время обновления не выключайте монитор и не прерывайте подключение.</value>
+  </data>
+  <data name="Display_FWU_Error_501" xml:space="preserve">
+    <value>Версия микропрограммы, обнаруженная на мониторе, не является официальным выпуском.</value>
+  </data>
+  <data name="Display_FWU_Error_61" xml:space="preserve">
+    <value>При обновлении микропрограммы произошла ошибка. Чтобы решить эту проблему, отключите и заново подключите кабель USB, а затем перезапустите монитор. Затем повторите попытку обновления микропрограммы.</value>
+  </data>
+  <data name="Display_FWU_Error_Other" xml:space="preserve">
+    <value>Обновление микропрограммы не выполнено.</value>
+  </data>
+  <data name="Update_Display_Alert_2" xml:space="preserve">
+    <value>Обновление может занять до [XXXXXX] мин. В течение этого времени не выключайте устройство и не прерывайте подключение.</value>
+  </data>
+  <data name="Update_in_progress_body" xml:space="preserve">
+    <value>На устройстве [XXXXXX] сейчас выполняется обновление микропрограммы. Доступность может быть непостоянной. Не отключайте устройство во время обновления. </value>
+  </data>
+  <data name="Update_successful_body" xml:space="preserve">
+    <value>Микропрограмма [XXXXXX] обновлена успешно</value>
+  </data>
+  <data name="Update_failed_body" xml:space="preserve">
+    <value>Не удалось обновить микропрограмму [XXXXXX]</value>
+  </data>
+  <data name="Update_successful" xml:space="preserve">
+    <value>Обновление выполнено успешно</value>
+  </data>
+  <data name="Update_failed" xml:space="preserve">
+    <value>Сбой обновления</value>
+  </data>
+  <data name="Update_in_progress" xml:space="preserve">
+    <value>Выполняется обновление</value>
+  </data>
+  <data name="Software_update_successful" xml:space="preserve">
+    <value>Обновление ПО завершено успешно</value>
+  </data>
+  <data name="Software_update_failed" xml:space="preserve">
+    <value>Сбой обновления ПО</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>Подключите монитор с помощью восходящего USB-порта, чтобы избежать ошибок во время обновления микропрограммы</value>
+  </data>
 </root>

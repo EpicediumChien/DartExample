@@ -53,7 +53,7 @@ namespace DDPM.UI.Module.EzArrange.Tests
             moduleOwnerMock = new Mock<IModuleOwner>();
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
-            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice() { MonitorInfo = new MonitorInfo() { DisplayName = "NAME" } });
             deviceManagerMock = new Mock<IDeviceManagerSA>();
             //Robert_Lin, 2025-1-7, IsEAFunctionEnabled is deleted.
             //deviceManagerMock.Setup(x => x.GetEAFunctionEnabled()).Returns(Task.FromResult(new VcpCore.Common.ObjGetVCP()));

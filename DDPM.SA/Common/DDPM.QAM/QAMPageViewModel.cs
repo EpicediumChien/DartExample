@@ -3,16 +3,10 @@ using System.Windows.Controls;
 using System.Windows;
 using DDPM.SA.Common;
 using DPeMPublic.Common.Enums;
-using Newtonsoft.Json;
-using System.IO;
 using System.Collections.ObjectModel;
 using DDPM.SA.Resources.Helper;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
-using DdmLibrary.Utility;
-using DPeMPublic.Common;
-using Microsoft.VisualBasic.Logging;
-using System.Security.Policy;
 
 namespace DDPM.QAM
 {

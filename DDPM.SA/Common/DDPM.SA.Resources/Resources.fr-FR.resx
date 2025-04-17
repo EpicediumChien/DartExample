@@ -540,4 +540,91 @@
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>Ne mettez pas le système hors tension tant que les mises à jour ne sont pas terminées</value>
   </data>
+  <data name="Update_failed_due_to_network_error" xml:space="preserve">
+    <value>La mise à jour a échoué en raison d’une erreur réseau. Veuillez réessayer.</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>Déplacez ou cliquez deux fois sur le bouton gauche de la souris cible</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>Appuyez deux fois sur la touche U pour activer la mise à jour du firmware du clavier cible</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>Le profil ICC par défaut convient à la fonction HDR intelligent. Nous ne sommes pas en mesure de modifier les couleurs prédéfinies dans le</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>Le profil ICC par défaut ne convient pas à la fonction HDR intelligent. Nous ne sommes pas en mesure de modifier les couleurs prédéfinies dans le</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>La mise à jour peut prendre entre 10 et 30 minutes en fonction du modèle et de la configuration de votre écran (par exemple le type de connexion). Cela peut prendre plus de temps si vous mettez à jour plusieurs écrans du même modèle. N’éteignez pas votre écran et ne débranchez pas les câbles pendant le téléchargement de la mise à jour.</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Opération réussie</value>
+  </data>
+  <data name="Firmware_updated" xml:space="preserve">
+    <value>Firmware mis à jour.</value>
+  </data>
+  <data name="Display_FWU_Error_1" xml:space="preserve">
+    <value>La mise à jour du firmware a échoué en raison d’un problème de package utilitaire de firmware. Le fichier est peut-être corrompu.</value>
+  </data>
+  <data name="Display_FWU_Error_3" xml:space="preserve">
+    <value>La mise à jour du firmware a rencontré une erreur. Pour résoudre ce problème, débranchez et rebranchez le câble USB, puis remettez l’écran sous tension. Réessayez ensuite de mettre le firmware à jour.</value>
+  </data>
+  <data name="Display_FWU_Error_5" xml:space="preserve">
+    <value>La mise à jour du firmware a rencontré une erreur. Pour résoudre ce problème, débranchez et rebranchez le câble USB, puis remettez l’écran sous tension. Réessayez ensuite de mettre le firmware à jour.</value>
+  </data>
+  <data name="Display_FWU_Error_7" xml:space="preserve">
+    <value>La mise à jour du firmware a échoué. Le code du firmware a été effacé et sa vérification a échoué.</value>
+  </data>
+  <data name="Display_FWU_Error_9" xml:space="preserve">
+    <value>Le firmware de votre écran est à jour.</value>
+  </data>
+  <data name="Display_FWU_Error_10" xml:space="preserve">
+    <value>Une autre instance de l’utilitaire de mise à jour du firmware est peut-être en cours d’exécution. Fermez une instance de l’utilitaire pour continuer.</value>
+  </data>
+  <data name="Display_FWU_Error_12" xml:space="preserve">
+    <value>Une autre instance de l’utilitaire de mise à jour du firmware est peut-être en cours d’exécution. Fermez une instance de l’utilitaire pour continuer.</value>
+  </data>
+  <data name="Display_FWU_Error_201" xml:space="preserve">
+    <value>La mise à jour peut prendre jusqu’à xx minutes. Gardez votre écran sous tension et connecté pendant la mise à jour.</value>
+  </data>
+  <data name="Display_FWU_Error_501" xml:space="preserve">
+    <value>La version du firmware détectée sur votre écran n’est pas une version officielle.</value>
+  </data>
+  <data name="Display_FWU_Error_61" xml:space="preserve">
+    <value>La mise à jour du firmware a rencontré une erreur. Pour résoudre ce problème, débranchez et rebranchez le câble USB, puis remettez l’écran sous tension. Réessayez ensuite de mettre le firmware à jour.</value>
+  </data>
+  <data name="Display_FWU_Error_Other" xml:space="preserve">
+    <value>La mise à jour du firmware a échoué.</value>
+  </data>
+  <data name="Update_Display_Alert_2" xml:space="preserve">
+    <value>La mise à jour peut prendre jusqu’à [XXXXXX] minutes. Pendant ce temps, gardez l’appareil sous tension et connecté.</value>
+  </data>
+  <data name="Update_in_progress_body" xml:space="preserve">
+    <value>Une mise à jour du firmware est en cours sur [XXXXXX]. La disponibilité peut être intermittente. Ne débranchez pas l’appareil pendant la mise à jour. </value>
+  </data>
+  <data name="Update_successful_body" xml:space="preserve">
+    <value>Mise à jour réussie du firmware de [XXXXXX]</value>
+  </data>
+  <data name="Update_failed_body" xml:space="preserve">
+    <value>Échec de la mise à jour du firmware de [XXXXXX]</value>
+  </data>
+  <data name="Update_successful" xml:space="preserve">
+    <value>Mise à jour réussie</value>
+  </data>
+  <data name="Update_failed" xml:space="preserve">
+    <value>Échec de la mise à jour</value>
+  </data>
+  <data name="Update_in_progress" xml:space="preserve">
+    <value>Mise à jour en cours</value>
+  </data>
+  <data name="Software_update_successful" xml:space="preserve">
+    <value>Mise à jour logicielle réussie</value>
+  </data>
+  <data name="Software_update_failed" xml:space="preserve">
+    <value>Échec de la mise à jour logicielle</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>Veuillez brancher votre écran via le port USB montant pour éviter les erreurs lors de la mise à jour du firmware</value>
+  </data>
 </root>

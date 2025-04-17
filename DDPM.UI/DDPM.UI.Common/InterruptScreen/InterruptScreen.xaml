@@ -10,8 +10,14 @@
         Title="InterruptScreen"
         WindowStyle="None"
         AllowsTransparency="True"
-        WindowStartupLocation="CenterScreen"
-        Closing="Window_Closing">
+        WindowStartupLocation="CenterOwner"
+        Closing="Window_Closing"
+        Height="600"
+        Width="1000"
+        MinHeight="600"
+        MinWidth="1000"
+        MaxHeight="600"
+        MaxWidth="1000">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -56,7 +62,7 @@
                           VerticalAlignment="Top"
                           MouseDown="Grid_MouseDown"
                           Background="Transparent"
-                          Margin="0,55,41,0"
+                          Margin="0,50,41,0"
                           Panel.ZIndex="1">
                         <Path VerticalAlignment="Center"
                               Data="M14 0.7175L13.2825 0L7 6.3L0.7175 0.04375L0 0.76125L6.25625 7L0.04375 13.2388L0.76125 14L7 7.74375L13.2388 14L13.9563 13.2825L7.7 7L14 0.7175Z"

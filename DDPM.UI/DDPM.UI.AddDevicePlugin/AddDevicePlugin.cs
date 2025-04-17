@@ -66,7 +66,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             }
             else
             {
-                _viewModel!.WacomVersion = DdpmCommonHelper.DeviceManagerSA.GetIsdDriverVersion().Result;
+                //_viewModel!.WacomVersion = DdpmCommonHelper.DeviceManagerSA.GetIsdDriverVersion().Result;
                 _deviceHelper = DdpmCommonHelper.DeviceManagerSA.GetRFDongleDevices().Result;
 
                 _viewModel?.PrepareDongleInfo(_deviceHelper.dongleInfo);
@@ -89,7 +89,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             PluginIoc.ConfigureServices(new ServiceCollection()
                 .AddSingleton(_showPluginManager)
                 .AddSingleton(_console)
-                .AddSingleton(_log)
+                //.AddSingleton(_log)
                 .AddSingleton<IAddDeviceViewModel, AddDeviceViewModel>()
                 .BuildServiceProvider());
 
@@ -125,8 +125,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         {
             DdpmCommonHelper.WriteUILog($"AddDevice pugin OnShown Begin timestamp: {DateTime.Now:hh:mm:ss.ffffff}");
             ConfigureServices();
-            //GetPeripheralsAsync();
-            GetRFDongleAsync();
+            //GetRFDongleAsync();
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceChanged;
@@ -136,14 +135,6 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         }
 
         #endregion Interface IConsolePluginSupportsActivations
-
-        //private void GetPeripheralsAsync()
-        //{
-        //    _log.Debug($"GetPeripherals is invoked");
-        //    Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA.GetDevices(true);
-
-        //    _viewModel?.CheckPandora(task.Result.deviceInfo);
-        //}
 
         private void DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {

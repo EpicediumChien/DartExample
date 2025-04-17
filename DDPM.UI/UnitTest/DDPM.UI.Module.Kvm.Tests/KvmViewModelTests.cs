@@ -13,6 +13,7 @@ using Dell.Client.Framework.UX.WPF.ResourceManager;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using System.Windows;
 using System.Windows.Controls;
 using VcpCore.Common;
@@ -57,14 +58,58 @@ namespace DDPM.UI.Module.Kvm.Tests
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
             deviceManagerMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new ValueTuple<HotkeySettings, List<HotkeyData>>(new HotkeySettings() { HotkeyInfo = new List<HotkeyInfo>() { new HotkeyInfo() { Hotkey = new List<VirtualKey>() { VirtualKey.Q, VirtualKey.M } } } }, new List<HotkeyData>())));
-            //DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
-            //DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>() { { "AA", new List<string>() }, { "EE", new List<string>() } };
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>() { { "AA", new List<string>() }, { "EE", new List<string>() } };
             kvmModule = new KvmModule(moduleOwner);
             kvmViewModel = new KvmViewModel();
-            //kvmViewModel.KvmModule = kvmModule;
-            //kvmViewModel.KvmModule.SelectedHomeDevice = new HomeDevice();
-            //kvmViewModel.KvmModule.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
+            kvmViewModel.KvmModule = kvmModule;
+            kvmViewModel.KvmModule.SelectedHomeDevice = new HomeDevice();
+            kvmViewModel.KvmModule.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
             privateObject = new PrivateObject(kvmViewModel);
+            List<InputSourceList> mockList = new List<InputSourceList>();
+            mockList.Add(new InputSourceList() { Type = "DisplayPort", PathData = "USB-C", kvmModule = kvmModule });
+            mockList.Add(new InputSourceList() { Type = "Thunderbolt", PathData = "Thunderbolt", kvmModule = kvmModule });
+            mockList.Add(new InputSourceList() { Type = "HDMI", PathData = "Thunderbolt", kvmModule = kvmModule });
+            privateObject.SetFieldOrProperty("_inputsList", mockList);
+            List<USBList> mockUsbsList = new List<USBList>();
+            mockUsbsList.Add(new USBList() { Type = "DisplayPort", PathData = "USB-C", kvmModule = kvmModule });
+            mockUsbsList.Add(new USBList() { Type = "Thunderbolt", PathData = "Thunderbolt", kvmModule = kvmModule });
+            mockUsbsList.Add(new USBList() { Type = "HDMI", PathData = "Thunderbolt", kvmModule = kvmModule });
+            privateObject.SetFieldOrProperty("_usbsList", mockUsbsList);
+            var pcsList = new Dictionary<string, PCsInfo>();
+            pcsList.Add("PC1", new PCsInfo()
+            {
+                InputType = "DisplayPort",
+                InputName = "DisplayPort",
+                USBUpstream = "USB-C",
+                Code = 15
+            });
+            pcsList.Add("PC2", new PCsInfo()
+            {
+                InputType = "DisplayPort",
+                InputName = "DisplayPort",
+                USBUpstream = "USB-C",
+                Code = 15
+            });
+            pcsList.Add("PC3", new PCsInfo()
+            {
+                InputType = "DisplayPort",
+                InputName = "DisplayPort",
+                USBUpstream = "USB-C",
+                Code = 15
+            });
+            pcsList.Add("PC4", new PCsInfo()
+            {
+                InputType = "DisplayPort",
+                InputName = "DisplayPort",
+                USBUpstream = "USB-C",
+                Code = 15
+            });
+            kvmViewModel.pcsList = pcsList;
+            kvmViewModel.original_pcsList = pcsList;
+            var inputList = new Dictionary<string, InputInfo>();
+            inputList.Add("DisplayPort", new InputInfo() { InputName = "DisplayPort", USBUpstream = "USB-C", Code = 15 });
+            kvmViewModel.inputList = inputList;
             inputSourceList = new InputSourceList();
         }
 
@@ -423,101 +468,91 @@ namespace DDPM.UI.Module.Kvm.Tests
         [Test]
         public void TestPC1Inputs_Selected()
         {
-            var inputList = new Dictionary<string, InputInfo>();
-            kvmViewModel.inputList = inputList;
-            var pcsList = new Dictionary<string, PCsInfo>();
-            kvmViewModel.pcsList = pcsList;
-            var pC1Inputs_Selected = new InputSourceList();
+            var pC1Inputs_Selected = new InputSourceList() { Type = "DisplayPort", PathData = "USB-C", kvmModule = kvmModule };
             kvmViewModel.PC1Inputs_Selected = pC1Inputs_Selected;
-            Assert.That(kvmViewModel.PC1Inputs_Selected, Is.EqualTo(pC1Inputs_Selected));
+            Assert.That(kvmViewModel.PC1Inputs_Selected.Type, Is.EqualTo(pC1Inputs_Selected.Type));
+            Assert.That(kvmViewModel.PC1Inputs_Selected.PathData, Is.EqualTo(pC1Inputs_Selected.PathData));
+            Assert.That(kvmViewModel.PC1Inputs_Selected.kvmModule, Is.EqualTo(pC1Inputs_Selected.kvmModule));
             Assert.That(kvmViewModel.pcsList["PC1"], Is.Not.Null);
         }
 
         [Test]
         public void TestPC2Inputs_Selected()
         {
-            var inputList = new Dictionary<string, InputInfo>();
-            kvmViewModel.inputList = inputList;
-            var pcsList = new Dictionary<string, PCsInfo>();
-            kvmViewModel.pcsList = pcsList;
-            var pC2Inputs_Selected = new InputSourceList();
+            var pC2Inputs_Selected = new InputSourceList() { Type = "DisplayPort", PathData = "USB-C", kvmModule = kvmModule };
             kvmViewModel.PC2Inputs_Selected = pC2Inputs_Selected;
-            Assert.That(kvmViewModel.PC2Inputs_Selected, Is.EqualTo(pC2Inputs_Selected));
+            Assert.That(kvmViewModel.PC2Inputs_Selected.Type, Is.EqualTo(pC2Inputs_Selected.Type));
+            Assert.That(kvmViewModel.PC2Inputs_Selected.PathData, Is.EqualTo(pC2Inputs_Selected.PathData));
+            Assert.That(kvmViewModel.PC2Inputs_Selected.kvmModule, Is.EqualTo(pC2Inputs_Selected.kvmModule));
             Assert.That(kvmViewModel.pcsList["PC2"], Is.Not.Null);
         }
 
         [Test]
         public void TestPC3Inputs_Selected()
         {
-            var inputList = new Dictionary<string, InputInfo>();
-            kvmViewModel.inputList = inputList;
-            var pcsList = new Dictionary<string, PCsInfo>();
-            kvmViewModel.pcsList = pcsList;
-            var pC3Inputs_Selected = new InputSourceList();
+
+            var pC3Inputs_Selected = new InputSourceList() { Type = "DisplayPort", PathData = "USB-C", kvmModule = kvmModule };
             kvmViewModel.PC3Inputs_Selected = pC3Inputs_Selected;
-            Assert.That(kvmViewModel.PC3Inputs_Selected, Is.EqualTo(pC3Inputs_Selected));
+            Assert.That(kvmViewModel.PC3Inputs_Selected.Type, Is.EqualTo(pC3Inputs_Selected.Type));
+            Assert.That(kvmViewModel.PC3Inputs_Selected.PathData, Is.EqualTo(pC3Inputs_Selected.PathData));
+            Assert.That(kvmViewModel.PC3Inputs_Selected.kvmModule, Is.EqualTo(pC3Inputs_Selected.kvmModule));
             Assert.That(kvmViewModel.pcsList["PC3"], Is.Not.Null);
         }
 
         [Test]
         public void TestPC4Inputs_Selected()
         {
-            var inputList = new Dictionary<string, InputInfo>();
-            kvmViewModel.inputList = inputList;
-            var pcsList = new Dictionary<string, PCsInfo>();
-            kvmViewModel.pcsList = pcsList;
-            var pC4Inputs_Selected = new InputSourceList();
+            var pC4Inputs_Selected = new InputSourceList() { Type = "DisplayPort", PathData = "USB-C", kvmModule = kvmModule };
             kvmViewModel.PC4Inputs_Selected = pC4Inputs_Selected;
-            Assert.That(kvmViewModel.PC4Inputs_Selected, Is.EqualTo(pC4Inputs_Selected));
+            Assert.That(kvmViewModel.PC4Inputs_Selected.Type, Is.EqualTo(pC4Inputs_Selected.Type));
+            Assert.That(kvmViewModel.PC4Inputs_Selected.PathData, Is.EqualTo(pC4Inputs_Selected.PathData));
+            Assert.That(kvmViewModel.PC4Inputs_Selected.kvmModule, Is.EqualTo(pC4Inputs_Selected.kvmModule));
             Assert.That(kvmViewModel.pcsList["PC4"], Is.Not.Null);
         }
 
         [Test]
         public void TestPC1USB_Selected()
         {
-            var pcsList = new Dictionary<string, PCsInfo>();
-            pcsList.Add("PC1", new PCsInfo());
-            kvmViewModel.pcsList = pcsList;
-            var pC1USB_Selected = new USBList() { kvmModule = new KvmModule(moduleOwner), Type = "A" };
+            var pC1USB_Selected = new USBList() { Type = "DisplayPort", PathData = "USB-C", kvmModule = kvmModule };
             kvmViewModel.PC1USB_Selected = pC1USB_Selected;
-            Assert.That(kvmViewModel.PC1USB_Selected, Is.EqualTo(pC1USB_Selected));
-            Assert.That(kvmViewModel.pcsList["PC1"].USBUpstream, Is.EqualTo("A"));
+            Assert.That(kvmViewModel.PC1USB_Selected.Type, Is.EqualTo(pC1USB_Selected.Type));
+            Assert.That(kvmViewModel.PC1USB_Selected.PathData, Is.EqualTo(pC1USB_Selected.PathData));
+            Assert.That(kvmViewModel.PC1USB_Selected.kvmModule, Is.EqualTo(pC1USB_Selected.kvmModule));
+            Assert.That(kvmViewModel.pcsList["PC1"].USBUpstream, Is.EqualTo("DisplayPort"));
         }
 
         [Test]
         public void TestPC2USB_Selected()
         {
-            var pcsList = new Dictionary<string, PCsInfo>();
-            pcsList.Add("PC2", new PCsInfo());
-            kvmViewModel.pcsList = pcsList;
-            var pC2USB_Selected = new USBList() { kvmModule = new KvmModule(moduleOwner), Type = "A" };
+            var pC2USB_Selected = new USBList() { Type = "Thunderbolt", PathData = "Thunderbolt", kvmModule = kvmModule };
             kvmViewModel.PC2USB_Selected = pC2USB_Selected;
-            Assert.That(kvmViewModel.PC2USB_Selected, Is.EqualTo(pC2USB_Selected));
-            Assert.That(kvmViewModel.pcsList["PC2"].USBUpstream, Is.EqualTo("A"));
+            Assert.That(kvmViewModel.PC2USB_Selected.Type, Is.EqualTo(pC2USB_Selected.Type));
+            Assert.That(kvmViewModel.PC2USB_Selected.PathData, Is.EqualTo(pC2USB_Selected.PathData));
+            Assert.That(kvmViewModel.PC2USB_Selected.kvmModule, Is.EqualTo(pC2USB_Selected.kvmModule));
+            Assert.That(kvmViewModel.pcsList["PC2"].USBUpstream, Is.EqualTo("Thunderbolt"));
         }
 
         [Test]
         public void TestPC3USB_Selected()
         {
-            var pcsList = new Dictionary<string, PCsInfo>();
-            pcsList.Add("PC3", new PCsInfo());
-            kvmViewModel.pcsList = pcsList;
-            var pC3USB_Selected = new USBList() { kvmModule = new KvmModule(moduleOwner), Type = "A" };
+            var pC3USB_Selected = new USBList() { Type = "DisplayPort", PathData = "USB-C", kvmModule = kvmModule };
             kvmViewModel.PC3USB_Selected = pC3USB_Selected;
-            Assert.That(kvmViewModel.PC3USB_Selected, Is.EqualTo(pC3USB_Selected));
-            Assert.That(kvmViewModel.pcsList["PC3"].USBUpstream, Is.EqualTo("A"));
+            Assert.That(kvmViewModel.PC3USB_Selected.Type, Is.EqualTo(pC3USB_Selected.Type));
+            Assert.That(kvmViewModel.PC3USB_Selected.PathData, Is.EqualTo(pC3USB_Selected.PathData));
+            Assert.That(kvmViewModel.PC3USB_Selected.kvmModule, Is.EqualTo(pC3USB_Selected.kvmModule));
+            Assert.That(kvmViewModel.pcsList["PC3"].USBUpstream, Is.EqualTo("DisplayPort"));
         }
 
         [Test]
         public void TestPC4USB_Selected()
         {
-            var pcsList = new Dictionary<string, PCsInfo>();
-            pcsList.Add("PC4", new PCsInfo());
-            kvmViewModel.pcsList = pcsList;
-            var pC4USB_Selected = new USBList() { kvmModule = new KvmModule(moduleOwner), Type = "A" };
+
+            var pC4USB_Selected = new USBList() { Type = "Thunderbolt", PathData = "Thunderbolt", kvmModule = kvmModule };
             kvmViewModel.PC4USB_Selected = pC4USB_Selected;
-            Assert.That(kvmViewModel.PC4USB_Selected, Is.EqualTo(pC4USB_Selected));
-            Assert.That(kvmViewModel.pcsList["PC4"].USBUpstream, Is.EqualTo("A"));
+            Assert.That(kvmViewModel.PC4USB_Selected.Type, Is.EqualTo(pC4USB_Selected.Type));
+            Assert.That(kvmViewModel.PC4USB_Selected.PathData, Is.EqualTo(pC4USB_Selected.PathData));
+            Assert.That(kvmViewModel.PC4USB_Selected.kvmModule, Is.EqualTo(pC4USB_Selected.kvmModule));
+            Assert.That(kvmViewModel.pcsList["PC4"].USBUpstream, Is.EqualTo("Thunderbolt"));
         }
 
         [Test]

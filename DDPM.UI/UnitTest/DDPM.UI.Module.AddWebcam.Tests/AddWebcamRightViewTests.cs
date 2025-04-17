@@ -38,7 +38,7 @@ namespace DDPM.UI.Module.AddWebcam.Tests
             peripheralPlugin = peripheralPluginMock.Object;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new AddDeviceViewModel(showPluginManager, console, log);
+            vm = new AddDeviceViewModel(console);
             addWebcamRightView = new AddWebcamRightView(vm);
             privateObject = new PrivateObject(addWebcamRightView);
         }

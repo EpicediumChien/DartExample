@@ -7,7 +7,11 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
+using System.Windows;
 using System.Windows.Controls;
+using Dell.Client.Framework.UX.WPF.ResourceManager;
+using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Settings;
 
 namespace DDPM.UI.Module.SpeakerInteractions.Tests
 {
@@ -31,6 +35,14 @@ namespace DDPM.UI.Module.SpeakerInteractions.Tests
         [SetUp]
         public void Setup()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            ResourceManager res = new ResourceManager();
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             moduleOwnerMock = new Mock<IModuleOwner>();
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
@@ -47,6 +59,7 @@ namespace DDPM.UI.Module.SpeakerInteractions.Tests
             vm = new SoundBarViewModel(console, log, deviceManager);
             CurrentDeviceInfo = new DeviceInfo() { IsWiredAudioIMicNSEnable = true, IsWiredAudioMicMuteSoundEnable = true, WiredAudioVolumeAdjustmentTone = 1 };
             vm.CurrentDeviceInfo = CurrentDeviceInfo;
+            deviceManagerMock.Setup(x => x.GetAllAppList()).Returns(Task.FromResult(new Dictionary<string, InstalledAppInfo> { }));
             speakerInteractionsModule = new SpeakerInteractionsModule(vm);
             privateObject = new PrivateObject(speakerInteractionsModule);
         }

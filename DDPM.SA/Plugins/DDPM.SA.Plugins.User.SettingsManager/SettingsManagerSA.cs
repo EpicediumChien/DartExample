@@ -1554,7 +1554,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 WriteLog($"{nameof(ReadImportSettingsFile)} {FileInfo}");
                 return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
             }
-            #endregion 
+            #endregion Check export file path
 
             #region Check and read exported file JSON
             //security SA
@@ -1575,7 +1575,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 WriteLog($"[ReadImportSettingsFile] exception: {ex.Message}");
             }
-            #endregion
+            #endregion Check and read exported file JSON
 
             return Task.FromResult(ImpSettings ?? new DDPMImpExpSettings());
         }
@@ -2562,5 +2562,16 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         }
 
         #endregion Info Key
+
+        public Task<bool> UpdateNKVMFeatureFlag(bool enable)
+        {
+            if(_SysSettingsPlugin == null)
+            {
+                WriteLog("[UpdateNKVMFeatureFlag] null sys setting plugin, return false");
+                return Task.FromResult(false);
+            }
+            bool tmp = _SysSettingsPlugin.UpdateNKVMFeatureFlag(enable).Result;
+            return Task.FromResult(tmp);
+        }
     }
 }

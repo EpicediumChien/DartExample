@@ -540,4 +540,91 @@
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>アップデートが完了するまでシステムの電源を切らない</value>
   </data>
+  <data name="Update_failed_due_to_network_error" xml:space="preserve">
+    <value>ネットワーク エラーのため、アップデートに失敗しました。もう一度やり直してください。</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>ターゲット マウスの左ボタンを2回動かすか、クリックします</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>「U」キーを2回押し、ターゲット キーボードのファームウェア アップデートを有効にします</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>デフォルトのICCプロファイルは、Smart HDR用です。のカラー プリセットは変更できません</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>デフォルトのICCプロファイルは、Smart HDRに適していません。のカラー プリセットは変更できません</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>お使いのモニターのモデルとセットアップ（接続の種類など）によっては、アップデートの完了に約10～30分かかる場合があります。同じモデルの複数のモニターをアップデートする場合は、時間がかかることがあります。アップデートのダウンロード中は、ディスプレイの電源を切ったり、ケーブルを外したりしないでください。</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>成功しました</value>
+  </data>
+  <data name="Firmware_updated" xml:space="preserve">
+    <value>ファームウェアがアップデートされました。</value>
+  </data>
+  <data name="Display_FWU_Error_1" xml:space="preserve">
+    <value>ファームウェア ユーティリティー パッケージの問題により、ファームウェア アップデートが失敗しました。ファイルが破損している可能性があります。</value>
+  </data>
+  <data name="Display_FWU_Error_3" xml:space="preserve">
+    <value>ファームウェア アップデートでエラーが発生しました。この問題を解決するには、USBケーブルを外してから再接続し、モニターの電源を入れ直します。その後、ファームウェア アップデートを再試行します。</value>
+  </data>
+  <data name="Display_FWU_Error_5" xml:space="preserve">
+    <value>ファームウェア アップデートでエラーが発生しました。この問題を解決するには、USBケーブルを外してから再接続し、モニターの電源を入れ直します。その後、ファームウェア アップデートを再試行します。</value>
+  </data>
+  <data name="Display_FWU_Error_7" xml:space="preserve">
+    <value>ファームウェア アップデートが失敗しました。ファームウェア コードが消去され、ファームウェア コードの検証は失敗しました。</value>
+  </data>
+  <data name="Display_FWU_Error_9" xml:space="preserve">
+    <value>お使いのモニターのファームウェアは最新バージョンです。</value>
+  </data>
+  <data name="Display_FWU_Error_10" xml:space="preserve">
+    <value>ファームウェア アップデート ユーティリティーの別のインスタンスが実行されている可能性があります。続行するには、ユーティリティーのインスタンスを1つ閉じてください。</value>
+  </data>
+  <data name="Display_FWU_Error_12" xml:space="preserve">
+    <value>ファームウェア アップデート ユーティリティーの別のインスタンスが実行されている可能性があります。続行するには、ユーティリティーのインスタンスを1つ閉じてください。</value>
+  </data>
+  <data name="Display_FWU_Error_201" xml:space="preserve">
+    <value>アップデートには最長でxx分かかる場合があります。アップデート中は、モニターの電源を入れ、接続したままにしてください。</value>
+  </data>
+  <data name="Display_FWU_Error_501" xml:space="preserve">
+    <value>お使いのモニターで検出されたファームウェア バージョンは、公式リリースではありません。</value>
+  </data>
+  <data name="Display_FWU_Error_61" xml:space="preserve">
+    <value>ファームウェア アップデートでエラーが発生しました。この問題を解決するには、USBケーブルを取り外してから再接続し、モニターの電源を入れ直してください。その後、ファームウェア アップデートを再試行します。</value>
+  </data>
+  <data name="Display_FWU_Error_Other" xml:space="preserve">
+    <value>ファームウェアのアップデートが失敗しました。</value>
+  </data>
+  <data name="Update_Display_Alert_2" xml:space="preserve">
+    <value>アップデートには最長で［XXXXXX］分かかる場合があります。この間、デバイスの電源を入れて、接続したままにしておきます。</value>
+  </data>
+  <data name="Update_in_progress_body" xml:space="preserve">
+    <value>［XXXXXX］はファームウェア アップデートが進行中です。ファームウェア アップデートの提供は不定期の場合があります。アップデート中はデバイスを取り外さないでください。 </value>
+  </data>
+  <data name="Update_successful_body" xml:space="preserve">
+    <value>［XXXXXX］のファームウェアは、正常にアップデートされました</value>
+  </data>
+  <data name="Update_failed_body" xml:space="preserve">
+    <value>［XXXXXX］のファームウェアは、アップデートに失敗しました</value>
+  </data>
+  <data name="Update_successful" xml:space="preserve">
+    <value>アップデートが正常に行われました</value>
+  </data>
+  <data name="Update_failed" xml:space="preserve">
+    <value>アップデートが失敗しました</value>
+  </data>
+  <data name="Update_in_progress" xml:space="preserve">
+    <value>アップデートが進行中</value>
+  </data>
+  <data name="Software_update_successful" xml:space="preserve">
+    <value>ソフトウェアは正常にアップデートされました</value>
+  </data>
+  <data name="Software_update_failed" xml:space="preserve">
+    <value>ソフトウェア アップデートは失敗しました</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>ファームウェア アップデートプロセス中のエラーを回避するため、USBアップストリーム ポートを使用してモニターを接続してください</value>
+  </data>
 </root>

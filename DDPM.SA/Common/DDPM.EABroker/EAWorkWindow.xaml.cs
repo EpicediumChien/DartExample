@@ -186,7 +186,8 @@ namespace DDPM.EABroker
                 //Derek 2025/03/28 release previous resource
                 ReleaseSplitCtrls();
 
-                if ((cellCount == 0) && (splitKey == 'A'))
+                //if ((cellCount == 0) && (splitKey == 'A'))
+                if (splitJson.IsOff)
                 {
                     _workingSplit = null;
                     splitCtrl.Content = null;
@@ -194,7 +195,8 @@ namespace DDPM.EABroker
                     return;
                 }
 
-                if ((cellCount == 0) && (splitKey == 'B'))
+                //if ((cellCount == 0) && (splitKey == 'B'))
+                if (splitJson.IsOverlapLayout)
                 {
                     SplitCtrl0B sp0B = new SplitCtrl0B();
                     _workingSplit = sp0B;

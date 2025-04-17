@@ -498,9 +498,6 @@
   <data name="Brightness.16" xml:space="preserve">
     <value>전환 길이</value>
   </data>
-  <data name="Brightness.17" xml:space="preserve">
-    <value>테스트</value>
-  </data>
   <data name="Min" xml:space="preserve">
     <value>분</value>
   </data>
@@ -1035,9 +1032,6 @@
   <data name="Kvm.29" xml:space="preserve">
     <value>네트워크를 통해 설정</value>
   </data>
-  <data name="Kvm.30" xml:space="preserve">
-    <value>PC(Mac 및 Windows) 간에 파일을 쉽고 안전하게 공유</value>
-  </data>
   <data name="Kvm.31" xml:space="preserve">
     <value>네트워크 KVM 열기</value>
   </data>
@@ -1181,12 +1175,6 @@
   </data>
   <data name="SpeakerInteractions.5" xml:space="preserve">
     <value>비즈니스용 Skype</value>
-  </data>
-  <data name="WebCameraCapture.0" xml:space="preserve">
-    <value>3-2-1 카운트다운</value>
-  </data>
-  <data name="WebCameraCapture.1" xml:space="preserve">
-    <value>프레이밍 그리드</value>
   </data>
   <data name="WebCameraCapture.2" xml:space="preserve">
     <value>열기</value>
@@ -2509,7 +2497,7 @@
     <value>확인</value>
   </data>
   <data name="Collab.2" xml:space="preserve">
-    <value>회의 컨트롤에 빠르게 액세스할 수 있습니다. 키를 켜거나 끄면\nMicrosoft Teams 또는 Zoom 통화 중에\n키보드에서 키가 표시되거나 숨겨집니다.</value>
+    <value>회의 컨트롤에 빠르게 액세스할 수 있습니다. 키를 켜거나 끄면Microsoft Teams 또는 Zoom 통화 중에 키보드에서 키가 표시되거나 숨겨집니다.</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
     <value>전화 회의 중 새 채팅 메시지가 있을 때 깜박임 효과를\n활성화합니다.</value>
@@ -3504,19 +3492,137 @@
   <data name="HDR" xml:space="preserve">
     <value>HDR</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+    <value>디바이스 ID</value>
+  </data>
+  <data name="Brightness.17" xml:space="preserve">
+    <value>이 기능은 사용자의 눈이 원하는 설정에 적응할 수 있도록 합니다.</value>
+  </data>
+  <data name="Kvm.30" xml:space="preserve">
+    <value>간편하고 안전한 PC 간 파일 공유(Mac 및 Windows)</value>
+  </data>
+  <data name="WebCameraCapture.0" xml:space="preserve">
+    <value>3-2-1 카운트다운</value>
+  </data>
+  <data name="WebCameraCapture.1" xml:space="preserve">
+    <value>프레이밍 그리드</value>
+  </data>
+  <data name="Brightness.21" xml:space="preserve">
+    <value>연결된 모니터에 밝기/휘도, 대비, 예약 설정 및 색상 사전 설정을 적용합니다.</value>
+  </data>
+  <data name="slot" xml:space="preserve">
+    <value>슬롯 사용 가능</value>
+  </data>
+  <data name="Hotkey.10" xml:space="preserve">
+    <value>해당 핫키가 다른 애플리케이션에 구성된 핫키와 충돌합니다. 다른 핫키 조합을 사용하십시오.</value>
+  </data>
+  <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers" xml:space="preserve">
+    <value>종류가 동일한 여러 USB 무선 수신기의 펌웨어 업데이트는 지원되지 않습니다. 하나의 대상 USB 무선 수신기를 연결된 상태로 유지하십시오.</value>
+  </data>
+  <data name="DisplayAlert" xml:space="preserve">
+    <value>모니터가 현재 사용 중입니다. 일부 기능만 제어할 수 있습니다.</value>
+  </data>
+  <data name="ColorMsg.0" xml:space="preserve">
+    <value>색상을 사용할 수 없는 경우</value>
+  </data>
+  <data name="LearnMoreMsg.0" xml:space="preserve">
+    <value>스캔하여 Dell Audio 앱을 다운로드하고 헤드셋을 맞춤 구성</value>
+  </data>
+  <data name="EzArrange.11" xml:space="preserve">
+    <value>아이콘 이미지 저장...</value>
+  </data>
+  <data name="Camera.26" xml:space="preserve">
+    <value>USB 3.0을 통해 모니터를 연결하여 4K UHD 해상도를 활성화합니다.</value>
+  </data>
+  <data name="Camera.27" xml:space="preserve">
+    <value>USB 3.0을 통해 웹캠을 연결하여 4K UHD 해상도를 활성화합니다.</value>
+  </data>
+  <data name="WebCameraPresenceDetection.12" xml:space="preserve">
+    <value>초</value>
+  </data>
+  <data name="WebCameraPresenceDetection.13" xml:space="preserve">
+    <value>분</value>
+  </data>
+  <data name="Cardi.1" xml:space="preserve">
+    <value>AI 마이크 노이즈 캔슬레이션</value>
+  </data>
+  <data name="Cardi.2" xml:space="preserve">
+    <value>멀티미디어 사전 설정</value>
+  </data>
+  <data name="Cardi.3" xml:space="preserve">
+    <value>통화 중에 자동으로 적용되는 기능입니다.</value>
+  </data>
+  <data name="Cardi.4" xml:space="preserve">
+    <value>음악 및 기타 콘텐츠를 들을 때 자동으로 적용되는 기능입니다.</value>
+  </data>
+  <data name="Cardi.5" xml:space="preserve">
+    <value>내 주변의 마이크 잡음을 줄여 다른 사용자의 오디오 경험을 개선합니다.</value>
+  </data>
+  <data name="Cardi.6" xml:space="preserve">
+    <value>상대방의 마이크 잡음을 줄여 나의 오디오 경험을 개선합니다.</value>
+  </data>
+  <data name="Cardi.7" xml:space="preserve">
+    <value>이퀄라이저는 선택한 사전 설정에 따라 조정합니다.</value>
+  </data>
+  <data name="CustomizeScrollTiltLCaption" xml:space="preserve">
+    <value>왼쪽으로 기울여 스크롤 맞춤 구성</value>
+  </data>
+  <data name="CustomizeScrollTiltRCaption" xml:space="preserve">
+    <value>오른쪽으로 기울여 스크롤 맞춤 구성</value>
+  </data>
+  <data name="CustomizeScrollWheelCaption" xml:space="preserve">
+    <value>스크롤 휠 클릭 맞춤 구성</value>
+  </data>
+  <data name="CustomizeSideButtonBCaption" xml:space="preserve">
+    <value>측면 버튼 뒤로 맞춤 구성</value>
+  </data>
+  <data name="CustomizeSideButtonFCaption" xml:space="preserve">
+    <value>측면 버튼 앞으로 맞춤 구성</value>
+  </data>
+  <data name="Incompatible" xml:space="preserve">
+    <value>이 디바이스는 Dell Display and Peripheral Manager와 호환되지 않습니다.</value>
+  </data>
+  <data name="WalkThroughPen_Sub.1_1" xml:space="preserve">
+    <value>펜이 X% 충전되었습니다.\n\n펜을 완전히 충전하려면 태블릿 화면에 펜이 부착되어 있는지 확인하십시오. 펜 충전이 완료되면 알림이 표시됩니다.\n\n배터리 충전량이 10% 미만이면 배터리 부족 알림이 표시됩니다. </value>
+  </data>
+  <data name="Save_dock_asset_report" xml:space="preserve">
+    <value>도크 자산 보고서 저장</value>
+  </data>
+  <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers2" xml:space="preserve">
+    <value>종류가 동일한 여러 USB 무선 수신기의 업데이트는 지원되지 않습니다. 하나의 대상 USB 무선 수신기를 연결된 상태로 유지하십시오.</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>모니터 모델 및 설정(예: 연결 유형)에 따라 업데이트를 완료하는 데 약 10~30분 정도 걸릴 수 있습니다. 동일한 모델의 모니터를 여러 대 업데이트하는 경우 시간이 오래 걸릴 수 있습니다. 업데이트를 다운로드하는 동안 디스플레이의 전원을 끄거나 케이블을 분리하지 마십시오.</value>
+  </data>
+  <data name="Update_Mouse_Alert2" xml:space="preserve">
+    <value>디바이스의 버튼 또는 키를 눌러 이 업데이트를 활성화합니다.</value>
+  </data>
+  <data name="Update_BatteryLow_Alert2" xml:space="preserve">
+    <value>디바이스의 배터리 잔량이 부족합니다. 이 업데이트를 활성화하려면 배터리를 교체/재충전하십시오.</value>
+  </data>
+  <data name="Update_Webcam_Alert2" xml:space="preserve">
+    <value>이 업데이트에서는 Microsoft 설정에서 존재 감지 컨트롤을 활성화합니다. 이 기능은 Win 11 22H2 이상 및 OS 빌드
+22621 이상의 시스템에서 적용합니다.</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>펌웨어 업데이트 프로세스 중 오류를 방지하려면 USB 업스트림 포트를 사용하여 모니터를 연결하십시오.</value>
+  </data>
   <data name="UnableToLoadDdpm" xml:space="preserve">
-    <value />
+    <value>현재 Dell Display and Peripheral Manager 앱을 로드할 수 없습니다. 앱을 닫고 다시 시도하십시오.</value>
   </data>
   <data name="InputValidationTooltip.1" xml:space="preserve">
-    <value />
+    <value>최대 {0}자 사용</value>
   </data>
   <data name="InputValidationTooltip.2" xml:space="preserve">
-    <value />
+    <value>영숫자 및 다음 특수 문자만 사용하십시오. {0}</value>
   </data>
   <data name="InputValidationTooltip.3" xml:space="preserve">
-    <value />
+    <value>파일 경로가 최대 260자를 초과했거나, 예약된 파일 이름을 사용했거나, 잘못된 문자(&amp;lt; &amp;gt; : &quot; / \ | ?)를 포함하고 있습니다.</value>
   </data>
   <data name="InputValidationTooltip.4" xml:space="preserve">
-    <value />
+    <value>상대 경로가 아닌 전체 URL 경로만 입력하십시오.</value>
+  </data>
+  <data name="ErrorMsg.0" xml:space="preserve">
+    <value>현재 Dell Display and Peripheral Manager 앱을 로드할 수 없습니다. 앱을 닫고 다시 시도하십시오.</value>
   </data>
 </root>

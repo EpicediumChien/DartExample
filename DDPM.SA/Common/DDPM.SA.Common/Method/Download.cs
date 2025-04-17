@@ -1,5 +1,6 @@
 ﻿using DDPM.SA.Common.Security;
 using DDPM.SA.Common.Settings;
+using DDPM.SA.Obfuscation;
 using Microsoft.Win32;
 using System;
 using System.IO;
@@ -90,6 +91,8 @@ namespace DDPM.SA.Common.Method
                         cts = new CancellationTokenSource();
                     }
                     HttpClient client = new HttpClient();
+                    // setup agent name, DDPMW-2896
+                    client.DefaultRequestHeaders.UserAgent.ParseAdd(GlobalDefinitions.HttpAgentNamePreset + SettingsAccess.QueryAppAccessInfo().ver);
                     // 設定逾時
                     client.Timeout = TimeSpan.FromSeconds(60);
                     // 發送 HTTP GET 請求到指定的 URL

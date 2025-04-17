@@ -6,6 +6,8 @@ using NGA.UnitTest.PrivateObject;
 using System.Windows;
 using System.Windows.Controls;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
+using Dell.Client.Framework.UX.WPF;
+using System;
 
 namespace DDPM.UI.Module.InputSource.Tests
 {
@@ -15,6 +17,8 @@ namespace DDPM.UI.Module.InputSource.Tests
         private InputSourceModule? inputSourceModule;
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
+        private Mock<IConsole>? consoleMock;
+        private IConsole? console;
 
         [SetUp]
         public void Setup()
@@ -30,6 +34,9 @@ namespace DDPM.UI.Module.InputSource.Tests
             moduleOwnerMock = new Mock<IModuleOwner>();
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
+            consoleMock = new Mock<IConsole>();
+            console = consoleMock.Object;
+            DdpmCommonHelper.MyConsole = console;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
             inputSourceModule = new InputSourceModule();
             privateObject = new PrivateObject(inputSourceModule);

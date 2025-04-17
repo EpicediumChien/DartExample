@@ -49,6 +49,7 @@ using DDPM.UI.Resources.Helper;
 using Microsoft.VisualBasic.Logging;
 using System.Diagnostics.Eventing.Reader;
 using System;
+using DDPM.Easy.Common;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -175,6 +176,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //Robert_Lin, 2024-12-21 Register a event handler to handle when mainwindow
             // move to new position
             _console.RegisterForEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, Handle_MainWindow_MoveToNewPosition);
+
+            //Robert_Lin 2025-4-15 Add for dispose when the process exit
+            AppDomain.CurrentDomain.ProcessExit += (s, e) =>
+            {
+                ISplitCtrl.DisposeAll();
+            };
         }
 
         private void PluginManager_PluginsStarted(object? sender, PluginsStartedEventArgs pluginsStartedEventArgs)
@@ -304,7 +311,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //After "GetDdpmDevicesAsync" the user setting cache is ready "DdpmCommonHelper.Settings_Cache"
 
                             if (DdpmCommonHelper.Settings_Cache == null)// &&
-                                //DdpmCommonHelper.DeviceManagerSA != null)
+                                                                        //DdpmCommonHelper.DeviceManagerSA != null)
                             {
                                 //Elapsed= 2 msec
                                 _log.Info("Calling to ReadDDPMSettings()");
@@ -398,7 +405,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         _log.Info($"Return from CheckIfNeedImportSetting_Display()");
                     }
                 }
-                else if(pluginCondition is PluginStartedCondition)
+                else if (pluginCondition is PluginStartedCondition)
                 {
                     _log.Info($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} plugin is in {nameof(PluginStartedCondition)}");
                 }
@@ -512,11 +519,23 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 if ((e != null) && !string.IsNullOrEmpty(e.changedProperty))
                 {
+                    // << 25-04-14 added by Hess to tune Unpair peripheral performance
+                    // seperate Peripherals_UnPlug event
+                    if (e.type == DeviceChangedType.Peripherals_UnPlug && _deviceManager != null)
+                    {
+                        _log.Info("DdpmHomePlugin.DeviceChanged.Peripherals_UnPlug start...");
+                        _deviceInfos = _deviceManager.GetDevices().Result.deviceInfo;
+                        _viewModel?.PrepareMonitorInfos(_monitorInfos);
+                        _viewModel?.PrepareDeviceInfos(_deviceInfos);
+                        _log.Info("DdpmHomePlugin.DeviceChanged.Peripherals_UnPlug end...");
+                        return;
+                    }
+
                     //Robert_Lin, 2024-7-22 log info
                     _log.Info($"@ ChangedProperty=[{e.changedProperty}], ChangedType=[{e.type}] DeviceID=[{e.deviceID}]");
 
                     //Robert_Lin, 2025-4-12, If the changedProperty is Battery related, then call DeviceChanged_Battery to handle.
-                    if (e.changedProperty.Equals("BatteryStatusChanged", StringComparison.OrdinalIgnoreCase) || 
+                    if (e.changedProperty.Equals("BatteryStatusChanged", StringComparison.OrdinalIgnoreCase) ||
                         e.changedProperty.Equals("BatteryLevelChanged", StringComparison.OrdinalIgnoreCase))
                     {
                         _ = Task.Run(() => { DeviceChanged_Battery(e); });
@@ -1560,15 +1579,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     bool? b = false;
                     System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        InterruptScreen interruptScreen = new InterruptScreen(sWUpdateInfoPackage.SWUpdateInfo[0].TheLatestVersion, myDeserializedClass);
-                        b = interruptScreen.ShowDialog();
-                        if (b == true)
+                        InterruptScreen interruptScreen = new InterruptScreen(sWUpdateInfoPackage.SWUpdateInfo[0].TheLatestVersion, myDeserializedClass, DdpmCommonHelper.DeviceManagerSA, sWUpdateInfoPackage, _log);
+                        interruptScreen.Owner = System.Windows.Application.Current.MainWindow;
+                        interruptScreen.Show();
+                        /*if (b == true)
                         {
                             _log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall go");
                             List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(sWUpdateInfoPackage.SWUpdateInfo, true).Result;
                             _log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall finish");
                             //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
-                        }
+                        }*/
                     }));
                 }
             }
@@ -1854,14 +1874,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     _monitorInfos = _deviceManager!.GetMonitors().Result;  // change to restore monitor caches
                     _log.Info($"[Walkthrough] CollectAndCompareDevicesAsync GetMonitors, _monitorInfos == null");
                 }
-                if(_deviceInfos == null)
+                if (_deviceInfos == null)
                 {
                     _deviceInfos = _deviceManager!.GetDevices().Result.deviceInfo; // change to restore device caches
                     _log.Info($"[Walkthrough] CollectAndCompareDevicesAsync GetDevices, _deviceInfos == null");
                 }
 
                 _log.Info($"[Walkthrough] CollectAndCompareDevicesAsync, monitor count:{_monitorInfos.Count.ToString()}, device count : {_deviceInfos.Count.ToString()}");
-               
+
                 // WalkThroughInfo
                 foreach (var monitor in _monitorInfos)
                 {

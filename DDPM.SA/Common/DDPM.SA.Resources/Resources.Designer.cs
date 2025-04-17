@@ -565,7 +565,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Firmware update aborted. Ensure only one device of same model is connected to system..
+        ///   Looks up a localized string similar to Firmware update for [XXXXXX] aborted. Ensure only one device of same model is connected to system..
         /// </summary>
         internal static string Firmware_update_aborted_same_model_is_connected {
             get {
@@ -574,7 +574,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Firmware update in progress. Fail to abort..
+        ///   Looks up a localized string similar to Firmware update for [XXXXXX] in progress. Fail to abort..
         /// </summary>
         internal static string Firmware_update_in_progress_Fail_to_abort {
             get {
@@ -583,7 +583,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Firmware update unsuccessful.
+        ///   Looks up a localized string similar to Firmware update for [XXXXXX] was unsuccessful.
         /// </summary>
         internal static string Firmware_update_unsuccessful {
             get {
@@ -1294,7 +1294,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update failed due to network error. Try again..
+        ///   Looks up a localized string similar to Update for [XXXXXX] failed due to network error. Try again..
         /// </summary>
         internal static string Update_failed_due_to_network_error {
             get {
@@ -1466,7 +1466,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User aborted firmware update.
+        ///   Looks up a localized string similar to User aborted firmware update for [XXXXXX].
         /// </summary>
         internal static string User_aborted_firmware_update {
             get {

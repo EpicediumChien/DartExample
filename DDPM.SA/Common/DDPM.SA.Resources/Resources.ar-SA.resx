@@ -540,4 +540,91 @@
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>تجنب إيقاف تشغيل النظام حتى تكتمل التحديثات</value>
   </data>
+  <data name="Update_failed_due_to_network_error" xml:space="preserve">
+    <value>فشل التحديث بسبب خطأ في الشبكة. حاول مرة أخرى.</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>حرك مؤشر الماوس أو انقر على زره الأيسر المستهدف مرتين</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>اضغط على مفتاح &quot;U&quot; مرتين لتنشيط تحديث البرنامج الثابت للوحة المفاتيح المستهدفة</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>ملف تعريف ICC الافتراضي لتقنية HDR الذكية. يتعذر علينا تغيير الإعداد المسبق للون في</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>ملف تعريف ICC الافتراضي غير مناسب لتقنية HDR الذكية. يتعذر علينا تغيير الإعداد المسبق للون في</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>قد يستغرق إكمال عملية التحديث ما بين 10 إلى 30 دقيقة، اعتمادًا على طراز الشاشة والإعداد (على سبيل المثال، نوع الاتصال). قد يستغرق الأمر وقتًا أطول إذا كنت تقوم بتحديث شاشات متعددة من الطراز نفسه. لا تقم بإيقاف تشغيل الشاشة أو فصل الكابلات في أثناء تنزيل التحديث.</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>النجاح</value>
+  </data>
+  <data name="Firmware_updated" xml:space="preserve">
+    <value>تم تحديث البرنامج الثابت.</value>
+  </data>
+  <data name="Display_FWU_Error_1" xml:space="preserve">
+    <value>لم ينجح تحديث البرنامج الثابت بسبب مشكلة في حزمة أداة البرنامج الثابت. قد يكون الملف تالفًا.</value>
+  </data>
+  <data name="Display_FWU_Error_3" xml:space="preserve">
+    <value>واجه تحديث البرنامج الثابت خطأ. لحل هذه المشكلة، افصل كابل USB وأعد توصيله، ثم أعد تشغيل الشاشة. بعد ذلك، أعد محاولة تحديث البرنامج الثابت.</value>
+  </data>
+  <data name="Display_FWU_Error_5" xml:space="preserve">
+    <value>واجه تحديث البرنامج الثابت خطأ. لحل هذه المشكلة، افصل كابل USB وأعد توصيله، ثم أعد تشغيل الشاشة. بعد ذلك، أعد محاولة تحديث البرنامج الثابت.</value>
+  </data>
+  <data name="Display_FWU_Error_7" xml:space="preserve">
+    <value>لم ينجح تحديث البرنامج الثابت. تم مسح رمز البرنامج الثابت وفشلت عملية التحقق منه.</value>
+  </data>
+  <data name="Display_FWU_Error_9" xml:space="preserve">
+    <value>البرنامج الثابت في شاشتك هو الإصدار الأحدث بالفعل.</value>
+  </data>
+  <data name="Display_FWU_Error_10" xml:space="preserve">
+    <value>قد تكون هناك نسخة أخرى من أداة تحديث البرنامج الثابت قيد التشغيل. أغلق نسخة واحدة للمتابعة.</value>
+  </data>
+  <data name="Display_FWU_Error_12" xml:space="preserve">
+    <value>قد تكون هناك نسخة أخرى من أداة تحديث البرنامج الثابت قيد التشغيل. أغلق نسخة واحدة للمتابعة.</value>
+  </data>
+  <data name="Display_FWU_Error_201" xml:space="preserve">
+    <value>قد يستغرق التحديث ما يصل إلى xx من الدقائق. اترك الشاشة قيد التشغيل والاتصال في أثناء التحديث.</value>
+  </data>
+  <data name="Display_FWU_Error_501" xml:space="preserve">
+    <value>إصدار البرنامج الثابت الذي تم اكتشافه على شاشتك ليس إصدارًا رسميًا.</value>
+  </data>
+  <data name="Display_FWU_Error_61" xml:space="preserve">
+    <value>واجه تحديث البرنامج الثابت خطأ. لحل هذه المشكلة، افصل كابل USB وأعد توصيله، ثم أعد تشغيل الشاشة. بعد ذلك، أعد محاولة تحديث البرنامج الثابت.</value>
+  </data>
+  <data name="Display_FWU_Error_Other" xml:space="preserve">
+    <value>لم ينجح تحديث البرنامج الثابت.</value>
+  </data>
+  <data name="Update_Display_Alert_2" xml:space="preserve">
+    <value>قد يستغرق التحديث ما يصل إلى [XXXXXX] من الدقائق. اترك الجهاز قيد التشغيل والاتصال خلال هذه الفترة.</value>
+  </data>
+  <data name="Update_in_progress_body" xml:space="preserve">
+    <value>لدى [XXXXXX] تحديث للبرنامج الثابت قيد التقدم. قد يكون توفره متقطعًا. لا تفصل الجهاز في أثناء التحديث. </value>
+  </data>
+  <data name="Update_successful_body" xml:space="preserve">
+    <value>تم تحديث البرنامج الثابت لـ [XXXXXX] بنجاح</value>
+  </data>
+  <data name="Update_failed_body" xml:space="preserve">
+    <value>فشل تحديث البرنامج الثابت لـ [XXXXXX]</value>
+  </data>
+  <data name="Update_successful" xml:space="preserve">
+    <value>نجح التحديث</value>
+  </data>
+  <data name="Update_failed" xml:space="preserve">
+    <value>فشل التحديث</value>
+  </data>
+  <data name="Update_in_progress" xml:space="preserve">
+    <value>التحديث قيد التقدم</value>
+  </data>
+  <data name="Software_update_successful" xml:space="preserve">
+    <value>تم تحديث البرنامج بنجاح</value>
+  </data>
+  <data name="Software_update_failed" xml:space="preserve">
+    <value>فشل تحديث البرنامج</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>يُرجى توصيل شاشتك باستخدام منفذ USB العلوي لتفادي حدوث أخطاء في أثناء عملية تحديث البرنامج الثابت</value>
+  </data>
 </root>

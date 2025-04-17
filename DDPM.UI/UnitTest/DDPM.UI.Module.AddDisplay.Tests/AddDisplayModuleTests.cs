@@ -42,7 +42,7 @@ namespace DDPM.UI.Module.AddDisplay.Tests
             peripheralPlugin = peripheralPluginMock.Object;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new AddDeviceViewModel(showPluginManager, console, log);
+            vm = new AddDeviceViewModel(console);
             addDisplayModule = new AddDisplayModule(vm);
             privateObject = new PrivateObject(addDisplayModule);
 
@@ -161,6 +161,6 @@ namespace DDPM.UI.Module.AddDisplay.Tests
             {
                 Assert.Fail("not invoked");
             }
-        }   
+        }
     }
 }

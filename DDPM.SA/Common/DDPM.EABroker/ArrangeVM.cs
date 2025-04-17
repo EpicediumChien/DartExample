@@ -1493,10 +1493,17 @@ namespace DDPM.EABroker
             //Validation: recentList count >= 4
             if (recentList != null && recentList.Length >= 4)
             {
-                AwsIcon1 = ArrangeVM.SplitCtrlFromSplitJson(recentList[0], eSplitModes.AWS);
-                AwsIcon2 = ArrangeVM.SplitCtrlFromSplitJson(recentList[1], eSplitModes.AWS);
-                AwsIcon3 = ArrangeVM.SplitCtrlFromSplitJson(recentList[2], eSplitModes.AWS);
-                AwsIcon4 = ArrangeVM.SplitCtrlFromSplitJson(recentList[3], eSplitModes.AWS);
+                AwsIcon1 = SplitCtrlFromSplitJson(recentList[0], eSplitModes.AWS);
+                if (AwsIcon1 != null)
+                {
+                    if (AwsIcon1.IsOverlapCustomLayout)
+                    {
+
+                    }
+                }
+                AwsIcon2 = SplitCtrlFromSplitJson(recentList[1], eSplitModes.AWS);
+                AwsIcon3 = SplitCtrlFromSplitJson(recentList[2], eSplitModes.AWS);
+                AwsIcon4 = SplitCtrlFromSplitJson(recentList[3], eSplitModes.AWS);
                 return true;
 
             }
@@ -1516,7 +1523,7 @@ namespace DDPM.EABroker
         /// <param name="spJson"></param>
         /// <param name="splitMode"></param>
         /// <returns></returns>
-        public static ISplitCtrl? SplitCtrlFromSplitJson(SplitJson spJson, eSplitModes splitMode)
+        public ISplitCtrl? SplitCtrlFromSplitJson(SplitJson spJson, eSplitModes splitMode)
         {
             ISplitCtrl? splitCtrl = ISplitCtrl.Create(spJson.CellCount, spJson.SplitKey);
 
@@ -1530,13 +1537,14 @@ namespace DDPM.EABroker
             splitCtrl.FriendlyName = spJson.CustomName;
 
             splitCtrl.SplitMode = splitMode;
-            if ((spJson.CellCount == 0) && (spJson.SplitKey == 'B'))
+            //if ((spJson.CellCount == 0) && (spJson.SplitKey == 'B'))
+            if (spJson.IsOverlapLayout)
             {
                 SplitCtrl0B spctrl0B = (SplitCtrl0B)splitCtrl;
                 if (splitMode == eSplitModes.AWS)
                 {
                     splitMode = eSplitModes.Work;
-                    spctrl0B.ApplySettingsToCellList(new Rect(0, 0, ArrangeVM.cxIcon, ArrangeVM.cyIcon));
+                    spctrl0B.ApplySettingsToCellList(new Rect(0, 0, ArrangeVM.cxIcon*ScreenScale , ArrangeVM.cyIcon*ScreenScale));
                 }
             }
 

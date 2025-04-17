@@ -498,9 +498,6 @@
   <data name="Brightness.16" xml:space="preserve">
     <value>トランジションの長さ</value>
   </data>
-  <data name="Brightness.17" xml:space="preserve">
-    <value>テスト。</value>
-  </data>
   <data name="Min" xml:space="preserve">
     <value>分</value>
   </data>
@@ -1035,9 +1032,6 @@
   <data name="Kvm.29" xml:space="preserve">
     <value>ネットワークを使用したセットアップ</value>
   </data>
-  <data name="Kvm.30" xml:space="preserve">
-    <value>パソコン（MacとWindows）間で安全かつ簡単にファイルを共有</value>
-  </data>
   <data name="Kvm.31" xml:space="preserve">
     <value>ネットワークKVMを開く</value>
   </data>
@@ -1181,12 +1175,6 @@
   </data>
   <data name="SpeakerInteractions.5" xml:space="preserve">
     <value>Skype for Business</value>
-  </data>
-  <data name="WebCameraCapture.0" xml:space="preserve">
-    <value>3-2-1 Countdown</value>
-  </data>
-  <data name="WebCameraCapture.1" xml:space="preserve">
-    <value>Framing Grid</value>
   </data>
   <data name="WebCameraCapture.2" xml:space="preserve">
     <value>開く</value>
@@ -2509,7 +2497,7 @@
     <value>OK</value>
   </data>
   <data name="Collab.2" xml:space="preserve">
-    <value>会議のコントロールにすばやくアクセスできます。\nキーのオン/オフを切り替えると、Microsoft TeamsやZoomで通話中に\nキーボードのキーが表示または非表示になります。</value>
+    <value>会議のコントロールにすばやくアクセスできます。キーのオン/オフを切り替えると、Microsoft TeamsやZoomで通話中にキーボードのキーが表示または非表示になります。</value>
   </data>
   <data name="Collab.3" xml:space="preserve">
     <value>電話会議に新しいチャット メッセージがあるときに点滅効果を有効にします\n</value>
@@ -3504,19 +3492,136 @@
   <data name="HDR" xml:space="preserve">
     <value>HDR</value>
   </data>
+  <data name="DeviceID" xml:space="preserve">
+    <value>デバイス ID</value>
+  </data>
+  <data name="Brightness.17" xml:space="preserve">
+    <value>この機能により、目的の設定に目を適応できます</value>
+  </data>
+  <data name="Kvm.30" xml:space="preserve">
+    <value>簡単で安全なPC間のファイル共有（MacとWindows）</value>
+  </data>
+  <data name="WebCameraCapture.0" xml:space="preserve">
+    <value>3-2-1 Countdown</value>
+  </data>
+  <data name="WebCameraCapture.1" xml:space="preserve">
+    <value>Framing Grid</value>
+  </data>
+  <data name="Brightness.21" xml:space="preserve">
+    <value>明るさ/輝度、コントラスト、スケジュール設定、カラー プリセットを接続されたモニターに適用します</value>
+  </data>
+  <data name="slot" xml:space="preserve">
+    <value>スロットは使用可能です</value>
+  </data>
+  <data name="Hotkey.10" xml:space="preserve">
+    <value>このホットキーは、他のアプリケーションで設定されたホットキーと重複しています。別のホットキーの組み合わせを使用してください。</value>
+  </data>
+  <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers" xml:space="preserve">
+    <value>同じ種類の複数のUSBワイヤレス レシーバーのファームウェア アップデートはサポートされていません。1個のターゲットUSBワイヤレス レシーバーを接続したままにしてください。</value>
+  </data>
+  <data name="DisplayAlert" xml:space="preserve">
+    <value>モニターは現在ビジーです。限られた機能のみを制御できます。</value>
+  </data>
+  <data name="ColorMsg.0" xml:space="preserve">
+    <value>次の場合は、カラーを使用できません</value>
+  </data>
+  <data name="LearnMoreMsg.0" xml:space="preserve">
+    <value>スキャンしてDell Audioアプリケーションをダウンロードし、ヘッドセットをカスタマイズします</value>
+  </data>
+  <data name="EzArrange.11" xml:space="preserve">
+    <value>アイコン イメージを保存します...</value>
+  </data>
+  <data name="Camera.26" xml:space="preserve">
+    <value>USB 3.0を使用してモニターを接続し、4K UHD解像度を有効にします。</value>
+  </data>
+  <data name="Camera.27" xml:space="preserve">
+    <value>USB 3.0を使用してWebカメラを接続し、4K UHD解像度を有効にします。</value>
+  </data>
+  <data name="WebCameraPresenceDetection.12" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="WebCameraPresenceDetection.13" xml:space="preserve">
+    <value>分</value>
+  </data>
+  <data name="Cardi.1" xml:space="preserve">
+    <value>AIマイク ノイズ キャンセリング</value>
+  </data>
+  <data name="Cardi.2" xml:space="preserve">
+    <value>マルチメディア プリセット</value>
+  </data>
+  <data name="Cardi.3" xml:space="preserve">
+    <value>通話中に機能が自動的に適用されます</value>
+  </data>
+  <data name="Cardi.4" xml:space="preserve">
+    <value>音楽やその他のコンテンツを聴くときに、自動的にこの機能が適用されます</value>
+  </data>
+  <data name="Cardi.5" xml:space="preserve">
+    <value>近くのマイク ノイズを制限して、他のユーザーのオーディオ体験を向上させます</value>
+  </data>
+  <data name="Cardi.6" xml:space="preserve">
+    <value>遠くのマイク ノイズを制限して、自分のオーディオ体験を向上させます</value>
+  </data>
+  <data name="Cardi.7" xml:space="preserve">
+    <value>イコライザーは、選択したプリセットに基づいて調整されます</value>
+  </data>
+  <data name="CustomizeScrollTiltLCaption" xml:space="preserve">
+    <value>スクロール チルト（左）のカスタマイズ</value>
+  </data>
+  <data name="CustomizeScrollTiltRCaption" xml:space="preserve">
+    <value>スクロール チルト（右）のカスタマイズ</value>
+  </data>
+  <data name="CustomizeScrollWheelCaption" xml:space="preserve">
+    <value>スクロール ホイール クリックのカスタマイズ</value>
+  </data>
+  <data name="CustomizeSideButtonBCaption" xml:space="preserve">
+    <value>サイド ボタン（背面）のカスタマイズ</value>
+  </data>
+  <data name="CustomizeSideButtonFCaption" xml:space="preserve">
+    <value>サイド ボタン（前面）のカスタマイズ</value>
+  </data>
+  <data name="Incompatible" xml:space="preserve">
+    <value>このデバイスは、Dell Display and Peripheral Managerと互換性がありません</value>
+  </data>
+  <data name="WalkThroughPen_Sub.1_1" xml:space="preserve">
+    <value>ペンはX%充電されています。\n\nペンを完全に充電するには、ペンがタブレット画面に接続されていることを確認してください。ペンの充電が完了すると通知されます。\n\nバッテリー残量が10%を下回ると、バッテリー残量低下の通知が表示されます。 </value>
+  </data>
+  <data name="Save_dock_asset_report" xml:space="preserve">
+    <value>ドッキング ステーション資産レポートの保存</value>
+  </data>
+  <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers2" xml:space="preserve">
+    <value>同じ種類の複数のUSBワイヤレスレシーバーのアップデートはサポートされていません。1個のターゲットUSBワイヤレス レシーバーを接続したままにしてください。</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>お使いのモニターのモデルとセットアップ（接続のタイプなど）によっては、アップデートの完了に約10～30分かかる場合があります。同じモデルの複数のモニターをアップデートする場合、時間がかかることがあります。アップデートのダウンロード中は、ディスプレイの電源を切ったり、ケーブルを外したりしないでください。</value>
+  </data>
+  <data name="Update_Mouse_Alert2" xml:space="preserve">
+    <value>このデバイスのボタンまたはキーを押し、このアップデートを有効にします</value>
+  </data>
+  <data name="Update_BatteryLow_Alert2" xml:space="preserve">
+    <value>このデバイスのバッテリー残量が少なくなっています。バッテリーを交換するか再充電して、このアップデートを可能にします。</value>
+  </data>
+  <data name="Update_Webcam_Alert2" xml:space="preserve">
+    <value>Win 11 22H2以降とOSビルド22621以降のシステムの場合、Microsoft設定を介したプレゼンス センシング制御が、このアップデートにより有効になります</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>ファームウェア アップデート プロセス中のエラーを回避するため、USBアップストリーム ポートを使用してモニターを接続してください</value>
+  </data>
   <data name="UnableToLoadDdpm" xml:space="preserve">
-    <value />
+    <value>現時点でDell Display and Peripheral Managerアプリケーションをロードできません。アプリケーションを閉じて再試行してください。</value>
   </data>
   <data name="InputValidationTooltip.1" xml:space="preserve">
-    <value />
+    <value>使用できる文字数の上限は{0}です</value>
   </data>
   <data name="InputValidationTooltip.2" xml:space="preserve">
-    <value />
+    <value>英数字と次の特殊文字のみを使用します {0}</value>
   </data>
   <data name="InputValidationTooltip.3" xml:space="preserve">
-    <value />
+    <value>ファイル パスが260文字の上限を超えているか、予約済みファイル名を使用しているか、無効な文字(&amp;lt; &amp;gt; : &quot; / \ | ?)があります</value>
   </data>
   <data name="InputValidationTooltip.4" xml:space="preserve">
-    <value />
+    <value>相対パスではなく、完全なURLパスのみを入力します</value>
+  </data>
+  <data name="ErrorMsg.0" xml:space="preserve">
+    <value>現時点でDell Display and Peripheral Managerアプリをロードできません。アプリを閉じて再試行してください。</value>
   </data>
 </root>

@@ -89,7 +89,7 @@ namespace DDPM.EABroker
             if (splitCtrl == null)
                 return;
 
-            this.Dispatcher.Invoke(() =>
+            this.Dispatcher.BeginInvoke(() =>
             {
                 //If workSplit not been assigned, or changed
                 bool needToRefreshWorkSplit = (_workSplit == null) || (splitCtrl.EAID != _workSplit.EAID);
@@ -107,12 +107,13 @@ namespace DDPM.EABroker
                         if (_workScreen == null)
                             _workScreen = _vm.WorkScreen;
 
+                        double awsBuddyOverlapScale = 1.000; /// _vm.ScreenScale;
                         //Fix the rcScreen from _workScreen
                         Rect rcScreen = new Rect();
-                        rcScreen.X = _workScreen.Bounds.Left / _vm.ScreenScale;
-                        rcScreen.Y = _workScreen.Bounds.Top / _vm.ScreenScale;
-                        rcScreen.Width = _workScreen.Bounds.Width / _vm.ScreenScale;
-                        rcScreen.Height = _workScreen.Bounds.Height / _vm.ScreenScale;
+                        rcScreen.X = _workScreen.WorkingArea.Left * awsBuddyOverlapScale;
+                        rcScreen.Y = _workScreen.WorkingArea.Top * awsBuddyOverlapScale;
+                        rcScreen.Width = _workScreen.WorkingArea.Width * awsBuddyOverlapScale;
+                        rcScreen.Height = _workScreen.WorkingArea.Height * awsBuddyOverlapScale;
 
                         //Create Borders and CellBorders to canvas grid
                         sp0B.ApplySettingsToCellList(rcScreen);
@@ -132,10 +133,14 @@ namespace DDPM.EABroker
                     //Set the hovering Cell to Hover state
                     if (localSplit.IsAddedCustomLayout)
                     {
+                        localSplit.HoveringCell = hoverCellName;
                         foreach (CellObj objCell in localSplit.CellList)
                         {
                             if (objCell.Name.Equals(hoverCellName))
+                            {
+
                                 objCell.CellBd.Dispatcher_SetIsHover(true);
+                            }
                             else
                                 objCell.CellBd.Dispatcher_SetIsHover(false);
                         }
@@ -182,8 +187,8 @@ namespace DDPM.EABroker
                 //splitContent.Content = localSplit;
 
                 //Delay to call RefreshCellRects
-                RefreshCellRects();
-            });
+          //      RefreshCellRects();
+            }, System.Windows.Threading.DispatcherPriority.Loaded);
         }
 
         public void RefreshCellRects(int flag)

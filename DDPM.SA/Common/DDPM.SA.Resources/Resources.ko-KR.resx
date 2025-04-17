@@ -540,4 +540,91 @@
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>업데이트가 완료될 때까지 시스템 전원을 끄지 마십시오.</value>
   </data>
+  <data name="Update_failed_due_to_network_error" xml:space="preserve">
+    <value>네트워크 오류로 인해 업데이트에 실패했습니다. 다시 시도하십시오.</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>대상 마우스를 움직이거나 왼쪽 버튼을 두 번 클릭합니다.</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>&quot;U&quot; 키를 두 번 눌러 대상 키보드의 펌웨어 업데이트를 활성화합니다.</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>기본 ICC 프로파일은 스마트 HDR용입니다. 색상 사전 설정은 변경할 수 없습니다. 대상:</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>기본 ICC 프로파일은 스마트 HDR에 적합하지 않습니다. 색상 사전 설정은 변경할 수 없습니다. 대상:</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>모니터 모델 및 설정(예: 연결 유형)에 따라 업데이트를 완료하는 데 약 10~30분 정도 걸릴 수 있습니다. 동일한 모델의 모니터를 여러 대 업데이트하는 경우 시간이 오래 걸릴 수 있습니다. 업데이트를 다운로드하는 동안 디스플레이의 전원을 끄거나 케이블을 분리하지 마십시오.</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>성공</value>
+  </data>
+  <data name="Firmware_updated" xml:space="preserve">
+    <value>펌웨어가 업데이트되었습니다.</value>
+  </data>
+  <data name="Display_FWU_Error_1" xml:space="preserve">
+    <value>펌웨어 유틸리티 패키지 문제로 인해 펌웨어 업데이트에 실패했습니다. 파일이 손상되었을 수 있습니다.</value>
+  </data>
+  <data name="Display_FWU_Error_3" xml:space="preserve">
+    <value>펌웨어 업데이트에서 오류가 발생했습니다. 이 문제를 해결하려면 USB 케이블을 분리했다가 다시 연결하고 모니터 전원을 껐다가 켭니다. 그런 다음 펌웨어 업데이트를 다시 시도하십시오.</value>
+  </data>
+  <data name="Display_FWU_Error_5" xml:space="preserve">
+    <value>펌웨어 업데이트에서 오류가 발생했습니다. 이 문제를 해결하려면 USB 케이블을 분리했다가 다시 연결하고 모니터 전원을 껐다가 켭니다. 그런 다음 펌웨어 업데이트를 다시 시도하십시오.</value>
+  </data>
+  <data name="Display_FWU_Error_7" xml:space="preserve">
+    <value>펌웨어 업데이트에 실패했습니다. 펌웨어 코드가 지워졌으며 펌웨어 코드 확인에 실패했습니다.</value>
+  </data>
+  <data name="Display_FWU_Error_9" xml:space="preserve">
+    <value>모니터의 펌웨어가 최신 버전입니다.</value>
+  </data>
+  <data name="Display_FWU_Error_10" xml:space="preserve">
+    <value>펌웨어 업데이트 유틸리티의 다른 인스턴스가 실행 중일 수 있습니다. 계속하려면 유틸리티의 인스턴스 하나를 닫으십시오.</value>
+  </data>
+  <data name="Display_FWU_Error_12" xml:space="preserve">
+    <value>펌웨어 업데이트 유틸리티의 다른 인스턴스가 실행 중일 수 있습니다. 계속하려면 유틸리티의 인스턴스 하나를 닫으십시오.</value>
+  </data>
+  <data name="Display_FWU_Error_201" xml:space="preserve">
+    <value>업데이트에는 최대 xx분이 소요될 수 있습니다. 업데이트하는 동안 모니터를 켠 채로 전원에 연결된 상태를 유지하십시오.</value>
+  </data>
+  <data name="Display_FWU_Error_501" xml:space="preserve">
+    <value>모니터에서 감지된 펌웨어 버전은 공식 릴리스가 아닙니다.</value>
+  </data>
+  <data name="Display_FWU_Error_61" xml:space="preserve">
+    <value>펌웨어 업데이트에서 오류가 발생했습니다. 이 문제를 해결하려면 USB 케이블을 분리했다가 다시 연결하고 모니터 전원을 껐다가 켭니다. 그런 다음 펌웨어 업데이트를 다시 시도하십시오.</value>
+  </data>
+  <data name="Display_FWU_Error_Other" xml:space="preserve">
+    <value>펌웨어 업데이트에 실패했습니다.</value>
+  </data>
+  <data name="Update_Display_Alert_2" xml:space="preserve">
+    <value>업데이트에는 최대 [XXXXXX]분이 소요될 수 있습니다. 업데이트하는 동안 모니터를 켠 채로 전원에 연결된 상태를 유지하십시오.</value>
+  </data>
+  <data name="Update_in_progress_body" xml:space="preserve">
+    <value>[XXXXXX]에서 펌웨어 업데이트가 진행 중입니다. 디바이스의 가용성이 간헐적일 수 있습니다. 업데이트 중에 디바이스를 분리하지 마십시오. </value>
+  </data>
+  <data name="Update_successful_body" xml:space="preserve">
+    <value>[XXXXXX]의 펌웨어가 업데이트되었습니다.</value>
+  </data>
+  <data name="Update_failed_body" xml:space="preserve">
+    <value>[XXXXXX]의 펌웨어를 업데이트하지 못했습니다.</value>
+  </data>
+  <data name="Update_successful" xml:space="preserve">
+    <value>업데이트 성공</value>
+  </data>
+  <data name="Update_failed" xml:space="preserve">
+    <value>업데이트가 실패</value>
+  </data>
+  <data name="Update_in_progress" xml:space="preserve">
+    <value>업데이트 진행 중</value>
+  </data>
+  <data name="Software_update_successful" xml:space="preserve">
+    <value>소프트웨어 업데이트 성공</value>
+  </data>
+  <data name="Software_update_failed" xml:space="preserve">
+    <value>소프트웨어 업데이트 실패</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>펌웨어 업데이트 프로세스 중 오류를 방지하려면 USB 업스트림 포트를 사용하여 모니터를 연결하십시오.</value>
+  </data>
 </root>

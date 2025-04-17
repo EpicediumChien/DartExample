@@ -2,7 +2,9 @@
 using DDPM.UI.Common;
 using DDPM.UI.Resources;
 using DDPM.UI.Resources.Helper;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
+using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -44,23 +46,33 @@ namespace DDPM.UI.Common
         private int _currentIndex = 0;
         private DispatcherTimer _timer;
         InterruptScreenRoot _InterruptScreenRoot;
+        IDeviceManagerSA _DeviceManagerSA;
+        SWUpdateInfoPackage _SWUpdateInfoPackage;
+        ILog _Log;
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public InterruptScreen(string versionNumber,InterruptScreenRoot interruptScreenRoot)
+        public InterruptScreen(string versionNumber, InterruptScreenRoot interruptScreenRoot, IDeviceManagerSA deviceManagerSA, SWUpdateInfoPackage swUpdateInfoPackage, ILog log)
         {
             InitializeComponent();
             this.Owner = Application.Current.MainWindow;
             DataContext = this;
-            if (interruptScreenRoot == null)
+            if (interruptScreenRoot == null || deviceManagerSA == null || swUpdateInfoPackage == null)
             {
+                _Log?.Info($"@ InterruptScreen is null : {interruptScreenRoot == null}");
+                _Log?.Info($"@ deviceManagerSA is null : {deviceManagerSA == null}");
+                _Log?.Info($"@ swUpdateInfoPackage is null : {swUpdateInfoPackage == null}");
                 this.Close();
+                return;
             }
             Available_Title = $"{LangHelper.Instance["Update_Available_Version"]} {versionNumber}";
             _InterruptScreenRoot = interruptScreenRoot;
+            _DeviceManagerSA = deviceManagerSA;
+            _SWUpdateInfoPackage = swUpdateInfoPackage;
+            _Log = log;
             NewSupportedDevicesCollection = new ObservableCollection<UI_NewSupportedDevices>();
             NewFeaturesList = new ObservableCollection<UI_NewFeatures>();
             BugFixesList = new ObservableCollection<UI_BugFixesContent>();
@@ -92,6 +104,7 @@ namespace DDPM.UI.Common
                                 {
                                     Title = GetTranslation(featuresList.content.productLabel),
                                     BackgroundImage = ConvertByteArrayToBitmapImage(featuresList.content.image),
+                                    //IsShowName = featuresList.content.IsShowName,
                                 });
                             }
                             break;
@@ -129,7 +142,14 @@ namespace DDPM.UI.Common
                 if (NewSupportedDevicesCollection.Count > 0)
                 {
                     BackgroundImage = NewSupportedDevicesCollection[_currentIndex].BackgroundImage;
-                    NewDeviceName = NewSupportedDevicesCollection[_currentIndex].Title;
+                    if (NewSupportedDevicesCollection[_currentIndex].IsShowName)
+                    {
+                        NewDeviceName = NewSupportedDevicesCollection[_currentIndex].Title;
+                    }
+                    else
+                    {
+                        NewDeviceName = "";
+                    }
                 }
             }
             OnPropertyChanged("BackgroundImage");
@@ -334,7 +354,14 @@ namespace DDPM.UI.Common
             if (NewSupportedDevicesCollection.Count > _currentIndex)
             {
                 BackgroundImage = NewSupportedDevicesCollection[_currentIndex].BackgroundImage;
-                NewDeviceName = NewSupportedDevicesCollection[_currentIndex].Title;
+                if (NewSupportedDevicesCollection[_currentIndex].IsShowName)
+                {
+                    NewDeviceName = NewSupportedDevicesCollection[_currentIndex].Title;
+                }
+                else
+                {
+                    NewDeviceName = "";
+                }
             }
             OnPropertyChanged("BackgroundImage");
             OnPropertyChanged("NewDeviceName");
@@ -343,16 +370,29 @@ namespace DDPM.UI.Common
         {
             if (_timer != null)
             {
-                _timer.Tick -= (sender, e) => NextItem();
                 _timer.Stop();
+                _timer.Tick -= (sender, e) => NextItem();
                 _timer = null;
             }
         }
 
         private void UXButton_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
-            this.Close();
+            try
+            {
+                _Log?.Info("UXButton_Click SW_DownloadAndInstall go");
+                List<SWUpdateInfo> swUpdateInfos = _DeviceManagerSA.SW_DownloadAndInstall(_SWUpdateInfoPackage.SWUpdateInfo, true).Result;
+                _Log?.Info("UXButton_Click SW_DownloadAndInstall finish");
+            }
+            catch (Exception ex)
+            {
+                _Log?.Error($"UXButton_Click error : {ex.Message}");
+            }
+            finally
+            {
+                //this.DialogResult = true;
+                this.Close();
+            }
         }
 
         private void LearnMoreForSoftware_Click(object sender, RoutedEventArgs e)
@@ -394,12 +434,14 @@ namespace DDPM.UI.Common
     public class UI_NewSupportedDevices
     {
         public string Title { get; set; }
+        public bool IsShowName { get; set; }
         public string Content_1 { get; set; }
         public string Content_2 { get; set; }
         public BitmapImage BackgroundImage { get; set; }
         public UI_NewSupportedDevices()
         {
             Title = string.Empty;
+            IsShowName = true;
             Content_1 = string.Empty;
             Content_2 = string.Empty;
         }

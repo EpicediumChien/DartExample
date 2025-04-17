@@ -540,4 +540,91 @@
   <data name="UpdateProgressMsg" xml:space="preserve">
     <value>在更新完成之前，请勿关闭系统电源</value>
   </data>
+  <data name="Update_failed_due_to_network_error" xml:space="preserve">
+    <value>由于网络错误，更新失败。请重试。</value>
+  </data>
+  <data name="M1_Please_double_click_mouse_left_button_to_start_firmware_update" xml:space="preserve">
+    <value>移动目标鼠标或单击目标鼠标的左键两次</value>
+  </data>
+  <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
+    <value>按“U”键两次可激活目标键盘的固件更新</value>
+  </data>
+  <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
+    <value>默认 ICC 配置文件适用于智能 HDR。我们无法更改颜色预设</value>
+  </data>
+  <data name="ICC_notification_SmartHDR" xml:space="preserve">
+    <value>默认 ICC 配置文件不适用于智能 HDR。我们无法更改颜色预设</value>
+  </data>
+  <data name="Update_Display_Alert" xml:space="preserve">
+    <value>更新可能需要大约 10 到 30 分钟才能完成，具体取决于您的显示器型号和设置（例如，连接类型）。如果您要更新多个同一型号的显示器，则可能需要更长时间。下载更新时，请勿关闭显示器电源或断开线缆连接。</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>成功</value>
+  </data>
+  <data name="Firmware_updated" xml:space="preserve">
+    <value>固件已更新。</value>
+  </data>
+  <data name="Display_FWU_Error_1" xml:space="preserve">
+    <value>由于固件实用程序包存在问题，因此固件更新失败。文件可能已损坏。</value>
+  </data>
+  <data name="Display_FWU_Error_3" xml:space="preserve">
+    <value>固件更新遇到错误。要解决此问题，请断开并重新连接 USB 线缆，然后关闭显示器电源后将其重启。接下来，重新尝试固件更新。</value>
+  </data>
+  <data name="Display_FWU_Error_5" xml:space="preserve">
+    <value>固件更新遇到错误。要解决此问题，请断开并重新连接 USB 线缆，然后关闭显示器电源后将其重启。接下来，重新尝试固件更新。</value>
+  </data>
+  <data name="Display_FWU_Error_7" xml:space="preserve">
+    <value>固件更新失败。固件代码已被擦除，并且固件代码验证失败。</value>
+  </data>
+  <data name="Display_FWU_Error_9" xml:space="preserve">
+    <value>显示器的固件是最新版本。</value>
+  </data>
+  <data name="Display_FWU_Error_10" xml:space="preserve">
+    <value>固件更新实用程序的另一个实例可能正在运行。请关闭该实用程序的一个实例以继续。</value>
+  </data>
+  <data name="Display_FWU_Error_12" xml:space="preserve">
+    <value>固件更新实用程序的另一个实例可能正在运行。请关闭该实用程序的一个实例以继续。</value>
+  </data>
+  <data name="Display_FWU_Error_201" xml:space="preserve">
+    <value>更新最多可能需要 xx 分钟。在更新期间，请保持显示器处于开启和连接状态。</value>
+  </data>
+  <data name="Display_FWU_Error_501" xml:space="preserve">
+    <value>在您的显示器上检测到的固件版本不是官方版本。</value>
+  </data>
+  <data name="Display_FWU_Error_61" xml:space="preserve">
+    <value>固件更新遇到错误。要解决此问题，请断开并重新连接 USB 线缆，然后关闭显示器电源后将其重启。接下来，重新尝试固件更新。</value>
+  </data>
+  <data name="Display_FWU_Error_Other" xml:space="preserve">
+    <value>固件更新失败。</value>
+  </data>
+  <data name="Update_Display_Alert_2" xml:space="preserve">
+    <value>更新最多可能需要 [XXXXXX] 分钟。在此期间，请保持设备处于开启和连接状态。</value>
+  </data>
+  <data name="Update_in_progress_body" xml:space="preserve">
+    <value>[XXXXXX] 正在进行固件更新。可用性可能会出现波动。在更新期间，请勿将设备断开连接。 </value>
+  </data>
+  <data name="Update_successful_body" xml:space="preserve">
+    <value>[XXXXXX] 的固件已成功更新</value>
+  </data>
+  <data name="Update_failed_body" xml:space="preserve">
+    <value>[XXXXXX] 的固件更新失败</value>
+  </data>
+  <data name="Update_successful" xml:space="preserve">
+    <value>更新成功</value>
+  </data>
+  <data name="Update_failed" xml:space="preserve">
+    <value>更新失败</value>
+  </data>
+  <data name="Update_in_progress" xml:space="preserve">
+    <value>更新进行中</value>
+  </data>
+  <data name="Software_update_successful" xml:space="preserve">
+    <value>软件更新成功</value>
+  </data>
+  <data name="Software_update_failed" xml:space="preserve">
+    <value>软件更新失败</value>
+  </data>
+  <data name="Update_Display_Alert_3" xml:space="preserve">
+    <value>请使用 USB 上行端口连接您的显示器，以避免在固件更新过程中出现错误</value>
+  </data>
 </root>
