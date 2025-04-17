@@ -2,12 +2,10 @@
 using DDPM.UI.Common;
 using DDPM.UI.Common.UserControls;
 using DDPM.UI.Interfaces;
-using DDPM.UI.Plugin.Common;
+using DDPM.UI.Module.RtkHubPortInfo;
 using DDPM.UI.Plugin.ViewModels;
-using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media.Animation;
 
 namespace DDPM.UI.Plugin.RtkHubPlugin
@@ -20,11 +18,7 @@ namespace DDPM.UI.Plugin.RtkHubPlugin
         private readonly RtkHubViewModel? _vm;
 
         private readonly int[] _rightFrameWidth = new int[] { 0, 530, 530, 530 };
-        private readonly string AudioSettings = Strings.HeadsetAudioSettings;
-        private readonly string AutomatedActions = Strings.HeadsetAutomatedActions;
-        private readonly string DeviceSettings = Strings.HeadsetDeviceSettings;
-        private readonly Style ConnectionStyle1;
-        private readonly Style ConnectionStyle2;
+        private readonly string AudioSettings = Strings.RtkHub01;
 
         public LaunchView()
         {
@@ -38,14 +32,15 @@ namespace DDPM.UI.Plugin.RtkHubPlugin
                 _vm.Reset();
                 DataContext = _vm;
                 _vm.VbarItemClickCommand = new RelayCommand<VbarItem1>(OnVbarItemClicked!);
-                _vm!.ConnectionType = "Dongle";
+                _vm!.ConnectionType = "Port";
                 BuildModuleGroups();
                 InitializeButtonImage();
                 btnUnpair.Visibility = Visibility.Collapsed;
-                ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
-                ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
+                //ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
+                //ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
                 txtSystemName3.Text = _vm.VisiblePairedHostName1;
                 txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
+                //txt1.Text = Strings.USB_C;
                 //txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
                 //txtAudioBLText.Text = string.Format(Strings.Paired_Info, _vm.CurrentDeviceInfo.TotalNumberOfPairedHostName);
                 Loaded += LaunchView_LoadedStatus;
@@ -56,82 +51,82 @@ namespace DDPM.UI.Plugin.RtkHubPlugin
 
         private void LaunchView_UnLoadedStatus(object sender, RoutedEventArgs e)
         {
-            DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView_UnLoadedStatus ... in ");
-            if (_vm == null)
-            {
-                DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] ~LaunchView_UnLoadedStatus _vm is null");
-                return;
-            }
-            try
-            {
-                _vm.UloadHeadset_DTPNotify();
-                if (DdpmCommonHelper.DeviceManagerSA != null)
-                {
-                    DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
-                    Loaded -= LaunchView_LoadedStatus;
-                    Unloaded -= LaunchView_UnLoadedStatus;
-                    DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] -= DeviceManagerSA_ITSettingsActionEvent、ImageUpdate、LaunchView_LoadedStatus、LaunchView_UnLoadedStatus");
-                }
-                else
-                {
-                    DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] ~LaunchView_UnLoadedStatus DeviceManagerSA is null");
-                }
-                DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView_UnLoadedStatus ... out ");
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView_UnLoadedStatus Exception = {ex.Message}");
-            }
+            //DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView_UnLoadedStatus ... in ");
+            //if (_vm == null)
+            //{
+            //    DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] ~LaunchView_UnLoadedStatus _vm is null");
+            //    return;
+            //}
+            //try
+            //{
+            //    _vm.UloadHeadset_DTPNotify();
+            //    if (DdpmCommonHelper.DeviceManagerSA != null)
+            //    {
+            //        DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            //        Loaded -= LaunchView_LoadedStatus;
+            //        Unloaded -= LaunchView_UnLoadedStatus;
+            //        DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] -= DeviceManagerSA_ITSettingsActionEvent、ImageUpdate、LaunchView_LoadedStatus、LaunchView_UnLoadedStatus");
+            //    }
+            //    else
+            //    {
+            //        DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] ~LaunchView_UnLoadedStatus DeviceManagerSA is null");
+            //    }
+            //    DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView_UnLoadedStatus ... out ");
+            //}
+            //catch (Exception ex)
+            //{
+            //    DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView_UnLoadedStatus Exception = {ex.Message}");
+            //}
         }
 
         private void LaunchView_LoadedStatus(object sender, RoutedEventArgs e)
         {
-            DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView_LoadedStatus ... in ");
-            if (_vm == null)
-            {
-                DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] ~LaunchView_LoadedStatus _vm is null");
-                return;
-            }
+            //DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView_LoadedStatus ... in ");
+            //if (_vm == null)
+            //{
+            //    DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] ~LaunchView_LoadedStatus _vm is null");
+            //    return;
+            //}
 
-            try
-            {
-                DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
-                DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView_LoadedStatus ... out ");
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView_LoadedStatus Exception = {ex.Message}");
-            }
+            //try
+            //{
+            //    DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
+            //    DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView_LoadedStatus ... out ");
+            //}
+            //catch (Exception ex)
+            //{
+            //    DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView_LoadedStatus Exception = {ex.Message}");
+            //}
         }
 
         private void LaunchView_Loaded(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                if (!_vm!.IsDTPReady)
-                    DdpmCommonHelper.MyConsole!.ShowHomePage();
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView_Loaded Exception = {ex.Message}");
-            }
+            //try
+            //{
+            //    if (!_vm!.IsDTPReady)
+            //        DdpmCommonHelper.MyConsole!.ShowHomePage();
+            //}
+            //catch (Exception ex)
+            //{
+            //    DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView_Loaded Exception = {ex.Message}");
+            //}
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
         {
-            try
-            {
-                var rst = DdpmCommonHelper.ApplyRestoreFactoryDefaultsEventData(e, "Lock_Audio_RestoreFactoryDefaults");
-                //Dispatcher.Invoke(new Action(() =>
-                //{
-                //    RestoreLockIcon.Visibility = rst.isLocked;
-                //    txtRestore.IsEnabled = rst.isEnabled;
-                //}));
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView DeviceManagerSA_ITSettingsActionEvent Exception = {ex.Message}");
-            }
+            //try
+            //{
+            //    var rst = DdpmCommonHelper.ApplyRestoreFactoryDefaultsEventData(e, "Lock_Audio_RestoreFactoryDefaults");
+            //    //Dispatcher.Invoke(new Action(() =>
+            //    //{
+            //    //    RestoreLockIcon.Visibility = rst.isLocked;
+            //    //    txtRestore.IsEnabled = rst.isEnabled;
+            //    //}));
+            //}
+            //catch (Exception ex)
+            //{
+            //    DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] LaunchView DeviceManagerSA_ITSettingsActionEvent Exception = {ex.Message}");
+            //}
         }
 
         #region Init for Modules
@@ -141,47 +136,25 @@ namespace DDPM.UI.Plugin.RtkHubPlugin
         /// </summary>
         private void BuildModuleGroups(bool secondVbar = true)
         {
-            //DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] BuildModuleGroups ... in");
-            //try
-            //{
-            //    List<ModuleGroup> groups = new List<ModuleGroup>();
-            //    ModuleGroup moduleGroup;
-            //    moduleGroup = new ModuleGroup()
-            //    {
-            //        GroupName = AudioSettings,
-            //        GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Setting.png"),
-            //        GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.AudioSettings)
-            //    };
-            //    moduleGroup.AddHeader(AudioSettings, new HeadsetAudioSettingsModule(_vm!));
-            //    groups.Add(moduleGroup);
-
-            //    if (secondVbar)
-            //    {
-            //        moduleGroup = new ModuleGroup()
-            //        {
-            //            GroupName = AutomatedActions,
-            //            GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
-            //            GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
-            //        };
-            //        moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
-            //        groups.Add(moduleGroup);
-            //    }
-
-            //    moduleGroup = new ModuleGroup()
-            //    {
-            //        GroupName = DeviceSettings,
-            //        GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Main.png"),
-            //        GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetSettings)
-            //    };
-            //    moduleGroup.AddHeader(DeviceSettings, new HeadsetDeviceSettingsModule(_vm!));
-            //    groups.Add(moduleGroup);
-
-            //    _vm.ModuleGroups = groups;
-            //}
-            //catch (Exception ex)
-            //{
-            //    DdpmCommonHelper.WriteUILog($"[Headset_LaunchView] BuildModuleGroups Exception = {ex.Message}");
-            //}
+            DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] BuildModuleGroups ... in");
+            try
+            {
+                List<ModuleGroup> groups = new List<ModuleGroup>();
+                ModuleGroup moduleGroup;
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = AudioSettings,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/DA225_PortInfo.png", "DDPM.UI.Resources"),
+                    GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.RtkHubPortInfo)
+                };
+                moduleGroup.AddHeader(AudioSettings, new RtkHubPortInfoModule(_vm!));
+                groups.Add(moduleGroup);
+                _vm.ModuleGroups = groups;
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[RtkHub_LaunchView] BuildModuleGroups Exception = {ex.Message}");
+            }
         }
 
         private void InitializeButtonImage()
