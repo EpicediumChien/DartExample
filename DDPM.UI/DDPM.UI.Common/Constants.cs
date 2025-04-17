@@ -94,11 +94,6 @@ public class Constants
     public const string BootloaderPluginId = "{7EA1CB12-F945-4CAB-915B-BD4C3D25259E}";
 
     /// <summary>
-    /// DDPM.UI.Plugin.RthHub PluginId
-    /// </summary>
-    public const string RtkHubPluginId = "{096B2E88-D78E-4FBF-BA37-2F79961B82CC}";
-
-    /// <summary>
     /// DDPM.UI.Plugin.ExitAppPlugin PluginId
     /// </summary>
     public const string ExitAppPluginId = "{10AFA730-380B-4F3F-8427-E96392FC2796}";

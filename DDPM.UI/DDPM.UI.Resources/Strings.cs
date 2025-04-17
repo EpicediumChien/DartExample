@@ -633,26 +633,5 @@ namespace DDPM.UI.Common
         public static readonly string DTPUnavailable = GetString("DTPUnavailable");//"DTP service is unavailable!";
 
         public static readonly string Auto_Color_Temperature_MSG = GetString("Color.10");
-
-        //For DDPM 2.1.x.x
-        public static readonly string USB_C = GetString("USBC");
-        public static readonly string RtkHub01 = GetString("RtkHub.01");
-        public static readonly string RtkHub02 = GetString("RtkHub.02");
-        public static readonly string RtkHub03 = GetString("RtkHub.03");
-        public static readonly string RtkHub04 = GetString("RtkHub.04");
-        public static readonly string RtkHub05 = GetString("RtkHub.05");
-        public static readonly string RtkHub06 = GetString("RtkHub.06");
-        public static readonly string RtkHub07 = GetString("RtkHub.07");
-        public static readonly string RtkHub08 = GetString("RtkHub.08");
-        public static readonly string RtkHub09 = GetString("RtkHub.09");
-        public static readonly string RtkHub10 = GetString("RtkHub.10");
-        public static readonly string RtkHub11 = GetString("RtkHub.11");
-        public static readonly string RtkHub12 = GetString("RtkHub.12");
-        public static readonly string RtkHub13 = GetString("RtkHub.13");
-        public static readonly string RtkHub14 = GetString("RtkHub.14");
-        public static readonly string RtkHub15 = GetString("RtkHub.15");
-        public static readonly string RtkHub16 = GetString("RtkHub.16");
-        public static readonly string RtkHub17 = GetString("RtkHub.17");
-        public static readonly string RtkHub18 = GetString("RtkHub.18");
     }
 }

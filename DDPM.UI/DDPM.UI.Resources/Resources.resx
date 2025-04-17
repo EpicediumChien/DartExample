@@ -3645,64 +3645,7 @@
   <data name="WebCameraSettings.31" xml:space="preserve">
     <value>Portrait</value>
   </data>
-  <data name="USBC" xml:space="preserve">
-    <value>USB-C</value>
-  </data>
   <data name="AddDevice.Pen.5" xml:space="preserve">
     <value>Pens with Active Electrostatic technology (PN5122W) can be connected with this method</value>
-  </data>
-  <data name="RtkHub.01" xml:space="preserve">
-    <value>Port Information</value>
-  </data>
-  <data name="RtkHub.02" xml:space="preserve">
-    <value>USB Port Status</value>
-  </data>
-  <data name="RtkHub.03" xml:space="preserve">
-    <value>Input</value>
-  </data>
-  <data name="RtkHub.04" xml:space="preserve">
-    <value>Device Name</value>
-  </data>
-  <data name="RtkHub.05" xml:space="preserve">
-    <value>Status</value>
-  </data>
-  <data name="RtkHub.06" xml:space="preserve">
-    <value>In Use</value>
-  </data>
-  <data name="RtkHub.07" xml:space="preserve">
-    <value>Available</value>
-  </data>
-  <data name="RtkHub.08" xml:space="preserve">
-    <value>Your overall power budget use is within an acceptable range</value>
-  </data>
-  <data name="RtkHub.09" xml:space="preserve">
-    <value>You will be notified if overall power budget reaches 90% or more. If at full capacity, connected devices will become unavailable.</value>
-  </data>
-  <data name="RtkHub.10" xml:space="preserve">
-    <value>Other Device</value>
-  </data>
-  <data name="RtkHub.11" xml:space="preserve">
-    <value>UnKnown</value>
-  </data>
-  <data name="RtkHub.12" xml:space="preserve">
-    <value>Your USB power budget has reached or exceeded 90%. Disconnect devices you no longer need. If power budget use reaches full capacity, connected devices will become unavailable.</value>
-  </data>
-  <data name="RtkHub.13" xml:space="preserve">
-    <value>Your USB power budget has exceeded full capacity. To ensure proper functionality, disconnect one or more devices.</value>
-  </data>
-  <data name="RtkHub.14" xml:space="preserve">
-    <value>USB port is NOT functioning. Unplug the device and retry.</value>
-  </data>
-  <data name="RtkHub.15" xml:space="preserve">
-    <value>Port is unavailable because power capacity was exceeded or to allow other connected devices to function</value>
-  </data>
-  <data name="RtkHub.16" xml:space="preserve">
-    <value>USB-A</value>
-  </data>
-  <data name="RtkHub.17" xml:space="preserve">
-    <value>USB-C 1</value>
-  </data>
-  <data name="RtkHub.18" xml:space="preserve">
-    <value>USB-C 2</value>
   </data>
 </root>

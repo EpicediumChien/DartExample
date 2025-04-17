@@ -21,7 +21,6 @@ namespace DDPM.UI.Common
         Dock = 1700,
         WalkThrough = 1800,
         AirAudio = 1900,
-        RtkHub = 2000,
     }
 
     public enum PenButtonName
@@ -115,7 +114,6 @@ namespace DDPM.UI.Common
         WebcamColorImg,
         WebcamDetection,
         WebcamCapture,
-        WebcamMicrophone,
-        RtkHubPortInfo
+        WebcamMicrophone
     }
 }

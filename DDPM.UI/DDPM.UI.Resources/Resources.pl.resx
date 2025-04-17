@@ -3616,52 +3616,12 @@
     <value>Należy używać wyłącznie znaków alfanumerycznych i następujących znaków specjalnych {0}</value>
   </data>
   <data name="InputValidationTooltip.3" xml:space="preserve">
-    <value>Ścieżka pliku przekroczyła limit 260 znaków, używa zarezerwowanej nazwy pliku lub zawiera nieprawidłowe znaki &lt; &amp;gt; : " / \ | ?</value>
+    <value>Ścieżka pliku przekroczyła limit 260 znaków, używa zarezerwowanej nazwy pliku lub zawiera nieprawidłowe znaki &lt; &amp;gt; : &quot; / \ | ?</value>
   </data>
   <data name="InputValidationTooltip.4" xml:space="preserve">
     <value>Wprowadź tylko pełną ścieżkę URL, a nie ścieżkę względną</value>
   </data>
   <data name="ErrorMsg.0" xml:space="preserve">
     <value>W tej chwili nie można załadować aplikacji Dell Display and Peripheral Manager. Zamknij aplikację i spróbuj ponownie.</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="RtkHub.02" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.03" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.04" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.05" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.06" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.07" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.08" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.09" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.10" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.11" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.12" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.13" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="RtkHub.14" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
   </data>
 </root>
