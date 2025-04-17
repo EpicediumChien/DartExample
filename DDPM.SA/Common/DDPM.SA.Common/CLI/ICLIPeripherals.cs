@@ -265,15 +265,32 @@ namespace DDPM.SA.Common
                     break;
                 case "MICNOISECANCELLATION":
                     TargetFeature = targetFeature;
-                    var isAirAudio = di.LogicalDeviceType.Equals("LogicalAirAudio", System.StringComparison.OrdinalIgnoreCase);
-                    var support = isAirAudio
-                        ? devMgr.GetAirAudioIsMicNoiseCancellationSupportedAsync(di.ID.ToString()).Result
-                        : di.IsMicNoiseCancellationSupported;
+                    if (GlobalDefinitions.isSupport210)
+                    {
+                        var isAirAudio = di.LogicalDeviceType.Equals("LogicalAirAudio", System.StringComparison.OrdinalIgnoreCase);
+                        if (!isAirAudio)
+                        {
+                            return;
+                        }
+                        var Airsupport = devMgr.GetAirAudioIsMicNoiseCancellationSupportedAsync(di.ID.ToString()).Result;
+                        if (Airsupport)
+                        {
+                            retcode = devMgr.GetAirAudioMicNoiseCancellationAsync(di.ID.ToString()).Result;
+                            Value = (retcode) ? "ON" : "OFF";
+                            Result = "PASS";
+                            Message = "N/A";
+                        }
+                        else
+                        {
+                            Value = "N/A";
+                            Result = "FAIL";
+                            Message = "AirAudio not support MICNOISECANCELLATION";
+                        }
+                    }
+                    var support = di.IsMicNoiseCancellationSupported;
                     if (support)
                     {
-                        retcode = isAirAudio
-                            ? devMgr.GetAirAudioMicNoiseCancellationAsync(di.ID.ToString()).Result 
-                            : di.MicNoiseCancellation;
+                        retcode = di.MicNoiseCancellation;
                         Value = (retcode) ? "ON" : "OFF";
                         Result = "PASS";
                         Message = "N/A";
@@ -284,6 +301,7 @@ namespace DDPM.SA.Common
                         Result = "FAIL";
                         Message = "Audio not support MICNOISECANCELLATION";
                     }
+                   
                     return;
                 case "WEARDETECTION":
                     TargetFeature = targetFeature;
