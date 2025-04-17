@@ -115,7 +115,7 @@ namespace DDPM.SA.Common
         //Input is command line parsing object, and the return integer is ExitCode
         Task<CLIEventResult> PerformCommandLineRelay(CommandLineInput commandLineInput);
 
-        Task<bool> checkDefer(int from, string guid, string commanddata); // add @ 20241210 stephen
+        Task<bool> checkDefer(int from, string guid, string commanddata, string cli_command = ""); // add @ 20241210 stephen, 2025/4/17 Dean add cli command for toast message
         Task<bool> checkDeferSchedule(int from, string guid, DeferItem item); // add @ 20241210 stephen
         Task showNotification(int from, string guid, DeferItem item); // add @ 20241219 stephen
 
@@ -137,6 +137,7 @@ namespace DDPM.SA.Common
         public string toast_message { get; set; }
         public bool is_defer { get; set; }
         public DeferItem defer_item { get; set; }
+        public string cli_command_format { get; set; }
     }
 
     // add @ 20250116 stephen

@@ -976,7 +976,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 // add @ 20241210 stephen: check is defer
                 //_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, uniqueAgentGuid.ToString(), request.remote_request);
                 if (request.remote_request.ToLower().Contains("defer") && 
-                    _CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, uniqueAgentGuid.ToString(), request.remote_request).Result)
+                    _CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, uniqueAgentGuid.ToString(), request.remote_request, taskInfo.command.ToLower()).Result)
                 {
                     WriteLog($"[CMA] _CliManagerPlugin.checkDefer = true, do not run command");
 

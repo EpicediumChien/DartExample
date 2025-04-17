@@ -1072,7 +1072,7 @@ namespace DDPM.SA.Plugin.CLIManager
                 deferResponse.Add(defer_id, isDefer);
             }
         }
-        public Task<bool> checkDefer(int from, string guid, string commanddata)
+        public Task<bool> checkDefer(int from, string guid, string commanddata, string cli_command = "")
         {
             try
             {
@@ -1086,7 +1086,8 @@ namespace DDPM.SA.Plugin.CLIManager
                         defer_id = did,
                         toast_message = commanddata,
                         is_defer = true,
-                        defer_item = item
+                        defer_item = item,
+                        cli_command_format = cli_command
                     });
                 }
 
