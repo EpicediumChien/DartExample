@@ -372,18 +372,25 @@ namespace DDPM.SA.Common
                                     }
                                     else if (tmpSS[0].ToUpper().Contains("INDEX") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DEVICEDATA") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                     {
-                                        int temp = int.Parse(t) - 1;
-                                        commandInput.DeviceIndex.Add(temp.ToString());
+                                        if (int.TryParse(t, out _))
+                                        {
+                                            int temp = int.Parse(t) - 1;
+                                            commandInput.DeviceIndex.Add(temp.ToString());
+                                        }
+                                        else
+                                        {
+                                            _Log.Error($"[ICLICommandTable] INDEX {tmpSS[0]}");
+                                        }
                                     }
                                     else if (tmpSS[0].ToUpper().Contains("PPID"))
                                     {
-                                        int temp = int.Parse(t) - 1;
-                                        commandInput.PPID.Add(temp.ToString());
+                                        //int temp = int.Parse(t) - 1;
+                                        commandInput.PPID.Add(t);
                                     }
                                     else if (tmpSS[0].ToUpper().Contains("SERIALNUMBER"))
                                     {
-                                        int temp = int.Parse(t) - 1;
-                                        commandInput.SerialNumber.Add(temp.ToString());
+                                        //int temp = int.Parse(t) - 1;
+                                        commandInput.SerialNumber.Add(t);
                                     }
                                     else
                                     {
