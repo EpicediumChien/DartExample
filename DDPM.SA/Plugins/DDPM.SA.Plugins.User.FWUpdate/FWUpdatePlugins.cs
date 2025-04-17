@@ -2662,7 +2662,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 //Updates can only be displayed if the firmware is HPD and the OS supports MPS.
                 ret = fwUpdateInfo.IsESISupported && ret && isUPD;
             }
-            if (GlobalDefinitions.isSupport210)
+            if (!GlobalDefinitions.isSupport210)
             {
                 if (fwUpdateInfo.DeviceType == DeviceType.LogicalAirAudio)//0205 Added by Bruce, to skip CADI FWU.
                 {
