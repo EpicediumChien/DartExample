@@ -8603,6 +8603,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 USB-C 的當地語系化字串。
+        /// </summary>
+        internal static string USBC {
+            get {
+                return ResourceManager.GetString("USBC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 USB KVM 的當地語系化字串。
         /// </summary>
         internal static string USBKVM {
