@@ -5051,6 +5051,22 @@ namespace DDPM.CLI.Plugins.Display
                     {"Rec709", "Rec.709"},//PIMS-356254
                     {"REC709", "Rec.709"},//PIMS-356254
                     {"BT709", "BT.709"},//PIMS-356254
+                    {"MultiscreenMatch", "Multiscreen Match"},
+                    {"User1", "User 1"},
+                    {"User2", "User 2"},
+                    {"User3", "User 3"},
+                    {"Custom1", "Custom 1"},
+                    {"Custom2", "Custom 2"},
+                    {"Custom3", "Custom 3"},
+                    {"DCIP3D65G2.4L100", "DCI P3 D65 G2.4 L100"},
+                    {"BT.709D65BT1886L100", "BT.709 D65 BT1886 L100"},
+                    {"BT.2020D65BT1886L100", "BT.2020 D65 BT1886 L100"},
+                    {"sRGBD65sRGBL250", "sRGB D65 sRGB L250"},
+                    {"AdobeRGBD65G2.2L250", "Adobe RGB D65 G2.2 L250"},
+                    {"AdobeRGBD50G2.2L250", "Adobe RGB D50 G2.2 L250"},
+                    {"sRGBD65sRGBL120", "sRGB D65 sRGB L120"},
+                    {"AdobeRGBD65G2.2L160", "Adobe RGB D65 G2.2 L160"},
+                    {"AdobeRGBD50G2.2L160", "Adobe RGB D50 G2.2 L160"},
                 };
                 value = colorPresetList.ContainsKey(value.ToUpper()) ? colorPresetList[value.ToUpper()] : value;
                 if (index.Count == 0 && serviceTag.Count == 0 && model.Count == 0)
