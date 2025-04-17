@@ -5796,7 +5796,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public event EventHandler<CMAIDEventArgs> DTPEventForCMAChanged;
 
-        public void OnCMAUpdateNotify(CMAIDEventArgs e)
+        public void OnCMAUpdateNotify(object sender, CMAIDEventArgs e)
         {
             writelog($"[OnCMAUpdateNotify] DTPEventForCMAChanged ... in ");
             EventHandler<CMAIDEventArgs> Handler = DTPEventForCMAChanged;
@@ -14192,7 +14192,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         //Derek 1119
                         _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
-                        _DTPProxyPlugin.CMAEventHandler += DTPEventForCMAChanged;
+                        _DTPProxyPlugin.CMAEventHandler += OnCMAUpdateNotify;
                         UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
                         if (GlobalDefinitions.isSupport210)
                         {
@@ -17725,7 +17725,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _SettingsPlugin.ITSettingsActionEvent -= _SettingsPlugin_ITSettingsActionEvent;
 
                     if (_DTPProxyPlugin != null)
-                        _DTPProxyPlugin.CMAEventHandler -= DTPEventForCMAChanged;
+                        _DTPProxyPlugin.CMAEventHandler -= OnCMAUpdateNotify;
                 }
 
                 IsDisposed = true;
