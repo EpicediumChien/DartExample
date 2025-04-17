@@ -1318,30 +1318,77 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 writelog("MICNOISECANCELLATION Entry");
                                 if (isAirAudio)
                                 {
-                                    return;
-                                }
-                                var Airsupport = _devMgr.GetAirAudioIsMicNoiseCancellationSupportedAsync(x.Guid).Result;
-                                if (Airsupport)
-                                {
-                                    writelog($"{x.Model} support MICNOISECANCELLATION");
-                                    var result = string.Empty;
-                                    if (isAirAudio)
+                                    var Airsupport = _devMgr.GetAirAudioIsMicNoiseCancellationSupportedAsync(x.Guid).Result;
+                                    if (Airsupport)
                                     {
-                                        writelog("Entry _devMgr.SetAirAudioMicNoiseCancellationAsync");
-                                        result = RunAsyncTimeout(_devMgr.SetAirAudioMicNoiseCancellationAsync(x.Guid, bl)).Result;
-                                        writelog("Exit _devMgr.SetAirAudioMicNoiseCancellationAsync");
+                                        writelog($"{x.Model} support MICNOISECANCELLATION");
+                                        var result = string.Empty;
+                                        if (isAirAudio)
+                                        {
+                                            writelog("Entry _devMgr.SetAirAudioMicNoiseCancellationAsync");
+                                            result = RunAsyncTimeout(_devMgr.SetAirAudioMicNoiseCancellationAsync(x.Guid, bl)).Result;
+                                            writelog("Exit _devMgr.SetAirAudioMicNoiseCancellationAsync");
+                                        }
+                                        else
+                                        {
+                                            writelog("Entry AirAudio _devMgr.SetMicNoiseCancellation");
+                                            result = RunAsyncTimeout(_devMgr.SetMicNoiseCancellation(bl, Guid.Parse(x.Guid))).Result;
+                                            writelog("Exit AirAudio _devMgr.SetMicNoiseCancellation");
+                                        }
+
+                                        if (result == "0")
+                                        {
+                                            x.Result = "PASS";
+                                            x.Value = _devMgr.GetAirAudioMicNoiseCancellationAsync(x.Guid).Result ? "ON" : "OFF";
+                                            x.Message = "N/A";
+                                        }
+                                        else if (result == "1")
+                                        {
+                                            x.Result = "FAIL";
+                                            x.Message = "Timeout";
+                                        }
+                                        else
+                                        {
+                                            x.Result = "FAIL";
+                                            x.Message = result;
+                                        }
+                                        writelog($"Set AirAudio MICNOISECANCELLATION Result: {x.Result}, Message: {x.Message}");
+                                        retcode = result == "0";
                                     }
                                     else
                                     {
-                                        writelog("Entry AirAudio _devMgr.SetMicNoiseCancellation");
+                                        writelog($"{x.Model} not support MICNOISECANCELLATION");
+                                        x.Value = "Not supported";
+                                        x.Result = "FAIL";
+                                        x.Message = "AirAudio not support MICNOISECANCELLATION";
+                                        retcode = false;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                var support = _devMgr.GetIsMicNoiseCancellationSupportedAsync(x.Guid).Result;
+                                if (support)
+                                {
+                                    writelog($"{x.Model} support MICNOISECANCELLATION");
+                                    var result = string.Empty;
+                                    if (x.Model == "WL7024")
+                                    {
+                                        writelog("Entry _devMgr.SetMicNoiseCancellationForMito");
+                                        result = RunAsyncTimeout(_devMgr.SetMicNoiseCancellationForMito(bl, Guid.Parse(x.Guid))).Result;
+                                        writelog("Exit _devMgr.SetMicNoiseCancellationForMito");
+                                    }
+                                    else
+                                    {
+                                        writelog("Entry _devMgr.SetMicNoiseCancellation");
                                         result = RunAsyncTimeout(_devMgr.SetMicNoiseCancellation(bl, Guid.Parse(x.Guid))).Result;
-                                        writelog("Exit AirAudio _devMgr.SetMicNoiseCancellation");
+                                        writelog("Exit _devMgr.SetMicNoiseCancellation");
                                     }
 
                                     if (result == "0")
                                     {
                                         x.Result = "PASS";
-                                        x.Value = _devMgr.GetAirAudioMicNoiseCancellationAsync(x.Guid).Result ? "ON" : "OFF";
+                                        x.Value = _devMgr.GetMicNoiseCancellationAsync(x.Guid).Result ? "ON" : "OFF";
                                         x.Message = "N/A";
                                     }
                                     else if (result == "1")
@@ -1354,7 +1401,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         x.Result = "FAIL";
                                         x.Message = result;
                                     }
-                                    writelog($"Set AirAudio MICNOISECANCELLATION Result: {x.Result}, Message: {x.Message}");
+                                    writelog($"Set MICNOISECANCELLATION Result: {x.Result}, Message: {x.Message}");
                                     retcode = result == "0";
                                 }
                                 else
@@ -1362,56 +1409,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     writelog($"{x.Model} not support MICNOISECANCELLATION");
                                     x.Value = "Not supported";
                                     x.Result = "FAIL";
-                                    x.Message = "AirAudio not support MICNOISECANCELLATION";
+                                    x.Message = "Audio not support MICNOISECANCELLATION";
                                     retcode = false;
                                 }
-                            }
-                            var support = _devMgr.GetIsMicNoiseCancellationSupportedAsync(x.Guid).Result;
-                            if (support)
-                            {
-                                writelog($"{x.Model} support MICNOISECANCELLATION");
-                                var result = string.Empty;
-                                if (x.Model == "WL7024")
-                                {
-                                    writelog("Entry _devMgr.SetMicNoiseCancellationForMito");
-                                    result = RunAsyncTimeout(_devMgr.SetMicNoiseCancellationForMito(bl, Guid.Parse(x.Guid))).Result;
-                                    writelog("Exit _devMgr.SetMicNoiseCancellationForMito");
-                                }
-                                else
-                                {
-                                    writelog("Entry _devMgr.SetMicNoiseCancellation");
-                                    result = RunAsyncTimeout(_devMgr.SetMicNoiseCancellation(bl, Guid.Parse(x.Guid))).Result;
-                                    writelog("Exit _devMgr.SetMicNoiseCancellation");
-                                }
 
-                                if (result == "0")
-                                {
-                                    x.Result = "PASS";
-                                    x.Value = _devMgr.GetMicNoiseCancellationAsync(x.Guid).Result ? "ON" : "OFF";
-                                    x.Message = "N/A";
-                                }
-                                else if (result == "1")
-                                {
-                                    x.Result = "FAIL";
-                                    x.Message = "Timeout";
-                                }
-                                else
-                                {
-                                    x.Result = "FAIL";
-                                    x.Message = result;
-                                }
-                                writelog($"Set MICNOISECANCELLATION Result: {x.Result}, Message: {x.Message}");
-                                retcode = result == "0";
                             }
-                            else
-                            {
-                                writelog($"{x.Model} not support MICNOISECANCELLATION");
-                                x.Value = "Not supported";
-                                x.Result = "FAIL";
-                                x.Message = "Audio not support MICNOISECANCELLATION";
-                                retcode = false;
-                            }
-                            
                         }
                     });
                     return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;

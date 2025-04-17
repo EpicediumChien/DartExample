@@ -12815,53 +12815,53 @@ namespace DDPM.CLI.Plugins.Display
                         if (GlobalDefinitions.isSupport210)
                         {
                             var isAirAudio = device.LogicalDeviceType.Equals("LogicalAirAudio", System.StringComparison.OrdinalIgnoreCase);
-                            if (!isAirAudio)
+                            if (isAirAudio)
                             {
-                                return false;
-                            }
-                            var Airsupport = _devMgr.GetAirAudioIsMicNoiseCancellationSupportedAsync(device.ID.ToString()).Result;
+                                var Airsupport = _devMgr.GetAirAudioIsMicNoiseCancellationSupportedAsync(device.ID.ToString()).Result;
 
-                            if (Airsupport)
-                            {
-                                if (property.Value.ToString() == "ON")
+                                if (Airsupport)
                                 {
-                                    if (isAirAudio)
+                                    if (property.Value.ToString() == "ON")
                                     {
-                                        writelog("_devMgr.SetAirAudioMicNoiseCancellationAsync entry");
-                                        _devMgr.SetAirAudioMicNoiseCancellationAsync(device.ID.ToString(), true);
-                                        writelog("_devMgr.SetAirAudioMicNoiseCancellationAsync exit");
+                                        if (isAirAudio)
+                                        {
+                                            writelog("_devMgr.SetAirAudioMicNoiseCancellationAsync entry");
+                                            _devMgr.SetAirAudioMicNoiseCancellationAsync(device.ID.ToString(), true);
+                                            writelog("_devMgr.SetAirAudioMicNoiseCancellationAsync exit");
+                                        }
+                                        else
+                                        {
+                                            writelog("_devMgr.SetMicNoiseCancellation entry");
+                                            _devMgr.SetMicNoiseCancellation(true, device.ID);
+                                            writelog("_devMgr.SetMicNoiseCancellation exit");
+                                        }
+                                    }
+                                    else if (property.Value.ToString() == "OFF")
+                                    {
+                                        if (isAirAudio)
+                                        {
+                                            writelog("_devMgr.SetAirAudioMicNoiseCancellationAsync entry");
+                                            _devMgr.SetAirAudioMicNoiseCancellationAsync(device.ID.ToString(), true);
+                                            writelog("_devMgr.SetAirAudioMicNoiseCancellationAsync exit");
+                                        }
+                                        else
+                                        {
+                                            writelog("_devMgr.SetMicNoiseCancellation entry");
+                                            _devMgr.SetMicNoiseCancellation(false, device.ID);
+                                            writelog("_devMgr.SetMicNoiseCancellation exit");
+                                        }
                                     }
                                     else
                                     {
-                                        writelog("_devMgr.SetMicNoiseCancellation entry");
-                                        _devMgr.SetMicNoiseCancellation(true, device.ID);
-                                        writelog("_devMgr.SetMicNoiseCancellation exit");
-                                    }
-                                }
-                                else if (property.Value.ToString() == "OFF")
-                                {
-                                    if (isAirAudio)
-                                    {
-                                        writelog("_devMgr.SetAirAudioMicNoiseCancellationAsync entry");
-                                        _devMgr.SetAirAudioMicNoiseCancellationAsync(device.ID.ToString(), true);
-                                        writelog("_devMgr.SetAirAudioMicNoiseCancellationAsync exit");
-                                    }
-                                    else
-                                    {
-                                        writelog("_devMgr.SetMicNoiseCancellation entry");
-                                        _devMgr.SetMicNoiseCancellation(false, device.ID);
-                                        writelog("_devMgr.SetMicNoiseCancellation exit");
+                                        resultMessages.Add("MICNOISECANCELLATION is wrong value");
+                                        ispass = false;
                                     }
                                 }
                                 else
                                 {
-                                    resultMessages.Add("MICNOISECANCELLATION is wrong value");
-                                    ispass = false;
+                                    resultMessages.Add("MICNOISECANCELLATION not support");
                                 }
-                            }
-                            else
-                            {
-                                resultMessages.Add("MICNOISECANCELLATION not support");
+                                break; 
                             }
                         }
                         var support = device.IsMicNoiseCancellationSupported;

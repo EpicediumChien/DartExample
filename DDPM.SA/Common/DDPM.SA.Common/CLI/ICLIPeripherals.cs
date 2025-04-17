@@ -268,23 +268,23 @@ namespace DDPM.SA.Common
                     if (GlobalDefinitions.isSupport210)
                     {
                         var isAirAudio = di.LogicalDeviceType.Equals("LogicalAirAudio", System.StringComparison.OrdinalIgnoreCase);
-                        if (!isAirAudio)
+                        if (isAirAudio)
                         {
+                            var Airsupport = devMgr.GetAirAudioIsMicNoiseCancellationSupportedAsync(di.ID.ToString()).Result;
+                            if (Airsupport)
+                            {
+                                retcode = devMgr.GetAirAudioMicNoiseCancellationAsync(di.ID.ToString()).Result;
+                                Value = (retcode) ? "ON" : "OFF";
+                                Result = "PASS";
+                                Message = "N/A";
+                            }
+                            else
+                            {
+                                Value = "N/A";
+                                Result = "FAIL";
+                                Message = "AirAudio not support MICNOISECANCELLATION";
+                            }
                             return;
-                        }
-                        var Airsupport = devMgr.GetAirAudioIsMicNoiseCancellationSupportedAsync(di.ID.ToString()).Result;
-                        if (Airsupport)
-                        {
-                            retcode = devMgr.GetAirAudioMicNoiseCancellationAsync(di.ID.ToString()).Result;
-                            Value = (retcode) ? "ON" : "OFF";
-                            Result = "PASS";
-                            Message = "N/A";
-                        }
-                        else
-                        {
-                            Value = "N/A";
-                            Result = "FAIL";
-                            Message = "AirAudio not support MICNOISECANCELLATION";
                         }
                     }
                     var support = di.IsMicNoiseCancellationSupported;
