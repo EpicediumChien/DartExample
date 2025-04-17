@@ -357,90 +357,23 @@
                                VerticalAlignment="Top"
                                FontFamily="Roboto"
                                FontSize="20"
-                               FontWeight="Medium"
-                               Margin="10,10,31,10"
                                TextWrapping="WrapWithOverflow"
                                Foreground="{DynamicResource Default_SA_OSD_PathColor}"
                                Text="{Binding ShowStringTitle}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Setter Property="Margin" Value="10,10,31,10" />
+                                <Setter Property="FontWeight" Value="Medium" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="Unknown">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
+                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="FW">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                        <Setter Property="Margin" Value="32,32,32,0" />
+                                        <Setter Property="FontWeight" Value="Regular" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="Keyboard">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
+                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="FingerPrint">
+                                        <Setter Property="Visibility" Value="Visible" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="Mouse">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="Headset">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="Pen">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="QAM">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="CapsLockOn">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="CapsLockOff">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="ScrollLockOn">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="ScrollLockOff">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="NumLockOn">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="NumLockOff">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="WalkAwayLock">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="StartRecording">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="EasyMemory">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
-                                    </DataTrigger>
-
                                 </Style.Triggers>
                             </Style>
                         </TextBlock.Style></TextBlock>
@@ -580,9 +513,9 @@
                                         <Setter Property="ContentTemplate"
                                                 Value="{StaticResource ScrollLockOFFIcon}" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
+                                    <DataTrigger Binding="{Binding OSDType_Device}" 
                                                  Value="FW">
-                                        <Setter Property="Visibility"
+                                        <Setter Property="Visibility" 
                                                 Value="Collapsed" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding OSDType_Device}"
@@ -611,37 +544,28 @@
                     </ContentControl>
                     <StackPanel x:Name="StringPart"
                                 Grid.Row="1"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
                                 Orientation="Vertical">
                         <StackPanel.Style>
                             <Style TargetType="StackPanel">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="QAM">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
+                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="QAM">
+                                        <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="FW">
-                                        <Setter Property="Grid.Row"
-                                                Value="0" />
-                                        <Setter Property="Grid.RowSpan"
-                                                Value="2" />
+                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="FW">
+                                        <Setter Property="Grid.Row" Value="0" />
+                                        <Setter Property="Grid.RowSpan" Value="2" />
+                                        <Setter Property="HorizontalAlignment" Value="Left" />
+                                        <Setter Property="VerticalAlignment" Value="Top"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="StartRecording">
-                                        <Setter Property="Grid.Row"
-                                                Value="0" />
-                                        <Setter Property="Grid.RowSpan"
-                                                Value="2" />
+                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="StartRecording">
+                                        <Setter Property="Grid.Row" Value="0" />
+                                        <Setter Property="Grid.RowSpan" Value="2" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding OSDType_Device}"
-                                                 Value="EasyMemory">
-                                        <Setter Property="Grid.Row"
-                                                Value="0" />
-                                        <Setter Property="Grid.RowSpan"
-                                                Value="2" />
+                                    <DataTrigger Binding="{Binding OSDType_Device}" Value="EasyMemory">
+                                        <Setter Property="Grid.Row" Value="0" />
+                                        <Setter Property="Grid.RowSpan" Value="2" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -657,21 +581,17 @@
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding OSDType_Device}"
-                                                     Value="FW">
-                                            <Setter Property="Visibility"
-                                                    Value="Collapsed" />
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="FW">
+                                            <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding OSDType_Device}"
-                                                     Value="StartRecording">
-                                            <Setter Property="Visibility"
-                                                    Value="Collapsed" />
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="StartRecording">
+                                            <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                        <TextBlock HorizontalAlignment="Center"
+                        <TextBlock 
                                    VerticalAlignment="Top"
                                    FontFamily="Roboto"
                                    TextWrapping="Wrap"
@@ -679,11 +599,10 @@
                                    Text="{Binding ShowStringContent}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
+                                    <Setter Property="TextAlignment" Value="Center" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding OSDType_Device}"
-                                                     Value="WalkAwayLock">
-                                            <Setter Property="Margin"
-                                                    Value="0,10,0,0" />
+                                        <DataTrigger Binding="{Binding OSDType_Device}" Value="WalkAwayLock">
+                                            <Setter Property="Margin" Value="0,10,0,0" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding OSDType_Device}" Value="Unknown">
                                             <Setter Property="FontSize" Value="14" />
@@ -730,8 +649,10 @@
                                             <Setter Property="FontWeight" Value="Medium" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding OSDType_Device}" Value="FW">
-                                            <Setter Property="FontSize" Value="14" />
-                                            <Setter Property="FontWeight" Value="Medium" />
+                                            <Setter Property="FontSize" Value="16" />
+                                            <Setter Property="FontWeight" Value="Regular" />
+                                            <Setter Property="TextAlignment" Value="Left" />
+                                            <Setter Property="Margin" Value="32,8,32,0" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding OSDType_Device}" Value="Mute">
                                             <Setter Property="FontSize" Value="14" />

@@ -12048,7 +12048,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else
                 {
                     //_QAM.Show();
-                    _QAM?.Dispatcher.Invoke(() => {
+                    _QAM?.Dispatcher.Invoke(() =>
+                    {
                         _QAM?.Show();
                         _QAM?.Activate();
                     });
@@ -15062,22 +15063,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             /*iTest++;
             if (iTest % 2 == 1)
             {
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Pen, "Dell Multi-Device pen - MS5320W");
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetyyyyyyyyy - MS5320W", true);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Fingerprint);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Keyboard - MS5320W");
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Pen, "Dell Multi-Device pen - MS5320W");
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetyyyyyyyyy - MS5320W", true);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Fingerprint);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
             }
             else
             {
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.StartRecording);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.EasyMemory);
-                //_OSD_Controler.CloseMultipleOSDByGuidAndOp("377C7B36-ED5B-446F-93A6-3418F0447836", OSDType_Op.None);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", false);
-                //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("FW", LangHelper.Instance["Firmware_update_unsuccessful"], true));
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.WalkAwayLock);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.StartRecording);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.EasyMemory);
+                _OSD_Controler.CloseMultipleOSDByGuidAndOp("377C7B36-ED5B-446F-93A6-3418F0447836", OSDType_Op.None);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, "Dell Multi-Device headsetxxxxxxxxxxx - MS5320W", false);
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("FW", LangHelper.Instance["Firmware_update_unsuccessful"], true));
+                ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, true, ("Error", LangHelper.Instance["Timeout_error"], true));
             }*/
             //will register as ALT+Z ?
             if (_altPressed && strKey.Equals("Z") && !_ctrlPressed && !_shiftPressed)
