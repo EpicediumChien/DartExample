@@ -65,7 +65,17 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 UIDebugPanel.Visibility = Visibility.Visible;
             }
             this.MinWidth = System.Windows.Application.Current.MainWindow.MinWidth;
+            //System.Windows.Application.Current.MainWindow.StateChanged -= MainWindow_StateChanged;
+            //System.Windows.Application.Current.MainWindow.StateChanged += MainWindow_StateChanged;
         }
+
+        //private void MainWindow_StateChanged(object? sender, EventArgs e)
+        //{
+        //    Dispatcher.BeginInvoke(new Action(() =>
+        //    {
+        //        RefreshListViewItemWidth();
+        //    }), System.Windows.Threading.DispatcherPriority.ContextIdle);
+        //}
 
         private void ImportNotifyEventHandler(object sender, MonitorInfo mo)
         {
@@ -369,11 +379,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //Calculate the sizeItem
             double sizeItem = sizeView - (minGap * 2 * gapRatio); //sizeView * ratioItemView;
 
-            //But the sizeItem must >= minWidth
-            if (sizeItem < minWidth)
-                return minWidth;
-
-            return sizeItem;
+            return justifyMinMaxWidth(sizeItem);
         }
 
         private double CalculateItemWidthV3_ItemsPerRow2(double cxView, double cyView)
@@ -386,9 +392,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 gapRatio = 2.0;
             }
-            double cxItem = (cxView - (minGap * 3.000 * gapRatio)) / 2.000;
-            double cyItem = (cyView - (minGap * 2.000 * gapRatio));
+            double cxItem = (cxView - minGap * 3.000 * gapRatio) / 2.000;
+            double cyItem = (cyView - minGap * gapRatio) / 2.00;
             double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2 * gapRatio);
+            if(_ddpmHomePageViewModel != null)
+                _ddpmHomePageViewModel.OrderingWidth = justifyMinMaxWidth(sizeItem) * 2 + minGap * 3;
+            // 1.16 for view item size
             return sizeItem;
         }
 
@@ -400,9 +409,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 hugeReduce = 100;
             }
-            double cxItem = (cxView - (minGap * 4.000)) / 3.000;
-            double cyItem = (cyView - (minGap * 2.000));
+            double cxItem = (cxView - minGap * 4.000) / 3.000;
+            double cyItem = (cyView - minGap) / 2.00;
             double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2 - hugeReduce * 3);
+
+            if (_ddpmHomePageViewModel != null)
+                _ddpmHomePageViewModel.OrderingWidth = justifyMinMaxWidth(sizeItem) * 3 + minGap * 4;
             return sizeItem;
         }
 
@@ -410,14 +422,25 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             //Add margin in cxItem to avoid internal margin
             double cxItem = (cxView - (minGap * 5.000)) / 4.000;
-            double cyItem = (cyView - (minGap * 2.000));
+            double cyItem = (cyView - minGap) / 2.00;
             double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
+            if (_ddpmHomePageViewModel != null)
+                _ddpmHomePageViewModel.OrderingWidth = justifyMinMaxWidth(sizeItem) * 4 + minGap * 5;
             return sizeItem;
         }
 
         private void rootUserControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
         {
             RefreshListViewItemWidth();
+        }
+
+        private double justifyMinMaxWidth(double originalWidth)
+        {
+            if (originalWidth < 250)
+                return 250;
+            if (originalWidth > 500)
+                return 500;
+            return originalWidth;
         }
 
         #endregion RWD HomeDevices
