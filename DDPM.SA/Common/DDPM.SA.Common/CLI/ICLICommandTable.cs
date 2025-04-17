@@ -823,7 +823,7 @@ namespace DDPM.SA.Common
                 commandInput.isNormalCommands = true;
         }
 
-        public static int Response_FormatError()
+        public static int Response_FormatError(ILog log = null)
         {
             CLI_RESPONSE result = new CLI_RESPONSE()
             {
@@ -837,12 +837,13 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Command line format error"
             };
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-
+            string output = JsonConvert.SerializeObject(result, Formatting.Indented);
+            Console.WriteLine(output);
+            log?.Info(output);
             return (int)CLI_ExitCode.fail_FormantError;
         }
 
-        public static int Response_UnelevatedError()
+        public static int Response_UnelevatedError(ILog log = null)
         {
             CLI_RESPONSE result = new CLI_RESPONSE()
             {
@@ -856,11 +857,13 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "DDPM CLI should be executed as elevated process"
             };
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            string output = JsonConvert.SerializeObject(result, Formatting.Indented);
+            Console.WriteLine(output);
+            log?.Info(output);
             return (int)CLI_ExitCode.fail_notAdmin;
         }
 
-        public static int Response_TimeoutError(CommandLineInput commandLineInput)
+        public static int Response_TimeoutError(CommandLineInput commandLineInput, ILog log = null)
         {
             CLI_RESPONSE result = new CLI_RESPONSE()
             {
@@ -874,11 +877,13 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Timeout for obtaining DDPM SA (CLI Manager)"
             };
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            string output = JsonConvert.SerializeObject(result, Formatting.Indented);
+            Console.WriteLine(output);
+            log?.Info(output);
             return (int)CLI_ExitCode.target_subagent_timeout;
         }
 
-        public static int Response_WrongIndex(CommandLineInput commandLineInput)
+        public static int Response_WrongIndex(CommandLineInput commandLineInput, ILog log = null)
         {
             CLI_RESPONSE result = new CLI_RESPONSE()
             {
@@ -892,7 +897,9 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Wrong ID value"
             };
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            string output = JsonConvert.SerializeObject(result, Formatting.Indented);
+            Console.WriteLine(output);
+            log?.Info(output);
             return (int)CLI_ExitCode.fail_Value;
         }
 
@@ -1022,7 +1029,7 @@ namespace DDPM.SA.Common
             };
         }
 
-        public static int ResponseFWUpdateDeviceNotConnected(CommandLineInput commandLineInput)
+        public static int ResponseFWUpdateDeviceNotConnected(CommandLineInput commandLineInput, ILog log = null)
         {
             APP_RESPONSE result = new APP_RESPONSE()
             {
@@ -1032,11 +1039,13 @@ namespace DDPM.SA.Common
                 Value = commandLineInput.Options.Count > 0 ? commandLineInput.Options[0].Option_Value : "N/A",
                 Message = "Device not connected, add to schedule."
             };
-            Console.WriteLine(result.ToJson());
+            string output = result.ToJson();
+            Console.WriteLine(output);
+            log?.Info(output);
             return (int)CLI_ExitCode.success;
         }
 
-        public static int ResponseDefer(CommandLineInput commandLineInput)
+        public static int ResponseDefer(CommandLineInput commandLineInput, ILog log = null)
         {
             APP_RESPONSE result = new APP_RESPONSE()
             {
@@ -1046,11 +1055,13 @@ namespace DDPM.SA.Common
                 Value = commandLineInput.Options.Count > 0 ? string.IsNullOrWhiteSpace(commandLineInput.Options[0].Option_Value) ? "N/A" : commandLineInput.Options[0].Option_Value : "N/A",
                 Message = "Set defer operation completed"
             };
-            Console.WriteLine(result.ToJson());
+            string output = result.ToJson();
+            Console.WriteLine(output);
+            log?.Info(output);
             return (int)CLI_ExitCode.success;
         }
 
-        public static int ResponseNotSupportValue(CommandLineInput commandLineInput)
+        public static int ResponseNotSupportValue(CommandLineInput commandLineInput, ILog log = null)
         {
             APP_RESPONSE result = new APP_RESPONSE()
             {
@@ -1060,7 +1071,9 @@ namespace DDPM.SA.Common
                 Value = commandLineInput.Options.Count > 0 ? commandLineInput.Options[0].Option_Value : "N/A",
                 Message = "Option value not supported"
             };
-            Console.WriteLine(result.ToJson());
+            string output = result.ToJson();
+            Console.WriteLine(output);
+            log?.Info(output);
             return (int)CLI_ExitCode.fail_option_value;
         }
 
@@ -1457,7 +1470,7 @@ namespace DDPM.SA.Common
             return (int)CLI_ExitCode.success;
         }
 
-        public static int Response_FormatErrorRecommendation(CommandLineInput commandLineInput)
+        public static int Response_FormatErrorRecommendation(CommandLineInput commandLineInput, ILog log = null)
         {
             if (true == CLIHelpCommandStructure.IsTargetTypeExists(commandLineInput))
             {
@@ -1477,7 +1490,9 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Command line format error"
             };
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            string output = JsonConvert.SerializeObject(result, Formatting.Indented);
+            Console.WriteLine(output);
+            log?.Info(output);
             return (int)CLI_ExitCode.fail_FormantError;
         }
     }
