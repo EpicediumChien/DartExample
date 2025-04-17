@@ -158,6 +158,7 @@ namespace DDPM.SA.Common
                     }
                     return;
                 case "MICSWITCH":
+                    TargetFeature = targetFeature;
                     if (di.IsMicEnumerationSupported)
                     {
                         retcode = di.IsMicEnumerationOn;
@@ -165,7 +166,6 @@ namespace DDPM.SA.Common
                         //Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
                         Result = "PASS";
                         Message = "N/A";
-                        TargetFeature = targetFeature;
                     }
                     else
                     {
@@ -266,14 +266,44 @@ namespace DDPM.SA.Common
                     break;
                 case "MICNOISECANCELLATION":
                     TargetFeature = targetFeature;
-                    if (!di.IsMicNoiseCancellationSupported)
+                    if (GlobalDefinitions.isSupport210)
+                    {
+                        var isAirAudio = di.LogicalDeviceType.Equals("LogicalAirAudio", System.StringComparison.OrdinalIgnoreCase);
+                        if (isAirAudio)
+                        {
+                            var Airsupport = devMgr.GetAirAudioIsMicNoiseCancellationSupportedAsync(di.ID.ToString()).Result;
+                            if (Airsupport)
+                            {
+                                retcode = devMgr.GetAirAudioMicNoiseCancellationAsync(di.ID.ToString()).Result;
+                                Value = (retcode) ? "ON" : "OFF";
+                                Result = "PASS";
+                                Message = "N/A";
+                            }
+                            else
+                            {
+                                Value = "N/A";
+                                Result = "FAIL";
+                                Message = "AirAudio not support MICNOISECANCELLATION";
+                            }
+                            return;
+                        }
+                    }
+                    var support = di.IsMicNoiseCancellationSupported;
+                    if (support)
+                    {
+                        retcode = di.MicNoiseCancellation;
+                        Value = (retcode) ? "ON" : "OFF";
+                        Result = "PASS";
+                        Message = "N/A";
+                    }
+                    else
                     {
                         Value = "N/A";
                         Result = "FAIL";
                         Message = "Audio not support MICNOISECANCELLATION";
-                        return;
                     }
-                    break;
+                   
+                    return;
                 case "WEARDETECTION":
                     TargetFeature = targetFeature;
                     if (!di.IsWearDetectionSupported)

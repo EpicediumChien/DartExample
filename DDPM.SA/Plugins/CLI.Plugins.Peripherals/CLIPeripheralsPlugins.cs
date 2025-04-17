@@ -76,6 +76,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
         bool _recode_head = false;
         bool _recode_speak = false;
+        bool _recode_air_audio = false;
 
         public CLIEventResult SetCommandArgs(CLIEventArgs input, IDeviceManagerSA devMgr)
         {
@@ -107,7 +108,15 @@ namespace DDPM.CLI.Plugins.Peripherals
                             _commandLineInput.PluginsType = "LOGICALWIREDAUDIO";
                             _recode_speak = true;
                         }
-
+                        if (GlobalDefinitions.isSupport210)
+                        {
+                            if (g.LogicalDeviceType == "LogicalAirAudio")
+                            {
+                                writelog("LogicalAirAudio Entry");
+                                _commandLineInput.PluginsType = "LOGICALAIRAUDIO";
+                                _recode_air_audio = true;
+                            }
+                        }
                     }
 
                 }
@@ -579,12 +588,12 @@ namespace DDPM.CLI.Plugins.Peripherals
 
             if (_commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS") && _commandLineInput.TargetType.Equals("AUDIO"))// for audio headset RESTOREFACTORYDEFAULTS.
             {
-                if (_commandLineInput.PluginsType.Equals("HEADSET"))
+                if (_recode_head)
                 {
                     SetResults.ForEach(x =>
                     {
                         x.Value = "";
-                        if (x.Result == "")
+                        if (x.Result == "" && _deviceinfo.FirstOrDefault(_ => _.ID.ToString() == x.Guid).LogicalDeviceType.Equals("LogicalHeadset", StringComparison.OrdinalIgnoreCase))
                         {
                             writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS HEADSET Entry");
                             var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadsetForCLI(x.Guid, true)).Result;
@@ -612,12 +621,12 @@ namespace DDPM.CLI.Plugins.Peripherals
                     });
                 }
 
-                if (_commandLineInput.PluginsType.Equals("LOGICALWIREDAUDIO"))
+                if (_recode_speak)
                 {
                     SetResults.ForEach(x =>
                     {
                         x.Value = "";
-                        if (x.Result == "")
+                        if (x.Result == "" && _deviceinfo.FirstOrDefault(_ => _.ID.ToString() == x.Guid).LogicalDeviceType.Equals("LogicalWiredAudio", StringComparison.OrdinalIgnoreCase))
                         {
                             writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS LOGICALWIREDAUDIO Entry");
                             var result = RunAsyncTimeout(_devMgr.SetResetToDefaultAsyncForSoundbar(x.Guid, true)).Result;
@@ -644,65 +653,38 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                     });
                 }
-
-                if (_recode_speak && _recode_head)
+                if (GlobalDefinitions.isSupport210)
                 {
-                    SetResults.ForEach(x =>
+                    if (_recode_air_audio)
                     {
-                        x.Value = "";
-                        if (x.Result == "")
+                        SetResults.ForEach(x =>
                         {
-                            writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS Soundbar Entry");
-                            var result = RunAsyncTimeout(_devMgr.SetResetToDefaultAsyncForSoundbar(x.Guid, true)).Result;
-                            writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS Soundbar DONE");
-                            if (result == "0")
+                            x.Value = "";
+                            if (x.Result == "" && _deviceinfo.FirstOrDefault(_ => _.ID.ToString() == x.Guid).LogicalDeviceType.Equals("LogicalAirAudio", StringComparison.OrdinalIgnoreCase))
                             {
-                                x.Result = "PASS";
-                                //retcode_ = _devMgr.GetIsAutoFramingOn(ItemId).Result;
-                                x.Value = "SUCCESS";
-                                //x.Value += "," + (data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? "LOCK" : "UNLOCK");
-                                x.Message = "N/A";
+                                writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS LOGICALAIRAUDIO Entry");
+                                var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForAirAudioAsync(x.Guid, true)).Result;
+                                writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS LOGICALAIRAUDIO DONE");
+                                if (result == "0")
+                                {
+                                    x.Result = "PASS";
+                                    x.Value = "SUCCESS";
+                                    x.Message = "N/A";
+                                }
+                                else if (result == "1")
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = "Timeout";
+                                }
+                                else
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = result;
+                                }
+                                retcode = (result == "0") ? true : false;
                             }
-                            else if (result == "1")
-                            {
-                                x.Result = "FAIL";
-                                x.Message = "Timeout";
-                            }
-                            else
-                            {
-                                x.Result = "FAIL";
-                                x.Message = result;
-                            }
-                            retcode = (result == "0") ? true : false;
-                        }
-                    });
-                    SetResults.ForEach(x =>
-                    {
-                        x.Value = "";
-                        if (x.Result == "")
-                        {
-                            var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadsetForCLI(x.Guid, true)).Result;
-                            if (result == "0")
-                            {
-                                x.Result = "PASS";
-                                //retcode_ = _devMgr.GetIsAutoFramingOn(ItemId).Result;
-                                x.Value = "SUCCESS";
-                                //x.Value += "," + (data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? "LOCK" : "UNLOCK");
-                                x.Message = "N/A";
-                            }
-                            else if (result == "1")
-                            {
-                                x.Result = "FAIL";
-                                x.Message = "Timeout";
-                            }
-                            else
-                            {
-                                x.Result = "FAIL";
-                                x.Message = result;
-                            }
-                            retcode = (result == "0") ? true : false;
-                        }
-                    });
+                        });
+                    }
                 }
                 writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS" + (retcode ? "SUCCESS" : "FAIL"));
                 return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
@@ -1330,50 +1312,107 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            writelog("MICNOISECANCELLATION Entry");
-                            if (_devMgr.GetIsMicNoiseCancellationSupportedAsync(x.Guid).Result)
+                            if (GlobalDefinitions.isSupport210)
                             {
-                                writelog($"HeadSet {x.Model} support MICNOISECANCELLATION");
-                                var result = string.Empty;
-                                if (x.Model == "WL7024")
+                                var isAirAudio = _deviceinfo.FirstOrDefault(_ => _.ID.ToString() == x.Guid).LogicalDeviceType.Equals("LogicalAirAudio", StringComparison.OrdinalIgnoreCase);
+                                writelog("MICNOISECANCELLATION Entry");
+                                if (isAirAudio)
                                 {
-                                    writelog("Entry _devMgr.SetMicNoiseCancellationForMito");
-                                    result = RunAsyncTimeout(_devMgr.SetMicNoiseCancellationForMito(bl, Guid.Parse(x.Guid))).Result;
-                                    writelog("Exit _devMgr.SetMicNoiseCancellationForMito");
-                                }
-                                else
-                                {
-                                    writelog("Entry _devMgr.SetMicNoiseCancellation");
-                                    result = RunAsyncTimeout(_devMgr.SetMicNoiseCancellation(bl, Guid.Parse(x.Guid))).Result;
-                                    writelog("Exit _devMgr.SetMicNoiseCancellation");
-                                }
+                                    var Airsupport = _devMgr.GetAirAudioIsMicNoiseCancellationSupportedAsync(x.Guid).Result;
+                                    if (Airsupport)
+                                    {
+                                        writelog($"{x.Model} support MICNOISECANCELLATION");
+                                        var result = string.Empty;
+                                        if (isAirAudio)
+                                        {
+                                            writelog("Entry _devMgr.SetAirAudioMicNoiseCancellationAsync");
+                                            result = RunAsyncTimeout(_devMgr.SetAirAudioMicNoiseCancellationAsync(x.Guid, bl)).Result;
+                                            writelog("Exit _devMgr.SetAirAudioMicNoiseCancellationAsync");
+                                        }
+                                        else
+                                        {
+                                            writelog("Entry AirAudio _devMgr.SetMicNoiseCancellation");
+                                            result = RunAsyncTimeout(_devMgr.SetMicNoiseCancellation(bl, Guid.Parse(x.Guid))).Result;
+                                            writelog("Exit AirAudio _devMgr.SetMicNoiseCancellation");
+                                        }
 
-                                if (result == "0")
-                                {
-                                    x.Result = "PASS";
-                                    x.Value = _devMgr.GetMicNoiseCancellationAsync(x.Guid).Result ? "ON" : "OFF";
-                                    x.Message = "N/A";
+                                        if (result == "0")
+                                        {
+                                            x.Result = "PASS";
+                                            x.Value = _devMgr.GetAirAudioMicNoiseCancellationAsync(x.Guid).Result ? "ON" : "OFF";
+                                            x.Message = "N/A";
+                                        }
+                                        else if (result == "1")
+                                        {
+                                            x.Result = "FAIL";
+                                            x.Message = "Timeout";
+                                        }
+                                        else
+                                        {
+                                            x.Result = "FAIL";
+                                            x.Message = result;
+                                        }
+                                        writelog($"Set AirAudio MICNOISECANCELLATION Result: {x.Result}, Message: {x.Message}");
+                                        retcode = result == "0";
+                                    }
+                                    else
+                                    {
+                                        writelog($"{x.Model} not support MICNOISECANCELLATION");
+                                        x.Value = "Not supported";
+                                        x.Result = "FAIL";
+                                        x.Message = "AirAudio not support MICNOISECANCELLATION";
+                                        retcode = false;
+                                    }
                                 }
-                                else if (result == "1")
-                                {
-                                    x.Result = "FAIL";
-                                    x.Message = "Timeout";
-                                }
-                                else
-                                {
-                                    x.Result = "FAIL";
-                                    x.Message = result;
-                                }
-                                writelog($"Set MICNOISECANCELLATION Result: {x.Result}, Message: {x.Message}");
-                                retcode = result == "0";
                             }
                             else
                             {
-                                writelog($"HeadSet {x.Model} not support MICNOISECANCELLATION");
-                                x.Value = "Not supported";
-                                x.Result = "FAIL";
-                                x.Message = "Audio not support MICNOISECANCELLATION";
-                                retcode = false;
+                                var support = _devMgr.GetIsMicNoiseCancellationSupportedAsync(x.Guid).Result;
+                                if (support)
+                                {
+                                    writelog($"{x.Model} support MICNOISECANCELLATION");
+                                    var result = string.Empty;
+                                    if (x.Model == "WL7024")
+                                    {
+                                        writelog("Entry _devMgr.SetMicNoiseCancellationForMito");
+                                        result = RunAsyncTimeout(_devMgr.SetMicNoiseCancellationForMito(bl, Guid.Parse(x.Guid))).Result;
+                                        writelog("Exit _devMgr.SetMicNoiseCancellationForMito");
+                                    }
+                                    else
+                                    {
+                                        writelog("Entry _devMgr.SetMicNoiseCancellation");
+                                        result = RunAsyncTimeout(_devMgr.SetMicNoiseCancellation(bl, Guid.Parse(x.Guid))).Result;
+                                        writelog("Exit _devMgr.SetMicNoiseCancellation");
+                                    }
+
+                                    if (result == "0")
+                                    {
+                                        x.Result = "PASS";
+                                        x.Value = _devMgr.GetMicNoiseCancellationAsync(x.Guid).Result ? "ON" : "OFF";
+                                        x.Message = "N/A";
+                                    }
+                                    else if (result == "1")
+                                    {
+                                        x.Result = "FAIL";
+                                        x.Message = "Timeout";
+                                    }
+                                    else
+                                    {
+                                        x.Result = "FAIL";
+                                        x.Message = result;
+                                    }
+                                    writelog($"Set MICNOISECANCELLATION Result: {x.Result}, Message: {x.Message}");
+                                    retcode = result == "0";
+                                }
+                                else
+                                {
+                                    writelog($"{x.Model} not support MICNOISECANCELLATION");
+                                    x.Value = "Not supported";
+                                    x.Result = "FAIL";
+                                    x.Message = "Audio not support MICNOISECANCELLATION";
+                                    retcode = false;
+                                }
+
                             }
                         }
                     });
@@ -2466,7 +2505,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     }
                                     else if (ss_1[0].ToUpper().Equals("AUDIO"))
                                     {
-                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.LogicalDeviceType == "LogicalHeadset" || x.LogicalDeviceType == "LogicalWiredAudio").ToList();
+                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.LogicalDeviceType == "LogicalHeadset" || x.LogicalDeviceType == "LogicalWiredAudio" ).ToList();
 
                                         switch (g.LogicalDeviceType)
                                         {
@@ -2480,6 +2519,34 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             default:
                                                 break;
                                         }
+                                        if (GlobalDefinitions.isSupport210)
+                                        {
+                                            fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.LogicalDeviceType == "LogicalAirAudio").ToList();
+                                            switch (g.LogicalDeviceType)
+                                            {
+                                                case "LogicalAirAudio":
+
+                                                    _recode_speaker = true;
+                                                    _record_soundbar = true;
+
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    if (GlobalDefinitions.isSupport210)
+                                    {
+                                        if (g.LogicalDeviceType == "LogicalAirAudio")
+                                        {
+                                            _recode_air_audio = true;
+                                            fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.LogicalDeviceType == "LogicalAirAudio").ToList();
+                                        }
+                                        //else if (g.LogicalDeviceType == "LogicalAirAudio")
+                                        //{
+                                        //    _recode_air_audio = true;
+                                        //    fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.LogicalDeviceType == "LogicalAirAudio").ToList();
+                                        //}
                                     }
                                     Trace.WriteLine($"g.PhyscialDeviceID  =  {g.LogicalDeviceType}");
                                 }
@@ -3780,6 +3847,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                     deviceTypes.Add(DeviceType.PhysicalWiredAudio);
                     deviceTypes.Add(DeviceType.PhysicalAudioDongle);
                     deviceTypes.Add(DeviceType.PhysicalBluetoothAudio);
+                    if (GlobalDefinitions.isSupport210)
+                    {
+                        deviceTypes.Add(DeviceType.LogicalAirAudio);
+                    }
                     deviceType = DeviceType.LogicalWiredAudio;
                     break;
                 case "WEBCAM":
