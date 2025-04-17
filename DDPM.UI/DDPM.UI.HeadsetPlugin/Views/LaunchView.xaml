@@ -151,7 +151,7 @@
             <Grid VerticalAlignment="Bottom">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                        <Border Style="{StaticResource BorderConnection}" Margin="-70,0,0,8" Visibility="Collapsed" x:Name="DongleConnection">
+                        <Border Style="{StaticResource BorderConnection}" Margin="-70,0,0,8" Visibility="Visible" x:Name="DongleConnection">
                             <Grid Margin="16">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="auto"/>
@@ -167,14 +167,15 @@
                                     </Grid.ColumnDefinitions>
                                     <UXControls:UXTextBlock Grid.Column="0" Name="txt3" Style="{StaticResource ConnectionStyle3}" />
                                     <!--<Image Margin="4,0,0,0" Width="16" Height="16" Source="/DDPM.UI.Resources;component/Resources/Images/Dongle.png" />-->
-                                    <ContentControl Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16"  Margin="0,2,8,2"
+                                    <ContentControl Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16"  Margin="0,5,8,5"
                                                     Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
-                                    <UXControls:UXTextBlock Grid.Column="2" Name="txtSystemName3" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"
-                                                            HorizontalAlignment="Left" FontFamily="{StaticResource RobotoFont}" FontSize="14" Style="{StaticResource ConnectionStyle3}" />
+                                    <UXControls:UXTextBlock Grid.Column="2" Name="txtSystemName3" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" LineHeight="20" Margin="0,3"
+                                                            HorizontalAlignment="Left" FontFamily="{StaticResource RobotoFont}" Style="{StaticResource ConnectionStyle3}" />
                                 </Grid>
-                                <Line Grid.Row="1" X1="15" Y1="10" X2="235" Y2="10" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" Height="16" VerticalAlignment="Center" />
-                                <UXControls:UXTextBlock Grid.Row="2" Name="txtFirmware" Style="{StaticResource ConnectionStyle3}" Margin="0,5,0,13" TextWrapping="WrapWithOverflow" />
-                                <UXControls:UXTextBlock Grid.Row="3" Name="txtSlot" Style="{StaticResource ConnectionStyle3}" Margin="0,5" TextWrapping="WrapWithOverflow"/>
+                                <Line Grid.Row="1" X1="0" Y1="8" X2="220" Y2="8" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" Height="16" />
+                                <UXControls:UXTextBlock Grid.Row="2" Name="txtFirmware" Style="{StaticResource ConnectionStyle3}" LineHeight="24" TextWrapping="WrapWithOverflow" 
+                                                        Margin="0,0,0,8"/>
+                                <UXControls:UXTextBlock Grid.Row="3" Name="txtSlot" Style="{StaticResource ConnectionStyle3}" LineHeight="24" TextWrapping="WrapWithOverflow"/>
                             </Grid>
                         </Border>
                         <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="BLConnection" VerticalAlignment="Bottom" Width="252">
