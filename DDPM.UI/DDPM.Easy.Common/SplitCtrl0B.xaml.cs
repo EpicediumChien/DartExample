@@ -89,13 +89,16 @@ namespace DDPM.Easy.Common
         //public List<CellObj> CellList { get; set; } = new List<CellObj>();
         public void InitCellList()
         {
-            cellListH.Clear();
+            //cellListH.Clear();
             //cellListH.Add(new CellObj("2b1", cell_2b1));
             //cellListH.Add(new CellObj("2b2", cell_2b2));
 
-            cellListV.Clear();
+            //cellListV.Clear();
             //cellListV.Add(new CellObj("2B1", cell_2B1));
             //cellListV.Add(new CellObj("2B2", cell_2B2));
+
+            clearCellObj(cellListH);
+            clearCellObj(cellListV);
         }
 
         /// <summary>
@@ -389,7 +392,8 @@ namespace DDPM.Easy.Common
                 listOut.Add(rect);
             }
 
-            cellListH.Clear();
+            clearCellObj(cellListH);//SDL: Improper Resource Shutdown or Release
+
             int idxCell = 0;
             foreach(Rect rcRatio in listOut)
             {
@@ -402,6 +406,19 @@ namespace DDPM.Easy.Common
         }
 
         #endregion Cell List
+
+        //SDL: Improper Resource Shutdown or Release
+        private static void clearCellObj(List<CellObj> list)
+        {
+            if (list != null && list.Count > 0)
+            {
+                foreach (CellObj cell in list)
+                {
+                    cell.Dispose();
+                }
+                list.Clear();
+            }
+        }//SDL: End
 
         #region CellBorders
         private List<CellBorder> celBordersH = new List<CellBorder>();
@@ -545,6 +562,7 @@ namespace DDPM.Easy.Common
         ~SplitCtrl0B()
         {
             Dispose(false);
+            InitCellList();
             vm?.Dispose();//SDL: Improper Resource Shutdown or Release
         }
         #endregion
