@@ -1219,7 +1219,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 response = response + "\"model\":\"" + data.Model + "\",";
                 response = response + "\"servicetag\":\"" + data.ServiceTag + "\",";
                 response = response + "\"marketingname\":\"" + "N/A" + "\",";
-                response = response + "\"serialnumber\":\"" + "N/A" + "\",";
+                response = response + "\"serialnumber\":\"" + deviceControlPannel.getSerialNumber(data.Model) + "\",";
                 response = response + "\"fwversion\":\"[" + data.TheLatestVersion + "]\",";
                 response = response + "\"fwupdateresponse\":[\"" + string.Empty + "\"]";
                 response = response + "}]";
@@ -1604,6 +1604,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
         #endregion
 
+        #region FW Job implement
         // add @ 20250117 stephen
         private void initFwJobControlPanel()
         {
@@ -1811,5 +1812,27 @@ namespace DDPM.SA.Plugins.CMAManager
             Task.Delay(3000).Wait(); // For test 30000 change to 3000
             isDoFwJobChecking = false;
         }
+        #endregion
+
+        // add @ 20250417 stephen
+        #region DTP device information implement
+
+        public Task UpdateDtpDeviceInfo(CmaDeviceInfo data)
+        {
+
+            WriteLog($"[CMA] UpdateDtpDeviceInfo called");
+
+            WriteLog($"[CMA] UpdateDtpDeviceInfo CmaDeviceInfo data.type = {data.type}");
+            WriteLog($"[CMA] UpdateDtpDeviceInfo CmaDeviceInfo data.guid = {data.guid}");
+            WriteLog($"[CMA] UpdateDtpDeviceInfo CmaDeviceInfo data.model = {data.model}");
+            WriteLog($"[CMA] UpdateDtpDeviceInfo CmaDeviceInfo data.serialnumber = {data.serialnumber}");
+            WriteLog($"[CMA] UpdateDtpDeviceInfo CmaDeviceInfo data.fwversion = {data.fwversion}");
+
+            deviceControlPannel.updateCmaDeviceList(data);
+
+            return Task.CompletedTask;
+        }
+
+        #endregion
     }
 }
