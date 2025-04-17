@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DDDPM.SA.Common;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
@@ -283,7 +284,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     //Determine the SortOrder in the foreach loop.
                     //Each Category have their index, would be in order of ModelNumber
                     int idxWebcam = 0, idxKB = 0, idxMouse = 0,
-                        idxPen = 0, idxHeadset = 0, idxSpeaker = 0, idxDock = 0, idxBootloader = 0, idxAirAudio = 0;
+                        idxPen = 0, idxHeadset = 0, idxSpeaker = 0, idxDock = 0, idxBootloader = 0, idxAirAudio = 0, idxRtkHub = 0;
 
                     //Robert_Lin 2024-5-16 This method should be called once, provide all
                     //monitor in this call. So it will clear original list at first
@@ -547,6 +548,25 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             dev.SortOrder = (int)dev.DeviceCategory + idxSpeaker;
                             idxSpeaker++;
                         }
+                        //250415 Wayn 新增RtkHub 
+                        else if (GlobalDefinitions.isSupport210 && devType.ToString().ToUpper().Contains("25"))
+                        {
+                            _log!.Info($"[DdpmHomePageViewModel] PrepareDeviceInfos RTKHUB ... ");
+                            string imagepath = "";
+                            switch (di.ModelNumber)
+                            {
+                                case "DA225":
+                                    imagepath = "Resources/Images/DA225.png";
+                                    break;
+                                default:
+                                    imagepath = "Resources/Images/DA225.png";
+                                    break;
+                            }
+                            dev.DeviceCategory = eDeviceCategory.RtkHub;
+                            dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(imagepath, "DDPM.UI.Resources");
+                            dev.SortOrder = (int)dev.DeviceCategory + idxRtkHub;
+                            idxRtkHub++;
+                        }
                         //0211 Bruce 新增Bootloader UI
                         else if (devType.Equals(DeviceType.PhysicalBootloader) ||
                             devType.Equals(DeviceType.LogicalBootloader))
@@ -577,7 +597,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         }
 
                         //_homeDevices.Add(dev);
-                        tempList.Add(dev);
+                        if (GlobalDefinitions.isSupport210 && devType.ToString().ToUpper().Contains("25"))
+                            tempList.Add(dev);
+                        else
+                            return;
                     }
                     //OnPropertyChanged("HomeDevices");
 

@@ -3614,12 +3614,52 @@
     <value>Use solo caracteres alfanuméricos y los siguientes caracteres especiales {0}</value>
   </data>
   <data name="InputValidationTooltip.3" xml:space="preserve">
-    <value>La ruta del archivo superó el máximo de 260 caracteres, usa un nombre de archivo reservado o tiene caracteres no válidos &amp;lt; &amp;gt; : &quot; / \ | ?</value>
+    <value>La ruta del archivo superó el máximo de 260 caracteres, usa un nombre de archivo reservado o tiene caracteres no válidos &amp;lt; &amp;gt; : " / \ | ?</value>
   </data>
   <data name="InputValidationTooltip.4" xml:space="preserve">
     <value>Ingrese solo una ruta URL completa, no una ruta relativa</value>
   </data>
   <data name="ErrorMsg.0" xml:space="preserve">
     <value>No se puede cargar la aplicación Dell Display and Peripheral Manager en este momento. Cierre la aplicación y vuelva a intentarlo.</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="RtkHub.02" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="RtkHub.03" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="RtkHub.04" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="RtkHub.05" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="RtkHub.06" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="RtkHub.07" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="RtkHub.08" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="RtkHub.09" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="RtkHub.10" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="RtkHub.11" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="RtkHub.12" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="RtkHub.13" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="RtkHub.14" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>

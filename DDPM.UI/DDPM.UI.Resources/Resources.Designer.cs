@@ -7648,6 +7648,168 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Port Information 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_01 {
+            get {
+                return ResourceManager.GetString("RtkHub.01", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 USB Port Status 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_02 {
+            get {
+                return ResourceManager.GetString("RtkHub.02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Input 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_03 {
+            get {
+                return ResourceManager.GetString("RtkHub.03", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Device Name 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_04 {
+            get {
+                return ResourceManager.GetString("RtkHub.04", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Status 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_05 {
+            get {
+                return ResourceManager.GetString("RtkHub.05", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 In Use 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_06 {
+            get {
+                return ResourceManager.GetString("RtkHub.06", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Available 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_07 {
+            get {
+                return ResourceManager.GetString("RtkHub.07", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Your overall power budget use is within an acceptable range 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_08 {
+            get {
+                return ResourceManager.GetString("RtkHub.08", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 You will be notified if overall power budget reaches 90% or more. If at full capacity, connected devices will become unavailable. 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_09 {
+            get {
+                return ResourceManager.GetString("RtkHub.09", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Other Device 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_10 {
+            get {
+                return ResourceManager.GetString("RtkHub.10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 UnKnown 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_11 {
+            get {
+                return ResourceManager.GetString("RtkHub.11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Your USB power budget has reached or exceeded 90%. Disconnect devices you no longer need. If power budget use reaches full capacity, connected devices will become unavailable. 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_12 {
+            get {
+                return ResourceManager.GetString("RtkHub.12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Your USB power budget has exceeded full capacity. To ensure proper functionality, disconnect one or more devices. 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_13 {
+            get {
+                return ResourceManager.GetString("RtkHub.13", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 USB port is NOT functioning. Unplug the device and retry. 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_14 {
+            get {
+                return ResourceManager.GetString("RtkHub.14", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Port is unavailable because power capacity was exceeded or to allow other connected devices to function 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_15 {
+            get {
+                return ResourceManager.GetString("RtkHub.15", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 USB-A 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_16 {
+            get {
+                return ResourceManager.GetString("RtkHub.16", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 USB-C 1 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_17 {
+            get {
+                return ResourceManager.GetString("RtkHub.17", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 USB-C 2 的當地語系化字串。
+        /// </summary>
+        internal static string RtkHub_18 {
+            get {
+                return ResourceManager.GetString("RtkHub.18", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Save 的當地語系化字串。
         /// </summary>
         internal static string Save {
@@ -8599,6 +8761,15 @@ namespace DDPM.UI.Resources {
         internal static string USB {
             get {
                 return ResourceManager.GetString("USB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 USB-C 的當地語系化字串。
+        /// </summary>
+        internal static string USBC {
+            get {
+                return ResourceManager.GetString("USBC", resourceCulture);
             }
         }
         
